@@ -1,0 +1,1 @@
+<?phpecho $this->Form->input('StatOrder', array('id' => 'stat_order_id', 'label' => __('Orders'), 'options' => $statOrders, 'empty' => Configure::read('option.empty')));?>

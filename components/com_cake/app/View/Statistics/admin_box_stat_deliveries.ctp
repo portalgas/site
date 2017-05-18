@@ -1,0 +1,1 @@
+<?php	echo $this->Form->input('StatDelivery', array('id' => 'stat_delivery_id', 'label' => __('Deliveries'), 'options' => $statDeliveries, 'onChange' => 'javascript:choiceDeliveries(this);', 'empty' => Configure::read('option.empty')));?>

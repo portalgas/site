@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	type="module"
+	version="3.0.0" client="site"
+	method="upgrade">
+	<name>GoogleCalendar</name>
+	<author>Jan Maat</author>
+	<creationDate>January 2013</creationDate>
+	<copyright>Copyright (C) 2012 Jan Maat All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>	
+	<version>10.0</version>	
+	<description>MOD_GOOGLECALENDAR_DESCRIPTION</description>
+	
+	<files>
+		<filename module="mod_googlecalendar">mod_googlecalendar.php</filename>
+		<filename>mod_googlecalendar.xml</filename>
+		<filename>helper.php</filename>
+		<filename>index.html</filename>		
+		<folder>tmpl</folder>
+		<folder>language</folder>		
+	</files>
+	
+	<config>
+		<fields name="params">
+			<fieldset name="basic">					
+					<field name="code" type="textarea"  filter="raw" label="CODE" description="DESCR_CODE" rows="5" cols="40" />							
+			</fieldset>
+                        <fieldset
+				name="advanced">
+				<field
+					name="moduleclass_sfx"
+					type="text"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+			</fieldset>		
+		</fields>
+	</config>
+</extension>

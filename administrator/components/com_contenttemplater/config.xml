@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config addfieldpath="/plugins/system/nnframework/fields">
+	<fieldset name="options" label="JOPTIONS">
+		<field name="@loadlanguage" type="nn_loadlanguage" extension="com_contenttemplater" />
+		<field name="view_state" type="radio" class="btn-group" default="1" label="NN_VIEW" description="NN_VIEW_DESC">
+			<option value="0">NN_SIMPLE</option>
+			<option value="1">NN_NORMAL</option>
+			<option value="">NN_ADVANCED</option>
+		</field>
+		<field name="@toggler_view_state_a" type="nn_toggler" param="view_state" value="" />
+		<field name="@notice_view_state" type="nn_plaintext" label="NN_ADVANCED" description="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+		<field name="@toggler_view_state_b" type="nn_toggler" />
+
+		<field name="@block_button_a" type="nn_block" start="1" label="NN_SETTINGS_EDITOR_BUTTON" />
+		<field name="enable_frontend" type="radio" class="btn-group" default="1" label="NN_ENABLE_IN_FRONTEND" description="NN_ENABLE_IN_FRONTEND_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+			<option value="2">NN_ONLY</option>
+		</field>
+		<field name="button_text" type="text" default="Insert Template" size="40" label="NN_BUTTON_TEXT" description="NN_BUTTON_TEXT_DESC" />
+		<field name="button_icon" type="radio" class="btn-group" default="1" label="NN_SHOW_ICON" description="NN_SHOW_ICON_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="show_confirm" type="radio" class="btn-group" default="0" label="CT_ASK_BEFORE_INSERTING_TEMPLATE" description="CT_ASK_BEFORE_INSERTING_TEMPLATE_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="show_create_new" type="radio" class="btn-group" default="1" label="CT_SHOW_CREATE_NEW" description="CT_SHOW_CREATE_NEW_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="show_empty" type="radio" class="btn-group" default="1" label="CT_SHOW_IF_EMPTY" description="CT_SHOW_IF_EMPTY_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="orderby" type="radio" default="" label="CT_ORDERBY" description="CT_ORDERBY_DESC">
+			<option value="">JFIELD_ORDERING_LABEL</option>
+			<option value="name">JGLOBAL_TITLE</option>
+		</field>
+		<field name="list_as_select" type="radio" class="btn-group" default="0" label="CT_LIST_AS_SELECT" description="CT_LIST_AS_SELECT_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="@toggler_button_select_a" type="nn_toggler" param="list_as_select" value="0" />
+		<field name="button_action" type="radio" default="hover" label="CT_BUTTON_ACTION" description="CT_BUTTON_ACTION_DESC">
+			<option value="hover">CT_HOVER</option>
+			<option value="click">CT_CLICK</option>
+		</field>
+		<field name="show_list_below" type="radio" class="btn-group" default="0" label="CT_LIST_BELOW" description="CT_LIST_BELOW_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="split_list" type="text" default="8" size="4" label="CT_SPLIT_LIST" description="CT_SPLIT_LIST_DESC" />
+		<field name="@toggler_button_select_b" type="nn_toggler" />
+		<field name="@block_button_b" type="nn_block" end="1" />
+
+		<field name="@block_load_a" type="nn_block" start="1" label="CT_AUTO_LOAD" />
+		<field name="@notice_url_delay" type="nn_plaintext" label="CT_LOAD_DELAY" description="CT_LOAD_DELAY_DESC" default="NN_ONLY_AVAILABLE_IN_PRO" />
+		<field name="@block_load_b" type="nn_block" end="1" />
+
+		<field name="@block_other_a" type="nn_block" start="1" label="NN_OTHER_SETTINGS" />
+		<field name="contact_table" type="text" default="contact_details" label="CT_CONTACT_TABLE" description="CT_CONTACT_TABLE_DESC" />
+		<field name="show_update_notification" type="radio" class="btn-group" default="1" label="NN_SHOW_UPDATE_NOTIFICATION" description="NN_SHOW_UPDATE_NOTIFICATION_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="@notice_show_copyright" type="nn_plaintext" label="NN_SHOW_COPYRIGHT" description="NN_SHOW_COPYRIGHT_DESC" default="NN_ONLY_AVAILABLE_IN_PRO" />
+		<field name="@block_other_b" type="nn_block" end="1" />
+	</fieldset>
+
+	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
+		<field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" class="inputbox" filter="rules" validate="rules"
+			component="com_contenttemplater" section="component" />
+	</fieldset>
+</config>

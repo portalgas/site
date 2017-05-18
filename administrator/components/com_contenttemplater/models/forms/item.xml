@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: item.xml 20990 2011-03-18 16:42:30Z infograf768 $ -->
+<form>
+	<fieldset>
+		<field
+			id="id"
+			name="id"
+			type="text"
+			default="0"
+			readonly="true"
+			class="readonly"
+			label="JGLOBAL_FIELD_ID_LABEL"
+			description="JGLOBAL_FIELD_ID_DESC" />
+	</fieldset>
+</form>

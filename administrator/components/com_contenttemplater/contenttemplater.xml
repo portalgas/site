@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="component" method="upgrade">
+	<name>COM_CONTENTTEMPLATER</name>
+	<description>COM_CONTENTTEMPLATER_DESC</description>
+	<version>4.6.3FREE</version>
+	<creationDate>September 2013</creationDate>
+	<author>NoNumber (Peter van Westen)</author>
+	<authorEmail>peter@nonumber.nl</authorEmail>
+	<authorUrl>http://www.nonumber.nl</authorUrl>
+	<copyright>Copyright © 2013 NoNumber All Rights Reserved</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+
+	<administration>
+		<menu img="../media/contenttemplater/images/icon_contenttemplater.png">COM_CONTENTTEMPLATER</menu>
+	</administration>
+
+	<!-- Installation -->
+	<uninstallfile>uninstall.contenttemplater.php</uninstallfile>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">uninstall.contenttemplater.sql</file>
+		</sql>
+	</uninstall>
+</extension>

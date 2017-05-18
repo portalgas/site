@@ -1,0 +1,58 @@
+.fc-header-title h2 {
+	line-height: 20px;
+	font-size: 19px;
+}
+
+.fc-header tr,.fc-header-title h2,.fc-header,.fc-header td {
+	border: 0px;
+}
+
+#dp-popup-window-divider {
+	margin: 0;
+}
+
+.dpcalendar-mini-module-form {
+	display: none;
+	position: absolute;
+	background-color: white;
+	z-index: 1002;
+	border: 1px solid #ccc;
+	max-width: 320px;
+	padding: 5px;
+}
+
+.dpcalendar-mini-module-form .control-group, .dpcalendar-mini-module-form .control-group .controls  {
+	margin: 2px;
+	padding: 0;
+}
+
+.dpcalendar-mini-module-form .control-group .control-label {
+	width: 80px;
+}
+
+.dpcalendar-mini-module-form .control-group label {
+	height: 14px;
+	font-size: 10px;
+	line-height: 14px;
+	margin-top: 5px;
+}
+
+.ui-timepicker-list li {
+	height: 14px;
+	font-size: 10px;
+	line-height: 14px;
+	margin-top: 5px;
+}
+
+.dpcalendar-mini-module-form .control-group input {
+	height: 14px;
+	font-size: 10px;
+	line-height: 14px;
+}
+
+.dpcalendar-mini-module-form .control-group select {
+	height: 28px;
+	font-size: 10px;
+	line-height: 14px;
+	padding: 0;
+}

@@ -1,0 +1,300 @@
+/* TABS */
+/*
+#tabsDelivery {
+	text-align:left;
+}
+#tabsDelivery  table {
+    background-color: #FFFFFF;
+    border-spacing: 1px;
+    color: #000000;
+    width: 100%;
+}
+#tabsDelivery table td, #tabsDelivery table th {
+    padding: 4px;
+}
+#tabsDelivery table thead th {
+    background: none repeat scroll 0 0 #A7B5C5;
+    border-bottom: 1px solid #999999;
+    border-left: 1px solid #FFFFFF;
+    color: #666666;
+    text-align: left;
+}
+#tabsDelivery table thead a:hover {
+    text-decoration: none;
+}
+#tabsDelivery table thead th img {
+    vertical-align: middle;
+}
+#tabsDelivery table tbody th {
+    font-weight: bold;
+}
+#tabsDelivery table tbody tr {
+    background-color: #FFFFFF;
+    text-align: left;
+}
+#tabsDelivery table tbody tr.row1 {
+    background: none repeat scroll 0 0 #F0F0F0;
+    border-top: 1px solid #FFFFFF;
+}
+#tabsDelivery table tbody tr.row0:hover td, #tabsDelivery table tbody tr.row1:hover td {
+    background-color: #F0F0F0;
+}
+#tabsDelivery table tbody tr td {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #FFFFFF;
+    height: 25px;
+}
+#tabsDelivery table tbody tr.row1 td {
+    background: none repeat scroll 0 0 #F9F9F9;
+    border-top: 1px solid #FFFFFF;
+}
+#tabsDelivery table tfoot tr {
+    color: #333333;
+    text-align: center;
+}
+#tabsDelivery table tfoot td, #tabsDelivery table tfoot th {
+    background-color: #F3F3F3;
+    border-top: 1px solid #999999;
+    text-align: center;
+}
+#tabsDelivery table td.order {
+    text-align: center;
+    white-space: nowrap;
+}
+#tabsDelivery table td.order span {
+    display: block;
+    float: left;
+    text-align: center;
+    width: 20px;
+}
+#tabsDelivery table .pagination {
+    display: table;
+    margin: 0 auto;
+    padding: 0;
+}
+
+#tabsDelivery .nota {
+	color:red;
+	padding-left:5px;
+}
+*/
+
+/* GENERAL */
+#tabsDelivery h1 {
+   color: #0B55C4;
+   font-size: 20px;
+   font-weight: bold;
+   margin: 0;
+   padding-bottom: 8px;
+	width: 50%;
+}
+/* MESSAGE 
+#tabsDelivery #system-message {
+    margin-bottom: 10px;
+    padding: 0;
+    width: 100%;
+}
+#tabsDelivery #system-message dt {
+    font-weight: bold;
+}
+#tabsDelivery #system-message dd {
+    font-weight: bold;
+    margin: 0;
+    text-indent: 30px;
+}
+#tabsDelivery #system-message dd ul {
+    border-bottom: 3px solid #84A7DB;
+    border-top: 3px solid #84A7DB;
+    list-style: none outside none;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+#tabsDelivery #system-message dt.message {
+    display: none;
+}
+#tabsDelivery #system-message dd.message {
+}
+#tabsDelivery #system-message dt.alert {
+    display: none;
+}
+#tabsDelivery #system-message dd.alert ul {
+    background-color: #E6C0C0;
+    border-bottom: 3px solid #DE7A7B;
+    border-top: 3px solid #DE7A7B;
+    color: #CC0000;
+}
+#tabsDelivery #system-message dt.notice {
+    display: none;
+}
+#tabsDelivery #system-message dd.notice ul {
+    background: none repeat scroll 0 0 #EFE7B8;
+    border-bottom: 3px solid #F0DC7E;
+    border-top: 3px solid #F0DC7E;
+    color: #CC0000;
+}
+
+#tabsDelivery #system-message dd.message ul li {margin-left: 30px;}
+#tabsDelivery #system-message dd.alert ul li {margin-left: 30px;}
+#tabsDelivery #system-message dd.notice ul li {margin-left: 30px;}
+#tabsDelivery #system-message ul li {display: inline;}
+
+#tabsDelivery #system-message dd.message ul {
+   background: url("/images/cake/notice-message.png") no-repeat scroll 4px center #C3D2E5;
+	border-bottom: 3px solid #84A7DB;
+	border-top: 3px solid #84A7DB;
+	color: #FFFFFF;
+}
+#tabsDelivery #system-message dd.notice ul {
+    background: url("/images/cake/notice-notice.png") no-repeat scroll 4px center #EFE7B8;
+    border-bottom: 3px solid #F0DC7E;
+    border-top: 3px solid #F0DC7E;
+    color: #CC0000 !important;
+}
+#tabsDelivery #system-message dd.alert ul {
+    background: url("/images/cake/notice-alert.png") no-repeat scroll 4px center #E6C0C0;
+    border-bottom: 3px solid #DE7A7B;
+    border-top: 3px solid #DE7A7B;
+    color: #CC0000 !important;
+}
+*/
+#tabsDelivery ul.acquisti {
+    list-style: decimal inside none !important;
+    margin: 0 !important;
+    padding: 3px !important;
+}
+
+#tabsDelivery td, 
+#tabsDelivery th, 
+#tabsDelivery div {
+	empty-cells: show;
+   font-size: 14px;
+}
+
+#tabsDelivery .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    font-weight: bold;
+}
+
+#tabsDelivery .notaRicorrenza {
+    border: 2px dotted #999999;
+    float: right;
+    margin: 12px;
+    padding: 5px;
+    text-align: right;
+    width: 90%;
+}
+#tabsDelivery .notaRicorrenza .titolo {
+	color:red;
+    margin-bottom: 5px;
+}
+
+#tabsDelivery .dettaglioAcquisti {
+    background-color:#FCF8E3; 
+}
+
+#tabsDelivery .qtaZero {
+   background-color: #FFFFFF;
+   float: left;
+   width: 30px;
+	margin-right:5px;
+}
+#tabsDelivery .qtaUno {
+   background-color: #09D96B;
+   float: left;
+   width: 30px;
+	margin-right:5px;
+}
+#tabsDelivery .prezzoNew {
+   clear: none;
+   float: left;
+}
+#tabsDelivery .submitBox {
+	clear: none;
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+#tabsDelivery .msgEcomm {
+	clear:both;
+	margin:5px 0 0 0;
+}
+#tabsDelivery .buttonPiuMeno {
+    clear: none;
+    float: right;
+    margin: 0px;
+}
+#tabsDelivery .buttonCarrello {
+   cursor: pointer;
+   float: left;
+   margin: 0 0 0 5px;
+   padding: 0;
+}
+
+#tabsDelivery .notaEcomm {
+   cursor: pointer;
+}
+#tabsDelivery .msgEcomm {
+    color: red;
+}
+#tabsDelivery .popup_header {
+   border: 2px dotted #B23557;
+   margin: 10px 20px 10px;
+   padding-left: 20%;
+}
+#tabsDelivery .popup_header ol li {
+    margin-bottom: 10px;
+    padding-left: 0;
+}
+#tabsDelivery .popup_header h1 {
+    color: #0B55C4;
+    font-size: 20px;
+    margin: 15px 0 5px 15px;
+}
+#tabsDelivery a.oldTime {
+    text-decoration: line-through !important;
+}
+/* override */
+#tabsDelivery .ui-widget-header {
+	border: none !important;
+	background: none repeat scroll 0 0 #fff;
+}
+#tabsDelivery .ui-tabs .ui-tabs-panel {
+	overflow: hidden !important; 
+    padding: 0;
+    padding-bottom:60px !important; /* aggiunto per ovviare problema overflow */
+}
+#tabsDelivery .ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+#tabsDelivery .ui-tabs .ui-tabs-nav li.ui-state-disabled a, 
+#tabsDelivery .ui-tabs .ui-tabs-nav li.ui-tabs-loading a {
+    background: none repeat scroll 0 0 #4FB4F3;
+    color: #FFFFFF;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: capitalize;
+}
+#tabsDelivery .ui-corner-all, 
+#tabsDelivery .ui-corner-bottom, 
+#tabsDelivery .ui-corner-right, 
+#tabsDelivery .ui-corner-br {
+    border: medium none;
+}
+
+#tabsDelivery table thead tr th, #tabs table thead tr th {
+    font-size: 16px !important;
+    height: 60px;
+    vertical-align: middle;
+}
+#tabsDelivery table tbody tr.rowEcomm, #tabs table tbody tr {
+    font-size: 14px;
+    height: 60px;
+}
+#tabsDelivery .filtroTabs {
+	margin:10px 0 10px 0;
+}
+#tabsDelivery .filtroTabs select {
+   font-size: 16px !important;
+   height: 25px;
+   width: 100%;
+}
+#tabsDelivery .filtroTabs select option {
+   font-size: 16px !important;
+}

@@ -1,0 +1,35 @@
+/**
+ * Admin CSS
+ *
+ * @package         Content Templater
+ * @version         4.6.3
+ *
+ * @author          Peter van Westen <peter@nonumber.nl>
+ * @link            http://www.nonumber.nl
+ * @copyright       Copyright © 2013 NoNumber All Rights Reserved
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+.icon-48-contenttemplater {
+  background: transparent url(../images/contenttemplater.png) no-repeat 10px 9px !important;
+  padding-left: 253px !important;
+  /* width + 20 */
+
+}
+/* AP template */
+#ap-wrapper .icon-48-contenttemplater {
+  background: transparent url(../images/contenttemplater.png) no-repeat 10px 13px !important;
+  padding-left: 253px;
+  /* width + 20 */
+
+  font-size: 22px;
+  color: #000000;
+}
+/* APLite template */
+.ap-main .icon-48-contenttemplater {
+  background: #ffffff url(../images/contenttemplater.png) no-repeat -27px -7px !important;
+  padding-left: 213px !important;
+  /* width - 20 */
+
+  padding-right: 5px !important;
+  color: #000000 !important;
+}

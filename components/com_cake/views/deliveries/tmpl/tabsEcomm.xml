@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout
+		title="COM_CAKE_DELIVERIES_TABECOMM_DEFAULT_TITLE" option="COM_CAKE_DELIVERIES_TABECOMM_DEFAULT_OPTION">
+		<help
+			key="JHELP_MENUS_MENU_ITEM_COM_CAKE_SUBMIT"
+		/>
+		<message>
+			<![CDATA[COM_CAKE_DELIVERIES_TABECOMM_DEFAULT_DESC]]>
+		</message>
+	</layout>
+</metadata>

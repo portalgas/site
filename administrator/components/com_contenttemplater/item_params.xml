@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config addfieldpath="/plugins/system/nnframework/fields">
+	<fieldset name="view_state">
+		<field name="view_state" type="radio" default="-1"
+			label="NN_VIEW" description="">
+			<option value="0">NN_SIMPLE</option>
+			<option value="1">NN_NORMAL</option>
+			<option value="2">NN_ADVANCED</option>
+		</field>
+	</fieldset>
+
+	<fieldset name="main_texts">
+		<field name="@view_state" type="nn_plaintext" label="VIEW_STATE_PLACEHOLDER" />
+		<field name="@toggler_view_state_a" type="nn_toggler" param="view_state" value="2" />
+		<field name="@notice_view_state" type="nn_plaintext" label="NN_ADVANCED" description="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+		<field name="@toggler_view_state_b" type="nn_toggler" />
+		<field name="@main_desc" type="nn_plaintext" label="CT_ITEM_INFORMATION" />
+	</fieldset>
+
+	<fieldset name="details">
+		<field name="published" type="radio" class="btn-group" default="1" label="JPUBLISHED" description="NN_PUBLISHED_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="name" type="text" size="100" default="" label="JGLOBAL_TITLE" description="CT_NAME_DESC" />
+		<field name="description" type="nn_textareaplus" width="400" height="80" default="" label="JGLOBAL_DESCRIPTION" description="CT_DESCRIPTION_DESC" />
+	</fieldset>
+
+	<fieldset name="-content">
+		<field name="@block_editor" type="nn_block" description="CT_CONTENT_DESC" />
+		<field name="content" type="nn_editor" default="" label="" />
+	</fieldset>
+
+	<fieldset name="override">
+		<field name="override_settings" type="radio" class="btn-group" default="0" label="CT_OVERRIDE_SETTINGS" description="CT_OVERRIDE_SETTINGS_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="@toggler_override_1a" type="nn_toggler" param="override_settings" value="0" />
+		<field name="@block_override_1" type="nn_block" description="CT_OVERRIDE_DISABLED_DESC" />
+		<field name="@toggler_override_1b" type="nn_toggler" />
+		<field name="@toggler_override_2a" type="nn_toggler" param="override_settings" value="1" />
+		<field name="@block_override_2" type="nn_block" description="CT_OVERRIDE_ENABLED_DESC" />
+		<field name="@toggler_override_2b" type="nn_toggler" />
+	</fieldset>
+
+	<fieldset name="-settings">
+		<field name="jform_title" type="text" size="30" default="" label="JGLOBAL_TITLE" description="JFIELD_TITLE_DESC" />
+		<field name="jform_alias" type="text" size="30" default="" label="JFIELD_ALIAS_LABEL" description="JFIELD_ALIAS_DESC" />
+		<field name="jform_catid" type="nn_cats" default="-1" size="1" show_ignore="1" label="JCATEGORY" description="JFIELD_CATEGORY_DESC" />
+		<field name="@toggler_cat_k2_a" type="nn_toggler" param="has_k2" value="1" />
+		<field name="jform_categories_k2" type="nn_k2" group="categories" multiple="0" size="1" show_ignore="1" default="-1"
+			label="NN_K2_CATEGORIES" description="" />
+		<field name="@toggler_cat_k2_b" type="nn_toggler" />
+		<field name="@toggler_cat_zoo_a" type="nn_toggler" param="has_zoo" value="1" />
+		<field name="jform_categories_zoo" type="nn_zoo" group="categories" multiple="1" show_ignore="1" width="200" default="-1"
+			label="NN_ZOO_CATEGORIES" description="" />
+		<field name="@toggler_cat_zoo_b" type="nn_toggler" />
+		<field name="jform_state" type="list" default="-1"
+			label="JSTATUS" description="JFIELD_PUBLISHED_DESC">
+			<option value="-1">NN_IGNORE</option>
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+			<option value="2">JARCHIVED</option>
+			<option value="-2">JTRASHED</option>
+		</field>
+		<field name="jform_access" type="accesslevel" size="1" default="-1"
+			label="JFIELD_ACCESS_LABEL" description="JFIELD_ACCESS_DESC">
+			<option value="-1">NN_IGNORE</option>
+		</field>
+		<field name="jform_featured" type="list" default="-1"
+			label="JFEATURED" description="COM_CONTENT_FIELD_FEATURED_DESC">
+			<option value="-1">NN_IGNORE</option>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field name="jform_language" type="contentlanguage" default="-1"
+			label="JFIELD_LANGUAGE_LABEL" description="COM_CONTENT_FIELD_LANGUAGE_DESC">
+			<option value="-1">NN_IGNORE</option>
+			<option value="*">JALL</option>
+		</field>
+	</fieldset>
+
+	<fieldset name="-publishing">
+		<field name="@notice_publishing" type="nn_plaintext" label="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="-basic">
+		<field name="@notice_basic" type="nn_plaintext" label="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="-metadata">
+		<field name="@notice_metadata" type="nn_plaintext" label="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="-customfields">
+		<field name="@notice_customfields" type="nn_plaintext" label="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="button">
+		<field name="button_enabled" type="list" default="1" label="CT_SHOW_IN_EDITOR_BUTTON_LIST" description="CT_SHOW_IN_EDITOR_BUTTON_LIST_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+			<option value="2">CT_AS_SEPARATE_EDITOR_BUTTON</option>
+		</field>
+
+		<field name="@toggler_button_a" type="nn_toggler" param="button_enabled" value="1,2" />
+		<field name="@toggler_button_enabled_a" type="nn_toggler" param="button_enabled" value="2" />
+		<field name="button_name" type="text" size="40" default="" label="CT_EDITOR_BUTTON_NAME" description="CT_EDITOR_BUTTON_NAME_DESC" />
+		<field name="button_image" type="nn_radioimages" default="-1"
+			label="CT_EDITOR_BUTTON_IMAGE" description="CT_EDITOR_BUTTON_IMAGE_DESC"
+			directory="media/contenttemplater/images/buttons"
+			filter=".png"
+			hide_none="0" hide_default="1" />
+		<field name="@toggler_button_enabled_b" type="nn_toggler" />
+
+		<field name="@block_button" type="nn_block" description="CT_EDITOR_BUTTON_LIST_DESC" />
+
+		<field name="button_enable_in_frontend" type="radio" class="btn-group" default="1" label="NN_ENABLE_IN_FRONTEND" description="CT_ENABLE_BUTTON_IN_FRONTEND_DESC">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+			<option value="2">NN_ONLY</option>
+		</field>
+		<field name="@toggler_button_b" type="nn_toggler" />
+	</fieldset>
+
+	<fieldset name="load">
+		<field name="@notice_block_load" type="nn_block" description="CT_LOAD_BY_DEFAULT_DESC" />
+		<field name="@notice_load_enabled" type="nn_plaintext" label="CT_ENABLE_LOAD_BY_DEFAULT" description="CT_ENABLE_LOAD_BY_DEFAULT_DESC" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="url">
+		<field name="@notice_block_url" type="nn_block" description="CT_LOAD_BY_URL_DESC" />
+		<field name="@notice_url_enabled" type="nn_plaintext" label="CT_ENABLE_LOAD_BY_URL" description="CT_ENABLE_LOAD_BY_URL_DESC" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+
+	<fieldset name="assignments">
+		<field name="@notice_assignments" type="nn_plaintext" label="" default="NN_ONLY_AVAILABLE_IN_PRO" />
+	</fieldset>
+</config>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>PLG_EDITORS-XTD_CONTENTTEMPLATER</name>
+	<description>PLG_EDITORS-XTD_CONTENTTEMPLATER_DESC</description>
+	<version>4.6.3FREE</version>
+	<creationDate>September 2013</creationDate>
+	<author>NoNumber (Peter van Westen)</author>
+	<authorEmail>peter@nonumber.nl</authorEmail>
+	<authorUrl>http://www.nonumber.nl</authorUrl>
+	<copyright>Copyright © 2013 NoNumber All Rights Reserved</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+
+	<!-- Files -->
+	<files>
+		<filename plugin="editorbuttons">contenttemplater.php</filename>
+		<filename>contenttemplater.inc.php</filename>
+		<filename>helper.php</filename>
+		<filename>index.html</filename>
+	</files>
+
+	<!-- Parameters -->
+	<config>
+		<fields name="params" addfieldpath="/plugins/system/nnframework/fields">
+			<fieldset name="description">
+				<field name="@loadlanguage" type="nn_loadlanguage" extension="plg_editors-xtd_contenttemplater" />
+				<field name="@license" type="nn_license" extension="CONTENT_TEMPLATER" />
+				<field name="@version" type="nn_version" extension="CONTENT_TEMPLATER" xml="/plugins/editors-xtd/contenttemplater/contenttemplater.xml" />
+				<field name="@dependency" type="nn_dependency"
+					label="CT_THE_COMPONENT"
+					file="/administrator/components/com_contenttemplater/contenttemplater.php" />
+				<field name="@dependency" type="nn_dependency"
+					label="CT_THE_SYSTEM_PLUGIN"
+					file="/plugins/system/contenttemplater/contenttemplater.php" />
+				<field name="@header" type="nn_header"
+					label="CONTENT_TEMPLATER"
+					description="CONTENT_TEMPLATER_DESC"
+					xml="/plugins/editors-xtd/contenttemplater/contenttemplater.xml"
+					url="http://www.nonumber.nl/contenttemplater" />
+
+				<field name="@notice_settings" type="nn_plaintext" label="CT_SETTINGS" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

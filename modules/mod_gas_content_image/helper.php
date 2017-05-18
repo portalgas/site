@@ -1,0 +1,144 @@
+<?php
+/**
+ * @package		Joomla.Site
+ * @subpackage	mod_random_image
+ * @copyright	Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+// no direct access
+defined('_JEXEC') or die;
+
+class modGasContentImageHelper
+{
+	//static function getRandomImage(&$params, $images)
+	static function getContentImage(&$params, $images)
+	{
+		$width	= $params->get('width');
+		$height	= $params->get('height');
+
+		$i			= count($images);
+		$random		= mt_rand(0, $i - 1);
+		$image		= $images[$random];
+		$size		= getimagesize (JPATH_BASE . '/' . $image->folder . '/' . $image->name);
+
+
+		if ($width == '') {
+			$width = 100;
+		}
+
+		if ($size[0] < $width) {
+			$width = $size[0];
+		}
+
+		$coeff = $size[0]/$size[1];
+		if ($height == '') {
+			$height = (int) ($width/$coeff);
+		} else {
+			$newheight = min ($height, (int) ($width/$coeff));
+			if ($newheight < $height) {
+				$height = $newheight;
+			} else {
+				$width = $height * $coeff;
+			}
+		}
+
+		$image->width	= $width;
+		$image->height	= $height;
+		$image->folder	= str_replace('\\', '/', $image->folder);
+
+		return $image;
+	}
+
+	static function getImages(&$params, $folder, $content_id)
+	{
+		/*
+		 * gestisco tutte le immagini
+		 *  $type = $params->get('type', 'jpg');
+		 */
+		$types = array('jpg', 'jpeg', 'png', 'gif');		
+
+		$files	= array();
+		$images	= array();
+
+		$dir = JPATH_BASE . '/' . $folder;
+
+		// check if directory exists
+		if (is_dir($dir))
+		{
+			if ($handle = opendir($dir)) {
+				while (false !== ($file = readdir($handle))) {
+					/*
+					if ($file != '.' && $file != '..' && $file != 'CVS' && $file != 'index.html' &&
+						$file==$content_id.'.'.$type) { // fractis 
+						$files[] = $file;
+					}
+					*/
+					
+					if ($file != '.' && $file != '..' && $file != 'CVS' && $file != 'index.html') {
+						foreach($types as $type) {
+							if(strtolower($file)==strtolower($content_id.'.'.$type)) {
+								$files[] = $file;	
+								break;
+							}
+						}
+						
+						if(empty($files)) {
+							if(strtolower($file)==strtolower('tmp-'.$content_id.'.'.$type)) {
+								$files[] = $file;	
+								break;
+							}
+						}
+					}					
+				}
+			}
+			closedir($handle);
+			
+			/*
+			 * fractis
+			 * se non esiste mette quella di default
+			 */
+			if(empty($files)) {
+				if ($handle = opendir($dir)) {					while (false !== ($file = readdir($handle))) {						if ($file != '.' && $file != '..' && $file != 'CVS' && $file != 'index.html' &&								$file=='0.jpg') {							$files[] = $file;						}					}				}				closedir($handle);				
+			}
+				
+				
+			$i = 0;
+			foreach ($files as $img)
+			{
+				if (!is_dir($dir . '/' . $img))
+				{
+					//if (preg_match('/'.$type.'/', $img)) {
+						$images[$i] = new stdClass;
+
+						$images[$i]->name	= $img;
+						$images[$i]->folder	= $folder;
+						$i++;
+					//}
+				}
+			}
+		}
+
+		return $images;
+	}
+
+	static function getFolder(&$params)
+	{
+		$folder	= $params->get('folder');
+
+		$LiveSite	= JURI::base();
+
+		// if folder includes livesite info, remove
+		if (JString::strpos($folder, $LiveSite) === 0) {
+			$folder = str_replace($LiveSite, '', $folder);
+		}
+		// if folder includes absolute path, remove
+		if (JString::strpos($folder, JPATH_SITE) === 0) {
+			$folder= str_replace(JPATH_BASE, '', $folder);
+		}
+		$folder = str_replace('\\', DIRECTORY_SEPARATOR, $folder);
+		$folder = str_replace('/', DIRECTORY_SEPARATOR, $folder);
+
+		return $folder;
+	}
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="package" method="upgrade">
+	<packagename>dpcalendar</packagename>
+	<packager>Digital Peak</packager>
+	<name>DPCalendar</name>
+	<author>Digital Peak</author>
+	<creationDate>Nov 2014</creationDate>
+	<copyright>(C) 2007 - 2014 Digital Peak. All rights reserved.</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html
+		GNU/GPL</license>
+	<authorEmail>info@digital-peak.com</authorEmail>
+	<authorUrl>joomla.digital-peak.com</authorUrl>
+	<version>4.1.2</version>
+	<files>
+		<file id="plg_system_dpcalendar" type="plugin" group="system" client="site">plg_system_dpcalendar.zip</file>
+		<file id="mod_dpcalendar_upcoming" type="module">mod_dpcalendar_upcoming.zip</file>
+		<file id="mod_dpcalendar_counter" type="module">mod_dpcalendar_counter.zip</file>
+		<file id="mod_dpcalendar_mini" type="module">mod_dpcalendar_mini.zip</file>
+		<file id="plg_search_dpcalendar" type="plugin" group="search" client="site">plg_search_dpcalendar.zip</file>
+		<file id="com_dpcalendar" type="component">com_dpcalendar.zip</file>
+	</files>
+	
+	<updateservers>
+		<server type="extension" priority="1" name="DPCalendar Free Update Site"><![CDATA[http://joomla.digital-peak.com/index.php?option=com_ars&view=update&task=stream&format=xml&id=4&ext=extension.xml]]></server>
+	</updateservers>
+</extension>

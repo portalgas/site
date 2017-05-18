@@ -1,0 +1,154 @@
+/**
+ * Stylesheet for font faces
+ *
+ * @package         NoNumber Framework
+ * @version         13.9.1
+ *
+ * @author          Peter van Westen <peter@nonumber.nl>
+ * @link            http://www.nonumber.nl
+ * @copyright       Copyright © 2013 NoNumber All Rights Reserved
+ * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+
+.button-nonumber > a:after {
+	font-family: 'NoNumber' !important;
+	font-style: normal;
+	speak: none;
+	font-size: 16px !important;
+	line-height: 14px;
+	content: "\e000";
+	margin-left: 4px;
+	vertical-align: -3px;
+}
+
+.button-addtomenu > a:after {
+	content: "\e001";
+}
+.button-adminbardocker > a:after {
+	content: "\e002";
+}
+.button-advancedmodulemanager > a:after {
+	content: "\e003";
+}
+.button-articlesanywhere > a:after {
+	content: "\e004";
+}
+.button-betterpreview > a:after {
+	content: "\e005";
+}
+.button-cachecleaner > a:after {
+	content: "\e006";
+}
+.button-cdnforjoomla > a:after {
+	content: "\e007";
+}
+.button-contenttemplater > a:after {
+	content: "\e008";
+}
+.button-dbreplacer > a:after {
+	content: "\e009";
+}
+.button-modalizer > a:after,
+.button-modals > a:after {
+	content: "\e00a";
+}
+.button-modulesanywhere > a:after {
+	content: "\e00b";
+}
+.button-rereplacer > a:after {
+	content: "\e00c";
+}
+.button-slider > a:after,
+.button-sliders > a:after {
+	content: "\e00d";
+}
+.button-snippets > a:after {
+	content: "\e00e";
+}
+.button-sourcerer > a:after {
+	content: "\e00f";
+}
+.button-taber > a:after,
+.button-tabs > a:after {
+	content: "\e010";
+}
+.button-timedstyles > a:after {
+	content: "\e011";
+}
+.button-tooltips > a:after {
+	content: "\e012";
+}
+.button-whatnothing > a:after {
+	content: " ";
+	width: 16px;
+	display: inline-block;
+}
+
+.button-src-sourcetags > a:after {
+	content: "\e013";
+}
+.button-src-nosourcetags > a:after {
+	content: "\e014";
+}
+.button-src-tagstyle > a:after {
+	content: "\e015";
+}
+.button-src-tagstylebrackets > a:after {
+	content: "\e016";
+}
+
+.button_view_state {
+	margin: 10px 0;
+	background-image: url(../images/button_left.png) !important;
+	float: left !important;
+
+	> div {
+		float: left !important;
+		height: 26px !important;
+		background: url(../images/button_blank.png) no-repeat 100% 0;
+
+		> a {
+			padding: 0 11px 0 5px;
+			color: #999;
+			&:before {
+				font-family: 'NNIcoMoon';
+				font-weight: normal;
+				font-style: normal;
+				speak: none;
+				font-size: 16px !important;
+				line-height: 14px;
+				content: "";
+				margin-right: 5px;
+				vertical-align: -3px;
+			}
+		}
+	}
+	&.simple > div > a:before {
+		content: "\e017";
+	}
+	&.normal > div > a:before {
+		content: "\e018";
+	}
+	&.advanced > div > a:before {
+		content: "\e019";
+	}
+}
+
+.view_state_0 .button_view_state.simple,
+.view_state_1 .button_view_state.normal,
+.view_state_2 .button_view_state.advanced {
+	background-position: 0 100%;
+}
+.view_state_0 .button_view_state.simple > div,
+.view_state_1 .button_view_state.normal > div,
+.view_state_2 .button_view_state.advanced > div {
+	background-position: 100% 100%;
+}
+.view_state_0 .button_view_state.simple > div > a,
+.view_state_1 .button_view_state.normal > div > a,
+.view_state_2 .button_view_state.advanced > div > a {
+	color: #333;
+}
+.button_view_state > div > a:hover {
+	color: #0B55C4;
+}

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="profile">
+		<fieldset name="profile"
+			label="PLG_USER_PROFILE_SLIDER_LABEL"
+		>	
+			
+			<field
+				name="hasArticlesOrder"
+				type="list"
+				description="Gestisci gli articoli associati all'ordine"
+				label="Gestisci gli articoli associati all'ordine"
+			>	
+				<option value="Y">Si</option>
+				<option value="N">No</option>
+			</field>
+										
+			<field
+				name="codice"
+				type="text"
+				id="codice"
+				description="Codice"
+				filter="string"
+				label="Codice"
+				message="Codice"
+				size="10"
+			/>	
+								
+			<field
+				name="address"
+				type="text"
+				id="address"
+				description="PLG_USER_PROFILE_FIELD_ADDRESS_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_ADDRESS_LABEL"
+				message="PLG_USER_PROFILE_FIELD_ADDRESS_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="city"
+				type="text"
+				id="city"
+				description="PLG_USER_PROFILE_FIELD_CITY_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_CITY_LABEL"
+				message="PLG_USER_PROFILE_FIELD_CITY_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="region"
+				type="text"
+				id="region"
+				description="PLG_USER_PROFILE_FIELD_REGION_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_REGION_LABEL"
+				message="PLG_USER_PROFILE_FIELD_REGION_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="country"
+				type="text"
+				id="country"
+				description="PLG_USER_PROFILE_FIELD_COUNTRY_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_COUNTRY_LABEL"
+				message="PLG_USER_PROFILE_FIELD_COUNTRY_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="postal_code"
+				type="text"
+				id="postal_code"
+				description="PLG_USER_PROFILE_FIELD_POSTAL_CODE_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_POSTAL_CODE_LABEL"
+				message="PLG_USER_PROFILE_FIELD_POSTAL_CODE_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="phone"
+				type="tel"
+				id="phone"
+				description="PLG_USER_PROFILE_FIELD_PHONE_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_PHONE_LABEL"
+				message="PLG_USER_PROFILE_FIELD_PHONE_MESSAGE"
+				size="30"
+			/>
+			
+			<field
+				name="phone2"
+				type="tel"
+				id="phone2"
+				description="PLG_USER_PROFILE_FIELD_PHONE2_DESC"
+				filter="string"
+				label="PLG_USER_PROFILE_FIELD_PHONE2_LABEL"
+				message="PLG_USER_PROFILE_FIELD_PHONE2_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="aboutme"
+				type="textarea"
+				description="PLG_USER_PROFILE_FIELD_ABOUT_ME_DESC"
+				label="PLG_USER_PROFILE_FIELD_ABOUT_ME_LABEL"
+				message="PLG_USER_PROFILE_FIELD_ABOUT_ME_MESSAGE"
+				cols="30"
+				rows="5"
+				filter="safehtml"
+			/>
+			
+			<field
+				name="tos"
+				type="tos"
+				label="PLG_USER_PROFILE_FIELD_TOS_LABEL"
+				description="PLG_USER_PROFILE_FIELD_TOS_DESC">
+				<option value="1">PLG_USER_PROFILE_OPTION_AGREE</option>
+				<option value="0">PLG_USER_PROFILE_OPTION_NOT_AGREE</option>
+			</field>
+		
+			<field
+				name="dataRichEnter"
+				type="text"
+				id="dataRichEnter"
+				description="Data domanda di adesione"
+				filter="string"
+				label="Data domanda di adesione"
+				message="Data domanda di adesione"
+				size="10"
+			/>
+			
+			<field
+				name="dataEnter"
+				type="text"
+				id="dataEnter"
+				description="Data attivazione account"
+				filter="string"
+				label="Data attivazione account"
+				message="Data attivazione account"
+				size="10"
+			/>
+						
+			<field
+				name="numDeliberaEnter"
+				type="text"
+				id="numDeliberaEnter"
+				description="Num delibera d'accettazione"
+				filter="string"
+				label="Num delibera d'accettazione"
+				message="Num delibera d'accettazione"
+				size="5"
+			/>
+
+			<field
+				name="dataDeliberaEnter"
+				type="text"
+				id="dataDeliberaEnter"
+				description="Data delibera accettazione"
+				filter="string"
+				label="Data delibera accettazione"
+				message="Data delibera accettazione"
+				size="10"
+			/>
+			
+			<field
+				name="dataRichExit"
+				type="text"
+				id="dataRichExit"
+				description="Data dimissioni"
+				filter="string"
+				label="Data dimissioni"
+				message="Data dimissioni"
+				size="10"
+			/>
+			
+			<field
+				name="motivoRichExit"
+				type="text"
+				id="motivoRichExit"
+				description="Motivo dimissioni"
+				filter="string"
+				label="Motivo dimissioni"
+				message="Motivo dimissioni"
+				size="50"
+			/>
+			
+			<field
+				name="dataExit"
+				type="text"
+				id="dataExit"
+				description="Data chiusura account"
+				filter="string"
+				label="Data chiusura account"
+				message="Data chiusura account"
+				size="10"
+			/>
+			
+			<field
+				name="numDeliberaExit"
+				type="text"
+				id="numDeliberaExit"
+				description="Num delibera dimissioni"
+				filter="string"
+				label="Num delibera dimissioni"
+				message="Num delibera dimissioni"
+				size="5"
+			/>
+
+			<field
+				name="dataDeliberaExit"
+				type="text"
+				id="dataDeliberaExit"
+				description="Data delibera dimissioni"
+				filter="string"
+				label="Data delibera dimissioni"
+				message="Data delibera dimissioni"
+				size="10"
+			/>
+						
+			<field
+				name="dataRestituzCassa"
+				type="text"
+				id="dataRestituzCassa"
+				description="Data restituz. contributo suppletivo"
+				filter="string"
+				label="Data restituz. contributo suppletivo"
+				message="Data restituz. contributo suppletivo"
+				size="10"
+			/>	
+				
+			<field
+				name="notaRestituzCassa"
+				type="text"
+				id="notaRestituzCassa"
+				description="Nota restituz. contributo suppletivo"
+				filter="string"
+				label="Nota restituz. contributo suppletivo"
+				message="Nota restituz. contributo suppletivo"
+				size="50"
+			/>
+			
+			<field
+				name="nota"
+				type="textarea"
+				id="nota"
+				description="Nota"
+				label="Nota"
+				message="Nota"
+				cols="30"
+				rows="5"
+				filter="safehtml"
+			/>
+			
+		</fieldset>
+	</fields>
+</form>

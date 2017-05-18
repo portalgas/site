@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0.0" type="plugin" group="content">
+	<name>Google Calendar Plugin</name>
+	<author>Jan Maat</author>
+	<creationDate>January 2013</creationDate>
+	<copyright>This extension in released under the GNU/GPL License -
+		http://www.gnu.org/copyleft/gpl.html</copyright>
+	<authorEmail>jenj.maat@gmail.com</authorEmail>
+	<version>10</version>
+	<description>PLG_CONTENT_GOOGLECALENDAR_DESCRIPTION</description>
+
+
+	<files>
+		<filename plugin="googlecalendar">googlecalendar.php</filename>
+		<filename>index.html</filename>
+		<folder>language</folder>
+	</files>
+	
+	<config>
+		<fields name="params">
+			<fieldset name="basic">					
+					<field name="code" type="textarea"  filter="raw" label="CODE" description="DESCR_CODE" rows="5" cols="40" />							
+			</fieldset>		
+		</fields>
+	</config>
+	
+	
+</extension>	
