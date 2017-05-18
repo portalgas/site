@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<extension version="2.5" type="template" client="site">
+	<name>onepage</name>
+	<creationDate>15 Mar 2015</creationDate>
+	<author>Francesco Actis Grosso</author>
+	<authorEmail>francesco.actis@portalgas.it</authorEmail>
+	<authorUrl>http://www.portalgas.it</authorUrl>
+	<copyright>Copyright (C) 2014 Open Source Matters, Inc. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later;</license>
+	<version>1.0.0</version>
+	<description>Template base</description>
+
+	<files>
+		<folder>css</folder>
+		<folder>html</folder>
+		<folder>images</folder>
+		<folder>javascript</folder>
+		<filename>index.html</filename>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<filename>template_preview.png</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>favicon.ico</filename>
+	</files>
+
+	<positions>
+		<position>debug</position>
+	</positions>
+
+</extension>
+
+<!--
+INSERT INTO j_extensions ( `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `custom_data`, `system_data`, `checked_out`, `checked_out_time`, `ordering`, `state`) VALUES
+( 'onepage', 'template', 'onepage', '', 0, 1, 1, 0, '{"legacy":false,"name":"onepage","type":"template","creationDate":"15 Mar 2015","author":"Francesco Actis Grosso","copyright":"Copyright (C) 2014 Open Source Matters, Inc. All rights reserved.","authorEmail":"francesco.actis@portalgas.it","authorUrl":"http:\\/\\/www.portalgas.it","version":"2.5.0","description":"Template base","group":""}', '', '', '', 0, '0000-00-00 00:00:00', 0, 0);
+
+INSERT INTO j_template_styles (`template`, `client_id`, `home`, `title`, `params`) VALUES ('onepage', '0', '0', 'onepage', '{}');
+-->
