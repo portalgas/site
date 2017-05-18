@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<extension version="2.5" type="template" client="site">
+	<name>v01</name>
+	<creationDate>1 Feb 2014</creationDate>
+	<author>Francesco Actis Grosso</author>
+	<authorEmail>francesco.actis@portalgas.it</authorEmail>
+	<authorUrl>http://www.portalgas.it</authorUrl>
+	<copyright>Copyright (C) 2014 Open Source Matters, Inc. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later;</license>
+	<version>1.0.0</version>
+	<description>Template base</description>
+
+	<files>
+		<folder>css</folder>
+		<folder>html</folder>
+		<folder>images</folder>
+		<folder>javascript</folder>
+		<folder>fonts</folder>
+		<folder>language</folder>
+		<filename>index.html</filename>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<filename>template_preview.png</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>favicon.ico</filename>
+		<filename>component.php</filename>
+		<filename>error.php</filename>
+	</files>
+
+	<positions>
+		<position>debug</position>
+		<position>position-account</position>
+		<position>position-account-menu</position>
+		<position>position-menu-left</position>
+		<position>position-menu-right</position>
+		<position>position-before-content</position>
+		<position>position-content-bottom</position>
+		<position>position-cols-right</position>
+		<position>position-footer-left</position>
+		<position>position-footer-middle</position>
+		<position>position-footer-right</position>
+	</positions>
+
+	<!-- 	For core templates, we also install/uninstall the language files in the core language folders.
+	-->
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.tpl_v01.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tpl_v01.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">
+				<field name="organizationId" type="list" default="0"
+					label="Organizzazione Associata"
+					description="Organizzazione Associata al templates"
+					filter="integer"
+				>
+					<option value="0">portale</option>
+					<option value="21">amicogas (id 21)</option>
+					<option value="32">anxagas (id 32)</option>
+					<option value="3">arcoiris (id 3)</option>
+					<option value="30">borgobonta (id 30)</option>
+					<option value="6">castanoprimo (id 6)</option>
+					<option value="1">cavagnetta (id 1)</option>
+					<option value="10">colibri (id 10)</option>
+					<option value="11">condove (id 11)</option>
+					<option value="24">felettogas (id 24)</option>
+					<option value="27">fiordigas (id 27)</option>
+					<option value="13">galligas (id 13)</option>
+					<option value="9">gasalmese (id 9)</option>
+					<option value="31">gasamunì (id 31)</option>
+					<option value="23">gasati (id 23)</option>
+					<option value="7">gasavigliana (id 7)</option>
+					<option value="16">gasbarga (id 16)</option>
+					<option value="19">gasdorabaltea (id 19)</option>
+					<option value="8">gasbuttigliera (id 8)</option>
+					<option value="22">gasgarfagnana (id 22)</option>
+					<option value="15">gasivrea (id 15)</option>
+					<option value="17">gasmarti (id 17)</option>
+					<option value="5">gassepiossasco (id 5)</option>
+					<option value="12">gastaldi (id 12)</option>
+					<option value="14">gastrana (id 14)</option>
+					<option value="20">gasvalchiusella (id 20)</option>
+					<option value="18">gasvaldellatorre (id 18)</option>
+					<option value="34">gasvercelli (id 34)</option>
+					<option value="25">madrisiogas (id 25)</option>
+					<option value="2">oca sansalvario (id 2)</option>
+					<option value="33">pastamadristiromani (id 33)</option>
+					<option value="26">remolonsgas (id 26)</option>
+					<option value="28">villaltagas (id 28)</option>
+					<option value="29">villanovagas (id 29)</option>
+					<option value="4">villargas (id 4)</option>
+					
+				</field>
+				
+				
+				<field name="organizationSEO" type="list" default="0"
+					label="Codice SEO per Organizzazione"
+					description="Codice SEO per Organizzazione Associata al templates"
+					filter="string"
+				>
+					<option value="portale">portale</option>
+					<option value="amicogas">amicogas</option>
+					<option value="anxagas">anxagas</option>
+					<option value="arcoiris">arcoiris</option>
+					<option value="borgobonta">borgobonta</option>
+					<option value="barga">barga</option>
+					<option value="cavagnetta">cavagnetta</option>
+					<option value="castano-primo">castanoprimo</option>
+					<option value="colibri">colibrì</option>
+					<option value="condove">condove</option>
+					<option value="felettogas">felettogas</option>
+					<option value="fiordigas">fiordigas</option>
+					<option value="galligas">galligas</option>
+					<option value="gasalmese">gasalmese</option>
+					<option value="gasamuni">gasamunì</option>
+					<option value="gasati">gasati</option>
+					<option value="gasavigliana">gasavigliana</option>
+					<option value="gasdorabaltea">gasdorabaltea</option>
+					<option value="gasbuttigliera">gasbuttigliera</option>
+					<option value="gasgarfagnana">gasgarfagnana</option>
+					<option value="gasivrea">gasivrea</option>
+					<option value="gasmarti">gasmarti</option>
+					<option value="gassepiossasco">gassepiossasco</option>
+					<option value="gastaldi">gastaldi</option>
+					<option value="gastrana">gastrana</option>
+					<option value="gasvalchiusella">gasvalchiusella</option>
+					<option value="gasvaldellatorre">gasvaldellatorre</option>
+					<option value="gasvercelli">gasvercelli</option>
+					<option value="ocasansalvario">ocasansalvario</option>
+					<option value="pastamadristiromani">pastamadristiromani</option>
+					<option value="madrisiogas">madrisiogas</option>
+					<option value="remolonsgas">remolonsgas</option>
+					<option value="villaltagas">villaltagas</option>
+					<option value="villanovagas">villanovagas</option>
+					<option value="villargas">villargas</option>
+				</field>
+							
+			</fieldset>
+		</fields>
+	</config>
+</extension>
