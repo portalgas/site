@@ -1,4 +1,4 @@
-<h1>PorTalGas</h1>
+<h1>PortAlGas</h1>
 <p>La nostra idea è quella di creare un gestionale web ed un app mobile (denominato PortAlGas) che permetta ai G.A.S. (GAS gruppo d'acquisto solidale) e ai D.E.S. (distretto di economia solidale) una gestione completa e tecnologicamente avanzata dei propri ordini, governandone tutto il ciclo di vita.</p>
 <p>Il cuore del progetto è l'idea di partire da uno strumento di e-commerce (semplice ed intuitivo) integrando le funzionalità tipiche degli acquisti dei GAS.</p>
 <p>Una gestione a schede guidate dal luogo e dalla data di consegna, integrando ordini ed articoli validi espressamente per la consegna in oggetto il tutto rendendo queste attività il più semplici possibili e automatizzate.</p>
@@ -31,7 +31,7 @@
 <p>Dopo alcuni anni di gestione di un Gas ci siamo resi conto che le possibilità dei sw attuali non rispecchiavano le nostre esigenze abbiamo quindi iniziato ad ampliare le funzionalità del nostro Sito con alcune funzionalità.</p>
 <p>Queste richiedono però un intervento quotidiano manuale e non è proprio il massimo quindi abbiamo scelto di pensarne uno tutto nuovo.</p>
 <h1>Link</h1>
-<ul class="social">
+<ul>
 	<li>
 		<a target="_blank" href="https://facebook.com/portalgas.it"><img src="http://www.portalgas.it/images/cake/ico-social-fb.png" alt="PortAlGas su facebook" title="PortAlGas su facebook" border="0"> Facebook</a>
 	</li>
@@ -42,7 +42,7 @@
 		<a href="http://manuali.portalgas.it" target="_blank"><img title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="http://www.portalgas.it/images/cake/ico-manual.png" border="0"> Manuali</a>
 	</li>						
 	<li>
-		<a target="_blank" href="/mobile"><img src="http://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
+		<a target="_blank" href="http://www.portalgas.it/mobile"><img src="http://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
 	</li>
 	<li>
 	<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
