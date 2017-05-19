@@ -445,20 +445,13 @@ class AppHelper extends Helper {
 				$tmp .= '<label for="'.$model.'">'.$options['label'].'</label>';
 			
 			foreach($options['options'] as $key => $value) {
+				$tmp .= '<label class="radio-inline" for="'.$model.$fieldName.$key.'" >';
 				$tmp .= '<input type="radio" ';
 				if($options['value']==$key) $tmp .= 'checked="checked" ';
-				$tmp .= 'value="'.$key.'" id="'.$model.$fieldName.$key.'" name="data['.$model.']['.$fieldName.']"> ';
-				$tmp .= '<label for="'.$model.$fieldName.$key.'" ';
+				$tmp .= 'value="'.$key.'" id="'.$model.$fieldName.$key.'" name="data['.$model.']['.$fieldName.']" /> ';
+				$tmp .= $value.'</label>';
 				
-				$tmp .= 'style="';
-				if(isset($options['label_style'])) 
-					$tmp .= $options['label_style'];
-				else	
-					$tmp .= 'width:80px !important;margin-left:10px;';
-					
-				$tmp .= '">'.$value.'</label>';
-				
-				if(isset($options['separator'])) $tmp .= $options['separator'];
+				// if(isset($options['separator'])) $tmp .= $options['separator'];
 			}
 			if(isset($options['after'])) $tmp .= $options['after'];
 			$tmp .= '</div>';
@@ -493,7 +486,7 @@ class AppHelper extends Helper {
 		}
 
 		$tmp = '';
-		if(isset($options['options'])) {			$tmp .= '<div class="input';			if(in_array('required', $options) && $options['required']=='required') {				$tmp .= 'radio-required'; // mette * rosso dopo la label				unset($options['required']);			}			$tmp .= '">';
+		if(isset($options['options'])) {			$tmp .= '<div class="input ';			if(in_array('required', $options) && $options['required']=='required') {				$tmp .= 'radio-required'; // mette * rosso dopo la label				unset($options['required']);			}			$tmp .= '">';
 			
 			$tmp .= '<label for="'.$model.'">'.$options['label'].'</label>';			
 			foreach($options['options'] as $key => $value) {

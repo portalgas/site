@@ -1,7 +1,6 @@
 <?php
 $msg_print_screen_supplier_article_ctrl = '<p>Il testo che hai inserito ha <b>poche righe</b>: questo dovrebbe comporre l\'articolo per descrivere l\'attività del produttore:<br />non è obbligatorio che il produttore abbia un articolo associato.<br /><br />Se hai una semplice descrizione del produttore <b>non</b> comporre questo campo.<br />Consulta il <b>sito</b> del produttore per avere materiale da pubblicare!</p><p>Di seguito come apparirà ai gasisti l\'articolo di un produttore</p><p><img src=\"'.Configure::read('App.img.cake').'/print_screen_supplier_article.jpg\" title=\"\" border=\"0\" /></p>';
 ?>
-
 <div class="modal fade" id="modalSupplierPrintScreen" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -18,8 +17,6 @@ $msg_print_screen_supplier_article_ctrl = '<p>Il testo che hai inserito ha <b>po
 	</div>		
 </div>		
 
-
-
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.print_screen').click(function() {
@@ -29,17 +26,14 @@ $(document).ready(function() {
 
 		switch(id) {
 			case "print_screen_supplier_nota":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Ecco come apparirà la descrizione inserita");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" class="img-responsive" />');
 				break;
 			case "print_screen_supplier_article":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Ecco come apparirà il testo inserito per la scheda del produttore");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" class="img-responsive" />');
 				break;
 			case "print_screen_supplier_article_ctrl":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Scheda del produttore");
 				mymodal.find('.modal-body').html("<?php echo $msg_print_screen_supplier_article_ctrl;?>");
 				break;

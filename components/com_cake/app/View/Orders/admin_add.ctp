@@ -45,14 +45,15 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 					 'options' => $ACLsuppliersOrganization, 
 					 'default' => $supplier_organization_id, 
 					 'required' => 'false', 
-					 'after' => '<div class="col-md-2" id="suppliers_organization_details"></div>',
 					 'empty' => Configure::read('option.empty'));
 	if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
 		$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
 
 	echo '<div class="row">';
-	echo '<div class="col-md-12">';
+	echo '<div class="col-md-10">';
 	echo $this->Form->input('supplier_organization_id', $options);
+	echo '</div>';
+	echo '<div class="col-md-2" id="suppliers_organization_details">';
 	echo '</div>';
 	echo '</div>';
 	
@@ -169,7 +170,7 @@ if($user->organization['Organization']['payToDelivery']=='ON' || $user->organiza
 				'after' => '<div class="action actionCostLess"></div>'.$this->App->drawTooltip(null,__('toolTipHasCostLess'),$type='HELP')));		
 			echo $this->Html->div('clearfix','');
 		}
-		
+
 	echo '</div>';
 }
 echo '</div>'; // end class tab-content

@@ -41,8 +41,7 @@ echo $this->Html->div('clearfix','');
 					 'data-placeholder' => 'Scegli un produttore',
 					 'options' => $ACLsuppliersOrganization, 
 					 'default' => $supplier_organization_id, 
-					 'required' => 'false', 
-					 'after' => '<div class="col-md-2" id="suppliers_organization_details"></div>');
+					 'required' => 'false');
 	if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
 		$options += array('class'=> 'form-control selectpicker', 'data-live-search' => true); 
 	else
@@ -50,9 +49,11 @@ echo $this->Html->div('clearfix','');
 		$options += array('empty' => Configure::read('option.empty'),
 						  'class' => 'form-control'); 
 	echo '<div class="row">';
-	echo '<div class="col-md-12">';
+	echo '<div class="col-md-10">';
 	echo $this->Form->input('supplier_organization_id', $options);
 	echo '</div>';
+	echo '<div class="col-md-2" id="suppliers_organization_details">';
+	echo '</div>';	
 	echo '</div>';		
 	
 	/*

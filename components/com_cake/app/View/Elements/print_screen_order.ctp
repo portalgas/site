@@ -23,24 +23,20 @@ $(document).ready(function() {
 
 		switch(id) {
 			case "print_screen_mail_open_testo":
-				mymodal.find('.modal-dialog').removeClass("modal-lg").addClass("modal-md");
 				mymodal.find('.modal-title').html("Ecco come apparirà il testo inserito");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_mail_open_testo.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_mail_open_testo.jpg" title="" class="img-responsive" />');
 				break;
 			case "print_screen_order_nota":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Ecco come apparirà il testo inserito");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_order_nota.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_order_nota.jpg" title="" class="img-responsive" />');
 				break;
 			case "print_screen_type_draw_simple":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Ecco come apparirà agli utenti");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_type_draw_simple.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_type_draw_simple.jpg" title="" class="img-responsive" />');
 				break;
 			case "print_screen_type_draw_complete":
-				mymodal.find('.modal-dialog').removeClass("modal-md").addClass("modal-lg");
 				mymodal.find('.modal-title').html("Ecco come apparirà agli utenti");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_type_draw_complete.jpg" title="" border="0" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_type_draw_complete.jpg" title="" class="img-responsive" />');
 				break;
 		}
 		
