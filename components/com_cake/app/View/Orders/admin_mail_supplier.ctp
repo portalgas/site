@@ -84,7 +84,7 @@ jQuery(document).ready(function() {
 
 		var subject = jQuery('#OrderSubject').val();
 		if(subject=="") {
-			alert("Devi indicare il soggetto della mail");
+			alert("Devi indicare l'oggetto della mail");
 			return false;
 		}
 		/*

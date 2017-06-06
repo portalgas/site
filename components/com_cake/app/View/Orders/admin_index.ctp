@@ -21,7 +21,7 @@ echo '</div>';
 echo '</h2>';
 if(!empty($results)) {
 
-	echo '<div class="table-responsive"><table class="table table-hover table-striped">';
+	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
 	echo '	<th></th>';
 	echo '	<th>'.__('N').'</th>';
