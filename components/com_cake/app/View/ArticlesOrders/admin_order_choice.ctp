@@ -6,21 +6,21 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 <script type="text/javascript">
 function choiceDelivery() {
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	if(delivery_id!='') {
-		jQuery('#formGas').submit();
+		$('#formGas').submit();
 	}	
 }
 function choiceOrder() {
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id = jQuery('#order_id').val();
+	var delivery_id = $('#delivery_id').val();
+	var order_id = $('#order_id').val();
 	if((delivery_id!='' || delivery_id!=undefined) && (order_id!='' && order_id!=undefined)) {
-		jQuery('#formGas').submit();
+		$('#formGas').submit();
 	}	
 }
 <?php 
 if(!empty($order_id) && $order_valido) {
-	echo 'jQuery(document).ready(function() { ';
+	echo '$(document).ready(function() { ';
 	echo 'choiceOrder()';
 	echo '});';
 }	

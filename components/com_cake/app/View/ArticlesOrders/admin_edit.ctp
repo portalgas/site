@@ -44,7 +44,7 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 	include('box_article_detail.ctp');
 	
 		$i=0;
-		echo $this->Form->input('prezzo',array('value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'size'=>10,'class' => 'noWidth', 'type' => 'text', 'after' => '&euro;','tabindex'=>($i+1),'class'=>'noWidth double', 'required'=>'required'));
+		echo $this->Form->input('prezzo',array('value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'size'=>10,'class' => 'noWidth', 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1),'class'=>'noWidth double', 'required'=>'required'));
 		
 		echo $this->Form->input('qta_minima',array('label' => __('qta_minima'),'type' => 'text','size' => 2,'class' => 'noWidth','tabindex'=>($i+1)));
 		echo $this->Form->input('qta_massima',array('label' => __('qta_massima'),'type' => 'text','size' => 2,'class' => 'noWidth','tabindex'=>($i+1)));
@@ -85,117 +85,113 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 	echo $this->Form->hidden('article_id',array('id' =>'article_id', 'value'=> $this->request->data['ArticlesOrder']['article_id']));
 	echo $this->Form->hidden('qta_cart',array('id' =>'qta_cart', 'value'=> $this->request->data['ArticlesOrder']['qta_cart']));
 	echo $this->Form->end(__('Submit')); 
-	
+
 	echo '</div>';
-	?>
 
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Articles Orders'), array('controller'=>'ArticlesOrders', 'action' => 'index', $order['Order']['id']),array('class'=>'action actionReload'));?></li>
-	</ul>
-</div>
-
+$links = [];
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles Orders').' </span><span class="fa fa-reply"></span>', array('controller' => 'ArticlesOrders', 'action' => 'index', $order['Order']['id']), ['class' => 'animate', 'escape' => false]);
+echo $this->Menu->draw($links);
+?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		prezzo = jQuery('#ArticlesOrderPrezzo').val(); 
+		prezzo = $('#ArticlesOrderPrezzo').val(); 
 		if(prezzo=='' || prezzo==null || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') {
 			alert("Devi indicare l'importo per gli articoli che desideri associare all'ordine");
-			jQuery('#ArticlesOrderPrezzo').focus();
+			$('#ArticlesOrderPrezzo').focus();
 			return false;			
 		}
 			
-		pezzi_confezione = jQuery('#ArticlesOrderPezziConfezione').val(); 
+		pezzi_confezione = $('#ArticlesOrderPezziConfezione').val(); 
 		if(pezzi_confezione=='' || pezzi_confezione==null || !isFinite(pezzi_confezione)) {
 			alert("Devi indicare il numero di pezzi per confezione per gli articoli che desideri associare all'ordine");
-			jQuery('#ArticlesOrderPezziConfezione').focus();
+			$('#ArticlesOrderPezziConfezione').focus();
 			return false;			
 		}
 		if(pezzi_confezione <= 0) {
 			alert("Il numero di pezzi per confezione per gli articoli che desideri associare all'ordine deve essere > di zero");
-			jQuery('#ArticlesOrderPezziConfezione').focus();
+			$('#ArticlesOrderPezziConfezione').focus();
 			return false;			
 		}
 					
-		qta_minima = jQuery('#ArticlesOrderQtaMinima').val(); 
+		qta_minima = $('#ArticlesOrderQtaMinima').val(); 
 		if(qta_minima=='' || qta_minima==null || !isFinite(qta_minima)) {
 			alert("Devi indicare la quantità minima che un gasista può acquistare");
-			jQuery('#ArticlesOrderQtaMinima').focus();
+			$('#ArticlesOrderQtaMinima').focus();
 			return false;			
 		}
 		qta_minima = parseInt(qta_minima);
 		if(qta_minima <= 0) {
 			alert("La quantità minima che un gasista può acquistare deve essere > di zero");
-			jQuery('ArticlesOrderQtaMinima').focus();
+			$('ArticlesOrderQtaMinima').focus();
 			return false;			
 		}
 
-		qta_massima = jQuery('#ArticlesOrderQtaMassima').val(); 
+		qta_massima = $('#ArticlesOrderQtaMassima').val(); 
 		if(qta_massima=='' || qta_massima==null || !isFinite(qta_massima)) {
 			alert("Devi indicare la quantità massima che un gasista può acquistare: di default 0");
-			jQuery('#ArticlesOrderQtaMassima').focus();
+			$('#ArticlesOrderQtaMassima').focus();
 			return false;			
 		}
 		
-		qta_minima_order = jQuery("#ArticlesOrderQtaMinimaOrder").val(); 
+		qta_minima_order = $("#ArticlesOrderQtaMinimaOrder").val(); 
 		if(qta_minima_order=='' || qta_minima_order==null || !isFinite(qta_minima_order)) {
 			alert("Devi indicare la quantità minima rispetto a tutti gli acquisti dell'ordine");
-			jQuery("#ArticlesOrderQtaMinimaOrder").focus();
+			$("#ArticlesOrderQtaMinimaOrder").focus();
 			return false;			
 		}
 		
-		qta_massima_order = jQuery('#ArticlesOrderQtaMassimaOrder').val(); 
+		qta_massima_order = $('#ArticlesOrderQtaMassimaOrder').val(); 
 		if(qta_massima_order=='' || qta_massima_order==null || !isFinite(qta_massima_order)) {
 			alert("Devi indicare la quantità massima rispetto a tutti gli acquisti dell'ordine");
-			jQuery('#ArticlesOrderQtaMassimaOrder').focus();
+			$('#ArticlesOrderQtaMassimaOrder').focus();
 			return false;			
 		}
 		qta_massima_order = parseInt(qta_massima_order);
 		if(qta_massima_order > 0 && qta_massima_order < pezzi_confezione) {
 			alert("La quantità massima rispetto a tutti gli acquisti dell'ordine è inferiore al numero di pezzi in una confezione");
-			jQuery('#ArticlesOrderQtaMassimaOrder').focus();
+			$('#ArticlesOrderQtaMassimaOrder').focus();
 			return false;			
 		}
-		qta_cart = jQuery('#qta_cart').val(); 
+		qta_cart = $('#qta_cart').val(); 
 		if(qta_massima_order > 0 && qta_cart > qta_massima_order) {
 			if(!confirm("La quantità massima è inferiore alla quantità finora acquistata, sei sicuro di voler procedere?"))
 				return false;
 		}
 		
-		qta_multipli = jQuery('#ArticlesOrderQtaMultipli').val(); 
+		qta_multipli = $('#ArticlesOrderQtaMultipli').val(); 
 		if(qta_multipli=='' || qta_multipli==null || !isFinite(qta_multipli)) {
 			alert("Devi indicare di che multiplo dev'essere la quantità per gli articoli associati all'ordine");
-			jQuery('#ArticlesOrderQtaMultipli').focus();
+			$('#ArticlesOrderQtaMultipli').focus();
 			return false;			
 		}
 		qta_multipli = parseInt(qta_multipli);
 		if(qta_multipli <= 0) {
 			alert("Il multiplo per gli articoli che desideri associare all'ordine deve essere > di zero");
-			jQuery('#ArticlesOrderQtaMultipli').focus();
+			$('#ArticlesOrderQtaMultipli').focus();
 			return false;			
 		}
 	
 		if((qta_massima) > 0 && (qta_massima < qta_multipli)) {
 			alert("La quantità massima che un gasista può acquistare non può essere inferiore della quantità multipla");
-			jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
+			$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
 			return false;
 		}
 				
 		<?php
 		if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
 		?>
-			alert_to_qta = jQuery('#ArticlesOrderQtaAlertToQta').val(); 
+			alert_to_qta = $('#ArticlesOrderQtaAlertToQta').val(); 
 			if(alert_to_qta=='' || alert_to_qta==null || !isFinite(alert_to_qta)) {
 				alert("Devi indicare quando avvisare raggiunta una certa quantità per gli articoli associati all'ordine");
-				jQuery('#ArticlesOrderQtaAlertToQta').focus();
+				$('#ArticlesOrderQtaAlertToQta').focus();
 				return false;			
 			}
 			if(alert_to_qta <= 0) {
 				alert("La quantità che indica quando avvisare per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery('#ArticlesOrderQtaAlertToQta').focus();
+				$('#ArticlesOrderQtaAlertToQta').focus();
 				return false;			
 			}
 		<?php

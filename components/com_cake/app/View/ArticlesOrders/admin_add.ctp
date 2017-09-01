@@ -82,7 +82,7 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 				<th>Nome prodotto</th>
 				<th></th>
 				<th><?php echo __('Prezzo');?></th>
-				<th><?php echo __('pezzi_confezione');?></th>
+				<th style="padding-left:15px"><?php echo __('pezzi_confezione');?></th>
 				<th><?php echo __('qta_minima_short');?></th>
 				<th><?php echo __('qta_massima_short');?></th>
 				<th><?php echo __('qta_multipli');?></th>
@@ -115,16 +115,16 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 			}
 			echo '</td>';
 			?>
-			<td nowrap><?php echo $this->Form->input('prezzo',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]','value'=>$result['Article']['prezzo_'],'size'=>10,'tabindex'=>($i+1),'after'=>'&euro;','class'=>'double noWidth'));?></td>
-			<td><?php echo $this->Form->input('pezzi_confezione',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value'=>$result['Article']['pezzi_confezione'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
-			<td><?php echo $this->Form->input('qta_minima',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]','value'=>$result['Article']['qta_minima'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
-			<td><?php echo $this->Form->input('qta_massima',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]','value'=>$result['Article']['qta_massima'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
-			<td><?php echo $this->Form->input('qta_multipli',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]','value'=>$result['Article']['qta_multipli'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
-			<td><?php echo $this->Form->input('qta_minima_order',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]','value'=>$result['Article']['qta_minima_order'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
-			<td><?php echo $this->Form->input('qta_massima_order',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]','value'=>$result['Article']['qta_massima_order'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1)));?></td>
+			<td style="white-space: nowrap;"><?php echo $this->Form->input('prezzo',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]','value'=>$result['Article']['prezzo_'],'tabindex'=>($i+1),'after'=>'&nbsp;&euro;','style' => 'display:inline','class'=>'double'));?></td>
+			<td style="padding-left:15px"><?php echo $this->Form->input('pezzi_confezione',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value'=>$result['Article']['pezzi_confezione'],'size'=>3,'tabindex'=>($i+1)));?></td>
+			<td><?php echo $this->Form->input('qta_minima',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]','value'=>$result['Article']['qta_minima'],'size'=>3,'tabindex'=>($i+1)));?></td>
+			<td><?php echo $this->Form->input('qta_massima',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]','value'=>$result['Article']['qta_massima'],'size'=>3,'tabindex'=>($i+1)));?></td>
+			<td><?php echo $this->Form->input('qta_multipli',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]','value'=>$result['Article']['qta_multipli'],'size'=>3,'tabindex'=>($i+1)));?></td>
+			<td><?php echo $this->Form->input('qta_minima_order',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]','value'=>$result['Article']['qta_minima_order'],'size'=>3,'tabindex'=>($i+1)));?></td>
+			<td><?php echo $this->Form->input('qta_massima_order',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]','value'=>$result['Article']['qta_massima_order'],'size'=>3,'tabindex'=>($i+1)));?></td>
 				<?php 
 				if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') 
-					echo '<td>'.$this->Form->input('alert_to_qta',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value'=>$result['Article']['alert_to_qta'],'size'=>3,'class' => 'noWidth','tabindex'=>($i+1))).'</td>';
+					echo '<td>'.$this->Form->input('alert_to_qta',array('type' => 'text', 'label'=>false,'name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value'=>$result['Article']['alert_to_qta'],'size'=>3,'tabindex'=>($i+1))).'</td>';
 				?>
 		</tr>
 		<tr class="trView" id="trViewId-<?php echo $result['Article']['id'];?>">
@@ -151,148 +151,148 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#article_id_selected_all').click(function () {
-		var checked = jQuery("input[name='article_id_selected_all']:checked").val();
+$(document).ready(function() {
+	$('#article_id_selected_all').click(function () {
+		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=article_id_selected]').prop('checked',true);
+			$('input[name=article_id_selected]').prop('checked',true);
 		else
-			jQuery('input[name=article_id_selected]').prop('checked',false);
+			$('input[name=article_id_selected]').prop('checked',false);
 	});
 	 
-	jQuery(".bindCheckbox").each(function () {
-		jQuery(this).click(function() {
-			var idArticleCheckbox = jQuery(this).attr('idArticleCheckbox');
+	$(".bindCheckbox").each(function () {
+		$(this).click(function() {
+			var idArticleCheckbox = $(this).attr('idArticleCheckbox');
 			
 			if(idArticleCheckbox!=null && idArticleCheckbox!=undefined) {
-				if(jQuery("#"+idArticleCheckbox).is(':checked'))
-					jQuery("#"+idArticleCheckbox).prop('checked',false);
+				if($("#"+idArticleCheckbox).is(':checked'))
+					$("#"+idArticleCheckbox).prop('checked',false);
 				else
-					jQuery("#"+idArticleCheckbox).prop('checked',true);
+					$("#"+idArticleCheckbox).prop('checked',true);
 			}
 		}); 
 	});
 	 
-	jQuery('#article_id_selected_all').click(function () {
-		var checked = jQuery("input[name='article_id_selected_all']:checked").val();
+	$('#article_id_selected_all').click(function () {
+		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=article_id_selected]').prop('checked',true);
+			$('input[name=article_id_selected]').prop('checked',true);
 		else
-			jQuery('input[name=article_id_selected]').prop('checked',false);
+			$('input[name=article_id_selected]').prop('checked',false);
 	});
 	
-	jQuery('#action_articles_orders_previuos').click(function() {	
-		jQuery('#action_post').val('action_articles_orders_previuos');
+	$('#action_articles_orders_previuos').click(function() {	
+		$('#action_post').val('action_articles_orders_previuos');
 	});
-	jQuery('#action_articles_orders_current1').click(function() {	
-		jQuery('#action_post').val('action_articles_orders_current');
+	$('#action_articles_orders_current1').click(function() {	
+		$('#action_post').val('action_articles_orders_current');
 	});
-	jQuery('#action_articles_orders_current2').click(function() {	
-		jQuery('#action_post').val('action_articles_orders_current');
+	$('#action_articles_orders_current2').click(function() {	
+		$('#action_post').val('action_articles_orders_current');
 	});
 
 	 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 		
-		var action_post = jQuery('#action_post').val();
+		var action_post = $('#action_post').val();
 		if(action_post=='action_articles_orders_previuos') 
 			return true;
 		
 		var article_id_selected = '';
-		for(i = 0; i < jQuery("input[name='article_id_selected']:checked").length; i++) {
-			article_id_selected += jQuery("input[name='article_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='article_id_selected']:checked").length; i++) {
+			article_id_selected += $("input[name='article_id_selected']:checked").eq(i).val()+',';
 			
-			article_id = jQuery("input[name='article_id_selected']:checked").eq(i).val();
+			article_id = $("input[name='article_id_selected']:checked").eq(i).val();
 			
-			prezzo = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
+			prezzo = $("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
 			if(prezzo=='' || prezzo==null || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') {
 				alert("Devi indicare l'importo per gli articoli che desideri associare all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
 				return false;			
 			}
 			
-			pezzi_confezione = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
+			pezzi_confezione = $("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
 			if(pezzi_confezione=='' || pezzi_confezione==null || !isFinite(pezzi_confezione)) {
 				alert("Devi indicare il numero di pezzi per confezione per gli articoli che desideri associare all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
 				return false;			
 			}
 			pezzi_confezione = parseInt(pezzi_confezione);
 			if(pezzi_confezione <= 0) {
 				alert("Il numero di pezzi per confezione per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
 				return false;			
 			}
 						
-			qta_minima = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
+			qta_minima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
 			if(qta_minima=='' || qta_minima==null || !isFinite(qta_minima)) {
 				alert("Devi indicare la quantità minima che un gasista può acquistare");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
 				return false;			
 			}
 			if(qta_minima <= 0) {
 				alert("La quantità minima che un gasista può acquistare deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
 				return false;			
 			}
 			
-			qta_massima = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").val(); 
+			qta_massima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").val(); 
 			if(qta_massima=='' || qta_massima==null || !isFinite(qta_massima)) {
 				alert("Devi indicare la quantità massima che un gasista può acquistare: di default 0");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
 				return false;			
 			}
 			
-			qta_minima_order = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
+			qta_minima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
 			if(qta_minima_order=='' || qta_minima_order==null || !isFinite(qta_minima_order)) {
 				alert("Devi indicare la quantità minima rispetto a tutti gli acquisti dell'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
 				return false;			
 			}
 			
-			qta_massima_order = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
+			qta_massima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
 			if(qta_massima_order=='' || qta_massima_order==null || !isFinite(qta_massima_order)) {
 				alert("Devi indicare la quantità massima rispetto a tutti gli acquisti dell'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
 				return false;			
 			}
 			qta_massima_order = parseInt(qta_massima_order);
 			if(qta_massima_order > 0 && qta_massima_order < pezzi_confezione) {
 				alert("La quantità massima rispetto a tutti gli acquisti dell'ordine è inferiore al numero di pezzi in una confezione");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
 				return false;			
 			}
-			qta_multipli = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
+			qta_multipli = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
 			if(qta_multipli=='' || qta_multipli==null || !isFinite(qta_multipli)) {
 				alert("Devi indicare di che multiplo dev'essere la quantità per gli articoli associati all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
 				return false;			
 			}
 			qta_multipli = parseInt(qta_multipli);
 			if(qta_multipli <= 0) {
 				alert("Il multiplo per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
 				return false;			
 			}
 			
 			if((qta_massima) > 0 && (qta_massima < qta_multipli)) {
 				alert("La quantità massima che un gasista può acquistare non può essere inferiore della quantità multipla");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
 				return false;
 			}
 		
 			<?php
 			if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
 			?>
-				alert_to_qta = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
+				alert_to_qta = $("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
 				if(alert_to_qta=='' || alert_to_qta==null || !isFinite(alert_to_qta)) {
 					alert("Devi indicare quando avvisare raggiunta una certa quantità per gli articoli associati all'ordine");
-					jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
+					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
 					return false;			
 				}
 				if(alert_to_qta <= 0) {
 					alert("La quantità che indica quando avvisare per gli articoli che desideri associare all'ordine deve essere > di zero");
-					jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
+					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
 					return false;			
 				}
 			<?php
@@ -306,7 +306,7 @@ jQuery(document).ready(function() {
 		}	    
 		article_id_selected = article_id_selected.substring(0,article_id_selected.length-1);
 		
-		jQuery('#article_id_selected').val(article_id_selected);
+		$('#article_id_selected').val(article_id_selected);
 
 		return true;
 	});

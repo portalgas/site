@@ -228,7 +228,7 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
 					}
 					echo '</td>';
-					echo '<td nowrap>'.$this->Form->input('prezzo',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['prezzo_'],'size'=>10,'tabindex'=>($ii+1),'after'=>'&euro;','class'=>'double')).'</td>';
+					echo '<td nowrap>'.$this->Form->input('prezzo',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['prezzo_'],'size'=>10,'tabindex'=>($ii+1),'after'=>'&nbsp;&euro;' ,'class'=>'double')).'</td>';
 					echo '<td>'.$this->Form->input('pezzi_confezione',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['pezzi_confezione'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
 					echo '<td>'.$this->Form->input('qta_minima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_minima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
 					echo '<td>'.$this->Form->input('qta_massima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_massima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
@@ -267,55 +267,55 @@ echo $this->element('legendaArticlesOrderStato');
 ?>
 		
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#article_order_key_selected_all').click(function () {
-		var checked = jQuery("input[name='article_order_key_selected_all']:checked").val();
+	$('#article_order_key_selected_all').click(function () {
+		var checked = $("input[name='article_order_key_selected_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=article_order_key_selected]').prop('checked',true);
+			$('input[name=article_order_key_selected]').prop('checked',true);
 		else
-			jQuery('input[name=article_order_key_selected]').prop('checked',false);
+			$('input[name=article_order_key_selected]').prop('checked',false);
 	});
 	
-	jQuery('#article_id_selected_all').click(function () {
-		var checked = jQuery("input[name='article_id_selected_all']:checked").val();
+	$('#article_id_selected_all').click(function () {
+		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=article_id_selected]').prop('checked',true);
+			$('input[name=article_id_selected]').prop('checked',true);
 		else
-			jQuery('input[name=article_id_selected]').prop('checked',false);
+			$('input[name=article_id_selected]').prop('checked',false);
 	});
 	
-	jQuery(".bindCheckbox").each(function () {
-		jQuery(this).click(function() {
-			var idArticlesOrderCheckbox = jQuery(this).attr('idArticlesOrderCheckbox');
-			var idArticleCheckbox = jQuery(this).attr('idArticleCheckbox');
+	$(".bindCheckbox").each(function () {
+		$(this).click(function() {
+			var idArticlesOrderCheckbox = $(this).attr('idArticlesOrderCheckbox');
+			var idArticleCheckbox = $(this).attr('idArticleCheckbox');
 			
 			if(idArticlesOrderCheckbox!=null && idArticlesOrderCheckbox!=undefined) {
-				if(jQuery("#"+idArticlesOrderCheckbox).is(':checked'))
-					jQuery("#"+idArticlesOrderCheckbox).prop('checked',false);
+				if($("#"+idArticlesOrderCheckbox).is(':checked'))
+					$("#"+idArticlesOrderCheckbox).prop('checked',false);
 				else
-					jQuery("#"+idArticlesOrderCheckbox).prop('checked',true);
+					$("#"+idArticlesOrderCheckbox).prop('checked',true);
 			}
 			else
 			if(idArticleCheckbox!=null && idArticleCheckbox!=undefined) {
-				if(jQuery("#"+idArticleCheckbox).is(':checked'))
-					jQuery("#"+idArticleCheckbox).prop('checked',false);
+				if($("#"+idArticleCheckbox).is(':checked'))
+					$("#"+idArticleCheckbox).prop('checked',false);
 				else
-					jQuery("#"+idArticleCheckbox).prop('checked',true);
+					$("#"+idArticleCheckbox).prop('checked',true);
 			}
 		}); 
 	});
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
 		/*
 		 * articoli gia' associati
 		 */
 		var articleJustInCart=0;
 		var article_order_key_selected = '';
-		for(i = 0; i < jQuery("input[name='article_order_key_selected']:checked").length; i++) {
-			var elem = jQuery("input[name='article_order_key_selected']:checked").eq(i);
-			if(jQuery(elem).attr('articleJustInCart')=='true') 
+		for(i = 0; i < $("input[name='article_order_key_selected']:checked").length; i++) {
+			var elem = $("input[name='article_order_key_selected']:checked").eq(i);
+			if($(elem).attr('articleJustInCart')=='true') 
 				articleJustInCart++;
 
 			article_order_key_selected += elem.val()+',';
@@ -327,95 +327,95 @@ jQuery(document).ready(function() {
 		
 		if(article_order_key_selected!='') {
 			article_order_key_selected = article_order_key_selected.substring(0,article_order_key_selected.length-1);		
-			jQuery('#article_order_key_selected').val(article_order_key_selected);
+			$('#article_order_key_selected').val(article_order_key_selected);
 		}	    
 
 		/*
 		 * articoli ancora da associare
 		 */
 		var article_id_selected = '';
-		for(i = 0; i < jQuery("input[name='article_id_selected']:checked").length; i++) {
-			article_id_selected += jQuery("input[name='article_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='article_id_selected']:checked").length; i++) {
+			article_id_selected += $("input[name='article_id_selected']:checked").eq(i).val()+',';
 			
-			article_id = jQuery("input[name='article_id_selected']:checked").eq(i).val();
+			article_id = $("input[name='article_id_selected']:checked").eq(i).val();
 			
-			prezzo = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
+			prezzo = $("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
 			if(prezzo=='' || prezzo==null || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') {
 				alert("Devi indicare l'importo per gli articoli che desideri associare all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
 				return false;			
 			}
 			
-			pezzi_confezione = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
+			pezzi_confezione = $("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
 			if(pezzi_confezione=='' || pezzi_confezione==null || !isFinite(pezzi_confezione)) {
 				alert("Devi indicare il numero di pezzi per confezione per gli articoli che desideri associare all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
 				return false;			
 			}
 			if(pezzi_confezione <= 0) {
 				alert("Il numero di pezzi per confezione per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
 				return false;			
 			}
 						
-			qta_minima = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
+			qta_minima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
 			if(qta_minima=='' || qta_minima==null || !isFinite(qta_minima)) {
 				alert("Devi indicare la quantità minima per gli articoli associati all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
 				return false;			
 			}
 			qta_minima = parseInt(qta_minima);
 			if(qta_minima <= 0) {
 				alert("La quantità minima per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
 				return false;			
 			}
 
-			qta_minima_order = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
+			qta_minima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
 			if(qta_minima_order=='' || qta_minima_order==null || !isFinite(qta_minima_order)) {
 				alert("Devi indicare la quantità minima rispetto a tutti gli acquisti per gli articoli associati all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
 				return false;			
 			}
 			
-			qta_massima_order = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
+			qta_massima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
 			if(qta_massima_order=='' || qta_massima_order==null || !isFinite(qta_massima_order)) {
 				alert("Devi indicare la quantità massima per gli articoli associati all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
 				return false;			
 			}
 			qta_massima_order = parseInt(qta_massima_order);
 			if(qta_massima_order > 0 && qta_massima_order < pezzi_confezione) {
 				alert("La quantità massima è inferiore al numero di pezzi in una confezione");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
 				return false;			
 			}
 			
-			qta_multipli = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
+			qta_multipli = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
 			if(qta_multipli=='' || qta_multipli==null || !isFinite(qta_multipli)) {
 				alert("Devi indicare di che multiplo dev'essere la quantità per gli articoli associati all'ordine");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
 				return false;			
 			}
 			qta_multipli = parseInt(qta_multipli);
 			if(qta_multipli <= 0) {
 				alert("Il multiplo per gli articoli che desideri associare all'ordine deve essere > di zero");
-				jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
+				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
 				return false;			
 			}
 			
 			<?php
 			if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
 			?>
-				alert_to_qta = jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
+				alert_to_qta = $("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
 				if(alert_to_qta=='' || alert_to_qta==null || !isFinite(alert_to_qta)) {
 					alert("Devi indicare quando avvisare raggiunta una certa quantità per gli articoli associati all'ordine");
-					jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
+					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
 					return false;			
 				}
 				if(alert_to_qta <= 0) {
 					alert("La quantità che indica quando avvisare per gli articoli che desideri associare all'ordine deve essere > di zero");
-					jQuery("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
+					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
 					return false;			
 				}
 			<?php
@@ -424,7 +424,7 @@ jQuery(document).ready(function() {
 		}
 		if(article_id_selected!='') {
 			article_id_selected = article_id_selected.substring(0,article_id_selected.length-1);
-			jQuery('#article_id_selected').val(article_id_selected);
+			$('#article_id_selected').val(article_id_selected);
 		}	    
 		
 		return true;
