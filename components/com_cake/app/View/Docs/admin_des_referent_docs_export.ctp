@@ -9,26 +9,26 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery("input[name='doc_options']").change(function() {
-		var des_supplier_id = jQuery('#des_order_id').val();
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
+	$("input[name='doc_options']").change(function() {
+		var des_supplier_id = $('#des_order_id').val();
+		var doc_options = $("input[name='doc_options']:checked").val();
                 /*
                  * attivo le opzioni
                  */
                 if(doc_options!=undefined) {
-                    var id = jQuery("input[name='doc_options']:checked").attr('id');
-                    jQuery('.box-options').hide();
-                    jQuery('#setting-'+id).show();
+                    var id = $("input[name='doc_options']:checked").attr('id');
+                    $('.box-options').hide();
+                    $('#setting-'+id).show();
                 }
 		AjaxCallToDocPreview();
 	});
 
-	jQuery('#actionExportDoc').click(function() {
-		var des_order_id = jQuery('#des_order_id').val();
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
-		var doc_formato = jQuery("input[name='doc_formato']:checked").val();
+	$('#actionExportDoc').click(function() {
+		var des_order_id = $('#des_order_id').val();
+		var doc_options = $("input[name='doc_options']:checked").val();
+		var doc_formato = $("input[name='doc_formato']:checked").val();
 
 		if(doc_options==null) {
 			alert("<?php echo __('jsAlertPrintFormatRequired');?>");
@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
 
 		var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToDes&des_order_id='+des_order_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&'+parametersFilter+'&format=notmpl';
 		/* console.log(url); */
-		jQuery('#actionExportDoc').attr('href', url);
+		$('#actionExportDoc').attr('href', url);
 
 		return true;
 	});
@@ -54,9 +54,9 @@ jQuery(document).ready(function() {
  * chiamata Ajax per anteprima documento
  */
 function AjaxCallToDocPreview() {
-	var des_order_id = jQuery('#des_order_id').val();
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
-	var doc_formato = jQuery("input[name='doc_formato']:checked").val();
+	var des_order_id = $('#des_order_id').val();
+	var doc_options = $("input[name='doc_options']:checked").val();
+	var doc_formato = $("input[name='doc_formato']:checked").val();
 	
 	if(des_order_id =='' || doc_options=='') return;
 	
@@ -210,23 +210,23 @@ echo $this->element('menuDesOrderLaterale');
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='codice1']").change(function() {			
+$(document).ready(function() {
+	$("input[name='codice1']").change(function() {			
 		AjaxCallToDocPreview();
 	});
-	jQuery("input[name='codice2']").change(function() {			
+	$("input[name='codice2']").change(function() {			
 		AjaxCallToDocPreview();
 	});
-	jQuery("input[name='codice3']").change(function() {			
+	$("input[name='codice3']").change(function() {			
 		AjaxCallToDocPreview();
 	});
-	jQuery("input[name='codice4']").change(function() {			
+	$("input[name='codice4']").change(function() {			
 		AjaxCallToDocPreview();
 	});
-	jQuery("input[name='codice5']").change(function() {			
+	$("input[name='codice5']").change(function() {			
 		AjaxCallToDocPreview();
 	});
-	jQuery("input[name='pezzi_confezione']").change(function() {			
+	$("input[name='pezzi_confezione']").change(function() {			
 		AjaxCallToDocPreview();
 	});
 });

@@ -47,7 +47,7 @@ function AjaxCallToDocOptions() {
  * chiamata Ajax per tasto print
  */
 function AjaxCallToDocPrint() {
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	var url = '/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_print_referente_all_gas&des_order_id='+des_order_id+'&organization_id='+organization_id+'&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&format=notmpl';
 	var idDivTarget = 'doc-print';
@@ -57,9 +57,9 @@ function AjaxCallToDocPrint() {
  * chiamata Ajax per anteprima documento
  */
 function AjaxCallToDocPreview() {
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); 
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); 
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	if(delivery_id =='' || order_id=='' || doc_options=='') return;
 	
@@ -81,7 +81,7 @@ function AjaxCallToDocPreview() {
 </h2>
 
 
-<div class="docs">
+<div class="contentMenuLaterale">
 <?php echo $this->Form->create();?>
 	<fieldset>
 	
@@ -89,17 +89,14 @@ function AjaxCallToDocPreview() {
 	echo $this->element('boxOrder',array('results' => $results));
 	?>	
 		
+	<div class="clearfix"></div>	
 	<div id="doc-options" style="display:none;"></div>
 
+	<div class="clearfix"></div>	
 	<div id="doc-print" style="display:none;"></div>
 
+	<div class="clearfix"></div>	
 	<div id="doc-preview" style="display:none;"></div>
 	
 	</fieldset>
 </div>
-	   	
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

@@ -45,7 +45,7 @@ function AjaxCallToDocOptions() {
  * chiamata Ajax per tasto print
  */
 function AjaxCallToDocPrint() {
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_print_referente&doc_options="+doc_options+"&format=notmpl";
 	var idDivTarget = 'doc-print';
@@ -55,10 +55,10 @@ function AjaxCallToDocPrint() {
  * chiamata Ajax per anteprima documento
  */
 function AjaxCallToDocPreview() {
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); 
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
-	
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); 
+	var doc_options = $("input[name='doc_options']:checked").val();
+
 	if(delivery_id =='' || order_id=='' || doc_options=='') return;
 	
 	var parametersFilter = setExportDocsParameters(doc_options);	
@@ -81,30 +81,25 @@ function AjaxCallToDocPreview() {
 	</div>
 </h2>
 
-
-<div class="contentMenuLaterale">
-<?php echo $this->Form->create();?>
-	<fieldset>
-	
-	<?php 
-	echo $this->element('boxOrder',array('results' => $results));
-	?>	
-		
-	<div id="doc-options" style="display:none;"></div>
-
-	<div id="doc-print" style="display:none;"></div>
-
-	<div id="doc-preview" style="display:none;"></div>
-	
-	</fieldset>
-</div>
-	   	
 <?php 
+echo '<div class="contentMenuLaterale">';
+echo $this->Form->create();
+echo '<fieldset>';
+	
+echo $this->element('boxOrder',array('results' => $results));
+	
+echo '<div class="clearfix"></div>';
+echo '<div id="doc-options" style="display:none;"></div>';
+
+echo '<div class="clearfix"></div>';
+echo '<div id="doc-print" style="display:none;"></div>';
+
+echo '<div class="clearfix"></div>';
+echo '<div id="doc-preview" style="display:none;"></div>';
+	
+echo '</fieldset>';
+echo '</div>';
+	   	
 $options = [];
 echo $this->MenuOrders->drawWrapper($order_id, $options);
 ?>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

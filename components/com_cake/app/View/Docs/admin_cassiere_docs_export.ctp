@@ -43,7 +43,7 @@ function AjaxCallToDocOptions() {
  * chiamata Ajax per tasto print
  */
 function AjaxCallToDocPrint() {
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_print_referente&doc_options="+doc_options+"&format=notmpl";
 	var idDivTarget = 'doc-print';
@@ -53,22 +53,25 @@ function AjaxCallToDocPrint() {
  * chiamata Ajax per anteprima documento
  */
 function AjaxCallToDocPreview() {
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); 
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); 
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	if(delivery_id =='' || order_id=='' || doc_options=='') return;
 	
 	var parametersFilter = setExportDocsParameters(doc_options);
 		
-	var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato=PREVIEW&'+parametersFilter+'&format=notmpl';
+	if(doc_options=='to-articles-weight')
+		var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToArticlesWeight&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato=PREVIEW&format=notmpl';
+	else
+		var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato=PREVIEW&'+parametersFilter+'&format=notmpl';
 	var idDivTarget = 'doc-preview';
 	ajaxCallBox(url, idDivTarget);	
 }
 <?php
 if(!empty($deliveries)) {
 ?>
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	if(delivery_id > 0) choiceDelivery();
 });
 <?php 
@@ -86,7 +89,7 @@ jQuery(document).ready(function() {
 </h2>
 
 
-<div class="form all">
+<div class="contentMenuLaterale">
 <?php echo $this->Form->create();?>
 	<fieldset>	
 		
@@ -117,9 +120,3 @@ jQuery(document).ready(function() {
 	
 	</fieldset>
 </div>
-	   	
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

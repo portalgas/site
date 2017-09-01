@@ -7,42 +7,42 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	if(delivery_id!="" && delivery_id!=undefined) caricaOrdini();
 	
-	jQuery('#delivery_id').change(function() {
+	$('#delivery_id').change(function() {
 		caricaOrdini();
 	});
 	
-	jQuery("input[name='doc_options']").change(function() {
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
+	$("input[name='doc_options']").change(function() {
+		var doc_options = $("input[name='doc_options']:checked").val();
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
 		if(order_id_selected!='') {
 			order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
 
-			jQuery('#articles-result').html('');
+			$('#articles-result').html('');
 			
 			tesoriereDocsExportAnteprima(order_id_selected,doc_options); 
 		}	
 		else {
 			alert("Seleziona almeno un ordine");
-			jQuery("input[name='doc_options']").prop('checked',false);
+			$("input[name='doc_options']").prop('checked',false);
 		}	
 	});
 
-	jQuery('#actionExportDoc').click(function() {
-		var delivery_id = jQuery('#delivery_id').val();
+	$('#actionExportDoc').click(function() {
+		var delivery_id = $('#delivery_id').val();
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
-		var doc_formato = jQuery("input[name='doc_formato']:checked").val();
+		var doc_options = $("input[name='doc_options']:checked").val();
+		var doc_formato = $("input[name='doc_formato']:checked").val();
 
 		if(delivery_id=='') {
 			order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
@@ -63,48 +63,48 @@ jQuery(document).ready(function() {
 		}
 
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
-		jQuery('#actionExportDoc').attr('href','/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToTesoriere&delivery_id='+delivery_id+'&order_id_selected='+order_id_selected+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl');
+		$('#actionExportDoc').attr('href','/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToTesoriere&delivery_id='+delivery_id+'&order_id_selected='+order_id_selected+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl');
 		return true;
 	});
 });
 
 function caricaOrdini() {
 	
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 
 	if(delivery_id=="") {
-		jQuery('#orders-result').css('display', 'none');	
-		jQuery('#type-render-data').css('display', 'none');	
-		jQuery('#print-doc').css('display', 'none');	
-		jQuery('#articles-results').css('display', 'none');	
+		$('#orders-result').css('display', 'none');	
+		$('#type-render-data').css('display', 'none');	
+		$('#print-doc').css('display', 'none');	
+		$('#articles-results').css('display', 'none');	
 		return;
 	}
 
-	jQuery('#orders-result').html('');
-	jQuery('#type-render-data').css('display', 'none');	
-	jQuery('#print-doc').css('display', 'none');	
-	jQuery('#articles-result').css('display', 'none');	
+	$('#orders-result').html('');
+	$('#type-render-data').css('display', 'none');	
+	$('#print-doc').css('display', 'none');	
+	$('#articles-result').css('display', 'none');	
 	
-	jQuery('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
-	jQuery('#orders-result').css('display', 'block');	
+	$('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#orders-result').css('display', 'block');	
 	
-	jQuery.ajax({
+	$.ajax({
 		type: "get",
 		url: "/administrator/index.php?option=com_cake&controller=Tesoriere&action=orders_index&delivery_id="+delivery_id+"&order_state_code_checked=<?php echo $order_state_code_checked;?>&format=notmpl",
 		data: "", 
 		success: function(response) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(response);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(response);
 
-			jQuery('#type-render-data').css('display', 'block');	
-			jQuery("input[name='doc_options']").removeAttr("checked");
-			jQuery('#print-doc').css('display', 'block');
-			jQuery('#articles-results').css('display', 'block');	
+			$('#type-render-data').css('display', 'block');	
+			$("input[name='doc_options']").removeAttr("checked");
+			$('#print-doc').css('display', 'block');
+			$('#articles-results').css('display', 'block');	
 					
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(textStatus);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(textStatus);
 		}
 	});	
 }

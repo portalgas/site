@@ -1,11 +1,11 @@
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
-		var delivery_id = jQuery('#delivery_id').val();
+	$('#formGas').submit(function() {
+		var delivery_id = $('#delivery_id').val();
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
 
 		if(delivery_id=='') {
@@ -18,11 +18,11 @@ jQuery(document).ready(function() {
 		}	    
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
 		
-		var action = jQuery('#formGas').attr('action');
+		var action = $('#formGas').attr('action');
 		action = action.substring(0,action.indexOf('tesoriereStatoInProcessing')+new String('tesoriereStatoInProcessing').length);
 		action += '&delivery_id='+delivery_id+'&order_id_selected='+order_id_selected;
 
-		jQuery('#formGas').attr('action',action);
+		$('#formGas').attr('action',action);
 		
 		return true;
 	});
