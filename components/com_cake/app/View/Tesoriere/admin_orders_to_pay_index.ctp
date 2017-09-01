@@ -138,59 +138,59 @@ else:
 endif; 
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.double').focusout(function() {setNumberFormat(this);});  /* applicato a tutti i campi prezzo */
+	$('.double').focusout(function() {setNumberFormat(this);});  /* applicato a tutti i campi prezzo */
 		
 	<?php if (!empty($results['Order'])) { ?>
-		jQuery('.submit').css('display','block');
+		$('.submit').css('display','block');
 	<?php
 	} else { ?>
-		jQuery('.submit').css('display','none');
+		$('.submit').css('display','none');
 	<?php
 	}
 	?>	
 
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('#box-account-close').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#box-account-close').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 
-	jQuery('#legendaOrderState').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#legendaOrderState').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 	
-	jQuery("input[name='order_tesoriere_stato_pay_selected']").click(function() {
-		var order_tesoriere_stato_pay = jQuery(this).val();
-		if(jQuery(this).is(':checked')) 
-			jQuery('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','table-row');
+	$("input[name='order_tesoriere_stato_pay_selected']").click(function() {
+		var order_tesoriere_stato_pay = $(this).val();
+		if($(this).is(':checked')) 
+			$('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','table-row');
 		else
-			jQuery('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','none');
+			$('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','none');
 	});	
 	
-	jQuery('.actionCopy').click(function() {
+	$('.actionCopy').click(function() {
 
-		var id = jQuery(this).attr('id');
-		var importo = jQuery(this).attr('importo');
+		var id = $(this).attr('id');
+		var importo = $(this).attr('importo');
 		
-		jQuery("input[name='data[Order]["+id+"][tesoriere_importo_pay]']").val(importo);
+		$("input[name='data[Order]["+id+"][tesoriere_importo_pay]']").val(importo);
 		
 		return false;
 	});

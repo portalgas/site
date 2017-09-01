@@ -128,37 +128,23 @@ if (!empty($results['Order'])):
 			
 			echo '<td>';
 			if(!empty($order['tesoriere_nota'])) {
-				
-				echo '<img style="cursor:pointer;" class="tesoriere_nota" id="'.$order['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi il messaggio del referente" border="0" />';
-				
-				echo '<div id="dialog-msg-'.$order['id'].'" title="Messaggio del referente">';
-				echo '<p>';
-				echo $order['tesoriere_nota'];
-				echo '</p>';
+						
+				echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$order['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+				echo '<div id="order_nota_'.$order['id'].'" class="modal fade" role="dialog">';
+				echo '<div class="modal-dialog">';
+				echo '<div class="modal-content">';
+				echo '<div class="modal-header">';
+				echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+				echo '<h4 class="modal-title">Nota del referente</h4>';
 				echo '</div>';
-				
-				echo '<script type="text/javascript">';
-				echo 'jQuery("#dialog-msg-'.$order['id'].'" ).dialog({';
-				echo "\r\n";
-				echo '	autoOpen: false,';
-				echo "\r\n";
-				echo '	height: 450,';
-				echo "\r\n";
-				echo '	width: 600,';
-				echo "\r\n";
-				echo '	modal: true,';
-				echo "\r\n";
-				echo '	buttons: {';
-				echo "\r\n";
-				echo '		"Chiudi": function() {';
-				echo "\r\n";
-				echo '			jQuery( this ).dialog( "close" );';
-				echo "\r\n";
-				echo '		},';
-				echo "\r\n";
-				echo '	}';
-				echo '});';
-				echo '</script>';
+				echo '<div class="modal-body"><p>'.$order['tesoriere_nota'].'</p>';
+				echo '</div>';
+				echo '<div class="modal-footer">';
+				echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+				echo '</div>';
+				echo '</div>';
+				echo '</div>';
+				echo '</div>';
 					
 			} // end if(!empty($order['tesoriere_nota']))
 			echo '</td>';
@@ -182,9 +168,9 @@ if (!empty($results['Order'])):
 		
 		echo '<td colspan="2" style="text-align="center;">';
 		if($order['tesoriere_fattura_importo']>0)
-			echo '<b>'.__('Tesoriere fattura importo Short').'</b> '.number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			echo '<b>'.__('Tesoriere fattura importo Short').'</b> '.number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 		if($order['tot_importo']>0)
-			echo '<br /><b>'.__('Importo totale ordine Short').'</b> '.number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			echo '<br /><b>'.__('Importo totale ordine Short').'</b> '.number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 		echo '</td></tr>';
 		
 		echo '<tr class="trView" id="trViewId-'.$order['id'].'">';
@@ -198,73 +184,69 @@ if (!empty($results['Order'])):
 else: 
 	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati"));
 endif; 
-?>
 
-<?php 
 echo $this->element('menuTesoriereLaterale');
 ?>
-
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 
-	jQuery('.tesoriere_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
+	$('.tesoriere_nota').click(function() {
+		var id = $(this).attr('id');
+		$("#dialog-msg-"+id ).dialog("open");
 	});
 	
 	<?php if($tot_order_checked>0) { ?>
-		jQuery('.submit').css('display','block');
+		$('.submit').css('display','block');
 	<?php
 	} else { ?>
-		jQuery('.submit').css('display','none');
+		$('.submit').css('display','none');
 	<?php
 	}
 	?>	
 
 	if(typeof bindLegenda == 'function') bindLegenda();
 	
-	jQuery('#order_id_selected_all').click(function () {
-		var checked = jQuery("input[name='order_id_selected_all']:checked").val();
+	$('#order_id_selected_all').click(function () {
+		var checked = $("input[name='order_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=order_id_selected]').prop('checked',true);
+			$('input[name=order_id_selected]').prop('checked',true);
 		else
-			jQuery('input[name=order_id_selected]').prop('checked',false);
+			$('input[name=order_id_selected]').prop('checked',false);
 	});
 
-	jQuery('#box-account-close').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#box-account-close').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 
-	jQuery('#legendaOrderState').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#legendaOrderState').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 	
-	jQuery("input[name='order_state_selected']").click(function() {
-		var order_state = jQuery(this).val();
-		if(jQuery(this).is(':checked')) 
-			jQuery('.OrderState'+order_state).css('display','table-row');
+	$("input[name='order_state_selected']").click(function() {
+		var order_state = $(this).val();
+		if($(this).is(':checked')) 
+			$('.OrderState'+order_state).css('display','table-row');
 		else
-			jQuery('.OrderState'+order_state).css('display','none');
+			$('.OrderState'+order_state).css('display','none');
 	});
 });
 </script>
-
 </div>

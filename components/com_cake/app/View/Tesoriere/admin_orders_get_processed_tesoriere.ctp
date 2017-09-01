@@ -1,4 +1,6 @@
 <?php
+echo '<div class="old-menu">';
+
 $this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $delivery_id));
@@ -7,87 +9,87 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.submit').css('display','none');
+	$('.submit').css('display','none');
 	
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	if(delivery_id!="" && delivery_id!=undefined) caricaOrdini();
 	
-	jQuery('#delivery_id').change(function() {
+	$('#delivery_id').change(function() {
 		caricaOrdini();
 	});
 
-	jQuery('#sumbitElabora').click(function() {
+	$('#sumbitElabora').click(function() {
 
 		if(!ctrlCampi()) return false;
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
 
-		jQuery('#doc-preview').css('display', 'block');
-		jQuery('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#doc-preview').css('display', 'block');
+		$('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-		jQuery.ajax({
+		$.ajax({
 			type: "get", 
 			url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_summary_orders&delivery_id="+delivery_id+"&order_id_selected="+order_id_selected+"&format=notmpl",
 			data: "",  
 			success: function(response) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery("#doc-preview").html(response);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$("#doc-preview").html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#doc-preview').html(textStatus);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$('#doc-preview').html(textStatus);
 			}
 		});
 		
 		return false;
 	});
 
-	jQuery('#sumbitToPROCESSED_REFERENTE_POST_DELIVERY').click(function() {
+	$('#sumbitToPROCESSED_REFERENTE_POST_DELIVERY').click(function() {
 
 		if(!ctrlCampi()) return false;
 
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
-		jQuery('#order_id_selected').val(order_id_selected);
+		$('#order_id_selected').val(order_id_selected);
 
-		jQuery('#action_submit').val('OrdersToPROCESSED_REFERENTE_POST_DELIVERY');
+		$('#action_submit').val('OrdersToPROCESSED_REFERENTE_POST_DELIVERY');
 
 		return true;
 	});		
 
 
-	jQuery('#sumbitToTO_PAYMENT').click(function() {
+	$('#sumbitToTO_PAYMENT').click(function() {
 
 		if(!ctrlCampi()) return false;
 
 		var order_id_selected = '';
-		for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-			order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+		for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+			order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 		}
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
-		jQuery('#order_id_selected').val(order_id_selected);
+		$('#order_id_selected').val(order_id_selected);
 		
-		jQuery('#action_submit').val('OrdersToTO_PAYMENT');
+		$('#action_submit').val('OrdersToTO_PAYMENT');
 
 		return true;
 	});		  
 });
 
 function ctrlCampi() {
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	var order_id_selected = '';
-	for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-		order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+	for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+		order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 	}
 
 	if(delivery_id=='') {
@@ -102,32 +104,32 @@ function ctrlCampi() {
 	return true;
 }
 function caricaOrdini() {
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 
 	if(delivery_id=="") {
-		jQuery('#orders-result').html('');
-		jQuery('#orders-result').css('display', 'none');
-		jQuery('#doc-preview').css('display', 'none');	
+		$('#orders-result').html('');
+		$('#orders-result').css('display', 'none');
+		$('#doc-preview').css('display', 'none');	
 		return;
 	}
 
-	jQuery('#orders-result').html('');
-	jQuery('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
-	jQuery('#orders-result').css('display', 'block');
-	jQuery('#doc-preview').css('display', 'none');
-	jQuery('#doc-preview').html('');	
+	$('#orders-result').html('');
+	$('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#orders-result').css('display', 'block');
+	$('#doc-preview').css('display', 'none');
+	$('#doc-preview').html('');	
 			
-	jQuery.ajax({
+	$.ajax({
 		type: "get",
 		url: "/administrator/index.php?option=com_cake&controller=Tesoriere&action=orders_index&delivery_id="+delivery_id+"&order_state_code_checked=<?php echo $order_state_code_checked;?>&format=notmpl",
 		data: "", 
 		success: function(response) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(response);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(textStatus);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(textStatus);
 		}
 	});
 }
@@ -138,7 +140,6 @@ function caricaOrdini() {
 </h2>
 
 
-<div class="docs">
 <?php echo $this->Form->create('Tesoriere',array('id' => 'formGas'));?>
 	<fieldset>
 	<?php

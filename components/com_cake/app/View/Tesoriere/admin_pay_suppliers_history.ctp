@@ -1,4 +1,6 @@
 <?php
+echo '<div class="old-menu">';
+
 $this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $delivery_id));
@@ -11,46 +13,45 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 </h2>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.submit').css('display','none');
+	$('.submit').css('display','none');
 		
-	jQuery('#delivery_id').change(function() {
+	$('#delivery_id').change(function() {
 		caricaOrdini();
 	});
 	
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	if(delivery_id!="" && delivery_id!=undefined) caricaOrdini();
 });
 	
 function caricaOrdini() {
-	var delivery_id = jQuery('#delivery_id').val();
+	var delivery_id = $('#delivery_id').val();
 	if(delivery_id=="" || delivery_id==undefined) {
-		jQuery('#orders-result').html('');
-		jQuery('#orders-result').css('display', 'none');
+		$('#orders-result').html('');
+		$('#orders-result').css('display', 'none');
 		return;
 	}
 
-	jQuery('#orders-result').html('');
-	jQuery('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
-	jQuery('#orders-result').css('display', 'block');	
-	jQuery.ajax({
+	$('#orders-result').html('');
+	$('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#orders-result').css('display', 'block');	
+	$.ajax({
 		type: "get",
 		url: "/administrator/index.php?option=com_cake&controller=Tesoriere&action=orders_to_pay_index_history&delivery_id="+delivery_id+"&format=notmpl",
 		data: "", 
 		success: function(response) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(response);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(textStatus);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(textStatus);
 		}
 	});	
 }
 </script>
 
-<div class="tesoriere">
 <?php echo $this->Form->create('Order', array('id'=>'formGas'));?>
 	<fieldset>
 	<?php

@@ -76,11 +76,11 @@ else:
 endif; 
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 });
