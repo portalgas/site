@@ -12,7 +12,7 @@
 	<?php
 	if(!empty($results)) {
 	?>
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover table-striped">
 	<tr>
 			<th><?php echo $this->Paginator->sort('event_type_id', __('EventsTypesShort'));?></th>
 			<th><?php echo $this->Paginator->sort('title');?></th>
@@ -61,7 +61,7 @@
 			$month_start_old = $month;
 		endforeach; 
 		
-		echo '</table>';
+		echo '</table></div>';
 	
 		echo '<p>';
 		echo $this->Paginator->counter(array(

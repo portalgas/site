@@ -23,10 +23,16 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->input('user_id', $options);
 	
 		echo $this->Form->input('nota', array('label' => __('EventNota')));
-		echo $this->Form->input('start', array('label' => __('EventStart'), 'minYear' => (date(Y)-2), 'maxYear' => (date(Y)+2)));
-		echo $this->Form->input('end', array('label' => __('Eventend'), 'minYear' => (date(Y)-2), 'maxYear' => (date(Y)+2)));
-		echo $this->Form->input('date_alert_mail', array('label' => __('EventDateAlertMail'), 'required' => false, 'empty' => true, 'minYear' => (date(Y)-2), 'maxYear' => (date(Y)+2)));
-		echo $this->Form->input('date_alert_fe', array('label' => __('EventDateAlertFE'), 'required' => false, 'empty' => true, 'minYear' => (date(Y)-2), 'maxYear' => (date(Y)+2)));
+
+		echo '<div class="row">';
+		echo $this->App->drawDateTime('Event', 'start', __('EventStart'));
+		echo '</div>';		
+		echo '<div class="row">';
+		echo $this->App->drawDateTime('Event', 'end', __('Eventend'));
+		echo '</div>';
+		
+		echo $this->App->drawDate('Event', 'date_alert_mail', __('EventDateAlertMail'), '');
+		echo $this->App->drawDate('Event', 'date_alert_fe', __('EventDateAlertFE'), '');
 		
 		echo $this->App->drawFormRadio('Event','isVisibleFrontEnd',array('options' => $isVisibleFrontEnd, 'value'=> 'Y', 'label'=>__('isVisibleFrontEnd'), 'required'=>'required',
 																'after'=>$this->App->drawTooltip(null,__('toolTipIsVisibleFrontEnd'),$type='HELP')));				
@@ -44,13 +50,13 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	/*
 	 * utenti ancora da associare
 	 */
-	echo '<div>';
+	echo '<div class="row"><div class="col-md-12">';
 	echo '<label for="User">'.__('Users').'</label>';
 
 	echo $this->Form->select('master_user_id', $usersResults, array('label' => __('Users'), 'id' => 'master_user_id', 'multiple' => true, 'size' =>10));
 	echo $this->Form->select('event_user_id', $eventUsersResults, array('id' => 'event_user_id', 'multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));
 	echo $this->Form->hidden('event_user_ids', array('id' => 'event_user_ids','value' => ''));
-	echo '</div>';
+	echo '</div></div>';
 	?>
 
 	<script type="text/javascript">
@@ -76,11 +82,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			});
 		});
 		
-		jQuery('#formGas').submit(function() {
+		$('#formGas').submit(function() {
 
 			var event_user_ids = '';
-			jQuery("#event_user_id option").each(function (){	
-				event_user_ids +=  jQuery(this).val()+',';
+			$("#event_user_id option").each(function (){	
+				event_user_ids +=  $(this).val()+',';
 			});
 			event_user_ids = event_user_ids.substring(0,event_user_ids.length-1);
 
@@ -89,7 +95,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				return false;
 			}
 
-			jQuery("#event_user_ids" ).val(event_user_ids);
+			$("#event_user_ids" ).val(event_user_ids);
 			
 			return true;
 		});		
