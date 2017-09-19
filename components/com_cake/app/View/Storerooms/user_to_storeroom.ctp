@@ -9,7 +9,7 @@
 	echo $this->Form->input('delivery_id',array('empty' => Configure::read('option.empty')));
 	
 	echo '<div class="input select">';
-	//echo '<label for="table"></label>';
+	//echo '<label for="table"></label> ';
 
 	echo "\r\n";
 	echo '<table style="width: 77%; float: right;">';
@@ -18,6 +18,7 @@
 	echo '<th>'.__('PrezzoUnita').'</th>';
 	echo '<th>'.__('Prezzo/UM').'</th>';
 	echo '<th>'.__('Importo').'</th>';
+	echo '<th style="padding-left:25px;">'.__('qta').'</th>';
 	echo '</tr>';
 
 	echo "\r\n";
@@ -37,12 +38,22 @@
 	echo '</td>';
 			
 	echo "\r\n";
-	echo '<td>';
+	echo '<td style="white-space: nowrap;">';
 	$options['label'] = false; 
-	$options['style'] = 'width:75px'; 
-	$options['value'] = '0.00'; 
+	$options['style'] = 'display:inline;';  
+	$options['value'] = $this->data['Storeroom']['prezzo_']; 
 	$options['after'] = ' <span style="font-size:14px;">&euro;</span>'; 
 	echo $this->Form->input('prezzoNew',$options);
+	echo '</td>';
+	
+	echo '<td style="padding-left:25px;">';
+	echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'), 
+										'label' => false,
+										 'id' => 'qta',
+										 'type' => 'select', 
+										 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
+										 'default'=> $this->data['Storeroom']['qta'],
+										 'onChange' => 'javascript:setImportoAndQtaRestore(this);'));	
 	echo '</td>';
 	echo '</tr>';
 	echo '</table>';
@@ -50,24 +61,19 @@
 
 	echo '</div>';
 
-	echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'), 
-										'label' => __('qta'),
-										 'id' => 'qta',
-										 'type' => 'select', 
-										 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
-										 'selected'=>'',
-										 'onChange' => 'javascript:setImportoAndQtaRestore(this);'));	
-
 	echo "<span style='float: right;font-size: 15px;'>";
 	echo "Restituisco alla dispensa la seguente quantit&agrave;:&nbsp;<span id='qtaRestore' class='qtaUno'>0</span></span>";
 
 	echo $this->Form->hidden('id');	 	
 	echo $this->Form->hidden('Prezzo');	
 	echo $this->Form->hidden('order_id',array('value'=>0));
-	?>
-	</fieldset>
-<?php echo $this->Form->end(__('Submit'));?>
-</div>
+	echo '</fieldset>';
+	
+	echo '<button type="submit" class="btn btn-success"><span>'.__('Submit').'</span></button>';
+
+    echo $this->Form->end();
+echo '</div>';
+?>
 <script type="text/javascript">
 function setImportoAndQtaRestore() {
 	setImporto();
@@ -76,47 +82,48 @@ function setImportoAndQtaRestore() {
 
 function setImporto() {
 	var prezzo = '<?php echo $this->data['Storeroom']['prezzo']?>';
-	var qta = jQuery("#qta").val();	
+	var qta = $("#qta").val();	
 	
 	prezzoNew = number_format(prezzo*qta,2,',','.');
-	jQuery('#StoreroomPrezzoNew').val(prezzoNew);
+	$('#StoreroomPrezzoNew').val(prezzoNew);
 }
 
 function setQtaRestore() {
-	var qta = jQuery("#qta").val();
+	var qta = $("#qta").val();
 	if(qta=="") qtaSelezionata = 0;
 	else qtaSelezionata =qta;
 
 	var qtaRestore = (parseInt(<?php echo $this->data['Storeroom']['qta'];?>) - parseInt(qtaSelezionata));
-   jQuery("#qtaRestore").html(qtaRestore);	
+   $("#qtaRestore").html(qtaRestore);	
 }
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	  setQtaRestore();
+	setQtaRestore();
+	setImporto();
 
-	  jQuery("#ajaxForm").submit(function() {
+	  $("#ajaxForm").submit(function() {
 
-		var storeroomId = jQuery('#StoreroomId').val();
-	    var deliveryId = jQuery("#StoreroomDeliveryId").val();
-	    var qta = jQuery("#qta").val();
+		var storeroomId = $('#StoreroomId').val();
+	    var deliveryId = $("#StoreroomDeliveryId").val();
+	    var qta = $("#qta").val();
 	    
 	    if(deliveryId=="") {
 		    alert("Devi indicare la consegna durante la quale ritirerai il prodotto");
 		    return false;
 		}
 		
-	    jQuery.ajax({
+	    $.ajax({
 	      type: "POST",
 	      url: "/?option=com_cake&controller=Storerooms&action=userToStoreroom&id="+storeroomId+"&format=notmplt",
 	      data: "id=" + storeroomId + "&delivery_id=" + deliveryId + "&qta=" + qta,
 	      dataType: "html",
 	      success: function(msg)
 	      {
-	    	    jQuery('#ajaxContent').animate({opacity:0});
+	    	    $('#ajaxContent').animate({opacity:0});
 	    	    var url = "/home-cavagnetta/tab-user-cart?esito=OK&format=notmpl";
-	    		jQuery('#ajaxContent').load(url);
-	    		jQuery('#ajaxContent').animate({opacity:1},1500);
+	    		$('#ajaxContent').load(url);
+	    		$('#ajaxContent').animate({opacity:1},1500);
 	      },
 	      error: function()
 	      {

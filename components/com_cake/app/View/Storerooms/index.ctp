@@ -112,10 +112,10 @@ echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'
 if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 ?>
 	function viewContentAjax(id) {
-		jQuery('#ajaxContent').animate({opacity:0});
+		$('#ajaxContent').animate({opacity:0});
 		var url = "/?option=com_cake&controller=Storerooms&action=storeroomToUser&id="+id+"&format=notmpl";
-		jQuery('#ajaxContent').load(url);
-		jQuery('#ajaxContent').animate({opacity:1},1500);
+		$('#ajaxContent').load(url);
+		$('#ajaxContent').animate({opacity:1},1500);
 		return;
 	}
 <?php
@@ -123,14 +123,14 @@ if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 ?>
 
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	/*
 	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
 	 */
 	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
+	$('.filter').click(function() {
+		$("input[name^='page']").val('');
 	});
 	
 });		

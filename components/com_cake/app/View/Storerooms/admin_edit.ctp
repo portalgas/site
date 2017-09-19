@@ -27,6 +27,7 @@ echo "</pre>";
 		echo '<th>'.__('Prezzo/UM').'</th>';
 		echo '<th>'.__('PrezzoUnita').'</th>';
 		echo '<th>'.__('Importo').'</th>';
+		echo '<th>'.__('qta').'</th>';
 		echo '</tr>';
 		
 		echo "\r\n";
@@ -48,12 +49,22 @@ echo "</pre>";
 		echo '</td>';
 		
 		echo "\r\n";
-		echo '<td>';
+		echo '<td style="white-space: nowrap;">';
 		$options['label'] = false;
-		$options['style'] = 'width:75px';
-		$options['value'] = '0.00';
+		$options['disabled'] = true; 
+		$options['style'] = 'display:inline;';
+		$options['value'] = $this->data['Storeroom']['prezzo_'];
 		$options['after'] = ' <span style="font-size:14px;">&euro;</span>';
 		echo $this->Form->input('prezzoNew',$options);
+		echo '</td>';
+		echo '<td>';
+		echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'), 
+											 'label' => false,
+											 'id' => 'qta',
+											 'type' => 'select', 
+											 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
+											 'default' => $this->data['Storeroom']['qta'],
+											 'onChange' => 'javascript:setImporto(this);'));	
 		echo '</td>';
 		echo '</tr>';
 		echo '</table>';
@@ -61,13 +72,7 @@ echo "</pre>";
 		
 		echo '</div>';
 		
-		echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'), 
-											 'label' => __('qta'),
-											 'id' => 'qta',
-											 'type' => 'select', 
-											 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
-											 'selected'=>'',
-											 'onChange' => 'javascript:setImporto(this);'));	
+
 
 		$optionsCommons = array('type'=>'text', 'disabled' => 'true', 'style'=>'width:auto !important');
 		$options = $optionsCommons + array('label' => 'Utente','value' => $this->data['User']['name'], 'size'=>'50');
@@ -92,9 +97,12 @@ echo "</pre>";
 <script type="text/javascript">
 function setImporto() {
 	var prezzo = '<?php echo $this->data['Storeroom']['prezzo']?>';
-	var qta = jQuery("#qta").val();	
+	var qta = $("#qta").val();	
 
 	prezzoNew = number_format(prezzo*qta,2,',','.');
-	jQuery('#StoreroomPrezzoNew').val(prezzoNew);	
+	$('#StoreroomPrezzoNew').val(prezzoNew);	
 }
+$(function() {
+	setImporto();
+});
 </script>

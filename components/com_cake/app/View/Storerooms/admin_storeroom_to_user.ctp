@@ -24,6 +24,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '<th>'.__('PrezzoUnita').'</th>';
 		echo '<th>'.__('Prezzo/UM').'</th>';
 		echo '<th>'.__('Importo').'</th>';
+		echo '<th>'.__('qta').'</th>';
 		echo '</tr>';
 		
 		echo "\r\n";
@@ -44,26 +45,30 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '</td>';
 				
 		echo "\r\n";
-		echo '<td>';
+		echo '<td style="white-space: nowrap;">';
 		$options['label'] = false;
-		$options['style'] = 'width:75px';
+		$options['disabled'] = true; 
+		$options['style'] = 'display:inline;';
 		$options['value'] = '0.00';
 		$options['after'] = ' <span style="font-size:14px;">&euro;</span>';
 		echo $this->Form->input('prezzoNew',$options);
 		echo '</td>';
+		
+		echo '<td style="white-space: nowrap;">';
+		echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'),
+											 'label' => false, 
+										     'id' => 'qta',
+											 'type' => 'select', 
+											 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
+											 'selected'=>'',
+											 'onChange' => 'javascript:setImporto(this);'));		
+		echo '</td>';
+		
 		echo '</tr>';
 		echo '</table>';
 		echo "\r\n";
 		
 		echo '</div>';
-
-		echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'),
-											 'label' => __('qta'), 
-										     'id' => 'qta',
-											 'type' => 'select', 
-											 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
-											 'selected'=>'',
-											 'onChange' => 'javascript:setImporto(this);'));	
 
 		$options = array('empty' => Configure::read('option.empty'));
 		if(count($users) > Configure::read('HtmlSelectWithSearchNum')) 
@@ -87,9 +92,9 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 <script type="text/javascript">
 function setImporto() {
 	var prezzo = '<?php echo $this->data['Storeroom']['prezzo']?>';
-	var qta = jQuery("#qta").val();	
+	var qta = $("#qta").val();	
 	
 	prezzoNew = number_format(prezzo*qta,2,',','.');
-	jQuery('#StoreroomPrezzoNew').val(prezzoNew);
+	$('#StoreroomPrezzoNew').val(prezzoNew);
 }
 </script>

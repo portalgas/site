@@ -70,7 +70,7 @@ if(!empty($results )) {
 					<th><?php echo __('Conf');?></th>
 					<th><?php echo __('PrezzoUnita');?></th>
 					<th><?php echo __('Prezzo/UM');?></th>
-					<th><?php echo __('Acquistati');?></th>
+					<th><?php echo __('StoreroomArticleJustBooked');?></th>
 					<th><?php echo __('Importo');?></th>
 					<th><?php echo __('Created');?></th>					
 					<th class="actions"><?php echo __('Actions');?></th>
@@ -101,9 +101,9 @@ if(!empty($results )) {
 			<?php
 				echo '<td>';
 				if($result['Storeroom']['qta']==1)
-					echo $result['Storeroom']['qta'].' acquistato';
+					echo $result['Storeroom']['qta'];
 				else
-					echo $result['Storeroom']['qta'].' acquistati';
+					echo $result['Storeroom']['qta'];
 				echo '</td>';
 			?>
 			<td><?php echo $this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']);?></td>
@@ -208,14 +208,14 @@ else
 	</div>
 </div>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	/*
 	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
 	 */
 	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
+	$('.filter').click(function() {
+		$("input[name^='page']").val('');
 	});
 	
 });		

@@ -1,16 +1,20 @@
 <?php
 $i = 0;
-
 if(!empty($results)) {
 ?>
-	<div class="box-open-close">
-		<div class="barra-open-close close" id="articlesStoreroomsLabel">
-			Elenco degli articoli gi&agrave; in dispensa
+	<div class="panel-group">
+	  <div class="panel panel-primary">
+		<div class="panel-heading">
+		  <h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-lg fa-minus" aria-hidden="true"></i> Elenco degli articoli gi&agrave; in dispensa (<?php echo count($results);?>)</a>
+		  </h4>
 		</div>
-	
-		<div id="articlesStoreroomsList" style="display:none;">
+		<div id="collapse1" class="panel-collapse collapse in">
+		  <div class="panel-body">
+		  
+		 
 		
-			<table cellpadding="0" cellspacing="0">
+			<div class="table-responsive"><table class="table table-hover">
 			<tr>
 					<th></th>
 					<th><?php echo __('N');?></th>
@@ -21,7 +25,7 @@ if(!empty($results)) {
 					<th colspan="2">Nome prodotto</th>
 					<th><?php echo __('Conf.');?></th>
 					<th><?php echo __('Prezzo<br />unità');?></th>
-					<th><?php echo __('Quantità<br />in dispensa');?></th>	
+					<th style="text-align:center;"><?php echo __('Quantità<br />in dispensa');?></th>	
 					<th><?php echo __('Modifica<br />quantità<br />in dispensa');?></th>			
 			</tr>
 			<?php
@@ -54,32 +58,36 @@ if(!empty($results)) {
 				</td>
 				<td style="white-space: nowrap;"><?php echo $result['Storeroom']['prezzo'].' &euro;'; // Prezzo unità del prezzo in dispensa ?>
 				</td>
-				<td><?php echo $result['Storeroom']['qta'];?></td>
-				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Storeroom]['.$result['Storeroom']['id'].'][Qta]','value' => '', 'class' => 'qta_storeroom', 'size'=>3,'tabindex'=>($i+1)));?></td>
+				<td style="text-align:center;"><?php echo $result['Storeroom']['qta'];?></td>
+				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Storeroom]['.$result['Storeroom']['id'].'][Qta]','value' => '', 'class' => 'qta_storeroom', 'tabindex'=>($i+1)));?></td>
 			</tr>
 			<tr class="trView" id="trViewId-<?php echo $result['Article']['id'];?>">
 				<td colspan="2"></td>
 				<td colspan="<?php echo ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '7' :'6';?>" id="tdViewId-<?php echo $result['Article']['id'];?>"></td>
 			</tr>
-		<?php endforeach; ?>
-			</table>
-		</div>
-		
-	</div>	
-	<?php
+		<?php 
+		endforeach; 
+			
+		echo '</table></div>';
 	}
 	else   // 	if(!empty($results)
 		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Per il produttore scelto non ci sono articoli nella dispensa"));
 	?>
 	
-	<div class="box-open-close">
-		<div class="barra-open-close close" id="articlesLabel">
-			Elenco degli articoli attivi ancora da associare alla dispensa
+		  </div>
 		</div>
-			
-		<div id="articlesList" style="display:none;">
+	  </div>
+	  <div class="panel panel-primary">
+		<div class="panel-heading">
+		  <h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><i class="fa fa-lg fa-plus" aria-hidden="true"></i> Elenco degli articoli attivi ancora da associare alla dispensa</a>
+		  </h4>
+		</div>
+		<div id="collapse2" class="panel-collapse collapse">
+		  <div class="panel-body">
+
 		
-			<table cellpadding="0" cellspacing="0">
+			<div class="table-responsive"><table class="table table-hover">
 			<tr>
 				<th><?php echo __('N');?></th>
 				<?php
@@ -118,69 +126,12 @@ if(!empty($results)) {
 				<td style="white-space: nowrap;"><?php // Prezzo/UM
 					echo $this->App->getArticlePrezzoUM($article['Article']['prezzo'], $article['Article']['qta'], $article['Article']['um'], $article['Article']['um_riferimento']);?>
 				</td>						
-				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][Qta]','value' => 0,'size'=>3,'class' => 'qta_article', 'tabindex'=>($i+1)));?></td>
+				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][Qta]','value' => 0, 'class' => 'qta_article', 'tabindex'=>($i+1)));?></td>
 			</tr>
 		<?php endforeach; ?>
-			</table>
+			</table></div>
 		
+		  </div>
 		</div>
-
-</div>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#articlesStoreroomsLabel').click(function() {
-		if(jQuery('#articlesStoreroomsList').css('display')=='none')  {
-			jQuery('#articlesStoreroomsList').removeClass('close');
-			jQuery('#articlesStoreroomsList').addClass('open');
-			jQuery('#articlesStoreroomsList').show('slow');
-		}	
-		else {
-			jQuery('#articlesStoreroomsList').removeClass('open');
-			jQuery('#articlesStoreroomsList').addClass('close');
-			jQuery('#articlesStoreroomsList').hide('slow');
-		}
-	});
-	jQuery('#articlesLabel').click(function() {
-		if(jQuery('#articlesList').css('display')=='none') {
-			jQuery('#articlesLabel').removeClass('close');
-			jQuery('#articlesLabel').addClass('open');
-			jQuery('#articlesList').show('slow');
-		}	
-		else {
-			jQuery('#articlesLabel').removeClass('open');
-			jQuery('#articlesLabel').addClass('close');
-			jQuery('#articlesList').hide('slow');
-		}	
-	});
-});
-<?php
-if(!empty($results)) {
-?>
-jQuery(document).ready(function() {
-	
-	<?php
-	/*
-	* $storeroom_id valorizzati se chiamato da admin_index per modifica
-	*/	
-	if(!empty($storeroom_id)) {
-	?>
-		jQuery('#articlesStoreroomsLabel').removeClass('close');
-		jQuery('#articlesStoreroomsLabel').addClass('open');
-		jQuery('#articlesStoreroomsList').show('slow');
-	<?php
-	}
-	else {
-	?>
-		jQuery('#articlesLabel').removeClass('close');
-		jQuery('#articlesLabel').addClass('open');
-		jQuery('#articlesList').show('slow');	
-	<?php
-	}
-	?>	
-	
-});	
-<?php
-}
-?>
-</script>
+	  </div>
+	</div> <!-- panel-group -->

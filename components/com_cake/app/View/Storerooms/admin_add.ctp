@@ -6,30 +6,30 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 <script type="text/javascript">
 function add_list_articles() {
-	var supplier_organization_id = jQuery("#supplier_organization_id").val();
-	var storeroom_id = jQuery("#storeroom_id").val();
+	var supplier_organization_id = $("#supplier_organization_id").val();
+	var storeroom_id = $("#storeroom_id").val();
 
 	if(supplier_organization_id=="") {
-		jQuery('#articles-result').css('display', 'none');
-		jQuery('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
-		jQuery('#articles-result').html("");
+		$('#articles-result').css('display', 'none');
+		$('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
+		$('#articles-result').html("");
 		return false;	
 	}
 
-	jQuery('#articles-result').css('display', 'block');
-	jQuery('#articles-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#articles-result').css('display', 'block');
+	$('#articles-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-	jQuery.ajax({
+	$.ajax({
 		type: "get", 
 		url: "/administrator/index.php?option=com_cake&controller=Storerooms&action=add_list_articles&supplier_organization_id="+supplier_organization_id+"&storeroom_id="+storeroom_id+"&format=notmpl",
 		data: "",  
 		success: function(response) {
-			jQuery('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#articles-result').html(response);
+			$('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#articles-result').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#articles-result').html(textStatus);
+			$('#articles-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#articles-result').html(textStatus);
 		}
 	});
 	return false;
@@ -77,7 +77,7 @@ function add_list_articles() {
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	<?php
 	/*
@@ -90,7 +90,7 @@ jQuery(document).ready(function() {
 	}
 	?>
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
 		var continua = true;
 		
@@ -98,12 +98,12 @@ jQuery(document).ready(function() {
 		 * ciclo per gli articoli gia' inseriti in dispensa 
 		 */
 		 var count = 0;
-		jQuery(".qta_storeroom").each(function () {
-			var qta_storeroom = jQuery(this).val(); 
+		$(".qta_storeroom").each(function () {
+			var qta_storeroom = $(this).val(); 
 		
 			if(continua && qta_storeroom!='' && !isNumber(qta_storeroom)) {
 				alert("Devi indicare la quantità da modificare in dispensa con un valore numerico");
-				jQuery(this).focus();
+				$(this).focus();
 				continua = false;
 			}
 				
@@ -117,12 +117,12 @@ jQuery(document).ready(function() {
 		 * ciclo per gli articoli ancora da inserire in dispensa 
 		 */
 		 if(continua) {
-			jQuery(".qta_article").each(function () {
-				var qta_article = jQuery(this).val(); 
+			$(".qta_article").each(function () {
+				var qta_article = $(this).val(); 
 			
 				if(continua && !isNumber(qta_article)) {
 					alert("Devi indicare la quantità da associare alla dispensa con un valore numerico");
-					jQuery(this).focus();
+					$(this).focus();
 					continua = false;
 				}
 					
