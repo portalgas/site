@@ -46,7 +46,10 @@ class RequestPaymentsController extends AppController {
 			/*
 			 * se non ci sono consegne valide (quelle per la dispensa) non fa comparire la voce di menu "Aggiungi una richiesta pagamento di dispensa"
 			 */
-			$deliveries = $this->__deliveries_validate_to_storeroom();			if(empty($deliveries)) 
+			App::import('Model', 'Storeroom');
+			$Storeroom = new Storeroom;
+		
+			$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);			if(empty($deliveries)) 
 				$deliveriesValideToStoreroom = 'N';
 			else 	
 				$deliveriesValideToStoreroom = 'Y';
@@ -627,6 +630,7 @@ class RequestPaymentsController extends AppController {
 		 */
 		App::import('Model', 'Storeroom');
 		$Storeroom = new Storeroom;
+		
 		$this->storeroomUser = $Storeroom->getStoreroomUser($this->user);
 		if(empty($this->storeroomUser)) {
 			$this->Session->setFlash(__('StoreroomNotFound'));
@@ -725,16 +729,7 @@ class RequestPaymentsController extends AppController {
 		
 		$FilterRequestPaymentDeliveryId = null;
 		
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
-		$conditionsDeliveries = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									  'Delivery.isVisibleBackOffice' => 'Y',
-									  'Delivery.isToStoreroom' => 'Y',
-									  'Delivery.isToStoreroomPay' => 'N',
-									  'Delivery.sys' => 'N',
-									  'Delivery.stato_elaborazione' => 'OPEN');
-		$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),
-													'conditions' => $conditionsDeliveries,'order'=>'data ASC','recursive' => -1));		
+		$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);	
 		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
 		$this->set(compact('deliveries'));
 		
@@ -1178,12 +1173,6 @@ class RequestPaymentsController extends AppController {
 		$results = $this->RequestPayment->getAllDetails($this->user, $requestPaymentResults['RequestPaymentsOrder']['request_payment_id'], $conditions=array());		$this->set(compact('results'));
 	}
 	
-	private function __deliveries_validate_to_storeroom()	{
-		
-		App::import('Model', 'Delivery');		$Delivery = new Delivery;		$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',							'Delivery.isToStoreroom' => 'Y',							'Delivery.isToStoreroomPay' => 'N',
-							'Delivery.sys' => 'N',							'Delivery.stato_elaborazione' => 'OPEN');		$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),									 			   'conditions' => $conditions,'order'=>'data ASC','recursive' => -1));
-		return $deliveries;	}
-
 	/*
 	 * gli passo il contenuto di getAllDetails() e	 * ctrl che sia stata associata almeno una richesta (orders, storeroom, genereric)	*/
 	private function __ctrl_request_payment_empty($user, $results) {

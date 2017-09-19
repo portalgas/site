@@ -896,7 +896,26 @@ class TesoriereController extends AppController {
 		App::import('Model', 'RequestPayment');		$RequestPayment = new RequestPayment;				$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}				$conditions = array('RequestPayment.organization_id' => $this->user->organization['Organization']['id'],				'RequestPayment.id' => $request_payment_id);		$requestPaymentResults = $RequestPayment->find('first', array('conditions' => $conditions, 'recursive' => -1));		$this->set('requestPaymentResults', $requestPaymentResults);	
 
 		$tot_importo = $RequestPayment->getTotImporto($this->user, $request_payment_id);
-		$this->set('tot_importo',$tot_importo);	}		public function admin_sotto_menu_referentetesoriere_request_payment($delivery_id, $request_payment_id, $position_img) {			$this->admin_sotto_menu_referentetesoriere($delivery_id, $position_img);
+		$this->set('tot_importo',$tot_importo);
+		
+		/*
+		 * dispensa
+		*/
+		if($this->user->organization['Organization']['hasStoreroom']=='Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+
+			App::import('Model', 'Storeroom');
+			$Storeroom = new Storeroom;
+		
+			$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);
+			if(empty($deliveries)) 
+				$deliveriesValideToStoreroom = 'N';
+			else 	
+				$deliveriesValideToStoreroom = 'Y';
+		}
+		else 
+			$deliveriesValideToStoreroom = 'N';
+	
+		$this->set('deliveriesValideToStoreroom', $deliveriesValideToStoreroom);			}		public function admin_sotto_menu_referentetesoriere_request_payment($delivery_id, $request_payment_id, $position_img) {			$this->admin_sotto_menu_referentetesoriere($delivery_id, $position_img);
 		
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
