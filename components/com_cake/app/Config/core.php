@@ -352,10 +352,11 @@ Configure::write('SOC.mail', 'info@portalgas.it');
 Configure::write('SOC.mail-assistenza', 'info@portalgas.it'); // utilizzato in default.po
 
 Configure::write('Filter.prefix', 'Filter');        // in database.php (cron per il dump delle tabelle)
-Configure::write('DB.prefix', '');        // in database.php (cron per il dump delle tabelle)
-Configure::write('DB.portalPrefix', '');  // (cron per il dump delle tabelle)
+Configure::write('DB.prefix', 'k_');        // in database.php (cron per il dump delle tabelle)
+Configure::write('DB.portalPrefix', 'j_');  // (cron per il dump delle tabelle)
 Configure::write('DB.tableJoomlaWithPassword', 'jos_users'); // nome della tabella per la migrazione degli utenti, contiente la password
 Configure::write('DB.field.date.empty', '0000-00-00');
+Configure::write('DB.field.datetime.empty', '0000-00-00 00:00:00');
 
 /*
  * requests_payments.stato
@@ -512,14 +513,14 @@ Configure::write('doc_export_keywork', 'PortAlGas');
 Configure::write('doc_export_logo', '150h50.png');  // in xtcpdf.php $logo = Configure::read('App.root').DS.Configure::read('App.img.loghi').DS.$organization['Organization']['id'].Configure::read('doc_export_logo');
 
 // https://code.google.com/apis/console
-Configure::write('GoogleClient_id',' ');
-Configure::write('GoogleClient_secret',' '); 
-Configure::write('GoogleEmail', '');  
-Configure::write('GoogleEmailGmail','');
-Configure::write('GoogleApi_key',''); 
-Configure::write('GoogleService_client_id','');
-Configure::write('GoogleService_email',''); 
-Configure::write('GooglePrivateKeyLocation','');  
+Configure::write('GoogleClient_id','317847689931-ltnq3244cit3mojunmtee3cqtacc4tdh.apps.googleusercontent.com');
+Configure::write('GoogleClient_secret','DDXUm8LlWwZo-HOIlIS7BN-0'); // BudhMZHHol0HM9R4HGwMuoFH
+Configure::write('GoogleEmail', '317847689931-ltnq3244cit3mojunmtee3cqtacc4tdh@developer.gserviceaccount.com');  
+Configure::write('GoogleEmailGmail','portalgas.it@gmail.com');
+Configure::write('GoogleApi_key','AIzaSyAv17GOXb6FwIzeKXmzSVFJ32FYEgGMthI'); 
+Configure::write('GoogleService_client_id','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4.apps.googleusercontent.com');
+Configure::write('GoogleService_email','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4@developer.gserviceaccount.com');  // Service Account 1
+Configure::write('GooglePrivateKeyLocation','cert/portalgas-33593677e799.p12');  // portalgas-5b553a227069.p12
 
 Configure::write('OrderNotaMaxLen', 50);
 Configure::write('SupplierArticleMinLen', 250);
@@ -551,7 +552,6 @@ Configure::write('ArticlesOrderToTypeDrawComplete', 100);  // numero articoli in
 Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
 Configure::write('DeliveryToDefinedDate', '2025-01-01');
 Configure::write('DeliveryToDefinedLabel', 'Da definire');
-Configure::write('LayoutBootstrap', true);
 
 Configure::write('urlFrontEndToRewriteCakeRequest',array(
 		array('controller'=>'Deliveries','action'=>'tabsAjaxEcommDeliveries','admin'=>false),
@@ -563,6 +563,7 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 		array('controller'=>'Storerooms','action'=>'userToStoreroom','admin'=>false),  // chiamate da storerooms/index in ajax
 		array('controller'=>'Storerooms','action'=>'storeroomToUser','admin'=>false),  // chiamate da storerooms/index in ajax
 		array('controller'=>'Storerooms','action'=>'export','admin'=>false),  
+		array('controller'=>'Storerooms','action'=>'exportBooking','admin'=>false),  
 		array('controller'=>'PopUp','action'=>'delivery_info','admin'=>false),
 		array('controller'=>'PopUp','action'=>'order_mail_open_testo','admin'=>false),
 		array('controller'=>'Carts','action'=>'cart_to_user_preview','admin'=>false),
@@ -624,7 +625,8 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 		array('controller'=>'Users','action'=>'bookmarks_mails_update','admin'=>false),
 		array('controller'=>'BookmarksArticles','action'=>'index','admin'=>false,'SEO'=>'bookmarks-articles'),
 		array('controller'=>'Events','action'=>'index','admin'=>false,'SEO'=>'events'),	
-		array('controller'=>'PdfCarts','action'=>'index','admin'=>false,'SEO'=>'carts-history'),	
+		array('controller'=>'PdfCarts','action'=>'index','admin'=>false,'SEO'=>'carts-history'),
+		array('controller'=>'DocsCreates','action'=>'pdf_create','admin'=>false)	
 	//	ecommprod  
 		));
 
@@ -697,9 +699,9 @@ Configure::write('App.img.cake', '/images/cake');
 Configure::write('App.img.loghi', '/images/cake/loghi');
 Configure::write('App.baseUrl', '/'.Configure::read('App.dominio').'/components/com_cake/app');  // variabile d'ambiente $this->Html->script()
  
-Configure::write('App.cron.log', '/log');
-Configure::write('App.cron.dump', '/dump');
-Configure::write('App.cron.backup', '/backup');
+Configure::write('App.cron.log', '/var/portalgas/cron/log');
+Configure::write('App.cron.dump', '/var/portalgas/dump');
+Configure::write('App.cron.backup', '/var/portalgas/backup');
  
 /*
  *  $_SERVER['SERVER_NAME'] non e' valorizzato da Cron
@@ -712,6 +714,8 @@ Configure::write('App.server', 'http://'.$_SERVER['SERVER_NAME']);
  * override developer.mode, App.root, App.cron.log, App.cron.dump, App.cron.backup
  */
 if($_SERVER['SERVER_NAME']!='www.portalgas.it' && 
+	$_SERVER['SERVER_NAME']!='next.portalgas.it' &&
+	$_SERVER['SERVER_NAME']!='test.portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='localhost'
 ) 
