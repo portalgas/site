@@ -435,8 +435,7 @@ class PagesController extends AppController {
 
         $conditions = array();
         $suppliersOrganizationResults = $SuppliersOrganization->getSuppliersOrganization($this->user, $conditions);
-
-
+		
         $this->layout = 'default';
     }
 
@@ -570,6 +569,33 @@ class PagesController extends AppController {
             $filterUserGroups += array(Configure::read('group_id_cassiere') => __("UserGroupsCassiere"));
 
         $this->set(compact('filterUserGroups'));
+		
+		/*
+		 * docsCreates
+		 */
+        App::import('Model', 'DocsCreateUser');
+        $DocsCreateUser = new DocsCreateUser;
+
+		$options = [];
+		$options['conditions'] = ['DocsCreateUser.organization_id' => $this->user->organization['Organization']['id'],
+								  'DocsCreateUser.user_id' => $this->user->id,
+								  'DocsCreate.stato' => 'Y',
+								  'DocsCreate.organization_id' => $this->user->organization['Organization']['id']];
+		$options['order'] = array('DocsCreate.created ASC');
+		$options['recursive'] = 1;
+		$docsCreatesResults = $DocsCreateUser->find('all', $options);
+		
+		$newDocsCreatesResults = [];
+		if(!empty($docsCreatesResults)) 
+			foreach($docsCreatesResults as $docsCreatesResult) {
+				$newDocsCreatesResults[$docsCreatesResult['DocsCreate']['id']] =  $docsCreatesResult['DocsCreateUser']['num'].'/'.$docsCreatesResult['DocsCreateUser']['year'].' '.$docsCreatesResult['DocsCreate']['name'];
+			}
+		$this->set('docsCreatesResults', $newDocsCreatesResults);
+		
+		/*
+		 * storeroom
+		 */
+		$this->_export_docs_storeroom();		 
     }
 
     public function admin_utility_docs_cassiere() {
@@ -762,6 +788,40 @@ class PagesController extends AppController {
     }
 
     public function admin_export_docs_storeroom() {
+		$this->_export_docs_storeroom();
+	}
+	
+    public function _export_docs_storeroom() {
+		
+        App::import('Model', 'Storeroom');
+        $Storeroom = new Storeroom;
+		
+		$storeroomUser = $Storeroom->getStoreroomUser($this->user);
+		
+		/*
+		 *  ctrl se lo user corrente e' la dispensa
+		 */	
+		$isUserCurrentStoreroom = false;
+		if(!empty($storeroomUser) && $storeroomUser['User']['id']==$this->user->get('id') && 
+			$storeroomUser['User']['organization_id']==$this->user->organization['Organization']['id']) {
+				$isUserCurrentStoreroom = true;	
+		}		
+		$this->set('isUserCurrentStoreroom',$isUserCurrentStoreroom);	
+        $this->set('isManager', $this->isManager());
+		
+		App::import('Model', 'Delivery');
+		$Delivery = new Delivery;
+ 		$options = [];
+		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									  'Delivery.isVisibleBackOffice' => 'Y',
+									  'Delivery.isToStoreroom' => 'Y',
+ 									  'Delivery.sys'=> 'N',
+									  'Delivery.stato_elaborazione' => 'OPEN');
+        $options['fields'] = array('id', 'luogoData');
+		$options['order'] = 'data ASC';
+		$options['recursive'] = -1;
+		$deliveriesStorerooms = $Delivery->find('list', $options);
+		$this->set(compact('deliveriesStorerooms'));
 	}
 	
     /*

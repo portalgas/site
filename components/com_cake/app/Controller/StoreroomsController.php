@@ -78,36 +78,11 @@ class StoreroomsController extends AppController {
 	 * cosa e' stato acquistato	
 	 */
 	public function admin_index_to_users() {
+		
+		$debug = false;
+		
 		$FilterStoreroomDeliveryId = null;
 		$FilterStoreroomGroupBy = null; 
-		
-		$conditions = array();
-		$conditions[] = array('Storeroom.organization_id' => (int)$this->user->organization['Organization']['id'],
-							  'Storeroom.user_id != ' => $this->storeroomUser['User']['id'],
-							  'Storeroom.delivery_id > ' => 0,
-							  'Storeroom.stato' => 'Y');
-	
-		/* recupero dati dalla Session gestita in appController::beforeFilter */ 
-		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId')) {
-			$FilterStoreroomDeliveryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId');
-			$conditions[] = array('Storeroom.delivery_id'=>$FilterStoreroomDeliveryId);
-		}
-		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'GroupBy')) 
-			$FilterStoreroomGroupBy = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'GroupBy');
-		else
-			$FilterStoreroomGroupBy = 'SUPPLIERS';
-		
-		
-		/* filtro */
-		$this->set('FilterStoreroomDeliveryId', $FilterStoreroomDeliveryId);
-		$this->set('FilterStoreroomGroupBy', $FilterStoreroomGroupBy);
-		$this->set('ArrayFilterStoreroomGroupBy',array('SUPPLIERS' => 'Produttori', 'USERS' => 'Utenti'));
-				
-		if($FilterStoreroomGroupBy=='SUPPLIERS') 
-			$orderBy = array('Storeroom.delivery_id, Article.supplier_organization_id, Storeroom.name');
-		else
-		if($FilterStoreroomGroupBy=='USERS') 
-			$orderBy = array('Storeroom.delivery_id, '.Configure::read('orderUser').', Storeroom.name');
 		
 		/*
 		 * creo elenco consegne per filtro
@@ -126,11 +101,44 @@ class StoreroomsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		$this->set(compact('deliveries'));
+		
+		$conditions = array();
+		$conditions[] = array('Storeroom.organization_id' => (int)$this->user->organization['Organization']['id'],
+							  'Storeroom.user_id != ' => $this->storeroomUser['User']['id'],
+							  'Storeroom.delivery_id > ' => 0,
+							  'Storeroom.stato' => 'Y');
+	
+		/* recupero dati dalla Session gestita in appController::beforeFilter */ 
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId')) {
+			$FilterStoreroomDeliveryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId');
+			$conditions[] = array('Storeroom.delivery_id'=>$FilterStoreroomDeliveryId);
+		}
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'GroupBy')) 
+			$FilterStoreroomGroupBy = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'GroupBy');
+		else
+			$FilterStoreroomGroupBy = 'SUPPLIERS';
+		
+		/* filtro */
+		$this->set('FilterStoreroomDeliveryId', $FilterStoreroomDeliveryId);
+		$this->set('FilterStoreroomGroupBy', $FilterStoreroomGroupBy);
+		$this->set('ArrayFilterStoreroomGroupBy',array('SUPPLIERS' => 'Produttori', 'USERS' => 'Utenti'));
+				
+		if($FilterStoreroomGroupBy=='SUPPLIERS') 
+			$orderBy = array('Storeroom.delivery_id, Article.supplier_organization_id, Storeroom.name');
+		else
+		if($FilterStoreroomGroupBy=='USERS') 
+			$orderBy = array('Storeroom.delivery_id, '.Configure::read('orderUser').', Storeroom.name');
 
 		$this->Storeroom->Delivery->unbindModel(array('hasMany' => array('Order')));
 		$this->Storeroom->Article->unbindModel(array('hasMany' => array('ArticlesOrder')));
 		$this->Storeroom->User->unbindModel(array('hasMany' => array('Cart')));
 		$results = $this->Storeroom->find('all',array('conditions' => $conditions,'order' => $orderBy,'recursive' => 1));
+		if($debug) {
+			echo "<pre>";
+			print_r($conditions);
+			print_r($results);
+			echo "</pre>";
+		}
 
 		/*
 		* posso modificare l'associazione con l'utente solo i produttori di cui sono referente
@@ -168,7 +176,9 @@ class StoreroomsController extends AppController {
 	 * cosa c'e' in dispensa
 	 */
 	public function admin_index() {
-		
+
+		$debug = false;
+	
 		App::import('Model', 'Supplier');
 		
 		$this->__ctrl_data_delete_qta_zero(); 
@@ -220,7 +230,12 @@ class StoreroomsController extends AppController {
 							'Article.supplier_organization_id' => $FilterStoreroomSupplierId);
 		$orderBy = array('SuppliersOrganization' => 'SuppliersOrganization.name, Article.name');
 		$results = $this->Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
-
+		if($debug) {
+			echo "<pre>";
+			print_r($conditions);
+			print_r($results);
+			echo "</pre>";
+		}
 		/*
 		 * posso associare all'utente solo i produttori di cui sono referente
 		 */
@@ -243,13 +258,33 @@ class StoreroomsController extends AppController {
 			$options['recursive'] = -1;
 			$SupplierResults = $Supplier->find('first', $options);			
 			if(!empty($SupplierResults))
-				$results[$numResult]['Supplier']['img1'] = $SupplierResults['Supplier']['img1'];			
+				$results[$numResult]['Supplier']['img1'] = $SupplierResults['Supplier']['img1'];
+
+			/*
+			 * per ogni articolo in dispensa, ctrl cos'e' stato gia' acquistato
+			*/ 
+			$results[$numResult]['Storeroom']['articlesJustBookeds'] = $this->Storeroom->getArticlesJustBooked($this->user, $this->storeroomUser, $result['Article']['organization_id'], $result['Article']['id']);
+				
+			// articoli in dispensa da prenotare
+			$results[$numResult]['Storeroom']['qtaToBooked'] = $result['Storeroom']['qta'];
+
+			// articoli gia' prenotati
+			$qtaJustBooked = 0;
+			if(!empty($results[$numResult]['Storeroom']['articlesJustBookeds'])) 
+				foreach($results[$numResult]['Storeroom']['articlesJustBookeds'] as $articlesJustBooked)  {
+					$qtaJustBooked += $articlesJustBooked['Storeroom']['qta'];
+			}
+			$results[$numResult]['Storeroom']['qtaJustBooked'] = $qtaJustBooked;
+
+			//articoli totali
+			$results[$numResult]['Storeroom']['qtaTot'] = ($result['Storeroom']['qta'] + $qtaJustBooked);
 		}
 		/*
 		echo "<pre>";
 		print_r($results);
 		echo "</pre>";
 		*/
+
 		$this->set(compact('results',$results));
 	}	
 	
@@ -319,6 +354,8 @@ class StoreroomsController extends AppController {
 	}
 
 	/* 
+	 * dal carrello modifico la dispensa
+	 *
 	 * associa un articolo nel carrello della dispensa all'utente
 	 * storeroom.delivery_id  = 0
 	 * storeroom.delivery_id valorizzato
@@ -358,15 +395,24 @@ class StoreroomsController extends AppController {
 			$storeroomDestinazione['Storeroom']['qta'] = $_REQUEST['qta'];
 				
 			$this->__storeroom_management($id,$storeroomOrigine,$storeroomDestinazione);
+
+			/*
+			 * il redirect su Storeroom::index c'e' come callback nella view
+			 */ 			
 		}
-		
+
 		$user_id = $this->storeroomUser['User']['id'];
 		$this->__populate_to_view($id, $user_id);
 		
 		$this->layout = 'ajax';
 	}
 	
+	/* 
+	 * Associa gli articoli della dispensa all'utente
+	 */
 	public function admin_storeroomToUser($id) {
+		
+		$debug = false;
 		
 		$this->Storeroom->id = $id;
 		if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
@@ -376,6 +422,11 @@ class StoreroomsController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 
+			if($this->request->data['Storeroom']['user_id']==$this->storeroomUser['User']['id']) {
+				$this->Session->setFlash(__('StoreroomErrorUsedStoreroomUser'));
+				$this->myRedirect(array('action' => 'index'));
+			}
+			
 			$conditions = array('User.id' => $this->storeroomUser['User']['id'],
 								'Storeroom.id' => $id);
 			$storeroomOld = current($this->Storeroom->getArticlesToStoreroom($this->user, $conditions));
@@ -393,7 +444,7 @@ class StoreroomsController extends AppController {
 			$storeroomDestinazione['Storeroom']['delivery_id'] = $this->request->data['Storeroom']['delivery_id']; // delivery scelta dal menu tendina
 			$storeroomDestinazione['Storeroom']['qta'] = $this->request->data['Storeroom']['qta'];
 			
-			$this->__storeroom_management($id,$storeroomOrigine,$storeroomDestinazione); 
+			$this->__storeroom_management($id,$storeroomOrigine,$storeroomDestinazione,$debug); 
 			
 			$this->Session->setFlash(__('The storeroom has been saved'));
 			$this->myRedirect(array('action' => 'index'));
@@ -402,7 +453,9 @@ class StoreroomsController extends AppController {
 		App::import('Model', 'User');
 		$User = new User;
 
-		$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
+		$conditions = [];
+		$conditions['UserGroupMap.group_id'] = Configure::read('group_id_user');
+		$conditions['UserGroupMap.group_id NOT IN'] = "(".Configure::read('group_id_storeroom').")";
 		$users = $User->getUsersList($this->user, $conditions);
 		$this->set(compact('users'));
 
@@ -523,8 +576,7 @@ class StoreroomsController extends AppController {
      * carello utente
 	 * 		user TO storeroom -> $user_id  $storeroomUser
 	 * */
-	private function __storeroom_management($id,$storeroomOrigine,$storeroomDestinazione) {
-		$debug = false;
+	private function __storeroom_management($id, $storeroomOrigine, $storeroomDestinazione, $debug = false) {
 		
 		if($debug) {
 			echo "<pre>storeroomOriginale ";
@@ -849,8 +901,8 @@ class StoreroomsController extends AppController {
 	}	
 	
 	/*
-	 * elenco degli articoli acquistati da portare in dispensa
-	 * se Order.state_code = PROCESSED-POST-DELIVERY
+	 * elenco degli articoli acquistati da portare in dispensa UtilsCron::articlesFromCartToStoreroom
+	 * se Order.state_code = PROCESSED-POST-DELIVERY / INCOMING-ORDER / PROCESSED-ON-DELIVERY
 	 */
 	public function admin_carts_to_storeroom() {
 		App::import('Model', 'ArticlesOrder');
@@ -858,7 +910,8 @@ class StoreroomsController extends AppController {
 		
 		$conditions = array('Cart.user_id' => $this->storeroomUser['User']['id'],
 							'Cart.order_id' => $this->order_id,
-							'Cart.inStoreroom' => 'N');		 
+							// 'Cart.inStoreroom' => 'N'
+							);		 
 		$results = $ArticlesOrder->getArticoliDellUtenteInOrdine($this->user, $conditions);
 		$this->set('results', $results);
 		/*
@@ -866,6 +919,19 @@ class StoreroomsController extends AppController {
 		print_r($results);
 		echo "</pre>";
 		*/
+		
+        /*
+         * Order
+         * */
+        App::import('Model', 'Order');
+        $Order = new Order;
+
+        $options = array();
+        $options['conditions'] = array('Order.organization_id' => (int) $this->user->organization['Organization']['id'],
+										'Order.isVisibleBackOffice' => 'Y',
+										'Order.id' => $this->order_id);
+        $order = $Order->find('first', $options);
+		$this->set('order', $order);
 	}
 	
 	
@@ -880,7 +946,18 @@ class StoreroomsController extends AppController {
 		$this->__export($doc_formato);
 	}
 
+	public function exportBooking($delivery_id=0, $doc_formato) {
+		$this->__exportBooking($delivery_id, $doc_formato);
+	}
+	
+	public function admin_exportBooking($delivery_id=0, $doc_formato) {
+		$this->__exportBooking($delivery_id, $doc_formato);
+	}
+	
 	private function __export($doc_formato) {
+		
+		$debug = false;
+		
         if ($doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -893,17 +970,42 @@ class StoreroomsController extends AppController {
 		 */
 		$conditions = array('Delivery.id' => 0,  // articoli in dispensa non ancora acquistati
 							'User.id' => $this->storeroomUser['User']['id'],
-							'Article.supplier_organization_id' => $FilterStoreroomSupplierId);
+							// 'Article.supplier_organization_id' => $FilterStoreroomSupplierId
+							);
 		$orderBy = array('SuppliersOrganization' => 'SuppliersOrganization.name, Article.name');
 		$results = $this->Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		foreach($results as $numResult => $result) {
+
+			/*
+			 * per ogni articolo in dispensa, ctrl cos'e' stato gia' acquistato
+			*/ 
+			$results[$numResult]['Storeroom']['articlesJustBookeds'] = $this->Storeroom->getArticlesJustBooked($this->user, $this->storeroomUser, $result['Article']['organization_id'], $result['Article']['id']);
+				
+			// articoli in dispensa da prenotare
+			$results[$numResult]['Storeroom']['qtaToBooked'] = $result['Storeroom']['qta'];
+
+			// articoli gia' prenotati
+			$qtaJustBooked = 0;
+			if(!empty($results[$numResult]['Storeroom']['articlesJustBookeds'])) 
+				foreach($results[$numResult]['Storeroom']['articlesJustBookeds'] as $articlesJustBooked)  {
+					$qtaJustBooked += $articlesJustBooked['Storeroom']['qta'];
+			}
+			$results[$numResult]['Storeroom']['qtaJustBooked'] = $qtaJustBooked;
+
+			//articoli totali
+			$results[$numResult]['Storeroom']['qtaTot'] = ($result['Storeroom']['qta'] + $qtaJustBooked);
+		}
+		if($debug) {
+			echo "<pre>";
+			print_r($results);
+			echo "</pre>";
+		}
+		
 		$this->set(compact('results',$results));
 		
-		$fileData['fileName'] = "Dispensa";
+		$fileData['fileTitle'] = "Dispensa";
+		$fileData['fileName'] = "dispensa";
 		$this->set('fileData', $fileData);
 		$this->set('organization', $this->user->organization);
 		
@@ -920,6 +1022,85 @@ class StoreroomsController extends AppController {
             case 'EXCEL':
                 $this->layout = 'excel';
 				$this->render('export_excel');
+			break;
+        }
+		
+	}
+
+	private function __exportBooking($delivery_id, $doc_formato) {
+		
+        if ($doc_formato == null || empty($delivery_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+		
+		App::import('Model', 'Supplier');
+
+		App::import('Model', 'Delivery');
+        $Delivery = new Delivery;
+
+        $options = array();
+        $options['conditions'] = array('Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+										'Delivery.isVisibleBackOffice' => 'Y',
+										'Delivery.id' => $delivery_id);
+        $delivery = $Delivery->find('first', $options);
+		$this->set('delivery', $delivery);
+		
+		/* 
+		 * Articoli in dispensa
+		 */
+		$conditions = array('Delivery.id' => $delivery_id,  // articoli in dispensa non ancora acquistati
+							// 'Article.supplier_organization_id' => $FilterStoreroomSupplierId
+							);
+		$orderBy = array('SuppliersOrganization' => 'SuppliersOrganization.name, Article.name');
+		$results = $this->Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
+		
+		foreach($results as $numResult => $result) {
+
+			/*
+			 * per ogni articolo in dispensa, ctrl cos'e' stato gia' acquistato
+			*/ 
+			$results[$numResult]['Storeroom']['articlesJustBookeds'] = $this->Storeroom->getArticlesJustBooked($this->user, $this->storeroomUser, $result['Article']['organization_id'], $result['Article']['id']);
+				
+			// articoli in dispensa da prenotare
+			$results[$numResult]['Storeroom']['qtaToBooked'] = $result['Storeroom']['qta'];
+
+			// articoli gia' prenotati
+			$qtaJustBooked = 0;
+			if(!empty($results[$numResult]['Storeroom']['articlesJustBookeds'])) 
+				foreach($results[$numResult]['Storeroom']['articlesJustBookeds'] as $articlesJustBooked)  {
+					$qtaJustBooked += $articlesJustBooked['Storeroom']['qta'];
+			}
+			$results[$numResult]['Storeroom']['qtaJustBooked'] = $qtaJustBooked;
+
+			//articoli totali
+			$results[$numResult]['Storeroom']['qtaTot'] = ($result['Storeroom']['qta'] + $qtaJustBooked);
+		}
+		/*
+		echo "<pre>";
+		print_r($results);
+		echo "</pre>";
+		*/
+		$this->set(compact('results',$results));
+		
+		$fileData['fileTitle'] = "Dispensa, articoli prenotati";
+		$fileData['fileName'] = "dispensa_articoli_prenotati";
+		$this->set('fileData', $fileData);
+		$this->set('organization', $this->user->organization);
+
+        switch ($doc_formato) {
+            case 'PREVIEW':
+                $this->layout = 'ajax';
+				$this->render('export_booking');
+                break;
+            case 'PDF':
+                $this->layout = 'pdf';
+                $this->render('export_booking');
+                break;
+            case 'CSV':
+            case 'EXCEL':
+                $this->layout = 'excel';
+				$this->render('export_booking_excel');
 			break;
         }
 		
