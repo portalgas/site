@@ -1,9 +1,15 @@
-<div class="storeroom">
-<?php echo $this->Form->create('Storeroom',array('id'=>'ajaxForm'));?>
-	<fieldset>
-		<legend><?php echo __('Edit Storeroom to User'); ?></legend>
+<?php
+/* 
+ * dal carrello modifico la dispensa
+ */
+$url = Configure::read('App.server')."/home-".$user->organization['Organization']['j_seo']."/carrello-".$user->organization['Organization']['j_seo']."?esito=OK&format=notmpl";
 
-	<?php
+echo '<div class="storeroom">';
+
+echo $this->Form->create('Storeroom',array('id'=>'ajaxForm'));
+echo '<fieldset>';
+echo '<legend>'.__('Edit Storeroom to User').'</legend>';
+
 	echo $this->Form->input('name',array('disabled' => 'true'));
 
 	echo $this->Form->input('delivery_id',array('empty' => Configure::read('option.empty')));
@@ -121,7 +127,7 @@ $(document).ready(function() {
 	      success: function(msg)
 	      {
 	    	    $('#ajaxContent').animate({opacity:0});
-	    	    var url = "/home-cavagnetta/tab-user-cart?esito=OK&format=notmpl";
+	    	    var url = "<?php echo $url;?>";
 	    		$('#ajaxContent').load(url);
 	    		$('#ajaxContent').animate({opacity:1},1500);
 	      },

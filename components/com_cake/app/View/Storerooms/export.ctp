@@ -19,7 +19,7 @@ if($this->layout=='ajax') {
 
 
 $html = '';
-
+		
 if (!empty($results)) {
 
 		$html = '';
@@ -27,13 +27,23 @@ if (!empty($results)) {
 		$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 		$html .= '		<tr>';
 		
-		$html .= '			<th width="'.$output->getCELLWIDTH30().'">'.__('N.').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH150().'">'.__('Supplier').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Conf').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH80().'">'.__('PrezzoUnita').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('qta').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('Importo').'</th>';	
+		if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+			$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Supplier').'</th>';		 
+			$html .= '			<th width="'.($output->getCELLWIDTH150()+$output->getCELLWIDTH20()).'">'.__('Name').'</th>';
+		}
+		else {
+			$html .= '			<th width="'.$output->getCELLWIDTH30().'">'.__('N.').'</th>';
+			$html .= '			<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'">'.__('Supplier').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
+		}
+		$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('Conf').'</th>';
+		$html .= '			<th width="'.$output->getCELLWIDTH60().'">'.__('PrezzoUnita').'</th>';
+		$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('StoreroomQta').'</th>';
+		if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+			$html .= '	<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('StoreroomArticleToBooked').'</th>';
+			$html .= '	<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('StoreroomArticleJustBooked').'</th>';			
+		}		
+		$html .= '			<th width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('Importo').'</th>';	
 
 		$html .= '		</tr>';				
 		$html .= '	</thead><tbody>';
@@ -41,13 +51,23 @@ if (!empty($results)) {
 		foreach ($results as $numResult => $result) {
 			
 			$html .= '<tr>';
-			$html .= '			<td width="'.$output->getCELLWIDTH30().'">'.($numResult + 1).'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH150().'">'.$result['SuppliersOrganization']['name'].'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$result['Storeroom']['name'].'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH70().'">'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH80().'">'.number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH50().'">'.$result['Storeroom']['qta'].'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';	
+			if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+				$html .= '			<td width="'.$output->getCELLWIDTH100().'">'.$result['SuppliersOrganization']['name'].'</td>';
+				$html .= '			<td width="'.($output->getCELLWIDTH150()+$output->getCELLWIDTH20()).'">'.$result['Storeroom']['name'].'</td>';			
+			}
+			else { 
+				$html .= '			<td width="'.$output->getCELLWIDTH30().'">'.($numResult + 1).'</td>';
+				$html .= '			<td width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'">'.$result['SuppliersOrganization']['name'].'</td>';
+				$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$result['Storeroom']['name'].'</td>';
+			}
+			$html .= '			<td width="'.$output->getCELLWIDTH50().'">'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
+			$html .= '			<td width="'.$output->getCELLWIDTH60().'">'.number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
+			$html .= '			<td  width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$result['Storeroom']['qtaTot'].'</td>';
+			if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+				$html .= '			<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$result['Storeroom']['qtaToBooked'].'</td>';
+				$html .= '			<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$result['Storeroom']['qtaJustBooked'].'</td>';
+			}
+			$html .= '			<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';	
 			$html .= '</tr>';			
 		}		
 

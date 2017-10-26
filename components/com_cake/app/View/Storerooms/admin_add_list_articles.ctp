@@ -45,7 +45,7 @@ if(!empty($results)) {
 				
 				echo '<td>';
 				if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-					echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 				}		
 				echo '</td>';				
 				?>
@@ -56,7 +56,7 @@ if(!empty($results)) {
 					if($result['Article']['qta']>0)
 						echo $this->App->getArticleConf($result['Article']['qta'], $this->App->traslateEnum($result['Article']['um']));?>
 				</td>
-				<td style="white-space: nowrap;"><?php echo $result['Storeroom']['prezzo'].' &euro;'; // Prezzo unità del prezzo in dispensa ?>
+				<td style="white-space: nowrap;"><?php echo $result['Storeroom']['prezzo'].'&nbsp;&euro;'; // Prezzo unità del prezzo in dispensa ?>
 				</td>
 				<td style="text-align:center;"><?php echo $result['Storeroom']['qta'];?></td>
 				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Storeroom]['.$result['Storeroom']['id'].'][Qta]','value' => '', 'class' => 'qta_storeroom', 'tabindex'=>($i+1)));?></td>
@@ -112,7 +112,7 @@ if(!empty($results)) {
 				
 				echo '<td>';
 				if(!empty($article['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['Article']['organization_id'].DS.$article['Article']['img1'])) {
-					echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';
+					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';
 				}		
 				echo '</td>';				
 				?>				

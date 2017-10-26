@@ -1,9 +1,12 @@
-<div class="storeroom">
-<?php echo $this->Form->create('Storeroom',array('id'=>'ajaxForm'));?>
-	<fieldset>
-		<legend><?php echo __('Add Storeroom to User'); ?></legend>
+<?php
+$url = Configure::read('App.server')."/home-".$user->organization['Organization']['j_seo']."/dispensa-".$user->organization['Organization']['j_seo']."?esito=OK&format=notmpl";
 
-	<?php
+echo '<div class="storeroom">';
+
+echo $this->Form->create('Storeroom',array('id'=>'ajaxForm'));
+echo '<fieldset>';
+echo '<legend>'.__('Add Storeroom to User').'</legend>';
+
 	echo $this->Form->input('supplier',array('value' => $this->data['SuppliersOrganization']['name'], 'disabled' => 'true'));
 	
 	echo $this->Form->input('name',array('disabled' => 'true'));
@@ -136,7 +139,7 @@ $(document).ready(function() {
 	      success: function(msg)
 	      {
 	    	    $('#ajaxContent').animate({opacity:0});
-	    	    var url = "/home-cavagnetta/storeroom?esito=OK&format=notmpl";
+	    	    var url = "<?php echo $url;?>";
 	    		$('#ajaxContent').load(url);
 	    		$('#ajaxContent').animate({opacity:1},1500);
 	      },

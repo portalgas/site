@@ -64,7 +64,7 @@ echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'
 			echo '<td colspan="'.($user->organization['Organization']['hasStoreroomFrontEnd']=='Y'?'8':'7').'" class="trGroup">'.__('Supplier').': ';
 			echo '	<span>';
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 			echo '	</span>';			
 			echo $result['SuppliersOrganization']['name'];
 			echo '</td>';
@@ -75,23 +75,23 @@ echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'
 		echo '<td>'.($i+1).'</td>';
 		echo '<td>';
 		if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 		}		
 		echo '</td>';		
 		echo '<td>';	
 		echo $result['Storeroom']['name']; 
 		echo '</td>';
 		echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
-		echo '<td>'.number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+		echo '<td>'.number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 		echo '<td>'.$this->App->getArticlePrezzoUM($result['Storeroom']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
 		echo '<td>';
 		echo '<b>'.$result['Storeroom']['qta'].'</b> in dispensa';
 		echo '</td>';
 		if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 			echo '<td class="actions-table">';
-			//echo $this->Html->link('Acquista il prodotto dalla dispensa', array('action' => 'storeroomToUser', $storeroom['Storeroom']['id']),array('title' => __('Storeroom To User')));
-			//echo '<a title="Acquista il prodotto dalla dispensa" href="/storeroomToUser?id='.$storeroom['Storeroom']['id'].'">'.__('Storeroom To User').'</a>';
-			echo '<a title="Acquista il prodotto dalla dispensa" href="javascript:viewContentAjax(\''.$result['Storeroom']['id'].'\')">Acquista il prodotto dalla dispensa</a>';
+			//echo $this->Html->link('Prenota il prodotto dalla dispensa', array('action' => 'storeroomToUser', $storeroom['Storeroom']['id']),array('title' => __('Storeroom To User')));
+			//echo '<a title="Prenota il prodotto dalla dispensa" href="/storeroomToUser?id='.$storeroom['Storeroom']['id'].'">'.__('Storeroom To User').'</a>';
+			echo '<a title="Prenota il prodotto dalla dispensa" href="javascript:viewContentAjax(\''.$result['Storeroom']['id'].'\')"><button type="button" class="btn btn-primary">Prenota il prodotto dalla dispensa</button></a>';
 			echo '</td>';
 		}			
 		?>

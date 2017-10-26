@@ -38,8 +38,6 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			</table>
 		</fieldset>					
 
-
-<div class="storerooms">
 <?php	
 if(!empty($results )) {
 	if($FilterStoreroomGroupBy=='SUPPLIERS') {
@@ -61,22 +59,23 @@ if(!empty($results )) {
 				
 				if($result['Delivery']['isToStoreroom']=='N')
 						echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "La consegna non è abilitata per gestire la dispensa!")); 
-				?>
-				<table cellpadding="0" cellspacing="0">
-				<tr>
-					<th><?php echo __('N');?></th>
-					<th>Utente</th>
-					<th><?php echo __('Name');?></th>
-					<th><?php echo __('Conf');?></th>
-					<th><?php echo __('PrezzoUnita');?></th>
-					<th><?php echo __('Prezzo/UM');?></th>
-					<th><?php echo __('StoreroomArticleJustBooked');?></th>
-					<th><?php echo __('Importo');?></th>
-					<th><?php echo __('Created');?></th>					
-					<th class="actions"><?php echo __('Actions');?></th>
-				</tr>
 			
-			<?php
+				echo '<div class="table-responsive"><table class="table table-hover">';
+				echo '<thead>';
+				echo '<tr>';
+				echo '	<th>'.__('N').'</th>';
+				echo '	<th>Utente</th>';
+				echo '	<th>'.__('Name').'</th>';
+				echo '	<th>'.__('Conf').'</th>';
+				echo '	<th>'.__('PrezzoUnita').'</th>';
+				echo '	<th>'.__('Prezzo/UM').'</th>';
+				echo '	<th style="text-align:center;">'.__('StoreroomArticleJustBooked').'</th>';
+				echo '	<th>'.__('Importo').'</th>';
+				echo '	<th>'.__('Created').'</th>';
+				echo '	<th class="actions">'.__('Actions').'</th>';
+				echo '</tr>';
+				echo '</thead>';
+
 			}
 			else 
 				$count++;
@@ -88,39 +87,38 @@ if(!empty($results )) {
 				echo '</td>';
 				echo '</tr>';
 			}
-		?>
-		<tr>
-			<td><?php echo ($count); ?></td>
-			<td><?php echo $result['User']['name']; ?></td>
-			<td><?php 
+		
+		echo '<tr>';
+			echo '<td>'.($count).'</td>';
+			echo '<td>'.$result['User']['name'].'</td>';
+			echo '<td>'; 
 				if($result['Storeroom']['stato']=='LOCK') echo '<span class="stato_lock"></span> ';
-				echo $result['Storeroom']['name']; ?></td>
-			<td><?php echo $this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);?></td>
-			<td><?php echo $result['Storeroom']['prezzo_e'];?></td>
-			<td><?php echo $this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);?></td>
-			<?php
-				echo '<td>';
-				if($result['Storeroom']['qta']==1)
-					echo $result['Storeroom']['qta'];
-				else
-					echo $result['Storeroom']['qta'];
-				echo '</td>';
-			?>
-			<td><?php echo $this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']);?></td>
-			<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Storeroom']['created']); ?></td>
-			<td class="actions-table-img">
-				<?php
+				echo $result['Storeroom']['name'].'</td>';
+			echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
+			echo '<td>'.$result['Storeroom']['prezzo_e'].'</td>';
+			echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
+	
+			echo '<td style="text-align:center;">';
+			if($result['Storeroom']['qta']==1)
+				echo $result['Storeroom']['qta'];
+			else
+				echo $result['Storeroom']['qta'];
+			echo '</td>';
+
+			echo '<td>'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';
+			echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Storeroom']['created']).'</td>';
+			echo '<td class="actions-table-img">';
 				if($result['SuppliersOrganization']['IsReferente']=='Y') 
-					echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica')); ?>
-			</td>
-		</tr>
-	<?php 
+					echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica'));
+			echo '</td>';
+		echo '</tr>';
+	
 		$delivery_id_old=$result['Storeroom']['delivery_id'];
 		$supplier_organization_id_old=$result['Article']['supplier_organization_id'];
-		endforeach; ?>
-		</table>
+		endforeach; 
+		
+		echo '</table></div>';
 
-	<?php
 	}
 	else 
 	if($FilterStoreroomGroupBy=='USERS') {
@@ -142,22 +140,23 @@ if(!empty($results )) {
 				
 				if($result['Delivery']['isToStoreroom']=='N')
 						echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "La consegna non è abilitata per gestire la dispensa!")); 
-				?>
-				<table cellpadding="0" cellspacing="0">
-				<tr>
-						<th><?php echo __('N');?></th>
-						<th><?php echo __('Supplier');?></th>
-						<th><?php echo __('Name');?></th>
-						<th><?php echo __('Conf');?></th>
-						<th><?php echo __('PrezzoUnita');?></th>
-						<th><?php echo __('Prezzo/UM');?></th>
-						<th><?php echo __('qta');?></th>
-						<th><?php echo __('Importo');?></th>
-						<th><?php echo __('Created');?></th>
-						<th class="actions"><?php echo __('Actions');?></th>
-				</tr>
+
+				echo '<div class="table-responsive"><table class="table table-hover">';
+				echo '<thead>';
+				echo '<tr>';
+				echo '<th>'.__('N').'</th>';
+				echo '<th>'.__('Supplier').'</th>';
+				echo '<th>'.__('Name').'</th>';
+				echo '<th>'.__('Conf').'</th>';
+				echo '<th>'.__('PrezzoUnita').'</th>';
+				echo '<th>'.__('Prezzo/UM').'</th>';
+				echo '<th>'.__('qta').'</th>';
+				echo '<th>'.__('Importo').'</th>';
+				echo '<th>'.__('Created').'</th>';
+				echo '<th class="actions">'.__('Actions').'</th>';
+				echo '</tr>';
+				echo '<thead>';
 			
-			<?php
 			}
 			else 
 				$count++;
@@ -169,44 +168,43 @@ if(!empty($results )) {
 				echo '</td>';
 				echo '</tr>';
 			}
-		?>
-		<tr>
-			<td><?php echo ($count); ?></td>
-			<td><?php 
-				echo $result['SuppliersOrganization']['SuppliersOrganization']['name']; ?></td>
-			<td><?php 
+		echo '<tr>';
+			echo '<td>'.($count).'</td>';
+			echo '<td>';
+			echo $result['SuppliersOrganization']['SuppliersOrganization']['name'].'</td>';
+			echo '<td>';
 				if($result['Storeroom']['stato']=='LOCK') echo '<span class="stato_lock"></span> ';
-				echo $result['Storeroom']['name']; ?></td>
-			<td><?php echo $this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);?></td>
-			<td><?php echo $result['Storeroom']['prezzo_e'];?></td>
-			<td><?php echo $this->App->getArticlePrezzoUM($result['Storeroom']['prezzo'], $result['Article']['prezzo'], $result['Article']['um'], $result['Article']['um_riferimento']);?></td>
-			<?php
-				echo '<td>';
-				if($result['Storeroom']['qta']==1)
-					echo $result['Storeroom']['qta'].' acquistato';
-				else
-					echo $result['Storeroom']['qta'].' acquistati';
-				echo '</td>';
-			?>
-			<td><?php echo $this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']);?></td>
-			<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Storeroom']['created']); ?></td>
-			<td class="actions-table-img">
-				<?php echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica')); ?>
-			</td>
-		</tr>
-	<?php 
+				echo $result['Storeroom']['name'].'</td>';
+			echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
+			echo '<td>'.$result['Storeroom']['prezzo_e'].'</td>';
+			echo '<td>'.$this->App->getArticlePrezzoUM($result['Storeroom']['prezzo'], $result['Article']['prezzo'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
+			
+			echo '<td>';
+			if($result['Storeroom']['qta']==1)
+				echo $result['Storeroom']['qta'].' acquistato';
+			else
+				echo $result['Storeroom']['qta'].' acquistati';
+			echo '</td>';
+		
+			echo '<td>'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';
+			echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Storeroom']['created']).'</td>';
+			echo '<td class="actions-table-img">';
+			echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica')); 
+			echo '</td>';
+		echo '</tr>';
+
 		$delivery_id_old=$result['Storeroom']['delivery_id'];
 		$user_id_old=$result['Storeroom']['user_id'];
-		endforeach; ?>
-		</table>	
-	<?php
+		endforeach;
+		echo '</table></div>';	
+
 	}
 } //  if(empty($results ))
 else
 	echo $this->element('boxMsg',array('class_msg' => 'message'));	
-?>	
-	</div>
-</div>
+
+echo '</div>';
+?>
 <script type="text/javascript">
 $(document).ready(function() {
 	<?php 
