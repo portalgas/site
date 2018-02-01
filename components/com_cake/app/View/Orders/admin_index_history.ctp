@@ -19,7 +19,7 @@ else
 	
 	if(!empty($results)) {
 	?>
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th></th>
 			<th><?php echo __('N');?></th>
@@ -72,7 +72,7 @@ else
 		<td><?php echo $numRow;?></td>
 		<td>
 			<?php if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 			?>
 		</td>
 		<td>
@@ -83,45 +83,31 @@ else
 			<?php echo $this->Time->i18nFormat($result['Order']['data_fine'],"%A %e %B %Y"); ?>
 		</td>
 		<?php
-			/*
-			 *  campo nota
-			 */
-			echo '<td>';
-			if(!empty($result['Order']['nota'])) {
-				
-				echo '<img style="cursor:pointer;" class="referente_nota" id="'.$result['Order']['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi la nota del referente" border="0" />';
-				
-				echo '<div id="dialog-msg-'.$result['Order']['id'].'" title="Nota del referente">';
-				echo '<p>';
-				echo $result['Order']['nota'];
-				echo '</p>';
-				echo '</div>';
-				
-				echo '<script type="text/javascript">';
-				echo 'jQuery("#dialog-msg-'.$result['Order']['id'].'" ).dialog({';
-				echo "\r\n";
-				echo '	autoOpen: false,';
-				echo "\r\n";
-				echo '	height: 450,';
-				echo "\r\n";
-				echo '	width: 600,';
-				echo "\r\n";
-				echo '	modal: true,';
-				echo "\r\n";
-				echo '	buttons: {';
-				echo "\r\n";
-				echo '		"Chiudi": function() {';
-				echo "\r\n";
-				echo '			jQuery( this ).dialog( "close" );';
-				echo "\r\n";
-				echo '		},';
-				echo "\r\n";
-				echo '	}';
-				echo '});';
-				echo '</script>';
-					
-			} // end if(!empty($result['Order']['nota']))	
-			echo '</td>';		
+		/*
+		 *  campo nota
+		 */
+		echo '<td>';
+		if(!empty($result['Order']['nota'])) {
+			
+			echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$result['Order']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+			echo '<div id="order_nota_'.$result['Order']['id'].'" class="modal fade" role="dialog">';
+			echo '<div class="modal-dialog">';
+			echo '<div class="modal-content">';
+			echo '<div class="modal-header">';
+			echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+			echo '<h4 class="modal-title">Nota del referente</h4>';
+			echo '</div>';
+			echo '<div class="modal-body"><p>'.$result['Order']['nota'].'</p>';
+			echo '</div>';
+			echo '<div class="modal-footer">';
+			echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';			
+			
+		} // end if(!empty($result['Order']['nota']))	
+		echo '</td>'; 
 
 		if($user->organization['Organization']['hasVisibility']=='Y') 
 			echo '<td title="'.__('toolTipVisibleBackOffice').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleBackOffice']).'"></td>';		
@@ -154,7 +140,7 @@ else
 <?php 
 	$delivery_id_old=$result['Delivery']['id'];
 	endforeach; ?>
-	</table>
+	</table></div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
@@ -177,12 +163,3 @@ else
 	
 echo '</div>';
 ?>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.referente_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
-	});
-});
-</script>

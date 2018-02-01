@@ -42,11 +42,11 @@ echo '</ul>';
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		
 		if(delivery_id=='') {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");

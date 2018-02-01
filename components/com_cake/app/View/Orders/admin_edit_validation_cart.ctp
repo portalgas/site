@@ -19,12 +19,12 @@ echo '<legend>'.__('ValidationCartRiOpen').'</legend>';
 
 		echo $this->Form->input('id');
 		echo '<div class="input text required">';
-		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label>';
+		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label> ';
 		echo $this->Form->value('SuppliersOrganization.name');
 		echo '</div>';
 		
 		echo '<div class="input text required">';
-		echo '<label for="OrderDeliveryId">'.__('Delivery').'</label>';
+		echo '<label for="OrderDeliveryId">'.__('Delivery').'</label> ';
 		if($this->request->data['Delivery']['sys']=='N')
 			echo $this->Form->value('Delivery.luogoData');
 		else 
@@ -33,12 +33,12 @@ echo '<legend>'.__('ValidationCartRiOpen').'</legend>';
 		echo '<input type="hidden" id="DeliveryDataDb" name="data[Delivery][data_db]" value="'.$this->Form->value('Delivery.data').'" />';
 		
 		echo '<div class="input text required">';
-		echo '<label for="OrderDataInizio">'.__('Data inizio').'</label>';
+		echo '<label for="OrderDataInizio">'.__('Data inizio').'</label> ';
 		echo $this->Time->i18nFormat($this->Form->value('Order.data_inizio'),"%A, %e %B %Y");
 		echo '</div>';
 		
 		echo '<div class="input text required">';
-		echo '<label for="OrderDataFine">'.__('Data fine').'</label>';
+		echo '<label for="OrderDataFine">'.__('Data fine').'</label> ';
 		echo $this->Time->i18nFormat($this->Form->value('Order.data_fine'),"%A, %e %B %Y");
 		echo '</div>';
 		echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
@@ -70,31 +70,31 @@ $options = [];
 echo $this->MenuOrders->drawWrapper($this->Form->value('Order.id'), $options);
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery("input[name='data[Order][invio_mail]']").change(function() {	
-		var invio_mail = jQuery("input[name='data[Order][invio_mail]']:checked").val();
+	$("input[name='data[Order][invio_mail]']").change(function() {	
+		var invio_mail = $("input[name='data[Order][invio_mail]']:checked").val();
 		if(invio_mail=='N')
-			jQuery('#box_mail_open_testo').hide();
+			$('#box_mail_open_testo').hide();
 		else
-			jQuery('#box_mail_open_testo').show();
+			$('#box_mail_open_testo').show();
 	});
 			
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var deliveryDataDb = jQuery('#DeliveryDataDb').val();
+		var deliveryDataDb = $('#DeliveryDataDb').val();
 		if(deliveryDataDb=='' || deliveryDataDb==undefined || deliveryDataDb=='<?php echo Configure::read('DB.field.date.empty');?>')  {
 	 		alert("Non è indicata la data di chiusura della consegna");
  			return false;
 		}
 		
-		var orderDataFineDb = jQuery('#OrderDataFineDb').val();
+		var orderDataFineDb = $('#OrderDataFineDb').val();
 		if(orderDataFineDb=='' || orderDataFineDb==undefined || orderDataFineDb=='<?php echo Configure::read('DB.field.date.empty');?>')  {
 	 		alert("Non è indicata la data di chiusura dell'ordine");
  			return false;
 		}
 
-		var orderDataFineValidationDb = jQuery('#OrderDataFineValidationDb').val();
+		var orderDataFineValidationDb = $('#OrderDataFineValidationDb').val();
  		if(orderDataFineValidationDb=='' || orderDataFineValidationDb==undefined || orderDataFineValidationDb=='<?php echo Configure::read('DB.field.date.empty');?>')  {
  	 		alert("Devi indicare nuova la data di chiusura dell'ordine");
 	 		return false;

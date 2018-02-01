@@ -14,11 +14,11 @@ echo $this->Form->create('Order', array('type' => 'post'));?>
 	<fieldset>
 		<legend><?php echo __('Title Delete Order'); ?></legend>
 
-		<div class="input text"><label for=""><?php echo __('Supplier')?></label><?php echo $results['SuppliersOrganization']['name'];?></div>
+		<div class="input text"><label for=""><?php echo __('Supplier')?></label> <?php echo $results['SuppliersOrganization']['name'];?></div>
 
-		<div class="input text"><label for="">Decorrenza</label><?php echo $results['Order']['name'];?></div>
+		<div class="input text"><label for="">Decorrenza</label> <?php echo $results['Order']['name'];?></div>
 
-		<div class="input text"><label for=""><?php echo __('StateOrder');?></label><?php echo $this->App->drawOrdersStateDiv($results);?><?php echo __($results['Order']['state_code'].'-label');?></div>
+		<div class="input text"><label for=""><?php echo __('StateOrder');?></label> <?php echo $this->App->drawOrdersStateDiv($results);?><?php echo __($results['Order']['state_code'].'-label');?></div>
 
 		<?php echo $this->Element('boxMsg',array('msg' => "Elementi associati che verranno cancellati definitivamente")); ?>
 
@@ -48,10 +48,10 @@ echo $this->Form->create('Order', array('type' => 'post'));?>
 		echo '<div class="left label" style="width:100px !important;">&nbsp;</div>';
 		echo '<div class="left radio">';
 		echo '<p>';
-		echo '<input type="radio" name="send_mail" id="send_mail_Y" value="Y" checked="checked" /><label for="send_mail_Y"><span style="color:green;">Si</span>, invia la mail</label>';
+		echo '<input type="radio" name="send_mail" id="send_mail_Y" value="Y" checked="checked" /><label for="send_mail_Y"><span style="color:green;">Si</span>, invia la mail</label> ';
 		echo '</p>';
 		echo '<p>';
-		echo '<input type="radio" name="send_mail" id="send_mail_N" value="N" /><label for="send_mail_N"><span style="color:red;">No</span>, non inviare la mail</label>';
+		echo '<input type="radio" name="send_mail" id="send_mail_N" value="N" /><label for="send_mail_N"><span style="color:red;">No</span>, non inviare la mail</label> ';
 		echo '</p>';
 		echo '</div>';
 		

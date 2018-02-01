@@ -19,29 +19,56 @@ echo '		<li>'.$this->Html->link(__('New Order'), array('action' => 'add'),array(
 echo '	</ul>';
 echo '</div>';
 echo '</h2>';
+
+echo $this->Form->create('FilterOrder',array('id'=>'formGasFilter','type'=>'get'));
+echo '<fieldset class="filter">';
+	echo '<legend>'.__('Filter Order').'</legend>';
+	
+		echo '<div class="row">';
+		echo '<div class="col-md-6">';
+		$options = array('label' => '&nbsp;', 'options' => $ACLsuppliersOrganization,
+								'empty' => 'Filtra per produttore',
+								'name'=>'FilterOrderSuppliersOrganizationId','default' => $FilterOrderSuppliersOrganizationId,'escape' => false);
+		if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
+			$options += array('class'=> 'selectpicker', 'data-live-search' => true);
+		echo $this->Form->input('supplier_organization_id',$options);					
+		echo '</div>';
+		
+		echo '<div class="col-md-4">';
+		echo $this->Form->input('orders',array('label' => __('Ordinamento'), 'class' => 'form-control', 'options' => $orders, 'name' => 'FilterOrderOrderBy', 'default' => $FilterOrderOrderBy, 'escape' => false)); 
+		echo '</div>';	
+		
+		echo '<div class="col-md-2">';	
+		echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none'))); 
+		echo '</div>';		
+		echo '</div>';
+		
+echo '</fieldset>';
+		
+		
 if(!empty($results)) {
 
 	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
-	echo '	<th></th>';
-	echo '	<th>'.__('N').'</th>';
+	echo '	<th class="hidden-xs hidden-sm"></th>';
+	echo '	<th class="hidden-xs hidden-sm">'.__('N').'</th>';
 	echo '	<th colspan="2">'.$this->Paginator->sort('supplier_organization_id').'</th>';
 	echo '	<th class="hidden-xs hidden-sm">';
 	echo 		__('Data inizio');
 	echo '		<br />';
 	echo 		__('Data fine');
 	echo '	</th>';
-	echo '	<th>'.__('Aperto/Chiuso').'</th>';
-	echo '	<th>'.$this->Paginator->sort('nota').'</th>';
-	echo '<th>'.__('stato_elaborazione').'</th>';
+	echo '	<th class="hidden-xs">'.__('Aperto/Chiuso').'</th>';
+	echo '	<th class="hidden-xs">'.$this->Paginator->sort('nota').'</th>';
+	echo '<th class="hidden-xs">'.__('stato_elaborazione').'</th>';
 		
 	if($user->organization['Organization']['hasVisibility']=='Y') {			
-		echo '<th>'.$this->Paginator->sort('isVisibleFrontEnd',__('isVisibleFrontEnd')).'</th>';
-		echo '<th>'.$this->Paginator->sort('isVisibleBackOffice',__('isVisibleBackOffice')).'</th>';
+		echo '<th class="hidden-xs">'.$this->Paginator->sort('isVisibleFrontEnd',__('isVisibleFrontEnd')).'</th>';
+		echo '<th class="hidden-xs">'.$this->Paginator->sort('isVisibleBackOffice',__('isVisibleBackOffice')).'</th>';
 	}
 
 	echo '	<th class="hidden-xs hidden-sm">'.$this->Paginator->sort('Created').'</th>';
-	echo '	<th class="actions">'.__('Actions').'</th>';
+	echo '	<th class="actions" style="min-width: 125px;">'.__('Actions').'</th>';
 	echo '</tr>';
 	
 	$delivery_id_old = 0;
@@ -82,18 +109,14 @@ if(!empty($results)) {
 		
 
 	echo '<tr>';
-	if(Configure::read('LayoutBootstrap')) {
-		echo '<td>';
-		echo '<a data-toggle="collapse" href="#ajax_details-'.$result['Order']['id'].'" title="'.__('Href_title_expand').'"><i class="fa fa-3x fa-search-plus" aria-hidden="true"></i></a>';
-		echo '</td>';
-	}
-	else
-		echo '	<td><a action="orders-'.$result['Order']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+	echo '<td class="hidden-xs hidden-sm">';
+	echo '<a data-toggle="collapse" href="#ajax_details-'.$result['Order']['id'].'" title="'.__('Href_title_expand').'"><i class="fa fa-3x fa-search-plus" aria-hidden="true"></i></a>';
+	echo '</td>';
 	
-	echo '	<td>'.$numRow.'</td>';
+	echo '	<td class="hidden-xs hidden-sm">'.$numRow.'</td>';
 	echo '	<td>';
 	if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-		echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 	echo '	</td>';
 	echo '	<td>';
 	
@@ -123,71 +146,37 @@ if(!empty($results)) {
 	if($result['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))
 		echo '<br />Riaperto fino a '.$this->Time->i18nFormat($result['Order']['data_fine_validation'],"%A %e %B %Y");
 	echo '	</td>';
-	echo '	<td style="white-space:nowrap;">';
+	echo '	<td style="white-space:nowrap;" class="hidden-xs">';
 	echo $this->App->utilsCommons->getOrderTime($result['Order']);
 	echo '	</td>';
 	
 	/*
 	 *  campo nota
 	 */
-	echo '<td>';
+	echo '<td class="hidden-xs">';
 	if(!empty($result['Order']['nota'])) {
 		
-		if(Configure::read('LayoutBootstrap')) {
-			echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$result['Order']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
-			echo '<div id="order_nota_'.$result['Order']['id'].'" class="modal fade" role="dialog">';
-			echo '<div class="modal-dialog">';
-			echo '<div class="modal-content">';
-			echo '<div class="modal-header">';
-			echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
-			echo '<h4 class="modal-title">Nota del referente</h4>';
-			echo '</div>';
-			echo '<div class="modal-body"><p>'.$result['Order']['nota'].'</p>';
-			echo '</div>';
-			echo '<div class="modal-footer">';
-			echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';			
-		}
-		else {		
-			echo '<img style="cursor:pointer;" class="referente_nota" id="'.$result['Order']['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi la nota del referente" border="0" />';
-			
-			echo '<div id="dialog-msg-'.$result['Order']['id'].'" title="Nota del referente">';
-			echo '<p>';
-			echo $result['Order']['nota'];
-			echo '</p>';
-			echo '</div>';
-			
-			echo '<script type="text/javascript">';
-			echo 'jQuery("#dialog-msg-'.$result['Order']['id'].'" ).dialog({';
-			echo "\r\n";
-			echo '	autoOpen: false,';
-			echo "\r\n";
-			echo '	height: 450,';
-			echo "\r\n";
-			echo '	width: 600,';
-			echo "\r\n";
-			echo '	modal: true,';
-			echo "\r\n";
-			echo '	buttons: {';
-			echo "\r\n";
-			echo '		"Chiudi": function() {';
-			echo "\r\n";
-			echo '			jQuery( this ).dialog( "close" );';
-			echo "\r\n";
-			echo '		},';
-			echo "\r\n";
-			echo '	}';
-			echo '});';
-			echo '</script>';
-		}
+		echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$result['Order']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+		echo '<div id="order_nota_'.$result['Order']['id'].'" class="modal fade" role="dialog">';
+		echo '<div class="modal-dialog">';
+		echo '<div class="modal-content">';
+		echo '<div class="modal-header">';
+		echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+		echo '<h4 class="modal-title">Nota del referente</h4>';
+		echo '</div>';
+		echo '<div class="modal-body"><p>'.$result['Order']['nota'].'</p>';
+		echo '</div>';
+		echo '<div class="modal-footer">';
+		echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';			
 		
 	} // end if(!empty($result['Order']['nota']))	
 	echo '</td>'; 
 		
-	echo '<td>';		 
+	echo '<td class="hidden-xs">';		 
 	if($result['Order']['state_code']=='PROCESSED-POST-DELIVERY') {
 		if($isReferenteTesoriere)
 			echo $this->Html->link(null, array('controller' => 'Referente', 'action' => 'order_state_in_TO_PAYMENT', null, 'delivery_id='.$result['Order']['delivery_id'], 'order_id='.$result['Order']['id']),array('class' => 'action orderStato'.$result['Order']['state_code'],'title' => "Gestisci il pagamento dell'ordine"));
@@ -204,14 +193,24 @@ if(!empty($results)) {
     echo __($result['Order']['state_code'].'-label');
 	echo '</td>';
 	if($user->organization['Organization']['hasVisibility']=='Y') {
-		echo '<td title="'.__('toolTipsVisibleFrontEnd').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleFrontEnd']).'"></td>';
-		echo '<td title="'.__('toolTipVisibleBackOffice').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleBackOffice']).'"></td>';		
+		echo '<td class="hidden-xs" title="'.__('toolTipsVisibleFrontEnd').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleFrontEnd']).'"></td>';
+		echo '<td class="hidden-xs" title="'.__('toolTipVisibleBackOffice').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleBackOffice']).'"></td>';		
 	}
 	
 	echo '	<td style="white-space: nowrap;" class="hidden-xs hidden-sm">'.$this->App->formatDateCreatedModifier($result['Order']['created']).'</td>';
 	
-	echo '<td class="actions-table-img-3">';
+	echo '<td>';
 	
+	echo '<a href="'.Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$result['Order']['delivery_id'].'&order_id='.$result['Order']['id'].'"><button type="button" class="btn btn-primary"><i class="fa fa-2x fa-home" aria-hidden="true"></i></button></a>';
+	
+	$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=sotto_menu&order_id='.$result['Order']['id'].'&position_img=bgLeft&format=notmpl';
+	$modal_size = 'md'; // sm md lg
+	$modal_header = __('Order').' '.$result['SuppliersOrganization']['name'];
+	echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
+	
+	/*
+	 * gestione menu' precedente
+	echo '<td class="actions-table-img-3">';
 	if($result['Order']['isVisibleBackOffice']=='N') 
 		echo $this->Html->link(null, array('action' => 'edit', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionEdit','title' => __('Edit Order')));
 	else {
@@ -227,29 +226,42 @@ if(!empty($results)) {
 		echo '<div id="order-sotto-menu-'.$result['Order']['id'].'"></div>';
 		echo '</div>';
 	} // end if($results['Order']['isVisibleBackOffice']=='N')
+	*/
+	
 	echo '</td>';
 
 	echo '</tr>';
 	
-	if(Configure::read('LayoutBootstrap')) {
-		echo '<tr data-attr-action="orders-'.$result['Order']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Order']['id'].'">';
-		echo '	<td colspan="2"></td>'; 
-		echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Order']['id'].'"></td>';
-		echo '</tr>';		
-	}
-	else {	
-		echo '<tr class="trView" id="trViewId-'.$result['Order']['id'].'">';
-		echo '	<td colspan="2"></td>'; 
-		echo '	<td colspan="'.$colspan.'" id="tdViewId-'.$result['Order']['id'].'"></td>';
-		echo '</tr>';
-	}
+	echo '<tr data-attr-action="orders-'.$result['Order']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Order']['id'].'">';
+	echo '	<td colspan="2"></td>'; 
+	echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Order']['id'].'"></td>';
+	echo '</tr>';		
 
 	$delivery_id_old=$result['Delivery']['id'];
 endforeach; 
 
 echo '</table></div>';
 		
-		
+/*
+ * modal order menu
+ */		
+echo '<div class="modal menu fade" role="dialog">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+echo '<h4 class="modal-title">'.__('Order').'</h4>';
+echo '</div>';
+echo '<div class="modal-body"><p></p>';
+echo '</div>';
+echo '<div class="modal-footer">';
+echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';	
+
+ 
 echo '<p>';
 echo $this->Paginator->counter(array(
 'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
@@ -273,37 +285,6 @@ else
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
-
-			jQuery('.menuDetails').css('display','none');
-			
-			var idRow = jQuery(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
-
-			viewOrderSottoMenu(numRow,"bgLeft");
-
-			var offset = jQuery(this).offset();
-			var newTop = (offset.top - 100);
-			var newLeft = (offset.left - 350);
-
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
-		});
-	});	
-
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
-		});
-	});	
-
-	jQuery('.referente_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
-	});
+$(document).ready(function() {
 });
 </script>

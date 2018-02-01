@@ -14,9 +14,9 @@ echo $this->Form->create('Order', array('type' => 'post'));?>
 	<fieldset>
 		<legend><?php echo __('Close Order'); ?></legend>
 
-		<div class="input text"><label for=""><?php echo __('Supplier')?></label><?php echo $results['SuppliersOrganization']['name'];?></div>
+		<div class="input text"><label for=""><?php echo __('Supplier')?></label> <?php echo $results['SuppliersOrganization']['name'];?></div>
 
-		<div class="input text"><label for=""><?php echo __('Delivery')?></label>
+		<div class="input text"><label for=""><?php echo __('Delivery')?></label> 
 		<?php 
 		if($results['Delivery']['sys']=='N')
 			echo $results['Delivery']['luogoData'];
@@ -24,9 +24,9 @@ echo $this->Form->create('Order', array('type' => 'post'));?>
 			echo $results['Delivery']['luogo'];		
 		?></div>
 
-		<div class="input text"><label for="">Decorrenza</label><?php echo $results['Order']['name'];?></div>
+		<div class="input text"><label for="">Decorrenza</label> <?php echo $results['Order']['name'];?></div>
 
-		<div class="input text"><label for=""><?php echo __('StateOrder');?></label><?php echo $this->App->drawOrdersStateDiv($results);?><?php echo __($results['Order']['state_code'].'-label');?></div>
+		<div class="input text"><label for=""><?php echo __('StateOrder');?></label> <?php echo $this->App->drawOrdersStateDiv($results);?><?php echo __($results['Order']['state_code'].'-label');?></div>
 
 		<?php 
 		echo $this->Element('boxMsg',array('msg' => $msg)); 

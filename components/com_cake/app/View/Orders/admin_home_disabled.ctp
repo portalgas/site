@@ -399,19 +399,19 @@ if($results['Order']['state_code']!='PROCESSED-ON-DELIVERY') {
 
 	
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.helpWF').each(function(){
-		jQuery(this).mouseenter(function(){
-			jQuery(this).children('div').css('display','block');
+$(document).ready(function() {
+	$('.helpWF').each(function(){
+		$(this).mouseenter(function(){
+			$(this).children('div').css('display','block');
 		});
-		jQuery(this).mouseleave(function(){
-			jQuery(this).children('div').css('display','none');
+		$(this).mouseleave(function(){
+			$(this).children('div').css('display','none');
 		});
 	});
 	
-	jQuery('.logo').click(function () {
+	$('.logo').click(function () {
 		var url = '/administrator/index.php?option=com_cake&controller=Orders&action=home&order_id=<?php echo $results['Order']['id'];?>&popup=Y&format=notmpl';
-		apriPopUp(url);
+		apriPopUpBootstrap(url, '');
 	});	
 });
 </script>

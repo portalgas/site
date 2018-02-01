@@ -14,10 +14,10 @@ $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'h
 $this->Html->addCrumb($label_crumb);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
+echo '<div class="contentMenuLaterale">';
+
 if(!empty($des_order_id))
 	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
-
-echo '<div class="contentMenuLaterale">';
 
 echo '<table cellpadding = "0" cellspacing = "0">';
 echo '<tr>';
@@ -51,7 +51,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		
 		echo '<div class="row">';
 		echo '<div class="col-md-10">';
-		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label>';
+		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label> ';
 		echo $this->Form->value('SuppliersOrganization.name');
 		echo '</div>';
 		echo '<div class="col-md-2" id="suppliers_organization_details"></div>';
@@ -70,27 +70,23 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		echo $this->element('boxOrdersDelivery', array('modalita' => 'EDIT', 'isManagerDelivery' => $isManagerDelivery));
 		echo $this->Html->div('clearfix','');
 		
-		echo $this->Form->input('data_inizio',array('type' => 'text','size'=>'30','label' => __('Data inizio'), 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_inizio'),"%A, %e %B %Y"), 'required' => 'false'));
-		echo $this->Ajax->datepicker('OrderDataInizio',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataInizioDb', 'altFormat' => 'yy-mm-dd'));
-		echo '<input type="hidden" id="OrderDataInizioDb" name="data[Order][data_inizio_db]" value="'.$this->Form->value('Order.data_inizio').'" />';
-
+		echo $this->App->drawDate('Order', 'data_inizio', __('Data inizio'), $this->Form->value('Order.data_inizio'));
+		
 		if(!empty($this->request->data['Order']['data_fine_validation']) && $this->request->data['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) {
 			
-			echo $this->Form->input('data_fine_validation',array('type' => 'text','size'=>'30','label' => "Riaperto l'ordine fino a", 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y"), 'required' => 'false'));
+			echo $this->Form->input('data_fine_validation',array('type' => 'text', 'label' => "Riaperto l'ordine fino a", 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y"), 'required' => 'false'));
 			echo $this->Ajax->datepicker('OrderDataFineValidation',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineValidationDb', 'altFormat' => 'yy-mm-dd'));
 			echo '<input type="hidden" id="OrderDataFineValidationDb" name="data[Order][data_fine_validation_db]" value="'.$this->Form->value('Order.data_fine_validation').'" />';
 				
 			echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
 		}
 		else {
-			echo $this->Form->input('data_fine',array('type' => 'text','size'=>'30','label' => __('Data fine'), 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine'),"%A, %e %B %Y"), 'required' => 'false'));
-			echo $this->Ajax->datepicker('OrderDataFine',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineDb', 'altFormat' => 'yy-mm-dd'));
-			echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
+			echo $this->App->drawDate('Order', 'data_fine', __('Data fine'), $this->Form->value('Order.data_fine'));
 		}
 					
 		if($this->request->data['Order']['data_incoming_order']!='0000-00-00') {
 			echo '<div class="input text required">';
-			echo '<label>'.__('Data Incoming Order').'</label>';
+			echo '<label>'.__('Data Incoming Order').'</label> ';
 			echo $this->Time->i18nFormat($this->Form->value('Order.data_incoming_order'),"%A, %e %B %Y");
 			echo '</div>';
 		}
@@ -100,7 +96,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		 */
 		if(!empty($des_order_id)) {
 			echo '<div class="input text ">';
-			echo '<label>'.__('Data fine max').'</label>';
+			echo '<label>'.__('Data fine max').'</label> ';
 			echo $this->Time->i18nFormat($desOrdersResults['DesOrder']['data_fine_max'],"%A, %e %B %Y");
 			echo '</div>';	
 		}		
@@ -165,7 +161,7 @@ if(empty($des_order_id))  {
 	echo __('order_qta_massima');
 	echo '</td>';
 	echo '<td>';
-	echo $this->Form->input('qta_massima', array('label' => false, 'type' => 'text', 'id' => 'qta_massima', 'size'=> 5,'class' => 'noWidth'));
+	echo $this->Form->input('qta_massima', array('label' => false, 'type' => 'text', 'id' => 'qta_massima'));
 	echo '</td>';
 	echo '<td>';
 	echo $this->Form->input('qta_massima_um',array('id' => 'qta_massima_um', 'label' => false,'options' => $qta_massima_um_options, 'required' => 'false'));
@@ -177,8 +173,8 @@ if(empty($des_order_id))  {
 	echo '<td>';
 	echo __('order_importo_massimo');
 	echo '</td>';
-	echo '<td colspan="2">';
-	echo $this->Form->input('importo_massimo', array('label' => false, 'type' => 'text', 'id' => 'importo_massimo', 'size'=> 5,'class' => 'noWidth double', 'after' => '&euro;'));
+	echo '<td colspan="2"  style="white-space: nowrap;">';
+	echo $this->Form->input('importo_massimo', array('label' => false, 'type' => 'text', 'id' => 'importo_massimo', 'class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;'));
 	echo '</td>';
 	echo '<td><div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div></td>';
 	echo '</tr>';
@@ -191,28 +187,43 @@ if($user->organization['Organization']['payToDelivery']=='ON' || $user->organiza
 	echo '<div class="tab-pane fade" id="tabs-4">';
 	
 	echo $this->element('boxOrdersTypeGest', array('modalita' => 'EDIT', 'value' => $this->Form->value('Order.typeGest')));
-			
+	
 	echo $this->Html->div('clearfix','');
 	
 	if($user->organization['Organization']['hasTrasport']=='Y') {
-		echo $this->App->drawFormRadio('Order','hasTrasport',array('options' => $hasTrasport, 'value'=>$this->Form->value('Order.hasTrasport'), 'label'=>__('HasTrasport'), 'required'=>'false',
-														 'after' => '<div class="action actionTrasport"></div>'.$this->App->drawTooltip(null,__('toolTipHasTrasport'),$type='HELP')));
-		echo $this->Html->div('clearfix','');
+		echo '<div class="row">';
+		echo '<div class="col-md-1 action actionTrasport">';
+		echo '</div>';
+		echo '<div class="col-md-11">';
+		echo $this->App->drawFormRadio('Order','hasTrasport',array('options' => $hasTrasport, 'value'=> $this->Form->value('Order.hasTrasport'), 'label'=>__('HasTrasport'), 'required'=>'false',
+				'after' => $this->App->drawTooltip(null,__('toolTipHasTrasport'),$type='HELP')));
+		echo '</div>';
+		echo '</div>';
 	}
 	
 	if($user->organization['Organization']['hasCostMore']=='Y') {
-		echo $this->App->drawFormRadio('Order','hasCostMore',array('options' => $hasCostMore, 'value'=>$this->Form->value('Order.hasCostMore'), 'label'=>__('HasCostMore'), 'required'=>'false',
-														'after' => '<div class="action actionCostMore"></div>'.$this->App->drawTooltip(null,__('toolTipHasCostMore'),$type='HELP')));
-		echo $this->Html->div('clearfix','');
+		echo '<div class="row">';
+		echo '<div class="col-md-1 action actionCostMore">';
+		echo '</div>';
+		echo '<div class="col-md-11">';			
+		echo $this->App->drawFormRadio('Order','hasCostMore',array('options' => $hasCostMore, 'value'=> $this->Form->value('Order.hasCostMore'), 'label'=>__('HasCostMore'), 'required'=>'false',
+			'after' => $this->App->drawTooltip(null,__('toolTipHasCostMore'),$type='HELP')));
+		echo '</div>';
+		echo '</div>';
 	}
-		
+	
 	if($user->organization['Organization']['hasCostLess']=='Y') {
-		echo $this->App->drawFormRadio('Order','hasCostLess',array('options' => $hasCostLess, 'value'=>$this->Form->value('Order.hasCostLess'), 'label'=>__('HasCostLess'), 'required'=>'false',
-														'after' => '<div class="action actionCostLess"></div>'.$this->App->drawTooltip(null,__('toolTipHasCostLess'),$type='HELP')));
-		echo $this->Html->div('clearfix','');
+		echo '<div class="row">';
+		echo '<div class="col-md-1 action actionCostLess">';
+		echo '</div>';
+		echo '<div class="col-md-11">';				
+		echo $this->App->drawFormRadio('Order','hasCostLess',array('options' => $hasCostLess, 'value'=> $this->Form->value('Order.hasCostLess'), 'label'=>__('HasCostLess'), 'required'=>'false',
+			'after' => $this->App->drawTooltip(null,__('toolTipHasCostLess'),$type='HELP')));		
+		echo '</div>';
+		echo '</div>';
 	}
-		
-	echo '</div>';
+	
+	echo '</div>';		
 }
 
 
@@ -242,7 +253,7 @@ if(!empty($suppliersOrganizationsReferent)) {
 		echo $referent['User']['name'];
 	
 		if(!empty($referent['User']['email']))	
-			echo ' <a class="link_mailto" title="'.__('Email send').'" target="_blank" href="mailto:'.$referent['User']['email'].'"></a>';
+			echo ' <a class="fa fa-envelope-o fa-lg" title="'.__('Email send').'" target="_blank" href="mailto:'.$referent['User']['email'].'"></a>';
 		echo '</td>';
 
 		echo '<td>';
@@ -274,14 +285,14 @@ if(!empty($suppliersOrganizationsReferent)) {
 			echo "\n\r";
 			echo '<tr>';
 			echo '<td style="width:16px;">';
-			echo '<span title="'.__('UserGroupsReferentDes').'" style="cursor:pointer;"><img src="'.Configure::read('App.img.cake').'/icons/16x16/group_link.png" alt="'.__('UserGroupsReferentDes').'" style="margin-right:5px;"></span>';
+			echo '<span title="'.__('UserGroupsReferentDes').'" style="cursor:pointer;"><img class="img-responsive-disabled" src="'.Configure::read('App.img.cake').'/icons/16x16/group_link.png" alt="'.__('UserGroupsReferentDes').'" style="margin-right:5px;"></span>';
 			echo '</td>';
 			
 			echo '<td>';	
 			echo $referent['User']['name'];
 		
 			if(!empty($referent['User']['email']))	
-				echo ' <a class="link_mailto" title="'.__('Email send').'" target="_blank" href="mailto:'.$referent['User']['email'].'"></a>';
+				echo ' <a class="fa fa-envelope-o fa-lg" title="'.__('Email send').'" target="_blank" href="mailto:'.$referent['User']['email'].'"></a>';
 			echo '</td>';
 
 			echo '<td>';
@@ -345,22 +356,14 @@ function suppliersOrganizationDetails(supplier_organization_id) {
 		ajaxCallBox(url, idDivTarget);		
 	}
 }
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	<?php if(!Configure::read('LayoutBootstrap')) { ?>
-	jQuery(function() {
-		jQuery( ".tabs" ).tabs({
-			event: "click"
-		});
-	});	
-	<?php } ?>
-	
 	var battute = <?php echo Configure::read('OrderNotaMaxLen');?>;
 	
-	jQuery("input[name='data[Order][nota]']").after("<p style='float:right' class='avviso'>Hai ancora <strong>"+ (battute - jQuery("input[name='data[Order][nota]']").val().length)+"</strong> caratteri disponibili</p>");
+	$("input[name='data[Order][nota]']").after("<p style='float:right' class='avviso'>Hai ancora <strong>"+ (battute - $("input[name='data[Order][nota]']").val().length)+"</strong> caratteri disponibili</p>");
 
-	jQuery("input[name='data[Order][nota]']").keyup(function() {
-		if(jQuery(this).val().length > battute) {
+	$("input[name='data[Order][nota]']").keyup(function() {
+		if($(this).val().length > battute) {
 			$(this).val($(this).val().substr(0, battute));
 		}
 		$(this).parent().find('p.avviso').html("Hai ancora <strong>"+ (battute - $(this).val().length)+"</strong> caratteri disponibili");
@@ -368,40 +371,40 @@ jQuery(document).ready(function() {
 	
 	suppliersOrganizationDetails(<?php echo $this->Form->value('Order.supplier_organization_id');?>);
 	
-	jQuery('#qta_massima').focusout(function() {validateNumberField(this,'quantita\' massima');});
-	jQuery('.double').focusout(function() {validateNumberField(this,'importo massimo');});
+	$('#qta_massima').focusout(function() {validateNumberField(this,'quantita\' massima');});
+	$('.double').focusout(function() {validateNumberField(this,'importo massimo');});
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var typeDelivery = jQuery("input[name='typeDelivery']:checked").val();
+		var typeDelivery = $("input[name='typeDelivery']:checked").val();
 		if(typeDelivery=='delivery_old') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Se desideri associare l'ordine ad una consegna scaduta clicca sul link");
-			jQuery('#delivery_id').focus();
-			jQuery('#delivery_old_content').css('background-color','yellow');
+			$('#delivery_id').focus();
+			$('#delivery_old_content').css('background-color','yellow');
 			return false;		
 		}
 		
 		if(typeDelivery==undefined || typeDelivery!='to_defined') {
-			var delivery_id = jQuery('#delivery_id').val();
+			var delivery_id = $('#delivery_id').val();
 			if(delivery_id=='' || delivery_id==undefined) {
-				jQuery('.tabs').tabs('option', 'active',0);
+				$('.nav-tabs a[href="#tabs-0"]').tab('show');
 				alert("Devi scegliere la consegna da associare all'ordine");
-				jQuery('#delivery_id').focus();
+				$('#delivery_id').focus();
 				return false;
 			}	    
 		}
 
-		var orderDataInizioDb = jQuery('#OrderDataInizioDb').val();
+		var orderDataInizioDb = $('#OrderDataInizioDb').val();
 		if(orderDataInizioDb=='' || orderDataInizioDb==undefined) {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la data di apertura dell'ordine");
 			return false;
 		}	
 		
-		var OrderDataFineDb = jQuery('#OrderDataFineDb').val();
+		var OrderDataFineDb = $('#OrderDataFineDb').val();
 		if(OrderDataFineDb=='' || OrderDataFineDb==undefined) {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la data di chiusura dell'ordine");
 			return false;
 		}	

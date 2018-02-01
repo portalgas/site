@@ -19,7 +19,6 @@ else {
 	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
 }	
 	
-	
 echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
@@ -43,12 +42,13 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	$options = array('id' => 'supplier_organization_id', 
 					 'data-placeholder' => 'Scegli un produttore',
 					 'options' => $ACLsuppliersOrganization, 
-					 'default' => $supplier_organization_id, 
-					 'required' => 'false', 
-					 'empty' => Configure::read('option.empty'));
-	if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
+					 'value' => $supplier_organization_id, 
+					 'required' => 'false');
+	if(!$browsers['ie11'] && count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
 		$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
-
+	if(empty($supplier_organization_id))
+		$options += array('empty' => Configure::read('option.empty')); 
+		
 	echo '<div class="row">';
 	echo '<div class="col-md-10">';
 	echo $this->Form->input('supplier_organization_id', $options);
@@ -63,20 +63,17 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	echo $this->element('boxOrdersDelivery', array('modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery));
 	echo $this->Html->div('clearfix','');
 	
-	echo $this->Form->input('data_inizio',array('type' => 'text','size'=>'30','label' => __('Data inizio'), 'value' => $data_inizio, 'required'=>'false'));
-	echo $this->Ajax->datepicker('OrderDataInizio',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataInizioDb', 'altFormat' => 'yy-mm-dd'));
-	echo '<input type="hidden" id="OrderDataInizioDb" name="data[Order][data_inizio_db]" value="'.$data_inizio_db.'" />';
+	echo $this->App->drawDate('Order', 'data_inizio', __('Data inizio'), $data_inizio_db);
 	
-	echo $this->Form->input('data_fine',array('type' => 'text','size'=>'30','label' => __('Data fine'), 'value' => $data_fine, 'required'=>'false'));
-	echo $this->Ajax->datepicker('OrderDataFine',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineDb', 'altFormat' => 'yy-mm-dd'));
-	echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$data_fine_db.'" />';
+	echo $this->App->drawDate('Order', 'data_fine', __('Data fine'), $data_fine_db);
+
 	
 	/* 
 	 * DES, data chiusura ordine
 	 */
 	if(!empty($des_order_id)) {
 		echo '<div class="input text ">';
-		echo '<label>'.__('Data fine max').'</label>';
+		echo '<label>'.__('Data fine max').'</label> ';
 		echo $this->Time->i18nFormat($desOrdersResults['DesOrder']['data_fine_max'],"%A, %e %B %Y");
 		echo '</div>';	
 	}
@@ -124,7 +121,7 @@ if(empty($des_order_id))  {
 	echo __('order_qta_massima');
 	echo '</td>';
 	echo '<td>';
-	echo $this->Form->input('qta_massima', array('label' => false, 'value' => $qta_massima, 'type' => 'text', 'id' => 'qta_massima', 'size'=> 5,'class' => 'noWidth'));
+	echo $this->Form->input('qta_massima', array('label' => false, 'value' => $qta_massima, 'type' => 'text', 'id' => 'qta_massima'));
 	echo '</td>';
 	echo '<td>';
 	echo $this->Form->input('qta_massima_um',array('id' => 'qta_massima_um', 'label' => false, 'options' => $qta_massima_um_options, 'default' => $qta_massima_um, 'required' => 'false'));
@@ -136,8 +133,8 @@ if(empty($des_order_id))  {
 	echo '<td>';
 	echo __('order_importo_massimo');
 	echo '</td>';
-	echo '<td colspan="2">';
-	echo $this->Form->input('importo_massimo', array('label' => false, 'value' => $importo_massimo, 'type' => 'text', 'id' => 'importo_massimo', 'size'=> 5,'class' => 'noWidth double', 'after' => '&euro;'));
+	echo '<td colspan="2"  style="white-space: nowrap;">';
+	echo $this->Form->input('importo_massimo', array('label' => false, 'value' => $importo_massimo, 'type' => 'text', 'id' => 'importo_massimo','class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;'));
 	echo '</td>';
 	echo '<td><div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div></td>';
 	echo '</tr>';
@@ -154,21 +151,36 @@ if($user->organization['Organization']['payToDelivery']=='ON' || $user->organiza
 		echo $this->Html->div('clearfix','');
 		
 		if($user->organization['Organization']['hasTrasport']=='Y') {
+			echo '<div class="row">';
+			echo '<div class="col-md-1 action actionTrasport">';
+			echo '</div>';
+			echo '<div class="col-md-11">';
 			echo $this->App->drawFormRadio('Order','hasTrasport',array('options' => $hasTrasport, 'value'=> $hasTrasportDefault, 'label'=>__('HasTrasport'), 'required'=>'false',
-					'after' => '<div class="action actionTrasport"></div>'.$this->App->drawTooltip(null,__('toolTipHasTrasport'),$type='HELP')));
-			echo $this->Html->div('clearfix','');
+					'after' => $this->App->drawTooltip(null,__('toolTipHasTrasport'),$type='HELP')));
+			echo '</div>';
+			echo '</div>';
 		}
 		
 		if($user->organization['Organization']['hasCostMore']=='Y') {
+			echo '<div class="row">';
+			echo '<div class="col-md-1 action actionCostMore">';
+			echo '</div>';
+			echo '<div class="col-md-11">';			
 			echo $this->App->drawFormRadio('Order','hasCostMore',array('options' => $hasCostMore, 'value'=> $hasCostMoreDefault, 'label'=>__('HasCostMore'), 'required'=>'false',
-				'after' => '<div class="action actionCostMore"></div>'.$this->App->drawTooltip(null,__('toolTipHasCostMore'),$type='HELP')));
-			echo $this->Html->div('clearfix','');
+				'after' => $this->App->drawTooltip(null,__('toolTipHasCostMore'),$type='HELP')));
+			echo '</div>';
+			echo '</div>';
 		}
 		
 		if($user->organization['Organization']['hasCostLess']=='Y') {
+			echo '<div class="row">';
+			echo '<div class="col-md-1 action actionCostLess">';
+			echo '</div>';
+			echo '<div class="col-md-11">';				
 			echo $this->App->drawFormRadio('Order','hasCostLess',array('options' => $hasCostLess, 'value'=> $hasCostLessDefault, 'label'=>__('HasCostLess'), 'required'=>'false',
-				'after' => '<div class="action actionCostLess"></div>'.$this->App->drawTooltip(null,__('toolTipHasCostLess'),$type='HELP')));		
-			echo $this->Html->div('clearfix','');
+				'after' => $this->App->drawTooltip(null,__('toolTipHasCostLess'),$type='HELP')));		
+			echo '</div>';
+			echo '</div>';
 		}
 
 	echo '</div>';
@@ -258,8 +270,8 @@ $(document).ready(function() {
 	
 		var supplier_organization_id = $('#supplier_organization_id').val();
 		if(supplier_organization_id=='' || supplier_organization_id==undefined) {
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
-			$('.tabs').tabs('option', 'active',0);
 			$('#supplier_organization_id').focus();
 			return false;
 		}
@@ -269,7 +281,7 @@ $(document).ready(function() {
 			var delivery_id = $('#delivery_id').val();
 			if(delivery_id=='' || delivery_id==undefined) {
 				alert("<?php echo __('jsAlertDeliveryRequired');?>");
-				$('.tabs').tabs('option', 'active',0);
+				$('.tabs li:eq(0) a').tab('show');
 				$('#delivery_id').focus();
 				return false;
 			}	    
@@ -277,14 +289,14 @@ $(document).ready(function() {
 		
 		var orderDataInizioDb = $('#OrderDataInizioDb').val();
 		if(orderDataInizioDb=='' || orderDataInizioDb==undefined) {
-			$('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la data di apertura dell'ordine");
 			return false;
 		}	
 		
 		var OrderDataFineDb = $('#OrderDataFineDb').val();
 		if(OrderDataFineDb=='' || OrderDataFineDb==undefined) {
-			$('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la data di chiusura dell'ordine");
 			return false;
 		}	

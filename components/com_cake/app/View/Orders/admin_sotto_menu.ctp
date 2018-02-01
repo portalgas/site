@@ -25,6 +25,7 @@ echo "\r\n";
 echo '<ul class="menuLateraleItems">';
 echo "\r\n";
 
+
 foreach($orderActions as $orderAction) {
 
 	$label = __($orderAction['OrdersAction']['label']);

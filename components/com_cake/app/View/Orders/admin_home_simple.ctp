@@ -102,25 +102,25 @@ else{
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 <?php 
 foreach($raggruppamentoOrderActions as $raggruppamentoOrderAction) {
 
 	echo 'var '.$raggruppamentoOrderAction['controller'].' = false;';
 	echo "\r\n";
 ?>
-	jQuery('#<?php echo $raggruppamentoOrderAction['controller'];?> > a').click(function() {
-		allLiSiblings = jQuery(this).parent().siblings();
+	$('#<?php echo $raggruppamentoOrderAction['controller'];?> > a').click(function() {
+		allLiSiblings = $(this).parent().siblings();
 		if(<?php echo $raggruppamentoOrderAction['controller'];?>) {
-			jQuery(this).css('opacity','1');
-			jQuery(allLiSiblings).css('display','block');
-			jQuery('#<?php echo $raggruppamentoOrderAction['controller'];?>Content').fadeOut();
+			$(this).css('opacity','1');
+			$(allLiSiblings).css('display','block');
+			$('#<?php echo $raggruppamentoOrderAction['controller'];?>Content').fadeOut();
 			<?php echo $raggruppamentoOrderAction['controller'];?> = false;
 		}
 		else {
-			jQuery(this).css('opacity','0.3');
-			jQuery(allLiSiblings).css('display','none');
-			jQuery('#<?php echo $raggruppamentoOrderAction['controller'];?>Content').fadeIn();
+			$(this).css('opacity','0.3');
+			$(allLiSiblings).css('display','none');
+			$('#<?php echo $raggruppamentoOrderAction['controller'];?>Content').fadeIn();
 			<?php echo $raggruppamentoOrderAction['controller'];?> = true;
 		}
 	});

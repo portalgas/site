@@ -19,12 +19,12 @@ echo '<legend>'.__('OrderDeliveryChange').'</legend>';
 
 		echo $this->Form->input('id');
 		echo '<div class="input text">';
-		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label>';
+		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label> ';
 		echo $this->Form->value('SuppliersOrganization.name');
 		echo '</div>';
 
 		echo '<div class="input text">';
-		echo '<label for="OrderDeliveryId">Consegna precedente</label>';
+		echo '<label for="OrderDeliveryId">Consegna precedente</label> ';
 		if($OrderOldresults['Delivery']['sys']=='N')
 			echo $OrderOldresults['Delivery']['luogoData'];
 		else
@@ -33,7 +33,7 @@ echo '<legend>'.__('OrderDeliveryChange').'</legend>';
 		
 
 		echo '<div class="input text">';
-		echo '<label for="OrderDeliveryId">Nuova consegna</label>';
+		echo '<label for="OrderDeliveryId">Nuova consegna</label> ';
 		if($this->request->data['Delivery']['sys']=='N')
 			echo $this->Form->value('Delivery.luogoData');
 		else
@@ -62,14 +62,14 @@ $options = [];
 echo $this->MenuOrders->drawWrapper($this->Form->value('Order.id'), $options);
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#action_exit').click(function() {	
+	$('#action_exit').click(function() {	
 		window.location.replace('<?php echo Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&order_id='.$this->request->data['Order']['id'].'&delivery_id='.$this->request->data['Order']['delivery_id'];?>');
 		return false;
 	});	
 		
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
 		return true;
 	});
