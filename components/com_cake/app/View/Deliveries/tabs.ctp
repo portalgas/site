@@ -42,23 +42,23 @@ if(empty($results))	echo $this->Tabs->messageNotOrders();else {
 	 </div>
 	</div>
 	
-		<script type="text/javascript">	jQuery(document).ready(function() {				jQuery('#tabs a').click(function (e) {
+		<script type="text/javascript">	$(document).ready(function() {				$('#tabs a').click(function (e) {
 			e.preventDefault()
-		  	jQuery(this).tab('show')
+		  	$(this).tab('show')
 		})
 						<?php		/*		 * la prima volta carico il tab 0 e richiama drawDelivery()		 */ 
-		if(isset($results[0]['Delivery']['data'])) {			echo "jQuery('#tabs a:first').tab('show');";			echo "\r\n";			echo 'drawDelivery(\''.$results[0]['Delivery']['data'].'\', 0)';		}		?>
+		if(isset($results[0]['Delivery']['data'])) {			echo "$('#tabs a:first').tab('show');";			echo "\r\n";			echo 'drawDelivery(\''.$results[0]['Delivery']['data'].'\', 0)';		}		?>
 		
-		jQuery('#myModal').on('show.bs.modal', function (e) {
+		$('#myModal').on('show.bs.modal', function (e) {
 			var url = "'/?option=com_cake&controller=PopUp&action=delivery_info&format=notmpl";
-			jQuery(".modal-body").load(url).animate({ opacity: 1}, 750);
+			$(".modal-body").load(url).animate({ opacity: 1}, 750);
 		});
 		
-		jQuery('#myModalScheda').on('show.bs.modal', function (e) {
-  			var invoker = jQuery(e.relatedTarget);
+		$('#myModalScheda').on('show.bs.modal', function (e) {
+  			var invoker = $(e.relatedTarget);
 			var url = invoker.attr('url');
-			jQuery(".modal-body").load(url).animate({ opacity: 1}, 750);
+			$(".modal-body").load(url).animate({ opacity: 1}, 750);
 		});		});		function drawDelivery(deliveryData, numTabs) {
-				jQuery('#calendar_view').html('');		jQuery('#tabs-'+numTabs).html('');	
-		jQuery('#tabs-'+numTabs).css('min-height','100px');		jQuery('#tabs-'+numTabs).addClass('active');
-		jQuery('#tabs-'+numTabs).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');				jQuery.ajax({				type: "GET",				url: "/?option=com_cake&controller=Deliveries&action=tabsAjaxDeliveries&data="+deliveryData+"&format=notmpl", 				data: "",				success: function(response){					jQuery('#tabs-'+numTabs).css('background', 'none repeat scroll 0 0 transparent');					jQuery('#tabs-'+numTabs).html(response);				},				error:function (XMLHttpRequest, textStatus, errorThrown) {					jQuery('#tabs-'+numTabs).css('background', 'none repeat scroll 0 0 transparent');					jQuery('#tabs-'+numTabs).html(textStatus);				}		});	}	</script><?php} // if(empty($results))?></div>
+				$('#calendar_view').html('');		$('#tabs-'+numTabs).html('');	
+		$('#tabs-'+numTabs).css('min-height','100px');		$('#tabs-'+numTabs).addClass('active');
+		$('#tabs-'+numTabs).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');				$.ajax({				type: "GET",				url: "/?option=com_cake&controller=Deliveries&action=tabsAjaxDeliveries&data="+deliveryData+"&format=notmpl", 				data: "",				success: function(response){					$('#tabs-'+numTabs).css('background', 'none repeat scroll 0 0 transparent');					$('#tabs-'+numTabs).html(response);				},				error:function (XMLHttpRequest, textStatus, errorThrown) {					$('#tabs-'+numTabs).css('background', 'none repeat scroll 0 0 transparent');					$('#tabs-'+numTabs).html(textStatus);				}		});	}	</script><?php} // if(empty($results))?></div>

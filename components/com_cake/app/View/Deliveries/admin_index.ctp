@@ -45,21 +45,24 @@ else
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
-	foreach ($results as $i => $result):
+	foreach ($results as $i => $result) {
 		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1);
-		 ?>
-	<tr class="view">
-		<td><a action="deliveries-<?php echo $result['Delivery']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo $numRow;?></td>
-		<td>
-			<?php echo $result['Delivery']['luogo']; 
-			if(!empty($result['Delivery']['nota']))  echo '<div class="small">'.$result['Delivery']['nota'].'</div>';
-			?>		
-		</td>
-		<td class="nota_evidenza_<?php echo strtolower($result['Delivery']['nota_evidenza']); ?>">&nbsp;</td>
-		<td style="white-space:nowrap;"><?php echo $this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y"); ?></td>
-		<td>
-			<?php 
+		
+		echo '<tr class="view">';
+
+		echo '<td>';
+		echo '<a data-toggle="collapse" href="#ajax_details-'.$result['Delivery']['id'].'" title="'.__('Href_title_expand').'"><i class="fa fa-3x fa-search-plus" aria-hidden="true"></i></a>';
+		echo '</td>';		
+		
+		echo '<td>'.$numRow.'</td>';
+		echo '<td>';
+		echo $result['Delivery']['luogo']; 
+		if(!empty($result['Delivery']['nota']))  echo '<div class="small">'.$result['Delivery']['nota'].'</div>';
+		echo '</td>';
+		echo '<td class="nota_evidenza_'.strtolower($result['Delivery']['nota_evidenza']).'">&nbsp;</td>';
+		echo '<td style="white-space:nowrap;">'.$this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y").'</td>';
+		echo '<td>';
+
 			if($result['Delivery']['daysToEndConsegna']<0) 
 				echo '<span style="color:red;">Chiuso</span>';
 			else {
@@ -82,28 +85,26 @@ else
 		}
 		echo '<td>';
 		if(!empty($result['Delivery']['gcalendar_event_id']))
-			echo '<img src="'.Configure::read('App.server').Configure::read('App.img.cake').'/gcalendar.png" title="Inserito in GCalendar con evento num '.$result['Delivery']['gcalendar_event_id'].'" />';
+			echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.img.cake').'/gcalendar.png" title="Inserito in GCalendar con evento num '.$result['Delivery']['gcalendar_event_id'].'" />';
 		echo '</td>';
-		?>	
-		<td title="<?php echo __('toolTipStatoElaborazione');?>" class="stato_<?php echo strtolower($result['Delivery']['stato_elaborazione']); ?>"></td>
-		<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Delivery']['created']); ?></td>
-		<td class="actions-table-img-5">
-			<?php echo $this->Html->link(null, array('action' => 'calendar_view', null, 'delivery_id='.$result['Delivery']['id']), array('class' => 'action actionDeliveryCalendar','title' => __('View Calendar Delivery'))); 
-			if($result['Delivery']['sys']=='N') {
-				echo $this->Html->link(null, array('action' => 'copy', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionCopy','title' => __('Copy')));
-				echo $this->Html->link(null, array('action' => 'edit', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionEdit','title' => __('Edit'))); 
-				echo $this->Html->link(null, array('controller' => 'Pages', 'action' => 'export_docs_delivery', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionPrinter','title' => __('Print Delivery')));
-				echo $this->Html->link(null, array('action' => 'delete', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
-			}
-			?>
-		</td>
-	</tr>
-	<tr class="trView" id="trViewId-<?php echo $result['Delivery']['id'];?>">
-		<td colspan="2"></td>
-		<td colspan="<?php echo $colspan;?>" id="tdViewId-<?php echo $result['Delivery']['id'];?>"></td>
-	</tr>
-<?php endforeach; 
+			
+		echo '<td title="'.__('toolTipStatoElaborazione').'" class="stato_'.strtolower($result['Delivery']['stato_elaborazione']).'"></td>';
+		echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Delivery']['created']).'</td>';
+		
+		echo '<td>';
+		$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Menus&action=delivery&id='.$result['Delivery']['id'].'&format=notmpl';
+		$modal_size = 'sm'; // sm md lg
+		$modal_header = __('Delivery').' '.$result['Delivery']['luogo'];
+		echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
+		echo '</td>';
+	echo '</tr>';
 	
+	echo '<tr data-attr-action="deliveries-'.$result['Delivery']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Delivery']['id'].'">';
+	echo '	<td colspan="2"></td>'; 
+	echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Delivery']['id'].'"></td>';
+	echo '</tr>';
+		
+}	
 		echo '</table>';
 		echo '<p>';
 		
@@ -128,8 +129,8 @@ else
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.actionCopy').click(function() {
+$(document).ready(function() {
+	$('.actionCopy').click(function() {
 
 		if(!confirm("Sei sicuro di voler copiare la consegna selezionata?")) {
 			return false;

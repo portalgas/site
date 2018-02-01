@@ -24,37 +24,37 @@ echo '</div>';
 function drawTab(numTabs) {
 	
 	if(numTabs==0) {
-		jQuery('#tabType1content').html('');
+		$('#tabType1content').html('');
 		url = "/?option=com_cake&controller=Deliveries&action=tabsEcommTabOrdersDelivery&format=notmpl";
 	}
 	else
 	if(numTabs==1) {
-		jQuery('#tabType0content').html('');
+		$('#tabType0content').html('');
 		url = "/?option=com_cake&controller=Deliveries&action=tabsEcommTabAllOrders&format=notmpl";		
 	}
 	else
 		return;
 			
-	jQuery('#tabs-'+numTabs).addClass('active');
-	jQuery('#tabType'+numTabs+'content').css('min-height','100');
-	jQuery('#tabType'+numTabs+'content').css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#tabs-'+numTabs).addClass('active');
+	$('#tabType'+numTabs+'content').css('min-height','100');
+	$('#tabType'+numTabs+'content').css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
 	
-	jQuery.ajax({
+	$.ajax({
 			type: "GET",
 			url: url, 
 			data: "",
 			success: function(response){
-				jQuery('#tabType'+numTabs+'content').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#tabType'+numTabs+'content').html(response);
+				$('#tabType'+numTabs+'content').css('background', 'none repeat scroll 0 0 transparent');
+				$('#tabType'+numTabs+'content').html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#tabType'+numTabs+'content').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#tabType'+numTabs+'content').html(textStatus);
+				$('#tabType'+numTabs+'content').css('background', 'none repeat scroll 0 0 transparent');
+				$('#tabType'+numTabs+'content').html(textStatus);
 			}
 	});
 }
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	drawTab(0);
 });
 </script>

@@ -41,11 +41,14 @@ else
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
-	foreach ($results as $i => $result):
+	foreach ($results as $i => $result) {
 		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1);
-		 ?>
-	<tr class="view">
-		<td><a action="deliveries-<?php echo $result['Delivery']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
+		 
+		echo '<tr class="view">';
+		echo '<td>';
+		echo '<a data-toggle="collapse" href="#ajax_details-'.$result['Delivery']['id'].'" title="'.__('Href_title_expand').'"><i class="fa fa-3x fa-search-plus" aria-hidden="true"></i></a>';
+		echo '</td>';
+		?>		
 		<td><?php echo $numRow;?></td>
 		<td><?php echo $result['Delivery']['luogo']; ?></td>
 		<td style="white-space:nowrap;"><?php echo $this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y"); ?></td>
@@ -71,23 +74,27 @@ else
 			echo '<td title="'.__('toolTipVisibleBackOffice').'" class="stato_'.$this->App->traslateEnum($result['Delivery']['isVisibleBackOffice']).'"></td>';		
 		echo '<td>';
 		if(!empty($result['Delivery']['gcalendar_event_id']))
-			echo '<img src="'.Configure::read('App.server').Configure::read('App.img.cake').'/gcalendar.png" title="Inserito in GCalendar con evento num '.$result['Delivery']['gcalendar_event_id'].'" />';
+			echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.img.cake').'/gcalendar.png" title="Inserito in GCalendar con evento num '.$result['Delivery']['gcalendar_event_id'].'" />';
 		echo '</td>';
-		?>			
-		<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Delivery']['created']); ?></td>
-		<td class="actions-table-img-3">
-			<?php 
-			echo $this->Html->link(null, array('action' => 'copy', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionCopy','title' => __('Copy')));
-			echo $this->Html->link(null, array('controller' => 'Pages', 'action' => 'export_docs_delivery', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionPrinter','title' => __('Print Delivery')));
-			echo $this->Html->link(null, array('action' => 'delete', null, 'delivery_id='.$result['Delivery']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
-			?>
-		</td>
-	</tr>
-	<tr class="trView" id="trViewId-<?php echo $result['Delivery']['id'];?>">
-		<td colspan="2"></td>
-		<td colspan="<?php echo $colspan;?>" id="tdViewId-<?php echo $result['Delivery']['id'];?>"></td>
-	</tr>
-<?php endforeach; ?>
+		echo '<td style="white-space: nowrap;">';
+		echo $this->App->formatDateCreatedModifier($result['Delivery']['created']);
+		echo '</td>';
+
+		echo '<td>';
+		$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Menus&action=delivery_history&id='.$result['Delivery']['id'].'&format=notmpl';
+		$modal_size = 'md'; 
+		$modal_header = __('Delivery');
+		echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
+		echo '</td>';
+		echo '</tr>';
+		
+	echo '<tr data-attr-action="deliveries-'.$result['Delivery']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Delivery']['id'].'">';
+	echo '	<td colspan="2"></td>'; 
+	echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Delivery']['id'].'"></td>';
+	echo '</tr>';
+	
+}
+?>
 	</table>
 	<p>
 	<?php

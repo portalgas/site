@@ -19,6 +19,90 @@ if($tot==0)
 	echo $this->element('boxMsgFrontEnd',array('class_msg' => 'notice', 'msg' => "Non sono stati ancora effettuati acquisti"));
 else {	
 
+
+	/*
+	 * D I S P E N S A
+	 */
+	 $tot_importo_storeroom = 0;
+	 $tot_qta_storeroom = 0;		 
+	if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') { 
+		$i=0;
+		if(isset($storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery])) {
+				
+			$storeroomDelivery = $storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery];
+		
+				if($storeroomDelivery['totStorerooms']) {
+					echo '<h2>Dispensa</h2>';
+					echo $this->Tabs->setTableHeaderEcommStoreroomFrontEnd($storeroomDelivery['id']);
+				
+					$supplier_organization_id_old = 0;
+					foreach($storeroomDelivery['Storeroom'] as $numStoreroom  => $storeroom) {
+		
+						if($storeroom['SuppliersOrganization']['id']!=$supplier_organization_id_old) {
+							echo '<tr style="height:30px;">';
+							echo '<td colspan="9" class="trGroup">'.__('Supplier').': '.$storeroom['SuppliersOrganization']['name'];
+							if(!empty($storeroom['SuppliersOrganization']['descrizione'])) echo '/'.$storeroom['SuppliersOrganization']['descrizione'];
+								
+							echo '</td>';
+							echo '</tr>';
+						}
+				
+						echo "\r\n";
+						echo '<tr>';
+						echo '<td>'.($numStoreroom+1).'</td>';
+						echo "\n";
+						echo '<td>';
+						if($storeroom['Article']['bio']=='Y')
+							echo '<span class="bio" title="'.Configure::read('bio').'"></span>';
+						else echo "";
+						echo '</td>';
+						echo '<td>'.$storeroom['name'].'</td>';
+				
+						echo "\n";  
+						echo '<td style="white-space: nowrap;">'.$this->App->getArticleConf($storeroom['Article']['qta'], $storeroom['Article']['um']).'</td>';
+						echo '<td style="white-space: nowrap;">'.$storeroom['prezzo_e'].'</td>';
+						echo '<td style="white-space: nowrap;">'.$this->App->getArticlePrezzoUM($storeroom['prezzo'], $storeroom['Article']['qta'], $storeroom['Article']['um'], $storeroom['Article']['um_riferimento']).'</td>';
+						echo '<td style="text-align:center;white-space: nowrap;">'.$storeroom['qta'].'</td>';
+						echo '<td style="white-space: nowrap;">'.$this->App->getArticleImporto($storeroom['prezzo'], $storeroom['qta']).'</td>';
+				
+						echo '<td style="white-space:nowrap;text-align:center;">';
+						echo "\n";
+						//echo '<a title="'.__('Edit').'" class="action actionEdit" href="/?option=com_cake&controller=Storerooms&action=userToStoreroom&id='.$data['cart']['id'].'"></a>';
+						echo '<a title="'.__('Edit').'" class="action actionEdit" href="javascript:viewContentAjax(\''.$storeroom['id'].'\')"><button type="button" class="btn btn-primary">'.__('Edit').'</button></a>';
+						echo '</td>';
+						echo '</tr>';
+							
+						$tot_importo_storeroom = ($tot_importo_storeroom + ($storeroom['prezzo'] * $storeroom['qta']));
+						$tot_qta_storeroom += $storeroom['qta'];									
+						$supplier_organization_id_old=$storeroom['SuppliersOrganization']['id'];
+					} // end foreach($storeroomDelivery['Storeroom'] as $numStoreroom  => $storeroom)
+				
+				echo '</tbody>';
+				echo '<tfooter>';
+				echo '<tr>';		
+				echo '<th></th>';
+				echo '<th></th>';
+				echo '<th></th>';
+				echo '<th></th>';
+				echo '<th></th>';
+				echo '<th></th>';
+				echo '<th style="text-align:center;">'.$tot_qta_storeroom.'</th>';
+				echo '<th>'.number_format($tot_importo_storeroom,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+				echo '<th></th>';
+				echo '</tr>';
+				echo '</tfooter>';
+				echo '</table>';					
+				echo '</table>';						
+					
+				} // end if($storeroomDelivery['totStorerooms']) 
+			} // end if(isset($storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery])) 
+		} // if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') 
+		/* 
+		 * E N D  - D I S P E N S A
+		 */				
+			 
+			 
+			 
 	/*
 	 * rendering C O N T E N U T O 
 	 */		
@@ -71,7 +155,7 @@ else {
 										echo '<td colspan="11" class="trGroup">';
 										
 										if(!empty($order['SuppliersOrganization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['SuppliersOrganization']['img1']))
-											echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$order['SuppliersOrganization']['img1'].'" />';
+											echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$order['SuppliersOrganization']['img1'].'" />';
 										
 										echo __('Supplier').': '.$order['SuppliersOrganization']['name'];
 										if(!empty($order['SuppliersOrganization']['descrizione'])) echo '/'.$order['SuppliersOrganization']['descrizione'];
@@ -256,98 +340,27 @@ else {
 				} // foreach($delivery['Order'] as $numOrder => $order) 
 			}  // end if(isset($delivery['Order']))
 				
-		/*
-		 * totale importo della consegna
-		*/
-		$tot_importo = ($tot_importo + $tot_importo_trasport + ($tot_importo_cost_less) + $tot_importo_cost_more);	
-		
-		if($user->organization['Organization']['payToDelivery']=='POST')
-			$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-		if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
-			$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-		
-                
-                
-			echo '<tr>';
-			echo '<td colspan="2"></td>';
-			echo '<td colspan="9" style="text-align:right;"><h4>'.$msg.'</h4></td>';			
-			echo '</tr>';
-						
-			echo '</tbody>';
-			echo '</table>';
-		}  // if($delivery['totOrders']>0 && $delivery['totArticlesOrder']>0)
+			/*
+			 * totale importo della consegna
+			*/
+			$tot_importo = ($tot_importo_storeroom + $tot_importo + $tot_importo_trasport + ($tot_importo_cost_less) + $tot_importo_cost_more);	
+			
+			if($user->organization['Organization']['payToDelivery']=='POST')
+				$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
+			if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+				$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
+			
+					
+					
+				echo '<tr>';
+				echo '<td colspan="2"></td>';
+				echo '<td colspan="9" style="text-align:right;"><h4>'.$msg.'</h4></td>';			
+				echo '</tr>';
+							
+				echo '</tbody>';
+				echo '</table>';
+			}  // if($delivery['totOrders']>0 && $delivery['totArticlesOrder']>0)
 
-		/*
-		 * D I S P E N S A
-		 */
-		if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') { 
-			$i=0;
-			if(isset($storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery])) {
-					
-				$storeroomDelivery = $storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery];
-			
-					if($storeroomDelivery['totStorerooms']) {
-						echo '<h2>Dispensa</h2>';
-						echo $this->Tabs->setTableHeaderEcommStoreroomFrontEnd($storeroomDelivery['id']);
-					
-						$supplier_organization_id_old = 0;
-						foreach($storeroomDelivery['Storeroom'] as $numStoreroom  => $storeroom) {
-			
-							if($storeroom['SuppliersOrganization']['id']!=$supplier_organization_id_old) {
-								echo '<tr style="height:30px;">';
-								echo '<td colspan="10" class="trGroup">'.__('Supplier').': '.$storeroom['SuppliersOrganization']['name'];
-								if(!empty($storeroom['SuppliersOrganization']['descrizione'])) echo '/'.$storeroom['SuppliersOrganization']['descrizione'];
-									
-								echo '</td>';
-								echo '</tr>';
-							}
-					
-							echo "\r\n";
-							echo '<tr>';
-							echo '<td>';
-							echo '<a action="articles-'.$storeroom['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
-							echo '</td>';
-					
-							echo '<td>'.($i+1).'</td>';
-							echo "\n";
-							echo '<td>';
-							if($storeroom['Article']['bio']=='Y')
-								echo '<span class="bio" title="'.Configure::read('bio').'"></span>';
-							else echo "";
-							echo '</td>';
-							echo '<td>'.$storeroom['name'].'</td>';
-					
-							echo "\n";  
-							echo '<td style="white-space: nowrap;">'.$this->App->getArticleConf($storeroom['Article']['qta'], $storeroom['Article']['um']).'</td>';
-							echo '<td style="white-space: nowrap;">'.$storeroom['prezzo_e'].'</td>';
-							echo '<td style="white-space: nowrap;">'.$this->App->getArticlePrezzoUM($storeroom['prezzo'], $storeroom['Article']['qta'], $storeroom['Article']['um'], $storeroom['Article']['um_riferimento']).'</td>';
-							echo '<td style="white-space: nowrap;">'.$storeroom['qta'].'</td>';
-							echo '<td style="white-space: nowrap;">'.$this->App->getArticleImporto($storeroom['prezzo'], $storeroom['qta']).'</td>';
-					
-							echo '<td style="white-space:nowrap;text-align:center;">';
-							echo "\n";
-							//echo '<a title="'.__('Edit').'" class="action actionEdit" href="/?option=com_cake&controller=Storerooms&action=userToStoreroom&id='.$data['cart']['id'].'"></a>';
-							echo '<a title="'.__('Edit').'" class="action actionEdit" href="javascript:viewContentAjax(\''.$storeroom['id'].'\')">edit</a>';
-							echo '</td>';
-							echo '</tr>';
-								
-							echo '<tr class="trView" id="trViewId-'.$storeroom['Article']['id'].'">';
-							echo '<td colspan="2"></td>';
-							echo '<td colspan="7" id="tdViewId-'.$storeroom['Article']['id'].'"></td>';
-							echo '</tr>';
-								
-							$supplier_organization_id_old=$storeroom['SuppliersOrganization']['id'];
-						} // end foreach($storeroomDelivery['Storeroom'] as $numStoreroom  => $storeroom)
-					
-					echo '</tbody>';
-					echo '</table>';						
-						
-					} // end if($storeroomDelivery['totStorerooms']) 
-				} // end if(isset($storeroomResults['Tab'][$numTabs]['Delivery'][$numDelivery])) 
-			} // if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') 
-			/* 
-		 	 * E N D  - D I S P E N S A
-		 	 */				
 			
 		} // end foreach($tab['Delivery'] as $numDelivery => $delivery)
 		 			
@@ -356,30 +369,30 @@ else {
 	
 <script type="text/javascript">
 function viewContentAjax(id) {
-	jQuery('#ajaxContent').animate({opacity:0});
+	$('#ajaxContent').animate({opacity:0});
 	var url = "/?option=com_cake&controller=Storerooms&action=userToStoreroom&id="+id+"&format=notmpl";
-	jQuery('#ajaxContent').load(url);
-	jQuery('#ajaxContent').animate({opacity:1},1500);
+	$('#ajaxContent').load(url);
+	$('#ajaxContent').animate({opacity:1},1500);
 	return;
 }
 </script>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery(".rowEcomm").each(function () {
+	$(".rowEcomm").each(function () {
 		activeEcommRows(this);    /* active + / - , mouseenter mouseleave */
 		activeSubmitEcomm(this);	
 	});	
 	
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionNotaView').each(function () {
+	$('.actionNotaView').each(function () {
 		actionNotaView(this); 
 	});
 });	

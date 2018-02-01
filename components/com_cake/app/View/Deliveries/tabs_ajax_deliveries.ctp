@@ -10,6 +10,77 @@ if(empty($results))
 	echo $this->Tabs->messageNotOrders();
 else {	
 
+
+	/*
+	 * D I S P E N S A
+	 * */
+	 $tot_importo_storeroom = 0;
+	 $tot_qta_storeroom = 0;
+	 if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+		 /*
+		 foreach ($storeroomResults as $numStoreroom => $deliveryStoreroom) {
+			if($deliveryStoreroom['Delivery']['id']==$delivery['id']) 
+				echo $this->element('boxMsg',array('class_msg' => 'success', 'msg' => "Durante la consegna sar&agrave; gestita anche la dispensa."));
+		}
+		*/
+		$supplier_organization_id_old = 0;
+		if(!empty($storeroomResults))  {
+			echo '<h2>Dispensa</h2>';
+			echo $this->Tabs->setTableHeaderStoreroomFrontEnd($delivery_id);				
+			foreach ($storeroomResults as $numStoreroom => $storeroom) {
+				
+				if($storeroom['SuppliersOrganization']['id']!=$supplier_organization_id_old) {
+					echo '<tr style="height:30px;">';
+					echo '<td colspan="8" class="trGroup">'.__('Supplier').': '.$storeroom['SuppliersOrganization']['name'];
+					if(!empty($storeroom['SuppliersOrganization']['descrizione'])) echo '/'.$storeroom['SuppliersOrganization']['descrizione'];
+						
+					echo '</td>';
+					echo '</tr>';
+				}
+		
+				echo "\r\n";
+				echo '<tr>';
+		
+				echo '<td>'.($numStoreroom+1).'</td>';
+				echo '<td>';
+				if($storeroom['Article']['bio']=='Y')
+					echo '<span class="bio" title="'.Configure::read('bio').'"></span>';
+				else echo "";
+				echo '</td>';
+				echo '<td>'.$storeroom['Storeroom']['name'].'</td>';
+		
+				echo "\n";  
+				echo '<td style="white-space: nowrap;">'.$this->App->getArticleConf($storeroom['Article']['qta'], $storeroom['Article']['um']).'</td>';
+				echo '<td style="white-space: nowrap;text-align:center;">'.number_format($storeroom['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
+				echo '<td style="white-space: nowrap;">'.$this->App->getArticlePrezzoUM($storeroom['Storeroom']['prezzo'], $storeroom['Article']['qta'], $storeroom['Article']['um'], $storeroom['Article']['um_riferimento']).'</td>';
+				echo '<td style="text-align:center;white-space: nowrap;">'.$storeroom['Storeroom']['qta'].'</td>';
+				echo '<td style="white-space: nowrap;">'.$this->App->getArticleImporto($storeroom['Storeroom']['prezzo'], $storeroom['Storeroom']['qta']).'</td>';
+		
+				echo '</tr>';
+						
+				$tot_importo_storeroom = ($tot_importo_storeroom + ($storeroom['Storeroom']['prezzo'] * $storeroom['Storeroom']['qta']));
+				$tot_qta_storeroom += $storeroom['Storeroom']['qta'];				
+				$supplier_organization_id_old=$storeroom['SuppliersOrganization']['id'];				
+			} // loop $storeroomResults
+			echo '</tbody>';
+			
+			echo '<tfooter>';
+			echo '<tr>';		
+			echo '<th></th>';
+			echo '<th></th>';
+			echo '<th></th>';
+			echo '<th></th>';
+			echo '<th></th>';
+			echo '<th></th>';
+			echo '<th style="text-align:center;">'.$tot_qta_storeroom.'</th>';
+			echo '<th>'.number_format($tot_importo_storeroom,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+			echo '</tr>';
+			echo '</tfooter>';
+			echo '</table>';	
+		}
+	} // end dispensa
+	
+
 	foreach($results['Tab'] as $numTabs => $tab) {
 		
 		foreach($tab['Delivery'] as $numDelivery => $delivery) {
@@ -42,7 +113,7 @@ else {
 						draw_row($i, $delivery, $order, $user, $this->App, $this->Time);
 						$i++;
 					}
-				}  // end ciclo Orders					
+				}  // end ciclo Orders
 			}
 			else {
 				$msg = "Non ci sono ancora produttori associati";
@@ -58,6 +129,7 @@ else {
 		 * $this->user->organization_id                    = organization dell'utente (in table.User)
 		 * $this->user->organization['Organization']['id'] = organization che si sta navigando (dal templates ho il parametro organization_id e organizationSEO che metto in $user->set('org_id',$organization_id)) 
 		 */
+		$tot_importo_delivery = ($tot_importo_storeroom + $tot_importo_delivery); 
 		if($user->id > 0 && $user->organization_id == $user->organization['Organization']['id'] && $tot_importo_delivery>0) {			
 				echo "\n";
 				echo '<table class="table" style="background-color:#C3D2E5;border-bottom: 3px solid #84A7DB;border-top: 3px solid #84A7DB;">';
@@ -118,24 +190,13 @@ else {
 		echo '<div class="clearfix"></div>';
 		?>
 		<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery("#showHideAllCart_<?php echo $delivery['id']?>" ).click(function() {
+		$(document).ready(function() {
+			$("#showHideAllCart_<?php echo $delivery['id']?>" ).click(function() {
 				showHideAllCart(<?php echo $delivery['id']?>);
 			});
 		});
 		</script>
-		<?php
-		 
-		/*
-		 * D I S P E N S A
-		 * */
-		 if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
-			foreach ($storeroomResults as $numStoreroom => $deliveryStoreroom) {
-				if($deliveryStoreroom['Delivery']['id']==$delivery['id']) 
-					echo $this->element('boxMsg',array('class_msg' => 'success', 'msg' => "Durante la consegna sar&agrave; gestita anche la dispensa."));
-			}	
-		}
-				
+		<?php				
 	} // end ciclo Deliveries
 		
 } // end ciclo Tabs
@@ -143,58 +204,58 @@ else {
 	<script type="text/javascript">
 	function showHideSingleCart(deliveryId, numRow) {
 
-			jQuery("input[name='showHideAllCart_"+deliveryId+"']").prop('checked',false);
+			$("input[name='showHideAllCart_"+deliveryId+"']").prop('checked',false);
 			
-			if(jQuery(".deliveryId"+deliveryId+"-A"+numRow).css('display')=='none') {  /* chiudo i dati per gli acquisti */
+			if($(".deliveryId"+deliveryId+"-A"+numRow).css('display')=='none') {  /* chiudo i dati per gli acquisti */
 
 				/* prima li chiuso tutti */
-				jQuery(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
-				jQuery(".th-deliveryId"+deliveryId+"-B").css('display','none');
-				jQuery(".deliveryId"+deliveryId+"-A").css('display','table-cell');
-				jQuery(".deliveryId"+deliveryId+"-B").css('display','none');
+				$(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
+				$(".th-deliveryId"+deliveryId+"-B").css('display','none');
+				$(".deliveryId"+deliveryId+"-A").css('display','table-cell');
+				$(".deliveryId"+deliveryId+"-B").css('display','none');
 				
 				
 				/* th */
-				jQuery(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
-				jQuery(".th-deliveryId"+deliveryId+"-B").css('display','none');
+				$(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
+				$(".th-deliveryId"+deliveryId+"-B").css('display','none');
 				
 				/* tr */
-				jQuery(".deliveryId"+deliveryId+"-A"+numRow).css('display','table-cell');
-				jQuery(".deliveryId"+deliveryId+"-B"+numRow).css('display','none');			
+				$(".deliveryId"+deliveryId+"-A"+numRow).css('display','table-cell');
+				$(".deliveryId"+deliveryId+"-B"+numRow).css('display','none');			
 			}
 			else { /* apro */
 				/* th */
-				jQuery(".th-deliveryId"+deliveryId+"-A").css('display','none');
-				jQuery(".th-deliveryId"+deliveryId+"-B").css('display','table-cell');
+				$(".th-deliveryId"+deliveryId+"-A").css('display','none');
+				$(".th-deliveryId"+deliveryId+"-B").css('display','table-cell');
 
 				/* tr */
-				jQuery(".deliveryId"+deliveryId+"-A"+numRow).css('display','none');
-				jQuery(".deliveryId"+deliveryId+"-B"+numRow).css('display','table-cell');
+				$(".deliveryId"+deliveryId+"-A"+numRow).css('display','none');
+				$(".deliveryId"+deliveryId+"-B"+numRow).css('display','table-cell');
 			}
 	}
 	function showHideAllCart(deliveryId) {
 
-		var checked = jQuery("input[name='showHideAllCart_"+deliveryId+"']:checked").val();
+		var checked = $("input[name='showHideAllCart_"+deliveryId+"']:checked").val();
 		
 		/*console.log("showHideAllCart(deliveryId="+deliveryId+") checked "+checked);*/
 		
 		if(checked=='ALL') {  /* apro tutti */
 			/* th */
-			jQuery(".th-deliveryId"+deliveryId+"-A").css('display','none');
-			jQuery(".th-deliveryId"+deliveryId+"-B").css('display','table-cell');
+			$(".th-deliveryId"+deliveryId+"-A").css('display','none');
+			$(".th-deliveryId"+deliveryId+"-B").css('display','table-cell');
 
 			/* tr */
-			jQuery(".deliveryId"+deliveryId+"-A").css('display','none');
-			jQuery(".deliveryId"+deliveryId+"-B").css('display','table-cell');
+			$(".deliveryId"+deliveryId+"-A").css('display','none');
+			$(".deliveryId"+deliveryId+"-B").css('display','table-cell');
 		}	
 		else {  /* chiudi tutti */
 			/* th */
-			jQuery(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
-			jQuery(".th-deliveryId"+deliveryId+"-B").css('display','none');
+			$(".th-deliveryId"+deliveryId+"-A").css('display','table-cell');
+			$(".th-deliveryId"+deliveryId+"-B").css('display','none');
 			
 			/* tr */
-			jQuery(".deliveryId"+deliveryId+"-A").css('display','table-cell');
-			jQuery(".deliveryId"+deliveryId+"-B").css('display','none');
+			$(".deliveryId"+deliveryId+"-A").css('display','table-cell');
+			$(".deliveryId"+deliveryId+"-B").css('display','none');
 		}
 	}
 	</script>
@@ -230,7 +291,7 @@ function draw_row($i, $delivery, $order, $user, $App, $Time) {
 					echo '<td>';
 					
 					if(!empty($order['SuppliersOrganization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['SuppliersOrganization']['img1']))
-						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$order['SuppliersOrganization']['img1'].'" />';
+						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$order['SuppliersOrganization']['img1'].'" />';
 					
 					echo '<span style="cursor:help;" title="';
 					if(!empty($order['SuppliersOrganization']['indirizzo'])) echo $order['SuppliersOrganization']['indirizzo'].' ';
@@ -363,10 +424,10 @@ function draw_row($i, $delivery, $order, $user, $App, $Time) {
 						echo "<td style=\"text-align:center\">";
 						if($tot_cart_in_order>0) {
 							echo '<a href="javascript:showHideSingleCart('.$delivery['id'].','.$i.');">';
-							echo '<img src="'.Configure::read('App.img.cake').'/cesta-piena.png" title="ci sono prodotti ordinati" border="0" /></a>';
+							echo '<img class="img-responsive-disabled" src="'.Configure::read('App.img.cake').'/cesta-piena.png" title="ci sono prodotti ordinati" border="0" /></a>';
 						}
 						else 
-							echo '<img src="'.Configure::read('App.img.cake').'/cesta-vuota.png" title="nessun prodotto ordinato" border="0" />';
+							echo '<img class="img-responsive-disabled" src="'.Configure::read('App.img.cake').'/cesta-vuota.png" title="nessun prodotto ordinato" border="0" />';
 						echo "</td>";
 					} // end if($user->id > 0 && $user->get('org_id') == $user->organization['Organization']['id'])  
 
@@ -376,11 +437,11 @@ function draw_row($i, $delivery, $order, $user, $App, $Time) {
 ?>
 
 <script type="text/javascript">
-	jQuery(document).ready(function ($) {
-		jQuery('.selectpicker').selectpicker({
+	$(document).ready(function ($) {
+		$('.selectpicker').selectpicker({
 			style: 'btn-default'
 		});
-		jQuery('#tabs').tab();
+		$('#tabs').tab();
 
 		$(function(){
 		   $('a').tooltip();

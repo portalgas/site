@@ -4,13 +4,13 @@ $this->Html->addCrumb(__('List Deliveries'), array('controller' => 'Deliveries',
 $this->Html->addCrumb(__('Edit Delivery'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
-<div class="contentMenuLaterale">
+<div class="deliveries form">
 <?php echo $this->Form->create('Delivery');?>
 	<fieldset>
 		<legend><?php echo __('Edit Delivery'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('luogo', ['class' => 'form-control']);
+		echo $this->Form->input('luogo');
 		
 		echo $this->Form->input('data',array('type' => 'text','size'=>'30','value' => $this->Time->i18nFormat($this->Form->value('Delivery.data'),"%A, %e %B %Y")));
 		
@@ -28,15 +28,28 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Ajax->datepicker('DeliveryData',array('dateFormat' => 'DD, d MM yy','altField' => '#DeliveryDataDb', 'altFormat' => 'yy-mm-dd'));
 		echo '<input type="hidden" id="DeliveryDataDb" name="data[Delivery][data_db]" value="'.$this->Form->value('Delivery.data').'" />';
 		
-		echo $this->Form->input('orario_da', array('type' => 'time','selected' => $this->Form->value('Delivery.orario_da'),'timeFormat'=>'24','interval' => 15));
-		echo $this->Form->input('orario_a',  array('type' => 'time','selected' => $this->Form->value('Delivery.orario_a'),'timeFormat'=>'24','interval' => 15));
-		echo $this->Form->input('nota');
+		echo $this->Html->div('clearfix','');
 		
+		echo '<div class="row">';
+		$options['required'] = 'required';
+		echo $this->App->drawHour('Delivery', 'orario_da', __('orario_da'), $this->Form->value('Delivery.orario_da'), $options);	
+		echo $this->App->drawHour('Delivery', 'orario_a', __('orario_a'), $this->Form->value('Delivery.orario_a'), $options);		
+		echo '</div>';		
+		
+		echo $this->Html->div('clearfix','');
+		echo '<br />';
+		
+		echo '<div class="row">';
+		echo '<div class="col-md-12">';		
+		echo $this->Form->input('nota');
+		echo $this->Html->div('clearfix','');
 		echo $this->Form->input('nota_evidenza',array('options' => $nota_evidenza,
 													  'value' => $this->Form->value('Delivery.nota_evidenza'),
 													  'label' => 'Nota evidenza',
 													  'after'=>'<div id="DeliveryNotaEvidenzaImg" style="float:right;height:18px;width:400px;" class=""></div>'));
-											
+		echo '</div>';
+		echo '</div>';
+		
 		echo $this->Html->div('clearfix','');
 		
 		if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
@@ -71,21 +84,23 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 echo $this->Form->hidden('isToStoreroomPay',array('value'=>$this->request['data']['Delivery']['isToStoreroomPay']));
 echo $this->Form->hidden('isToStoreroom_old',array('value'=>$this->request['data']['Delivery']['isToStoreroom']));
 echo $this->Form->end(__('Submit'));
-
-echo '</div>';
-
-$links = [];
-$links[] = $this->Html->link('<span class="desc animate"> '.__('List Deliveries').' </span><span class="fa fa-reply"></span>', array('controller' => 'Deliveries', 'action' => 'index'), ['class' => 'animate', 'escape' => false]);
-$links[] = $this->Html->link('<span class="desc animate"> '.__('Delete').' </span><span class="fa fa-trash"></span>', array('controller' => 'Deliveries', 'action' => 'delete', null, 'delivery_id='.$this->Form->value('Delivery.id')),array('title' => __('Delete'), 'class' => 'animate', 'escape' => false));
-echo $this->Menu->draw($links);
 ?>
-<script type="text/javascript">
-jQuery(document).ready(function() {
+</div>
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('List Deliveries'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
+		<li><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', null, 'delivery_id='.$this->Form->value('Delivery.id')),array('class' => 'action actionDelete','title' => __('Delete'))); ?></li>
+	</ul>
+</div>
 
-	jQuery('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('Delivery.nota_evidenza'));?>");
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('Delivery.nota_evidenza'));?>");
 	
-	jQuery('#DeliveryNotaEvidenza').change(function() {
-		var deliveryNotaEvidenza = jQuery(this).val();
+	$('#DeliveryNotaEvidenza').change(function() {
+		var deliveryNotaEvidenza = $(this).val();
 		setNotaEvidenza(deliveryNotaEvidenza);
 	});
 	
@@ -97,7 +112,7 @@ jQuery(document).ready(function() {
 });
 
 function setNotaEvidenza(deliveryNotaEvidenza) {
-	jQuery('#DeliveryNotaEvidenzaImg').removeClass();
-	jQuery('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
+	$('#DeliveryNotaEvidenzaImg').removeClass();
+	$('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
 }
 </script>

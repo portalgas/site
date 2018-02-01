@@ -24,7 +24,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		<div class="input text"><label for="">Totale ordini associati alla consegna</label><span class="<?php echo $class;?>"><?php echo count($results['Order']);?></span></div>
 
 		<?php ($results['totStorerooms'] > 0 ? $class = 'qtaUno' : $class = 'qtaZero');?>
-		<div class="input text"><label for="">Eventuali acquisti prodotti in dispensa</label><span class="qtaZero"><?php echo $results['totStorerooms'];?></span></div>
+		<div class="input text"><label for="">Eventuali acquisti prodotti in dispensa</label><span class="<?php echo $class;?>"><?php echo $results['totStorerooms'];?></span> gli articoli torneranno in dispensa</div>
 
 	</fieldset>
 <?php

@@ -80,68 +80,68 @@ else {
 	echo $this->element('boxIntroHelpEcomm', array('id' => 0));
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 	
-		jQuery('#all_order_to_validate').change(function() {
+		$('#all_order_to_validate').change(function() {
 
-		   	var key = jQuery("#all_order_to_validate option:selected").val();
+		   	var key = $("#all_order_to_validate option:selected").val();
 			keyArray = key.split('-');
 			var deliveryId = keyArray[0];
 			var orderId = keyArray[1];
 		
 		    if(orderId!="" && deliveryId!="") {
 
-	        	 if(jQuery('#all_orders').length>0) {
-		        	 jQuery('#all_orders option:first-child').prop('selected', true);
-					 jQuery('#all_orders').selectpicker('refresh');
+	        	 if($('#all_orders').length>0) {
+		        	 $('#all_orders option:first-child').prop('selected', true);
+					 $('#all_orders').selectpicker('refresh');
 	        	 }
 	        	 
-				 jQuery('.introHelp').css('display', 'none');
-				 jQuery('.articlesOrderResult').html('');
-				 jQuery('.articlesOrderResult').css('display', 'none');				 
-				 jQuery('#articlesOrderResult_'+deliveryId).css('display', 'block');
-				 jQuery('#articlesOrderResult_'+deliveryId).css('min-height','100');
-				 jQuery('#articlesOrderResult_'+deliveryId).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
+				 $('.introHelp').css('display', 'none');
+				 $('.articlesOrderResult').html('');
+				 $('.articlesOrderResult').css('display', 'none');				 
+				 $('#articlesOrderResult_'+deliveryId).css('display', 'block');
+				 $('#articlesOrderResult_'+deliveryId).css('min-height','100');
+				 $('#articlesOrderResult_'+deliveryId).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
 				 
 				 url = '/?option=com_cake&controller=Deliveries&action=tabsAjaxEcommCartsValidation&delivery_id='+deliveryId+'&order_id='+orderId+'&a=&b=&format=notmpl';
 				 
-				 jQuery.ajax({
+				 $.ajax({
 					type: "GET",
 					url: url,
 					data: "",
 					success: function(response){
-						jQuery('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
-						jQuery('#articlesOrderResult_'+deliveryId).html(response);
+						$('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
+						$('#articlesOrderResult_'+deliveryId).html(response);
 					},
 					error:function (XMLHttpRequest, textStatus, errorThrown) {
-						jQuery('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
-						jQuery('#articlesOrderResult_'+deliveryId).html(textStatus);
+						$('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
+						$('#articlesOrderResult_'+deliveryId).html(textStatus);
 					}
 			 	 });
 			}
 			else {
-				 jQuery('#articlesOrderResult_'+deliveryId).css('display', 'none');
-				 jQuery('#articlesOrderResult_'+deliveryId).html('');
-				 jQuery('#articlesOrderResult_'+deliveryId).css('min-height','100');
-				 jQuery('.introHelp').css('display', 'block');	
+				 $('#articlesOrderResult_'+deliveryId).css('display', 'none');
+				 $('#articlesOrderResult_'+deliveryId).html('');
+				 $('#articlesOrderResult_'+deliveryId).css('min-height','100');
+				 $('.introHelp').css('display', 'block');	
 			}
 		});
 	
-		jQuery('#all_orders').change(function() {
-		   var key = jQuery("#all_orders option:selected").val();
+		$('#all_orders').change(function() {
+		   var key = $("#all_orders option:selected").val();
 		   if(key!='') {
-	        	 if(jQuery('#all_order_to_validate').length>0) {
-		        	 jQuery('#all_order_to_validate option:first-child').prop('selected', true);
-					 jQuery('#all_order_to_validate').selectpicker('refresh');
+	        	 if($('#all_order_to_validate').length>0) {
+		        	 $('#all_order_to_validate option:first-child').prop('selected', true);
+					 $('#all_order_to_validate').selectpicker('refresh');
 	        	 }
 	        	 		   
 			     getAllOrderArticlesOrders(key);
 			}
 			else {
-				 jQuery('#articlesOrderResult_'+deliveryId).css('display', 'none');
-				 jQuery('#articlesOrderResult_'+deliveryId).html('');
-				 jQuery('#articlesOrderResult_'+deliveryId).css('min-height','100');
-				 jQuery('.introHelp').css('display', 'block');		
+				 $('#articlesOrderResult_'+deliveryId).css('display', 'none');
+				 $('#articlesOrderResult_'+deliveryId).html('');
+				 $('#articlesOrderResult_'+deliveryId).css('min-height','100');
+				 $('.introHelp').css('display', 'block');		
 			}
 		});    
 	});
@@ -154,44 +154,44 @@ else {
 		/* console.log("getAllOrderArticlesOrders() deliveryId "+deliveryId);*/
 		
 	    if(orderId!="" && deliveryId!="") {
-	    	jQuery('.introHelp').css('display', 'none');
-			 jQuery('.articlesOrderResult').html('');
-			 jQuery('.articlesOrderResult').css('display', 'none');
-			 jQuery('#articlesOrderResult_'+deliveryId).css('display', 'block');
-			 jQuery('#articlesOrderResult_'+deliveryId).css('min-height','100');
-			 jQuery('#articlesOrderResult_'+deliveryId).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	    	$('.introHelp').css('display', 'none');
+			 $('.articlesOrderResult').html('');
+			 $('.articlesOrderResult').css('display', 'none');
+			 $('#articlesOrderResult_'+deliveryId).css('display', 'block');
+			 $('#articlesOrderResult_'+deliveryId).css('min-height','100');
+			 $('#articlesOrderResult_'+deliveryId).css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
 			 
 			 url = "/?option=com_cake&controller=Deliveries&action=tabsAjaxEcommArticlesOrder&delivery_id="+deliveryId+"&order_id="+orderId+"&a=&b=&c=&format=notmpl";
 			 if(debug) console.log('ecomm_deliveries '+url);
 			 
-			 jQuery.ajax({
+			 $.ajax({
 				type: "GET",
 				url: url,
 				data: "",
 				success: function(response){
-					jQuery('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
-					jQuery('#articlesOrderResult_'+deliveryId).html(response);
+					$('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
+					$('#articlesOrderResult_'+deliveryId).html(response);
 				},
 				error:function (XMLHttpRequest, textStatus, errorThrown) {
-					jQuery('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
-					jQuery('#articlesOrderResult_'+deliveryId).html(textStatus);
+					$('#articlesOrderResult_'+deliveryId).css('background', 'none repeat scroll 0 0 transparent');
+					$('#articlesOrderResult_'+deliveryId).html(textStatus);
 				}
 		 	 });
 		 }
 		 else {
-			 jQuery('#articlesOrderResult_'+deliveryId).css('display', 'none');
-			 jQuery('#articlesOrderResult_'+deliveryId).html('');
+			 $('#articlesOrderResult_'+deliveryId).css('display', 'none');
+			 $('#articlesOrderResult_'+deliveryId).html('');
 		 }
 	}
 	</script>
 	
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('.selectpicker').selectpicker({
+	$(document).ready(function() {
+		$('.selectpicker').selectpicker({
 			style: 'selectpicker selectpicker-my'
 		});
 	
-		jQuery('a').tooltip();
+		$('a').tooltip();
 	});
 	</script>
 <?php
