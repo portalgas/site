@@ -16,7 +16,7 @@ foreach ($results as $numResult => $result) {
 	echo '<tr class="view-2">';
 	echo '<td>';
 	if(!empty($result['Organization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Organization']['img1']))
-		echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" />';	
+		echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" />';	
 	echo '</td>';			
 	echo '<td>'.$result['Organization']['name'].'</td>';
 	echo '<td colspan="3">';

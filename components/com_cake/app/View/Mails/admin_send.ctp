@@ -40,7 +40,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		 */
 		echo '<div id="users_cart" style="display:none;">';
 		$label = "Utenti che hanno effettuato acquisti";
-		echo $this->Form->input('orders',array('label' => $label,'options' => $orders, 'escape' => false));
+		echo $this->Form->input('orders',array('label' => $label,'options' => $orders, 'empty' => Configure::read('option.empty'), 'escape' => false));
+		echo '</div>';
+
+		echo '<div id="users_cart_articles_orders" style="display:none;">';
 		echo '</div>';
 		
 		/*
@@ -56,7 +59,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		 */
 		echo '<div id="users" style="display:none;">';
 		$label = __('Users').'&nbsp;('.count($users).')';
-		echo '<label for="MailUser">'.$label.'</label>';
+		echo '<label for="MailUser">'.$label.'</label> ';
 		
 		echo $this->Form->select('master_user_id', $users, array('label' => $label, 'multiple' => true, 'size' =>10));
 		echo $this->Form->select('user_id', array(), array('multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));					
@@ -68,7 +71,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		 */
 		echo '<div id="referenti" style="display:none;">';
 		$label = __('Referenti').'&nbsp;('.count($referenti).')';
-		echo '<label for="MailUser">'.$label.'</label>';
+		echo '<label for="MailUser">'.$label.'</label> ';
 		
 		echo $this->Form->select('master_referente_id', $referenti, array('label' => $label, 'multiple' => true, 'size' =>10));
 		echo $this->Form->select('referente_id', array(), array('multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));					
@@ -79,18 +82,21 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 		echo $this->Form->input('name',array('label' => 'Intestazione', 'value' => str_replace('<br />', '', $body_header), 'disabled' => 'true'));
 
-		echo '<div class="input text"><label></label>';
+		echo '<div class="clearfix"></div>';
+		echo '<div class="input text"><label></label> ';
 		echo $body_header_mittente; 
 		
 		echo $this->Form->textarea('body', array('rows' => '15', 'cols' => '75'));
 		
-		echo '<div class="input text"><label>Piè di pagina</label>';
+		echo '<div class="clearfix"></div>';
+		echo '<div class="input text"><label>Piè di pagina</label> ';
 		
 		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer_no_reply" style="display:inline;">'.str_replace('<br />', '', $body_footer_no_reply).'</textarea>';
 		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer" style="display:none;">'.str_replace('<br />', '', $body_footer).'</textarea>';
 		
 		echo '</div>';		
 		
+		echo '<div class="clearfix"></div>';
 		echo $this->Form->input('Document.img1', array(
 													'label' => 'Allegato',
 												    'between' => '<br />',
@@ -104,82 +110,101 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+function drawArticlesOrders(order_id) {
+	/* console.log("order_id "+order_id); */
+	if(order_id!=''){
+		var url = "/administrator/index.php?option=com_cake&controller=Mails&action=ajax_users_cart_articles_orders&order_id="+order_id+"&format=notmpl";
+		var idDivTarget = 'users_cart_articles_orders';
+		$('#users_cart_articles_orders').show();
+		ajaxCallBox(url, idDivTarget);
+	}
+	else {
+		$('#users_cart_articles_orders').html("");
+		$('#users_cart_articles_orders').hide();
+	}
+}
 
-	jQuery('#MailMittenti').change(function() {
-		var mittenti = jQuery('#MailMittenti').val();	
+$(document).ready(function() {
+
+	$('#MailMittenti').change(function() {
+		var mittenti = $('#MailMittenti').val();	
 		
 		if(mittenti=='<?php echo Configure::read('Mail.no_reply_mail');?>') {
-			jQuery('#body_footer_no_reply').show();
-			jQuery('#body_footer').hide();
+			$('#body_footer_no_reply').show();
+			$('#body_footer').hide();
 		}	
 		else {
-			jQuery('#body_footer_no_reply').hide();
-			jQuery('#body_footer').show();
+			$('#body_footer_no_reply').hide();
+			$('#body_footer').show();
 		}	
 	});
 	
-	jQuery('#MailMasterUserId').click(function() {
-		jQuery("#MailMasterUserId option:selected" ).each(function (){			
-			jQuery('#MailUserId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#MailOrders').change(function() {
+		var order_id = $('#MailOrders').val();	
+		drawArticlesOrders(order_id);
+	});
+	
+	$('#MailMasterUserId').click(function() {
+		$("#MailMasterUserId option:selected" ).each(function (){			
+			$('#MailUserId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#MailUserId').click(function() {
-		jQuery("#MailUserId option:selected" ).each(function (){			
-			jQuery('#MailMasterUserId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#MailUserId').click(function() {
+		$("#MailUserId option:selected" ).each(function (){			
+			$('#MailMasterUserId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#MailMasterReferenteId').click(function() {
-		jQuery("#MailMasterReferenteId option:selected" ).each(function (){			
-			jQuery('#MailReferenteId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#MailMasterReferenteId').click(function() {
+		$("#MailMasterReferenteId option:selected" ).each(function (){			
+			$('#MailReferenteId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#MailReferenteId').click(function() {
-		jQuery("#MailReferenteId option:selected" ).each(function (){			
-			jQuery('#MailMasterReferenteId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#MailReferenteId').click(function() {
+		$("#MailReferenteId option:selected" ).each(function (){			
+			$('#MailMasterReferenteId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery("input[name='data[Mail][dest_options]']").change(function() {
+	$("input[name='data[Mail][dest_options]']").change(function() {
 		choiceDestOptions();
 	});
 
-	jQuery("input[name='data[Mail][dest_options_qta]']").change(function() {
+	$("input[name='data[Mail][dest_options_qta]']").change(function() {
 		choiceDestOptions();
 	});
 	
 	choiceDestOptions();
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var dest_options_qta = jQuery("input[name='data[Mail][dest_options_qta]']:checked").val();
+		var dest_options_qta = $("input[name='data[Mail][dest_options_qta]']:checked").val();
 		if(dest_options_qta=='SOME') {
-			var dest_options = jQuery("input[name='data[Mail][dest_options]']:checked").val();
+			var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
 			
 			var destinatariScelti = null;
 			if(dest_options=='USERS') {
 				var user_ids = '';
-				jQuery("#MailUserId option" ).each(function (){	
-					user_ids +=  jQuery(this).val()+',';
+				$("#MailUserId option" ).each(function (){	
+					user_ids +=  $(this).val()+',';
 				});
 				user_ids = user_ids.substring(0,user_ids.length-1);
 				
@@ -188,13 +213,13 @@ jQuery(document).ready(function() {
 					return false;
 				}
 				
-				jQuery('#user_ids').val(user_ids);			
+				$('#user_ids').val(user_ids);			
 			}
 			else 
 			if(dest_options=='REFERENTI') {
 				var referente_ids = '';
-				jQuery("#MailReferenteId option" ).each(function (){	
-					referente_ids +=  jQuery(this).val()+',';
+				$("#MailReferenteId option" ).each(function (){	
+					referente_ids +=  $(this).val()+',';
 				});
 				referente_ids = referente_ids.substring(0,referente_ids.length-1);
 				
@@ -203,11 +228,11 @@ jQuery(document).ready(function() {
 					return false;
 				}
 				
-				jQuery('#referente_ids').val(referente_ids);	
+				$('#referente_ids').val(referente_ids);	
 			}
 			else	
 			if(dest_options=='SUPPLIERS') {
-				destinatariScelti = jQuery("#MailSupplierOrganization").val();
+				destinatariScelti = $("#MailSupplierOrganization").val();
 	
 				if(destinatariScelti==null) {
 					alert("Devi scegliere almeno un destinatario");
@@ -215,13 +240,13 @@ jQuery(document).ready(function() {
 				}			
 			}
 		}
-		var subject = jQuery('#MailSubject').val();
+		var subject = $('#MailSubject').val();
 		if(subject=="") {
 			alert("Devi indicare il soggetto della mail");
 			return false;
 		}
 	
-		var body = jQuery('#MailBody').val();
+		var body = $('#MailBody').val();
 		if(body=="") {
 			alert("Devi indicare il testo della mail");
 			return false;
@@ -229,82 +254,90 @@ jQuery(document).ready(function() {
 	
 		alert("Verrà inviata la mail, attendere che venga terminata l'esecuzione");
 	
-		jQuery("input[type=submit]").attr('disabled', 'disabled');
-		jQuery("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
-		jQuery("input[type=submit]").css('box-shadow', 'none');
+		$("input[type=submit]").attr('disabled', 'disabled');
+		$("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
+		$("input[type=submit]").css('box-shadow', 'none');
 
 		return true;
 	});	
 });
 
 function choiceDestOptions() {
-	var dest_options = jQuery("input[name='data[Mail][dest_options]']:checked").val();
-	var dest_options_qta = jQuery("input[name='data[Mail][dest_options_qta]']:checked").val();
+	var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
+	var dest_options_qta = $("input[name='data[Mail][dest_options_qta]']:checked").val();
 
-	jQuery('#Maildest_options_qtaALL').attr('disabled',false);
-	jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+	$('#Maildest_options_qtaALL').attr('disabled',false);
+	$('#Maildest_options_qtaSOME').attr('disabled',false);
 
 	if(dest_options=='USERS_CART') {
-		jQuery('#users_cart').css('display','block');
-		jQuery('#users').css('display','none');
-		jQuery('#userGroups').css('display','none');
-		jQuery('#referenti').css('display','none');
-		jQuery('#suppliersorganization').css('display','none');
+		$('#users_cart').css('display','block');
+		$('#users_cart_articles_orders').css('display','none');
+		$('#users').css('display','none');
+		$('#userGroups').css('display','none');
+		$('#referenti').css('display','none');
+		$('#suppliersorganization').css('display','none');
 		
-		jQuery('#Maildest_options_qtaALL').prop("checked", true);
-		jQuery('#Maildest_options_qtaSOME').attr('disabled',true);
+		$('#Maildest_options_qtaALL').prop("checked", true);
+		$('#Maildest_options_qtaSOME').attr('disabled',true);
+		
+		var order_id = $('#MailOrders').val();	
+		drawArticlesOrders(order_id);		
 	}
 	else
 	if(dest_options_qta=='ALL') {
-		jQuery('#Maildest_options_qtaUSERS_CART').css('display','none');
+		$('#Maildest_options_qtaUSERS_CART').css('display','none');
 	
-		jQuery('#users_cart').css('display','none');
-		jQuery('#users').css('display','none');
-		jQuery('#userGroups').css('display','none');
-		jQuery('#referenti').css('display','none');
-		jQuery('#suppliersorganization').css('display','none');
+		$('#users_cart').css('display','none');
+		$('#users_cart_articles_orders').css('display','none');
+		$('#users').css('display','none');
+		$('#userGroups').css('display','none');
+		$('#referenti').css('display','none');
+		$('#suppliersorganization').css('display','none');
 	}	
 	else {
 		if(dest_options=='USERS') {			
-			jQuery('#users_cart').css('display','none');
-			jQuery('#users').css('display','block');
-			jQuery('#userGroups').css('display','none');
-			jQuery('#referenti').css('display','none');
-			jQuery('#suppliersorganization').css('display','none');
+			$('#users_cart').css('display','none');
+			$('#users_cart_articles_orders').css('display','none');
+			$('#users').css('display','block');
+			$('#userGroups').css('display','none');
+			$('#referenti').css('display','none');
+			$('#suppliersorganization').css('display','none');
 			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+			$('#Maildest_options_qtaSOME').attr('disabled',false);
 		}
 		else
 		if(dest_options=='USERGROUPS') {			
-			jQuery('#users_cart').css('display','none');
-			jQuery('#users').css('display','none');
-			jQuery('#userGroups').css('display','block');
-			jQuery('#referenti').css('display','none');
-			jQuery('#suppliersorganization').css('display','none');
+			$('#users_cart').css('display','none');
+			$('#users_cart_articles_orders').css('display','none');
+			$('#users').css('display','none');
+			$('#userGroups').css('display','block');
+			$('#referenti').css('display','none');
+			$('#suppliersorganization').css('display','none');
 			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+			$('#Maildest_options_qtaSOME').attr('disabled',false);
 		}
 		else	
 		if(dest_options=='REFERENTI') {
-			jQuery('#users_cart').css('display','none');
-			jQuery('#users').css('display','none');
-			jQuery('#userGroups').css('display','none');
-			jQuery('#referenti').css('display','block');
-			jQuery('#suppliersorganization').css('display','none');
+			$('#users_cart').css('display','none');
+			$('#users_cart_articles_orders').css('display','none');
+			$('#users').css('display','none');
+			$('#userGroups').css('display','none');
+			$('#referenti').css('display','block');
+			$('#suppliersorganization').css('display','none');
 			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+			$('#Maildest_options_qtaSOME').attr('disabled',false);
 		}
 		else	
 		if(dest_options=='SUPPLIERS') {
-			jQuery('#users_cart').css('display','none');
-			jQuery('#users').css('display','none');
-			jQuery('#userGroups').css('display','none');
-			jQuery('#referenti').css('display','none');
-			jQuery('#suppliersorganization').css('display','block');
+			$('#users_cart').css('display','none');
+			$('#users_cart_articles_orders').css('display','none');
+			$('#users').css('display','none');
+			$('#userGroups').css('display','none');
+			$('#referenti').css('display','none');
+			$('#suppliersorganization').css('display','block');
 			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+			$('#Maildest_options_qtaSOME').attr('disabled',false);
 		}
 	}
-	
 }
 </script>

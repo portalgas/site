@@ -67,17 +67,20 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				
 		echo $this->Form->input('subject');
 		
-		echo '<div class="input text"><label></label>';
+		echo '<div class="clearfix"></div>';
+		echo '<div class="input text"><label></label> ';
 		echo $body_header_mittente; 
 		
 		echo $this->Form->textarea('body', array('rows' => '15', 'cols' => '75'));
+		echo '<div class="clearfix"></div>';
 		
-		echo '<div class="input text"><label>Piè di pagina</label>';
+		echo '<div class="input text"><label>Piè di pagina</label> ';
 		
 		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer" style="display:inline;">'.str_replace('<br />', '', $body_footer).'</textarea>';
 		
 		echo '</div>';		
 		
+		echo '<div class="clearfix"></div>';
 		echo $this->Form->input('Document.img1', array(
 													'label' => 'Allegato',
 												    'between' => '<br />',
@@ -94,50 +97,50 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='data[DesSupplier][id]']").change(function() {	
+$(document).ready(function() {
+	$("input[name='data[DesSupplier][id]']").change(function() {	
 		
-		var des_supplier_id = jQuery(this).val();
+		var des_supplier_id = $(this).val();
 
-		jQuery('.details_users').html("");
-		jQuery('.details_users').css('display', 'none');
+		$('.details_users').html("");
+		$('.details_users').css('display', 'none');
 				
-		jQuery('#details_users-'+des_supplier_id).css('min-height', '50px');
-		jQuery('#details_users-'+des_supplier_id).css('display', 'table-cell');
-		jQuery('#details_users-'+des_supplier_id).css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#details_users-'+des_supplier_id).css('min-height', '50px');
+		$('#details_users-'+des_supplier_id).css('display', 'table-cell');
+		$('#details_users-'+des_supplier_id).css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 		
-		jQuery.ajax({
+		$.ajax({
 			type: "GET",
 			url: "/administrator/index.php?option=com_cake&controller=Mails&action=des_send_details_users&des_supplier_id="+des_supplier_id+"&format=notmpl",
 			data: "",
 			success: function(response) {
-				jQuery('#details_users-'+des_supplier_id).css('background', 'none repeat scroll 0 0 transparent');
-				 jQuery('#details_users-'+des_supplier_id).html(response);
+				$('#details_users-'+des_supplier_id).css('background', 'none repeat scroll 0 0 transparent');
+				 $('#details_users-'+des_supplier_id).html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#details_users-'+des_supplier_id).css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#details_users-'+des_supplier_id).html(textStatus);
+				$('#details_users-'+des_supplier_id).css('background', 'none repeat scroll 0 0 transparent');
+				$('#details_users-'+des_supplier_id).html(textStatus);
 			}
 		});
 			
 		return false;
 	});
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var des_supplier_id = jQuery("input[name='data[DesSupplier][id]']:checked").val();
+		var des_supplier_id = $("input[name='data[DesSupplier][id]']:checked").val();
 		if(des_supplier_id=='' || des_supplier_id==undefined) {
 			alert("Devi indicare il produttore al quale sono associati i referenti");
 			return false;
 		}
 		
-		var subject = jQuery('#MailSubject').val();
+		var subject = $('#MailSubject').val();
 		if(subject=="")  {
 			alert("Devi indicare l'oggetto della mail");
 			return false;
 		}
 	
-		var body = jQuery('#MailBody').val();
+		var body = $('#MailBody').val();
 		if(body=="") {
 			alert("Devi indicare il testo della mail");
 			return false;
@@ -145,9 +148,9 @@ jQuery(document).ready(function() {
 	
 		alert("Verrà inviata la mail, attendere che venga terminata l'esecuzione");
 	
-		jQuery("input[type=submit]").attr('disabled', 'disabled');
-		jQuery("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
-		jQuery("input[type=submit]").css('box-shadow', 'none');
+		$("input[type=submit]").attr('disabled', 'disabled');
+		$("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
+		$("input[type=submit]").css('box-shadow', 'none');
 
 		return true;
 	});	

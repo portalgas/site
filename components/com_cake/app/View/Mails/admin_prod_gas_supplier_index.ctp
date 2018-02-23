@@ -1,9 +1,4 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
 $this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
 $this->Html->addCrumb(__('List Mails'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -15,36 +10,22 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
   
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<?php
-				echo '<th>'.$this->Paginator->sort('User.name').'</th>';
-			?>
 			<th><?php echo $this->Paginator->sort('mittente');?></th>
-			<th colspan="2"><?php echo __('Suppliers');?></th>
+			<th><?php echo __('dest_options');?></th>
 			<th><?php echo $this->Paginator->sort('subject');?></th>
 			<th>Testo della mail</th>
 			<th>Allegato</th>
 			<th><?php echo $this->Paginator->sort('created');?></th>
 			<?php
-			if($isRoot)
-				echo '<th>'.__('Actions').'</th>';
-			?>	
+			echo '<th>'.__('Actions').'</th>';
+			?>			
 	</tr>
 	<?php
 	foreach ($results as $numResult => $result):
 		echo '<tr>';
-		echo '<td>'.$result['User']['name'].'</td>';
 		?>		
 		<td><?php echo $result['Mail']['mittente']; ?></td>
-		<?php
-			echo '<td>';
-			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
-			echo '</td>';			
-			echo '<td>'.$result['Supplier']['name'];
-			if(!empty($result['Supplier']['descrizione']))
-				echo ' - '.$result['Supplier']['descrizione'];
-			echo '</td>';
-		?>
+		<td><?php echo $this->App->traslateEnum($result['Mail']['dest_ids']); ?></td>
 		<td><?php echo $result['Mail']['subject']; ?></td>
 		<td style="cursor:pointer;"><?php 
 		if(!empty($result['Mail']['body'])) {
@@ -68,11 +49,9 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->App->formatDateCreatedModifier($result['Mail']['created']);
 		echo '</td>';
 		
-		if($isRoot) {
-			echo '<td  class="actions-table-img">';
-			echo $this->Html->link(null, array('action' => 'delete', $result['Mail']['id']),array('class' => 'action actionDelete','title' => __('Delete')));
-			echo '</td>';			
-		}			
+		echo '<td  class="actions-table-img">';
+		echo $this->Html->link(null, array('action' => 'prod_gas_supplier_delete', $result['Mail']['id']),array('class' => 'action actionDelete','title' => __('Delete')));
+		echo '</td>';			
 			
 	echo '</tr>';
 endforeach;

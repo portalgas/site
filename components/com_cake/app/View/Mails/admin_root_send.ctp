@@ -25,8 +25,14 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 		echo $this->App->drawFormRadio('Mail','dest_options',array('options' => $dest_options, 'value'=>'SUPPLIERS', 'name' => 'dest-options', 'label' => __('A chi inviarla'),'tabindex'=>($i+1)));
 		
-		echo $this->App->drawFormRadio('Mail','dest_options_qta',array('options' => $dest_options_qta, 'value'=>'ALL', 'name' => 'dest-options-qta', 'label' => __('A quanti'),'tabindex'=>($i+1)));
-
+		echo '<div id="dest_options_qta_supplier">';
+		echo $this->App->drawFormRadio('Mail','dest_options_qta_supplier',array('options' => $dest_options_qta_supplier, 'value'=>'ALL', 'name' => 'dest-options-qta-supplier', 'label' => __('A quanti'),'tabindex'=>($i+1)));
+		echo '</div>';
+	
+		echo '<div id="dest_options_qta_gas">';
+		echo $this->App->drawFormRadio('Mail','dest_options_qta_gas',array('options' => $dest_options_qta_gas, 'value'=>'ALL', 'name' => 'dest-options-qta-gas', 'label' => __('A quanti'),'tabindex'=>($i+1)));
+		echo '</div>';
+	
 		/*
 		 * organizations
 		 */
@@ -45,17 +51,20 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				
 		echo $this->Form->input('subject');
 		
-		echo '<div class="input text"><label></label>';
+		echo '<div class="clearfix"></div>';
+		echo '<div class="input text"><label></label> ';
 		echo $body_header_mittente; 
 		
 		echo $this->Form->textarea('body', array('rows' => '15', 'cols' => '75'));
 		
-		echo '<div class="input text"><label>Piè di pagina</label>';
+		echo '<div class="clearfix"></div>';
+		echo '<div class="input text"><label>Piè di pagina</label> ';
 		
 		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer_no_reply" style="display:inline;">'.str_replace('<br />', '', $body_footer_no_reply).'</textarea>';
 		
 		echo '</div>';		
 		
+		echo '<div class="clearfix"></div>';
 		echo $this->Form->input('Document.img1', array(
 													'label' => 'Allegato',
 												    'between' => '<br />',
@@ -69,54 +78,64 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#MailMittenti').change(function() {
-		var mittenti = jQuery('#MailMittenti').val();	
+	$('#MailMittenti').change(function() {
+		var mittenti = $('#MailMittenti').val();	
 		
 		if(mittenti=='<?php echo Configure::read('Mail.no_reply_mail');?>') {
-			jQuery('#body_footer_no_reply').show();
-			jQuery('#body_footer').hide();
+			$('#body_footer_no_reply').show();
+			$('#body_footer').hide();
 		}	
 		else {
-			jQuery('#body_footer_no_reply').hide();
-			jQuery('#body_footer').show();
+			$('#body_footer_no_reply').hide();
+			$('#body_footer').show();
 		}	
 	});
 	
-	jQuery("input[name='data[Mail][dest_options]']").change(function() {
+	$("input[name='data[Mail][dest_options]']").change(function() {
 		choiceDestOptions();
 	});
 
-	jQuery("input[name='data[Mail][dest_options_qta]']").change(function() {
+	$("input[name='data[Mail][dest_options_qta_supplier]']").change(function() {
+		choiceDestOptions();
+	});
+	
+	$("input[name='data[Mail][dest_options_qta_gas]']").change(function() {
 		choiceDestOptions();
 	});
 	
 	choiceDestOptions();
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var dest_options_qta = jQuery("input[name='data[Mail][dest_options_qta]']:checked").val();
-		if(dest_options_qta=='SOME') {
-			var dest_options = jQuery("input[name='data[Mail][dest_options]']:checked").val();
-			
-			var destinatariScelti = null;
-			if(dest_options=='SUPPLIERS') {
-				destinatariScelti = jQuery("#MailSuppliers").val();
-	
+		if(dest_options=='ORGANIZATIONS') {
+			var dest_options_qta_gas = $("input[name='data[Mail][dest_options_qta_gas]']:checked").val();
+		}
+		else	
+		if(dest_options=='SUPPLIERS') {
+			var dest_options_qta_supplier = $("input[name='data[Mail][dest_options_qta_supplier]']:checked").val();
+			if(dest_options_qta_supplier=='SOME') {
+				var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
+				
+				var destinatariScelti = null;
+				destinatariScelti = $("#MailSuppliers").val();
+		
 				if(destinatariScelti==null) {
 					alert("Devi scegliere almeno un destinatario");
 					return false;
 				}			
 			}
+		
 		}
-		var subject = jQuery('#MailSubject').val();
+
+		var subject = $('#MailSubject').val();
 		if(subject=="") {
 			alert("Devi indicare il soggetto della mail");
 			return false;
 		}
 	
-		var body = jQuery('#MailBody').val();
+		var body = $('#MailBody').val();
 		if(body=="") {
 			alert("Devi indicare il testo della mail");
 			return false;
@@ -124,40 +143,53 @@ jQuery(document).ready(function() {
 	
 		alert("Verrà inviata la mail, attendere che venga terminata l'esecuzione");
 	
-		jQuery("input[type=submit]").attr('disabled', 'disabled');
-		jQuery("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
-		jQuery("input[type=submit]").css('box-shadow', 'none');
+		$("input[type=submit]").attr('disabled', 'disabled');
+		$("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
+		$("input[type=submit]").css('box-shadow', 'none');
 
 		return true;
 	});	
 });
 
 function choiceDestOptions() {
-	var dest_options = jQuery("input[name='data[Mail][dest_options]']:checked").val();
-	var dest_options_qta = jQuery("input[name='data[Mail][dest_options_qta]']:checked").val();
+	var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
+	var dest_options_qta_supplier = $("input[name='data[Mail][dest_options_qta_supplier]']:checked").val();
+	var dest_options_qta_gas = $("input[name='data[Mail][dest_options_qta_gas]']:checked").val();
 
-	jQuery('#Maildest_options_qtaALL').attr('disabled',false);
-	jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
+	$('#dest_options_qta_supplier').hide();
+	$('#dest_options_qta_gas').hide();
+	$('#Maildest_options_qta_supplierALL').attr('disabled',false);
+	$('#Maildest_options_qta_supplierSOME').attr('disabled',false);
+	$('#Maildest_options_qta_gasALL').attr('disabled',false);
+	$('#Maildest_options_qta_gasSOME').attr('disabled',false);
 
-	if(dest_options_qta=='ALL') {
-
-		jQuery('#organization').css('display','none');
-		jQuery('#suppliersorganization').css('display','none');
-	}	
-	else {	
-		if(dest_options=='ORGANIZATIONS') {
-			jQuery('#organization').css('display','block');
-			jQuery('#suppliersorganization').css('display','none');
-			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
-		}
-		else	
-		if(dest_options=='SUPPLIERS') {
-			jQuery('#organization').css('display','none');
-			jQuery('#suppliersorganization').css('display','block');
-			
-			jQuery('#Maildest_options_qtaSOME').attr('disabled',false);
-		}
+	
+	if(dest_options=='ORGANIZATIONS') {
+		$('#organization').css('display','block');
+		$('#suppliersorganization').css('display','none');
+		
+		$('#dest_options_qta_supplier').hide();
+		$('#dest_options_qta_gas').show();			
+		$('#Maildest_options_qta_gasSOME').attr('disabled',false);
+		
+		if(dest_options_qta_gas=='ALL') {
+			$('#organization').css('display','none');
+			$('#suppliersorganization').css('display','none');
+		}			
+	}
+	else	
+	if(dest_options=='SUPPLIERS') {
+		$('#organization').css('display','none');
+		$('#suppliersorganization').css('display','block');
+		
+		$('#dest_options_qta_supplier').show();
+		$('#dest_options_qta_gas').hide();			
+		$('#Maildest_options_qta_supplierSOME').attr('disabled',false);
+		
+		if(dest_options_qta_supplier=='ALL') {
+			$('#organization').css('display','none');
+			$('#suppliersorganization').css('display','none');
+		}			
 	}
 }
 </script>
