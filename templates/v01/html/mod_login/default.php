@@ -41,7 +41,7 @@ if ($type == 'logout') {
         </a>
     </div>
 
-    <div id="box-account-dashboard" style="display:none;">
+    <div id="box-account-dashboard" style="display:none;" data-attr-type="after-login">
         <form action="<?php echo JRoute::_('index.php', true, $params->get('usesecure')); ?>" method="post" id="login-form" >
             <fieldset>
                 <div class="gb_S">
@@ -58,10 +58,26 @@ if ($type == 'logout') {
                         }
 						?>
                     </p>
-                    <?php
-                        if(!empty($cash)) {
-                        	echo '<p>';
-                            echo '<button id="cash-action" data-attr-url="/?option=com_cake&controller=Ajax&action=view_cashes_histories&format=notmpl" class="btn ';
+					
+					<div id="box-cash">Loading...</div>
+					<script id="tmpl-box-cash" type="x-tmpl-mustache">
+						<p>
+						{{#data.cash_btn_debito}}
+							<label id="cash-action" data-attr-url="/?option=com_cake&controller=Ajax&action=view_cashes_histories&format=notmpl" class="btn btn-danger">Debito verso la cassa {{{ data.user_cash_e }}}</label>						
+						{{/data.cash_btn_debito}}
+						{{#data.cash_btn_credito}}
+							<label id="cash-action" data-attr-url="/?option=com_cake&controller=Ajax&action=view_cashes_histories&format=notmpl" class="btn btn-primary">Credito verso la cassa {{{ data.user_cash_e }}}</label>						
+						{{/data.cash_btn_credito}}
+						</p>
+						<p>
+							<div class="alert alert-warning">{{{data.ctrl_limit.fe_msg}}}</div>
+						</p>
+					</script>
+                    <?php	
+						/*
+						if(!empty($cash)) {
+                            echo '<p>';
+                            echo '<button id="cash-action3" data-attr-url="/?option=com_cake&controller=Ajax&action=view_cashes_histories&format=notmpl" class="btn ';
                             if($cash->importo < 0)
                                 echo 'btn-danger">Debito verso la cassa '.$cash->importo_e;
                             else
@@ -69,7 +85,7 @@ if ($type == 'logout') {
                             echo '</button>';
                             echo '</p>';
                         }
-                        /*else
+                        else
                            echo '<span class="label label-info">Nessuna voce in cassa</span>'; */
                        ?>
                     <p>
@@ -113,7 +129,7 @@ else {
 
                     <div class="form-group input-group margin-bottom-sm margin-top-lg">
                         <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-                        <input class="form-control" type="text" name="username" placeholder="Userame" />
+                        <input class="form-control" type="text" name="username" placeholder="Username" />
                     </div>
                     <div class="form-group input-group margin-bottom-lg margin-top-lg">
                         <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
@@ -167,7 +183,7 @@ else {
 
 
     <div id="box-account-dashboard-forget" style="display:none;">
-        <form action="" method="get" id="login-form" >
+        <form action="" method="get" id="login-form-forget" >
             <fieldset>
                 <div class="gb_S">							
                     <p>
@@ -195,45 +211,76 @@ else {
 
 
 <script type="text/javascript">
-    jQuery(document).ready(function () {
-        jQuery('.btn-account').on('click', function () {
+$(document).ready(function () {
+	var url = '/api/cash_ctrl_limit?format=notmpl';
+	var tmpl_box_cash = $('#tmpl-box-cash').html();
+	
+	$('.btn-account').on('click', function () {
 
-            jQuery('#account-msg').css('display', 'none');
-            jQuery('#account-msg').html("");
+		$('#account-msg').css('display', 'none');
+		$('#account-msg').html("");
 
-            if (jQuery('#box-account-dashboard').css('display') == 'none') {
-                jQuery('#box-account-dashboard').show();
-                jQuery('.account-arrow').removeClass('fa-caret-down');
-                jQuery('.account-arrow').addClass('fa-caret-up');
-            } else {
-                jQuery('#box-account-dashboard').hide();
-                jQuery('.account-arrow').removeClass('fa-caret-up');
-                jQuery('.account-arrow').addClass('fa-caret-down');
-            }
+		if ($('#box-account-dashboard').css('display') == 'none') {
+			$('#box-account-dashboard').show();
+			$('.account-arrow').removeClass('fa-caret-down');
+			$('.account-arrow').addClass('fa-caret-up');
+			
+			/* Mustache */
+			Mustache.parse(tmpl_box_cash); 
+			
+			if($('#box-account-dashboard').attr("data-attr-type")=='after-login') {
+				$.ajax({url: url, 
+					  datatype:'json',
+					  success: function(data){
+							var data = JSON.parse(data);
+						
+							if(data.user_cash < 0)
+								data.cash_btn_debito = true;
+							else 
+								data.cash_btn_credito = true;
+						
+							var rendered = Mustache.render(tmpl_box_cash, {data: data});
 
-            return false;
-        });
+							/*console.log(rendered);*/
+							$('#box-cash').html(rendered);
+													
+							var modalCallerId = "cash-action";
+							var modalHeader = "Movimenti di cassa";
+							var modalBody = "";
+							var modalSubmitFunc = "";
+							var modalSubmitText = "";
 
-        jQuery('#btn-account-forget').on('click', function () {
-            jQuery('#box-account-dashboard').hide();
-            jQuery('#box-account-dashboard-forget').show();
+							objModal = new Modal(modalCallerId, modalHeader, modalBody, modalSubmitFunc, modalSubmitText);							
+					  },
+					  error:function(){
+						  $("#box-cash").html("");
+					  } 			
+				});
+			}
+			/* */
+			
+		} else {
+			$("#box-cash").html("");
+			$('#box-account-dashboard').hide();
+			$('.account-arrow').removeClass('fa-caret-up');
+			$('.account-arrow').addClass('fa-caret-down');
+		}
 
-            return false;
-        });
+		return false;
+	});
 
-        jQuery('#btn-account-return').on('click', function () {
-            jQuery('#box-account-dashboard-forget').hide();
-            jQuery('#box-account-dashboard').show();
+	$('#btn-account-forget').on('click', function () {
+		$('#box-account-dashboard').hide();
+		$('#box-account-dashboard-forget').show();
 
-            return false;
-        });
-		
-		var modalCallerId = "cash-action";
-		var modalHeader = "Movimenti di cassa";
-		var modalBody = "";
-		var modalSubmitFunc = "";
-		var modalSubmitText = "";
+		return false;
+	});
 
-		objModal = new Modal(modalCallerId, modalHeader, modalBody, modalSubmitFunc, modalSubmitText);		
-    });
+	$('#btn-account-return').on('click', function () {
+		$('#box-account-dashboard-forget').hide();
+		$('#box-account-dashboard').show();
+
+		return false;
+	});
+});
 </script>							
