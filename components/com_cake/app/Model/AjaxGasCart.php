@@ -51,7 +51,7 @@ class AjaxGasCart extends AppModel {
 		else
 			$results = $this->__getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id);
 		
-		$this->qta_prima_modifica = $this->__getQtaPrimaModifica($user,$results);
+		$this->qta_prima_modifica = $this->getQtaPrimaModifica($user,$results);
 		
 		if($forzare_validazione)
 			$esito = true;
@@ -224,15 +224,28 @@ class AjaxGasCart extends AppModel {
 				$cart['Cart']['qta'] = $this->qta;
 			$this->log .= "\r\n Result x INSERT ".print_r($cart, true);
 			
-			if ($this->Cart->save($cart)) {
+			/* 
+			 * ctrl Cassa 
+			 */
+			App::import('Model', 'CashesUser');
+			$CashesUser = new CashesUser;
 				
-				if(empty($this->returnJS))
-					$this->returnJS = 'managementCart(\'%s\',\'OK\',null);';
-				
-				$esito = true;
+			if($CashesUser->ctrlLimitCart($user, $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo'])) {
+				if ($this->Cart->save($cart)) {
+					
+					if(empty($this->returnJS))
+						$this->returnJS = 'managementCart(\'%s\',\'OK\',null);';
+					
+					$esito = true;
+				}
+				else
+					$esito = false;
 			}
-			else
+			else {
+				$msg = Configure::read('cart_msg_limit_cash');
+				$this->returnJS = 'managementCart(\'%s\',\'LIMIT-CASH\',"'.$msg.'");';
 				$esito = false;
+			}
 		} // qta>0
 	
 		return $esito;
@@ -256,15 +269,34 @@ class AjaxGasCart extends AppModel {
 			
 		$this->log .= "\r\n Result x UPDATE ".print_r($cart, true);
 
-		if ($this->Cart->save($cart)) {
-			if(empty($this->returnJS))
-				$this->returnJS = 'managementCart(\'%s\',\'OK\',null);';
-			
-			$esito = true;
-		}
-		else
-			$esito = false;
+		/* 
+		 * ctrl Cassa 
+		 * solo se aumento la qta
+		 */
+		$esito_ctrl_limit_cart = true; 
+		if($this->qta > $this->qta_prima_modifica) {
+			App::import('Model', 'CashesUser');
+			$CashesUser = new CashesUser;
+				
+			$esito_ctrl_limit_cart = $CashesUser->ctrlLimitCart($user, $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo']);		
+		} 
 
+		if($esito_ctrl_limit_cart) {
+			if ($this->Cart->save($cart)) {
+				if(empty($this->returnJS))
+					$this->returnJS = 'managementCart(\'%s\',\'OK\',null);';
+				
+				$esito = true;
+			}
+			else
+				$esito = false;
+		}
+		else {
+			$msg = Configure::read('cart_msg_limit_cash');
+			$this->returnJS = 'managementCart(\'%s\',\'LIMIT-CASH\',"'.$msg.'");';
+			$esito = false;
+		}
+		
 		return $esito;
 	}
 	
@@ -305,7 +337,7 @@ class AjaxGasCart extends AppModel {
 		return $esito;
 	}
 
-	private function __getQtaPrimaModifica($user,$results) {
+	public function getQtaPrimaModifica($user, $results) {
 		$qta_prima_modifica = 0;
 
 		if($this->backOffice) {
