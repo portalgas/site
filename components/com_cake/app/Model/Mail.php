@@ -23,21 +23,62 @@ class Mail extends AppModel {
 	}
 	
 	public function send($Email, $mail, $body_mail, $debug=false) {
-	
-		$Email->viewVars(array('content_info' => $this->__getContentInfo()));
-		
-		if(!Configure::read('mail.send')) $Email->transport('Debug');
-		
-		if($debug) 
-			echo "<br />mail TO: ".$mail." body_mail ".$body_mail;
 
-		try {
-			$Email->send($body_mail);
-		} catch (Exception $e) {
-			CakeLog::write("error", $e, array("mails"));
+		$results = [];
+		
+		$mail = trim($mail);
+		if(empty($mail)) {
+			$results['KO'] = 'Mail vuota!';
+			return $results;
 		}
+		
+		$exclude = false;
+		foreach(Configure::read('EmailExcludeDomains') as $emailExcludeDomain) {
+			self::d($mail.' - '.$emailExcludeDomain, $debug);
+			if(strpos($mail, $emailExcludeDomain)!==false) {
+				$exclude = true;
+				break;
+			}
+		}
+			
+		if($exclude)  {	
+			self::d("EXCLUDE mail TO: ".$mail, $debug);
+			$results['OK'] = $mail.' (modalita DEBUG)';
+		}
+		else {
+			$Email->viewVars(array('content_info' => $this->_getContentInfo()));
+			
+			if(!Configure::read('mail.send')) $Email->transport('Debug');
+			
+			if($debug) {
+				if (!Configure::read('mail.send'))
+					echo "<br />inviata a " . $mail . " (modalita DEBUG)\n";
+				else
+					echo "<br />inviata a " . $mail . " \n";
+									
+				echo "<br />mail TO: ".$mail." body_mail ".$body_mail;
+			}
+
+			try {
+				$Email->to($mail);
+				$Email->send($body_mail);
+				
+				if (!Configure::read('mail.send'))
+					$results['OK'] = $mail.' (modalita DEBUG)';
+				else
+					$results['OK'] = $mail;
+			} catch (Exception $e) {
+				$results['KO'] = $mail;
+				CakeLog::write("error", $e, array("mails"));
+			}
+		}
+		
+		self::d($results, $debug);
+		
+		return $results;
 	}
-	
+
+							
 	public function drawLogo($organization=null) {
 	
 		if(isset($organization))
@@ -49,7 +90,7 @@ class Mail extends AppModel {
 		return $str;
 	}
 	
-	private function __getContentInfo() {
+	public function _getContentInfo() {
 
 		App::import('Model', 'Msg');
 		$Msg = new Msg;	
@@ -67,13 +108,13 @@ class Mail extends AppModel {
 		return $str;
 	}
 	
-	public $belongsTo = array(
-			'User' => array(
+	public $belongsTo = [
+			'User' => [
 					'className' => 'User',
 					'foreignKey' => 'user_id',
 					'conditions' => 'User.organization_id = Mail.organization_id',
 					'fields' => '',
 					'order' => ''
-			)
-	);
+			]
+	];
 }

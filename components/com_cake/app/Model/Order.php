@@ -1,37 +1,21 @@
 <?php
 App::uses('AppModel', 'Model');
 
-/*
- * DROP TRIGGER IF EXISTS `k_orders_Trigger`;
- * DELIMITER |
- * CREATE TRIGGER `k_orders_Trigger` AFTER DELETE ON `k_orders`
- * FOR EACH ROW BEGIN
- * delete from k_summary_orders where order_id = old.id and organization_id = old.organization_id;
- * delete from k_summary_order_trasports where order_id = old.id and organization_id = old.organization_id;
- * delete from k_summary_order_cost_lesses where order_id = old.id and organization_id = old.organization_id;
- * delete from k_summary_order_cost_mores where order_id = old.id and organization_id = old.organization_id;
- * delete from k_articles_orders where order_id = old.id and organization_id = old.organization_id;
- * delete from k_request_payments_orders where order_id = old.id and organization_id = old.organization_id; 
- * delete from k_monitoring_orders where order_id = old.id and organization_id = old.organization_id;
- * delete from k_des_orders_organizations where order_id = old.id and organization_id = old.organization_id; 
- * END
- * |
- * DELIMITER ;
- */
-
 class Order extends AppModel {
+
+	public $virtualFields = ['name' => "CONCAT_WS(' - ',DATE_FORMAT(Order.data_inizio, '%W, %e %M %Y'),DATE_FORMAT(Order.data_fine, '%W, %e %M %Y'))"]; 		
 		
 	/*
 	 * ctrl se l'utente e' referente dell'ordine
 	 */
 	public function aclReferenteSupplierOrganization($user, $order_id) {
 
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],										'Order.id' => $order_id);		$options['recursive'] = -1;
-		$options['fields'] = array('Order.supplier_organization_id');
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];		$options['recursive'] = -1;
+		$options['fields'] = ['Order.supplier_organization_id'];
 		
-		$results = array();		try {			$results = $this->find('first', $options);
-			$supplier_organization_id = $results['Order']['supplier_organization_id'];						if(!in_array($supplier_organization_id,explode(",",$user->get('ACLsuppliersIdsOrganization'))))				return false;			else				return true;						}		catch (Exception $e) {			CakeLog::write('error',$e);		}	}
+		$results = [];		$results = $this->find('first', $options);
+		$supplier_organization_id = $results['Order']['supplier_organization_id'];				if(!in_array($supplier_organization_id,explode(",",$user->get('ACLsuppliersIdsOrganization'))))			return false;		else			return true;	}
 	
 	public function getOrderPermissionToEditUtente($order) {
 		if($order['state_code']=='OPEN' || $order['state_code']=='RI-OPEN-VALIDATE')
@@ -63,8 +47,8 @@ class Order extends AppModel {
 			return false;
 	}
 		
-	/*	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli	*/	public function isOrderToValidate($user, $order_id) {			App::import('Model', 'ArticlesOrder');		$ArticlesOrder = new ArticlesOrder;					$conditions = array('Order.id' => (int)$order_id,							'ArticlesOrder.pezzi_confezione' => '1');	
-		$results = array();		try {			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);			if(empty($results))				$isToValidate = false;			else				$isToValidate = true;						return $isToValidate;						}		catch (Exception $e) {			CakeLog::write('error',$e);		}
+	/*	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli	*/	public function isOrderToValidate($user, $order_id) {			App::import('Model', 'ArticlesOrder');		$ArticlesOrder = new ArticlesOrder;					$conditions = ['Order.id' => (int)$order_id,					   'ArticlesOrder.pezzi_confezione' => '1'];	
+		$results = [];		try {			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);			if(empty($results))				$isToValidate = false;			else				$isToValidate = true;						return $isToValidate;						}		catch (Exception $e) {			CakeLog::write('error',$e);		}
 	}
 	
 	/*
@@ -75,10 +59,10 @@ class Order extends AppModel {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 			
-		$conditions = array('Order.id' => (int)$order_id,
-							'ArticlesOrder.qta_massima_order' => '0');
+		$conditions = ['Order.id' => (int)$order_id,
+						'ArticlesOrder.qta_massima_order' => '0'];
 	
-		$results = array();
+		$results = [];
 		try {
 			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);
 			if(empty($results))
@@ -103,10 +87,10 @@ class Order extends AppModel {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 			
-		$conditions = array('Order.id' => (int)$order_id,
-							'ArticlesOrder.qta_minima_order' => '0');
+		$conditions =['Order.id' => (int)$order_id,
+							'ArticlesOrder.qta_minima_order' => '0'];
 	
-		$results = array();
+		$results = [];
 		try {
 			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);
 			if(empty($results))
@@ -120,136 +104,6 @@ class Order extends AppModel {
 		catch (Exception $e) {
 			CakeLog::write('error',$e);
 		}
-	}
-
-	/*
-	 * ctrl prima di trasmettere l'ordine
-	 * payToDelivery = POST / ON-POST
-	 * 		tesoriere da 'PROCESSED-POST-DELIVERY' a 'WAIT-PROCESSED-TESORIERE'
-	 * payToDelivery = ON / ON-POST
-	 * 		cassiere  da 'INCOMING-ORDER' a 'PROCESSED-ON-DELIVERY'
-	 * 		cassiere a tesoriere da 'PROCESSED-ON-DELIVERY' a 'WAIT-PROCESSED-TESORIERE'
-	*/
-	public function isOrderValidateToTrasmit($user, $order_id, $debug=false) {
-
-		$esito = array();
-		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-									   'Order.id' => $order_id);
-		$options['recursive'] = 0;
-		$results = $this->find('first', $options);
-		
-		if($debug) {
-			echo "<pre>isOrderValidateToTrasmit() ";
-			print_r($results);
-			echo "</pre>";
-		}
-		
-		if($results['Order']['state_code']=='PROCESSED-POST-DELIVERY')  /* tesoriere */
-			$destinatario = 'Tesoriere';
-		else
-		if($results['Order']['state_code']=='INCOMING-ORDER')    /* cassiere */
-			$destinatario = 'Cassiere';
-		else
-		if($results['Order']['state_code']=='PROCESSED-ON-DELIVERY')    /* tesoriere */
-			$destinatario = 'Tesoriere';
-		else
-			$destinatario = 'Tesoriere o al Cassiere';
-		
-		if($results['Order']['state_code']!='PROCESSED-POST-DELIVERY' && 
-		   $results['Order']['state_code']!='INCOMING-ORDER' && 
-		   $results['Order']['state_code']!='PROCESSED-ON-DELIVERY') {
-			$esito['msg'] = "L'ordine ha una stato che non consente il passaggio al ".$destinatario; 
-		}
-		else  {
-			$continua = true;
-			/*
-			 * TESORIERE - Se Delivery.sys == 'Y' (consegna da definire) in 'WAIT-PROCESSED-TESORIERE' non posso editare l'ordine
-			 * CASSIERE -  Se Delivery.sys == 'Y' (consegna da definire) in 'PROCESSED-ON-DELIVERY' non posso editare l'ordine
-			 */
-			if($results['Delivery']['sys']=='Y') {
-				$esito['msg'] = "L'ordine è associato ad una consegna ancora da definire<br />e non può essere trasmesso al $destinatario";
-				$continua = false;
-			}
-			else {
-				if($continua && $results['Order']['hasTrasport']=='Y' && floatval($results['Order']['trasport']) > 0) {
-					
-					if($debug) echo '<br />Order.hasTrasport '.$results['Order']['hasTrasport'].' '.$results['Order']['trasport'];
-					/*
-					 *  trasporto
-					 */		
-					App::import('Model', 'SummaryOrderTrasport');
-					$SummaryOrderTrasport = new SummaryOrderTrasport;
-					 
-					$totale = $SummaryOrderTrasport->select_totale_importo_trasport($user, $order_id, $debug);
-					if(floatval($totale)==0) {
-						$esito['actions'][1]['msg'] = "L'ordine gestisce il <b>trasporto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-						$esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=trasport&delivery_id='.$results['Order']['delivery_id'].'&order_id='.$results['Order']['id'];
-						$esito['actions'][1]['action_class'] = 'actionTrasport';
-						$esito['actions'][1]['action_label']= __('Management trasport');
-						$continua = false;
-					}
-				}
-				
-				if($continua && $results['Order']['hasCostMore']=='Y' && floatval($results['Order']['cost_more']) > 0) {
-					
-					if($debug) echo '<br />Order.hasCostMore '.$results['Order']['hasCostMore'].' '.$results['Order']['cost_more'];
-					/*
-					 *  costo aggiuntivo
-					 */
-					App::import('Model', 'SummaryOrderCostMore');
-					$SummaryOrderCostMore = new SummaryOrderCostMore;
-					 
-					$totale = $SummaryOrderCostMore->select_totale_importo_cost_more($user, $order_id, $debug);
-					if(floatval($totale)==0) {
-						$esito['actions'][1]['msg'] = "L'ordine gestisce un <b>costo aggiuntivo</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-						$esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_more&delivery_id='.$results['Order']['delivery_id'].'&order_id='.$results['Order']['id'];
-						$esito['actions'][1]['action_class'] = 'actionCostMore';
-						$esito['actions'][1]['action_label'] = __('Management cost_more');
-						$continua = false;
-					}
-				}
-				
-				if($continua && $results['Order']['hasCostLess']=='Y' && floatval($results['Order']['cost_less']) > 0) {
-					
-					if($debug) echo '<br />Order.hasCostLess '.$results['Order']['hasCostLess'].' '.$results['Order']['cost_less'];
-					/*
-					 *  sconto
-					 */
-					App::import('Model', 'SummaryOrderCostLess');
-					$SummaryOrderCostLess = new SummaryOrderCostLess;
-					 
-					$totale = $SummaryOrderCostLess->select_totale_importo_cost_less($user, $order_id, $debug);
-					if(floatval($totale)==0) {
-						$esito['actions'][1]['msg'] = "L'ordine gestisce uno <b>sconto</b> ma non l'hai suddiviso per i gasisti, clicca qui suddividerlo";
-						$esito['actions'][1]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Carts&action=cost_less&delivery_id='.$results['Order']['delivery_id'].'&order_id='.$results['Order']['id'];
-						$esito['actions'][1]['action_class'] = 'actionCostLess';
-						$esito['actions'][1]['action_label'] = __('Management cost_less');
-						$continua = false;
-					}
-				}
-				
-				if(!$continua) {
-					$esito['msg'] = "L'ordine non può essere trasmesso al $destinatario perchè non è completo!<br />";
-					
-					$esito['actions'][0]['msg'] = "Oppure non desideri più gestirlo, clicca qui per modificare l'anagrafica dell'ordine";
-					$esito['actions'][0]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$results['Order']['delivery_id'].'&order_id='.$results['Order']['id'];
-					$esito['actions'][0]['action_class'] = 'actionEdit';
-					$esito['actions'][0]['action_label'] = __('Edit Order');					
-				}
-				
-			}
-
-		}
-			
-		if($debug) {
-			echo "<pre>isOrderValidateToTrasmit() ";
-			print_r($esito);
-			echo "</pre>";
-		}
-		
-		return $esito;
 	}
 
 	/*
@@ -268,10 +122,10 @@ class Order extends AppModel {
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
 
-        $option = array();
-        $option['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-        						    'SuppliersOrganization.id' => $request['Order']['supplier_organization_id']);
-        $option['fields'] = array('SuppliersOrganization.mail_order_open');
+        $option = [];
+        $option['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+        						 'SuppliersOrganization.id' => $request['Order']['supplier_organization_id']];
+        $option['fields'] = ['SuppliersOrganization.mail_order_open'];
         $option['recursive'] = -1;
         $results = $SuppliersOrganization->find('first', $option);
 		if($debug) {
@@ -326,7 +180,7 @@ class Order extends AppModel {
 				    organization_id = ".(int)$user->organization['Organization']['id']."
 					and qta_forzato > 0
 				    and order_id = ".(int)$order_id;
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		try {
 			$results = $this->query($sql);
 		}
@@ -347,7 +201,7 @@ class Order extends AppModel {
 				WHERE
 				    organization_id = ".(int)$user->organization['Organization']['id']."
 				    and order_id = ".(int)$order_id;
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		try {
 			$results = $this->query($sql);
 		}
@@ -365,7 +219,7 @@ class Order extends AppModel {
 		App::import('Model', 'SummaryOrderTrasport');
 		$SummaryOrderTrasport = new SummaryOrderTrasport;
 		
-		$SummaryOrderTrasport->delete_trasport_to_order($user, $order_id, $debug);
+		$SummaryOrderTrasport->delete_importo_to_order($user, $order_id, $debug);
 		
 		/*
 		 * ricalcolo le ArticlesOrder.qta_cart e ArticlesOrder.stato (QTAMAXORDER)
@@ -373,7 +227,7 @@ class Order extends AppModel {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 		 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
 										'ArticlesOrder.order_id' => $order_id);
 		$options['recursive'] = -1;
@@ -407,29 +261,21 @@ class Order extends AppModel {
 			
 		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
 		
-		$options = array();
-		$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
-										'ArticlesOrder.order_id' => $order_id,
-										'ArticlesOrder.stato != ' => 'N',
-										'Article.stato' => 'Y');
+		$options = [];
+		$options['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
+									'ArticlesOrder.order_id' => $order_id,
+									'ArticlesOrder.stato != ' => 'N',
+									'Article.stato' => 'Y'];
 		$options['recursive'] = 1;
 		$totArticlesOrders = $ArticlesOrder->find('count', $options);
-		if($debug) {
-			echo "<pre>totArticlesOrders (totale articoli associati all'ordine) ";
-			print_r($totArticlesOrders);
-			echo "</pre>";			
-		}
+		self::d("totArticlesOrders (totale articoli associati all'ordine) ".$totArticlesOrders, $debug);
 		
 		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
 		
-		$options['conditions'] += array('not' => array('Article.img1' => null));
+		$options['conditions'] += ['not' => ['Article.img1' => null]];
 		$options['recursive'] = 1;
 		$totArticlesImg = $ArticlesOrder->find('count', $options);
-		if($debug) {
-			echo "<pre>totArticlesImg (totale articoli con IMG associati all'ordine)  ";
-			print_r($totArticlesImg);
-			echo "</pre>";
-		}
+		self::d("totArticlesImg (totale articoli con IMG associati all'ordine) ".$totArticlesImg, $debug);
 
 		/*
 		 * % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
@@ -450,12 +296,10 @@ class Order extends AppModel {
 		else
 			$type_draw = 'SIMPLE';
 		
-		if($debug) {
-			echo "<br />perc_article_con_img_tollerata: se ci sono almeno ".$perc_article_con_img_tollerata." articoli con img => COMPLETE";
-			echo "<br />Configure::read(ArticlesOrderWithImgToTypeDrawComplete) ".Configure::read('ArticlesOrderWithImgToTypeDrawComplete');
-			echo "<br />Configure::read(ArticlesOrderToTypeDrawComplete) ".Configure::read('ArticlesOrderToTypeDrawComplete');
-			echo "<br />type_draw $type_draw";
-		}
+		self::d("perc_article_con_img_tollerata: se ci sono almeno ".$perc_article_con_img_tollerata." articoli con img => COMPLETE", $debug);
+		self::d("Configure::read(ArticlesOrderWithImgToTypeDrawComplete) ".Configure::read('ArticlesOrderWithImgToTypeDrawComplete'), $debug);
+		self::d("Configure::read(ArticlesOrderToTypeDrawComplete) ".Configure::read('ArticlesOrderToTypeDrawComplete'), $debug);
+		self::d("type_draw $type_draw", $debug);
 		
 		if($debug)  exit;
 		
@@ -476,9 +320,7 @@ class Order extends AppModel {
 				WHERE
 					organization_id = ".(int)$user->organization['Organization']['id']."
 				    and id = ".(int)$order_id;
-		if($debug)
-			echo "<br />".$sql;
-		
+		self::d($sql, $debug);		
 		try {
 			$results = $this->query($sql);
 				
@@ -499,12 +341,13 @@ class Order extends AppModel {
 	
 		$aggregate=false;
 		$split=false;
-		
+			
+					
 		/*
 		 * se c'e' stato un cambiamento 
 		 *    cancello il precedente
 		 */
-		if($results['Order']['typeGest']!=$results['Order']['OldResults']) {
+		if($results['Order']['typeGest']!=$OldResults['Order']['typeGest']) {
 		
 			switch ($results['Order']['typeGest']) {
 				case "AGGREGATE":
@@ -551,40 +394,37 @@ class Order extends AppModel {
 	 */
 	public function getTotImporto($user, $order_id, $debug=false) {
 		
+		if(empty($user))
+			self::x("Order::getTotImporto() user empty!");
+			
+		$importo_totale = 0;
+		
 		/*
 		 * dati dell'ordine
 		 */
 		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-										'Order.id' => $order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
 		$options['recursive'] = -1;
 		$order = $Order->find('first', $options);
 	
 		/*
-		 * in teoria x gli ordini type_gest = AGGREGATE
-		 * ma potrebbe averlo cambiato il tesoriere il quale elabora importi aggregati
+		 * SummaryOrderAggregate: estraggo eventuali dati aggregati 
 		 */
-		App::import('Model', 'SummaryOrder');
-		$SummaryOrder = new SummaryOrder;
+		App::import('Model', 'SummaryOrderAggregate');
+		$SummaryOrderAggregate = new SummaryOrderAggregate;
 		
-		$resultsSummaryOrder = $SummaryOrder->select_to_order($user, $order_id); // se l'ordine e' ancora aperto e' vuoto
+		$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $order_id); // se l'ordine e' ancora aperto e' vuoto
 		
-		if($debug) echo "<h3>ctrl se dati in SummaryOrder </h3>";
-		
-		$importo_totale = 0;
-		if(!empty($resultsSummaryOrder)) {
-			if($debug) echo "SummaryOrder trovati dati: calcolo il totale";
-			foreach ($resultsSummaryOrder as  $result) 
-				$importo_totale += $result['SummaryOrder']['importo'];
+		if(!empty($summaryOrderAggregateResults)) {
+			foreach ($summaryOrderAggregateResults as  $summaryOrderAggregateResult) 
+				$importo_totale += $summaryOrderAggregateResult['SummaryOrderAggregate']['importo'];
 				
-			if($debug) echo "<br />importo_totale ".$importo_totale;		
+			self::l("SummaryOrderAggregate->importo_totale ".$importo_totale, $debug);		
 		}
 		else {
-			if($debug) echo "SummaryOrder NON trovati dati: estraggo i dati dal Carrello (dell utente e forzati dal referente)";
-
 			/*
 			 * estrae l'importo totale degli acquisti (qta e qta_forzato, importo_forzato) di un ordine
 			*/
@@ -594,20 +434,27 @@ class Order extends AppModel {
 			$conditions['Order.id'] = $order_id;
 			$importo_totale = $Cart->getTotImporto($user, $conditions, $debug);
 			
-			if($debug) echo "<br />importo_totale ".$importo_totale;	
+			self::l("Cart->getTotImporto ".$importo_totale, $debug);	
+		}
 			
-			/*
-			 * trasporto
-			*/
-			if($order['Order']['hasTrasport']=='Y') 
-				$importo_totale += $order['Order']['trasport'];
-				
-			if($order['Order']['hasCostMore']=='Y') 
-				$importo_totale += $order['Order']['cost_more'];
-				
-			if($order['Order']['hasCostLess']=='Y') 
-				$importo_totale -= $order['Order']['cost_less'];
-		}	
+		/*
+		 * trasporto
+		*/
+		if($order['Order']['hasTrasport']=='Y') 
+			$importo_totale += $order['Order']['trasport'];
+			
+		if($order['Order']['hasCostMore']=='Y') 
+			$importo_totale += $order['Order']['cost_more'];
+			
+		if($order['Order']['hasCostLess']=='Y') 
+			$importo_totale -= $order['Order']['cost_less'];
+		
+		/* 
+		 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
+		 */
+		if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
+		
+		self::l("Order->getTotImporto ".$importo_totale, $debug);	
 		
 		return $importo_totale;
 	}
@@ -616,7 +463,7 @@ class Order extends AppModel {
 	 * estrae gli ordini con la consegna ancora da definire (Delivery.sys = Y)
 	*/
 	public function getOrdersDeliverySys($user) {
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
 									   'Delivery.organization_id'=>$user->organization['Organization']['id'],
 									   'Delivery.sys'=> 'Y',
@@ -628,50 +475,12 @@ class Order extends AppModel {
 		
 		return $results;
 	}
-	
-		
-	/*
-	 * al'ordine e' cambiata la consegna,
-	 * aggiorno con il nuovo delivery_id le tabelle
-	 *
-	 * k_summary_orders 					 
-	 * k_request_payments_orders
-	 */				
-	public function updateTablesToChangeDeliverId($user, $order_id, $delivery_id, $debug=false) {
-
-		try {
-			$sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders  
-					SET delivery_id = $delivery_id
-					WHERE 
-						organization_id = ".(int)$user->organization['Organization']['id']."
-				    	and order_id = ".(int)$order_id;
-			if($debug)
-				echo "<br />".$sql;
-			$results = $this->query($sql);
-			
-
-			$sql = "UPDATE ".Configure::read('DB.prefix')."request_payments_orders 
-					SET delivery_id = $delivery_id
-					WHERE 
-						organization_id = ".(int)$user->organization['Organization']['id']."
-				    	and order_id = ".(int)$order_id;
-			if($debug)
-				echo "<br />".$sql;
-			$results = $this->query($sql);
-		}
-		catch (Exception $e) {
-			CakeLog::write('error',$e);
-			return false;
-		}
-		
-		return true;
-	}
 
 	/*
 	 *  calcola il totale quantita di un ordine 
 	 *  	per il confronto con Order.quantita_massima
 	 */
-	 function getTotQuantitaArticlesOrder($user, $orderResult, $debug) {
+	 function getTotQuantitaArticlesOrder($user, $orderResult, $debug=false) {
 	
 		$sqlUmRange = '';
 		if($orderResult['Order']['qta_massima_um']=='KG')
@@ -683,7 +492,7 @@ class Order extends AppModel {
 		if($orderResult['Order']['qta_massima_um']=='PZ')
 			$sqlUmRange = " AND Article.um = 'PZ' "; 
 			
-		$sql = "SELECT Article.um, ArticlesOrder.qta_cart  
+		$sql = "SELECT Article.name, Article.qta, Article.um, ArticlesOrder.qta_cart  
 				FROM ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, 
 					 ".Configure::read('DB.prefix')."articles as Article 
 				WHERE ArticlesOrder.article_id = Article.id  
@@ -708,15 +517,23 @@ class Order extends AppModel {
 		 */
 		$totQuantita = 0;
 		foreach ($articlesResults as $numArticlesResults => $articlesResult) {
+			
+			if($debug) {
+				echo "<br />".$articlesResult['Article']['name']." da ".$articlesResult['Article']['qta']." ".$articlesResult['Article']['um']." - qta_cart ".$articlesResult['ArticlesOrder']['qta_cart']." : ".$totQuantita;
+			}
+				
 			if($articlesResult['Article']['um']=='KG' || $articlesResult['Article']['um']=='LT')
 				$articlesResult['ArticlesOrder']['qta_cart'] = ($articlesResult['ArticlesOrder']['qta_cart'] * 1000);
 			else
 			if($articlesResult['Article']['um']=='HG' || $articlesResult['Article']['um']=='DL')
 				$articlesResult['ArticlesOrder']['qta_cart'] = ($articlesResult['ArticlesOrder']['qta_cart'] * 100);
 				
-			$totQuantita += ($articlesResult['ArticlesOrder']['qta_cart']); 
+			$totQuantita += ($articlesResult['Article']['qta'] * $articlesResult['ArticlesOrder']['qta_cart']); 
 		}
 		
+		if($debug) 
+			echo '<br /> TOT QUANTITA '.$totQuantita;
+
 		return $totQuantita;
 	}	
 
@@ -725,7 +542,7 @@ class Order extends AppModel {
 	 *  calcola il totale importo di un ordine 
 	 *  	per il confronto con Order.importo_massimo
 	 */
-	function getTotImportoArticlesOrder($user, $order_id, $debug = false) {
+	public function getTotImportoArticlesOrder($user, $order_id, $debug = false) {
 			
 		$sql = "SELECT sum(Article.prezzo * ArticlesOrder.qta_cart) as totImporto 
 				FROM ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, 
@@ -796,7 +613,7 @@ class Order extends AppModel {
 		),
 	);
 
-	function date_comparison($field=array(), $operator, $field2) {
+	function date_comparison($field=[], $operator, $field2) {
 		foreach( $field as $key => $value1 ){
 			$value2 = $this->data[$this->alias][$field2];
 			
@@ -809,7 +626,7 @@ class Order extends AppModel {
 		return true;
 	}
 
-	function date_comparison_to_delivery($field=array(), $operator) {
+	function date_comparison_to_delivery($field=[], $operator) {
 		foreach( $field as $key => $value ){
 			if(isset($this->data[$this->alias]['delivery_id'])) { // capita se l'elenco delle consegne è vuoto
 				$delivery_id = $this->data[$this->alias]['delivery_id'];
@@ -828,26 +645,26 @@ class Order extends AppModel {
 		return true;		
 	}
 	
-	function tot_articles($field=array()) {
+	function tot_articles($field=[]) {
 		
 		/*
 		 * se e' DES posso anche non avere articoli associati
 		 */
 		if(!empty($this->data[$this->alias]['des_order_id'])) 
 			return true;
-			
+
 		foreach( $field as $key => $value) {
 			$supplier_organization_id = $value;
 			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];			
 			App::import('Model', 'SuppliersOrganization');			$SuppliersOrganization = new SuppliersOrganization;
-			$results = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id);						}
+			$articleCount = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id);					}
 		
-		if($results['totArticles']==0)			return false;
+		if($articleCount==0)			return false;
 		else
 			return true;		
 	}
 	
-	function order_duplicate($field=array()) {
+	function order_duplicate($field=[]) {
 		foreach( $field as $key => $value) {
 			
 			$supplier_organization_id = $value;
@@ -857,19 +674,19 @@ class Order extends AppModel {
 			App::import('Model', 'Order');
 			$Order = new Order;
 			
-			$options = array();
-			$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-											'Order.delivery_id' => $delivery_id,
-											'Order.supplier_organization_id' => $supplier_organization_id,
-											'Order.isVisibleBackOffice' => 'Y');
-	
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
+									'Order.delivery_id' => $delivery_id,
+									'Order.supplier_organization_id' => $supplier_organization_id,
+									'Order.isVisibleBackOffice' => 'Y'];
+
 			/*
 			 * per edit
 			 */
 			if(isset($this->data[$this->alias]['id']))
-				$options['conditions'] += array('Order.id !=' => $this->data[$this->alias]['id']);
+				$options['conditions'] += ['Order.id !=' => $this->data[$this->alias]['id']];
 				
-			$options['fields'] = array('id');
+			$options['fields'] = ['Order.id'];
 			$options['recursive'] = -1;
 			$results = $Order->find('first', $options);
 				
@@ -881,8 +698,6 @@ class Order extends AppModel {
 			return true;		
 	}	
 				
-	public $virtualFields = array('name' => "CONCAT_WS(' - ',DATE_FORMAT(Order.data_inizio, '%W, %e %M %Y'),DATE_FORMAT(Order.data_fine, '%W, %e %M %Y'))"); 		
-
 	public $belongsTo = array(
 		'SuppliersOrganization' => array(
 			'className' => 'SuppliersOrganization',
@@ -933,6 +748,10 @@ class Order extends AppModel {
 
 					$results[$key]['Order']['tesoriere_importo_pay_'] = number_format($val['Order']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tesoriere_importo_pay_e'] = $results[$key]['Order']['tesoriere_importo_pay_'].' &euro;';
+
+					$results[$key]['Order']['tesoriere_fattura_importo_'] = number_format($val['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['Order']['tesoriere_fattura_importo_e'] = $results[$key]['Order']['tesoriere_fattura_importo_'].' &euro;';
+
 
 					$results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';					
@@ -990,7 +809,17 @@ class Order extends AppModel {
 					$results[$key]['tesoriere_importo_pay_'] = number_format($val['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['tesoriere_importo_pay_e'] = $results['Order']['tesoriere_importo_pay_'].' &euro;';
 				}
-
+				
+				if(isset($val['Order']['tesoriere_fattura_importo'])) {
+					$results[$key]['Order']['tesoriere_fattura_importo_'] = number_format($val['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['Order']['tesoriere_fattura_importo_e'] = $results[$key]['Order']['tesoriere_fattura_importo_'].' &euro;';
+				}
+				else
+				if(isset($val['tesoriere_fattura_importo'])) {
+					$results[$key]['tesoriere_fattura_importo_'] = number_format($val['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['tesoriere_fattura_importo_e'] = $results['Order']['tesoriere_fattura_importo_'].' &euro;';
+				}
+				
 				if(isset($val['Order']['tot_importo'])) {
 					$results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';
@@ -1005,8 +834,8 @@ class Order extends AppModel {
 		
 		return $results;
 	}
-
-	public function beforeValidate($options = array()) {
+	
+	public function beforeValidate($options = []) {
 		 
 		if (!empty($this->data['Order']['data_inizio']))
 			$this->data['Order']['data_inizio'] = $this->data['Order']['data_inizio_db'];
@@ -1023,7 +852,7 @@ class Order extends AppModel {
 		return true;
 	}
 		
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['Order']['data_inizio'])) 
 	    	$this->data['Order']['data_inizio'] = $this->data['Order']['data_inizio_db'];
 

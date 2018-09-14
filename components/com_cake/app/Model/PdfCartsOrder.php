@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class PdfCartsOrder extends AppModel {
 
 	public $validate = array(
@@ -88,7 +89,7 @@ class PdfCartsOrder extends AppModel {
 		return $results;
 	}
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['PdfCartsOrder']['order_importo']))
 			$this->data['PdfCartsOrder']['order_importo'] = $this->importoToDatabase($this->data['PdfCartsOrder']['order_importo']);
 		

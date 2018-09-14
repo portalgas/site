@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DocsCreate extends AppModel {
 
 	public $useTable = 'docs';

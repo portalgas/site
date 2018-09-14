@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class OrdersAction extends AppModel {
 
 	public $validate = array(
@@ -85,5 +86,21 @@ class OrdersAction extends AppModel {
 			),
 		),
 	);
+	
+	public $hasMany = array(
+		'TemplatesOrdersStatesOrdersAction' => array(
+			'className' => 'TemplatesOrdersStatesOrdersAction',
+			'foreignKey' => 'order_action_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		)
+	);	
 
 }

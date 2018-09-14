@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+
 App::import('Model', 'Cart');
 
 class AjaxGasCart extends AppModel {
@@ -47,25 +48,25 @@ class AjaxGasCart extends AppModel {
 		$this->log .= "\r\n action $action";
 		
 		if($action=='INSERT')
-			$results = $this->__getArticlesOrder($user, $order_id, $article_organization_id, $article_id);
+			$results = $this->_getArticlesOrder($user, $order_id, $article_organization_id, $article_id);
 		else
-			$results = $this->__getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id);
+			$results = $this->_getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id);
 		
 		$this->qta_prima_modifica = $this->getQtaPrimaModifica($user,$results);
 		
 		if($forzare_validazione)
 			$esito = true;
 		else
-			$esito = $this->__ctrlValidita($user, $results, $action);
+			$esito = $this->_ctrlValidita($user, $results, $action);
 		
 		if($esito) {
 			if($action == 'INSERT') 
-				$esito = $this->__insertCart($user, $user_id, $results);  // I N S E R T
+				$esito = $this->_insertCart($user, $user_id, $results);  // I N S E R T
 			else {
 				if($this->qta==0)   //  D E L E T E
-					$esito = $this->__deleteCart($user, $results);
+					$esito = $this->_deleteCart($user, $results);
 				else //  U P D A T E 
-					$esito = $this->__updateCart($user, $results);
+					$esito = $this->_updateCart($user, $results);
 			}
 			
 			App::import('Model', 'ArticlesOrder');
@@ -91,7 +92,7 @@ class AjaxGasCart extends AppModel {
 	 * $action = INSERT
 	 * $action = UPDATE-DELETE
 	 */
-	private function __ctrlValidita($user, $results, $action) {
+	private function _ctrlValidita($user, $results, $action) {
 		
 		$esito=true;
 		
@@ -106,14 +107,14 @@ class AjaxGasCart extends AppModel {
 		if($results['ArticlesOrder']['stato']=='N') {
 			$msg = sprintf(Configure::read('cart_msg_stato_N'), $results['ArticlesOrder']['name']);
 			$this->returnJS = 'managementCart(\'%s\',\'ERRORE-STATO-N\',"'.$msg.'");';
-			$this->log .= "\r\n __ctrlValidita ArticlesOrder.stato = N";
+			$this->log .= "\r\n _ctrlValidita ArticlesOrder.stato = N";
 			$esito = false;
 		}
 		else
 		if($results['ArticlesOrder']['stato']=='N' || $results['Cart']['stato']=='N') {
 			$msg = sprintf(Configure::read('cart_msg_stato_N'), $results['ArticlesOrder']['name']);
 			$this->returnJS = 'managementCart(\'%s\',\'ERRORE-STATO-N\',"'.$msg.'");';
-			$this->log .= "\r\n __ctrlValidita ArticlesOrder.stato = N || Cart.stato = N";
+			$this->log .= "\r\n _ctrlValidita ArticlesOrder.stato = N || Cart.stato = N";
 			$esito = false;
 		}
 		else
@@ -125,13 +126,13 @@ class AjaxGasCart extends AppModel {
 			if($results['ArticlesOrder']['stato']=='QTAMAXORDER' && ($this->qta > $this->qta_prima_modifica)) {
 				$msg = sprintf(Configure::read('cart_msg_qtamax_order_stop'), $results['ArticlesOrder']['name'], $results['ArticlesOrder']['qta_massima_order']);
 				$this->returnJS = 'managementCart(\'%s\',\'ERRORE-QTAMAXORDER-STOP\',"'.$msg.'");';
-				$this->log .= "\r\n __ctrlValidita ArticlesOrder.stato = QTAMAXORDER e qta aumentata";
+				$this->log .= "\r\n _ctrlValidita ArticlesOrder.stato = QTAMAXORDER e qta aumentata";
 				$esito = false;
 			}
 			if($results['ArticlesOrder']['stato']=='LOCK' && ($this->qta > $this->qta_prima_modifica)) {
 				$msg = sprintf(Configure::read('cart_msg_block_stop'), $results['ArticlesOrder']['name']);
 				$this->returnJS = 'managementCart(\'%s\',\'ERRORE-LOCK-STOP\',"'.$msg.'");';
-				$this->log .= "\r\n __ctrlValidita Cart.stato = LOCK e qta aumentata";
+				$this->log .= "\r\n _ctrlValidita Cart.stato = LOCK e qta aumentata";
 				$esito = false;
 			}					
 		}	
@@ -141,7 +142,7 @@ class AjaxGasCart extends AppModel {
 		if($this->qta>0 && ($this->qta < $results['ArticlesOrder']['qta_minima'])) {  // ctrl qta minima riferita all'acquisto del singolo gasista
 			$msg = sprintf(Configure::read('cart_msg_qtamin'), $results['ArticlesOrder']['name'],$results['ArticlesOrder']['qta_minima'], $this->qta);
 			$this->returnJS = 'managementCart(\'%s\',\'ERRORE-QTAMIN\',"'.$msg.'");';
-			$this->log .= "\r\n __ctrlValidita ArticlesOrder.qta_minima inferiore ($this->qta) ";
+			$this->log .= "\r\n _ctrlValidita ArticlesOrder.qta_minima inferiore ($this->qta) ";
 			$esito = false;
 		}	
 		else
@@ -152,7 +153,7 @@ class AjaxGasCart extends AppModel {
 			if($this->qta>0 && ($this->qta > $results['ArticlesOrder']['qta_massima'])) {  // ctrl qta massima riferita all'acquisto del singolo gasista
 				$msg = sprintf(Configure::read('cart_msg_qtamax'), $results['ArticlesOrder']['name'],$results['ArticlesOrder']['qta_massima'], $this->qta);
 				$this->returnJS = 'managementCart(\'%s\',\'ERRORE-QTAMAX\',"'.$msg.'");';
-				$this->log .= "\r\n __ctrlValidita ArticlesOrder.qta_massima superiore ($this->qta) ";
+				$this->log .= "\r\n _ctrlValidita ArticlesOrder.qta_massima superiore ($this->qta) ";
 				$esito = false;
 			}		
 		}
@@ -176,7 +177,7 @@ class AjaxGasCart extends AppModel {
 	/*
 	 * se INSERT
 	 */
-	private function __getArticlesOrder($user, $order_id, $article_organization_id, $article_id) {			$this->log .= "\r\n __getArticlesOrder";	
+	private function _getArticlesOrder($user, $order_id, $article_organization_id, $article_id) {			$this->log .= "\r\n _getArticlesOrder";	
 		App::import('Model', 'ArticlesOrder');		$ArticlesOrder = new ArticlesOrder();
 				$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],										'ArticlesOrder.order_id' => $order_id,
 										'ArticlesOrder.article_organization_id' => $article_organization_id,
@@ -188,9 +189,9 @@ class AjaxGasCart extends AppModel {
 	/*
 	 * se UPDATE-DELETE
 	 */
-	private function __getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id) {
+	private function _getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id) {
 
-		$this->log .= "\r\n __getCartArticlesOrder";
+		$this->log .= "\r\n _getCartArticlesOrder";
 		
 		$options['conditions'] = array('Cart.organization_id' => $user->organization['Organization']['id'],										'Cart.order_id' => $order_id,
 										'Cart.article_organization_id' => $article_organization_id,
@@ -202,9 +203,9 @@ class AjaxGasCart extends AppModel {
 		return $results;
 	}
 	
-	private function __insertCart($user, $user_id, $results) {
+	private function _insertCart($user, $user_id, $results) {
 	
-		$this->log .= "\r\n __insertCart";
+		$this->log .= "\r\n _insertCart";
 		$esito = true;
 
 		if($this->qta==0) {
@@ -251,10 +252,10 @@ class AjaxGasCart extends AppModel {
 		return $esito;
 	}
 	
-	private function __updateCart($user, $results) {
+	private function _updateCart($user, $results) {
 		$esito = true;
 		
-		$this->log .= "\r\n__updateCart";
+		$this->log .= "\r\n_updateCart";
 		
 		$cart['Cart']['organization_id'] = $user->organization['Organization']['id'];
 		$cart['Cart']['user_id']    = $results['Cart']['user_id'];
@@ -300,7 +301,7 @@ class AjaxGasCart extends AppModel {
 		return $esito;
 	}
 	
-	private function __deleteCart($user, $results) {
+	private function _deleteCart($user, $results) {
 		$esito = true;
 	
 		if($this->backOffice) {
