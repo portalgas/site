@@ -1,23 +1,25 @@
 <?php
-
 App::uses('Controller', 'Controller');
 App::uses('UtilsCommons', 'Lib');
 App::uses('UtilsCrons', 'Lib');  // ho la gestione degli stati di Order o ProdDelivery
 
 class AppController extends Controller {
 
-    public $components = array('Session',
+    public $components = ['Session',
         'Cookie',
         'ActionsOrder',
         'ActionsProdDelivery',
-        'UserGroups');
-    public $helpers = array('App',
+        'Users',
+        'UserGroups'];
+		
+    public $helpers = ['App',
         'Html',
         'Form',
         'Session',
         'Time',
         'Ajax',
-		'MenuOrders');
+		'MenuOrders'];
+		
     public $utilsCommons;
 
     /*
@@ -36,13 +38,52 @@ class AppController extends Controller {
     public $des_supplier_id;
     public $des_id;
 
+	public static function d($var, $debug=false) { // idem in AppController / AppModel / AppHelper
+		if($debug) {		
+			if(is_array ($var)) {
+				foreach($var as $k => $v) {
+					echo "<pre>";
+					print_r($k);
+					echo '  ';
+					print_r($v);
+					echo "</pre>";
+				}
+			}
+			else {			
+				echo "<pre>";
+				print_r($var);
+				echo "</pre>";
+			}
+		}
+	}
+
+	public static function dd($var, $debug=true) { // idem in AppController / AppModel / AppHelper
+		self::d($var, true);
+	}
+		
+	public static function l($var, $debug=false) { // idem in AppController / AppModel / AppHelper
+		if(Configure::read('developer.mode') || $debug) {
+			if(is_array ($var)) 
+				CakeLog::write('debug', print_r($var, true), ['myDebug']);
+			else 
+				CakeLog::write('debug', $var, ['myDebug']);
+		}
+	}
+	
+	public static function x($var) { // idem in AppController / AppModel / AppHelper
+		die($var);
+	}
+		
     public function beforeFilter() {
 
         $debug = false;
 
         date_default_timezone_set('Europe/Rome');
 
-        if (empty($this->utilsCommons))
+		$browsers = $this->getBrowser();
+		$this->set(compact('browsers'));
+		
+		if (empty($this->utilsCommons))
             $this->utilsCommons = new UtilsCommons();
 
         $this->user = JFactory::getUser();
@@ -57,51 +98,45 @@ class AppController extends Controller {
             unset($this->userGroups[Configure::read('group_id_root_supplier')]);
 
 
-        if ($debug) {
-            echo "<pre>------- BEFORE APPController ---------";
-            print_r($this->user);
-            echo "</pre>------- BEFORE APPController ---------";
-        }
-
+        self::d(["------- BEFORE APPController ---------", $this->user], $debug);
+		
         /*
          *  B A C K O F F I C E
          */
         if ($this->params['prefix'] == 'admin') {
 
-            /*
-             * D E S, se ho + des 
+			/*
+             * D E S 
              */
-            if (isset($this->request->data['DesOrganization']['des_id'])) {
-                $this->user->set('des_id', $this->request->data['DesOrganization']['des_id']);
-                $this->__addParamsDesJUser($this->user, $debug);
-            }
-
-            if ($this->__resourcesDesEnabled($this->name, $this->action) && empty($this->user->des_id)) {
+			if(isset($this->request->data['DesOrganization']['des_id'])) {
+				$this->user->set('des_id', $this->request->data['DesOrganization']['des_id']); // ho scelto il DES
+				$this->user = $this->Users->setUserDes($this->user, $debug);
+			}
+		
+            if ($this->_resourcesDesEnabled($this->name, $this->action, $debug) && empty($this->user->des_id)) {
                 /*
                  * se sono associato ad un solo DES
                  */
                 App::import('Model', 'DesOrganization');
                 $DesOrganization = new DesOrganization;
 
-                $options = array();
-                $options['conditions'] = array('DesOrganization.organization_id' => $this->user->organization['Organization']['id']);
-                $options['fields'] = array('DesOrganization.des_id');
+                $options = [];
+                $options['conditions'] = ['DesOrganization.organization_id' => $this->user->organization['Organization']['id']];
+                $options['fields'] = ['DesOrganization.des_id'];
                 $options['recursive'] = -1;
                 $desOrganizationResults = $DesOrganization->find('all', $options);
-                /*
-                  echo "<pre>";
-                  print_r($desOrganizationResults);
-                  echo "</pre>";
-                 */
+                
+				self::d($desOrganizationResults, $debug);
+				
                 if (count($desOrganizationResults) == 1) {
                     $des_id = $desOrganizationResults[0]['DesOrganization']['des_id'];
-                    // echo "<br />des_id ".$des_id;
+                    self::d("des_id ".$des_id, $debug);
                     $this->user->set('des_id', $des_id);
-                    $this->__addParamsDesJUser($this->user, $debug);
+                    $this->user = $this->Users->setUserDes($this->user, $debug);
                 } else {
                     $this->Session->setFlash(__('msg_des_not_selected'));
-                    if (!$debug)
-                        $this->myRedirect(array('controller' => 'DesOrganizations', 'action' => 'choice', 'admin' => true));
+                    if(!$debug)
+                        $this->myRedirect(['controller' => 'DesOrganizations', 'action' => 'choice', 'admin' => true]);
                 }
             }
 
@@ -109,19 +144,19 @@ class AppController extends Controller {
              * root
              */
             if ($this->isRoot()) {
-
-                if (!$this->__resourcesRootEnabled($this->name, $this->action) && empty($this->user->organization)) {
+                if (!$this->_resourcesRootEnabled($this->name, $this->action) && empty($this->user->organization)) {
                     $this->Session->setFlash(__('msg_organization_not_selected'));
-                    if (!$debug)
-                        $this->myRedirect(array('controller' => 'organizations', 'action' => 'choice', 'admin' => true));
+                    if(!$debug)
+                        $this->myRedirect(['controller' => 'organizations', 'action' => 'choice', 'admin' => true]);
                 }
 
                 /*
                  * carica l'organization in Session solo se cambia
                  */
                 if (isset($this->request->data['Organization']['organization_id'])) {
-                    $this->user->set('organization', $this->__getOrganization($this->request->data['Organization']['organization_id']));
-                    $this->__addParamsJUser($this->user);
+                    $this->user->set('organization', $this->_getOrganization($this->request->data['Organization']['organization_id']));
+                    
+					$this->user = $this->Users->setUser($this->user, $debug);
                 }
             }
             /*
@@ -133,13 +168,9 @@ class AppController extends Controller {
                  * e la carico solo la prima volta
                  */
                 if (empty($this->user->organization)) {
-                    $this->user->set('organization', $this->__getOrganization($this->user->get('organization_id')));
-                    $this->__addParamsJUser($this->user);
-                }
-
-                if ($this->user->get('supplier_id') > 0 && empty($this->user->supplier)) {
-                    $this->user->set('supplier', $this->__getSupplier($this->user->get('supplier_id')));
-                    $this->__addParamsJUser($this->user);
+                    $this->user->set('organization', $this->_getOrganization($this->user->get('organization_id')));
+                    
+					$this->user = $this->Users->setUser($this->user, $debug);	
                 }
             } // end if($this->isRoot())
 
@@ -147,59 +178,66 @@ class AppController extends Controller {
              * cookies setcookie(name,value,expire,path,domain,secure,httponly);
              * e session
              * */
-            if ($this->user->organization['Organization']['type'] == 'GAS') {
-                if (isset($this->request->pass['delivery_id'])) {
-                    $delivery_id = $this->request->pass['delivery_id'];
-                    if ($delivery_id != '' && $delivery_id != null && !is_numeric($delivery_id)) {
-                        $this->Session->setFlash(__('msg_error_params'));
-                        $this->myRedirect(Configure::read('routes_msg_exclamation'));
-                    }
-                    setcookie('delivery_id', $delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
-                    $this->Session->write('delivery_id', $delivery_id);
-                } else
-                if (isset($_COOKIE['delivery_id']) && !empty($_COOKIE['delivery_id']))
-                    $this->Session->write('delivery_id', $_COOKIE['delivery_id']);
+			switch($this->user->organization['Organization']['type']) {
+				case 'GAS':
+				case 'PRODGAS':
+					if (isset($this->request->pass['delivery_id'])) {
+						$delivery_id = $this->request->pass['delivery_id'];
+						if ($delivery_id != '' && $delivery_id != null && !is_numeric($delivery_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('delivery_id', $delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
+						$this->Session->write('delivery_id', $delivery_id);
+					} else
+					if (isset($_COOKIE['delivery_id']) && !empty($_COOKIE['delivery_id']))
+						$this->Session->write('delivery_id', $_COOKIE['delivery_id']);
 
-                if (isset($this->request->pass['order_id'])) {
-                    $order_id = $this->request->pass['order_id'];
-                    if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
-                        $this->Session->setFlash(__('msg_error_params'));
-                        $this->myRedirect(Configure::read('routes_msg_exclamation'));
-                    }
-                    setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
-                    $this->Session->write('order_id', $order_id);
-                } else
-                if (isset($_COOKIE['order_id']) && !empty($_COOKIE['order_id']))
-                    $this->Session->write('order_id', $_COOKIE['order_id']);
+					if (isset($this->request->pass['order_id'])) {
+						$order_id = $this->request->pass['order_id'];
+						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
+						$this->Session->write('order_id', $order_id);
+					} else
+					if (isset($_COOKIE['order_id']) && !empty($_COOKIE['order_id']))
+						$this->Session->write('order_id', $_COOKIE['order_id']);
 
-                $this->delivery_id = $this->Session->read('delivery_id');
-                $this->order_id = $this->Session->read('order_id');
+					$this->delivery_id = $this->Session->read('delivery_id');
+					$this->order_id = $this->Session->read('order_id');
 
-                $this->set('delivery_id', $this->delivery_id);
-                $this->set('order_id', $this->order_id);
+					$this->set('delivery_id', $this->delivery_id);
+					$this->set('order_id', $this->order_id);
 
-                //if(Configure::read('developer.mode')) echo 'AppController delivery_id '.$this->delivery_id.' order_id '.$this->order_id.'<br />';
-            }
-            else
-            if ($this->user->organization['Organization']['type'] == 'PROD') {
-                if (isset($this->request->pass['prod_delivery_id'])) {
-                    $prod_delivery_id = $this->request->pass['prod_delivery_id'];
-                    if ($prod_delivery_id != '' && $prod_delivery_id != null && !is_numeric($prod_delivery_id)) {
-                        $this->Session->setFlash(__('msg_error_params'));
-                        $this->myRedirect(Configure::read('routes_msg_exclamation'));
-                    }
-                    setcookie('prod_delivery_id', $prod_delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
-                    $this->Session->write('prod_delivery_id', $prod_delivery_id);
-                } else
-                if (isset($_COOKIE['prod_delivery_id']) && !empty($_COOKIE['prod_delivery_id']))
-                    $this->Session->write('prod_delivery_id', $_COOKIE['prod_delivery_id']);
+					//if(Configure::read('developer.mode')) echo 'AppController delivery_id '.$this->delivery_id.' order_id '.$this->order_id.'<br />';
+				
+					if (isset($this->request->pass['prod_delivery_id'])) {
+						$prod_delivery_id = $this->request->pass['prod_delivery_id'];
+						if ($prod_delivery_id != '' && $prod_delivery_id != null && !is_numeric($prod_delivery_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('prod_delivery_id', $prod_delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
+						$this->Session->write('prod_delivery_id', $prod_delivery_id);
+					} else
+					if (isset($_COOKIE['prod_delivery_id']) && !empty($_COOKIE['prod_delivery_id']))
+						$this->Session->write('prod_delivery_id', $_COOKIE['prod_delivery_id']);
 
 
-                $this->prod_delivery_id = $this->Session->read('prod_delivery_id');
+					$this->prod_delivery_id = $this->Session->read('prod_delivery_id');
 
-                $this->set('prod_delivery_id', $this->prod_delivery_id);
+					$this->set('prod_delivery_id', $this->prod_delivery_id);
 
-                //if(Configure::read('developer.mode')) echo 'AppController delivery_id '.$this->delivery_id.' order_id '.$this->order_id.'<br />';
+					//if(Configure::read('developer.mode')) echo 'AppController delivery_id '.$this->delivery_id.' order_id '.$this->order_id.'<br />';
+				break;
+				case 'PROD':
+				
+				break;
+				default:
+				//	self::x(__('msg_error_org_type'));
+				break;				
             }
 
             /*
@@ -263,10 +301,16 @@ class AppController extends Controller {
                  * se no lo prendo dal template.params
                  */
                 if (!empty($this->user->organization['Organization']['id']))
-                    $this->user->set('organization', $this->__getOrganization($this->user->organization['Organization']['id']));
+                    $this->user->set('organization', $this->_getOrganization($this->user->organization['Organization']['id']));
                 else
-                    $this->user->set('organization', $this->__getOrganization($organization_id));
+                    $this->user->set('organization', $this->_getOrganization($organization_id));
             }
+			
+
+			/*
+			 * aggiungo i dati per il prepagati, x BO e FE
+			 */
+			$this->user = $this->Users->setUserCash($this->user);			
         }
 
         // affinche' le date sul db e nelle view vengano tradotte il italiano
@@ -275,11 +319,7 @@ class AppController extends Controller {
         $sql = "set lc_time_names = 'it_IT'";
         $this->{$this->modelClass}->query($sql);
 
-        if ($debug) {
-            echo "<pre>------- POST APPController ---------";
-            print_r($this->user);
-            echo "</pre>------- POST APPController ---------";
-        }
+		self::d(["------- POST APPController ---------", $this->user], $debug);
 
         $this->set('user', $this->user);
     }
@@ -288,20 +328,12 @@ class AppController extends Controller {
 
         $debug = false;
 
-        if ($debug) {
-            echo "<pre>BEFORE ";
-            print_r($this->user->get('ACLsuppliersIdsOrganization'));
-            echo "</pre>";
-        }
+        self::d(["BEFORE", $this->user->get('ACLsuppliersIdsOrganization')], $debug);
 
-        $this->user->set('organization', $this->__getOrganization($this->user->organization['Organization']['id']));
-        $this->__addParamsJUser($this->user);
+        $this->user->set('organization', $this->_getOrganization($this->user->organization['Organization']['id']));
+        $this->Users->addParamsJUser($this->user);
 
-        if ($debug) {
-            echo "<pre>POST ";
-            print_r($this->user->get('ACLsuppliersIdsOrganization'));
-            echo "</pre>";
-        }
+        self::d(["POST", $this->user->get('ACLsuppliersIdsOrganization')], $debug);
     }
 
     /*
@@ -321,13 +353,6 @@ class AppController extends Controller {
                 $continua = true;
         } else
             $continua = false;
-
-        /*
-          echo $_SERVER['HTTP_USER_AGENT'];
-          echo "<pre>";
-          print_r($_SERVER);
-          echo "</pre>";
-         */
 
         /*
          * nel caso di ie8 ie9 HTTP_REFERER non e' valorizzato
@@ -396,9 +421,9 @@ class AppController extends Controller {
      */
 
     public function isSuperReferente() {
-        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_super_referent'), $this->user->getAuthorisedGroups()))
-            return true;
-        else
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_super_referent'), $this->user->getAuthorisedGroups())) 
+			return true;
+		else 
             return 0;
     }
 
@@ -568,96 +593,12 @@ class AppController extends Controller {
             return false;
     }
 
-    /*
-     * in base allo stato dell'ordine
-     * setto l'action possibile sull'ordine
-     */
-
-    public function actionToEditOrder($user, $results) {
-
-        $actionToEditOrder = array();
-
-        if (isset($results['Order'])) {
-
-            if ($this->isUserPermissionArticlesOrder($user)) { // l'utente gestisce l'associazione degli articoli con l'ordine
-                if ($results['Order']['state_code'] == 'CREATE-INCOMPLETE')
-                    $actionToEditOrder = array('controller' => 'ArticlesOrders', 'action' => 'admin_add', 'title' => __('Add ArticlesOrder Error'));
-                else
-                if ($results['Order']['state_code'] == 'OPEN' ||
-                        $results['Order']['state_code'] == 'OPEN-NEXT' ||
-                        $results['Order']['state_code'] == 'PROCESSED-BEFORE-DELIVERY' ||
-                        $results['Order']['state_code'] == 'PROCESSED-ON-DELIVERY' ||
-                        $results['Order']['state_code'] == 'PROCESSED-POST-DELIVERY')
-                    $actionToEditOrder = array('controller' => 'ArticlesOrders', 'action' => 'admin_index', 'title' => __('List Articles Orders'));
-                else
-                if ($results['Order']['state_code'] == 'WAIT-PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'TO-PAYMENT' ||
-                        $results['Order']['state_code'] == 'CLOSE')
-                    $actionToEditOrder = array();
-            }
-            else {  // l'utente non gestisce l'associazione degli articoli con l'ordine
-                if ($results['Order']['state_code'] == 'WAIT-PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'TO-PAYMENT' ||
-                        $results['Order']['state_code'] == 'CLOSE')
-                    $actionToEditOrder = array();
-                else
-                    $actionToEditOrder = array('controller' => 'Articles', 'action' => 'context_order_index', 'title' => __('List Articles'));
-            }
-        }
-
-        return $actionToEditOrder;
-    }
-
-    /*
-     * in base allo stato dell'ordine
-     * setto l'action possibile di un articolo
-     */
-
-    public function actionToEditArticle($user, $results) {
-
-        $actionToEditArticle = array();
-        if (isset($results['Order'])) {
-
-            if ($this->isUserPermissionArticlesOrder($user)) {  // l'utente gestisce l'associazione degli articoli con l'ordine
-                if ($results['Order']['state_code'] == 'CREATE-INCOMPLETE')
-                    $actionToEditArticle = array('controller' => 'ArticlesOrders', 'action' => 'admin_add', 'title' => __('Add ArticlesOrder Error'));
-                else
-                if ($results['Order']['state_code'] == 'OPEN' ||
-                        $results['Order']['state_code'] == 'OPEN-NEXT' ||
-                        $results['Order']['state_code'] == 'PROCESSED-BEFORE-DELIVERY' ||
-                        $results['Order']['state_code'] == 'PROCESSED-ON-DELIVERY' ||
-                        $results['Order']['state_code'] == 'PROCESSED-POST-DELIVERY')
-                    $actionToEditArticle = array('controller' => 'ArticlesOrders', 'action' => 'admin_edit', 'title' => __('Edit ArticlesOrder'));
-                else
-                if ($results['Order']['state_code'] == 'WAIT-PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'TO-PAYMENT' ||
-                        $results['Order']['state_code'] == 'CLOSE')
-                    $actionToEditArticle = array();
-            }
-            else { // l'utente non gestisce l'associazione degli articoli con l'ordine
-                if ($results['Order']['state_code'] == 'WAIT-PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'PROCESSED-TESORIERE' ||
-                        $results['Order']['state_code'] == 'TO-PAYMENT' ||
-                        $results['Order']['state_code'] == 'CLOSE')
-                    $actionToEditArticle = array();
-                else
-                    $actionToEditArticle = array('controller' => 'Articles', 'action' => 'admin_context_order_edit', 'title' => __('Edit Article'));
-            }
-        }
-
-        return $actionToEditArticle;
-    }
-
     /* ovveride lib/Cake/Controller/Controller.php 
      * code original 
      * 		$this->myRedirect(array('action' => 'index'));
      * cake imposta il controller e l'action nell'url /cake/user/index
      * qui si impostano nella queryString /administrator/index.php?option=com_cake&controller=Articles&action=context_articles_index&id=64&direction:asc
      * */
-
     public function myRedirect($url, $status = null, $exit = true) {
 
         /*
@@ -666,7 +607,7 @@ class AppController extends Controller {
         if (is_array($url)) {
 
             $params = $_REQUEST;
-
+   
             if (isset($url['option']))
                 $params['option'] = $url['option'];
             if (isset($url['controller']))
@@ -677,6 +618,20 @@ class AppController extends Controller {
                 $params['id'] = $url['id'];
             if (isset($url['supplier_organization_id']))
                 $params['supplier_organization_id'] = $url['supplier_organization_id'];
+            if (isset($url['organization_id']))
+                $params['organization_id'] = $url['organization_id'];
+            if (isset($url['delivery_id']))
+                $params['delivery_id'] = $url['delivery_id'];
+            if (isset($url['order_id']))
+                $params['order_id'] = $url['order_id'];
+            if (isset($url['article_organization_id']))
+                $params['article_organization_id'] = $url['article_organization_id'];
+            if (isset($url['article_id']))
+                $params['article_id'] = $url['article_id'];
+            if (isset($url['user_id']))
+                $params['user_id'] = $url['user_id'];
+            if (isset($url['type']))
+                $params['type'] = $url['type'];
 
             if (strpos($_SERVER['REQUEST_URI'], '/administrator/') === false)
                 $newUrl = Configure::read('App.server') . '/';
@@ -687,15 +642,45 @@ class AppController extends Controller {
             $newUrl .= 'option=' . $params['option'];
             $newUrl .= '&controller=' . $params['controller'];
             $newUrl .= '&action=' . $params['action'];
-            if (isset($params['id']))
+            if (isset($params['id'])) {
                 $newUrl .= '&id=' . $params['id'];
-            if (isset($url['supplier_organization_id']))
+            	unset($params['id']);
+            }    
+            if (isset($url['supplier_organization_id'])) {
                 $newUrl .= '&supplier_organization_id=' . $params['supplier_organization_id'];
+                unset($params['supplier_organization_id']);
+            }             
+            if (isset($url['organization_id'])) {
+                $newUrl .= '&organization_id=' . $params['organization_id'];
+                unset($params['organization_id']);
+            }        
+            if (isset($url['delivery_id'])) {
+                $newUrl .= '&delivery_id=' . $params['delivery_id'];
+                unset($params['delivery_id']);
+            }        
+            if (isset($url['order_id'])) {
+                $newUrl .= '&order_id=' . $params['order_id'];
+                unset($params['order_id']);
+            }        
+            if (isset($url['article_organization_id'])) {
+                $newUrl .= '&article_organization_id=' . $params['article_organization_id'];
+                unset($params['article_organization_id']);
+            }        
+            if (isset($url['article_id'])) {
+                $newUrl .= '&article_id=' . $params['article_id'];
+                unset($params['article_id']);
+            }        
+            if (isset($url['user_id'])) {
+                $newUrl .= '&user_id=' . $params['user_id'];
+                unset($params['user_id']);
+            }        
+            if (isset($url['type'])) {
+                $newUrl .= '&type=' . $params['type'];
+                unset($params['type']);
+            }    
             unset($params['option']);
             unset($params['controller']);
             unset($params['action']);
-            unset($params['id']);
-            unset($params['supplier_organization_id']);
 
             // TODO nella $_REQUEST mi trovato order_id e delivery_id che erano presi dal cookies!!
             unset($params['order_id']);
@@ -713,13 +698,7 @@ class AppController extends Controller {
             }
         } else
             $newUrl = $url;  // url assoluto
-            /*
-              echo "<pre>";
-              print_r($newUrl);
-              echo "</pre>";
-              exit;
-             */
-
+            
         /*
          * non piu utilizzato perche' tolti gli header all'oggetto Lib/Network/CakeResponse.php
           $this->response->header('Location', $newUrl);
@@ -748,208 +727,33 @@ class AppController extends Controller {
     }
 
     /*
-     * JUser Object ( in libraries/joomla/user/user.php function load($id)
-     * aggiungo [ACLsuppliersIdsOrganization], [ACLsuppliersIdsDes]
-     * 
-     * 	    [id] => 0
-     * 	    [name] =>
-     * 	    [username] =>
-     * 	    [email] =>
-     * 	    [params] =>
-     * 	    [groups] => Array ()
-     * 	    [guest] => 1
-     * 	    [organization] => Array()
-     *
-     *  private function __addParamsJUser()  richiamata anche da OrganizationController:admin_choice 
-     * 															OrganizationController:admin_edit
-     * 															DesOrganizationController:admin_choice 
-     *  	[ACLsuppliersIdsOrganization] = elenco degli ID dei produttori abilitati a gestire
-     *  	[ACLsuppliersIdsDes] = elenco degli ID dei produttori del DES abilitati a gestire
-     *   [hasArticlesOrder] = Gestisci gli articoli associati all'ordine
-     */
-
-    private function __addParamsJUser($user) {
-
-        /*
-         * ACLsuppliersIdsOrganization    1, 3, 5  supplier_organization_id
-         *    se Admin dell'organization
-         * 			tutti suppliers_organizations.id dell'organization
-         * 		se Referent
-         * 			tutti suppliers_organizations.id associati allo user
-         */
-        $ACLsuppliersIdsOrganization = 0; // contiene stringa supplier_organization_id 1, 3, 5
-        if ($this->isSuperReferente()) {
-            App::import('Model', 'SuppliersOrganization');
-            $SuppliersOrganization = new SuppliersOrganization;
-
-            $ACLsuppliersIdsOrganization = $SuppliersOrganization->getSuppliersOrganizationIds($user);
-        } else {
-            App::import('Model', 'SuppliersOrganizationsReferent');
-            $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
-
-            $ACLsuppliersIdsOrganization = $SuppliersOrganizationsReferent->getSuppliersOrganizationIdsByReferent($user, $user->get('id'));
-        }
-        $this->user->set('ACLsuppliersIdsOrganization', $ACLsuppliersIdsOrganization);
-
-        /*
-         * ctrl e' associato ad un solo DES 
-         */
-        if ($user->organization['Organization']['hasDes'] == 'Y') {
-            App::import('Model', 'DesOrganization');
-            $DesOrganization = new DesOrganization;
-
-            $options = array();
-            $options['conditions'] = array('DesOrganization.organization_id' => $user->organization['Organization']['id']); // non ho scelto il DES, ctrl solo se il suo GAS e' titolare
-
-            $options['fields'] = array('DesOrganization.des_id');
-            $options['recursive'] = -1;
-            $desOrganizationResults = $DesOrganization->find('all', $options);
-
-            if (count($desOrganizationResults) == 1) {
-                /*
-                 * e' associato a 1 solo DES
-                 */
-                $user->des_id = $desOrganizationResults[0]['DesOrganization']['des_id'];
-
-                $this->__addParamsDesJUser($user);
-            }
-        }
-
-
-        /*
-         * gestione degli articlesOrders, articolo associati agli ordini Y o N
-         */
-        if ($user->organization['Organization']['hasArticlesOrder'] == 'Y') {
-
-            App::import('Model', 'User');
-            $User = new User;
-
-            $sql = "SELECT
-							User.profile_key, User.profile_value
-						FROM
-						" . Configure::read('DB.portalPrefix') . "users Utente,
-						" . Configure::read('DB.portalPrefix') . "user_profiles User
-					WHERE
-						User.user_id = Utente.id
-						AND User.profile_key = 'profile.hasArticlesOrder'
-						AND Utente.id = " . $this->user->get('id');
-            if (!$this->isRoot())
-                $sql .= " AND Utente.organization_id = " . (int) $user->organization['Organization']['id'];
-            // echo '<br />'.$sql;
-            $results = $User->query($sql);
-            if (empty($results))
-                $profileResults['User']['hasArticlesOrder'] = 'N';
-            else {
-                $results = current($results);
-                $profileResults['User']['hasArticlesOrder'] = $results['User']['profile_value'];
-                $profileResults['User']['hasArticlesOrder'] = substr($profileResults['User']['hasArticlesOrder'], 1, strlen($profileResults['User']['hasArticlesOrder']) - 2);
-            }
-        } else
-            $profileResults['User']['hasArticlesOrder'] = 'N';
-
-        $this->user->set('user', $profileResults);
-    }
-
-    /*
-     * JUser Object ( in libraries/joomla/user/user.php function load($id)
-     * aggiungo [ACLsuppliersIdsOrganization], [ACLsuppliersIdsDes]
-     * 
-     * richiamata anche da DesOrganizationController:admin_choice 
-     */
-
-    protected function __addParamsDesJUser($user, $debug = false) {
-
-        /*
-         * ACLsuppliersIdsDes    1, 3, 5  des_suppliers_id
-         */
-        $ACLsuppliersIdsDes = 0; // contiene stringa des_suppliers_id 1, 3, 5
-        if ($this->isSuperReferenteDes()) {
-            App::import('Model', 'DesSupplier');
-            $DesSupplier = new DesSupplier;
-
-            $ACLsuppliersIdsDes = $DesSupplier->getDesSuppliersIds($user, $debug);
-        } else {
-            App::import('Model', 'DesSuppliersReferent');
-            $DesSuppliersReferent = new DesSuppliersReferent;
-
-            $ACLsuppliersIdsDes = $DesSuppliersReferent->getDesSupplierIdsByReferent($user, $user->get('id'), $debug);
-        }
-
-        if (empty($ACLsuppliersIdsDes))
-            $ACLsuppliersIdsDes = 0;
-
-        $this->user->set('ACLsuppliersIdsDes', $ACLsuppliersIdsDes);
-    }
-
-    /*
-     * configurazione organization[Organization] 
-     * 		dati 
-     *  	paramsConfig hasArticlesOrder, hasVisibility, hasTrasport, hasCostMore, hasCostLess, hasStoreroom, payToDelivery, hasDes, prodSupplierOrganizationId
-     *  	paramsFields hasFieldArticleCodice, hasFieldArticleIngredienti, hasFieldArticleAlertToQta, hasFieldArticleCategoryId, hasFieldSupplierCategoryId,
-     *  				 hasFieldFatturaRequired)
-     */
-
-    private function __getOrganization($organization_id = 0) {
-
-        $results = array();
-
-        if ($organization_id > 0) {
-            App::import('Model', 'Organization');
-            $Organization = new Organization;
-
-            $options = array();
-            $options['conditions'] = array('Organization.id' => (int) $organization_id);
-            $options['fields'] = array('id', 'name', 'www', 'type', 'template_id', 'j_seo', 'j_group_registred', 'j_page_category_id', 'paramsConfig', 'paramsFields', 'lat', 'lng');
-            $options['recursive'] = -1;
-            $results = $Organization->find('first', $options);
-
-            $paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
-            $paramsFields = json_decode($results['Organization']['paramsFields'], true);
-
-            $results['Organization'] += $paramsConfig;
-            $results['Organization'] += $paramsFields;
-
-            unset($results['Organization']['paramsConfig']);
-            unset($results['Organization']['paramsFields']);
-        }
-
-        return $results;
-    }
-
-    private function __getSupplier($supplier_id = 0) {
-
-        $results = array();
-
-        if ($supplier_id > 0) {
-            App::import('Model', 'Supplier');
-            $Supplier = new Supplier;
-
-            $options = array();
-            $options['conditions'] = array('Supplier.id' => (int) $supplier_id);
-            $options['recursive'] = -1;
-            $results = $Supplier->find('first', $options);
-        }
-
-        return $results;
-    }
-
-    /*
      * dagli Id dei produttori (ACLsuppliersIdsOrganization) 
      * estraggo la LIST dei produttori
      * 
      * call in Article/admin_add admin_edit admin_index
      * 		   Order/admin_add admin_edit 
-     */
+	 *
+	 * posso filtrare per SuppliersOrganization.owner_articles = REFERENT/SUPPLIER, in Article::add escludo i produttori NON gestiti dal GAS
+	 */
 
-    public function getACLsuppliersOrganization() {
+    public function getACLsuppliersOrganization($owner_articles='') {
 
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
-
-        $options = array();
-        $options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-            'SuppliersOrganization.id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')');
-        $options['order'] = array('SuppliersOrganization.name');
+		
+        $options = [];
+        $options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id']];
+		if(strpos($this->user->get('ACLsuppliersIdsOrganization'), ",")===false)
+			$options['conditions'] += ['SuppliersOrganization.id' => $this->user->get('ACLsuppliersIdsOrganization')];
+		else
+			$options['conditions'] += ['SuppliersOrganization.id IN ' => explode(",", $this->user->get('ACLsuppliersIdsOrganization'))];
+        
+		if(!empty($owner_articles))
+			$options['conditions'] += ['SuppliersOrganization.owner_articles' => $owner_articles];
+		
+		self::d($options, false);
+		
+		$options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = -1;
         $ACLsuppliersOrganization = $SuppliersOrganization->find('list', $options);
 
@@ -966,7 +770,7 @@ class AppController extends Controller {
         App::import('Model', 'DesSupplier');
         $DesSupplier = new DesSupplier;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id,
             'DesSupplier.id IN (' . $this->user->get('ACLsuppliersIdsDes') . ')',
             "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
@@ -975,12 +779,7 @@ class AppController extends Controller {
         $options['recursive'] = 1;
         $ACLsuppliersIdsDes = $DesSupplier->find('list', $options);
 
-        /*
-          echo "<pre>";
-          print_r($options);
-          print_r($ACLsuppliersIdsDes);
-          echo "</pre>";
-         */
+        self::d([$options, $ACLsuppliersIdsDes], false);
 
         return $ACLsuppliersIdsDes;
     }
@@ -1024,7 +823,7 @@ class AppController extends Controller {
     }
 
     /*
-     * $modulo: sono in quel modulo e ctrl se ho anche altir moduli che possono andare in conflitto
+     * $modulo: sono in quel modulo e ctrl se ho anche altri moduli che possono andare in conflitto
      * 			managementCartsOne (Gestisci gli acquisti nel dettaglio) con 
      * 				Order.typeGest.AGGREGATE per SummaryOrder
      * 				Order.typeGest.SPLIT     per Order.qta
@@ -1038,127 +837,55 @@ class AppController extends Controller {
      * 				Order.hasCostMore
      * 				Order.hasCostLess
      */
-
     public function ctrlModuleConflicts($user, $order_id, $modulo, $debug = false) {
 
-        $debug = false;
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+		
+		$options = [];
+		$options['moduleConflicts'] = $modulo;
+		
+		$esito = $OrderLifeCycle->beforeRendering($user, $order_id, $this->request->params['controller'], $this->action, $options, $debug);
+		if(isset($esito['ctrlModuleConflicts'])) {
+			/*
+			 * ctrl se ho un cookie settato per 
+			 * 		quel conflitto 
+			 * 		quell'ordine
+			 */
+			 
+			self::l([$esito, $_COOKIE], false);
+			 
+			if (isset($_COOKIE[$esito['ctrlModuleConflicts']['alertModuleConflicts']])) {
+				if ($_COOKIE[$esito['ctrlModuleConflicts']['alertModuleConflicts']] == $this->order_id) {
+					$popUpDisabled = true;
+				}	
+				else
+					$popUpDisabled = false;
+			}
 
-        $alertModuleConflicts = '';
-
-        App::import('Model', 'Order');
-        $Order = new Order;
-
-
-        $options = array();
-        $options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-            'Order.id' => $order_id);
-        $options['fields'] = array('state_code', 'typeGest', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'trasport', 'cost_more', 'cost_less');
-        $options['recursive'] = -1;
-        $results = $Order->find('first', $options);
-
-        if ($debug) {
-            echo 'Order.state_code ' . $results['Order']['state_code'] . '<br />';
-            echo 'modulo ' . $modulo . '<br />';
-            echo "<pre>";
-            print_r($results);
-            echo "</pre>";
-        }
-
-        /*
-         *  ctrl valido solo quando il refeente puo' gestire in modo completo l'ordine
-         */
-        if ($results['Order']['state_code'] == 'PROCESSED-POST-DELIVERY' ||
-                $results['Order']['state_code'] == 'INCOMING-ORDER') {
-            switch ($modulo) {
-                case 'managementCartsOne':
-                    if ($results['Order']['typeGest'] == 'AGGREGATE') {
-
-                        App::import('Model', 'SummaryOrder');
-                        $SummaryOrder = new SummaryOrder;
-
-                        $summaryOrdeResults = $SummaryOrder->select_to_order($user, $order_id);
-                        if (!empty($summaryOrdeResults))
-                            $alertModuleConflicts = 'summary_order_just_populate';
-                    }
-                    else
-                    if ($results['Order']['typeGest'] == 'SPLIT') {
-                        $alertModuleConflicts = 'order_change_qta';
-                    }
-
-                    if (empty($alertModuleConflicts)) {
-                        if (($results['Order']['hasTrasport'] == 'Y' && $results['Order']['trasport'] != '0.00') ||
-                                ($results['Order']['hasCostMore'] == 'Y' && $results['Order']['cost_more'] != '0.00') ||
-                                ($results['Order']['hasCostLess'] == 'Y' && $results['Order']['cost_less'] != '0.00'))
-                            $alertModuleConflicts = 'order_change_carts_one';
-                    }
-                    break;
-                case 'managementCartsGroupByUsers':
-                    if (($results['Order']['hasTrasport'] == 'Y' && $results['Order']['trasport'] != '0.00') ||
-                            ($results['Order']['hasCostMore'] == 'Y' && $results['Order']['cost_more'] != '0.00') ||
-                            ($results['Order']['hasCostLess'] == 'Y' && $results['Order']['cost_less'] != '0.00'))
-                        $alertModuleConflicts = 'summary_order_change';
-                    break;
-            }
-        } /* end if($results['Order']['state_code'] */
-
-        if ($results['Order']['hasTrasport'] == 'Y' && $results['Order']['trasport'] != '0.00')
-            $orderHasTrasport = 'Y';
-        else
-            $orderHasTrasport = 'N';
-
-        if ($results['Order']['hasCostMore'] == 'Y' && $results['Order']['cost_more'] != '0.00')
-            $orderHasCostMore = 'Y';
-        else
-            $orderHasCostMore = 'N';
-
-        if ($results['Order']['hasCostLess'] == 'Y' && $results['Order']['cost_less'] != '0.00')
-            $orderHasCostLess = 'Y';
-        else
-            $orderHasCostLess = 'N';
-
-        /*
-         * ctrl se ho un cookie settato per 
-         * 		quel conflitto 
-         * 		quell'ordine
-         */
-        if (isset($_COOKIE[$alertModuleConflicts])) {
-            if ($_COOKIE[$alertModuleConflicts] == $order_id)
-                $popUpDisabled = true;
-            else
-                $popUpDisabled = false;
-        }
-
-        if ($debug) {
-            echo "<pre>_COOKIE[$alertModuleConflicts] ";
-            print_r($_COOKIE);
-            echo "</pre>";
-
-            echo '<br />alertModuleConflicts ' . $alertModuleConflicts;
-            echo '<br />orderHasTrasport ' . $orderHasTrasport;
-            echo '<br />orderHasCostMore ' . $orderHasCostMore;
-            echo '<br />orderHasCostLess ' . $orderHasCostLess;
-        }
-
-        $this->set('orderHasTrasport', $orderHasTrasport);
-        $this->set('orderHasCostMore', $orderHasCostMore);
-        $this->set('orderHasCostLess', $orderHasCostLess);
-        $this->set('popUpDisabled', $popUpDisabled);
-        $this->set('alertModuleConflicts', $alertModuleConflicts);
+	        $this->set('orderSummaryOrderAggregate', $esito['ctrlModuleConflicts']['orderHasSummaryOrderAggregate']);
+			$this->set('orderHasCostMore', $esito['ctrlModuleConflicts']['orderHasCostMore']);
+			$this->set('orderHasCostLess', $esito['ctrlModuleConflicts']['orderHasCostLess']);
+			$this->set('alertModuleConflicts', $esito['ctrlModuleConflicts']['alertModuleConflicts']);
+			$this->set('popUpDisabled', $popUpDisabled);
+			
+		} // end if(isset($esito['ctrlModuleConflicts']))
     }
 
     /*
      * gestisco il box con i dati dell'ordine
      */
+    public function _boxOrder($user, $delivery_id, $order_id, $opts) {
 
-    protected function __boxOrder($user, $delivery_id, $order_id, $opts) {
-
+		$debug = false;
+		
         /*
           App::import('Model', 'Delivery');
           $Delivery = new Delivery;
 
-          $conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-          'Delivery.isVisibleBackOffice' => 'Y',
-          'Delivery.stato_elaborazione' => 'OPEN');
+          $conditions = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+				          'Delivery.isVisibleBackOffice' => 'Y',
+				          'Delivery.stato_elaborazione' => 'OPEN'];
 
           $deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),'conditions'=>$conditions,'order'=>'data ASC','recursive'=>-1));
           if(empty($deliveries)) {
@@ -1170,12 +897,15 @@ class AppController extends Controller {
 
         App::import('Model', 'Order');
         $Order = new Order;
+		
+        App::import('Model', 'OrderLifeCycle');
+        $OrderLifeCycle = new OrderLifeCycle;
 
-        $options = array();
-        $options['conditions'] = array('Order.organization_id' => (int) $user->organization['Organization']['id'],
-            'Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-            'Order.id' => $order_id,
-            'Delivery.id' => $delivery_id);
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => (int) $user->organization['Organization']['id'],
+								'Delivery.organization_id' => (int) $user->organization['Organization']['id'],
+								'Order.id' => $order_id,
+								'Delivery.id' => $delivery_id];
         if (isset($opts['conditions']))
             $options['conditions'] += $opts['conditions'];
         $options['recursive'] = 1;
@@ -1201,23 +931,30 @@ class AppController extends Controller {
          * permission per abilitazione modifica del carrello
          */
         $permissions = array('isReferentGeneric' => $this->isReferentGeneric(),
-            'isTesoriereGeneric' => $this->isTesoriereGeneric());
+							 'isTesoriereGeneric' => $this->isTesoriereGeneric());
         $this->set('permissions', $permissions);
 
-        $this->set('results', $results);
-        $this->set('call_action', $this->action);
+        /*
+         * gestione eventuale msg se sono nel modulo exportDocs
+         */		
+		$msg = $OrderLifeCycle->beforeRendering($this->user, $results, $this->request->params['controller'], $this->action, $options, $debug);
+		if(isset($msg['msgExportDocs']) && !empty($msg['msgExportDocs']))
+			$results['msgExportDocs'] = $msg['msgExportDocs'];
+		else
+			$results['msgExportDocs'] = '';
+		
+		$this->set('results', $results);
     }
 
     /*
      * gestisco il box con i dati della consegna del produttore
      */
-
-    protected function __boxProdDelivery($user, $prod_delivery_id, $opts) {
+    public function _boxProdDelivery($user, $prod_delivery_id, $opts) {
 
         App::import('Model', 'ProdDelivery');
         $ProdDelivery = new ProdDelivery;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('ProdDelivery.organization_id' => (int) $user->organization['Organization']['id'],
             'ProdDelivery.id' => $prod_delivery_id);
         if (isset($opts['conditions']))
@@ -1267,7 +1004,6 @@ class AppController extends Controller {
     /* ::         GeoDataSource.com (C) All Rights Reserved 2015		   		     : */
     /* ::                                                                         : */
     /* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-
     function distance($lat1, $lon1, $lat2, $lon2, $unit) {
 
         $theta = $lon1 - $lon2;
@@ -1289,29 +1025,24 @@ class AppController extends Controller {
     /*
      *  risorse alle quali accedere senza organiation_id
      */
+    private function _resourcesRootEnabled($controller, $action) {
 
-    private function __resourcesRootEnabled($controller, $action) {
-
-        $controllersEnabled = array('organizations',
-            'ordersactions',
-            'organizationspays',
-            'templatesordersstates',
-            'templatesordersstatesOrdersActions',
-            'suppliers',
-            'categoriessuppliers',
-            'configurations',
-            'logs',
-            'mails',
-            'helps');
+        $controllersEnabled = ['organizations',
+							'ordersactions',
+							'organizationspays',
+							'templatesordersstates',
+							'templatesordersstatesOrdersActions',
+							'suppliers',
+							'categoriessuppliers',
+							'configurations',
+							'logs',
+							'mails',
+							'helps',
+							'cakeerror'];
 
         $controller = strtolower($controller);
         $action = strtolower($action);
-        /*
-          echo "<br />__resourcesRootEnabled() controller ".$controller;
-          echo "<pre>";
-          print_r($controllersEnabled);
-          echo "<pre>in_array(controller, controllersEnabled) ".in_array($controller, $controllersEnabled);
-         */
+        
         if (in_array($controller, $controllersEnabled) || ($action == 'admin_msg_stop_browser'))
             return true;
         else
@@ -1321,20 +1052,19 @@ class AppController extends Controller {
     /*
      *  risorse alle quali per accedere devo aver valorizzato des_id
      */
+    private function _resourcesDesEnabled($controller, $action, $debug=false) {
 
-    private function __resourcesDesEnabled($controller, $action) {
-
-        $controllersEnabled = array('desorganizations',
-            'dessuppliersreferents',
-            'desusergroupmap',
-            'desorders',
-            'des');
+        $controllersEnabled = ['desorganizations',
+							'dessuppliersreferents',
+							'desusergroupmap',
+							'desorders',
+							'des'];
 
         $controller = strtolower($controller);
         $action = strtolower($action);
 
-        // echo "<br />__resourcesDesEnabled() controller ".$controller." action ".$action;
-
+		self::d("App::_resourcesDesEnabled() controller ".$controller." action ".$action, $debug);
+		
         if ($controller == 'desorganizations' && $action == 'admin_choice')
             return false;
         else
@@ -1344,4 +1074,83 @@ class AppController extends Controller {
             return false;
     }
 
+	public function getBrowser($debug=false) {
+		$browsers = [];
+		if(isset($_SERVER["HTTP_USER_AGENT"])) {
+			$userAgent = $_SERVER["HTTP_USER_AGENT"];
+			$browsers['userAgent'] = $userAgent;
+			$browsers['ie11'] = strpos($userAgent, 'Trident/7.0; rv:11.0') ? true : false; // Internet Explorer IE11
+			$browsers['msie'] = strpos($userAgent, 'MSIE') ? true : false; // Internet Explorer
+			$browsers['firefox'] = strpos($userAgent, 'Firefox') ? true : false; // Firefox
+			$browsers['safari'] = strpos($userAgent, 'Safari') ? true : false; // Webkit powered browser
+			$browsers['chrome'] = strpos($userAgent, 'Chrome') ? true : false; // Webkit powered browser		
+		}
+
+		self::d($browsers, $debug);
+		
+		return $browsers;
+	}
+	
+    /*
+     * configurazione organization[Organization] 
+     * 		dati 
+     *  	paramsConfig hasArticlesOrder, hasVisibility, hasTrasport, hasCostMore, hasCostLess, hasStoreroom, hasDes, prodSupplierOrganizationId
+     *  	paramsFields hasFieldArticleCodice, hasFieldArticleIngredienti, hasFieldArticleAlertToQta, hasFieldArticleCategoryId, hasFieldSupplierCategoryId,
+     *  				 hasFieldFatturaRequired)
+     */
+    private function _getOrganization($organization_id = 0) {
+
+        $results = [];
+
+        if ($organization_id > 0) {
+            App::import('Model', 'Organization');
+            $Organization = new Organization;
+
+			$Organization->unbindModel(['hasMany' => ['Delivery', 'User']]);
+
+            $options = [];
+            $options['conditions'] = ['Organization.id' => (int) $organization_id];
+            $options['recursive'] = 0;
+            $results = $Organization->find('first', $options);
+			
+            $paramsFields = json_decode($results['Organization']['paramsFields'], true);
+            $paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
+
+			/*
+			 * configurazione preso dal template
+			 */
+			$paramsConfig['payToDelivery'] = $results['Template']['payToDelivery'];
+			$paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
+			$paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
+			$paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
+			$paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
+
+            $results['Organization'] += $paramsConfig;
+            $results['Organization'] += $paramsFields;
+
+            unset($results['Organization']['paramsConfig']);
+            unset($results['Organization']['paramsFields']);
+			
+			if($results['Organization']['type']=='PRODGAS') {
+				
+				/*
+				 * estraggo i produttori legati al PRODGAS, posso essere + di 1 ma per ora ne gestisco uno
+				 */
+				App::import('Model', 'SuppliersOrganization');
+				$SuppliersOrganization = new SuppliersOrganization;
+		
+				$SuppliersOrganization->unbindModel(['belongsTo' => ['Organization', 'CategoriesSupplier']]);
+
+				$options = [];
+				$options['conditions'] = ['SuppliersOrganization.organization_id' => (int) $organization_id];
+				$options['recursive'] = 0;
+				$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+				
+				$results['Supplier'] = $suppliersOrganizationResults;
+			}
+        }
+
+        return $results;
+    }
+	
 }

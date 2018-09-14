@@ -27,10 +27,8 @@ class AjaxController extends AppController {
         list($request_payment_id, $user_id) = explode('_', $key);
         $doc_formato = 'PREVIEW';
 
-        if ($debug)
-            echo '<br />request_payment_id ' . $request_payment_id;
-        if ($debug)
-            echo '<br />user_id ' . $user_id;
+        self::d('request_payment_id ' . $request_payment_id, $debug);
+        self::d('user_id ' . $user_id, $debug);
 
         if ($user_id == null || $request_payment_id == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -43,11 +41,11 @@ class AjaxController extends AppController {
         /*
          * num della richiesta pagamento
          */
-        $options = array();
-        $options['conditions'] = array('RequestPayment.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'RequestPayment.id' => $request_payment_id);
+        $options = [];
+        $options['conditions'] = ['RequestPayment.organization_id' => (int) $this->user->organization['Organization']['id'],
+								  'RequestPayment.id' => $request_payment_id];
         $options['recursive'] = -1;
-        $options['fields'] = array('num');
+        $options['fields'] = ['RequestPayment.num'];
         $results = $RequestPayment->find('first', $options);
         $request_payment_num = $results['RequestPayment']['num'];
         $this->set('request_payment_num', $request_payment_num);
@@ -65,8 +63,8 @@ class AjaxController extends AppController {
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
-        $options = array();
-        $options['conditions'] = array('Organization.id' => (int) $this->user->organization['Organization']['id']);
+        $options = [];
+        $options['conditions'] = ['Organization.id' => (int) $this->user->organization['Organization']['id']];
         $options['recursive'] = -1;
         $organizationResults = $Organization->find('first', $options);
         $this->set('organizationResults', $organizationResults);
@@ -77,9 +75,9 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $options = array();
-        $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.id' => $user_id);
+        $options = [];
+        $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+								  'User.id' => $user_id];
         $options['recursive'] = -1;
         $userResults = $User->find('first', $options);
         $this->set('userResults', $userResults);
@@ -105,23 +103,20 @@ class AjaxController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        if ($this->user->organization['Organization']['payToDelivery'] == 'POST' || $this->user->organization['Organization']['payToDelivery'] == 'ON-POST') {
+        if ($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery'] == 'ON-POST') {
 
             App::import('Model', 'SummaryPayment');
             $SummaryPayment = new SummaryPayment;
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('SummaryPayment.organization_id' => (int) $this->user->organization['Organization']['id'],
                 'SummaryPayment.user_id' => $user_id);
             $options['recursive'] = 1;
             $options['order'] = array('RequestPayment.num');
             $results = $SummaryPayment->find('all', $options);
             $this->set('results', $results);
-            /*
-              echo "<pre>";
-              print_r($results);
-              echo "</pre>";
-             */
+            
+			self::d($results, false);
         }
 
         /*
@@ -130,7 +125,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Cash');
         $Cash = new Cash;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
             'Cash.user_id' => $user_id);
         $options['recursive'] = -1;
@@ -152,7 +147,7 @@ class AjaxController extends AppController {
 
     public function admin_view_deliveries($delivery_id = 0) {
 
-        $this->__view_deliveries($delivery_id);
+        $this->_view_deliveries($delivery_id);
 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_deliveries');
@@ -160,13 +155,13 @@ class AjaxController extends AppController {
 
     public function admin_view_deliveries_small($delivery_id = 0) {
 
-        $this->__view_deliveries($delivery_id);
+        $this->_view_deliveries($delivery_id);
 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_deliveries_small');
     }
 
-    private function __view_deliveries($delivery_id) {
+    private function _view_deliveries($delivery_id) {
         if (empty($delivery_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -196,7 +191,7 @@ class AjaxController extends AppController {
         $Order = new Order;
 
         $Order->unbindModel(array('belongsTo' => array('Delivery')));
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Order.delivery_id' => $delivery_id,
             'Order.organization_id' => (int) $this->user->organization['Organization']['id'],
             'Order.isVisibleBackOffice' => 'Y',
@@ -217,7 +212,7 @@ class AjaxController extends AppController {
              * */
             $Supplier = new Supplier;
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
             $options['fields'] = array('img1');
             $options['recursive'] = -1;
@@ -262,7 +257,179 @@ class AjaxController extends AppController {
         $this->render('/Ajax/view_suppliers_organizations_referents');
     }
 
-    public function admin_view_orders($order_id) {
+	/*
+	 * call root TestLifeCycles::index
+	 * dettaglio  di un ordine 
+	 * k_summary_order: dati aggragati per gasista per un ordine
+     * k_summary_payments: dati aggregati per gasista per richiesta di pagamento (può includere ordini + dispensa + voci di spesa)
+	 */
+    public function admin_view_summary_orders($order_id) {
+
+        if (empty($order_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        App::import('Model', 'Order');
+        $Order = new Order;
+		
+        App::import('Model', 'RequestPayment');
+        $RequestPayment = new RequestPayment;
+		
+        App::import('Model', 'SummaryOrder');
+        $SummaryOrder = new SummaryOrder;
+		$SummaryOrder->unbindModel(['belongsTo' => ['Order', 'Delivery']]);
+
+        App::import('Model', 'SummaryPayment');
+        $SummaryPayment = new SummaryPayment;
+		$SummaryPayment->unbindModel(['belongsTo' => ['RequestPayment']]);
+		
+        App::import('Model', 'SummaryOrderTrasport');
+        $SummaryOrderTrasport = new SummaryOrderTrasport;
+
+        App::import('Model', 'SummaryOrderCostMore');
+        $SummaryOrderCostMore = new SummaryOrderCostMore;
+		
+        App::import('Model', 'SummaryOrderCostLess');
+        $SummaryOrderCostLess = new SummaryOrderCostLess;
+		
+        $Order->id = $order_id;
+        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];	   
+        $options['recursive'] = -1;
+        $orderResults = $Order->find('first', $options);
+		self::d($orderResults, false);
+		$this->set('orderResults', $orderResults);
+		
+        $options = [];
+        $options['conditions'] = ['SummaryOrder.organization_id' => $this->user->organization['Organization']['id'],
+								  'SummaryOrder.order_id' => $order_id];
+		$options['order'] = Configure::read('orderUser');			   
+        $options['recursive'] = 0;
+        $results = $SummaryOrder->find('all', $options);
+		
+		/*
+		 * estraggo i dettagli di una richiesta di pagamento
+		 * 	- ordini associati
+		 *  - voci di spesa generica
+		 *  - dispensa
+		 */
+		$requestPaymentResults = [];
+		if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+			switch ($orderResults['Order']['state_code']) {
+				case 'TO-PAYMENT': 
+				case 'SUPPLIER-PAID': 
+					$request_payment_id = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $order_id);
+					$requestPaymentResults = $RequestPayment->getAllDetails($this->user, $request_payment_id);
+					self::d($requestPaymentResults, false);
+				break;
+			}
+		} // end if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST')
+			
+		$user_ids = [];
+		foreach($results as $numResult => $result) {
+			/*
+			 * trasport
+			 */
+			if($orderResults['Order']['hasTrasport']=='Y') {
+				$options = [];
+				$options['conditions'] = array('SummaryOrderTrasport.organization_id' => $this->user->organization['Organization']['id'],
+											   'SummaryOrderTrasport.order_id' => $result['SummaryOrder']['order_id'],
+											   'SummaryOrderTrasport.user_id' => $result['SummaryOrder']['user_id']);			   
+				$options['recursive'] = -1;
+				$summaryOrderTrasportResults = $SummaryOrderTrasport->find('first', $options);
+				self::d($summaryOrderTrasportResults, false);
+				if(!empty($summaryOrderTrasportResults)) {
+					$results[$numResult]['SummaryOrderTrasport'] = $summaryOrderTrasportResults['SummaryOrderTrasport'];
+				}					
+			}
+
+			/*
+			 * costMore
+			 */			
+			if($orderResults['Order']['hasCostMore']=='Y') {
+				$options = [];
+				$options['conditions'] = array('SummaryOrderCostMore.organization_id' => $this->user->organization['Organization']['id'],
+											   'SummaryOrderCostMore.order_id' => $result['SummaryOrder']['order_id'],
+											   'SummaryOrderCostMore.user_id' => $result['SummaryOrder']['user_id']);			   
+				$options['recursive'] = -1;
+				$summaryOrderCostMoreResults = $SummaryOrderCostMore->find('first', $options);
+				self::d($summaryOrderCostMoreResults, false);
+				if(!empty($summaryOrderCostMoreResults)) {
+					$results[$numResult]['SummaryOrderCostMore'] = $summaryOrderCostMoreResults['SummaryOrderCostMore'];
+				}					
+			}
+
+			/*
+			 * costLess
+			 */			
+			if($orderResults['Order']['hasCostLess']=='Y') {
+				$options = [];
+				$options['conditions'] = array('SummaryOrderCostLess.organization_id' => $this->user->organization['Organization']['id'],
+											   'SummaryOrderCostLess.order_id' => $result['SummaryOrder']['order_id'],
+											   'SummaryOrderCostLess.user_id' => $result['SummaryOrder']['user_id']);			   
+				$options['recursive'] = -1;
+				$summaryOrderCostLessResults = $SummaryOrderCostLess->find('first', $options);
+				self::d($summaryOrderCostLessResults, false);
+				if(!empty($summaryOrderCostLessResults)) {
+					$results[$numResult]['SummaryOrderCostLess'] = $summaryOrderCostLessResults['SummaryOrderCostLess'];
+				}					
+			}
+			
+			if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+				
+				switch ($orderResults['Order']['state_code']) {
+					case 'TO-PAYMENT': 
+					case 'SUPPLIER-PAID': 
+						$options = [];
+						$options['conditions'] = array('SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+													   'SummaryPayment.user_id' => $result['SummaryOrder']['user_id'],
+													   'SummaryPayment.request_payment_id' => $request_payment_id);			   
+						$options['recursive'] = 0;
+						$summaryPaymentResults = $SummaryPayment->find('first', $options);
+						self::d($summaryPaymentResults, false);
+						if(!empty($summaryPaymentResults)) {
+							$results[$numResult]['SummaryPayment'] = $summaryPaymentResults;
+						}
+						
+						array_push($user_ids, $result['SummaryOrder']['user_id']);
+						
+						 
+						/*
+						 * estraggo altri gasisti della RequestPayment
+						 */
+						if(!empty($user_ids)) {
+
+							$options = [];	
+							$options['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+														   'SummaryPayment.request_payment_id' => $request_payment_id,
+														   ['NOT' => ['SummaryPayment.user_id' => $user_ids]]]; 
+							$options['recursive'] = 0;
+							$summaryPaymentNotSummaryOrderResults = $SummaryPayment->find('all', $options);
+							self::d($summaryPaymentNotSummaryOrderResults, false);
+							if(!empty($summaryPaymentNotSummaryOrderResults)) {
+								$results[$numResult]['SummaryPaymentNotSummaryOrderResults'] = $summaryPaymentNotSummaryOrderResults;
+							}				 
+						}
+				}
+			} // end if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST')
+				
+		} // loop foreach($results as $numResult => $result) 
+		
+		self::d($results, false);
+        $this->set('results', $results);		
+		$this->set('requestPaymentResults', $requestPaymentResults);
+		
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_summary_orders');
+	}
+	
+    public function admin_view_order_details($order_id) {
 
         if (empty($order_id)) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -277,37 +444,65 @@ class AjaxController extends AppController {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
+		
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
+        $options['recursive'] = -1;
+        $results = $Order->find('first', $options);
+        $this->set('results', $results);
+
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_order_details');
+	}
+		
+    public function admin_view_orders($order_id) {
+
+        if (empty($order_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        App::import('Model', 'OrderLifeCycle');
+        $OrderLifeCycle = new OrderLifeCycle;
+		
+        App::import('Model', 'Order');
+        $Order = new Order;
+
+        $Order->id = $order_id;
+        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
 
         /*
          * estraggo 
          * dati ordine 
          * gli articoli associati all'ordine
          */
-        $Order->hasAndBelongsToMany['Article'] = array(
-            'className' => 'Article',
-            'joinTable' => 'articles_orders',
-            'foreignKey' => 'order_id',
-            'associationForeignKey' => 'article_id',
-            'unique' => 'keepExisting',
-            'conditions' => 'Article.organization_id = ArticlesOrder.article_organization_id AND Article.stato = \'Y\' AND ArticlesOrder.stato != \'N\' AND ArticlesOrder.organization_id = ' . $this->user->organization['Organization']['id'],
-            'with' => 'ArticlesOrder');
+        $Order->hasAndBelongsToMany['Article'] = ['className' => 'Article',
+												'joinTable' => 'articles_orders',
+												'foreignKey' => 'order_id',
+												'associationForeignKey' => 'article_id',
+												'unique' => 'keepExisting',
+												'conditions' => 'Article.organization_id = ArticlesOrder.article_organization_id AND Article.stato = \'Y\' AND ArticlesOrder.stato != \'N\' AND ArticlesOrder.organization_id = ' . $this->user->organization['Organization']['id'],
+												'with' => 'ArticlesOrder'];
 
-        $options = array();
-        $options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-            'Order.id' => $order_id);
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
         $options['recursive'] = 1;
         $results = $Order->find('first', $options);
         $this->set('results', $results);
 
         /*
          * creo il link articlesOrder/admin_index
+		 * No se e' una promozione (prod_gas_promotion_id)
          */
-        if ($results['Delivery']['isVisibleBackOffice'] == 'N' || $results['Order']['isVisibleBackOffice'] == 'N') {
-            $actionToEditOrder = array();
-            $actionToEditArticle = array();
+        if ($results['Delivery']['isVisibleBackOffice'] == 'N' || $results['Order']['isVisibleBackOffice'] == 'N' || $results['Order']['prod_gas_promotion_id']!=0) {
+            $actionToEditOrder = [];
+            $actionToEditArticle = [];
         } else {
-            $actionToEditOrder = $this->actionToEditOrder($this->user, $results);
-            $actionToEditArticle = $this->actionToEditArticle($this->user, $results);
+            $actionToEditOrder = $OrderLifeCycle->actionToEditOrder($this->user, $results);
+            $actionToEditArticle = $OrderLifeCycle->actionToEditArticle($this->user, $results);
         }
         $this->set('actionToEditOrder', $actionToEditOrder);
         $this->set('actionToEditArticle', $actionToEditArticle);
@@ -347,7 +542,7 @@ class AjaxController extends AppController {
         /*
          * ordini associati al produttore
          */
-        $options = array();
+        $options = [];
         $options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
             'SuppliersOrganization.id' => $id);
         $options['order'] = array('Delivery.data', 'Order.data_inizio');
@@ -362,7 +557,11 @@ class AjaxController extends AppController {
     }
 
     // call Supplier::add_index
+	// call SuppliersOrganizations&action::add_index
     public function admin_view_suppliers($id = null) {
+		
+		$debug=false;
+		
         if (empty($id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -378,48 +577,96 @@ class AjaxController extends AppController {
         App::import('Model', 'SuppliersOrganization');
 
         App::import('Model', 'SuppliersOrganizationsReferent');
-
+		
         $Supplier->id = $id;
         if (!$Supplier->exists()) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $options = array();
-        $options['conditions'] = array('Supplier.id' => $id);
+        $options = [];
+        $options['conditions'] = ['Supplier.id' => $id];
         $options['recursive'] = 1;
         $results = $Supplier->find('first', $options);
+		self::d($results, $debug); 
 
         if (isset($results['SuppliersOrganization']))
             foreach ($results['SuppliersOrganization'] as $numResult => $suppliersOrganization) {
 
+				$articleResults = [];
+				
                 /*
                  * dati  associati al produttore: Organization, Article, Referents
+				 * se il produttore gestisce il listino (Supplier.owner_organization_id > 0) prendo i suoi articoli
                  */
                 $SuppliersOrganization = new SuppliersOrganization;
-                $SuppliersOrganization->unbindModel(array('belongsTo' => array('Supplier', 'CategoriesSupplier')));
-                $SuppliersOrganization->unbindModel(array('hasMany' => array('Order')));
+                $SuppliersOrganization->unbindModel(['belongsTo' => ['Supplier', 'CategoriesSupplie']]);
+                if($results['Supplier']['owner_organization_id']>0) {
+					$SuppliersOrganization->unbindModel(['hasMany' => ['Article','Order']]);
+				
+					/*
+					 * estraggo articoli del produttore
+					 */
+					if($numResult==0) {
+	
+						App::import('Model', 'Article');
+						$Article = new Article;
+		
+						App::import('Model', 'ProdGasSupplier');
+						$ProdGasSupplier = new ProdGasSupplier;
+		
+						$organization_id = $results['Supplier']['owner_organization_id'];
+						$prodGasSupplierResults = $ProdGasSupplier->getOrganizationSupplier($this->user, $organization_id, 'SUPPLIER', $debug);
+						
+						self::d($prodGasSupplierResults, $debug); 
+						if(!empty($prodGasSupplierResults)) {
+							$options = [];
+							$options['conditions'] = ['Article.organization_id' => $prodGasSupplierResults['SuppliersOrganization']['organization_id'],
+														'Article.supplier_organization_id' => $prodGasSupplierResults['SuppliersOrganization']['id'],
+														'Article.stato' => 'Y'];
+							$options['recursive'] = -1;
+							$articleResults = $Article->find('all', $options);
 
-                $options = array();
-                $options['conditions'] = array('SuppliersOrganization.organization_id' => $suppliersOrganization['organization_id'],
-							                    'SuppliersOrganization.id' => $suppliersOrganization['id'],
-							                    'Organization.stato' => 'Y');
+							self::d($articleResults, $debug); 
+						}
+					}
+				}
+				else
+					$SuppliersOrganization->unbindModel(['hasMany' => ['Order']]);
+					
+                $options = [];
+                $options['conditions'] = ['SuppliersOrganization.organization_id' => $suppliersOrganization['organization_id'],
+											'SuppliersOrganization.id' => $suppliersOrganization['id'],
+											'Organization.stato' => 'Y',
+											'Organization.type' => 'GAS'];
                 $options['recursive'] = 1;
                 $suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-
+				self::d($suppliersOrganizationResults, $debug); 
+								
                 /*
                  * per i test posso avere dati sporchi: articoli e produttori senza Organization
                  */
                 if (empty($suppliersOrganizationResults))
                     unset($results['SuppliersOrganization'][$numResult]);
-                else {
+                else {			
+
+					/*
+					 * il listino e' del produttore, associo il suo listino
+					 */
+					if($results['Supplier']['owner_organization_id']>0 && $numResult==0) { 
+						foreach($articleResults as $numResult2 => $articleResult)
+						$suppliersOrganizationResults['Article'][] = $articleResult['Article'];
+						
+						self::d($suppliersOrganizationResults, $debug); 
+					}
 					
 					$results['SuppliersOrganization'][$numResult] = $suppliersOrganizationResults;
+				
 					
 					/*
 					 * per ogni produttore faccio la media dei voti
 					 */	
-					$options = array();
+					$options = [];
 					$options['conditions'] = array('SuppliersVote.organization_id' => $suppliersOrganization['organization_id'],
 												   'SuppliersVote.supplier_id' => $results['Supplier']['id']);
 					$options['recursive'] = -1;
@@ -431,11 +678,8 @@ class AjaxController extends AppController {
                     
             }
 		
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		self::d($results, $debug);
+		
         $this->set('results', $results);
         $this->set('supplier_id', $id);
 
@@ -443,15 +687,14 @@ class AjaxController extends AppController {
         $this->render('/Ajax/view_suppliers');
     }
 
-    public function admin_view_articles($article_id = 0) {
-        $this->view_articles($article_id);
+    public function admin_view_articles($key) {
+        $this->view_articles($key);
     }
 
     /*
      * dettaglio di acquisti di un articolo
      * 		ArticlesOrder.key = $order_id, $organization_id, $article_id
      */
-
     public function admin_view_article_carts($key) {
 
         if (empty($key)) {
@@ -471,34 +714,34 @@ class AjaxController extends AppController {
         $Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
         $Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
 
-        $options = array();
-        $options['conditions'] = array('Article.organization_id' => $article_organization_id,
-            'Article.id' => $article_id);
+        $options = [];
+        $options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
         $options['recursive'] = -1;
-        $options['fields'] = array('stato');
+        $options['fields'] = ['Article.stato'];
         $results = $Article->find('first', $options);
         $article_stato = $results['Article']['stato'];
         $this->set(compact('article_stato'));
 
         if ($article_stato == 'Y') {
+        
             App::import('Model', 'Delivery');
             $Delivery = new Delivery;
 
-            $options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
-                'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
-                'suppliers' => false, 'referents' => false);
+            $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+						'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
+						'suppliers' => false, 'referents' => false];
 
-            $conditions = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
-                    'Delivery.stato_elaborazione' => 'OPEN'),
-                'Cart' => array('Cart.deleteToReferent' => 'N'));
+            $conditions = ['Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
+										 'Delivery.stato_elaborazione' => 'OPEN'],
+							'Cart' => ['Cart.deleteToReferent' => 'N']];
 
             if (!empty($order_id))
-                $conditions += array('ArticlesOrder' => array('ArticlesOrder.order_id' => $order_id,
-                        'ArticlesOrder.article_organization_id' => $article_organization_id,
-                        'ArticlesOrder.article_id' => $article_id));
+                $conditions += ['ArticlesOrder' => ['ArticlesOrder.order_id' => $order_id,
+													'ArticlesOrder.article_organization_id' => $article_organization_id,
+													'ArticlesOrder.article_id' => $article_id]];
             else
-                $conditions += array('ArticlesOrder' => array('ArticlesOrder.article_organization_id' => $article_organization_id,
-                        'ArticlesOrder.article_id' => $article_id));
+                $conditions += ['ArticlesOrder' => ['ArticlesOrder.article_organization_id' => $article_organization_id,
+								'ArticlesOrder.article_id' => $article_id]];
 
             $orderBy = array('User' => Configure::read('orderUser'));
 
@@ -508,7 +751,7 @@ class AjaxController extends AppController {
             /*
              * ctrl configurazione Organization
              */
-            $storeroomResults = array();
+            $storeroomResults = [];
             $organization = $this->user->get('Organization');
             if ($this->user->organization['Organization']['hasStoreroom'] == 'Y') {
 
@@ -518,10 +761,10 @@ class AjaxController extends AppController {
                 App::import('Model', 'Storeroom');
                 $Storeroom = new Storeroom;
 
-                $conditions = array('Delivery.id' => '> 0', // se dispensa e' 0
-                    'Articles.organization_id' => $article_organization_id,
-                    'Article.id' => $article_id);
-                $orderBy = array('Delivery' => 'Delivery.data,Delivery.id, ' . Configure::read('orderUser') . ', User.id');
+                $conditions = ['Delivery.id' => '> 0', // se dispensa e' 0
+								'Articles.organization_id' => $article_organization_id,
+								'Article.id' => $article_id];
+                $orderBy = ['Delivery' => 'Delivery.data,Delivery.id, ' . Configure::read('orderUser') . ', User.id'];
 
                 $storeroomDeliveryResults = $Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
 
@@ -531,15 +774,16 @@ class AjaxController extends AppController {
                 App::import('Model', 'Storeroom');
                 $Storeroom = new Storeroom;
 
-                $conditions = array('Delivery.id' => '0', // se dispensa e' 0,
-                    'Articles.organization_id' => $article_organization_id,
-                    'Article.id' => $article_id);
-                $orderBy = array('Delivery' => 'Delivery.data,Delivery.id, ' . Configure::read('orderUser') . ', User.id');
+                $conditions = ['Delivery.id' => '0', // se dispensa e' 0,
+								'Articles.organization_id' => $article_organization_id,
+								'Article.id' => $article_id];
+                $orderBy = ['Delivery' => 'Delivery.data,Delivery.id, ' . Configure::read('orderUser') . ', User.id'];
 
                 $storeroomResults = $Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
             } // if($this->user->organization['Organization']['hasStoreroom']=='Y')
 
             $this->set(compact('storeroomResults', 'storeroomDeliveryResults'));
+        
         } // end if($article_stato=='Y')
 
         $this->layout = 'ajax';
@@ -547,16 +791,66 @@ class AjaxController extends AppController {
     }
 
     /*
+     * dettaglio di acquisti di un articolo per tutti i GAS associati al ProdGas
+     * 		ArticlesOrder.key = $order_id, $organization_id, $article_id
+     */
+    public function admin_view_prodgas_article_carts($key) {
+
+		$debug = false;
+		
+        if (empty($key)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        list($order_id, $article_organization_id, $article_id) = explode('_', $key);
+
+        /*
+         * ctrl che lo Article.stato = Y, se no non posso avere acquisti
+         */
+        App::import('Model', 'Article');
+        $Article = new Article;
+
+        $Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));
+        $Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
+        $Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
+
+        $options = [];
+        $options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
+        $options['recursive'] = -1;
+        $options['fields'] = ['Article.stato'];
+        $results = $Article->find('first', $options);
+        $article_stato = $results['Article']['stato'];
+        $this->set(compact('article_stato'));
+
+        if ($article_stato == 'Y') {
+        
+	        App::import('Model', 'ProdGasArticle');
+	        $ProdGasArticle = new ProdGasArticle;
+			
+			$articlesOrderResults = $ProdGasArticle->getGasOrganizationInCart($this->user, $article_organization_id, $article_id, $debug); 
+			self::d($articlesOrderResults);
+
+        } // end if($article_stato=='Y')
+
+		$this->set('results', $articlesOrderResults);
+			
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_prodgas_article_carts');
+    }
+
+    /*
      * dettaglio di acquisti di un articolo in un preciso ordine e consegna
      * 		in validation_carts
      * ArticlesOrder.key = $order_id, $article_organization_id, $article_id
      */
-
     public function admin_view_articles_order_carts($key) {
 
         $debug = false;
         
-        $results = array();
+        $results = [];
+        $desResults = [];
+		$totAcquistiAltriGas = 0;
 
         if (empty($key) && strpos($key, '_') !== false) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -596,80 +890,129 @@ class AjaxController extends AppController {
         }
 
         App::import('Model', 'Cart');
+		$Cart = new Cart();
 		
-       /*
-         *  ctrl eventuali acquisti gia' fatti
+        /*
+         *  ctrl eventuali acquisti gia' fatti del proprio GAS
          */      
-        if($des_order_id==0 || !$isReferentDesAllGasDesSupplier) {
-	        $Cart = new Cart();
-	
-	        $options = array();
-	        $options['conditions'] = array('Cart.organization_id' => $this->user->organization['Organization']['id'],
-	        								'Cart.order_id' => $order_id,
-	                                        'Cart.article_organization_id' => $article_organization_id,
-	                                        'Cart.article_id' => $article_id,
-	                                        'Cart.deleteToReferent' => 'N',
-	        );
-	        $options['recursive'] = 1;
-	        $options['order'] = array(Configure::read('orderUser'));
-	        $results = $Cart->find('all', $options);	                
-        }
-        else {
-            /*
-            * se DES ctrl acquisti di TUTTI i GAS 
-            */
-			$options = array();
-			$options['conditions'] = array('DesOrdersOrganization.des_id' => $this->user->des_id,
-										   'DesOrdersOrganization.des_order_id' => $des_order_id);
+		$options = [];
+		$options['conditions'] = ['Cart.organization_id' => $this->user->organization['Organization']['id'],
+									'Cart.order_id' => $order_id,
+									'Cart.article_organization_id' => $article_organization_id,
+									'Cart.article_id' => $article_id,
+									'Cart.deleteToReferent' => 'N'];
+		$options['recursive'] = 1;
+		$options['order'] = [Configure::read('orderUser')];
+		$results = $Cart->find('all', $options);	                
+			
+		/*
+		* se DES 
+		*	se isReferentDesAllGasDesSupplier  => ctrl acquisti di TUTTI i GAS 
+		*	se !isReferentDesAllGasDesSupplier => ctrl eventuali acquisti gia' fatti del proprio GAS + totla acquisti di TUTTI i GAS 
+		*/
+		
+		if(!empty($des_order_id)) {
+			/*
+			 * estraggo acquisti di TUTTI i GAS
+			 */
+			$options = [];
+			$options['conditions'] = ['DesOrdersOrganization.des_id' => $this->user->des_id,
+									   'DesOrdersOrganization.des_order_id' => $des_order_id];
 			$options['recursive'] = -1;								
 			$desOrdersOrganizationResults = $DesOrdersOrganization->find('all', $options);
 			
-			/*
-			echo "<pre>DesOrdersOrganization::getDesOrdersOrganization() \n";
-			print_r($options);
-			print_r($desOrdersOrganizationResults);
-			echo "</pre>";
-			*/
-			       
-            $i=0;
-        	foreach($desOrdersOrganizationResults as $desOrdersOrganizationResult) {
-        	
-                $Cart = new Cart();
-                $options = array();
-                $options['conditions'] = array('Cart.organization_id' => $desOrdersOrganizationResult['DesOrdersOrganization']['organization_id'],
-                                                'Cart.order_id' => $desOrdersOrganizationResult['DesOrdersOrganization']['order_id'],
-                                                'Cart.article_organization_id' => $article_organization_id,
-                                                'Cart.article_id' => $article_id,
-                                                'Cart.deleteToReferent' => 'N',
-                );
+			self::d([$options, $desOrdersOrganizationResults], false);
+				   
+			$i=0;
+			foreach($desOrdersOrganizationResults as $desOrdersOrganizationResult) {
+			
+				$Cart = new Cart();
+				$options = [];
+				$options['conditions'] = ['Cart.organization_id' => $desOrdersOrganizationResult['DesOrdersOrganization']['organization_id'],
+										'Cart.order_id' => $desOrdersOrganizationResult['DesOrdersOrganization']['order_id'],
+										'Cart.article_organization_id' => $article_organization_id,
+										'Cart.article_id' => $article_id,
+										'Cart.deleteToReferent' => 'N'];
 	
-                $options['order'] = '';
-                $options['recursive'] = 1;
-                $cartResults = $Cart->find('all', $options);
-                /*
-                echo "<pre>";
-                print_r($options['conditions']);
-                print_r($cartResults);
-                echo "</pre>";
-	            */    
-	            if(!empty($cartResults)) {
-	                $results[$i] = current($cartResults);
+				$options['order'] = '';
+				$options['recursive'] = 1;
+				$cartResults = $Cart->find('all', $options);
+				
+				self::d([$options['conditions'], $cartResults], false);
+		   
+				if(!empty($cartResults)) {
+					$desResults[$i] = current($cartResults);
 					$i++;
 				}
 				
-            } // loop DesOrdersOrganizationResult
-        }
-            
+			} // loop DesOrdersOrganizationResult
+				
+			if(!$isReferentDesAllGasDesSupplier) {  // se non ho ACL estraggo solo il totale
+				$totAcquistiAltriGas = count($desResults);
+			}
+			else {
+				$results = $desResults;
+			}
+
+        } // if(!empty($des_order_id))
+         
+		$this->set('totAcquistiAltriGas', $totAcquistiAltriGas);	 
         $this->set('results', $results);
-        /*
-        echo "<pre>";
-        print_r($results);
-        echo "</pre>";
-        */
+		self::d($results, false);
+		
         $this->layout = 'ajax';
         $this->render('/Ajax/view_articles_order_carts');
     }
 
+    /*
+     * dettaglio di acquisti di un articolo in un preciso ordine e consegna
+     * 		in validation_carts
+     * ArticlesOrder.key = $organization_id $order_id, $article_organization_id, $article_id
+     */
+    public function admin_view_prodgas_articles_order_carts($key) {
+
+        $debug = false;
+        
+        $results = [];
+        $desResults = [];
+		$totAcquistiAltriGas = 0;
+
+        if (empty($key) && strpos($key, '_') !== false) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+        list($organization_id, $order_id, $article_organization_id, $article_id) = explode('_', $key);
+
+        App::import('Model', 'ArticlesOrder');
+        $ArticlesOrder = new ArticlesOrder();
+        if (!$ArticlesOrder->exists($organization_id, $order_id, $article_organization_id, $article_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        App::import('Model', 'Cart');
+		$Cart = new Cart();
+		
+        /*
+         *  ctrl eventuali acquisti gia' fatti del proprio GAS
+         */      
+		$options = [];
+		$options['conditions'] = ['Cart.organization_id' => $organization_id,
+									'Cart.order_id' => $order_id,
+									'Cart.article_organization_id' => $article_organization_id,
+									'Cart.article_id' => $article_id,
+									'Cart.deleteToReferent' => 'N'];
+		$options['recursive'] = 1;
+		$options['order'] = [Configure::read('orderUser')];
+		$results = $Cart->find('all', $options);	                
+	 
+        $this->set('results', $results);
+		self::d($results, false);
+		
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_prodgas_articles_order_carts');
+    }
+	
     /*
      * dettaglio di acquisti di un articolo in un preciso ordine e consegna
      * codice = a admin_view_articles_order_carts 
@@ -678,7 +1021,7 @@ class AjaxController extends AppController {
 
     public function admin_view_backup_articles_order_carts($key) {
 
-        $results = array();
+        $results = [];
 
         if (empty($key) && strpos($key, '_') !== false) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -692,7 +1035,7 @@ class AjaxController extends AppController {
         App::import('Model', 'BackupCart');
         $BackupCart = new BackupCart();
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('BackupCart.organization_id' => $this->user->organization['Organization']['id'],
             'BackupCart.order_id' => $order_id,
             'BackupCart.article_organization_id' => $article_organization_id,
@@ -723,17 +1066,14 @@ class AjaxController extends AppController {
         App::import('Model', 'CashesHistory');
         $CashesHistory = new CashesHistory;
         
-        $options = array();
+        $options = [];
         $options['conditions'] = array('CashesHistory.organization_id' => (int) $this->user->organization['Organization']['id'],
 							            'CashesHistory.cash_id' => $cash_id);
 		$options['order'] =	array('CashesHistory.id asc'); // per created no perche' e' sempre = 
-		 $options['recursive'] = 0;
+		$options['recursive'] = 0;
         $results = $CashesHistory->find('all', $options);
-		if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "<pre>";
-		}
+
+		self::d($results, $debug);
 
 		/*
 		 * aggiungo ultimo movimento
@@ -741,91 +1081,29 @@ class AjaxController extends AppController {
         App::import('Model', 'Cash');
         $Cash = new Cash;
         
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
-							            'Cash.id' => $cash_id);
+							           'Cash.id' => $cash_id);
 		$options['recursive'] =	-1; 
         $cashResults = $Cash->find('first', $options);
 		
 		if(!empty($cashResults))	
 			$results[(count($results))]['CashesHistory'] = $cashResults['Cash'];	
 
-		
-		/*
-		 * calcolo dai saldi alle operazioni
-		 */
-        foreach($results as $numResult => $result) {
-			if($numResult>0) {
-				$importo_old = $results[$numResult-1]['CashesHistory']['importo'];
-				$importo = $results[$numResult]['CashesHistory']['importo'];
-				
-				$operazione = (-1*($importo_old - $importo));
-				$results[$numResult-1]['CashesHistory']['operazione'] = $operazione;
-				$results[$numResult-1]['CashesHistory']['operazione_'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-				$results[$numResult-1]['CashesHistory']['operazione_e'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-				
-				$results[$numResult-1]['CashesHistory']['nota'] = $results[$numResult-1]['CashesHistory']['nota'];
-				$results[$numResult-1]['CashesHistory']['created'] = $results[$numResult-1]['CashesHistory']['created'];
-			}	
-		}
-	
-		$results[$numResult]['CashesHistory']['operazione'] = '';
-		$results[$numResult]['CashesHistory']['operazione_'] = '';
-		$results[$numResult]['CashesHistory']['operazione_e'] = '';		
-
-		/*
-		 * aggiungo la prima riga con partenza saldo a 0
-		 * porto nota / modified all'occorrenza dell'array precedente
-		 */
-		$newResults = array(); 
-		if(!empty($results)) { 		
-			$newResults[0]['Cash']['importo'] = '0';
-			$newResults[0]['Cash']['importo_'] = '0,00';
-			$newResults[0]['Cash']['importo_e'] = '0,00 &euro;';
-			$operazione = (-1*(0 - $results[0]['CashesHistory']['importo']));
-			
-
-			$newResults[0]['CashesHistory']['importo'] = '0';
-			$newResults[0]['CashesHistory']['importo_'] = '0,00';
-			$newResults[0]['CashesHistory']['importo_e'] = '0,00 &euro;';
-
-			$newResults[0]['CashesHistory']['nota'] = $results[0]['CashesHistory']['nota'];
-			$newResults[0]['CashesHistory']['modified'] = $results[0]['CashesHistory']['modified'];
-				
-			$newResults[0]['CashesHistory']['operazione'] = $operazione;
-			$newResults[0]['CashesHistory']['operazione_'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-			$newResults[0]['CashesHistory']['operazione_e'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-		
-			foreach($results as $numResult => $result) {
-				$newResults[$numResult+1] = $result;
-				
-				if(isset($results[$numResult+1])) {
-					$newResults[$numResult+1]['CashesHistory']['nota'] = $results[$numResult+1]['CashesHistory']['nota'];
-					$newResults[$numResult+1]['CashesHistory']['modified'] = $results[$numResult+1]['CashesHistory']['modified'];
-				}
-				else {
-					$newResults[$numResult+1]['CashesHistory']['nota'] = "";					
-				}
-			}
-		}
-	
-		if($debug) {
-			echo "<pre>";
-			print_r($newResults);
-			echo "<pre>";
-		}
-		
-        $this->set('results', $newResults);
+		$results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
+        $this->set('results', $results);
 		 
         $this->layout = 'ajax';
         $this->render('/Ajax/admin_view_cashes_histories');
     }
 	
 	/*
-	 * history Cash da FE, vado per cacs_id
+	 * history Cash da FE, vado per cash_id
 	 */	
     public function view_cashes_histories() {
 
+		$debug = false;
+		
 		$user_id = $this->user->id;
 
         if (empty($user_id)) {
@@ -836,7 +1114,7 @@ class AjaxController extends AppController {
         App::import('Model', 'CashesHistory');
         $CashesHistory = new CashesHistory;
         
-        $options = array();
+        $options = [];
         $options['conditions'] = array('CashesHistory.organization_id' => (int) $this->user->organization['Organization']['id'],
 							            'CashesHistory.user_id' => $user_id);
 		$options['order'] =	array('CashesHistory.id asc'); // per created no perche' e' sempre = 
@@ -848,7 +1126,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Cash');
         $Cash = new Cash;
         
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
 							            'Cash.user_id' => $user_id);
 		$options['recursive'] =	-1; 
@@ -857,61 +1135,54 @@ class AjaxController extends AppController {
 		if(!empty($cashResults))	
 			$results[(count($results))]['CashesHistory'] = $cashResults['Cash'];	
 
-		
-		/*
-		 * calcolo dai saldi alle operazioni
-		 */
-        foreach($results as $numResult => $result) {
-			if($numResult>0) {
-				$importo_old = $results[$numResult-1]['CashesHistory']['importo'];
-				$importo = $results[$numResult]['CashesHistory']['importo'];
-				
-				$operazione = (-1*($importo_old - $importo));
-				$results[$numResult-1]['CashesHistory']['operazione'] = $operazione;
-				$results[$numResult-1]['CashesHistory']['operazione_'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-				$results[$numResult-1]['CashesHistory']['operazione_e'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			}	
-		}
-	
-		$results[$numResult]['CashesHistory']['operazione'] = '';
-		$results[$numResult]['CashesHistory']['operazione_'] = '';
-		$results[$numResult]['CashesHistory']['operazione_e'] = '';		
-						
-		/*
-		  echo "<pre>";
-		  print_r($results);
-		  echo "</pre>";
-		*/
+		$results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
         $this->set('results', $results);
 		 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_cashes_histories');
     }
     
-    public function view_articles($article_id = 0) {
-        if (empty($article_id)) {
+    public function view_articles($key) {
+    
+    	list($article_organization_id, $article_id) = explode('_', $key);
+    
+        if (empty($article_organization_id) || empty($article_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
         App::import('Model', 'Article');
         $Article = new Article;
-        if (!$Article->exists($this->user->organization['Organization']['id'], $article_id)) {
+        if (!$Article->exists($article_organization_id, $article_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $options = array();
-        $options['conditions'] = array('Article.id' => $article_id);
+        $options = [];
+        $options['conditions'] = ['Article.id' => $article_id, 'Article.organization_id' => $article_organization_id];
         $results = $Article->getArticlesDataAnagr($this->user, $options);
         $this->set('results', $results);
 
+		/*
+		 * dati owner_articles listino REFERENT / DES / SUPPLIER 
+		 */
+		if($article_organization_id!=$this->user->organization['Organization']['id']) {
+	        App::import('Model', 'Organization');
+	        $Organization = new Organization;
+	        
+			$options = [];
+			$options['conditions'] = ['Organization.id' => $article_organization_id];
+			$options['recursive'] = -1;
+			$organizationResults = $Organization->find('first', $options);	
+			$this->set('organizationResults', $organizationResults);
+		}
+		 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_articles');
     }
 
     public function admin_view_articles_order($key, $evidenzia = '') {
-        $this->__view_articles_order($key, $evidenzia);
+        $this->_view_articles_order($key, $evidenzia);
     }
 
     /*
@@ -920,11 +1191,11 @@ class AjaxController extends AppController {
      */
 
     public function view_articles_order($key, $evidenzia = '') {
-        $this->__view_articles_order($key, $evidenzia);
+        $this->_view_articles_order($key, $evidenzia);
     }
 
     public function view_articles_order_no_img($key) {
-        $this->__view_articles_order($key);
+        $this->_view_articles_order($key);
 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_articles_order_no_img');
@@ -936,15 +1207,15 @@ class AjaxController extends AppController {
      */
 
     public function admin_view_prod_deliveries_articles($key, $evidenzia = '') {
-        $this->__view_prod_deliveries_articles($key, $evidenzia);
+        $this->_view_prod_deliveries_articles($key, $evidenzia);
     }
 
     public function view_prod_deliveries_articles($key, $evidenzia = '') {
-        $this->__view_prod_deliveries_articles($key, $evidenzia);
+        $this->_view_prod_deliveries_articles($key, $evidenzia);
     }
 
     public function view_prod_deliveries_articles_no_img($key) {
-        $this->__view_prod_deliveries_articles($key);
+        $this->_view_prod_deliveries_articles($key);
 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_prod_deliveries_articles_no_img');
@@ -960,10 +1231,9 @@ class AjaxController extends AppController {
         App::import('Model', 'Order');
         $Order = new Order();
 
-        $options = array();
-        $options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-            'Order.id' => $order_id);
-        $options['recursive'] = -1;
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
+		$options['recursive'] = -1;
         $results = $Order->find('first', $options);
 
         $delivery_id = $results['Order']['delivery_id'];
@@ -983,9 +1253,8 @@ class AjaxController extends AppController {
         App::import('Model', 'SuppliersOrganizationsReferent');
         $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 
-        $options = array();
-        $options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-            'Order.id' => $order_id);
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
         $options['recursive'] = 1;
         $results = $Order->find('first', $options);
 
@@ -1007,7 +1276,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier();
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Supplier.id' => $results['SuppliersOrganization']['supplier_id']);
         $options['recursive'] = -1;
         $supplier = $Supplier->find('first', $options);
@@ -1028,7 +1297,7 @@ class AjaxController extends AppController {
 
         $ProdDeliveriesArticle->unbindModel(array('belongsTo' => array('ProdDelivery', 'ProdCart')));
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('ProdDeliveriesArticle.organization_id' => $this->user->organization['Organization']['id'],
             'ProdDeliveriesArticle.prod_delivery_id' => $prod_delivery_id,
             ''
@@ -1048,7 +1317,7 @@ class AjaxController extends AppController {
      * ArticlesOrder.key = $order_id_$article_organization_id_$article_id
      */
 
-    private function __view_articles_order($key, $evidenzia = '') {
+    private function _view_articles_order($key, $evidenzia = '') {
 
         if (empty($key) && strpos($key, '_') !== false) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -1086,25 +1355,25 @@ class AjaxController extends AppController {
                 }
                 $results['ArticlesType'] = $tmp;
             } else
-                $results['ArticlesType'] = array();
+                $results['ArticlesType'] = [];
         }
 
         $this->set('results', $results);
         $this->set('evidenzia', $evidenzia);
 
-        /*
-         * articolo non del GAS
-         */
-        if ($this->user->organization['Organization']['id'] != $article_organization_id) {
-            App::import('Model', 'Organization');
-            $Organization = new Organization;
-
-            $options = array();
-            $options['conditions'] = array('Organization.id' => (int) $article_organization_id);
-            $options['recursive'] = -1;
-            $organizationOtherResults = $Organization->find('first', $options);
-            $this->set('organizationOtherResults', $organizationOtherResults);
-        }
+		/*
+		 * dati owner_articles listino REFERENT / DES / SUPPLIER 
+		 */
+		if($article_organization_id!=$this->user->organization['Organization']['id']) {
+	        App::import('Model', 'Organization');
+	        $Organization = new Organization;
+	        
+			$options = [];
+			$options['conditions'] = ['Organization.id' => $article_organization_id];
+			$options['recursive'] = -1;
+			$organizationResults = $Organization->find('first', $options);	
+			$this->set('organizationResults', $organizationResults);
+		}
 
         $this->layout = 'ajax';
         $this->render('/Ajax/view_articles_order');
@@ -1116,7 +1385,7 @@ class AjaxController extends AppController {
      * ProdDeliveryArticle.key = $prod_delivery_id_$article_organization_id_$article_id
      */
 
-    private function __view_prod_deliveries_articles($key, $evidenzia = '') {
+    private function _view_prod_deliveries_articles($key, $evidenzia = '') {
 
         if (empty($key) && strpos($key, '_') !== false) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -1154,7 +1423,7 @@ class AjaxController extends AppController {
                 }
                 $results['ArticlesType'] = $tmp;
             } else
-                $results['ArticlesType'] = array();
+                $results['ArticlesType'] = [];
         }
 
         $this->set('results', $results);
@@ -1209,7 +1478,7 @@ class AjaxController extends AppController {
         App::import('Model', 'OrdersAction');
         $OrdersAction = new OrdersAction;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('OrdersAction.id' => $order_action_id);
         $results = $OrdersAction->find('first', $options);
 
@@ -1235,7 +1504,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;
 
-        $option = array();
+        $option = [];
         $option['conditions'] = array('Supplier.j_content_id' => $j_content_id);
         $option['recursive'] = 1;
         $results = $Supplier->find('first', $option);
@@ -1250,7 +1519,7 @@ class AjaxController extends AppController {
 
                 $Organization = new Organization;
 
-                $options = array();
+                $options = [];
                 $options['conditions'] = array('Organization.id' => $organization_id);
                 $options['recursive'] = -1;
 
@@ -1260,12 +1529,9 @@ class AjaxController extends AppController {
 
                 unset($results['SuppliersOrganization'][$numResult]);
             }
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
-
+        
+		self::d($results, false);
+        
         $this->set('results', $results);
 
         $this->layout = 'ajax';
@@ -1285,7 +1551,7 @@ class AjaxController extends AppController {
 		App::import('Model', 'Article');
 		$Article = new Article;
 
-        $option = array();
+        $option = [];
         $option['conditions'] = array('Supplier.j_content_id' => $j_content_id);
         $option['recursive'] = 1;
         $results = $Supplier->find('first', $option);
@@ -1299,11 +1565,11 @@ class AjaxController extends AppController {
 
 			foreach($results['SuppliersOrganization'] as $suppliersOrganization) {
 			
-					$articlesResults = array();
+					$articlesResults = [];
 					$organization_id = $suppliersOrganization['organization_id'];
 					$supplier_organization_id = $suppliersOrganization['id'];
 
-					$options = array();
+					$options = [];
 					$options['conditions'] = array('Article.organization_id' => $organization_id,
 													'Article.supplier_organization_id' => $supplier_organization_id,
 													'Article.stato' => 'Y');
@@ -1317,11 +1583,9 @@ class AjaxController extends AppController {
 					
 			} // foreach($results['SuppliersOrganization'] as $suppliersOrganization)
         }
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
+        
+		self::d($results, false);
+		
         $this->set('results', $results);
 
         $this->layout = 'ajax';
@@ -1344,18 +1608,14 @@ class AjaxController extends AppController {
         $SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
         $SuppliersOrganization->unbindModel(array('hasMany' => array('Article')));
 
-        $option = array();
+        $option = [];
         $option['conditions'] = array('SuppliersOrganization.organization_id' => $organization_id,
             'Supplier.j_content_id' => $j_content_id);
         $option['recursive'] = 2;
         $results = $SuppliersOrganization->find('first', $option);
 
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
-
+        self::d($results, false);
+		
         $this->set('results', $results);
         $this->set('organization_id', $organization_id);
 
@@ -1368,11 +1628,16 @@ class AjaxController extends AppController {
         App::import('Model', 'Delivery');
         $Delivery = new Delivery;
 
-        $tmpResults = $Delivery->find('all', array('conditions' => array('Delivery.luogo LIKE' => '%' . $q . '%',
-                'Delivery.organization_id' => (int) $this->user->organization['Organization']['id']),
-            'fields' => 'DISTINCT luogo', 'recursive' => -1));
+		$options = [];
+		$options['conditions'] = ['Delivery.luogo LIKE' => '%' . $q . '%',
+                				  'Delivery.organization_id' => (int) $this->user->organization['Organization']['id']];
+		$options['fields'] = ['DISTINCT luogo'];
+		$options['recursive'] = -1;
+        $tmpResults = $Delivery->find('all', $options);
 
-        $results = array();
+		self::l($tmpResults, false);
+		
+        $results = [];
         foreach ($tmpResults as $key => $value)
             foreach ($value as $key1 => $value1)
                 foreach ($value1 as $key2 => $value2)
@@ -1430,7 +1695,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
             'Article.organization_id' => $this->user->organization['Organization']['id'],
             'Article.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')');
@@ -1448,7 +1713,7 @@ class AjaxController extends AppController {
         $Article = new Article;
 
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
             'Article.organization_id' => $this->user->organization['Organization']['id'],
             'Article.supplier_organization_id' => $supplier_organization_id);
@@ -1469,7 +1734,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
             'Article.supplier_organization_id' => $supplier_organization_id,
             'Article.stato' => 'Y');
@@ -1486,7 +1751,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('lower(Supplier.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
             'Supplier.stato != ' => 'N');
         $options['fields'] = array('name');
@@ -1505,7 +1770,7 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('lower(Supplier.name) LIKE' => '%' . strtolower(addslashes($q)) . '%');
         $options['fields'] = array('name');
         $options['recursive'] = -1;
@@ -1539,7 +1804,7 @@ class AjaxController extends AppController {
 
 		$debug = false;
 		
-        $results = array();
+        $results = [];
 
         if (!empty($supplier_organization_id)) {
             App::import('Model', 'SuppliersOrganization');
@@ -1547,17 +1812,14 @@ class AjaxController extends AppController {
             
             $SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('SuppliersOrganization.id' => $supplier_organization_id,
                 'SuppliersOrganization.organization_id' => (int) $this->user->organization['Organization']['id']);
             $options['recursive'] = 0;
             $results = $SuppliersOrganization->find('first', $options);
-			/*
-              echo "<pre>";
-              print_r($results);
-              echo "</pre>";
-             */
-
+	
+            self::d($results, false);
+			
 			 /*
 			  * ctrl se potrebbe essere un ordine DES
 			  */
@@ -1587,7 +1849,7 @@ class AjaxController extends AppController {
 			            App::import('Model', 'DesOrganization');
 			            $DesOrganization = new DesOrganization;
 
-			            $options = array();
+			            $options = [];
 						$options['conditions'] = array('DesOrganization.organization_id' => $this->user->organization['Organization']['id']); // non ho scelto il DES, ctrl solo se il suo GAS e' titolare
 							   		                   					   		                   
 			            $options['fields'] = array('DesOrganization.des_id');
@@ -1608,7 +1870,7 @@ class AjaxController extends AppController {
 							/*
 							 * non ho scelto il DES ma e' associato a + DES, ctrl solo se il suo GAS e' titolare
 							 */						
-							$options = array();
+							$options = [];
 			            	$options['conditions'] = array('DesSupplier.supplier_id' => $results['Supplier']['id'],
 		            								       'DesSupplier.own_organization_id' => $this->user->organization['Organization']['id']);
 				            $options['recursive'] = -1;
@@ -1633,7 +1895,7 @@ class AjaxController extends AppController {
 						/*
 						 * ho scelto il DES
 						 */ 					
-			            $options = array();
+			            $options = [];
 			            $options['conditions'] = array('DesSupplier.supplier_id' => $results['Supplier']['id'],
 			            						       'DesSupplier.des_id' => $this->user->des_id);			   		                   
 			            $options['fields'] = array('DesSupplier.id');
@@ -1652,7 +1914,7 @@ class AjaxController extends AppController {
 					
 							$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'User')));
 							
-							$options = array();
+							$options = [];
 							$options['conditions'] = array('DesSuppliersReferent.des_id' => $this->user->des_id,
 														   'DesSuppliersReferent.organization_id' => $this->user->organization['Organization']['id'],
 														   'DesSuppliersReferent.user_id' => $this->user->get('id'),
@@ -1672,11 +1934,8 @@ class AjaxController extends AppController {
 									if($debug) echo '<br />sono REFERENTE DES del produttore';
 								}
 							
-								/*						   
-					              echo "<pre>";
-					              print_r($ACLDesSuppliersResults);
-					              echo "</pre>";
-					            */
+								self::d($ACLDesSuppliersResults, false);
+					            
 					        } // end if(!empty($ACLDesSuppliersResults))
 							else {
 								/*
@@ -1685,7 +1944,7 @@ class AjaxController extends AppController {
 								App::import('Model', 'UserGroupMap');
 								$UserGroupMap = new UserGroupMap;
 						
-								$options = array();
+								$options = [];
 								$options['conditions'] = array('UserGroupMap.user_id' => $this->user->get('id'),
 															   'UserGroupMap.group_id' => Configure::read('group_id_super_referent_des'));
 								$options['recursive'] = -1;
@@ -1745,7 +2004,7 @@ class AjaxController extends AppController {
 
     public function admin_desSupplierDetails($des_supplier_id = 0, $format = 'notmpl') {
 
-        $results = array();
+        $results = [];
 
         if (!empty($des_supplier_id)) {
 
@@ -1754,18 +2013,14 @@ class AjaxController extends AppController {
 
             $DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization', 'DesOrder')));
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id,
                 'DesSupplier.own_organization_id' => $this->user->organization['Organization']['id'],
                 'DesSupplier.id' => $des_supplier_id);
             $options['recursive'] = 0;
             $results = $DesSupplier->find('first', $options);
 
-            /*
-              echo "<pre>";
-              print_r($results);
-              echo "</pre>";
-             */
+            self::d($results, false);
         }
 
         $this->set('results', $results);
@@ -1780,7 +2035,6 @@ class AjaxController extends AppController {
      * 		ProdGasArticles::admin_index_quick
      * idRow = id-field-table
      */
-
     public function admin_updateGeneric($idRow) {
 
 		$debug = false;
@@ -1790,8 +2044,8 @@ class AjaxController extends AppController {
         $esito = 'NO';
 
         $this->log .= "\r\n------------------------------------------------------------------------------";
-        $this->log .= "\r\n organization_id".$this->user->organization['Organization']['id'];
-        $this->log .= "\r\n supplier_id".$this->user->supplier['Supplier']['id'];
+        $this->log .= "\r\n GAS organization_id".$this->user->organization['Organization']['id'];
+        $this->log .= "\r\n PRODGAS organization_id".$this->user->organization['Supplier']['id'];
         $this->log .= "\r\n idRow $idRow";
 
 
@@ -1840,13 +2094,10 @@ class AjaxController extends AppController {
             $sql = "SELECT * 
 					FROM " . Configure::read('DB.prefix') . $table . " 
 					WHERE 
-						$field = " . $value . " 
-						and id = " . (int) $id;
-			if(!empty($this->user->supplier['Supplier'])) 
-				$sql .= " and supplier_id = ".$this->user->supplier['Supplier']['id'];
-			else
-				$sql .= " and organization_id = ".$this->user->organization['Organization']['id'];		
-            // echo '<br />'.$sql;exit;
+						BINARY $field = " . $value . " 
+						and id = ".(int) $id." and organization_id = ".$this->user->organization['Organization']['id'];		
+
+            // self::d($sql, false);
             $this->log .= "\r\n sql $sql";
             $results = $this->{$this->modelClass}->query($sql);
             $this->log .= "\r\n count(results) " . count($results);
@@ -1860,12 +2111,8 @@ class AjaxController extends AppController {
 							$field = " . $value . ", 
 							modified = '" . date('Y-m-d H:i:s') . "'
 			   			WHERE
-		   					id = " . (int) $id;			
-				if(!empty($this->user->supplier['Supplier'])) 
-					$sql .= " and supplier_id = ".$this->user->supplier['Supplier']['id'];
-				else
-					$sql .= " and organization_id = ".$this->user->organization['Organization']['id'];
-                // echo '<br />'.$sql;
+		   					id = ".(int)$id." and organization_id = ".$this->user->organization['Organization']['id'];
+                // self::d($sql, false);
                 $this->log .= "\r\n sql $sql";
                 $results = $this->{$this->modelClass}->query($sql);
 
@@ -1884,11 +2131,7 @@ class AjaxController extends AppController {
         $this->log .= "\r\n  $content_for_layout";
         if (Configure::read('developer.mode'))
             CakeLog::write("debug", $this->log);
-		if($debug) {
-			echo "<pre>";
-			print_r($this->log);
-			echo "</pre>";
-		}
+		self::d($this->log, $debug);
 
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
@@ -1914,12 +2157,9 @@ class AjaxController extends AppController {
         $SummaryOrder = new SummaryOrder;
         $results = $SummaryOrder->select_to_order($this->user, $order_id);
         $this->set(compact('results'));
-
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
+		
+		self::d($results, false);
+		
         $this->layout = 'ajax';
         $this->render('/Ajax/admin_view_cassiere_orders');
     }
@@ -1955,4 +2195,91 @@ class AjaxController extends AppController {
 		$this->layout = 'ajax';
 		$this->render('/Layouts/ajax');
 	}	
+	
+    public function admin_view_docs_creates($doc_id = 0) {
+		
+		if (empty($doc_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+
+		App::import('Model', 'DocsCreateUser');
+		$DocsCreateUser  = new DocsCreateUser ;
+		
+		$options = [];
+		$options['conditions'] = ['DocsCreateUser.organization_id' => $this->user->organization['Organization']['id'],
+								  'DocsCreateUser.doc_id' => $doc_id];
+		$options['order'] = ['DocsCreateUser.num'];
+		$options['recursive'] = 1;
+		
+		$results = $DocsCreateUser->find('all', $options);
+		$this->set('results', $results);
+
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_docs_creates');
+    }	
+	
+	/*
+	 * di un articolo in dispensa, estrae le eventuali prenotazioni 
+	 */
+    public function admin_view_storeroom_just_booked($storeroom_id = 0) {
+
+		if (empty($storeroom_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+
+		App::import('Model', 'Storeroom');
+		$Storeroom = new Storeroom;
+	            
+		/*
+		 * ctrl configurazione Organization
+		 */
+		if($this->user->organization['Organization']['hasStoreroom']=='N') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
+		
+		$storeroomUser = $Storeroom->getStoreroomUser($this->user);
+		if(empty($storeroomUser)) {
+			$this->Session->setFlash(__('StoreroomNotFound'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}	
+		
+		$options = [];
+		$options['conditions'] = ['Storeroom.organization_id' => $this->user->organization['Organization']['id'],
+								  'Storeroom.id' => $storeroom_id];
+		$options['recursive'] = -1;
+		$storeroomResults = $Storeroom->find('first', $options);
+		
+		$results = $Storeroom->getArticlesJustBooked($this->user, $storeroomUser, $storeroomResults['Storeroom']['organization_id'], $storeroomResults['Storeroom']['article_id']);
+		$this->set('results', $results);
+		
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_storeroom_just_booked');
+    }
+    
+    /*
+     *	dettaglio user di acquisti effettuati 
+     */
+    public function admin_view_orders_cashes_limit_users($user_id=0) {
+		
+		$debug=false;
+		
+		if (empty($user_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+
+		App::import('Model', 'CashesUser');
+		$CashesUser = new CashesUser;
+		
+		$results = $CashesUser->getTotImportoAcquistatoDetails($this->user, $user_id, $debug);
+		$this->set('results', $results);
+		
+		self::d($results, false);
+		
+        $this->layout = 'ajax';
+        $this->render('/Ajax/view_orders_cashes_limit_users');
+    }
 }

@@ -4,15 +4,15 @@ App::uses('CakeEmail', 'Network/Email');
 
 class OrdersController extends AppController {
 
-   public $components = array('RequestHandler', 'Routings', 'ActionsDesOrder', 'Documents'); 
+   public $components = ['RequestHandler', 'Routings', 'ActionsDesOrder', 'Documents']; 
    
-   public $helpers = array('OrderHome', 'Text');
+   public $helpers = ['OrderHome', 'Text'];
    
    public function beforeFilter() {
    		parent::beforeFilter();
    		
    		/* ctrl ACL */
-	   	$actionWithPermission = array('admin_home', 'admin_edit', 'admin_delete', 'admin_close', 'admin_sotto_menu', 'admin_sotto_menu_bootstrap', 'admin_edit_validation_cart', 'admin_delivery_change', 'admin_mail_supplier');
+	   	$actionWithPermission = ['admin_home', 'admin_edit', 'admin_delete', 'admin_close', 'admin_sotto_menu', 'admin_sotto_menu_bootstrap', 'admin_edit_validation_cart', 'admin_delivery_change', 'admin_mail_supplier'];
 	   	if (in_array($this->action, $actionWithPermission)) {
 	   		 
 	   		if($this->isSuperReferente()) {
@@ -53,8 +53,8 @@ class OrdersController extends AppController {
    				$this->myRedirect(Configure::read('routes_msg_stop'));
    			}
    		} // end if (in_array($this->action, $actionWithPermission))
-   			   		   		
-		/*
+   			
+   		/*
 		 * ctrl referentTesoriere
 		*/
    		$this->set('isReferenteTesoriere',$this->isReferenteTesoriere); 
@@ -65,12 +65,16 @@ class OrdersController extends AppController {
     */
    public function admin_index() {
 
+		$debug = false;
+		
 	   	App::import('Model', 'Supplier');
 	   	
 	   	// App::import('Model', 'SuppliersOrganizationsReferent');
 	   	
 	   	App::import('Model', 'DesOrdersOrganization');
-			
+		
+		App::import('Model', 'OrderLifeCycle');
+		
 	   	/*
 	   	 * aggiorno lo stato degli ordini
 	   	 * */
@@ -79,23 +83,69 @@ class OrdersController extends AppController {
    		$utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);
    		if(Configure::read('developer.mode')) echo "</pre>";
    		
-   		$this->__ctrl_data_visibility();
-   		$this->__ctrl_state_code_error(); 
-   		
-   				
+   		$this->_ctrl_data_visibility();
+   			
+		/*
+		 * filters
+		 */
+		$conditions = [];
+  		$FilterOrderOrderBy = 'Delivery.data asc';
+		$FilterOrderSuppliersOrganizationId = null;
+
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'SuppliersOrganizationId')) {
+			$FilterOrderSuppliersOrganizationId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'SuppliersOrganizationId');
+			$conditions += ['SuppliersOrganization.id' => $FilterOrderSuppliersOrganizationId];
+		}
+			
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'OrderBy')) {
+			$FilterOrderOrderBy = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrderBy');
+			$order = $FilterOrderOrderBy;
+		}
+		else
+			$order = 'Delivery.data asc';
+		$order .= ', Delivery.id, Order.data_inizio asc';
+		
+		$this->set('FilterOrderSuppliersOrganizationId', $FilterOrderSuppliersOrganizationId);
+		$this->set('FilterOrderOrderBy', $FilterOrderOrderBy);
+		
+		/*
+		 * filtri modulo
+		*/
+		if($this->isSuperReferente()) {
+			App::import('Model', 'SuppliersOrganization');
+			$SuppliersOrganization = new SuppliersOrganization;
+				
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+									  'SuppliersOrganization.stato' => 'Y'];
+			$options['recursive'] = -1;
+			$options['order'] = ['SuppliersOrganization.name'];
+			$results = $SuppliersOrganization->find('list', $options);
+			$this->set('ACLsuppliersOrganization',$results);
+		}
+		else
+			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
+			
+		$orders = ['Delivery.data asc' => 'Prime consegne', 'Delivery.data desc' => 'Ultime consegne'];
+		$this->set('orders',$orders);
+		   
 		$SqlLimit = 75;
-		$conditions[] = array('Delivery.organization_id'=>$this->user->organization['Organization']['id'],
-							  'Order.organization_id'=>$this->user->organization['Organization']['id'],
-							  'Delivery.isVisibleBackOffice'=>'Y',
-							  'Delivery.stato_elaborazione'=>'OPEN',
-							  'SuppliersOrganization.stato' => 'Y');
-						
+		$conditions += ['Delivery.organization_id'=>$this->user->organization['Organization']['id'],
+						  'Order.organization_id'=>$this->user->organization['Organization']['id'],
+						  'Delivery.isVisibleBackOffice'=>'Y',
+						  'Delivery.stato_elaborazione'=>'OPEN',
+						  'SuppliersOrganization.stato' => 'Y'];
+					
 		if(!$this->isSuperReferente()) {
-			$conditions[] = array('Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
+			$conditions += ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
 		}
 
-		$this->Order->recursive = 0; 
-	    $this->paginate = array('conditions' => $conditions,'order'=>'Delivery.data asc, Delivery.id, Order.data_inizio asc','limit' => $SqlLimit);
+		$this->Order->recursive = 0;
+
+		self::d($conditions, $debug);
+		self::d($order, $debug);
+		
+	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
 		foreach($results as $numResult => $result) {
@@ -105,9 +155,9 @@ class OrdersController extends AppController {
 			 * */
 			$Supplier = new Supplier;
 			
-			$options = array();
-			$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
-			$options['fields'] = array('Supplier.img1');
+			$options = [];
+			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
+			$options['fields'] = ['Supplier.img1'];
 			$options['recursive'] = -1;
 			$SupplierResults = $Supplier->find('first', $options);
 			if(!empty($SupplierResults))
@@ -117,11 +167,11 @@ class OrdersController extends AppController {
 			 * SuppliersOrganizationsReferent per la tipologia REFERENTE COREFERENTE TESORIERE
 			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
-					'SuppliersOrganizationsReferent.supplier_organization_id' => $result['Order']['supplier_organization_id'],
-					'SuppliersOrganizationsReferent.user_id' => $this->user->get('id'));
-			$options['fields'] = array('type');
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
+									'SuppliersOrganizationsReferent.supplier_organization_id' => $result['Order']['supplier_organization_id'],
+									'SuppliersOrganizationsReferent.user_id' => $this->user->get('id')];
+			$options['fields'] = ['type'];
 			$options['recursive'] = -1;
 			$SuppliersOrganizationsReferentResults = $SuppliersOrganizationsReferent->find('first', $options);
 			if(!empty($SuppliersOrganizationsReferentResults))
@@ -135,16 +185,32 @@ class OrdersController extends AppController {
 	
 				$DesOrdersOrganization = new DesOrdersOrganization();
 				
-				$options = array();
-				$options['conditions'] = array('DesOrdersOrganization.order_id' => $result['Order']['id'],
-											   'DesOrdersOrganization.organization_id' => $this->user->organization['Organization']['id']);
+				$options = [];
+				$options['conditions'] = ['DesOrdersOrganization.order_id' => $result['Order']['id'],
+										'DesOrdersOrganization.organization_id' => $this->user->organization['Organization']['id']];
 				$options['recursive'] = -1;
 				$desOrdersOrganization = $DesOrdersOrganization->find('first', $options);
 				$results[$numResult]['DesOrdersOrganization'] = $desOrdersOrganization['DesOrdersOrganization'];
 			} // DES
-			 				
-		} // loop Orders
+			 
+			/*
+			 * ordine saldato dai gasisti
+			 * ordine pagato al produttore
+			 */ 
+			 $OrderLifeCycle = new OrderLifeCycle;
+			
+ 		 	 $results[$numResult]['orderStateNext'] = $OrderLifeCycle->getOrderStateNext($this->user, $result, $this->isReferenteTesoriere, $debug);
 
+ 		 	 $results[$numResult]['PaidUsers'] = $OrderLifeCycle->getPaidUsers($this->user, $result, $debug);
+		 
+			 $results[$numResult]['PaidSupplier'] = $OrderLifeCycle->getPaidSupplier($this->user, $result, $debug);
+			 
+			 $results[$numResult]['Order']['can_state_code_to_close'] = $OrderLifeCycle->canStateCodeToClose($this->user, $result, $debug);
+			 
+			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
+			  
+		} // loop Orders
+ 
 		$this->set('results', $results);
 		$this->set('SqlLimit', $SqlLimit);
 		
@@ -156,6 +222,12 @@ class OrdersController extends AppController {
 		else
 			$delivery_link_permission = true;
 		$this->set('delivery_link_permission', $delivery_link_permission);
+		
+		/*
+		 * per ogni ordine CLOSE ctrl se richiesto il pagamento
+		 */
+		 $this->set('isRoot', $this->isRoot());
+		 $this->set('isTesoriereGeneric', $this->isTesoriereGeneric());
 		
 		/*
 		 * legenda profilata
@@ -181,19 +253,21 @@ class OrdersController extends AppController {
 		
 		App::import('Model', 'Supplier');
 		
+		App::import('Model', 'OrderLifeCycle');
+			
 		$SqlLimit = 20;
-		$conditions[] = array('Delivery.organization_id'=>$this->user->organization['Organization']['id'],
-							  'Order.organization_id'=>$this->user->organization['Organization']['id'],
-							  'Delivery.sys'=>'N',
-							  'Delivery.stato_elaborazione'=>'CLOSE');
+		$conditions[] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+							  'Order.organization_id' => $this->user->organization['Organization']['id'],
+							  'Delivery.sys' => 'N',
+							  'Delivery.stato_elaborazione' => 'CLOSE'];
 		
 		if(!$this->isSuperReferente()) {
-			$conditions[] = array('Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
+			$conditions[] = ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
 		}
 	
-		$this->Order->unbindModel(array('belongsTo' => array('ArticlesOrder')));
+		$this->Order->unbindModel(['belongsTo' => ['ArticlesOrder']]);
 		$this->Order->recursive = 0;
-		$this->paginate = array('conditions' => $conditions,'order'=>'Delivery.data desc,Order.data_inizio','limit' => $SqlLimit);
+		$this->paginate = ['conditions' => $conditions,'order'=>'Delivery.data desc,Order.data_inizio','limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
 		foreach($results as $numResult => $result) {
@@ -203,9 +277,9 @@ class OrdersController extends AppController {
 			* */
 			$Supplier = new Supplier;
 				
-			$options = array();
-			$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
-			$options['fields'] = array('Supplier.img1');
+			$options = [];
+			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
+			$options['fields'] = ['Supplier.img1'];
 			$options['recursive'] = -1;
 			$SupplierResults = $Supplier->find('first', $options);
 			if(!empty($SupplierResults))
@@ -213,35 +287,54 @@ class OrdersController extends AppController {
 			
 			/*
 			 * SuppliersOrganizationsReferent per la tipologia REFERENTE COREFERENTE TESORIERE
-			* */
 			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 				
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
 										'SuppliersOrganizationsReferent.supplier_organization_id' => $result['Order']['supplier_organization_id'],
-										'SuppliersOrganizationsReferent.user_id' => $this->user->get('id'));
-			$options['fields'] = array('type');
+										'SuppliersOrganizationsReferent.user_id' => $this->user->get('id')];
+			$options['fields'] = ['type'];
 			$options['recursive'] = -1;
 			$SuppliersOrganizationsReferentResults = $SuppliersOrganizationsReferent->find('first', $options);
 			if(!empty($SuppliersOrganizationsReferentResults))
 				$results[$numResult]['SuppliersOrganizationsReferent']['type'] = $SuppliersOrganizationsReferentResults['SuppliersOrganizationsReferent']['type'];
-					
+			* */
+								
 			/*
 			 * richieste di pagamento
 			 */
-			$options = array();
-			$options['conditions'] = array('RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
-											'RequestPaymentsOrder.order_id' => $result['Order']['id']);
-			$options['recursive'] = 0;
-			$RequestPaymentsOrder->unbindModel(array('belongsTo' => array('Order')));
-			$resultsRequestPaymentsOrder = $RequestPaymentsOrder->find('first', $options);
-			
-			if(!empty($resultsRequestPaymentsOrder)) {
-				$results[$numResult]['RequestPayment'] = $resultsRequestPaymentsOrder['RequestPayment'];
-				$results[$numResult]['RequestPaymentsOrder'] = $resultsRequestPaymentsOrder['RequestPaymentsOrder'];
+			if($this->user->organization['Template']['payToDelivery']=='POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+				$options = [];
+				$options['conditions'] = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
+										  'RequestPaymentsOrder.order_id' => $result['Order']['id']];
+				$options['recursive'] = 0;
+				$RequestPaymentsOrder->unbindModel(array('belongsTo' => array('Order')));
+				$resultsRequestPaymentsOrder = $RequestPaymentsOrder->find('first', $options);
+				
+				if(!empty($resultsRequestPaymentsOrder)) {
+					$results[$numResult]['RequestPayment'] = $resultsRequestPaymentsOrder['RequestPayment'];
+					$results[$numResult]['RequestPaymentsOrder'] = $resultsRequestPaymentsOrder['RequestPaymentsOrder'];
+				}
 			}
-		}
+			
+			/*
+			 * ordine saldato dai gasisti
+			 * ordine pagato al produttore
+			 */ 
+			 $OrderLifeCycle = new OrderLifeCycle;
+			
+ 		 	 $results[$numResult]['orderStateNext'] = $OrderLifeCycle->getOrderStateNext($this->user, $result, $this->isReferenteTesoriere, $debug);
 
+ 		 	 $results[$numResult]['PaidUsers'] = $OrderLifeCycle->getPaidUsers($this->user, $result, $debug);
+		 
+			 $results[$numResult]['PaidSupplier'] = $OrderLifeCycle->getPaidSupplier($this->user, $result, $debug);
+			 
+			 $results[$numResult]['Order']['can_state_code_to_close'] = $OrderLifeCycle->canStateCodeToClose($this->user, $result, $debug);
+			 
+			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
+			 
+		}
+		
 		$this->set('results', $results);
 		$this->set('SqlLimit', $SqlLimit);
 	}
@@ -258,11 +351,11 @@ class OrdersController extends AppController {
 		/*
 		 * se ritorno per validationError recupero eventuali dati
 		 */
-		if(empty($des_order_id))
-			$des_order_id = $this->request->data['Order']['des_order_id'];
 		if(empty($supplier_organization_id))
 			$supplier_organization_id = $this->request->data['Order']['supplier_organization_id'];
-	
+		self::d($supplier_organization_id, $debug);
+		$this->set(compact('supplier_organization_id'));
+
 		$msg = "";
 
 		/*
@@ -340,19 +433,19 @@ class OrdersController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			$this->order_id = $this->__add($this->user, $this->request->data, $debug);	
+			$this->order_id = $this->_add($this->user, $this->request->data, $debug);	
 
 			if($this->order_id > 0) {
 				
 				/*
-				 * associo gli articoli all'ordine
+				 * associo ordine all'ordine DES
 				 */
 				 if($this->user->organization['Organization']['hasDes']=='Y' && !empty($des_order_id)) {
 				 
 					App::import('Model', 'DesOrdersOrganization');
 					$DesOrdersOrganization = new DesOrdersOrganization();
 					
-					$data = array();
+					$data = [];
 					$data['DesOrdersOrganization']['des_id'] = $this->user->des_id;
 					$data['DesOrdersOrganization']['des_order_id'] = $des_order_id;
 					$data['DesOrdersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -381,14 +474,14 @@ class OrdersController extends AppController {
 		/*
 		 * prendo solo le consegne aperte
 		 */
-		$options =  array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'Delivery.stato_elaborazione' => 'OPEN',
-									    'Delivery.sys'=>'N',
-										'DATE(Delivery.data) >= CURDATE()');
-		$options['fields'] = array('Delivery.id', 'luogoData');
-		$options['order'] = array('Delivery.data ASC');
+		$options =  [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								'Delivery.isVisibleBackOffice' => 'Y',
+								'Delivery.stato_elaborazione' => 'OPEN',
+								'Delivery.sys'=>'N',
+								'DATE(Delivery.data) >= CURDATE()'];
+		$options['fields'] = ['Delivery.id', 'luogoData'];
+		$options['order'] = ['Delivery.data ASC'];
 		$deliveries = $this->Order->Delivery->find('list', $options); 
 		
 		/*
@@ -418,12 +511,13 @@ class OrdersController extends AppController {
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 										   'SuppliersOrganization.stato' => 'Y',
-										   'SuppliersOrganization.id' => $supplier_organization_id);
-			$options['order'] = array('SuppliersOrganization.name');
+										   'SuppliersOrganization.id' => $supplier_organization_id];
+			$options['order'] = ['SuppliersOrganization.name'];
 			$options['recursive'] = -1;
+			self::d($options['conditions'], $debug);
 			$ACLsuppliersOrganizationResults = $SuppliersOrganization->find('list', $options);
 
 			$this->set('ACLsuppliersOrganization',$ACLsuppliersOrganizationResults);				
@@ -433,10 +527,10 @@ class OrdersController extends AppController {
 				App::import('Model', 'SuppliersOrganization');
 				$SuppliersOrganization = new SuppliersOrganization;
 				
-				$options = array();
-				$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-											   'SuppliersOrganization.stato' => 'Y');
-				$options['order'] = array('SuppliersOrganization.name');
+				$options = [];
+				$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+									      'SuppliersOrganization.stato' => 'Y'];
+				$options['order'] = ['SuppliersOrganization.name'];
 				$options['recursive'] = -1;
 				$ACLsuppliersOrganizationResults = $SuppliersOrganization->find('list', $options);
 				$this->set('ACLsuppliersOrganization',$ACLsuppliersOrganizationResults);
@@ -456,7 +550,7 @@ class OrdersController extends AppController {
 		$this->set('isManagerDelivery', $this->isManagerDelivery());
 		
 		/*
-		 * dati DesOrder
+		 * dati DesOrder, diverso dalle altre chiamate $this->ActionsDesOrder->getDesOrderData() perche' non ho ancora order_id
 		 */
 		 if($this->user->organization['Organization']['hasDes']=='Y' && !empty($des_order_id)) {
 		 
@@ -464,13 +558,8 @@ class OrdersController extends AppController {
 			$DesOrder = new DesOrder();
 			
 			$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-			/*
-			echo "<pre>";
-			print_r($desOrdersResults);
-			echo "</pre>";	
-			*/
 			$this->set(compact('desOrdersResults'));			
-		}
+		}		
 	}
 
 	public function admin_easy_add() {
@@ -502,7 +591,7 @@ class OrdersController extends AppController {
 
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
-			$this->order_id = $this->__add($this->user, $this->request->data, $debug);	
+			$this->order_id = $this->_add($this->user, $this->request->data, $debug);	
 			
 			if($this->order_id > 0) {				
 				$options = [];
@@ -518,14 +607,14 @@ class OrdersController extends AppController {
 		/*
 		 * prendo solo le consegne aperte
 		 */
-		$options =  array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+		$options =  [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
 										'Delivery.stato_elaborazione' => 'OPEN',
 									    'Delivery.sys'=>'N',
-										'DATE(Delivery.data) >= CURDATE()');
-		$options['fields'] = array('Delivery.id', 'luogoData');
-		$options['order'] = array('Delivery.data ASC');
+										'DATE(Delivery.data) >= CURDATE()'];
+		$options['fields'] = ['Delivery.id', 'luogoData'];
+		$options['order'] = ['Delivery.data ASC'];
 		$deliveries = $this->Order->Delivery->find('list', $options); 
 		
 		/*
@@ -544,10 +633,10 @@ class OrdersController extends AppController {
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										   'SuppliersOrganization.stato' => 'Y');
-			$options['order'] = array('SuppliersOrganization.name');
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										   'SuppliersOrganization.stato' => 'Y'];
+			$options['order'] = ['SuppliersOrganization.name'];
 			$options['recursive'] = -1;
 			$results = $SuppliersOrganization->find('list', $options);
 			$this->set('ACLsuppliersOrganization',$results);
@@ -561,7 +650,7 @@ class OrdersController extends AppController {
 		$this->set('isManagerDelivery', $this->isManagerDelivery());		
 	}
 	
-	private function __add($user, $requestData, $debug) {
+	private function _add($user, $requestData, $debug) {
 	
 		$requestData['Order']['organization_id'] = $user->organization['Organization']['id'];
 		if(!empty($requestData['Order']['des_order_id']))
@@ -620,22 +709,17 @@ class OrdersController extends AppController {
 		unset($requestData['typeDelivery']);
 		unset($requestData['option']);
 		
-		if($debug) {
-			echo '<br />oggi '.$data_oggi.' = '.$data_inizio_db;
-			echo "<pre>";
-			print_r($requestData);
-			echo "</pre>";
-		}
+		self::d('OrderController::oggi '.$data_oggi.' = '.$data_inizio_db, $debug);
+		self::d($requestData, $debug);
 
-		$this->Order->set($requestData);
-		if(!$this->Order->validates()) {
-			$errors = $this->Order->validationErrors;
+		/*
+		 * richiamo la validazione 
+		 */
+		$msg_errors = $this->Order->getMessageErrorsToValidate($this->Order, $requestData);
+		if(!empty($msg_errors)) {
+			self::d($requestData, $debug);
+			self::d($msg_errors, $debug);
 			$order_id = 0;
-			if($debug) {
-				echo "<pre>";
-				print_r($errors);
-				echo "</pre>";			
-			}
 		}
 		else {
 			$this->Order->create();
@@ -645,7 +729,7 @@ class OrdersController extends AppController {
 				$order_id = 0;
 		}
 		
-		if($debug) echo '<br />__add() order_id '.$order_id;
+		self::d('OrderController::_add() order_id '.$order_id, $debug);
 		
 		return $order_id;
 	} 
@@ -662,9 +746,8 @@ class OrdersController extends AppController {
 		
 		$debug = false;
 		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		if (empty($results)) {
@@ -724,9 +807,8 @@ class OrdersController extends AppController {
 	
 		$debug = false;
 	
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		if (empty($results)) {
@@ -737,12 +819,18 @@ class OrdersController extends AppController {
 
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->user);	
 		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($this->user, $group_id, $results['Order']['id'], $debug);
+		
+		/* 
+		 * elimino l'item Order home (id=0) perche' sono già in home
+		 */
+		if($orderActions[0]['OrdersAction']['id']==0) 
+			unset($orderActions[0]);
 		$this->set('orderActions', $orderActions);
 	
 		/*
 		 * creo degli OrderActions di raggruppamento per controller (Orders, Carts, etc)
 		*/
-		$raggruppamentoOrderActions = array();
+		$raggruppamentoOrderActions = [];
 		/*
 		 * bugs, per questi stati non raggruppo perche' ho 2 OrderController con conseguenziali
 		 */
@@ -750,42 +838,17 @@ class OrdersController extends AppController {
 			$raggruppamentoOrderActions = $this->ActionsOrder->getRaggruppamentoOrderActions($orderActions, $debug);
 		$this->set('raggruppamentoOrderActions', $raggruppamentoOrderActions);
 		
-		/*
-		 * DES
-		 */
-		$des_order_id = 0;
-		if($this->user->organization['Organization']['hasDes']=='Y') {		
-	
-			App::import('Model', 'DesOrdersOrganization');
-			$DesOrdersOrganization = new DesOrdersOrganization();
-
-			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $this->order_id, $debug);
-			if(!empty($desOrdersOrganizationResults)) {
-			
-				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-								
-				App::import('Model', 'DesOrder');
-				$DesOrder = new DesOrder();
-				
-				$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-				/*
-				echo "<pre>";
-				print_r($desOrdersResults);
-				echo "</pre>";	
-				*/
-				
-				/*
-				 * ctrl eventuali occorrenze di SummaryDesOrder
-				*/
-				App::import('Model', 'SummaryDesOrder');
-				$SummaryDesOrder = new SummaryDesOrder;
-				$summaryDesOrderResults = $SummaryDesOrder->select_to_des_order($this->user, $des_order_id, $this->user->organization['Organization']['id']);
-				
-				$this->set(compact('desOrdersResults', 'summaryDesOrderResults'));			
-			}
-		} // DES
-		$this->set(compact('des_order_id'));
-
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
+		
 		/*
 		 * dati promozione del GAS (gli passo $this->user->organization['Organization']['id'])
 		 */
@@ -806,7 +869,6 @@ class OrdersController extends AppController {
 	
 		$debug=false;
 		
-
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 		
@@ -860,46 +922,27 @@ class OrdersController extends AppController {
 		$this->set('isVisibleBackOfficeDefault', $isVisibleBackOffice);
 		*/
 
-		$des_order_id = 0;
-		if($this->user->organization['Organization']['hasDes']=='Y') {		
-	
-			App::import('Model', 'DesOrdersOrganization');
-			$DesOrdersOrganization = new DesOrdersOrganization();
-
-			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $this->order_id, $debug);
-			if(!empty($desOrdersOrganizationResults)) {
-			
-				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-				
-				App::import('Model', 'DesOrder');
-				$DesOrder = new DesOrder();
-				
-				$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-				/*
-				echo "<pre>";
-				print_r($desOrdersResults);
-				echo "</pre>";	
-				*/
-				$this->set(compact('desOrdersResults'));			
-			}
-		} // DES
-		$this->set(compact('des_order_id'));
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 				
 			/*
 			 * ordine prima del salvataggio, ctrl successivi
 			 */
-			$options = array();
-			$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-											'Order.id' => $this->order_id);
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 			$options['recursive'] = -1;
 			$OrderOldresults = $this->Order->find('first', $options);
-			if($debug) {
-				echo "<pre>ordine precedente ";
-				print_r($OrderOldresults);
-				echo "</pre>";				
-			}
+			self::d($OrderOldresults, $debug);
 			
 			$this->request->data['Order']['data_inizio'] = $this->request->data['Order']['data_inizio_db'];
 			$this->request->data['Order']['data_fine'] = $this->request->data['Order']['data_fine_db'];
@@ -973,45 +1016,6 @@ class OrdersController extends AppController {
 				$msg .= __('The order has been saved').'<br/>';
 				 
 				/*
-				 * elimina il trasporto da SummaryOrders e Orders
-				*/
-				if($this->request['Order']['hasTrasport']=='N') {
-				
-					if($debug) echo "<br />Order.hasTrasport == N, cancello il trasporto";
-					
-					App::import('Model', 'SummaryOrderTrasport');
-					$SummaryOrderTrasport = new SummaryOrderTrasport;
-				
-					$SummaryOrderTrasport->delete_trasport_to_order($this->user, $this->order_id, $debug);
-				}
-
-				/*
-				 * elimina il costo aggiuntivo da SummaryOrders e Orders
-				*/
-				if($this->request['Order']['hasCostMore']=='N') {
-				
-					if($debug) echo "<br />Order.hasCostMore == N, cancello il costo aggiuntivo";
-						
-					App::import('Model', 'SummaryOrderCostMore');
-					$SummaryOrderCostMore = new SummaryOrderCostMore;
-				
-					$SummaryOrderCostMore->delete_cost_more_to_order($this->user, $this->order_id, $debug);
-				}
-				
-				/*
-				 * elimina lo sconto da SummaryOrders e Orders
-				*/
-				if($this->request['Order']['hasCostLess']=='N') {
-				
-					if($debug) echo "<br />Order.hasCostLess == N, cancello lo sconto";
-						
-					App::import('Model', 'SummaryOrderCostLess');
-					$SummaryOrderCostLess = new SummaryOrderCostLess;
-				
-					$SummaryOrderCostLess->delete_cost_less_to_order($this->user, $this->order_id, $debug);
-				}
-				
-				/*
 				 * gestType 'AGGREGATE', 'SPLIT'
 				 */
 				$this->Order->gestTypeGest($this->user, $this->request->data, $OrderOldresults, $debug);
@@ -1025,29 +1029,17 @@ class OrdersController extends AppController {
 				$utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $this->order_id);
 				if($debug) echo "</pre>";
 				
-				/*
-				 * ordine prima del salvataggio
-				* se riapro un ordine cancello a dati importo_forzato, summary_orders, summary_order_trasport, Order.trasport ...
-				* 
-				* 	si puo' fare solo Order.state_code = PROCESSED-BEFORE-DELIVERY => tutti i dati vuoti!
-				*  in PROCESSED-POST-DELIVERY se setto Order.data_fine > Delivery.data non mi viene permesso
-				*/
-				$options = array();
-				$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-												'Order.id' => $this->order_id);
+				$options = [];
+				$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 				$options['recursive'] = -1;
 				$results = $this->Order->find('first', $options);
-				if($debug) {
-					echo "<pre>ordine dopo la modifica ";
-					print_r($results);
-					echo "</pre>";
-				}
 				
-				if($OrderOldresults['Order']['state_code']=='PROCESSED-BEFORE-DELIVERY' && 
-					($results['Order']['state_code']=='OPEN-NEXT' || $results['Order']['state_code']=='OPEN' || $results['Order']['state_code']=='RI-OPEN-VALIDATE')) {
-					if($debug) echo "<br />riapro l'ordine ";
-					$this->Order->riapriOrdine($this->user, $this->order_id, $debug);
-				}
+				self::d($results, false);
+
+				App::import('Model', 'OrderLifeCycle');
+				$OrderLifeCycle = new OrderLifeCycle;
+				
+				$OrderLifeCycle->changeOrder($this->user, $results, 'EDIT');
 				
 				$this->Session->setFlash($msg);
 				
@@ -1056,18 +1048,12 @@ class OrdersController extends AppController {
 				 */
 				if($OrderOldresults['Order']['delivery_id']!=$this->request->data['Order']['delivery_id']) {
 					
-					/*
-					 * aggiorno con il nuovo delivery_id le tabelle
-					 *
-					 * k_summary_orders 					 
-					 * k_request_payments_orders
-					 */
-					$this->Order->updateTablesToChangeDeliverId($this->user, $this->order_id, $this->request->data['Order']['delivery_id'], $debug);
-					
+					$OrderLifeCycle->changeOrder($this->user, $results, 'CHANGE_DELIVERY');
+				
 					App::import('Model', 'User');
 					$User = new User;
 					
-					$conditions = array();
+					$conditions = [];
 					$conditions = array('ArticlesOrder.order_id' => $this->order_id);
 					$results = $User->getUserWithCartByOrder($this->user ,$conditions);
 					
@@ -1079,21 +1065,16 @@ class OrdersController extends AppController {
 				else
 					$redirect = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id;
 					
+				self::d($redirect, $debug);	
 				if(!$debug) 
 					$this->myRedirect($redirect);
-				else  {
-					echo "<pre> ";
-					print_r($redirect);
-					echo "</pre>";					
-				}
 						
 			} else 
 				$this->Session->setFlash(__('The order could not be saved. Please, try again.'));
 		} // else if ($this->request->is('post') || $this->request->is('put'))
 
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id, 
-									   'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$this->request->data = $this->Order->find('first', $options);
 		if (empty($this->request->data)) {
@@ -1105,14 +1086,14 @@ class OrdersController extends AppController {
 			$this->set('msgDeliveryNotValid' , $msgDeliveryNotValid);
 		}
 		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'DATE(Delivery.data) >= CURDATE()',
-										'Delivery.sys'=>'N',
-										'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('Delivery.id', 'luogoData');
-		$options['order'] = array('Delivery.data ASC');
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'Delivery.isVisibleBackOffice' => 'Y',
+									'DATE(Delivery.data) >= CURDATE()',
+									'Delivery.sys'=>'N',
+									'Delivery.stato_elaborazione' => 'OPEN'];
+		$options['fields'] = ['Delivery.id', 'luogoData'];
+		$options['order'] = ['Delivery.data ASC'];
 		$deliveries = $this->Order->Delivery->find('list', $options);
 		/*
 		 * non piu' perche' ho Delivery.sys = Y
@@ -1145,12 +1126,12 @@ class OrdersController extends AppController {
 		/*
 		 * estraggo i referenti
 		*/
-		$this->__getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
+		$this->_getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
 		
 		if($isDesOrder) 
-			$this->__getDesReferenti($this->user, $this->des_order_id);
+			$this->_getDesReferenti($this->user, $this->des_order_id);
 		
-		$qta_massima_um_options = array('KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 'PZ' => 'Pezzi');
+		$qta_massima_um_options = ['KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 'PZ' => 'Pezzi'];
 		$this->set(compact('qta_massima_um_options'));
 
 		/*
@@ -1161,13 +1142,13 @@ class OrdersController extends AppController {
 		/*
 		 * ctrl se ci sono consegne scadute, per far vedere il tasto "associa a consegna scaduta"
 		 */		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Delivery.isVisibleBackOffice' => 'Y',
 									   'Delivery.stato_elaborazione' => 'OPEN',
 									   'Delivery.sys' => 'N', 
-									   'DATE(Delivery.data) < CURDATE()');
-		$options['order'] = array('Delivery.data ASC');
+									   'DATE(Delivery.data) < CURDATE()'];
+		$options['order'] = ['Delivery.data ASC'];
 		$options['recursive'] = -1;
 		$tot_delivery_old = $Delivery->find('count', $options); 
 		$this->set('tot_delivery_old', $tot_delivery_old);	
@@ -1175,7 +1156,7 @@ class OrdersController extends AppController {
 	}
 
 	public function admin_view() {
-		$this->__view();
+		$this->_view();
 	}
 	
 	/*
@@ -1186,10 +1167,10 @@ class OrdersController extends AppController {
 	 */
 	public function admin_view_public() {
 	
-		$this->__view();
+		$this->_view();
 	}
 	
-	private function __view() {
+	private function _view() {
 		$debug=false;
 		
 		$msg = '';
@@ -1198,10 +1179,20 @@ class OrdersController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
+
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 		
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-				'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$this->request->data = $this->Order->find('first', $options);
 		if (empty($this->request->data)) {
@@ -1221,7 +1212,7 @@ class OrdersController extends AppController {
 		/*
 		 * estraggo i referenti
 		*/
-		$this->__getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
+		$this->_getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
 		
 		$this->set('userGroups', $this->userGroups);		
 	}
@@ -1243,9 +1234,8 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-									   'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$results = $this->Order->find('first', $options);
 	
@@ -1266,7 +1256,7 @@ class OrdersController extends AppController {
 	        App::import('Model', 'OrderLifeCycle');
 	        $OrderLifeCycle = new OrderLifeCycle();
 	        
-	        $options = array();
+	        $options = [];
 	        $options['data_fine_validation'] = $data_fine_validation_db;
 	        $esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'RI-OPEN-VALIDATE', $options, $debug);
 	        if($esito['CODE']!=200) {
@@ -1298,10 +1288,10 @@ class OrdersController extends AppController {
 					App::import('Model', 'User');
 					$User = new User;
 					
-					$options = array();
-					$options['conditions'] = array('User.organization_id'=>(int)$this->user->organization['Organization']['id'],
-													'User.block'=> 0);
-					$options['fields'] = array('id','name','email');
+					$options = [];
+					$options['conditions'] = ['User.organization_id'=>(int)$this->user->organization['Organization']['id'],
+												'User.block'=> 0];
+					$options['fields'] = ['id','name','email'];
 					$options['order'] = Configure::read('orderUser');
 					$options['recursive'] = -1;
 					$users = $User->find('all', $options);
@@ -1331,7 +1321,7 @@ class OrdersController extends AppController {
 								$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
 								$Email->to($mail);
 									
-								$Mail->send($Email, $mail, $body_mail, $debug);
+								$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 							}
 							else
 								$msg .= $name.' senza indirizzo mail!<br />';
@@ -1415,7 +1405,12 @@ class OrdersController extends AppController {
 		$testo_mail .= '</ul>';
 		$testo_mail .= "Vai su http://".Configure::read('SOC.site')." e completa l'ordine ";
 		
-		$testo_mail = sprintf(Configure::read('Mail.body_carts_validation'), $results['Delivery']['luogoData'], $results['SuppliersOrganization']['name'], 'gg/mm/yyy', $testo_mail);
+		if ($result['Delivery']['sys'] == 'Y')
+        	$delivery = $result['Delivery']['luogo'];
+        else
+            $delivery = $result['Delivery']['luogoData'];
+                		
+		$testo_mail = sprintf(Configure::read('Mail.body_carts_validation'), $delivery, $results['SuppliersOrganization']['name'], 'gg/mm/yyy', $testo_mail);
 		
 		$this->set('testo_mail',$testo_mail);
 	}
@@ -1426,11 +1421,7 @@ class OrdersController extends AppController {
 	public function admin_delivery_change() {
 	
 		$debug = false;
-		if($debug) {
-			echo "<pre>";
-			print_r($this->request->data);
-			echo "</pre>";
-		}
+		self::d($this->request->data, $debug);	
 			
 		$msg = '';
 		$this->Order->id = $this->order_id;
@@ -1439,9 +1430,8 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-										'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$results = $this->Order->find('first', $options);
 		
@@ -1455,18 +1445,19 @@ class OrdersController extends AppController {
 		if(isset($this->request->data['Order']['delivery_id_old']))	
 			$delivery_id_old = $this->request->data['Order']['delivery_id_old'];
 		
-		if($debug) echo '<br />delivery_id_old '.$delivery_id_old;
+		self::d('delivery_id_old '.$delivery_id_old, $debug);
+		
 		$this->set(compact('delivery_id_old'));
 		
 		if(!empty($delivery_id_old)) {
 			App::import('Model', 'Delivery');
 			$Delivery = new Delivery;
 					
-			$options = array();
-			$options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
-										   'Delivery.id' => $delivery_id_old);
+			$options = [];
+			$options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+										   'Delivery.id' => $delivery_id_old];
+			$options['fields'] = ['Delivery.sys', 'Delivery.data', 'Delivery.luogo', 'Delivery.luogoData'];
 			$options['recursive'] = -1;
-			$options['fields'] = array('sys', 'data', 'luogo', 'luogoData');
 			
 			$OrderOldresults = $Delivery->find('first', $options);
 			$this->set(compact('OrderOldresults'));
@@ -1492,7 +1483,7 @@ class OrdersController extends AppController {
 			App::import('Model', 'User');
 			$User = new User;
 
-			$conditions = array();
+			$conditions = [];
 			$conditions = array('ArticlesOrder.order_id' => $this->order_id);
 			$users = $User->getUserWithCartByOrder($this->user ,$conditions);
 			
@@ -1522,7 +1513,7 @@ class OrdersController extends AppController {
 						$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
 						$Email->to($mail);
 
-						$Mail->send($Email, $mail, $body_mail, $debug);
+						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 					}
 					else
 						$msg .= $name.' senza indirizzo mail!<br />';
@@ -1569,7 +1560,7 @@ class OrdersController extends AppController {
 		/*
 		 * estraggo i referenti
 		*/
-		$suppliersOrganizationsReferent = $this->__getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
+		$suppliersOrganizationsReferent = $this->_getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
 		if(!empty($suppliersOrganizationsReferent)) {
 			foreach ($suppliersOrganizationsReferent as $referent) {
 
@@ -1597,58 +1588,32 @@ class OrdersController extends AppController {
 	public function admin_delete() {
 
 		$debug = false;
-		if($debug) {
-			echo "<pre>";
-			print_r($this->request->data);
-			echo "</pre>";
-		}
-	
+		
+		self::d($this->request->data, $debug);
+		
 		$this->Order->id = $this->order_id;
 		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		$this->set('results', $results);
 		
-		/*
-		 * desOrder
-		 */
-		$isTitolareDesSupplier = false; 
-		$des_order_id = 0;
-		if($this->user->organization['Organization']['hasDes']=='Y') {		
-	
-			App::import('Model', 'DesOrdersOrganization');
-			$DesOrdersOrganization = new DesOrdersOrganization();
-
-			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $this->order_id, $debug);
-			if(!empty($desOrdersOrganizationResults)) {
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 			
-				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-				
-				App::import('Model', 'DesOrder');
-				$DesOrder = new DesOrder();
-				
-				$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-				/*
-				echo "<pre>";
-				print_r($desOrdersResults);
-				echo "</pre>";	
-				*/
-				$this->set(compact('desOrdersResults'));	
-                        }
-                        
-		        $isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);
-			
-		} // DES
-		$this->set(compact('isTitolareDesSupplier'));		
-		$this->set(compact('des_order_id'));
-	
 		if ($this->request->is('post') || $this->request->is('put')) {
 
 				/*
@@ -1658,15 +1623,17 @@ class OrdersController extends AppController {
 				$BackupOrder = new BackupOrder();				
 				$BackupOrder->copyData($this->user, $this->order_id, $debug);
 				
-				
-				$msg = '';
+				$msg_ok = '';
+				$msg_no = '';
+				$tot_ok=0;
+				$tot_no=0;
 
 				/*
 				 * invio mail
 				*/				
 				if($this->request->data['send_mail']=='Y') {
 			
-					$mail_open_testo = $this->request->data['Order']['mail_open_testo'];
+					$body_mail = $this->request->data['Order']['mail_open_testo'];
 	
 					App::import('Model', 'Mail');
 					$Mail = new Mail;
@@ -1679,8 +1646,8 @@ class OrdersController extends AppController {
 					App::import('Model', 'User');
 					$User = new User;
 
-					$conditions = array();
-					$conditions = array('ArticlesOrder.order_id' => $this->order_id);
+					$conditions = [];
+					$conditions = ['ArticlesOrder.order_id' => $this->order_id];
 					$users = $User->getUserWithCartByOrder($this->user ,$conditions);
 			
 					if(!empty($users)) {
@@ -1692,7 +1659,6 @@ class OrdersController extends AppController {
 						else
 							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
 
-						$msg .= '<br />Inviata la mail a<br />';
 						/*
 					 	* ciclo UTENTI
 						*/
@@ -1701,64 +1667,73 @@ class OrdersController extends AppController {
 							$mail = $user['User']['email'];
 							$name = $user['User']['name'];
 							
-							if($debug) echo '<br />Mail a '.$mail;
-							
-							if(!empty($mail)) {
-								$body_mail = $mail_open_testo;
-	
-								$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
-								$Email->to($mail);
-	
-								$Mail->send($Email, $mail, $body_mail, $debug);
+							self::d('Mail a '.$mail, $debug);
 
-								$msg .= $name.'<br />';
+							$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+
+							$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
+							if(isset($mailResults['OK'])) {
+								$tot_ok++;
+								$msg_ok .= $mailResults['OK'].'<br />';							
 							}
-							else
-								$msg .= $name.' senza indirizzo mail!<br />';
+							else 
+							if(isset($mailResults['KO'])) {
+								$tot_no++;
+								$msg_ok .= $mailResults['KO'].'<br />';	
+							}
+
 						} // end foreach($results as $numResult => $result)
 						
 					} // end if(!empty($users))
 	
 				} // if($this->request->data['send_mail']=='Y')
-			
+					
 				if ($this->Order->delete()) {
                                     
 
-                                        /*
-                                         * D.E.S.
-                                         * se titolare cancello DesOrder, trigger cancellera' DesOrderOrganization => Order
-                                         */
-                                        if($this->user->organization['Organization']['hasDes']=='Y') {
-                                            if($isTitolareDesSupplier) {
-                                            	if($debug) echo "<br />OrganizationHasDes == Y - isTitolareDesSupplier - des_order_id ".$des_order_id; 
-                                            	
-                                                $DesOrder->id = $des_order_id;
-                                                $DesOrder->delete();
-                                            }
-                                            else {
-                                            	if($debug) echo "<br />OrganizationHasDes == Y - !isTitolareDesSupplier - des_order_id ".$des_order_id;
+					/*
+					 * D.E.S.
+					 * se titolare cancello DesOrder, trigger cancellera' DesOrderOrganization => Order
+					 */
+					if($this->user->organization['Organization']['hasDes']=='Y') {
+						if($isTitolareDesSupplier) {
+							if($debug) echo "<br />OrganizationHasDes == Y - isTitolareDesSupplier - des_order_id ".$des_order_id; 
+	
+							App::import('Model', 'DesOrder');
+							$DesOrder = new DesOrder();				
+										
+							$DesOrder->id = $des_order_id;
+							$DesOrder->delete();
+						}
+						else {
+							if($debug) echo "<br />OrganizationHasDes == Y - !isTitolareDesSupplier - des_order_id ".$des_order_id;
 
-                                                /*
-                                                 * tolto trigger che da Order cancellava DesOrderOrganization perche' andava in conflitto
-                                                 */ 
-                                                try {
-                                                    $sql = "DELETE FROM ".Configure::read('DB.prefix')."des_orders_organizations
-                                                            WHERE
-                                                                organization_id = ".(int)$this->user->organization['Organization']['id']."
-                                                                AND order_id = ".(int)$this->order_id;
-                                                    if($debug) echo '<br />'.$sql;
-                                                    $resultDelete = $this->Order->query($sql);
-                                                }
-                                                catch (Exception $e) {
-                                                    CakeLog::write('error',$sql);
-                                                }                                                                
-                                            }
-                                        } //  end if($this->user->organization['Organization']['hasDes']=='Y') 
+							/*
+							 * tolto trigger che da Order cancellava DesOrderOrganization perche' andava in conflitto
+							 */ 
+							try {
+								$sql = "DELETE FROM ".Configure::read('DB.prefix')."des_orders_organizations
+										WHERE
+											organization_id = ".(int)$this->user->organization['Organization']['id']."
+											AND order_id = ".(int)$this->order_id;
+								self::d($sql, $debug);
+								$resultDelete = $this->Order->query($sql);
+							}
+							catch (Exception $e) {
+								CakeLog::write('error',$sql);
+							}                                                                
+						}
+					} //  end if($this->user->organization['Organization']['hasDes']=='Y') 
 
 
-					$message = __('Delete Order');
-					$message .= $msg;
-					$this->Session->setFlash($message);
+					$msg = __('Delete Order').'<br />';
+					/*
+					 * messaggio
+					 */
+					if(!empty($msg_ok)) $msg_ok = 'La mail è stata inviata a<br />'.$msg_ok.'<br/>Totale: '.$tot_ok; 
+					if(!empty($msg_no)) $msg_no = '<hr />La mail NON è stata inviata a<br />'.$msg_no.'<br/>Totale: '.$tot_no; 
+					$msg .= $msg_ok.$msg_no;
+					$this->Session->setFlash($msg);
 				}
 				else
 					$this->Session->setFlash(__('Order was not deleted'));
@@ -1777,12 +1752,11 @@ class OrdersController extends AppController {
 		$ArticlesOrder = new ArticlesOrder;
 		
 		$ArticlesOrder->unbindModel(array('belongsTo' => array('Order')));
-		$options = array();
-		$options['conditions'] = array('ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
-									   'ArticlesOrder.order_id' => $this->order_id,
-									   'Article.stato' => 'Y',
-									   'Cart.order_id' => $this->order_id
-		);
+		$options = [];
+		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
+								   'ArticlesOrder.order_id' => $this->order_id,
+								   'Article.stato' => 'Y',
+								   'Cart.order_id' => $this->order_id];
 		$totCart = $ArticlesOrder->find('count', $options);
 		$this->set(compact('totCart'));
 		
@@ -1810,7 +1784,7 @@ class OrdersController extends AppController {
 			/*
 			 * estraggo i referenti
 			*/
-			$suppliersOrganizationsReferent = $this->__getReferenti($this->user, $results['Order']['supplier_organization_id']);
+			$suppliersOrganizationsReferent = $this->_getReferenti($this->user, $results['Order']['supplier_organization_id']);
 			if(!empty($suppliersOrganizationsReferent)) {
 				foreach ($suppliersOrganizationsReferent as $referent) {
 	
@@ -1834,11 +1808,10 @@ class OrdersController extends AppController {
 		 */
 		$ArticlesOrder = new ArticlesOrder;
 		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
-		$options = array();
-		$options['conditions'] = array('ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
-										'ArticlesOrder.order_id' => $this->order_id,
-										'Article.stato' => 'Y'
-									);
+		$options = [];
+		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
+									'ArticlesOrder.order_id' => $this->order_id,
+									'Article.stato' => 'Y'];
 		$totArticlesOrder = $ArticlesOrder->find('count', $options);
 		$this->set(compact('totArticlesOrder'));
 	}
@@ -1851,11 +1824,8 @@ class OrdersController extends AppController {
 	public function admin_close() {
 
 		$debug = false;
-		if($debug) {
-			echo "<pre>";
-			print_r($this->request->data);
-			echo "</pre>";
-		}
+		
+		self::d($this->request->data, $debug);
 	
 		$this->Order->id = $this->order_id;
 		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
@@ -1863,157 +1833,70 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		$this->set('results', $results);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+	
+		self::d($results, $debug);
+		
 		/*
 		 * msg 
 		 */
-		if($results['Delivery']['sys']=='Y')  {
-			$msg = "Per poter chiudere l'ordine dovrai prima associarlo ad una consegna valida";
-		}
-		else {
-			if($results['Order']['state_code']=='INCOMING-ORDER') {
-				if($this->user->organization['Organization']['payToDelivery']=='POST')
-					$msg = "Se chiudi l'ordine non potrai passarlo al TESORIERE per gestire i pagamenti";
-				else
-				if($this->user->organization['Organization']['payToDelivery']=='ON')
-					$msg = "Se chiudi l'ordine non potrai passarlo al CASSIERE per gestire i pagamenti";
-				else
-				if($this->user->organization['Organization']['payToDelivery']=='ON-POST')
-					$msg = "Se chiudi l'ordine non potrai passarlo al CASSIERE o al TESORIERE per gestire i pagamenti";
-				
-			}
-			else
-			if($results['Order']['state_code']=='PROCESSED-ON-DELIVERY') {	
-				if($this->user->organization['Organization']['payToDelivery']=='POST')
-					$msg = "Se chiudi l'ordine il TESORIERE non potr&agrave; più gestire i pagamenti";
-				else
-				if($this->user->organization['Organization']['payToDelivery']=='ON')
-					$msg = "Se chiudi l'ordine il CASSIERE non potr&agrave; più gestire i pagamenti";
-				else
-				if($this->user->organization['Organization']['payToDelivery']=='ON-POST')
-					$msg = "Se chiudi l'ordine il CASSIERE o il TESORIERE non potr&agrave; più gestire i pagamenti";
-				
-			}			
-		}
-
+        App::import('Model', 'OrderLifeCycle');
+        $OrderLifeCycle = new OrderLifeCycle();
+		
+		$msg = $OrderLifeCycle->beforeRendering($this->user, $results, $this->request->params['controller'], $this->action);
+		if(!empty($msg['msgOrderToClose'])) 
+			$msg = $msg['msgOrderToClose'];
+		else
+			$msg = '';
+		self::d($msg, $debug);
 		$this->set('msg', $msg);
 		
-		$order_just_pay = array('Y' => 'Si', 'N' => 'No');
-		$this->set(compact('order_just_pay'));
-		
-		
 		/*
-		 * desOrder
-		 */
-		$isTitolareDesSupplier = false; 
-		$des_order_id = 0;
-		if($this->user->organization['Organization']['hasDes']=='Y') {		
-	
-			App::import('Model', 'DesOrdersOrganization');
-			$DesOrdersOrganization = new DesOrdersOrganization();
-
-			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $this->order_id, $debug);
-			if(!empty($desOrdersOrganizationResults)) {
-			
-				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-				
-				App::import('Model', 'DesOrder');
-				$DesOrder = new DesOrder();
-				
-				$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-				/*
-				echo "<pre>";
-				print_r($desOrdersResults);
-				echo "</pre>";	
-				*/
-				$this->set(compact('desOrdersResults'));	
-                        }
-                        
-		        $isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);
-			
-		} // DES
-		$this->set(compact('isTitolareDesSupplier'));		
-		$this->set(compact('des_order_id'));
+		 * se order_just_pay = Y forzo il pagamento di un produttore
+		 */		
+		if($this->user->organization['Template']['orderSupplierPaid']=='Y') {
+			$order_just_pay = ['Y' => 'Si', 'N' => 'No'];
+			$this->set(compact('order_just_pay'));
+		}
+		
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
-
-
-			$continue = true;
-			$msg = '';
-						
-			if($results['Delivery']['sys']=='Y') {
-				$msg = __("Lo stato dell'ordine non è stato aggiornato perchè non associato ad una consegna valida.");  
-				$continue = false;
-			}
 			
-			if($continue) {
-		
+			if($this->user->organization['Template']['orderSupplierPaid']=='Y')
 				$order_just_pay = $this->request->data['Order']['order_just_pay'];
-				
-				/*
-				 * calcolo il totale degli importi degli acquisti dell'ordine
-				*/
-				$importo_totale = $this->Order->getTotImporto($this->user, $this->order_id);
-				/* 
-				 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-				 */
-				if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
-				
-				/*
-				 * aggiorno stato ORDER
-				*/
-		        App::import('Model', 'OrderLifeCycle');
-		        $OrderLifeCycle = new OrderLifeCycle();
-		        
-		        $options = array();
-		        $options['tot_importo'] = $importo_totale;
-		        $options['tesoriere_sorce'] = 'REFERENTE';
-		        if($order_just_pay=='Y') {
-		        	$options['tesoriere_data_pay'] = date('Y-m-d H:i:s');
-		        	$options['tesoriere_importo_pay'] = $importo_totale;
-		        	$options['tesoriere_fattura_importo'] = $importo_totale;
-		        	$options['tesoriere_stato_pay'] = 'Y';
-		        }
-		        $esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'CLOSE', $options, $debug);
-		        if($esito['CODE']!=200) {
-		        	$msg = $esito['MSG'];
-		        	$continue = false;
-		        } 
-			}
-				
-			if($continue) {
-				/*
-				 * popolo cmq SummaryOrder 
-				 */
-				App::import('Model', 'SummaryOrder');
-				$SummaryOrder = new SummaryOrder;
-				$resultsSummaryOrder = $SummaryOrder->select_to_order($this->user, $this->order_id);
-					
-				/*
-				 * se summaryOrder non e' gia' stato popolato dal referente da Cart::admin_managementCartsGroupByUsers
-				 */
-				if(empty($resultsSummaryOrder))
-					$SummaryOrder->populate_to_order($this->user, $this->order_id, 0);
-			}					
-
-			$this->Session->setFlash($msg);
+			if($order_just_pay=='Y')
+				$order_just_pay = true;
+			else
+				$order_just_pay = false;
 			
-			if($continue) {
-				$msg = __("Lo stato dell'ordine è stato aggiornato.");
+			$options = [];
+			$options['order_just_pay'] = $order_just_pay; // setta il pagamento del produttore
+			$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $results, 'CLOSE', $options, $debug);
+			if($esito['CODE']!=200) {
+				$msg = $esito['MSG'];
 				$this->Session->setFlash($msg);
-				$this->myRedirect(array('action' => 'home'));
-			}				
-		    
+			}
+            else {
+				$msg = __('OrderStateCodeUpdate');
+				$this->Session->setFlash($msg);
+				if(!$debug)
+					$this->myRedirect(['controller' => 'Orders', 'action' => 'index']);
+            } 
+
 		} // end POST
 	}
 	
@@ -2039,9 +1922,8 @@ class OrdersController extends AppController {
 		
 		$debug = false;
 		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-									   'Order.id' => $order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		if (empty($results)) {
@@ -2058,22 +1940,16 @@ class OrdersController extends AppController {
 		$orderStates = $this->ActionsOrder->getOrderStatesToLegenda($user, $group_id, $debug);
 		$this->set('orderStates', $orderStates);
 		
-		/*
-		 * ctrl se e' un ordine condiviso DES
-		 */
-		$des_order_id = 0; 
-		if($user->organization['Organization']['hasDes']=='Y') {
-		
-			App::import('Model', 'DesOrdersOrganization');
-			$DesOrdersOrganization = new DesOrdersOrganization();
-			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
-		 
-			if(!empty($desOrdersOrganizationResults)) {
-				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-				$desOrder = $desOrdersOrganizationResults['DesOrder'];
-			}	
-		}
-		$this->set(compact('des_order_id', 'desOrder'));
+        /*
+         * D.E.S.
+         */
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$des_order_id = $desResults['des_order_id'];
+		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+		$this->set('des_order_id',$des_order_id);
+		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+		$this->set('desOrdersResults', $desResults['desOrdersResults']);
+		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 		 
 		/*
          *  ctrl se e' una promozione
@@ -2121,7 +1997,7 @@ class OrdersController extends AppController {
 					WHERE
 						organization_id = ".(int)$this->user->organization['Organization']['id']."
 						and id = ".(int)$this->order_id;
-			// echo '<br />'.$sql;
+			self::d($sql, false);
 			$result = $this->Order->query($sql);
 			
 		   	/*
@@ -2138,7 +2014,7 @@ class OrdersController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Delivery.isVisibleBackOffice' => 'Y',
 									   'Delivery.stato_elaborazione' => 'OPEN',
@@ -2151,16 +2027,16 @@ class OrdersController extends AppController {
 		
 		$this->set(compact('deliveries'));
 
-	   	$options =array();
+	   	$options =[];
 	   	$options['conditions'] = array ('Delivery.stato_elaborazione' => 'OPEN');
-	   	$this->__boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
+	   	$this->_boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
 	   	 
 	}
 	
 	public function admin_mail_supplier() {
 
 		$debug = false;
-	
+
 	   	if(empty($this->order_id) || empty($this->delivery_id)) {
 	   		$this->Session->setFlash(__('msg_error_params'));
 	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -2172,9 +2048,8 @@ class OrdersController extends AppController {
 	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
 	   	}
 
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-										'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$results = $this->Order->find('first', $options);
 	
@@ -2184,8 +2059,8 @@ class OrdersController extends AppController {
 		App::import('Model', 'Supplier');
 		$Supplier = new Supplier;	
 		
-		$options = array();
-		$options['conditions'] = array('Supplier.id' => $results['SuppliersOrganization']['supplier_id']);
+		$options = [];
+		$options['conditions'] = ['Supplier.id' => $results['SuppliersOrganization']['supplier_id']];
 		$options['recursive'] = -1;
 		$supplierResults = $Supplier->find('first', $options);
 		$this->set('supplierResults',$supplierResults);
@@ -2202,12 +2077,10 @@ class OrdersController extends AppController {
 			
 			App::import('Model', 'Mail');
 			$Mail = new Mail;
+
+			$Email = $Mail->getMailSystem($this->user);
 			
-			/*
-			echo "<pre>this->request->data \n ";
-			print_r($this->request->data);
-			echo "</pre>";
-			*/
+			self::d($this->request->data, $debug);	
 		
 			$destinatatio_mail = $supplierResults['Supplier']['mail'];
 			$subject = $this->request->data['Order']['subject'];
@@ -2217,26 +2090,16 @@ class OrdersController extends AppController {
 				$body_mail = $intestazione.'<br /><br />'.$mail_open_testo;
 			else
 				$body_mail = $mail_open_testo;
-						
-			$Email = new CakeEmail(Configure::read('EmailConfig'));
-			$Email->helpers(array('Html', 'Text'));
-			$Email->template('default');
-			$Email->emailFormat('html');
 				
 			$Email->replyTo(array($this->user->email => $this->user->email));
-			$Email->from(array(Configure::read('SOC.mail') => Configure::read('SOC.name')));
-			$Email->sender(Configure::read('SOC.mail'), Configure::read('SOC.name'));
 			$Email->subject($subject);
-			$Email->viewVars(array('header' => $Mail->drawLogo($this->user->organization)));						
 			$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
 			$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
-			$Email->to($destinatatio_mail);
-			if(!Configure::read('mail.send')) $Email->transport('Debug');
 
 			/*
 			 * attachments
 			 */
-			$attachments = array();
+			$attachments = [];
 			$path_upload = Configure::read('App.root').Configure::read('App.img.upload.tmp').DS;
 			
 			if(!empty($this->request->data['Document']['img1']['name'])){
@@ -2253,25 +2116,33 @@ class OrdersController extends AppController {
 				else
 					$msg = $esito['msg'];					
 			}	
-			if($debug) {
-				echo "<pre>attachments \n ";
-				print_r($attachments);
-				echo "</pre>";				
-			}
+			
+			self::d($attachments, $debug);	
+			
 			if(empty($msg) && !empty($attachments))
 				$Email->attachments($attachments);
 			
 			if(empty($msg)) {
 				try {
 				// if($debug) echo '<br />body_mail '.$body_mail;
-					$Email->send($body_mail);
 
+					$mailResults = $Mail->send($Email, $destinatatio_mail, $body_mail, $debug);
+					if(isset($mailResults['OK'])) {
+						$tot_ok++;
+						$msg_ok .= $mailResults['OK'].'<br />';							
+					}
+					else 
+					if(isset($mailResults['KO'])) {
+						$tot_no++;
+						$msg_ok .= $mailResults['KO'].'<br />';	
+					}
+					
 					$msg = "Mail inviata al produttore $destinatatio_mail";
 
 					/*
 					 * save Mail
 					 */	
-					$data = array();
+					$data = [];
 					$data['Mail']['organization_id'] = $this->user->organization['Organization']['id'];
 					$data['Mail']['user_id'] = $this->user->id;
 					$data['Mail']['mittente'] = $this->user->email;
@@ -2283,18 +2154,11 @@ class OrdersController extends AppController {
 					if(isset($esito['fileNewName'])) // inserisco solo 1 allegato
 						$data['Mail']['allegato'] = $esito['fileNewName'];
 		
-					if($debug) {
-						echo "<pre>Mail \n ";
-						print_r($data);
-						echo "</pre>";					
-					}
+					self::d($data, $debug);	
 					
 					$Mail->create();
 					$Mail->save($data);
 			
-					if(!Configure::read('mail.send')) {
-						$msg .= ' (modalita DEBUG)';
-					}
 				} catch (Exception $e) {
 					$msg = "Errore nell'invio della mail al produttore $destinatatio_mail";
 					CakeLog::write("error", $e, array("mails"));
@@ -2302,7 +2166,7 @@ class OrdersController extends AppController {
 			} // if(empty($msg))
 			
 			$this->Session->setFlash($msg);			
-			if($debug) echo '<br />'.$msg;
+			self::d($msg, $debug);
 	
 			if(!$debug) $this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 		}
@@ -2353,7 +2217,7 @@ class OrdersController extends AppController {
 			/*
 			 * estraggo i referenti
 			*/
-			$suppliersOrganizationsReferent = $this->__getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
+			$suppliersOrganizationsReferent = $this->_getReferenti($this->user, $this->request->data['Order']['supplier_organization_id']);
 			if(!empty($suppliersOrganizationsReferent)) {
 				foreach ($suppliersOrganizationsReferent as $referent) {
 
@@ -2371,63 +2235,26 @@ class OrdersController extends AppController {
 			$this->set('testo_mail',$testo_mail);			
 		}
 		
-	   	$options =array();
+	   	$options =[];
 	   	$options['conditions'] = array ('Delivery.stato_elaborazione' => 'OPEN');
-	   	$this->__boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
+	   	$this->_boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
 	   	 
 	}
 	
 	/*
 	 * setto la visibility degli ordini a Y se l'organizzazione ha organizationHasVisibility = 'N'
 	*/
-	private function __ctrl_data_visibility() {
+	private function _ctrl_data_visibility() {
 	
 		if($this->user->organization['Organization']['hasVisibility']=='N') {
 			$sql = "UPDATE ".Configure::read('DB.prefix')."orders
    						SET isVisibleFrontEnd = 'Y', isVisibleBackOffice = 'Y'
 						WHERE organization_id = ".(int)$this->user->organization['Organization']['id'];
 			$result = $this->Order->query($sql);
-	
 		}
 	}
 	
-	/*
-	 * cron: orders da OPEN a PROCESSED-POST-DELIVERY per gli ordini con le consegne chiuse
-	*/
-	private function __ctrl_state_code_error() {
-	
-		if($this->user->organization['Organization']['payToDelivery']=='ON' || $this->user->organization['Organization']['payToDelivery']=='ON-POST')
-			$state_code_next = 'PROCESSED-ON-DELIVERY';
-		else
-			$state_code_next = 'PROCESSED-POST-DELIVERY';
-		
-		$sql = "SELECT `Order`.id
-				FROM
-					".Configure::read('DB.prefix')."deliveries Delivery,
-					`".Configure::read('DB.prefix')."orders` `Order`
-				WHERE
-					Delivery.organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and `Order`.organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and Delivery.stato_elaborazione = 'OPEN'
-					and `Order`.delivery_id = Delivery.id
-					and `Order`.state_code = 'OPEN' 
-					and DATE(Delivery.data) < CURDATE()
-					and `Order`.data_fine < CURDATE()";
-		//echo $sql."\n";
-		$results = $this->Order->query($sql);
-		foreach($results as $result) {
-			$sql ="UPDATE `".Configure::read('DB.prefix')."orders`
-				   SET
-						state_code = '$state_code_next',
-						modified = '".date('Y-m-d H:i:s')."'
-				   WHERE
-			   			organization_id = ".(int)$this->user->organization['Organization']['id']."
-			   			and id = ".$result['Order']['id'];
-			$this->Order->query($sql);
-		}
-	}	
-	
-	private function __getReferenti($user, $supplier_organization_id) {
+	private function _getReferenti($user, $supplier_organization_id) {
 	
 		App::import('Model', 'SuppliersOrganizationsReferent');
 		$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
@@ -2442,21 +2269,19 @@ class OrdersController extends AppController {
 		return $suppliersOrganizationsReferent;
 	}	
 	
-	private function __getDesReferenti($user, $des_order_id) {
+	private function _getDesReferenti($user, $des_order_id) {
 		App::import('Model', 'DesSuppliersReferent');
 		$DesSuppliersReferent = new DesSuppliersReferent();			
 		
-		$conditions = array();
-		$conditions = array('DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
-							'DesSupplier.des_id' => $user->des_id,
-							'DesSupplier.supplier_id', $des_order_id);
+		$conditions = [];
+		$conditions = ['DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
+						'DesSupplier.des_id' => $user->des_id,
+						'DesSupplier.supplier_id', $des_order_id];
 		$desSuppliersReferents = $DesSuppliersReferent->getReferentsDesCompact($conditions);
-		/*
-		echo "<pre>";
-		print_r($conditions);
-		print_r($desSuppliersReferents);
-		echo "</pre>";
-		*/
+		
+		self::d($conditions, $debug);
+		self::d($desSuppliersReferents, $debug);
+		
 		$this->set(compact('desSuppliersReferents'));
 
 		return $desSuppliersReferents;	
