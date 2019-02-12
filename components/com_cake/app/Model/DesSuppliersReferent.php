@@ -14,11 +14,8 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 
 			$tmp_user->organization['Organization']['id'] = $organization_id;
 			
-	 		if($debug) {
-	 			echo "<pre>DesSuppliersReferent::getUsersRoles() \r";
-	 			print_r($roles);
-	 			echo "</pre>";
-	 		}
+			self::d("DesSuppliersReferent::getUsersRoles()", $debug);
+			self::d($roles, $debug);
 	 			 	
 	 		$results = [];
 	 		
@@ -68,7 +65,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				$DesSuppliersReferent = new DesSuppliersReferent;
 				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
 
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
 											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
 											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
@@ -103,7 +100,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				$DesSuppliersReferent = new DesSuppliersReferent;
 				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
 
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
 											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
 											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
@@ -137,7 +134,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				$DesSuppliersReferent = new DesSuppliersReferent;
 				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
 
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
 											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
 											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
@@ -188,13 +185,13 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 
 		$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'User')));
 		
-		$options = array();
-		$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
-									   'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
-									   'DesSuppliersReferent.user_id' => $user->get('id'),
-									   'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier'),
-									   'DesSupplier.des_id' => $user->des_id,
-									   'DesSupplier.own_organization_id' => $user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
+								   'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
+								   'DesSuppliersReferent.user_id' => $user->get('id'),
+								   'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier'),
+								   'DesSupplier.des_id' => $user->des_id,
+								   'DesSupplier.own_organization_id' => $user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$ACLDesSuppliersResults = $DesSuppliersReferent->find('all', $options);
 		
@@ -205,10 +202,10 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 			
 			$Supplier = new Supplier;
 					
-			$options = array();
-			$options['conditions'] = array('Supplier.id' => $supplier_id,
-										   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
-			$options['order'] = array('Supplier.name');
+			$options = [];
+			$options['conditions'] = ['Supplier.id' => $supplier_id,
+									  "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')"];
+			$options['order'] = ['Supplier.name'];
 			$options['recursive'] = -1;
 			$suppliersResults = $Supplier->find('first', $options);		
 			if(!empty($suppliersResults)) {
@@ -244,14 +241,14 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 	*/
 	public function getDesSupplierIdsByReferent($user, $user_id, $debug=false) {
 	
-		$options = array();
-		$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
-									   'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
-									   'DesSuppliersReferent.user_id' => $user_id,
-									   "DesSuppliersReferent.group_id IN (".Configure::read('group_id_referent_des').",".Configure::read('group_id_titolare_des_supplier').")");
+		$options = [];
+		$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
+								   'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
+								   'DesSuppliersReferent.user_id' => $user_id,
+								   "DesSuppliersReferent.group_id IN (".Configure::read('group_id_referent_des').",".Configure::read('group_id_titolare_des_supplier').")"];
 		$options['recursive'] = -1;
-		$options['fields'] = array('des_supplier_id');
-		$options['order_by'] = array('id');
+		$options['fields'] = ['DesSuppliersReferent.des_supplier_id'];
+		$options['order_by'] = ['DesSuppliersReferent.id'];
 		$results = $this->find('all', $options);
 		
 		if($debug) {
@@ -283,7 +280,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 	 */
 	public function getReferentsDesCompact($conditions, $orderBy=null, $debug=false) {
 		
-		$results = array();
+		$results = [];
 		
 		if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 		
@@ -317,7 +314,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 		if(isset($conditions['DesSupplier.id'])) $sql .= " and DesSupplier.id = ".$conditions['DesSupplier.id'];  // filtro per produttore
 		if(isset($conditions['DesSuppliersReferent.group_id'])) $sql .= " and DesSuppliersReferent.group_id = ".$conditions['DesSuppliersReferent.group_id'];  // filtro per gruppo
 		$sql .= " ORDER BY ".$orderBy;
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		try {
 			$results = $this->query($sql);
 
@@ -342,7 +339,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				*/
 				$UserGroup = new UserGroup;
 					
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('UserGroup.id' => $result['DesSuppliersReferent']['group_id']);
 				$options['recursive'] = -1;
 				$userGroupResults = $UserGroup->find('first', $options);				
@@ -388,7 +385,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 			 *  ctrl se e' gia' referent,
 			*  se NO lo e' associo lo joomla.users al gruppo referenti in joomla.user_usergroup_map
 			*/
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
 										   'DesSuppliersReferent.user_id' => $user_id,
 										   'DesSuppliersReferent.group_id' => $group_id);

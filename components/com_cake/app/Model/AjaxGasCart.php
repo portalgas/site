@@ -182,7 +182,7 @@ class AjaxGasCart extends AppModel {
 				$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],										'ArticlesOrder.order_id' => $order_id,
 										'ArticlesOrder.article_organization_id' => $article_organization_id,
 										'ArticlesOrder.article_id' => $article_id									);		$options['recursive'] = 0;
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Order')));		$results = $ArticlesOrder->find('first', $options);
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Order']]);		$results = $ArticlesOrder->find('first', $options);
 		
 		$this->log .= "\r\n Result dei dati ".print_r($results, true);		return $results;	}
 	

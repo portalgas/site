@@ -228,8 +228,8 @@ class Order extends AppModel {
 		$ArticlesOrder = new ArticlesOrder;
 		 
 		$options = [];
-		$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
-										'ArticlesOrder.order_id' => $order_id);
+		$options['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
+								  'ArticlesOrder.order_id' => $order_id];
 		$options['recursive'] = -1;
 		$results = $ArticlesOrder->find('all', $options);	 
 		foreach ($results as $result) {
@@ -259,7 +259,7 @@ class Order extends AppModel {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 			
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Cart', 'Order']]);
 		
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
@@ -270,7 +270,7 @@ class Order extends AppModel {
 		$totArticlesOrders = $ArticlesOrder->find('count', $options);
 		self::d("totArticlesOrders (totale articoli associati all'ordine) ".$totArticlesOrders, $debug);
 		
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Cart', 'Order']]);
 		
 		$options['conditions'] += ['not' => ['Article.img1' => null]];
 		$options['recursive'] = 1;
@@ -464,11 +464,10 @@ class Order extends AppModel {
 	*/
 	public function getOrdersDeliverySys($user) {
 		$options = [];
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-									   'Delivery.organization_id'=>$user->organization['Organization']['id'],
-									   'Delivery.sys'=> 'Y',
-		);
-		$options['order'] = array('Order.data_inizio');
+		$options['conditions'] =  ['Order.organization_id' => $user->organization['Organization']['id'],
+								   'Delivery.organization_id'=>$user->organization['Organization']['id'],
+								   'Delivery.sys'=> 'Y'];
+		$options['order'] = ['Order.data_inizio'];
 		$options['recursive'] = 0;
 		
 		$results = $this->find('all', $options);
@@ -503,7 +502,7 @@ class Order extends AppModel {
 					  AND ArticlesOrder.order_id = ".$orderResult['Order']['id']." 
 					  AND ArticlesOrder.organization_id = ".$user->organization['Organization']['id'];
 		$sql .= $sqlUmRange;
-		if($debug)  echo $sql."\n";
+		self::d($sql, $debug);
 		$articlesResults = $this->query($sql);
 		
 		/*
@@ -553,7 +552,7 @@ class Order extends AppModel {
 					  AND Article.stato = 'Y' 
 					  AND ArticlesOrder.order_id = ".$order_id." 
 					  AND ArticlesOrder.organization_id = ".$user->organization['Organization']['id'];
-		if($debug) echo $sql."\n";
+		self::d($sql, $debug);
 		$totImporto = current($this->query($sql));
 		
 		return $totImporto[0]['totImporto'];

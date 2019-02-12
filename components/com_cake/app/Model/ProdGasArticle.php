@@ -6,13 +6,104 @@ class ProdGasArticle extends AppModel {
 	public $name = 'ProdGasArticle';
 	
 	/*
+	 * estrae i GAS che associato l'articolo ad un ordine
+	 */
+	public function getGasOrganizationInArticlesOrder($user, $article_organization_id, $article_id, $debug=false) {
+        
+        App::import('Model', 'Delivery');
+        $Delivery = new Delivery;
+
+        App::import('Model', 'ArticlesOrder');
+        $ArticlesOrder = new ArticlesOrder;
+		$ArticlesOrder->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'organization_id']]]);
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Article', 'Cart']]);
+					
+        $options = [];
+        $options['conditions'] = ['ArticlesOrder.article_organization_id' => $article_organization_id, 'ArticlesOrder.article_id' => $article_id];
+        $options['order'] = ['Organization.name', 'Order.data_inizio'];
+        $options['group'] = ['Order.id'];
+        $options['recursive'] = 1;
+        $articlesOrderResults = $ArticlesOrder->find('all', $options);
+		
+		if(!empty($articlesOrderResults))
+		foreach($articlesOrderResults as $numResult => $articlesOrderResult) {
+			
+			/*
+			 * Delivery
+			 */
+			$options = [];
+			$options['conditions'] = ['Delivery.organization_id' => $articlesOrderResult['Order']['organization_id'], 'Delivery.id' => $articlesOrderResult['Order']['delivery_id']];
+			$options['recursive'] = -1;
+			$deliveryResults = $Delivery->find('first', $options);	
+			$articlesOrderResults[$numResult]['Delivery'] = $deliveryResults['Delivery'];
+		
+		}
+		self::d($articlesOrderResults, $debug);
+		
+		return $articlesOrderResults;
+	}
+	
+	/*
+	 * estrae i GAS che hanno acquistato un articolo
+	 */
+	public function getGasOrganizationInCart($user, $article_organization_id, $article_id, $debug=false) {
+        
+        App::import('Model', 'Delivery');
+        $Delivery = new Delivery;
+
+        App::import('Model', 'Cart');
+        $Cart = new Cart;
+		$Cart->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'organization_id']]]);
+		$Cart->unbindModel(['belongsTo' => ['Article', 'User']]);
+
+        $options = [];
+        $options['conditions'] = ['Cart.article_organization_id' => $article_organization_id, 'Cart.article_id' => $article_id];
+        $options['group'] = ['Order.id'];
+        $options['recursive'] = 1;
+        $articlesOrderResults = $Cart->find('all', $options);
+		self::d($articlesOrderResults, $debug);
+				
+		if(!empty($articlesOrderResults))
+		foreach($articlesOrderResults as $numResult => $articlesOrderResult) {
+			
+			/*
+			 * Delivery
+			 */
+			$options = [];
+			$options['conditions'] = ['Delivery.organization_id' => $articlesOrderResult['Order']['organization_id'], 'Delivery.id' => $articlesOrderResult['Order']['delivery_id']];
+			$options['recursive'] = -1;
+			$deliveryResults = $Delivery->find('first', $options);	
+			$articlesOrderResults[$numResult]['Delivery'] = $deliveryResults['Delivery'];
+		
+		}
+		self::d($articlesOrderResults, $debug);
+		
+		return $articlesOrderResults;
+	}
+		
+	/*
+	 * come Article::isArticleInCart()
+	 */
+	public function isArticleInCart($user, $article_organization_id, $article_id, $debug=false) {
+        
+        $results = $this->getGasOrganizationInCart($user, $article_organization_id, $article_id, $debug);
+
+		if(empty($results)) 
+			return false;
+		else 
+			return true;		
+	}
+	
+				
+	
+	/*
 	 * estrae tutti gli articoli di un produttore
 	 * se valorizzo prod_gas_promotion_id prendo solo quelli della promozione
 	 */
 	public function getArticles($user, $prod_gas_promotion_id=0, $debug=false) {
 		
-		$options = array();
-		$options['conditions'] = array('ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id']);
+		$options = [];
+		$options['conditions'] = array('ProdGasArticle.supplier_id' => $user->organization['Supplier']['Supplier']['id']);
 		$options['order'] = array('ProdGasArticle.name');
 		$options['recursive'] = -1;
 		$results = $this->find('all', $options);
@@ -23,13 +114,13 @@ class ProdGasArticle extends AppModel {
 			
 			foreach($results as $numResult => $result) {
 				
-				$prodGasArticlesPromotionResults = array();
+				$prodGasArticlesPromotionResults = [];
 				
 				if($prod_gas_promotion_id!=0) {
 					$prod_gas_article_id = $result['ProdGasArticle']['id'];
 					
-					$options = array();
-					$options['conditions'] = array('ProdGasArticlesPromotion.supplier_id' => $user->supplier['Supplier']['id'],
+					$options = [];
+					$options['conditions'] = array('ProdGasArticlesPromotion.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
 												   'ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id,
 												   'ProdGasArticlesPromotion.prod_gas_article_id' => $prod_gas_article_id);
 					$options['recursive'] = -1;
@@ -124,6 +215,16 @@ class ProdGasArticle extends AppModel {
 				'counterQuery' => ''
 		)
 	);
+
+	public function beforeSave($options = []) {
+	
+		if (!empty($this->data['ProdGasArticle']['qta']))
+    	    $this->data['ProdGasArticle']['prezzo'] = $this->importoToDatabase($this->data['ProdGasArticle']['prezzo']);
+        if (!empty($this->data['ProdGasArticle']['qta']))
+        	$this->data['ProdGasArticle']['qta'] = $this->importoToDatabase($this->data['ProdGasArticle']['qta']);
+	    
+	    return true;
+	}
 
 	public function afterFind($results, $primary = false) {
 

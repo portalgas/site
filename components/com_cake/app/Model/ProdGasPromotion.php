@@ -6,49 +6,87 @@ class ProdGasPromotion extends AppModel {
     public $name = 'ProdGasPromotion';
 
 	/*
+	 * ctrl se puo' gestire le promozioni
+	 * 	Supplier.can_promotions - come produttore
+	 *  SuppliersOrganizaton.can_promotions - per il dato gas
+	 */ 
+	public function canPromotions($user, $organization_id=0, $debug=false) {
+	
+		$canPromotions = false;
+		
+		/*
+		 * ctrl a livello di produttore 
+		 *
+		App::import('Model', 'Supplier');
+		$Supplier = new Supplier;
+		
+		$options = [];
+		$options['conditions'] = ['Supplier.id' => $user->organization['Supplier']['Supplier']['id']];
+		$options['fields'] = ['Supplier.can_promotions'];
+		$options['recursive'] = -1;
+		$supplierResults = $Supplier->find('first', $options);
+		self::d($options, $debug);
+		self::d($supplierResults, $debug);
+		if(empty($supplierResults))
+			return false;
+		 */
+		 
+		self::d($user->organization['Supplier'], $debug);
+		if($user->organization['Supplier']['Supplier']['can_promotions']!='Y') 
+			return false;
+					
+		/*
+		 * ctrl a livello di GAS 
+		 */
+		 if(!empty($organization_id)) {
+			App::import('Model', 'SuppliersOrganization');
+			$SuppliersOrganization = new SuppliersOrganization;
+			
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.supplier_id' => $user->organization['Supplier']['Supplier']['id'], 
+									  'SuppliersOrganization.organization_id' => $organization_id];
+			$options['fields'] = ['SuppliersOrganization.can_promotions'];
+			$options['recursive'] = -1;
+			$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+			self::d($options, $debug);
+			self::d($suppliersOrganizationResults, $debug);			
+			if(empty($suppliersOrganizationResults))
+				return false;
+				
+			if($suppliersOrganizationResults['SuppliersOrganization']['can_promotions']=='N')
+				return false;		 
+		 }		
+
+		 return true;
+	}
+	
+	/*
 	 * estrae tutti i dati di una promozione
 	 * ProdGasPromotion / Supplier 
 	 *
-	 * se arrivo da un Ordine non ho $supplier_id
 	 * organization_id filtra per la promozione per il GAS passato
 	 */
-	public function getProdGasPromotion($user, $supplier_id=0, $prod_gas_promotion_id, $organization_id=0, $debug=false) {
+	public function getProdGasPromotion($user, $prod_gas_promotion_id, $organization_id=0, $debug=false) {
 	
-		$results = array();
+		$results = [];
 		
 		/*
 		 * dati promozione 
 		 */
-		$options = array();
-		$options['conditions'] = array('ProdGasPromotion.id' => $prod_gas_promotion_id);
-		if($supplier_id!=0)
-			$options['conditions'] += array('ProdGasPromotion.supplier_id' => $supplier_id);
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotion.id' => $prod_gas_promotion_id];
 		$options['recursive'] = -1;
 		$results = $this->find('first', $options);
-		$supplier_id = $results['ProdGasPromotion']['supplier_id'];
-		if($debug) {
-			echo "<pre>ProdGasPromotion->getProdGasPromotion() dati promozione \n";
-			print_r($results);
-			echo "</pre>";
-		}
+		self::d($results, $debug);
 		
 		/*
 		 * dati produttore 
 		 */
-		App::import('Model', 'Supplier');
-		$Supplier = new Supplier;
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;
 		
-		$options = array();
-		$options['conditions'] = array('Supplier.id' => $supplier_id);
-		$options['fields'] = array('Supplier.id','Supplier.name','Supplier.img1');
-		$options['recursive'] = -1;
-		$supplierResults = $Supplier->find('first', $options);
-
-		if($debug) {
-			echo "<pre>ProdGasPromotion->getProdGasPromotion() dati produttore \n";
-			print_r($supplierResults);
-			echo "</pre>";
-		}
+		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id']);
+		self::d($supplierResults, $debug); 
 
 		$results += $supplierResults;
 		
@@ -58,14 +96,13 @@ class ProdGasPromotion extends AppModel {
 		App::import('Model', 'ProdGasPromotionsOrganization');
 		$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
 		
-		$ProdGasPromotionsOrganization->unbindModel(array('belongsTo' => array('Order', 'Organization')));
+		$ProdGasPromotionsOrganization->unbindModel(['belongsTo' => ['Order', 'Organization']]);
 	
-		$options = array();
-		$options['conditions'] = array('ProdGasPromotionsOrganization.supplier_id' => $supplier_id,
-									   'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id);
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id];
 		$options['recursive'] = -1;							   
 		if(!empty($organization_id)) {
-			$options['conditions'] += array('ProdGasPromotionsOrganization.organization_id' => $organization_id);
+			$options['conditions'] += ['ProdGasPromotionsOrganization.organization_id' => $organization_id];
 			$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
 			
 			$results['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization'];
@@ -75,13 +112,7 @@ class ProdGasPromotion extends AppModel {
 			$results['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults;
 		}
 		
-		if($debug) {
-			echo "<pre>ProdGasPromotion->getProdGasPromotion() dati del GAS \n";
-			print_r($prodGasPromotionsOrganizationResults);
-			echo "</pre>";
-		}
-
-		
+		self::d($prodGasPromotionsOrganizationResults, $debug); 	
 
 		/* 
 		 * articoli i promozione
@@ -89,20 +120,15 @@ class ProdGasPromotion extends AppModel {
 		App::import('Model', 'ProdGasArticlesPromotion');
 		$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
 		
-		$ProdGasArticlesPromotion->unbindModel(array('belongsTo' => array('ProdGasPromotion')));
+		$ProdGasArticlesPromotion->unbindModel(['belongsTo' => ['ProdGasPromotion']]);
 	
-		$options = array();
-		$options['conditions'] = array('ProdGasArticlesPromotion.supplier_id' => $supplier_id,
-									   'ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id);
+		$options = [];
+		$options['conditions'] = ['ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id];
 		$options['recursive'] = 0;
 		$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
-
-		if($debug) {
-			echo "<pre>ProdGasPromotion->getProdGasPromotion() articoli in promozione \n";
-			print_r($prodGasArticlesPromotionResults);
-			echo "</pre>";
-		}
-
+		self::d($options, $debug);
+		self::d($prodGasArticlesPromotionResults, $debug); 	
+		
 		$results['ProdGasArticlesPromotion'] = $prodGasArticlesPromotionResults;
 		 
 		return $results;
@@ -117,13 +143,13 @@ class ProdGasPromotion extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Supplier', 'CategoriesSupplier')));
-		$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
+		$SuppliersOrganization->unbindModel(['belongsTo' => ['Supplier', 'CategoriesSupplier']]);
+		$SuppliersOrganization->unbindModel(['hasMany' => ['Article', 'Order', 'SuppliersOrganizationsReferent']]);
 		
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.supplier_id' => $user->supplier['Supplier']['id'],
-									   'SuppliersOrganization.stato' => 'Y');
-		$options['order'] = array('SuppliersOrganization.name');
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
+								  'SuppliersOrganization.stato' => 'Y'];
+		$options['order'] = ['SuppliersOrganization.name'];
 		$options['recursive'] = 1;
 		$results = $SuppliersOrganization->find('all', $options);
 		
@@ -136,18 +162,14 @@ class ProdGasPromotion extends AppModel {
 			foreach($results as $numResult => $result) {
 				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
 
-				$options = array();
-				$options['conditions'] = array('ProdGasPromotionsOrganization.supplier_id' => $user->supplier['Supplier']['id'],
-											   'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
-												'ProdGasPromotionsOrganization.organization_id' => $result['SuppliersOrganization']['organization_id']);
+				$options = [];
+				$options['conditions'] = ['ProdGasPromotionsOrganization.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
+										  'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
+										  'ProdGasPromotionsOrganization.organization_id' => $result['SuppliersOrganization']['organization_id']];
 				$options['recursive'] = -1;
 				$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
 
-				if($debug) {
-					echo "<pre>ProdGasPromotion->getProdGasPromotion() dati del GAS \n";
-					print_r($prodGasPromotionsOrganizationResults);
-					echo "</pre>";
-				}
+				self::d($prodGasPromotionsOrganizationResults, $debug);	
 				
 				if(!empty($prodGasPromotionsOrganizationResults)) 
 					$results[$numResult]['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization'];
@@ -156,11 +178,7 @@ class ProdGasPromotion extends AppModel {
 
 		}
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";	
-		}							
+		self::d($results, $debug);	
 		
 		return $results;
 	}
@@ -178,11 +196,11 @@ class ProdGasPromotion extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.supplier_id' => $user->supplier['Supplier']['id'],
-									   'SuppliersOrganization.stato' => 'Y');
-		$options['fields'] = array('SuppliersOrganization.organization_id');
-		$options['order'] = array('SuppliersOrganization.id');
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
+								   'SuppliersOrganization.stato' => 'Y'];
+		$options['fields'] = ['SuppliersOrganization.organization_id'];
+		$options['order'] = ['SuppliersOrganization.id'];
 		$options['recursive'] = -1;
 		$results = $SuppliersOrganization->find('all', $options);
 		
@@ -205,10 +223,10 @@ class ProdGasPromotion extends AppModel {
 				App::import('Model', 'Organization');
 				$Organization = new Organization;
 				
-				$options = array();
-				$options['conditions'] = array('Organization.id NOT IN ("'.$organization_ids .'")',
-												'Organization.type' => 'GAS');
-				$options['order'] = array('Organization.name');
+				$options = [];
+				$options['conditions'] = ['Organization.id NOT IN ("'.$organization_ids .'")',
+										  'Organization.type' => 'GAS'];
+				$options['order'] = ['Organization.name'];
 				$options['recursive'] = -1;
 				$results = $Organization->find('all', $options);
 				
@@ -216,11 +234,7 @@ class ProdGasPromotion extends AppModel {
 			
 		} // end if(!empty($results))
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";	
-		}							
+		self::d($results, $debug);					
 		
 		return $results;	
 	}
@@ -236,27 +250,24 @@ class ProdGasPromotion extends AppModel {
 					state_code = '".$next_state."',
 					modified = '".date('Y-m-d H:i:s')."'
 				WHERE
-				    supplier_id = ".$user->supplier['Supplier']['id']." 
-				    and id = ".(int)$prod_gas_promotion_id;
-		if($debug) echo '<br />'.$sql;
+				    organization_id = ".$user->organization['Organization']['id']." and id = ".(int)$prod_gas_promotion_id;
+		self::d($sql, $debug);
 		try {
 			$results = $this->query($sql);
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
 			CakeLog::write('error',$e);
-			if($debug) {
-				echo '<br />'.$sql;
-				echo '<br />'.$e;
-			}
-			
+			self::d($sql, $debug);
+			self::d($e, $debug);
+
 			return false;
 		}
 		return true;
 	}
 	
-	public $hasMany = array(
-		'ProdGasPromotionsOrganization' => array(
+	public $hasMany = [
+		'ProdGasPromotionsOrganization' => [
 				'className' => 'ProdGasPromotionsOrganization',
 				'foreignKey' => 'prod_gas_promotion_id',
 				'dependent' => false,
@@ -268,8 +279,8 @@ class ProdGasPromotion extends AppModel {
 				'exclusive' => '',
 				'finderQuery' => '',
 				'counterQuery' => ''
-		),
-		'ProdGasArticlesPromotion' => array(
+		],
+		'ProdGasArticlesPromotion' => [
 				'className' => 'ProdGasArticlesPromotion',
 				'foreignKey' => 'prod_gas_promotion_id',
 				'dependent' => false,
@@ -281,8 +292,8 @@ class ProdGasPromotion extends AppModel {
 				'exclusive' => '',
 				'finderQuery' => '',
 				'counterQuery' => ''
-		)
-	);
+		]
+	];
 	
 	public function afterFind($results, $primary = true) {
 		
@@ -344,7 +355,7 @@ class ProdGasPromotion extends AppModel {
 		return $results;
 	}
 
-	public function beforeValidate($options = array()) {
+	public function beforeValidate($options = []) {
 		 
 		if (!empty($this->data['ProdGasPromotion']['data_inizio']))
 			$this->data['ProdGasPromotion']['data_inizio'] = $this->data['ProdGasPromotion']['data_inizio_db'];
@@ -355,7 +366,7 @@ class ProdGasPromotion extends AppModel {
 		return true;
 	}
 		
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['ProdGasPromotion']['data_inizio'])) 
 	    	$this->data['ProdGasPromotion']['data_inizio'] = $this->data['ProdGasPromotion']['data_inizio_db'];
 

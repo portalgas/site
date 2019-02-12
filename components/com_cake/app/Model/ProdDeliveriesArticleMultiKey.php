@@ -1,4 +1,5 @@
 <?php
+
 App::uses('AppModel', 'Model');
 /* * override perche' $primaryKeyArray = array('organization_id', 'prod_delivery_id', 'article_id');*/
 class ProdDeliveriesArticleMultiKey extends AppModel {
@@ -32,7 +33,7 @@ class ProdDeliveriesArticleMultiKey extends AppModel {
 		
 		$options['recursive'] = -1;
 		$options['callbacks'] = false;		return (bool)$this->find('count', $options);	}	
-	public function read($organization_id=0, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $fields = NULL, $id = NULL) {		 		$this->validationErrors = array();
+	public function read($organization_id=0, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $fields = NULL, $id = NULL) {		 		$this->validationErrors = [];
 		$options['conditions'] = array($this->alias . '.organization_id' => $organization_id,										$this->alias . '.prod_delivery_id'  => $prod_delivery_id,
 									    $this->alias . '.article_organization_id' => $article_organization_id,										$this->alias . '.article_id' => $article_id								);		$options['recursive'] = 1;		$this->data = $this->find('first', $options);		
 		return $this->data;	}
@@ -40,11 +41,11 @@ class ProdDeliveriesArticleMultiKey extends AppModel {
 	/*
 	 * override perche' $primaryKeyArray = array('organization_id', 'prod_delivery_id', 'article_organization_id', 'article_id'); 
 	 */
-	public function save($data = null, $validate = true, $fieldList = array()) {
+	public function save($data = null, $validate = true, $fieldList = []) {
 		
 		$success = false;
 		
-		$defaults = array(				'validate' => true, 'fieldList' => array(),				'callbacks' => true, 'counterCache' => true		);		$_whitelist = $this->whitelist;		$fields = array();				if (!is_array($validate)) {			$options = array_merge($defaults, compact('validate', 'fieldList'));		} else {			$options = array_merge($defaults, $validate);		}
+		$defaults = array(				'validate' => true, 'fieldList' => [],				'callbacks' => true, 'counterCache' => true		);		$_whitelist = $this->whitelist;		$fields = [];				if (!is_array($validate)) {			$options = array_merge($defaults, compact('validate', 'fieldList'));		} else {			$options = array_merge($defaults, $validate);		}
 		
 		$this->set($data);
 		
@@ -133,7 +134,7 @@ class ProdDeliveriesArticleMultiKey extends AppModel {
 				$success = false;			}	
 		}
 
-		if ($success) {				if ($options['callbacks'] === true || $options['callbacks'] === 'after') {				$event = new CakeEvent('Model.afterSave', $this, array($created, $options));				$this->getEventManager()->dispatch($event);			}				if (!empty($this->data)) {				$success = $this->data;			}				$this->data = false;			$this->_clearCache();			$this->validationErrors = array();		}	
+		if ($success) {				if ($options['callbacks'] === true || $options['callbacks'] === 'after') {				$event = new CakeEvent('Model.afterSave', $this, array($created, $options));				$this->getEventManager()->dispatch($event);			}				if (!empty($this->data)) {				$success = $this->data;			}				$this->data = false;			$this->_clearCache();			$this->validationErrors = [];		}	
 		if($this->debug) 
 			exit;
 				return $success;	}
@@ -144,7 +145,7 @@ class ProdDeliveriesArticleMultiKey extends AppModel {
 		$sql = "DELETE 				FROM					".Configure::read('DB.prefix')."prod_deliveries_articles     				WHERE
    					organization_id = ".(int)$organization_id." 
    					AND prod_delivery_id = ".(int)$prod_delivery_id;
-		if(!empty($article_organization_id) && !empty($article_id)) $sql .= " AND article_organization_id ".(int)$article_organization_id." AND article_id = ".(int)$article_id;		// echo '<br />'.$sql;		try {
+		if(!empty($article_organization_id) && !empty($article_id)) $sql .= " AND article_organization_id ".(int)$article_organization_id." AND article_id = ".(int)$article_id;		self::d($sql, false);		try {
 			$results = $this->query($sql);
 			$success=true;
 		}

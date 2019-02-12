@@ -1,26 +1,34 @@
 <?php
-
 App::uses('AppModel', 'Model');
 
 class DesOrder extends AppModel {
-    /*
+    
+	/*
      * dati utilizzati  $this->element('boxDesOrderToOrder', array('results' => $desOrdersResults));	
      */
-
     public function getDesOrder($user, $des_order_id, $debug = false) {
-
+		
         App::import('Model', 'Supplier');
 
         App::import('Model', 'DesOrdersOrganization');
 
         App::import('Model', 'Organization');
 
-        $options = array();
+        $options = [];
         $options['recursive'] = 1;
-        $options['conditions'] = array('DesOrder.des_id' => $user->des_id,
-            'DesOrder.id' => $des_order_id);
+        $options['conditions'] = ['DesOrder.id' => $des_order_id];
+		/*
+		 * se arrivo da FO e' vuoto! 
+ 		 */
+		if(!empty($user->des_id)) {
+			$options['conditions'] += ['DesOrder.des_id' => $user->des_id];
+		} 
         $results = $this->find('first', $options);
 
+		self::d('DesOrder::getDesOrder()', $debug);
+        self::d($options, $debug);
+        self::d($user, $debug);
+		
         if (empty($results))
             return;
 
@@ -29,8 +37,8 @@ class DesOrder extends AppModel {
          */
         $Organization = new Organization;
 
-        $options = array();
-        $options['conditions'] = array('Organization.id' => $results['DesSupplier']['own_organization_id']);
+        $options = [];
+        $options['conditions'] = ['Organization.id' => $results['DesSupplier']['own_organization_id']];
         $options['recursive'] = -1;
         $ownOrganizationResults = $Organization->find('first', $options);
 
@@ -40,8 +48,8 @@ class DesOrder extends AppModel {
          */
         $Supplier = new Supplier;
 
-        $options = array();
-        $options['conditions'] = array('Supplier.id' => $results['DesSupplier']['supplier_id']);
+        $options = [];
+        $options['conditions'] = ['Supplier.id' => $results['DesSupplier']['supplier_id']];
         $options['recursive'] = -1;
         $supplierResults = $Supplier->find('first', $options);
 
@@ -50,24 +58,21 @@ class DesOrder extends AppModel {
          */
         $DesOrdersOrganization = new DesOrdersOrganization;
 
-        $options = array();
-        $options['conditions'] = array('DesOrdersOrganization.des_id' => $user->des_id,
-            'DesOrdersOrganization.des_order_id' => $results['DesOrder']['id']);
+        $options = [];
+        $options['conditions'] = ['DesOrdersOrganization.des_id' => $user->des_id,
+								  'DesOrdersOrganization.des_order_id' => $results['DesOrder']['id']];
 
         $options['recursive'] = 0;
-        $DesOrdersOrganization->unbindModel(array('belongsTo' => array('DesOrder', 'De')));
+        $DesOrdersOrganization->unbindModel(['belongsTo' => ['DesOrder', 'De']]);
         $desOrdersOrganizationsResults = $DesOrdersOrganization->find('all', $options);
 
         $results['OwnOrganization'] = $ownOrganizationResults['Organization'];
         $results['Supplier'] = $supplierResults['Supplier'];
         $results['DesOrdersOrganizations'] = $desOrdersOrganizationsResults;
 
-        if ($debug) {
-            echo "<pre>DesOrder::getDesOrder() ";
-            print_r($options);
-            print_r($results);
-            echo "</pre>";
-        }
+        self::d('DesOrder::getDesOrder()', $debug);
+        self::d($options, $debug);
+        self::d($results, $debug);
 
         return $results;
     }
@@ -78,7 +83,7 @@ class DesOrder extends AppModel {
 
     public function aclReferenteDesSupplier($user, $des_order_id, $debug = false) {
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesOrder.des_id' => $user->des_id,
             'DesOrder.id' => $des_order_id,
             'DesOrder.des_supplier_id IN (' . $user->get('ACLsuppliersIdsDes') . ')');
@@ -116,7 +121,7 @@ class DesOrder extends AppModel {
      * 	se valorizzato aggiorno solo quell'articles_orders
      */
 
-    public function insertOrUpdateArticlesOrderAllOrganizations($user, $des_order_id, $order_id, $articles_orders_key = array(), $isTitolareDesSupplier, $debug = false) {
+    public function insertOrUpdateArticlesOrderAllOrganizations($user, $des_order_id, $order_id, $articles_orders_key = [], $isTitolareDesSupplier, $debug = false) {
 
 
         //$debug = true;
@@ -137,7 +142,7 @@ class DesOrder extends AppModel {
                 echo '<h2>referente NOT is Titolare DesSupplier</h2>';
         }
 
-        $desOrdersResults = array();
+        $desOrdersResults = [];
 
 
         if ($isTitolareDesSupplier) {
@@ -148,7 +153,7 @@ class DesOrder extends AppModel {
             /*
              * estraggo gli altri ordini per allinearni con quelli del titolare 
              */
-            $options = array();
+            $options = [];
             $options['conditions'] = array('DesOrdersOrganization.des_order_id' => $des_order_id,
                 'DesOrdersOrganization.organization_id != ' => $user->organization['Organization']['id']);  // escludo quello del GAS	
             if (!empty($user->des_id))
@@ -181,7 +186,7 @@ class DesOrder extends AppModel {
                  * titolare_order_id:
                  * 		order_id del GAS titolare per copiare gli articlesOrders
                  */
-                $options = array();
+                $options = [];
                 $options['conditions'] = array('DesOrdersOrganization.organization_id' => $titolare_organization_id,
                     'DesOrdersOrganization.des_order_id' => (int) $des_order_id);
                 if (!empty($user->des_id))
@@ -212,7 +217,7 @@ class DesOrder extends AppModel {
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('ArticlesOrder.organization_id' => $titolare_organization_id,
             'ArticlesOrder.order_id' => $titolare_order_id,
             'ArticlesOrder.stato != ' => 'N');
@@ -251,7 +256,7 @@ class DesOrder extends AppModel {
                  */
                 foreach ($results as $result) {
 
-                    $data = array();
+                    $data = [];
                     $data['ArticlesOrder']['organization_id'] = $organization_id;
                     $data['ArticlesOrder']['order_id'] = $order_id;
                     $data['ArticlesOrder']['article_organization_id'] = $result['ArticlesOrder']['article_organization_id'];
@@ -301,8 +306,7 @@ class DesOrder extends AppModel {
      * 							ArticlesOrder.article_id, 
      * 							ArticlesOrder.order_id
      */
-
-    public function deleteArticlesOrderAllOrganizations($user, $des_order_id, $articles_orders_key = array(), $debug = false) {
+    public function deleteArticlesOrderAllOrganizations($user, $des_order_id, $articles_orders_key = [], $debug = false) {
 
         // $debug=true;
 
@@ -320,11 +324,11 @@ class DesOrder extends AppModel {
         App::import('Model', 'DesOrdersOrganization');
         $DesOrdersOrganization = new DesOrdersOrganization();
 
-        $options = array();
-        $options['conditions'] = array('DesOrdersOrganization.des_order_id' => $des_order_id,
-            'DesOrdersOrganization.organization_id != ' => $user->organization['Organization']['id']);  // escludo quello del GAS	
+        $options = [];
+        $options['conditions'] = ['DesOrdersOrganization.des_order_id' => $des_order_id,
+								  'DesOrdersOrganization.organization_id != ' => $user->organization['Organization']['id']];  // escludo quello del GAS	
         if (!empty($user->des_id))
-            $options['conditions'] += array('DesOrdersOrganization.des_id' => $user->des_id);
+            $options['conditions'] += ['DesOrdersOrganization.des_id' => $user->des_id];
         $options['recursive'] = -1;
 
         /*
@@ -332,21 +336,14 @@ class DesOrder extends AppModel {
          */
         $desOrdersOrganizationsToDeleteResults = $DesOrdersOrganization->find('all', $options);
 
-        if ($debug) {
-            echo '<br />DesOrder->deleteArticlesOrderAllOrganizations() - tutti gli ordini dei DES';
-            echo "<pre>";
-            print_r($options['conditions']);
-            print_r($desOrdersOrganizationsToDeleteResults);
-            echo "</pre>";
-        }
+		self::d('DesOrder::deleteArticlesOrderAllOrganizations()', $debug);
+        self::d($options['conditions'], $debug);
+        self::d($desOrdersOrganizationsToDeleteResults, $debug);
 
-        if ($debug) {
-            echo '<br />DesOrder->deleteArticlesOrderAllOrganizations() - titolare_organization_id ' . $titolare_organization_id;
-            echo '<br />DesOrder->deleteArticlesOrderAllOrganizations() - totale ordine del DES ' . count($desOrdersOrganizationsToDeleteResults);
-            echo "<pre>DesOrder->deleteArticlesOrderAllOrganizations() - articles_orders_key \n";
-            print_r($articles_orders_key);
-            echo "</pre>";
-        }
+		self::d('DesOrder->deleteArticlesOrderAllOrganizations() - titolare_organization_id ' . $titolare_organization_id, $debug);
+        self::d('DesOrder->deleteArticlesOrderAllOrganizations() - totale ordine del DES ' . count($desOrdersOrganizationsToDeleteResults), $debug);
+        self::d('DesOrder->deleteArticlesOrderAllOrganizations() - articles_orders_key', $debug);
+        self::d($articles_orders_key, $debug);
 
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
@@ -355,8 +352,7 @@ class DesOrder extends AppModel {
          * ciclo per DesOrders
          */
         if (empty($desOrdersOrganizationsToDeleteResults)) {
-            if ($debug)
-                echo '<br />Non ci sono altri ordini DES da aggiornare';
+            self::d('Non ci sono altri ordini DES da aggiornare', $debug);
         } else
             foreach ($desOrdersOrganizationsToDeleteResults as $desOrdersOrganizationsToDeleteResult) {
 
@@ -366,12 +362,11 @@ class DesOrder extends AppModel {
                 $article_id = $articles_orders_key['article_id'];
 
                 if (!$ArticlesOrder->delete($organization_id, $order_id, $article_organization_id, $article_id)) {
-                    if ($debug)
-                        echo '<br />Articolo ' . $article_id . ' del GAS ' . $organization_id . ' associato all ordine ' . $order_id . ' non cancellato!';
+                    self::d('Articolo ' . $article_id . ' del GAS ' . $organization_id . ' associato all ordine ' . $order_id . ' non cancellato!', $debug);
                 }
             }
 
-        if ($debug)
+        if($debug)
             exit;
 
         return true;
@@ -397,7 +392,7 @@ class DesOrder extends AppModel {
         $DesOrder = new DesOrder;
         $DesOrder->unbindModel(array('belongsTo' => array('DesOrganization', 'De', 'Organization')));
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesOrder.des_id' => $des_id,
                                         'DesOrder.state_code' => 'OPEN',
                                         '0' => 'DesOrder.data_fine_max < CURDATE()');
@@ -448,7 +443,7 @@ class DesOrder extends AppModel {
         $DesOrder = new DesOrder;
         $DesOrder->unbindModel(array('belongsTo' => array('DesOrganization', 'De', 'Organization')));
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesOrder.des_id' => $des_id,
                                         "(DesOrder.state_code = 'POST-TRASMISSION' or DesOrder.state_code = 'REFERENT-WORKING')");
         if (!empty($des_order_id))
@@ -471,7 +466,7 @@ class DesOrder extends AppModel {
                 $DesOrdersOrganization = new DesOrdersOrganization;
                 $DesOrdersOrganization->unbindModel(array('belongsTo' => array('DesOrganization', 'De', 'Organization', 'DesOrder')));
 
-                $options = array();
+                $options = [];
                 $options['conditions'] = array('DesOrdersOrganization.des_id' => $des_id,
                                                'DesOrdersOrganization.des_order_id' => $result['DesOrder']['id']);
                 $options['fields'] = array('Order.state_code');
@@ -539,7 +534,7 @@ class DesOrder extends AppModel {
         $DesOrder = new DesOrder;
         $DesOrder->unbindModel(array('belongsTo' => array('DesOrganization', 'De', 'Organization')));
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesOrder.des_id' => $des_id,
                                         'DesOrder.state_code' => 'CLOSE',
                                         '0' => 'DesOrder.data_fine_max < CURDATE()');
@@ -574,7 +569,7 @@ class DesOrder extends AppModel {
 		        $DesOrdersOrganization = new DesOrdersOrganization;
 		        $DesOrdersOrganization->unbindModel(array('belongsTo' => array('Organization', 'De', 'DesOrder')));
 		
-		        $options = array();
+		        $options = [];
 		        $options['conditions'] = array('DesOrdersOrganization.des_id' => $des_id,
 		                                        'DesOrdersOrganization.des_order_id' => $result['DesOrder']['id']);
         		$options['fields'] = array('Order.id');

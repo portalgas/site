@@ -1,20 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
-/*
- * DROP TRIGGER IF EXISTS `k_deliveries_Trigger`;
- * DELIMITER |
- * CREATE TRIGGER `k_deliveries_Trigger` AFTER DELETE ON `k_deliveries`
- * FOR EACH ROW BEGIN
- * delete from k_orders where delivery_id = old.id and organization_id = old.organization_id;
- * delete from k_storerooms where delivery_id = old.id and organization_id = old.organization_id;
- * delete from k_summary_orders where delivery_id = old.id and organization_id = old.organization_id;
- * delete from k_request_payments_storerooms where delivery_id = old.id and organization_id = old.organization_id;
- * delete from k_loops_deliveries where delivery_id = old.id and organization_id = old.organization_id;
-  * END
- * |
- * DELIMITER ;
- */
+
 class Delivery extends AppModel {
 
 	public $actsAs = array('Data');
@@ -54,14 +41,14 @@ class Delivery extends AppModel {
 			'orarioCtrl' => array(				'rule'       =>  array('orario_crtl', '<=', 'orario_da'),				'message'    => "L'orario A non può essere precedente o uguale dell'orario DA",			),
 		),
 	);
-	/*	 * ctrl che la data della consegna sia maggiore della data di chiusura dei suoi ordini	* */	function date_compare_orders_data($field=array()) {			$continue = true;		$operator = '>';			$data_delivery = $field['data'];		$id = $this->data[$this->alias]['id'];		
+	/*	 * ctrl che la data della consegna sia maggiore della data di chiusura dei suoi ordini	* */	function date_compare_orders_data($field=[]) {			$continue = true;		$operator = '>';			$data_delivery = $field['data'];		$id = $this->data[$this->alias]['id'];		
 		$conditions = array('Delivery.id' => $id);
 		$results = $this->find('first',array('conditions'=>$conditions,'recursive'=>1));			if(isset($results['Order']) && !empty($results['Order']))			foreach ($results['Order'] as $order) {			$data_fine = $order['data_fine'];				if (!Validation::comparison($data_delivery, $operator, $data_fine))				$continue = false;		}			return $continue;	}
 	
 	/*
 	 * ctrl che la data della consegna sia maggiore alla data odierna
 	 * */
-	function date_compare_data_oggi($field=array()) {
+	function date_compare_data_oggi($field=[]) {
 
 		$continue = true;
  		$operator = '>';
@@ -80,7 +67,7 @@ class Delivery extends AppModel {
 		return $continue;
 	}
 	
-	function orario_crtl($field=array(), $operator, $field2) {		foreach( $field as $key => $value1 ){			$value2 = $this->data[$this->alias][$field2];
+	function orario_crtl($field=[], $operator, $field2) {		foreach( $field as $key => $value1 ){			$value2 = $this->data[$this->alias][$field2];
 			
 			$value1 = str_replace(':','',$value1);
 			$value2 = str_replace(':','',$value2);			
@@ -117,7 +104,7 @@ class Delivery extends AppModel {
 	
 	public function getDeliverySys($user) {
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => $user->organization['Organization']['id'],
 									   'Delivery.sys' => 'Y');
 		$options['recursive'] = -1;

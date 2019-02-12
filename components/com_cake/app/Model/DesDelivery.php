@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesDelivery extends AppModel {
 
 	public $actsAs = array('Data');
@@ -12,7 +13,7 @@ class DesDelivery extends AppModel {
 	 */
 	public function isReferenteIntraGas($user, $des_id, $des_delivery_id) {
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesDelivery.des_id' =>  $des_id, 
 									   'DesDelivery.des_delivery_id' =>  $des_delivery_id,
 									   'DesDelivery.organization_id' => $user->organization['Organization']['id']);
@@ -68,7 +69,7 @@ class DesDelivery extends AppModel {
 	/*
 	 * ctrl che la data della consegna sia maggiore alla data odierna
 	 * */
-	function date_compare_data_oggi($field=array()) {
+	function date_compare_data_oggi($field=[]) {
 
 		$continue = true;
  		$operator = '>';
@@ -82,7 +83,7 @@ class DesDelivery extends AppModel {
 		return $continue;
 	}
 	
-	function orario_crtl($field=array(), $operator, $field2) {
+	function orario_crtl($field=[], $operator, $field2) {
 		foreach( $field as $key => $value1 ){
 			$value2 = $this->data[$this->alias][$field2];
 			

@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class BookmarksArticle extends Model {
 
 	public function popolaCarts($user, $order_id, $supplier_organization_id, $debug=false) {
@@ -8,7 +9,7 @@ class BookmarksArticle extends Model {
 		/*
 		 * ctrl se il produttore ha articoli tra ipreferiti degli utenti
 		 */
-		$options =  array();
+		$options =  [];
 		$options['conditions'] = array('BookmarksArticle.organization_id' => $user->organization['Organization']['id'],
 									   'BookmarksArticle.supplier_organization_id' => $supplier_organization_id
 		);
@@ -33,7 +34,7 @@ class BookmarksArticle extends Model {
 		App::import('Model', 'AjaxCart');
 		$AjaxCart = new AjaxCart;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
 										'ArticlesOrder.order_id' => $order_id,
 										'ArticlesOrder.flag_bookmarks' => 'N');
@@ -52,7 +53,7 @@ class BookmarksArticle extends Model {
 				$article_organization_id = $result['ArticlesOrder']['article_organization_id'];
 				$article_id = $result['ArticlesOrder']['article_id'];
 				
-				$options =  array();
+				$options =  [];
 				$options['conditions'] = array('BookmarksArticle.organization_id' => $user->organization['Organization']['id'],
 											   'BookmarksArticle.article_organization_id' => $article_organization_id,
 											   'BookmarksArticle.article_id' => $article_id,

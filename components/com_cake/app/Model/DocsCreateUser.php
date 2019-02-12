@@ -1,14 +1,6 @@
 <?php
-/*
- * Model/EventType.php
- * CakePHP Full Calendar Plugin
- *
- * Copyright (c) 2010 Silas Montgomery
- * http://silasmontgomery.com
- *
- * Licensed under MIT
- * http://www.opensource.org/licenses/mit-license.php
- */
+App::uses('AppModel', 'Model');
+
  
 class DocsCreateUser extends AppModel {
 	
@@ -29,7 +21,7 @@ class DocsCreateUser extends AppModel {
 						WHERE
 					organization_id = ".(int)$user->organization['Organization']['id']."
 					AND doc_id = $doc_id";
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
 			$result = $this->query($sql);
 		}
 		catch (Exception $e) {
@@ -39,13 +31,16 @@ class DocsCreateUser extends AppModel {
 		
 		$arr_user_ids = explode(',', $user_ids);
 		foreach ($arr_user_ids as $user_id) {
-			$data = array();
+			$data = [];
 			$data['DocsCreateUser']['organization_id'] = $user->organization['Organization']['id'];
 			$data['DocsCreateUser']['doc_id'] = $doc_id;
 			$data['DocsCreateUser']['user_id'] = $user_id;
-			
-			$Counter = new Counter;				
-			$data['DocsCreateUser']['num'] = $Counter->getCounterAndUpdate($user, 'docs_users');
+						
+			/*
+			 * setto il num progressivo reale quando invio la mail
+			 */
+			$data['DocsCreateUser']['num'] = 0;
+			$data['DocsCreateUser']['year'] = 0;
 
 			if($debug) {
 				echo "<pre>DocsCreateUser::insert() \n ";
@@ -63,7 +58,34 @@ class DocsCreateUser extends AppModel {
 		return true;
 	}	
 	
+	public function getLastNum($user, $year, $debug=false) {
+    	
+		$num_last = 0;
+		
+		$options = [];
+    	$options['conditions'] = ['DocsCreateUser.organization_id' => $user->organization['Organization']['id'],
+    							  'DocsCreateUser.year' => $year];
+    	$options['fields'] = ['MAX(DocsCreateUser.num) as num_last '];
+    	$results = $this->find('all', $options); 
+    	
+		if(isset($results[0]) && isset($results[0][0]) && !empty($results[0][0]['num_last'])) 
+			$num_last = $results[0][0]['num_last'];
+		
+    	/*
+    	echo "<pre>";
+    	print_r($options);
+    	print_r($results);
+    	echo "</pre>";
+		*/
+		
+		return ($num_last+1);		
+	}
+	
 	var $belongsTo = array(
+		'DocsCreate' => array(
+			'className' => 'DocsCreate',
+			'foreignKey' => 'doc_id'
+		),
 		'User' => array(
 			'className' => 'User',
 			'foreignKey' => 'user_id'

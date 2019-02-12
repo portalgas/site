@@ -4,9 +4,9 @@ App::uses('UtilsCommons', 'Lib');
 App::uses('CakeEmail', 'Network/Email');
 
 class AppModel extends Model {
-    public $actsAs = array('Enumerable');
-   
+    public $actsAs = ['Enumerable'];
 	public $utilsCommons;
+	private $no_organization_id_tables = ['organizations', 'suppliers'];
 	
 	public function __construct() {
     	parent::__construct();
@@ -58,13 +58,12 @@ class AppModel extends Model {
 		$Order = new Order;
 				
 		$options = [];
-		$options['conditions'] = ['Order.organization_id' => (int)$user->organization['Organization']['id'],
-								  'Order.id' => $order_id];
+		$options['conditions'] = ['Order.organization_id' => (int)$user->organization['Organization']['id'], 'Order.id' => $order_id];
 		$options['recursive'] = 0;	
 		$orderResult = $Order->find('first', $options);
 
-		// self::d([$options, $orderResult], false);
-
+		self::d([$options, $orderResult], false);
+		
 		return $orderResult;
 	}
 	
@@ -93,8 +92,8 @@ class AppModel extends Model {
     	
     	$maxId = 1;
     	
-     	$options['fields'] = array('MAX('.$this->alias.'.id)+1 AS maxId');
-    	$options['conditions'] = array($this->alias.'.organization_id' => $organization_id);
+     	$options['fields'] = ['MAX('.$this->alias.'.id)+1 AS maxId'];
+    	$options['conditions'] = [$this->alias.'.organization_id' => $organization_id];
     	$options['recursive'] = -1;
     	$results = $this->find('first', $options);
     	if(!empty($results)) {
@@ -114,28 +113,28 @@ class AppModel extends Model {
     	if ($id === false) {
     		return false;
     	}
-    	
-    	if(empty($organization_id))
+		
+    	if(empty($organization_id) || in_array($this->useTable, $this->no_organization_id_tables))
 	    	$conditions = array($this->alias . '.' . $this->primaryKey => $id);
     	else 
-    		$conditions = array(
+    		$conditions = [
     				$this->alias . '.' . $this->primaryKey => $id,
     				$this->alias . '.organization_id' => $organization_id
-    		);
-   
-    	return (bool)$this->find('count', array(
+    		];
+	   
+    	return (bool)$this->find('count', [
     			'conditions' => $conditions,
     			'recursive' => -1,
     			'callbacks' => false
-    	));
-    }    
+    	]);
+    }      
 
     /*
      * Organization, Supplier avranno $organization_id=0
     */
     public function read($organization_id=0, $fields = null, $id = null) {
     	
-    	$this->validationErrors = array();
+    	$this->validationErrors = [];
     	
     	if ($id) {
     		$this->id = $id;
@@ -146,20 +145,21 @@ class AppModel extends Model {
     	if (is_array($this->id)) {
     		$id = $this->id[0];
     	}
-    	if(empty($organization_id))
-    		$conditions = array($this->alias . '.' . $this->primaryKey => $id);
+    	
+		if(empty($organization_id) || in_array($this->useTable, $this->no_organization_id_tables))
+    		$conditions = [$this->alias . '.' . $this->primaryKey => $id];
     	else
-    		$conditions = array(
+    		$conditions = [
 	    				$this->alias . '.' . $this->primaryKey => $id,
 	    				$this->alias . '.organization_id' => $organization_id
-	    				);    	 
+	    				];    	 
     	
     	if ($id !== null && $id !== false) {    		
-    		$this->data = $this->find('first', array(
+    		$this->data = $this->find('first', [
     				'conditions' => $conditions,
     				'fields' => $fields,
     				'recursive' => -1
-    		));
+    		]);
     		
     		return $this->data;
     	}
@@ -167,13 +167,13 @@ class AppModel extends Model {
     }
     
     private function _unbindModelAll() {
-    	foreach(array(
+    	foreach([
     			'hasOne' => array_keys($this->hasOne),
     			'hasMany' => array_keys($this->hasMany),
     			'belongsTo' => array_keys($this->belongsTo),
     			'hasAndBelongsToMany' => array_keys($this->hasAndBelongsToMany)
-    	) as $relation => $model) {
-    	 	$this->unbindModel(array($relation => $model));
+    	] as $relation => $model) {
+    	 	$this->unbindModel([$relation => $model]);
     	}
     }
     
@@ -193,7 +193,9 @@ class AppModel extends Model {
     *  php importoToDatabase call ArticlesController::admin_edit() per data['prezzo'] da inserire in database
     *
     */
-    public function importoToDatabase($importo) {
+    public function importoToDatabase($importo, $debug=false) {
+    	
+    	self::l('importoToDatabase PRE '.$importo, $debug);
     	
     	/*
     	 * se non c'e' la , e' gia' formattato correttamente 
@@ -208,21 +210,23 @@ class AppModel extends Model {
     	$importo = str_replace(',','.',$importo);
     
     	if(strpos($importo, '.')===false)  $importo = $importo.'.00';
-    	 
+
+    	self::l('importoToDatabase POST '.$importo, $debug);
+    	    	 
     	return $importo;
     }
 	
 	public function _getMail($template='default') {
 		$Email = new CakeEmail(Configure::read('EmailConfig'));
-		$Email->helpers(array('Html', 'Text'));
+		$Email->helpers(['Html', 'Text']);
 		$Email->template($template);
 		$Email->emailFormat('html');
 		
 		$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
-		$Email->from(array(Configure::read('SOC.mail') => Configure::read('SOC.name')));
+		$Email->from([Configure::read('SOC.mail') => Configure::read('SOC.name')]);
 		$Email->sender(Configure::read('SOC.mail'), Configure::read('SOC.name'));
 		
-		$Email->viewVars(array('content_info' => $this->_getContentInfo()));
+		$Email->viewVars(['content_info' => $this->_getContentInfo()]);
 		
 		return $Email;
 	}
@@ -249,9 +253,6 @@ class AppModel extends Model {
 		if($organization['Organization']['id']==10)
 			$organization_name = "Colibrì";
 		else
-		if($organization['Organization']['id']==41)
-			$organization_name = "Bio C'è";
-		else
 			$organization_name = $organization['Organization']['name'];
 		
 		return $organization_name;
@@ -268,62 +269,52 @@ class AppModel extends Model {
 		return $str;
 	}
 	
-	public function _getUsers($organization_id) {
-            
-			App::import('Model', 'User');
-            $User = new User;
-
-            $options = [];
-            $options['conditions'] = array('User.organization_id'=>(int)$organization_id,
-                                            'User.block'=> 0);
-            $options['fields'] = array('User.id','User.name','User.email','User.username');
-            $options['order'] = Configure::read('orderUser');
-            $options['recursive'] = 0;
-
-            $users = $User->find('all', $options);
-
-            /*
-            echo "<pre>";
-            print_r($users;
-            echo "</pre>";
-            */
-
-            echo "getUsers(): trovati ".count($users)." utenti\n";
-
-            return $users;
-	}
-        
     public function _getObjUserLocal($organization_id, $debug=false) {
 
-			App::import('Model', 'Organization');
-            $Organization = new Organization;
+		App::import('Model', 'Organization');
+		$Organization = new Organization;
 
-            $options = [];
-            $options['conditions'] = ['Organization.id' => (int) $organization_id];
-			$options['recursive'] = 0;
-			$results = $Organization->find('first', $options);
+		$options = [];
+		$options['conditions'] = ['Organization.id' => (int) $organization_id];
+		$options['recursive'] = 0;
+		$results = $Organization->find('first', $options);
 
-			$user = new UserLocal();
-			$user->organization = $results;
+		$user = new UserLocal();
+		$user->organization = $results;
 
-			$paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
-			$paramsFields = json_decode($results['Organization']['paramsFields'], true);
+		$paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
+		$paramsFields = json_decode($results['Organization']['paramsFields'], true);
 
-			/*
-			 * configurazione preso dal template
-			 */
-			$paramsConfig['payToDelivery'] = $results['Template']['payToDelivery'];
-			$paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
-			$paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
-			$paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
-			$paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
+		/*
+		 * configurazione preso dal template
+		 */
+		$paramsConfig['payToDelivery'] = $results['Template']['payToDelivery'];
+		$paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
+		$paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
+		$paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
+		$paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
 
-			$user->organization['Organization'] += $paramsConfig;
-			$user->organization['Organization'] += $paramsFields;
+		$user->organization['Organization'] += $paramsConfig;
+		$user->organization['Organization'] += $paramsFields;
+	
+		if($debug)
+			echo "_getObjUserLocal() per il GAS ".$organization_id." \n";
 		
-			if($debug)
-				echo "_getObjUserLocal() per il GAS ".$organization_id." \n";
-			
-            return $user;
+		return $user;
     }
+    
+    /*
+     * verifica se un utente ha la gestione degli articoli sugli ordini
+     * dipende da 
+     * 		- Organization.hasArticlesOrder
+     * 		- User.hasArticlesOrder
+     * 
+     * anche in AppController, AppModel
+     */     
+    public function isUserPermissionArticlesOrder($user) {
+        if ($user->organization['Organization']['hasArticlesOrder'] == 'Y' && $user->user['User']['hasArticlesOrder'] == 'Y')
+            return true;
+        else
+            return false;
+    }    
 }

@@ -12,7 +12,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 	*/
 	public function getArticoliEventualiAcquistiInConsegna($user, $options) {
 	
-		$results = array();
+		$results = [];
 	
 		try {
 			if(!isset($options['order'])) $options['order'] = 'Article.name ASC';
@@ -61,7 +61,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 				$sql .= " AND Article.category_id = ".$options['conditions']['Article.category_id'];
 				
 			$sql .= " ORDER BY ".$options['order'];
-			// echo '<br />'.$sql;
+			self::d($sql, false);
 			$results = $this->query($sql);
 				
 			/*
@@ -117,7 +117,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 	
 		if((!isset($conditions['ProdCart.user_id']) || empty($conditions['ProdCart.user_id'])) &&
 		(!isset($conditions['User.id']) || empty($conditions['User.id'])))
-			die("Errore getProdDeliveriesArticleInProdDeliveryAndProdCartsByUserId conditions['ProdCart.user_id'] o conditions['User.id'] obbligatori");
+			self::x("Errore getProdDeliveriesArticleInProdDeliveryAndProdCartsByUserId conditions['ProdCart.user_id'] o conditions['User.id'] obbligatori");
 	
 		if(isset($orderBy['ProdDeliveriesArticle'])) $order = $orderBy['ProdDeliveriesArticle'];
 		else

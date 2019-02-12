@@ -1,23 +1,12 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * Category Model
- *
- * @property Category $ParentCategory
- * @property Category $ChildCategory
- */
+
+
 class Category extends AppModel {
 
     public $name = 'Category';
     public $actsAs = array('Tree');
 
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
-/**
- * belongsTo associations
- *
- * @var array
- */
 	public $belongsTo = array(
 		'Parent' => array(
 			'className' => 'Category',
@@ -28,11 +17,6 @@ class Category extends AppModel {
 		)
 	);
 
-/**
- * hasMany associations
- *
- * @var array
- */
 	public $hasMany = array(
 		'ChildCategory' => array(
 			'className' => 'Category',
@@ -48,5 +32,4 @@ class Category extends AppModel {
 			'counterQuery' => ''
 		)
 	);
-
 }

@@ -1,15 +1,7 @@
 <?php
-/*
- * Model/EventType.php
- * CakePHP Full Calendar Plugin
- *
- * Copyright (c) 2010 Silas Montgomery
- * http://silasmontgomery.com
- *
- * Licensed under MIT
- * http://www.opensource.org/licenses/mit-license.php
- */
- 
+App::uses('AppModel', 'Model');
+
+
 class EventsUser extends AppModel {
 	
 	var $name = 'EventsUser';
@@ -27,7 +19,7 @@ class EventsUser extends AppModel {
 						WHERE
 					organization_id = ".(int)$user->organization['Organization']['id']."
 					AND event_id = $event_id";
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
 			$result = $this->query($sql);
 		}
 		catch (Exception $e) {
@@ -37,7 +29,7 @@ class EventsUser extends AppModel {
 		
 		$arr_user_ids = explode(',', $user_ids);
 		foreach ($arr_user_ids as $user_id) {
-			$data = array();
+			$data = [];
 			$data['EventsUser']['organization_id'] = $user->organization['Organization']['id'];
 			$data['EventsUser']['event_id'] = $event_id;
 			$data['EventsUser']['user_id'] = $user_id;

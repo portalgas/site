@@ -4,14 +4,11 @@ App::uses('AppModel', 'Model');
 class DeliveryLifeCycle extends AppModel {
 
 	public $useTable = 'deliveries';
-	
-	/**
-	 * hasMany associations
-	 *
-	 * @var array
-	 */
-	public $hasMany = array(
-			'Order' => array(
+	public $name = 'Delivery'; 
+	public $alias = 'Delivery'; 
+		
+	public $hasMany = [
+			'Order' => [
 					'className' => 'Order',
 					'foreignKey' => 'delivery_id',
 					'dependent' => false,
@@ -23,67 +20,63 @@ class DeliveryLifeCycle extends AppModel {
 					'exclusive' => '',
 					'finderQuery' => '',
 					'counterQuery' => ''
-			)
-	);
+			]
+	];
 
 	/*
 	 *  elimino le consegne 
 	 *		- scadute DATE(Delivery.data) < CURDATE()
 	 *		- senza ordini associati
 	 */	
-	public function deliveriesExpiredWithoutOrdersDelete($user, $delivery_id=0, $debug) {
+	public function deleteExpiredWithoutAssociations($user, $delivery_id=0, $debug=false) {
+		
+		App::import('Model', 'Order');
+		$Order = new Order;
+		
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+								 'Delivery.sys' => 'N',
+								 'Delivery.isVisibleFrontEnd' => 'Y',
+								 'Delivery.isVisibleFrontEnd' => 'Y',
+								 'DATE(Delivery.data) < CURDATE()'];
+		if (!empty($delivery_id))
+			$options['conditions'] += ['Delivery.id' => $delivery_id];
+		if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
+			$options['conditions'] +=  ['OR' => ['Delivery.isToStoreroom' => 'Y',
+													'Delivery.isToStoreroomPay' => 'Y'],
+													['Delivery.isToStoreroom' => 'N']
+										  ];
+		$options['fields'] = ['Delivery.id'];
+		$options['recursive'] = -1;
+		//self::d($options['conditions'], $debug);
+		$deliveryResults = $this->find('all', $options);
+		self::d("Estratte ".count($deliveryResults)." consegne SCADUTE ed eventualmente pagate alla dispensa => controllo se SENZA Ordini (passate in statistiche)", $debug);
 	
-        try {	
-            $sql = "SELECT
-						Delivery.id, count(`Order`.id) as tot_order
-				   FROM
-						 " . Configure::read('DB.prefix') . "deliveries Delivery
-						LEFT JOIN " . Configure::read('DB.prefix') . "orders `Order` ON (`Order`.delivery_id = Delivery.id AND `Order`.organization_id = " . (int) $user->organization['Organization']['id'] . ")
-				   WHERE
-						Delivery.organization_id = " . (int) $user->organization['Organization']['id'] . "
-						AND Delivery.sys = 'N' 
-						and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
-						and DATE(Delivery.data) < CURDATE() ";
-            if (!empty($delivery_id))
-                $sql .= " AND Delivery.id = " . (int) $delivery_id;
-            $sql .= " GROUP BY Delivery.id 
-					  ORDER BY Delivery.id ";
-            // if($debug) echo $sql."\n";
-            $results = $this->query($sql);
-            if ($debug)
-                echo "Estratte " . count($results) . " consegne SCADUTE => elimino quelle SENZA Ordini \n";
-			foreach ($results as $result) {
-				if($result[0]['tot_order']==0) { 
-					$sql = "DELETE FROM " . Configure::read('DB.prefix') . "deliveries 
-							WHERE organization_id = " . (int) $user->organization['Organization']['id'] . " 
-							AND id = ".$result['Delivery']['id'];
-					if ($debug) echo "CANCELLO la consegna ".$result['Delivery']['id']." con ".$result[0]['tot_order']." ordini $sql \n";				
-					$this->query($sql);
-				}
-				else {
-					if ($debug) echo "ESCLUDO la consegna ".$result['Delivery']['id']." con ".$result[0]['tot_order']." ordini \n";
-				}
+		foreach ($deliveryResults as $deliveryResult) {
+			
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
+									  'Order.delivery_id' => $deliveryResult['Delivery']['id']];
+			$options['recursive'] = -1;
+			$orderResults = $Order->find('count', $options);
+
+			if($orderResults==0) { 
+				$this->id = $deliveryResult['Delivery']['id'];
+				self::d("CANCELLO la consegna ".$deliveryResult['Delivery']['id']." con ".$orderResults." ordini ed eventualmente pagate alla dispensa", $debug);			
+				$this->delete();
 			}
-        } catch (Exception $e) {
-            if ($debug)
-                echo '<br />DeliveryLifeCycle::deliveriesExpiredWithoutOrdersDelete()<br />' . $e;
-        }
+			else 
+				self::d("NON CANCELLO la consegna ".$deliveryResult['Delivery']['id']." con ".$orderResults." ordini o eventualmente da pagate alla dispensa", $debug);	
+		} // end loops Delivery
     }				
     
     public function deliveriesToClose($user, $delivery_id=0, $debug) {
 
-        if ($debug) {
-            echo "\n".date("d/m/Y") . " - " . date("H:i:s") . " Porto le consegne a Delivery.stato_elaborazione = CLOSE con ";
-            echo "tutti gli ordini in stato_elaborazione = CLOSE ";
-            if ($user->organization['Organization']['hasUserGroupsTesoriere'] == 'Y')
-                echo "e Order.tesoriere_stato_pay = Y \n";
-            else
-                echo " \n";
-            if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST')
-                echo "e RequestPayment.stato_elaborazione = CLOSE  \n";    
-            if($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
-                echo "e isToStoreroomPay = Y \n";
-        }
+        self::d(date("d/m/Y") . " - " . date("H:i:s") . " Porto le consegne a Delivery.stato_elaborazione = CLOSE con tutti gli ordini in stato_elaborazione = CLOSE", $debug);
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
+			self::d("e RequestPayment.stato_elaborazione = CLOSE", $debug);
+		if($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
+			self::d("e isToStoreroomPay = Y", $debug);
 
         try {			
             /*
@@ -93,32 +86,28 @@ class DeliveryLifeCycle extends AppModel {
 						Delivery.id, count(`Order`.id) as tot_order
 				   FROM
 						 " . Configure::read('DB.prefix') . "deliveries Delivery, 
-						 `" . Configure::read('DB.prefix') . "orders` `Order` 
+						 " . Configure::read('DB.prefix') . "orders `Order` 
 				   WHERE
 						Delivery.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND `Order`.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND Delivery.stato_elaborazione = 'OPEN' 
 						AND Delivery.sys = 'N' 
 						AND `Order`.delivery_id = Delivery.id 
-						and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
-						and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' ";
+						and `Order`.isVisibleFrontEnd = 'Y'  and Delivery.isVisibleFrontEnd = 'Y' ";
             if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
                 $sql .= " AND (Delivery.isToStoreroom = 'Y' && Delivery.isToStoreroomPay = 'Y' || Delivery.isToStoreroom = 'N') ";
             if (!empty($delivery_id))
                 $sql .= " AND Delivery.id = " . (int) $delivery_id;
             $sql .= " GROUP BY Delivery.id 
 					  ORDER BY Delivery.id ";
-            // if($debug) echo $sql."\n";
+            self::d($sql, false);
             $results = $this->query($sql);
-            if ($debug)
-                echo "Estratte " . count($results) . " consegne OPEN\n\n";
+            self::d("Estratte " . count($results) . " consegne OPEN", $debug);
 
             /*
              * ciclo tutte le consegne e ctrl che abbiamo tutti gli ordini 
              *		- con state_code = CLOSE
              * 		- RequestPayment.stato_elaborazione = CLOSE 
-			 *      - se tutti gli utenti hanno pagato SummaryOrder.importo = SummaryOrder.importo_pagato li chiudo
-             *		- Order.tesoriere_stato_pay = 'Y'
              */
             foreach ($results as $result) {
 
@@ -126,36 +115,27 @@ class DeliveryLifeCycle extends AppModel {
 						count(`Order`.id) as tot_order_close 
 				   FROM
 						 " . Configure::read('DB.prefix') . "deliveries Delivery,
-						 `" . Configure::read('DB.prefix') . "orders` `Order`
+						 " . Configure::read('DB.prefix') . "orders `Order`
 				   WHERE
 						Delivery.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND `Order`.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND Delivery.id = " . $result['Delivery']['id'] . "
 						AND `Order`.delivery_id = Delivery.id
-						AND `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
+						AND `Order`.isVisibleFrontEnd = 'Y'  and Delivery.isVisibleFrontEnd = 'Y' 
 						AND `Order`.state_code = 'CLOSE' ";
-                if ($user->organization['Organization']['hasUserGroupsTesoriere'] == 'Y')
-                    $sql .= " AND `Order`.tesoriere_stato_pay = 'Y' ";
-                // if($debug) echo $sql."\n";
+                self::d($sql, false);
                 $ordersResults = current($this->query($sql));
 
-                if ($debug) {
-                    echo "Per la consegna " . $result['Delivery']['id'] . " estratti " . $ordersResults[0]['tot_order_close'] . " ordini CLOSE ";
-                    if ($user->organization['Organization']['hasUserGroupsTesoriere'] == 'Y')
-                        echo "e Order.tesoriere_stato_pay = 'Y' ";
-
-                    echo "su un totale " . $result[0]['tot_order'];
-					
-					if ($ordersResults[0]['tot_order_close'] == $result[0]['tot_order']) 
-						echo " => potrei chiudere la consegna \n";
-					else
-						echo " => non potrei chiudere la consegna \n";
-                }
+                self::d("Per la consegna " . $result['Delivery']['id'] . " estratti " . $ordersResults[0]['tot_order_close'] . " ordini CLOSE su un totale " . $result[0]['tot_order'], $debug);				
+				if ($ordersResults[0]['tot_order_close'] == $result[0]['tot_order']) 
+					self::d("=> potrei chiudere la consegna", $debug);
+				else
+					self::d(" => non potrei chiudere la consegna", $debug);
 
 				/*
 				 * ctrl che le richieste di pagamento siano CLOSE
 				 */
-				if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+				if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 					$sql = "SELECT RequestPayment.id, RequestPayment.num, RequestPayment.stato_elaborazione FROM 
 								" . Configure::read('DB.prefix') . "request_payments_orders as RequestPaymentsOrder, 
 								" . Configure::read('DB.prefix') . "request_payments RequestPayment  
@@ -165,20 +145,15 @@ class DeliveryLifeCycle extends AppModel {
 							AND RequestPaymentsOrder.request_payment_id = RequestPayment.id
 							AND RequestPayment.stato_elaborazione != 'CLOSE'
 							AND RequestPaymentsOrder.delivery_id = " . $result['Delivery']['id'];	
-			                // if($debug) echo $sql."\n";
+			                self::d($sql, false);
 			                $requestPaymentResults = $this->query($sql);	
-							/*
-							echo "<pre>";
-							print_r($requestPaymentResults);
-			                echo "</pre>";
-							*/
 							if(empty($requestPaymentClose)) {
 			                	$requestPaymentClose=true;
-								if($debug) echo "Nessun ordine e' legata ad una RICHIESTA DI PAGAMENTO chiusa => potrei chiudere la consegna \n";								
+								self::d("Nessun ordine e' legata ad una RICHIESTA DI PAGAMENTO chiusa => potrei chiudere la consegna", $debug);
 			                }
 							else {
  			                	$requestPaymentClose=false;
-								if($debug) echo "Alcuni ordini sono legati ad una RICHIESTA DI PAGAMENTO non chiusa => non potrei chiudere la consegna \n";
+								self::d("Alcuni ordini sono legati ad una RICHIESTA DI PAGAMENTO non chiusa => non potrei chiudere la consegna", $debug);
 							}			
 				}
 				else
@@ -197,22 +172,86 @@ class DeliveryLifeCycle extends AppModel {
 						   WHERE
 						   		organization_id = " . (int) $user->organization['Organization']['id'] . "
 						   		and id = " . $result['Delivery']['id'];
-                    if ($debug)
-                        echo $sql . "\n";
+                    self::d($sql, $debug);
                     $this->query($sql);
 
-                    if ($debug)
-                        echo "	per la consegna " . $result['Delivery']['id'] . " aggiorno lo stato a CLOSE \n";
+                    self::d("	per la consegna " . $result['Delivery']['id'] . " aggiorno lo stato a CLOSE ", $debug);
                 }
                 else
-                if ($debug)
-                    echo "	per la consegna " . $result['Delivery']['id'] . " NON aggiorno lo stato a CLOSE \n \n";
+                self::d("	per la consegna " . $result['Delivery']['id'] . " NON aggiorno lo stato a CLOSE", $debug);
             } // end foreach
 	
  
         } catch (Exception $e) {
-            if ($debug)
-                echo '<br />DeliveryLifeCycle::deliveriesToClose()<br />' . $e;
+            self::d('DeliveryLifeCycle::deliveriesToClose()<br />' . $e, $debug);
         }
-    }				
+    }
+    
+   public function deliveriesToOpen($user, $delivery_id=0, $debug=false) {
+
+        self::d(date("d/m/Y") . " - " . date("H:i:s") . " Porto le consegne a Delivery.stato_elaborazione = OPEN se almeno un ordine non e' in stato_elaborazione = CLOSE", $debug);
+		if($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
+			self::d("e isToStoreroomPay = N", $debug);
+			
+		App::import('Model', 'Order');
+		$Order = new Order;
+			
+        /*
+         * estraggo tutte le consegne CLOSE
+         */
+         $options = [];
+         $options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+					               'Delivery.stato_elaborazione' => 'CLOSE', 
+					               'Delivery.sys' => 'N', 
+					               'Delivery.isVisibleFrontEnd' => 'Y'];
+        if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
+        	$options['conditions'] += ['OR' => ['Delivery.isToStoreroom' => 'N',
+        									   ['Delivery.isToStoreroomPay' => 'N', 'Delivery.isToStoreroom' => 'Y']]];
+        if (!empty($delivery_id))
+        	$options['conditions'] += ['Delivery.id' => $delivery_id];
+        $options['recursive'] = -1;
+        $deliveryResults = $this->find('all', $options);
+        self::d($deliveryResults, $debug);
+        
+        foreach($deliveryResults as $deliveryResult) {
+
+	        /*
+	         * estraggo ordini non CLOSE
+	         */
+	         $options = [];
+	         $options['conditions'] = ['Order.organization_id' => $deliveryResult['Delivery']['organization_id'],
+						               'Order.delivery_id' => $deliveryResult['Delivery']['id'],
+						               'Order.state_code !=' => 'CLOSE'];
+	        $options['recursive'] = -1;
+	        $orderCount = $Order->find('count', $options);
+			self::d($orderCount, $debug);
+        	if($orderCount>0) {
+        		self::d(date("d/m/Y") . " - " . date("H:i:s") . " riapro la consegne a Delivery.stato_elaborazione = OPEN perche' trovati $orderCount ordini Order.state_code != CLOSE ", $debug);
+        		
+        		$deliveryResult['Delivery']['stato_elaborazione'] = 'OPEN';
+        		
+        		self::d($deliveryResult, $debug);
+        		
+				/*
+				 * richiamo la validazione 
+				 */
+				$msg_errors = $this->getMessageErrorsToValidate($this, $deliveryResult);
+				if(!empty($msg_errors)) {
+					self::d($deliveryResult, $debug);
+					self::d($msg_errors, $debug);
+				}
+				else {
+					$this->create();
+					if(!$this->save($deliveryResult)) {
+						self::l($deliveryResult, $debug);
+						self::l($msg_errors, $debug);
+						
+						return false;
+					}
+				}    		
+        	}
+        }            
+
+		return true;
+   }    				
 }

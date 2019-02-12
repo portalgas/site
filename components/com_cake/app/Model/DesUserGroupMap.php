@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesUserGroupMap extends AppModel {
 
 	public $actsAs = array('Containable');

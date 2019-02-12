@@ -1,105 +1,112 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class CashesUser extends AppModel {
     
     /*
-     * somma di quanto un gasista ha acquistato per le consegne ancora aperte
+     * somma di quanto un gasista ha acquistato e non ancora saldato
+	 * - tutti gli acquisti di ordini non associati a summary_orders (ordini aperti, prima della consegna etc)
+	 * - tutti gli acquisti di ordini associati a summary_orders con saldato_a IS NULL (non ancora saldato)
      */
     public function getTotImportoAcquistato($user, $user_id, $debug=false) {
-    
+
     	$tot_importo = '0.00';
 		$zero = floatval(0);
+		
+		$sql = "SELECT
+					ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
+				FROM
+					".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
+					".Configure::read('DB.prefix')."carts as Cart
+					 LEFT JOIN ".Configure::read('DB.prefix')."summary_orders as SummaryOrder ON 
+					(SummaryOrder.organization_id = ".(int)$user->organization['Organization']['id']." and SummaryOrder.user_id = Cart.user_id and SummaryOrder.order_id = Cart.order_id and SummaryOrder.saldato_a is null)
+				WHERE
+					ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.user_id = ".$user_id."
+				    and Cart.order_id = `Order`.id  
+				    and Cart.article_organization_id = ArticlesOrder.article_organization_id
+				    and Cart.article_id = ArticlesOrder.article_id  
+				    and ArticlesOrder.order_id = `Order`.id  
+				    and Cart.deleteToReferent = 'N' 
+				    and `Order`.isVisibleBackOffice = 'Y'";
+		self::d($sql, $debug); 
+		$results = $this->query($sql);
 
-		App::import('Model', 'Order');
-		$Order = new Order;
-    	
-    	$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization')));
-    	
-		App::import('Model', 'Cart');
-		$Cart = new Cart;
-    
-        $Cart->unbindModel(array('belongsTo' => array('User', 'Article', 'Order')));
-    
-    	$options = [];
-		$options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
-								  'Cart.user_id' => $user_id,
-								  'Cart.deleteToReferent' => 'N'];
-	    $options['recursive'] = 1;
-		$results = $Cart->find('all', $options);
-		if($debug) {
-			echo "<pre>CashesUser::getTotImportoAcquistato - CART \n ";
-			print_r($options);
-			print_r($results);
-			echo "</pre>";
-		}
-			
 		foreach($results as $numResult => $result) {
 
-			/*
-			 * escludo le consegne chiuse
-			 */
-		   	$options = [];
-			$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
-									  'Delivery.isVisibleFrontEnd' => 'Y',
-									  'Delivery.stato_elaborazione' => 'OPEN',
-									 // 'DATE(Delivery.data) >=' => 'CURDATE()',
-									  'Order.id' => $result['Cart']['order_id']
-									  ];
-		    $options['recursive'] = 0;
-			$orderResults = $Order->find('first', $options);
-			if($debug) {
-				echo "<pre>CashesUser::getTotImportoAcquistato - ORDERS con consegne ancora aperte \n ";
-				print_r($options);
-				print_r($orderResults);
-				echo "</pre>";
+			$prezzo = floatval($result['ArticlesOrder']['prezzo']);
+			$qta_forzato = floatval($result['Cart']['qta_forzato']);
+			
+			if($qta_forzato > $zero) {
+				$qta = $qta_forzato;
+			}
+			else {
+				$qta = floatval($result['Cart']['qta']);
+			}
+
+			$importo_forzato = floatval($result['Cart']['importo_forzato']);
+				
+			if($importo_forzato==$zero) {
+				if($qta_forzato>$zero) 
+					$importo = ($qta_forzato * $prezzo);
+				else {
+					$importo = (floatval($result['Cart']['qta']) * $prezzo);
+				}
+			}
+			else {
+				$importo = $importo_forzato;
 			}
 			
-			if(!empty($orderResults)) {
-			
-				$prezzo = floatval($result['ArticlesOrder']['prezzo']);
-				$qta_forzato = floatval($result['Cart']['qta_forzato']);
+			$tot_importo = ($tot_importo + $importo);
+			self::d('CashesUser::getTotImportoAcquistato - tot_importo '.$tot_importo, $debug);
+		} // end foreach($results as $numResult => $result)
 				
-				if($qta_forzato > $zero) {
-					$qta = $qta_forzato;
-				}
-				else {
-					$qta = floatval($result['Cart']['qta']);
-				}
+		self::d('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo, $debug);
 
-				$importo_forzato = floatval($result['Cart']['importo_forzato']);
-					
-				if($importo_forzato==$zero) {
-					if($qta_forzato>$zero) 
-						$importo = ($qta_forzato * $prezzo);
-					else {
-						$importo = (floatval($result['Cart']['qta']) * $prezzo);
-					}
-				}
-				else {
-					$importo = $importo_forzato;
-				}
-				
-				$tot_importo = ($tot_importo + $importo);
-				if($debug) {
-					echo "<pre>CashesUser::getTotImportoAcquistato - tot_importo \n ";
-					print_r($tot_importo);
-					echo "</pre>";
-				}				
-			} // end if(!empty($orderResults)) 
-						
-		} // end loop
-		
-		if($debug) {
-			echo "<pre>CashesUser::getTotImportoAcquistato - RESULTS \n ";
-			print_r($tot_importo);
-			echo "</pre>";
-		}
-
-	
 		return floatval($tot_importo);
     }
-    
+
+	/*
+	 * dettaglio degli ordini con acquisti 
+	 */ 
+    public function getTotImportoAcquistatoDetails($user, $user_id, $debug=false) {
+
+		self::d('CashesUser::getTotImportoAcquistatoDeatils', $debug);
+
+		$sql = "SELECT
+					`Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.state_code, 
+					Delivery.luogo, Delivery.data, SuppliersOrganization.name
+				FROM
+					".Configure::read('DB.prefix')."deliveries as Delivery,
+					".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization,
+					".Configure::read('DB.prefix')."orders as `Order`,
+					".Configure::read('DB.prefix')."carts as Cart
+					 LEFT JOIN ".Configure::read('DB.prefix')."summary_orders as SummaryOrder ON 
+					(SummaryOrder.organization_id = ".(int)$user->organization['Organization']['id']." and SummaryOrder.user_id = Cart.user_id and SummaryOrder.order_id = Cart.order_id and SummaryOrder.saldato_a is null)
+				WHERE
+					`Order`.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Delivery.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and SuppliersOrganization.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.user_id = ".$user_id."
+				    and Cart.order_id = `Order`.id  
+				    and Cart.deleteToReferent = 'N' 
+				    and `Order`.isVisibleBackOffice = 'Y'  
+				    and Delivery.id = `Order`.delivery_id   
+				    and SuppliersOrganization.id = `Order`.supplier_organization_id
+					GROUP BY `Order`.id 
+				    ORDER BY Delivery.data asc, SuppliersOrganization.name";
+		self::d($sql, $debug); 
+		$results = $this->query($sql);
+			
+		self::d($results, $debug);
+
+		return $results;
+    }
+        
     /* 
      * estrae i dati caricati alla login dell'utente in AppController
      */
@@ -275,7 +282,7 @@ class CashesUser extends AppModel {
     		case "LIMIT-NO":
     			$results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
     			$results['stato'] = 'GREEN';
-    			$results['fe_msg'] = 'Nessun limiti per gli acquisti';
+    			$results['fe_msg'] = 'Nessun limite per gli acquisti';
     		break;
     		case "LIMIT-CASH":
     			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
@@ -326,7 +333,7 @@ class CashesUser extends AppModel {
 		    		case "LIMIT-NO":
 		    			$results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
 		    			$results['stato'] = 'GREEN';
-						$results['fe_msg'] = 'Nessun limiti per gli acquisti';
+						$results['fe_msg'] = 'Nessun limite per gli acquisti';
 		    		break;
 		    		case "LIMIT-CASH":
 		    			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
@@ -401,7 +408,7 @@ class CashesUser extends AppModel {
 		return $results;
 	}
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['CashesUser']['limit_after']))
 			$this->data['CashesUser']['limit_after'] = $this->importoToDatabase($this->data['CashesUser']['limit_after']);
 	

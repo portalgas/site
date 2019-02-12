@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdGasOrder extends AppModel {
 
     public $useTable = 'suppliers';

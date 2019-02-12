@@ -1,16 +1,14 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * ProdDeliveriesState Model
- *
- */
+
+
 class ProdDeliveriesState extends AppModel {
 
 	public function getProdDeliveriesState() {
 
-		$results = array();
+		$results = [];
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDeliveriesState.flag_produttore' => 'Y');
 		$options['order'] = array('sort');
 		$options['recursive'] = -1;		try {			$results = $this->find('all', $options); 

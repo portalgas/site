@@ -3,6 +3,22 @@ App::uses('AppModel', 'Model');
 
 class Organization extends AppModel {
 
+	public function getOrganization($organization_id, $debug=false) {
+
+       	$options = [];
+        $options['conditions'] = ['Organization.id' => $organization_id];
+        $options['recursive'] = -1;
+        $organizationResults = $this->find('first', $options);
+	
+        $paramsConfig = json_decode($organizationResults['Organization']['paramsConfig'], true);
+        $paramsFields = json_decode($organizationResults['Organization']['paramsFields'], true);
+
+        $organizationResults['Organization'] += $paramsConfig;
+        $organizationResults['Organization'] += $paramsFields;
+	
+		return $organizationResults;
+	}
+	
 	public function getCashLimit($cashLimit = '') {
 
 		$results = ['LIMIT-NO' => __('LIMIT-NO'), // 'Nessun limite', 

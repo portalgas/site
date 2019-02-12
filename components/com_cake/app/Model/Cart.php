@@ -14,7 +14,7 @@ App::import('Model', 'CartMultiKey');
  * DELIMITER ;
  */
 class Cart extends CartMultiKey {
-	
+		
 	/*
 	 * carrello dell'utente in base alla consegna 
 	 */
@@ -23,22 +23,19 @@ class Cart extends CartMultiKey {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$conditions = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
-				'Delivery.id' => (int)$delivery_id),
-				'Cart' => array('Cart.user_id' => (int)$user_id,
-								'Cart.deleteToReferent' => 'N'));
+		$conditions = ['Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
+									  'Delivery.id' => (int)$delivery_id],
+				       'Cart' => ['Cart.user_id' => (int)$user_id,
+								'Cart.deleteToReferent' => 'N']];
 	
-		$options = array('orders'=> true, 'storerooms' => false, 'summaryOrders' => false,
-				'articoliDellUtenteInOrdine' => true,  // estraggo SOLO gli articoli acquistati da un utente in base all'ordine
-				'suppliers'=>true, 'referents'=>true);
+		$options = ['orders'=> true, 'storerooms' => false, 'summaryOrders' => false,
+					'articoliDellUtenteInOrdine' => true,  // estraggo SOLO gli articoli acquistati da un utente in base all'ordine
+					'suppliers'=>true, 'referents'=>true];
 		
-		$results = array();
+		$results = [];
 		try {
-			if($debug) {
-				echo "<pre>Cart::getUserCart() \n";
-				print_r($options);
-				echo "</pre>";
-			}
+			self::d('Cart::getUserCart()', $debug);
+			self::d($options, $debug);
 			$results = $Delivery->getDataWithoutTabs($user, $conditions, $options);
 		}
 		catch (Exception $e) {
@@ -57,18 +54,18 @@ class Cart extends CartMultiKey {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$results = array();
+		$results = [];
 		if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 	
 			/*
 			 * D I S P E N S A
 			*/
-			$options = array('orders' => false, 'storerooms' => true, 'summaryOrders' => false,
-							'suppliers'=>true, 'referents'=>false);
+			$options = ['orders' => false, 'storerooms' => true, 'summaryOrders' => false,
+						 'suppliers'=>true, 'referents'=>false];
 				
-			$conditions = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
-													'Delivery.id' => (int)$delivery_id),
-								'Storeroom' => array('Storeroom.user_id' => (int)$user_id));
+			$conditions = ['Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
+										  'Delivery.id' => (int)$delivery_id],
+							'Storeroom' => ['Storeroom.user_id' => (int)$user_id]];
 			$orderBy = null;
 			try {
 				$results = $Delivery->getDataWithoutTabs($user, $conditions, $options, $orderBy);
@@ -85,6 +82,7 @@ class Cart extends CartMultiKey {
 	/*
 	 * Ajax::admin_box_validation_carts()  estraggo gli acquisti da validate (ArticlesOrder.pezzi_confezione > 1)
 	*
+	* gestione colli
 	* se valorizzato $article_id cerco un determinato articolo,
 	* se no tutti gli articoli di un ordine
 	*/
@@ -94,37 +92,95 @@ class Cart extends CartMultiKey {
 	
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
+		
+		App::import('Model', 'Article');
+		$Article = new Article;
+		
+		/* 
+		 * ctrl se l'ordine e' DES
+		 */
+		 $des_order_id = 0;
+		 if($user->organization['Organization']['hasDes']=='Y') {
+	        App::import('Model', 'DesOrdersOrganization');
+	        $DesOrdersOrganization = new DesOrdersOrganization();
 	
-		$conditions = array('Order.id' => $order_id,
-				'ArticlesOrder.pezzi_confezione' => '1');
-		if(!empty($article_organization_id) && !empty($article_id)) $conditions += array('Article.organization_id' => $article_organization_id, 'Article.id' => $article_id);
-		$orderBy = array('Article' => 'Article.name');
+	        $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
+	        if (!empty($desOrdersOrganizationResults)) {
+	        	$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
+	        }
+		} // end if($user->organization['Organization']['hasDes']=='Y') 
+		            		 
+		$conditions = ['Order.id' => $order_id,
+						'ArticlesOrder.pezzi_confezione' => '1'];
+		if(!empty($article_organization_id) && !empty($article_id)) $conditions += ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
+		$orderBy = ['Article' => 'Article.name'];
 	
 		$results = $ArticlesOrder->getArticlesOrdersInOrder($user, $conditions, $orderBy);
+
 		foreach($results as $numResults => $result) {
 	
-			$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
-				
-			if($debug) {
-				echo '<br />';
-				echo '<br />pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'];
-				echo '<br />qta_cart '.$result['ArticlesOrder']['qta_cart'];
-				echo '<br />differenza_da_ordinare '.$differenza_da_ordinare;
-			}
-				
-			if($differenza_da_ordinare>0) {
-				$differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $differenza_da_ordinare);
-				$differenza_importo = ($differenza_da_ordinare * $result['ArticlesOrder']['prezzo']);
-	
-				if($debug) echo '<br />differenza_importo '.$differenza_importo;
+			$isArticleInCart = true;
+			
+			/*
+			 * ctrl che l'articolo sia acquistato perche' se ordine DES la ArticlesOrder.qta_cart ha il medesimo valore per tutti i GAS 
+			 */
+			$isArticleInCart = $Article->isArticleInCart($user, $result['ArticlesOrder']['article_organization_id'], $result['ArticlesOrder']['article_id']);
+			
+			if($isArticleInCart) {
+			    
+			    if(!empty($des_order_id)) {
+			    	/*
+			    	 * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+			    	 */
+			        $options = [];
+			        $options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
+		        								'Cart.order_id' => $order_id,
+		                                        'Cart.article_organization_id' => $result['ArticlesOrder']['article_organization_id'],
+		                                        'Cart.article_id' => $result['ArticlesOrder']['article_id'],
+			                                    'Cart.deleteToReferent' => 'N'];
+			        $options['recursive'] = -1;
+			        $options['fields'] = ['Cart.qta','Cart.qta_forzato'];
+			        $cartResults = $this->find('all', $options);
+			        $qta_cart = 0;	
+			        if(!empty($cartResults)) {
+			        	foreach($cartResults as $cartResult) {
+			        		if(!empty($cartResult['Cart']['qta_forzato']))
+			        			$qta_cart += $cartResult['Cart']['qta_forzato'];
+			        		else
+			        			$qta_cart += $cartResult['Cart']['qta'];
+			        	}
+			        	
+			        	$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
+			        	$result['ArticlesOrder']['qta_cart'] = $qta_cart;
+			        }
+					else {
+			        	$results[$numResults]['ArticlesOrder']['qta_cart'] = 0;
+			        	$result['ArticlesOrder']['qta_cart'] = 0;
+					}
+			    } // end if(!empty($des_order_id))
+				    
+				$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
 					
-				$results[$numResults]['ArticlesOrder']['differenza_da_ordinare'] = $differenza_da_ordinare;
-				$results[$numResults]['ArticlesOrder']['differenza_importo'] = $differenza_importo;
-	
+				self::d('pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'], $debug);
+				self::d('qta_cart '.$result['ArticlesOrder']['qta_cart'], $debug);
+				self::d('differenza_da_ordinare '.$differenza_da_ordinare, $debug);
+					
+				if($differenza_da_ordinare>0) {
+					$differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $differenza_da_ordinare);
+					$differenza_importo = ($differenza_da_ordinare * $result['ArticlesOrder']['prezzo']);
+		
+					self::d('differenza_importo '.$differenza_importo, $debug);
+						
+					$results[$numResults]['ArticlesOrder']['differenza_da_ordinare'] = $differenza_da_ordinare;
+					$results[$numResults]['ArticlesOrder']['differenza_importo'] = $differenza_importo;
+		
+				}
+				else
+					unset($results[$numResults]);
 			}
 			else
 				unset($results[$numResults]);
-				
+			
 		} // foreach($results['ArticlesOrder'] as $numResults => $articlesOrder)
 	
 		return $results;
@@ -136,36 +192,78 @@ class Cart extends CartMultiKey {
 	 * se valorizzato $article_id cerco un determinato articolo, 
 	 * se no tutti gli articoli di un ordine
 	 */
-	public function getCartToValidateFrontEnd($user, $delivery_id, $order_id, $article_organization_id=0, $article_id=0) {
+	public function getCartToValidateFrontEnd($user, $delivery_id, $order_id, $article_organization_id, $article_id=0) {
 		
 		$debug = false;
 		
+		/* 
+		 * ctrl se l'ordine e' DES
+		 */
+		$des_order_id = 0;
+		if($user->organization['Organization']['hasDes']=='Y') {
+	        App::import('Model', 'DesOrdersOrganization');
+	        $DesOrdersOrganization = new DesOrdersOrganization();
+	
+	        $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
+	        if (!empty($desOrdersOrganizationResults)) {
+	        	$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
+	        }
+		} // end if($user->organization['Organization']['hasDes']=='Y') 
+			
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 		
-		$options['conditions'] = array('Cart.user_id' => $user->id,
-										'Order.id' => $order_id,
-										'ArticlesOrder.order_id' => $order_id,
-										'ArticlesOrder.pezzi_confezione' => '1');
-		if(!empty($article_organization_id) && !empty($article_id)) $options['conditions'] += array('Article.organization_id' => $article_organization_id, 'Article.id' => $article_id);
+		$options['conditions'] = ['Cart.user_id' => $user->id,
+								  'ArticlesOrder.pezzi_confezione' => '1'];
+		if(!empty($article_id)) 
+			$options['conditions'] += ['Article.id' => $article_id];
 		
-		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $options);
+		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $order_id, $article_organization_id, $options);
 		foreach($results as $numResults => $result) {
+
+			if(!empty($des_order_id)) {
+				/*
+				 * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+				 */
+				$options = [];
+				$options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
+										'Cart.order_id' => $order_id,
+										'Cart.article_organization_id' => $result['ArticlesOrder']['article_organization_id'],
+										'Cart.article_id' => $result['ArticlesOrder']['article_id'],
+										'Cart.deleteToReferent' => 'N'];
+				$options['recursive'] = -1;
+				$options['fields'] = ['Cart.qta','Cart.qta_forzato'];
+				$cartResults = $this->find('all', $options);
+				$qta_cart = 0;	
+				if(!empty($cartResults)) {
+					foreach($cartResults as $cartResult) {
+						if(!empty($cartResult['Cart']['qta_forzato']))
+							$qta_cart += $cartResult['Cart']['qta_forzato'];
+						else
+							$qta_cart += $cartResult['Cart']['qta'];
+					}
+					
+					$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
+					$result['ArticlesOrder']['qta_cart'] = $qta_cart;
+				}
+				else {
+					$results[$numResults]['ArticlesOrder']['qta_cart'] = 0;
+					$result['ArticlesOrder']['qta_cart'] = 0;
+				}
+			} // end if(!empty($des_order_id))
 
 			$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
 			
-			if($debug) {
-				echo '<br />';
-				echo '<br />pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'];
-				echo '<br />qta_cart '.$result['ArticlesOrder']['qta_cart'];
-				echo '<br />differenza_da_ordinare '.$differenza_da_ordinare;
-			}
+			self::d('Article '.$result['Article']['id'].' - code '.$result['Article']['codice'], $debug);
+			self::d('pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'], $debug);
+			self::d('qta_cart '.$result['ArticlesOrder']['qta_cart'], $debug);
+			self::d('differenza_da_ordinare '.$differenza_da_ordinare, $debug);
 			
 			if($differenza_da_ordinare>0) {
 				$differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $differenza_da_ordinare);
 				$differenza_importo = ($differenza_da_ordinare * $result['ArticlesOrder']['prezzo']);
 				
-				if($debug) echo '<br />differenza_importo '.$differenza_importo;
+				self::d('differenza_importo '.$differenza_importo, $debug);
 					
 				$results[$numResults]['ArticlesOrder']['differenza_da_ordinare'] = $differenza_da_ordinare;
 				$results[$numResults]['ArticlesOrder']['differenza_importo'] = $differenza_importo;
@@ -189,32 +287,32 @@ class Cart extends CartMultiKey {
 	*/
 	public function getTotImporto($user, $conditions, $debug=false) {
 				
-		$sql = "SELECT
-					ArticlesOrder.prezzo, 
-					Cart.qta, Cart.qta_forzato, Cart.importo_forzato,
-					Cart.user_id 
-				FROM
-					".Configure::read('DB.prefix')."deliveries as Delivery,
-					".Configure::read('DB.prefix')."orders as `Order`,
-					".Configure::read('DB.prefix')."articles_orders as ArticlesOrder,
-					".Configure::read('DB.prefix')."carts as Cart
-				WHERE
-				    Delivery.organization_id = ".(int)$user->organization['Organization']['id']."
-				    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
-				    and ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
-				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
-					and Delivery.id = `Order`.delivery_id
-					and `Order`.id = ArticlesOrder.order_id
-					and ArticlesOrder.order_id = Cart.order_id
-					and ArticlesOrder.article_id = Cart.article_id
-				    and Cart.deleteToReferent = 'N'
-				    and ArticlesOrder.stato != 'N' ";
-		if(isset($conditions['Order.id'])) $sql .= " and `Order`.id = ".$conditions['Order.id'];  // filtro per ordine
-		if(isset($conditions['Delivery.id'])) $sql .= " and Delivery.id = ".$conditions['Delivery.id']." ";
-		$sql .= " ORDER BY Delivery.id, `Order`.id";
-		if($debug) echo '<br />'.$sql;
-		$results = array();
-		try {
+		try {		
+			$sql = "SELECT
+						ArticlesOrder.prezzo, 
+						Cart.qta, Cart.qta_forzato, Cart.importo_forzato, Cart.user_id 
+					FROM
+						".Configure::read('DB.prefix')."deliveries as Delivery,
+						".Configure::read('DB.prefix')."orders as `Order`,
+						".Configure::read('DB.prefix')."articles_orders as ArticlesOrder,
+						".Configure::read('DB.prefix')."carts as Cart
+					WHERE
+					    Delivery.organization_id = ".(int)$user->organization['Organization']['id']."
+					    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
+					    and ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
+					    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
+						and Delivery.id = `Order`.delivery_id
+						and `Order`.id = ArticlesOrder.order_id
+						and ArticlesOrder.order_id = Cart.order_id
+						and ArticlesOrder.article_id = Cart.article_id
+					    and Cart.deleteToReferent = 'N'
+					    and ArticlesOrder.stato != 'N' ";
+			if(isset($conditions['Cart.user_id'])) $sql .= " and Cart.user_id = ".$conditions['Cart.user_id'];  // filtro per un utente 
+			if(isset($conditions['Order.id'])) $sql .= " and `Order`.id = ".$conditions['Order.id'];  // filtro per ordine
+			if(isset($conditions['Delivery.id'])) $sql .= " and Delivery.id = ".$conditions['Delivery.id']." ";
+			$sql .= " ORDER BY Delivery.id, `Order`.id";
+			self::d($sql, $debug);
+			$results = [];
 			$results = $this->query($sql);
 		}
 		catch (Exception $e) {
@@ -240,118 +338,65 @@ class Cart extends CartMultiKey {
 				
 				$importo_totale += $importo;
 				
-				if($debug) {
-					echo '<br />'.$numResult.') ';
-					echo 'Cart.qta '.$result['Cart']['qta'].' - ';
-					echo 'Cart.qta_forzato '.$result['Cart']['qta_forzato'].' - ';
-					echo 'Cart.importo_forzato '.$result['Cart']['importo_forzato'].' - ';
-					echo 'ArticlesOrder.prezzo '.$result['ArticlesOrder']['prezzo'];
-					echo ' => importo '.$importo;
-					echo ' => importo_totale '.$importo_totale;
-				}
+				self::d($numResult, $debug);
+				self::d('Cart.qta '.$result['Cart']['qta'].' - ', $debug);
+				self::d('Cart.qta_forzato '.$result['Cart']['qta_forzato'].' - ', $debug);
+				self::d('Cart.importo_forzato '.$result['Cart']['importo_forzato'].' - ', $debug);
+				self::d('ArticlesOrder.prezzo '.$result['ArticlesOrder']['prezzo'], $debug);
+				self::d(' => importo '.$importo, $debug);
+				self::d(' => importo_totale '.$importo_totale, $debug);
 			}
 		}
 		
 		return $importo_totale;
 	}
 	
-    /*
-     * aggiunge ad un ordine le eventuali 
-     *  SummaryOrder 
-     *  SummaryOrderTrapsort spese di trasporto
-     *  SummaryOrderMore spese generiche
-     *  SummaryOrderLess sconti
-     *
-     *  call 
-     *      ExportDocs::userCart
-     *      Delivery::tabsAjaxUserCartDeliveries 
-     *
-     */
-    public function addSummaryOrder($user, $user_id, $order) {
-        
-        $order_id = $order['Order']['id'];		
-
-        /*
-        * dati dell'ordine
-        */
-        $hasTrasport = $order['Order']['hasTrasport']; /* trasporto */
-        $trasport = $order['Order']['trasport'];
-        $hasCostMore = $order['Order']['hasCostMore']; /* spesa aggiuntiva */
-        $cost_more = $order['Order']['cost_more'];
-        $hasCostLess = $order['Order']['hasCostLess'];  /* sconto */
-        $cost_less = $order['Order']['cost_less'];
-        $typeGest = $order['Order']['typeGest'];   /* AGGREGATE / SPLIT */
-
-        $resultsSummaryOrder = array();
-        $resultsSummaryOrderTrasport = array();
-        $resultsSummaryOrderCostMore = array();
-        $resultsSummaryOrderCostLess = array();
-
-        if($hasTrasport=='Y') {
-            App::import('Model', 'SummaryOrderTrasport');
-            $SummaryOrderTrasport = new SummaryOrderTrasport;
-
-            $resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($user, $order_id, $user_id);
-        }
-        if($hasCostMore=='Y') {
-            App::import('Model', 'SummaryOrderCostMore');
-            $SummaryOrderCostMore = new SummaryOrderCostMore;
-
-            $resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($user, $order_id, $user_id);
-        }
-        if($hasCostLess=='Y') {
-            App::import('Model', 'SummaryOrderCostLess');
-            $SummaryOrderCostLess = new SummaryOrderCostLess;
-
-            $resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($user, $order_id, $user_id);
-        }
-
-        App::import('Model', 'SummaryOrder');
-        $SummaryOrder = new SummaryOrder;
-        $resultsSummaryOrder = $SummaryOrder->select_to_order($user, $order_id, $user_id); // se l'ordine e' ancora aperto e' vuoto
-
-        $results = array();
-        $results['SummaryOrder'] = $resultsSummaryOrder;
-        $results['SummaryOrderTrasport'] = $resultsSummaryOrderTrasport;
-        $results['SummaryOrderCostMore'] = $resultsSummaryOrderCostMore;
-        $results['SummaryOrderCostLess'] = $resultsSummaryOrderCostLess;
-
-        /*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
-
-        return $results;
-    }
+	public function getLastCartDateByUser($user, $user_id, $debug) {
+		
+		$options = [];
+		$options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'], 
+								  'Cart.user_id' => $user_id, 
+								  'Cart.stato' => 'Y'];
+		$options['fields'] = ['Cart.date'];
+		$options['order'] = ['Cart.date' => 'desc'];
+		$options['recursive'] = -1;
+		$results = $this->find('first', $options);
+		self::d($options, $debug);
+		self::d($results, $debug);
+		
+		if(empty($results)) 
+			$results['Cart']['date'] = Configure::read('DB.field.datetime.empty');
+		
+		return $results; 
+	}
     
-	public $validate = array(
-		'organization_id' => array(
-				'numeric' => array(
-						'rule' => array('numeric'),
-				),
-		),
-		'article_organization_id' => array(
-				'numeric' => array(
-						'rule' => array('numeric'),
-				),
-		),
-		'article_id' => array(
-				'numeric' => array(
-						'rule' => array('numeric'),
-				),
-		),
-		'order_id' => array(
-				'numeric' => array(
-						'rule' => array('numeric'),
-				),
-		),			
-		'user_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-			),
-		),
-	);
+	public $validate = [
+		'organization_id' => [
+				'numeric' => [
+						'rule' => ['numeric'],
+				],
+		],
+		'article_organization_id' => [
+				'numeric' => [
+						'rule' => ['numeric'],
+				],
+		],
+		'article_id' => [
+				'numeric' => [
+						'rule' => ['numeric'],
+				],
+		],
+		'order_id' => [
+				'numeric' => [
+						'rule' => ['numeric'],
+				],
+		],			
+		'user_id' => [
+			'numeric' => [
+				'rule' => ['numeric'],
+			],
+		],
+	];
 
 	/* 
 	 * se arriva da Storeroom 
@@ -361,34 +406,34 @@ class Cart extends CartMultiKey {
 	 * 		delivery_id non valorizzato
 	 *  	order_id    valorizzato
 	 */
-	public $belongsTo = array(
-		'User' => array(
+	public $belongsTo = [
+		'User' => [
 			'className' => 'User',
 			'foreignKey' => 'user_id',
 			'conditions' => 'User.organization_id = Cart.organization_id',
 			'fields' => '',
 			'order' => ''
-		),
-		'Article' => array(
+		],
+		'Article' => [
 				'className' => 'Article',
 				'foreignKey' => 'article_id',
 				'conditions' => 'Article.organization_id = Cart.article_organization_id',
 				'fields' => '',
 				'order' => ''
-		),
-		'Order' => array(
+		],
+		'Order' => [
 				'className' => 'Order',
 				'foreignKey' => 'order_id',
 				'conditions' => 'Order.organization_id = Cart.organization_id',
 				'fields' => '',
 				'order' => ''
-		),
-		'ArticlesOrder' => array(
+		],
+		'ArticlesOrder' => [
 				'className' => 'ArticlesOrder',
 				'foreignKey' => '', 
 				'conditions' => 'ArticlesOrder.organization_id = Cart.organization_id AND ArticlesOrder.order_id = Cart.order_id AND ArticlesOrder.article_organization_id = Cart.article_organization_id AND ArticlesOrder.article_id = Cart.article_id',
 				'fields' => '',
 				'order' => ''
-		),			
-	);	
+		],
+	];	
 }

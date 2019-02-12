@@ -1,17 +1,14 @@
 <?php
 App::uses('AppModel', 'Model');
-/**
- * ArticlesType Model
- *
- * @property Article $Article
- */
+
+
 class ArticlesType extends AppModel {
 	
 	/*
 	 * estraggo tutti gli articleType
 	 */
 	public function getArticlesTypes() {
-		$results = array();		try {
+		$results = [];		try {
 			$results = $this->find('all', array('order_by' => 'sort',
 												'recursive' => -1));
 		}		catch (Exception $e) {			CakeLog::write('error',$sql);			CakeLog::write('error',$e);		}				
@@ -30,7 +27,7 @@ class ArticlesType extends AppModel {
 	 */
 	public function prepareArray($results) {
 
-		$tmp = array();
+		$tmp = [];
 		foreach ($results as $result) {
 			$tmp += array($result['ArticlesType']['id'] => $result['ArticlesType']['label']); 
 		}

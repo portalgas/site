@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class BookmarksMail extends Model {
 
          /*
@@ -12,7 +13,7 @@ class BookmarksMail extends Model {
                  /*
                  * ctrl se esiste gia'
                  */
-                $options = array();
+                $options = [];
 		$options['conditions'] = array('BookmarksMail.organization_id' => (int)$user->organization['Organization']['id'],
 						'BookmarksMail.user_id' => $user->id,
                                                 'BookmarksMail.supplier_organization_id' => $supplier_organization_id);
@@ -26,7 +27,7 @@ class BookmarksMail extends Model {
                     echo "</pre>";
                 }
                 
-                $data = array();
+                $data = [];
                 if (!empty($bookmarksMailResults)) {
                     /*
                      * UPDATE

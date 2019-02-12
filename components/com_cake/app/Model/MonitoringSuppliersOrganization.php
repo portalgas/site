@@ -1,8 +1,8 @@
 <?php
 App::uses('AppModel', 'Model');
-App::import('Model', 'MyAppModel');
 
-class MonitoringSuppliersOrganization extends MyAppModel {
+
+class MonitoringSuppliersOrganization extends AppModel {
         
     /*
      * call Cron::mailMonitoringSuppliersOrganizationsOrdersDataFine
@@ -26,6 +26,8 @@ class MonitoringSuppliersOrganization extends MyAppModel {
             App::import('Model', 'Mail');
             $Mail = new Mail;
                     
+			$Email = $Mail->getMailSystem($user);
+					
             $sql = "SELECT 
                         `Order`.*, Delivery.*, SuppliersOrganization.name, Supplier.descrizione, Supplier.img1   
                    FROM 
@@ -50,16 +52,11 @@ class MonitoringSuppliersOrganization extends MyAppModel {
                         and MonitoringSuppliersOrganization.supplier_organization_id = SuppliersOrganization.id
                         and MonitoringSuppliersOrganization.mail_order_data_fine = 'Y' 
                         order by Delivery.data, Supplier.name ";
-            if($debug) echo $sql."\n";
+            self::d($sql, $debug);
             $orderResults = $Order->query($sql);
 
             if (!empty($orderResults)) {
                 echo "Trovati " . count($orderResults) . " ordini \n";
-
-                /*
-                 * istanzio la mail
-                 */
-                $Email = $this->_getMail();
 
                 foreach ($orderResults as $orderResult) {
                     /*
@@ -73,13 +70,12 @@ class MonitoringSuppliersOrganization extends MyAppModel {
                     $subject_mail = "ATTENZIONE: inviare ordine a ".$orderResult['SuppliersOrganization']['name'];
                     $Email->subject($subject_mail);
 
-                    
                     $body_mail_final = "";
                     $body_mail_final .= "<br />";
                     $body_mail_final .= "L'ordine ";
                     $body_mail_final .= "<b>" . $orderResult['SuppliersOrganization']['name'] . '</b>';
                     $body_mail_final .= ' è terminato oggi: ricordati di <b>elaborarlo</b> e di <b>inviarlo</b> al produttore.';
-                    if ($debug)
+                    if($debug)
                         echo "\n" . $body_mail_final;
 
                     /*
@@ -87,14 +83,11 @@ class MonitoringSuppliersOrganization extends MyAppModel {
                      */
                     $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 
-                    $conditions = array('User.block' => 0,
-                                        'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']);
+                    $conditions = ['User.block' => 0,
+                                   'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']];
                     $results = $this->getReferentsCompact($user, $conditions, null, 'CRON');
-                    /*
-                    echo "<pre>";
-                    print_r($results);
-                    echo "</pre>";
-                     */
+                    self::d($results, $debug);
+
                     foreach ($results as $numResult => $result) {
 
                         $mail = $result['User']['email'];
@@ -104,32 +97,14 @@ class MonitoringSuppliersOrganization extends MyAppModel {
 
                         echo "\n" . $numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
-                        if (!empty($mail)) {
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+						$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))));
 
-                            $Email->viewVars(array('header' => $Mail->drawLogo($user->organization)));
-                            $Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
-                            $Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))));
+						if ($numResult == 0)
+							echo $body_mail_final;
 
-                            $Email->to($mail);
-                            if (!Configure::read('mail.send'))
-                                $Email->transport('Debug');
+						$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
 
-                            if ($numResult == 0)
-                                echo $body_mail_final;
-
-                            try {
-                                $Email->send($body_mail_final);
-
-                                if (!Configure::read('mail.send'))
-                                    echo ": inviata a " . $mail . " (modalita DEBUG)\n";
-                                else
-                                    echo ": inviata a " . $mail . " \n";
-                            } catch (Exception $e) {
-                                echo ": NON inviata $e \n";
-                                CakeLog::write("error", $e, array("mails"));
-                            }
-                        } else
-                            echo ": NON inviata, mail empty \n";
                     } // end loop users
                 
                 } // loop orders
@@ -141,7 +116,7 @@ class MonitoringSuppliersOrganization extends MyAppModel {
 	
 	private function getReferentsCompact($user, $conditions, $orderBy=null, $modalita='') {
 		
-		$results = array();
+		$results = [];
 		
 		if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 		
@@ -165,7 +140,7 @@ class MonitoringSuppliersOrganization extends MyAppModel {
 		if(isset($conditions['SuppliersOrganizationsReferent.group_id'])) $sql .= " and SuppliersOrganizationsReferent.group_id = ".$conditions['SuppliersOrganizationsReferent.group_id'];  // filtro per gruppo
 		if(isset($conditions['SuppliersOrganizationsReferent.type'])) $sql .= " and SuppliersOrganizationsReferent.type = '".$conditions['SuppliersOrganizationsReferent.type']."'"; 
 		$sql .= " ORDER BY ".$orderBy;
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
 
@@ -191,8 +166,8 @@ class MonitoringSuppliersOrganization extends MyAppModel {
 				*/
 				$UserGroup = new UserGroup;
 					
-				$options = array();
-				$options['conditions'] = array('UserGroup.id' => $result['SuppliersOrganizationsReferent']['group_id']);
+				$options = [];
+				$options['conditions'] =['UserGroup.id' => $result['SuppliersOrganizationsReferent']['group_id']];
 				$options['recursive'] = -1;
 				$userGroupResults = $UserGroup->find('first', $options);				
 				$group_name = $userGroupResults['UserGroup']['title'];

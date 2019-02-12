@@ -2,52 +2,6 @@
 App::uses('AppModel', 'Model');
 
 class LoopsDelivery extends AppModel {
-
-	public $validate = array(
-		'organization_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'user_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'luogo' => array(
-				'rule' => array('notempty'),
-				'message' => 'Indica il luogo della consegna',
-				'allowEmpty' => false
-		),
-		'data' => array(
-				'date' => array(
-						'rule' => array('date'),
-						'message' => 'Indica la data della consegna',
-						'allowEmpty' => false
-				),
-		),			
-	);
-
-	
-	public $belongsTo = array(
-		'User' => array(
-			'className' => 'User',
-			'foreignKey' => 'user_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
-	);
 	
 	/*
 	 * da una data di partenza (data_master) e dei filtri di ricorsione ($data) ottengo la nuova data di ricorsione
@@ -187,5 +141,391 @@ class LoopsDelivery extends AppModel {
 		if($debug) echo '<br />data_copy '.$data_copy;
 	
 		return $data_copy;
-	}	
+	}
+
+    /*
+     * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
+     * estraggo le consegne ricorsive di oggi
+     * 		estraggo per data_master_reale 
+     * 		ricalcolo la ricorsione partendo da data_master 
+     * 			data_master 	  => data_copy
+     * 			data_master_reale => data_copy_reale
+     * 			data_copy 		  => calcolo nuova ricorsione
+     * 			data_copy_reale   => calcolo nuova ricorsione
+     * 			nuova consegna con data_copy_reale
+     */	
+	public function cron($user, $debug=false) {
+		
+        App::import('Model', 'Delivery');
+
+        /*
+         * faccio CURDATE() - INTERVAL 1 DAY cosi aspetto che sia chiusa la master e prendo quelle del giorno precedente (il cron parte alle 0.35)
+         */
+        $options = [];
+        $options['conditions'] = ['LoopsDelivery.organization_id' => (int) $user->organization['Organization']['id'],
+								  'DATE(LoopsDelivery.data_master_reale) = CURDATE() - INTERVAL 1 DAY'];
+        $options['recursive'] = -1;
+        $loopsDeliveryResults = $this->find('all', $options);
+
+        if ($debug) {
+            echo '<h2>Consegne ricorsive</h2>';
+            echo "<pre>";
+            print_r($loopsDeliveryResults);
+            echo "</pre>";
+        }
+
+        if (!empty($loopsDeliveryResults)) {
+
+            foreach ($loopsDeliveryResults as $numResult => $loopsDeliveryResult) {
+
+                /*
+                 * non faccio + il ctrl se esiste una consegna: si possono creare + consegne per la stessa data
+                 * $delivery_just_exist = false;
+                 */
+                $rules = json_decode($loopsDeliveryResult['LoopsDelivery']['rules'], true);
+                $loopsDeliveryResult['LoopsDelivery'] += $rules;
+
+                $data = $loopsDeliveryResult['LoopsDelivery']['data_master_reale'];
+
+
+                /*
+                 * ctrl che non esisti gia' una consegna in quella data => NON +
+                 *
+
+                  $Delivery = new Delivery;
+
+                  $options = [];
+                  $options['conditions'] = array('Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+                  'DATE(Delivery.data)' => $loopsDeliveryResult['LoopsDelivery']['data_copy_reale']);
+                  $options['recursive'] = -1;
+                  $deliveryResults = $Delivery->find('first', $options);
+
+                  if(empty($deliveryResults)) {
+                 */
+                // $delivery_just_exist = false;
+
+                $row = [];
+                $row['Delivery']['organization_id'] = $user->organization['Organization']['id'];
+                $row['Delivery']['luogo'] = $loopsDeliveryResult['LoopsDelivery']['luogo'];
+                $row['Delivery']['data'] = $loopsDeliveryResult['LoopsDelivery']['data_copy_reale'];
+                $row['Delivery']['orario_da'] = $loopsDeliveryResult['LoopsDelivery']['orario_da'];
+                $row['Delivery']['orario_a'] = $loopsDeliveryResult['LoopsDelivery']['orario_a'];
+                $row['Delivery']['nota'] = $loopsDeliveryResult['LoopsDelivery']['nota'];
+                $row['Delivery']['nota_evidenza'] = $loopsDeliveryResult['LoopsDelivery']['nota_evidenza'];
+                $row['Delivery']['isToStoreroom'] = 'N';
+                $row['Delivery']['isToStoreroomPay'] = 'N';
+                $row['Delivery']['stato_elaborazione'] = 'OPEN';
+                $row['Delivery']['isVisibleFrontEnd'] = 'Y';
+                $row['Delivery']['isVisibleBackOffice'] = 'Y';
+                $row['Delivery']['sys'] = 'N';
+
+                if ($debug) {
+                    echo '<h2>Nuova consegna</h2>';
+                    echo "<pre>";
+                    print_r($row);
+                    echo "</pre>";
+                }
+
+                $Delivery = new Delivery;
+                $Delivery->create();
+                if ($Delivery->save($row)) {
+                    if ($debug)
+						echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " creata";
+                } else {
+                    if ($debug)
+						echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " NON creata";
+                }
+
+                /* } // if(empty($deliveryResults)) 
+                  else {
+                  if($debug)
+                  echo '<br />Consegne gia esistente';
+
+                  $delivery_just_exist = true;
+                  }
+                 */
+
+                /*
+                 * creo nuova ricorsione
+                 */
+                $row1 = [];
+                $row1['LoopsDelivery']['id'] = $loopsDeliveryResult['LoopsDelivery']['id'];
+                $row1['LoopsDelivery']['organization_id'] = $user->organization['Organization']['id'];
+                $row1['LoopsDelivery']['data_master'] = $loopsDeliveryResult['LoopsDelivery']['data_copy'];
+                $row1['LoopsDelivery']['data_master_reale'] = $loopsDeliveryResult['LoopsDelivery']['data_copy_reale'];
+
+                $data_copy = $this->get_data_copy($loopsDeliveryResult['LoopsDelivery']['data_copy'], $loopsDeliveryResult, $debug);
+
+                $row1['LoopsDelivery']['data_copy'] = $data_copy;
+                $row1['LoopsDelivery']['data_copy_reale'] = $data_copy;
+
+                if ($debug) {
+                    echo '<h2>Aggiorno ricorsione</h2>';
+                    echo "<pre>";
+                    print_r($row1);
+                    echo "</pre>";
+                }
+
+                $this->create();
+                if ($this->save($row1)) {
+                    echo "\r\n consegna ricorsiva creata con data $data_copy";
+                } else {
+                    echo "\r\n consegna ricorsiva NON creata con data $data_copy";
+                }
+
+                /*
+                 * invio mail di notifica a chi ha creato la ricorsione
+                 */
+                if ($loopsDeliveryResult['LoopsDelivery']['flag_send_mail'] == 'Y') {
+
+                    App::import('Model', 'User');
+                    $User = new User;
+
+					App::import('Model', 'Mail');
+					$Mail = new Mail;
+					
+					$Email = $Mail->getMailSystem($user);
+
+                    $options = [];
+                    $options['conditions'] = ['User.organization_id' => (int) $user->organization['Organization']['id'],
+											  'User.id' => $loopsDeliveryResult['LoopsDelivery']['user_id']];
+                    $options['recursive'] = -1;
+                    $result = $User->find('first', $options);
+                    if (!empty($result)) {
+                        $name = $result['User']['name'];
+                        $mail = $result['User']['email'];
+                        $username = $result['User']['username'];
+
+                        if ($debug)
+							echo "\r\n tratto l'utente " . $name . ', username ' . $username;
+
+						$body_mail = "";
+						if ($delivery_just_exist)
+							$body_mail .= 'Tentativo di creare la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " ma esisteva gi&agrave;.";
+						else
+							$body_mail .= 'Creata la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " a " . $row['Delivery']['luogo'] . '.';
+
+						$body_mail .= '<br />Prossima consegna sar&agrave; ' . $this->timeHelper->i18nFormat($row1['LoopsDelivery']['data_copy_reale']);
+
+						$body_mail_final = $body_mail;
+						echo $body_mail_final;
+
+						$subject_mail = 'Creata la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " a " . $row['Delivery']['luogo'];
+						$Email->subject($subject_mail);
+
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+						$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))));
+
+						$Email = $Mail->getMailSystem($this->user);
+						$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+						if(isset($mailResults['OK'])) {
+							$tot_ok++;
+							$msg_ok .= $mailResults['OK'].'<br />';							
+						}
+						else 
+						if(isset($mailResults['KO'])) {
+							$tot_no++;
+							$msg_ok .= $mailResults['KO'].'<br />';	
+						}
+
+                    } // if(!empty($results))				
+                } // if($row['LoopsDelivery']['flag_send_mail']=='Y')
+            } // end foreach ($loopsDeliveryResults as $loopsDeliveryResult)
+        } // end if(!empty($loopsDeliveryResults)) 			
+	}
+
+	/*
+	 * richiamato dal Cron
+	 */
+	public function creating($user, $loopsDeliveryResults, $create=false, $debug=false) {
+        
+		 App::import('Model', 'Delivery');
+         $Delivery = new Delivery;
+        
+        /*
+         * non faccio + il ctrl se esiste una consegna: si possono creare + consegne per la stessa data
+         * $delivery_just_exist = false;
+         */
+        $rules = json_decode($loopsDeliveryResults['LoopsDelivery']['rules'], true);
+        $loopsDeliveryResults['LoopsDelivery'] += $rules;
+
+        $data = $loopsDeliveryResults['LoopsDelivery']['data_master_reale'];
+		self::d('Creo nuova consegna con Delivery.data = LoopsDelivery.data_copy_reale '.$loopsDeliveryResults['LoopsDelivery']['data_copy_reale'], $debug);
+		self::d('LoopsDelivery.data_master_reale '.$data,$debug);
+
+        /*
+         * ctrl che non esisti gia' una consegna in quella data => NON +
+         *
+         $options = [];
+         $options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+ 						            'DATE(Delivery.data)' => $loopsDeliveryResults['LoopsDelivery']['data_copy_reale']];
+         $options['recursive'] = -1;
+         $deliveryResults = $Delivery->find('first', $options);
+
+         if(empty($deliveryResults)) {
+         */
+         // $delivery_just_exist = false;
+
+        $row = [];
+        $row['Delivery']['organization_id'] = $user->organization['Organization']['id'];
+        $row['Delivery']['luogo'] = $loopsDeliveryResults['LoopsDelivery']['luogo'];
+        $row['Delivery']['data'] = $loopsDeliveryResults['LoopsDelivery']['data_copy_reale'];
+        $row['Delivery']['orario_da'] = $loopsDeliveryResults['LoopsDelivery']['orario_da'];
+        $row['Delivery']['orario_a'] = $loopsDeliveryResults['LoopsDelivery']['orario_a'];
+        $row['Delivery']['nota'] = $loopsDeliveryResults['LoopsDelivery']['nota'];
+        $row['Delivery']['nota_evidenza'] = $loopsDeliveryResults['LoopsDelivery']['nota_evidenza'];
+        $row['Delivery']['isToStoreroom'] = 'N';
+        $row['Delivery']['isToStoreroomPay'] = 'N';
+        $row['Delivery']['stato_elaborazione'] = 'OPEN';
+        $row['Delivery']['isVisibleFrontEnd'] = 'Y';
+        $row['Delivery']['isVisibleBackOffice'] = 'Y';
+        $row['Delivery']['sys'] = 'N';
+
+        self::d(['Nuova consegna', $row], $debug);
+
+        if($create) {
+	        $Delivery->create();
+	        $saveResults = $Delivery->save($row);
+	        if ($saveResults) {
+	            echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " creata";
+	        } else {
+	            echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " NON creata";
+	        }
+	    }
+	    else
+	       echo "\r\n SIMULO - consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " creata";
+
+        /*
+         * 	} // if(empty($deliveryResults)) 
+	          else {
+	          if($debug)
+	          echo '<br />Consegne gia esistente';
+	
+	          $delivery_just_exist = true;
+	         }
+         * 
+         */
+
+        /*
+         * creo nuova ricorsione
+         */
+        $row1 = [];
+        $row1['LoopsDelivery']['id'] = $loopsDeliveryResults['LoopsDelivery']['id'];
+        $row1['LoopsDelivery']['organization_id'] = $user->organization['Organization']['id'];
+        $row1['LoopsDelivery']['data_master'] = $loopsDeliveryResults['LoopsDelivery']['data_copy'];
+        $row1['LoopsDelivery']['data_master_reale'] = $loopsDeliveryResults['LoopsDelivery']['data_copy_reale'];
+
+        $data_copy = $this->get_data_copy($loopsDeliveryResults['LoopsDelivery']['data_copy'], $loopsDeliveryResults, $debug);
+
+        $row1['LoopsDelivery']['data_copy'] = $data_copy;
+        $row1['LoopsDelivery']['data_copy_reale'] = $data_copy;
+
+        self::d(['Aggiorno ricorsione', $row1], $debug);
+
+        if($create) {
+        	$this->create();
+	        $saveResults = $this->save($row1); 
+	        if ($saveResults) {
+	            echo "\r\n consegna ricorsiva creata con data $data_copy";
+	        } else {
+	            echo "\r\n consegna ricorsiva NON creata con data $data_copy";
+	        }
+		}
+		else 
+			echo "\r\n SIMULO consegna ricorsiva creata con data $data_copy";
+
+        /*
+         * invio mail di notifica a chi ha creato la ricorsione
+         */
+        if ($create && $loopsDeliveryResults['LoopsDelivery']['flag_send_mail'] == '..Y') {
+
+            App::import('Model', 'User');
+            $User = new User;
+
+            App::import('Model', 'Mail');
+            $Mail = new Mail;
+
+			$Email = $Mail->getMailSystem($user);
+			
+            $options = [];
+            $options['conditions'] = ['User.organization_id' => (int) $user->organization['Organization']['id'],
+                					  'User.id' => $loopsDeliveryResults['LoopsDelivery']['user_id']];
+            $options['recursive'] = -1;
+            $result = $User->find('first', $options);
+            if (!empty($result)) {
+                $name = $result['User']['name'];
+                $mail = $result['User']['email'];
+                $username = $result['User']['username'];
+
+                echo "\r\n tratto l'utente " . $name . ', username ' . $username;
+
+				$body_mail = "";
+				if ($delivery_just_exist)
+					$body_mail .= 'Tentativo di creare la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " ma esisteva gi&agrave;.";
+				else
+					$body_mail .= 'Creata la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " a " . $row['Delivery']['luogo'] . '.';
+
+				$body_mail .= '<br />Prossima consegna sar&agrave; ' . $this->timeHelper->i18nFormat($row1['LoopsDelivery']['data_copy_reale']);
+
+				$body_mail_final = $body_mail;
+				echo $body_mail_final;
+
+				$subject_mail = 'Creata la consegna ricorsiva ' . $this->timeHelper->i18nFormat($row['Delivery']['data'], "%A %e %B %Y") . " a " . $row['Delivery']['luogo'];
+				$Email->subject($subject_mail);
+
+				$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+				$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))));
+
+				$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+				
+            } // if(!empty($results))				
+        } // if($row['LoopsDelivery']['flag_send_mail']=='Y')	
+        
+        return true;
+	}
+	
+	public $validate = array(
+		'organization_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'user_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'luogo' => array(
+				'rule' => array('notempty'),
+				'message' => 'Indica il luogo della consegna',
+				'allowEmpty' => false
+		),
+		'data' => array(
+				'date' => array(
+						'rule' => array('date'),
+						'message' => 'Indica la data della consegna',
+						'allowEmpty' => false
+				),
+		),			
+	);
+
+	public $belongsTo = array(
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'user_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		)
+	);
 }

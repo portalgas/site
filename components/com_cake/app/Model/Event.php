@@ -1,15 +1,6 @@
 <?php
-/*
- * Model/Event.php
- * CakePHP Full Calendar Plugin
- *
- * Copyright (c) 2010 Silas Montgomery
- * http://silasmontgomery.com
- *
- * Licensed under MIT
- * http://www.opensource.org/licenses/mit-license.php
- */
- 
+App::uses('AppModel', 'Model');
+
 class Event extends AppModel {
 	var $name = 'Event';
 	var $displayField = 'title';
@@ -17,10 +8,11 @@ class Event extends AppModel {
 	/*
 	 * call cron mailEvents
 	 */
-	public function sendNotificationMail($timeHelper, $appHelper, $organization_id, $debug) {
+	public function sendNotificationMail($timeHelper, $appHelper, $user, $debug=false) {
 		
-		$debug = false;
-		
+		if(empty($user))
+			return;
+				
 		try {
 			
 			$this->timeHelper = $timeHelper;
@@ -29,10 +21,12 @@ class Event extends AppModel {
 			App::import('Model', 'Mail');
 			$Mail = new Mail;
 		
-			echo date("d/m/Y")." - ".date("H:i:s")." Events agli utenti con date_alert_mail = CURDATE(), organization_id $organization_id \n";
+			$Email = $Mail->getMailSystem($user);
 			
-			$organization = $this->getOrganization($organization_id);
-			$j_seo = $organization['Organization']['j_seo'];
+			if($debug)
+				echo date("d/m/Y")." - ".date("H:i:s")." Events agli utenti con date_alert_mail = CURDATE(), organization_id ".$user->organization['Organization']['id']." \n";
+			
+			$j_seo = $user->organization['Organization']['j_seo'];
 		
 			/*
 			 * estraggo Event con Event.date_alert_mail = CURDATE()
@@ -41,18 +35,19 @@ class Event extends AppModel {
 					FROM ".Configure::read('DB.prefix')."event_types EventType, ".Configure::read('DB.prefix')."events as Event 
 						LEFT JOIN ".Configure::read('DB.portalPrefix')."users User ON (User.organization_id = Event.organization_id and User.id = Event.user_id) 
 					WHERE 
-					 Event.organization_id = ".$organization['Organization']['id']."
-					and EventType.organization_id = ".$organization['Organization']['id']."
+					 Event.organization_id = ".$user->organization['Organization']['id']."
+					and EventType.organization_id = ".$user->organization['Organization']['id']."
 					and EventType.id = Event.event_type_id 
 					and DATE(Event.date_alert_mail) = CURDATE()";
-			echo "\n".$sql;
+			if($debug)
+				echo "\n".$sql;
 			$results = $this->query($sql);
 			if(!empty($results)) 
 			foreach ($results as $numResult => $result) {
 				echo "\nTratto l'Event ".$result['Event']['title']." \n";
 				
 				$responsabile_user_id = $result['User']['id'];
-				$responsabile_user = array();
+				$responsabile_user = [];
 				if(!empty($responsabile_user_id)) {
 					$responsabile_user[0]['User']['id'] = $result['User']['id'];
 					$responsabile_user[0]['User']['name'] = $result['User']['name'];
@@ -66,8 +61,8 @@ class Event extends AppModel {
 				$sql = "SELECT User.id, User.name, User.email, User.username 
 						FROM ".Configure::read('DB.prefix')."events_users EventsUser, ".Configure::read('DB.portalPrefix')."users User 
 						WHERE 
-						 EventsUser.organization_id = ".$organization['Organization']['id']."
-						and User.organization_id = ".$organization['Organization']['id']."
+						 EventsUser.organization_id = ".$user->organization['Organization']['id']."
+						and User.organization_id = ".$user->organization['Organization']['id']."
 						and EventsUser.event_id = ".$result['Event']['id']."
 						and EventsUser.user_id = User.id ";
 				if(!empty($responsabile_user_id))
@@ -89,7 +84,8 @@ class Event extends AppModel {
 						$mail = $usersResult['User']['email'];
 						$username = $usersResult['User']['username'];
 						
-						echo "<br />\n".$numResultUser.") tratto l'utente ".$name.', username '.$username;
+						if($debug)
+							echo "<br />\n".$numResultUser.") tratto l'utente ".$name.', username '.$username;
 						
 						if(!empty($mail)) {
 							$body_mail = "";
@@ -109,34 +105,16 @@ class Event extends AppModel {
 							$body_mail .= '</div>';	
 
 							$body_mail_final = $body_mail;
-							if($numResult==0) echo "<br />\n".$body_mail_final;
+							if($debug && $numResult==0) echo "<br />\n".$body_mail_final;
 							
-							$Email = $this->getMail();						
-							$subject_mail = $this->appHelper->organizationNameError($user->organization).", attività ".$result['EventType']['name']." ".$result['Event']['title'];
+							$subject_mail = $this->_organizationNameError($user->organization).", attività ".$result['EventType']['name']." ".$result['Event']['title'];
 							$Email->subject($subject_mail);
 							
-							$Email->viewVars(array('header' => $Mail->drawLogo($user->organization)));
-							$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+							$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))));
 							
-							$Email->to($mail);
-							if(!Configure::read('mail.send'))  $Email->transport('Debug');
+							$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
 							
-							// inserisce msg con informazioni $Email->viewVars(array('content_info' => $this->__getContentInfo()));
-							
-							try {
-								if(!$debug) {
-									$Email->send($body_mail_final);
-							
-									if(!Configure::read('mail.send'))
-										echo ": inviata a ".$mail." (modalita DEBUG)\n";
-									else
-										echo ": inviata a ".$mail." \n";
-								}
-							} catch (Exception $e) {
-								echo ": NON inviata $e \n";
-								CakeLog::write("error", $e, array("mails"));
-							}
 						} // end if(!empty($mail)) 
 							
 				} // end loop Users
@@ -201,7 +179,7 @@ class Event extends AppModel {
 		),
 	);
 
-	function date_comparison($field=array(), $operator, $field2) {
+	function date_comparison($field=[], $operator, $field2) {
 		foreach( $field as $key => $value1 ){
 			$value2 = $this->data[$this->alias][$field2];
 			

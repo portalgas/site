@@ -22,58 +22,83 @@ class Mail extends AppModel {
 		return $Email;
 	}
 	
-	public function send($Email, $mail, $body_mail, $debug=false) {
+	/*
+	 * $mails = [$UserProfile.email, User.email] perche' restituisco il risultato solo della  
+	 */
+	public function send($Email, $mails, $body_mail, $debug=false) {
 
 		$results = [];
+		$_mails = [];
 		
-		$mail = trim($mail);
-		if(empty($mail)) {
-			$results['KO'] = 'Mail vuota!';
-			return $results;
-		}
+		if(!is_array($mails))
+			$_mails[] = $mails;
+		else 
+			$_mails = $mails;
 		
-		$exclude = false;
-		foreach(Configure::read('EmailExcludeDomains') as $emailExcludeDomain) {
-			self::d($mail.' - '.$emailExcludeDomain, $debug);
-			if(strpos($mail, $emailExcludeDomain)!==false) {
-				$exclude = true;
-				break;
-			}
-		}
+		foreach($_mails as $mail) {
 			
-		if($exclude)  {	
-			self::d("EXCLUDE mail TO: ".$mail, $debug);
-			$results['OK'] = $mail.' (modalita DEBUG)';
-		}
-		else {
-			$Email->viewVars(array('content_info' => $this->_getContentInfo()));
+			$mail = trim($mail);
 			
-			if(!Configure::read('mail.send')) $Email->transport('Debug');
-			
-			if($debug) {
-				if (!Configure::read('mail.send'))
-					echo "<br />inviata a " . $mail . " (modalita DEBUG)\n";
-				else
-					echo "<br />inviata a " . $mail . " \n";
-									
-				echo "<br />mail TO: ".$mail." body_mail ".$body_mail;
-			}
-
-			try {
-				$Email->to($mail);
-				$Email->send($body_mail);
+			// profile.email = "mail"
+			if(substr($mail, 0, 1)=='"') // primo carattere
+				$mail = substr($mail, 1, strlen($mail));
+			if(substr($mail, -1, 1)=='"') // ultimo carattere
+				$mail = substr($mail, 0, strlen($mail)-1);
+			$mail = trim($mail);
 				
-				if (!Configure::read('mail.send'))
+			if(!empty($mail)) { 
+			
+				self::d("Mail::send - tratto la mail ".$mail, $debug);
+									
+				/*
+				non + perche' mail2 = UserProfile.email
+				$results['KO'] = 'Mail vuota!';
+				return $results;
+				*/
+			
+				$exclude = false;
+				foreach(Configure::read('EmailExcludeDomains') as $emailExcludeDomain) {
+					self::d('Mail::send - EmailExcludeDomains '.$mail.' - '.$emailExcludeDomain, $debug);
+					if(strpos($mail, $emailExcludeDomain)!==false) {
+						$exclude = true;
+						break;
+					}
+				}
+				
+				if($exclude)  {	
+					self::d("EXCLUDE mail TO: ".$mail, $debug);
 					$results['OK'] = $mail.' (modalita DEBUG)';
-				else
-					$results['OK'] = $mail;
-			} catch (Exception $e) {
-				$results['KO'] = $mail;
-				CakeLog::write("error", $e, array("mails"));
-			}
-		}
-		
-		self::d($results, $debug);
+				}
+				else {
+					$Email->viewVars(array('content_info' => $this->_getContentInfo()));
+					
+					if(!Configure::read('mail.send')) $Email->transport('Debug');
+					
+					if($debug) {
+						if (!Configure::read('mail.send'))
+							self::d("Mail::send - inviata a " . $mail . " (modalita DEBUG)", $debug);
+						else
+							self::d("Mail::send - inviata a " . $mail, $debug);
+											
+						self::d("Mail::send - mail TO: ".$mail." body_mail ".$body_mail, $debug);
+					}
+
+					try {
+						$Email->to($mail);
+						$Email->send($body_mail);
+						
+						if (!Configure::read('mail.send'))
+							$results['OK'] = $mail.' (modalita DEBUG)';
+						else
+							$results['OK'] = $mail;
+					} catch (Exception $e) {
+						$results['KO'] = $mail;
+						CakeLog::write("error", $e, array("mails"));
+					}
+				}
+			} // end if(empty($mail)) 
+			self::d($results, $debug);
+		} // loops mails
 		
 		return $results;
 	}

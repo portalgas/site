@@ -1,4 +1,7 @@
 <?php
+App::uses('AppModel', 'Model');
+
+
 /*
  * Model/FullCalendar.php
  * CakePHP Full Calendar Plugin

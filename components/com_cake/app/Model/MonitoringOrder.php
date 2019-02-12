@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class MonitoringOrder extends AppModel {
 
 	public function delete_to_order($user, $order_id, $debug = false) {
@@ -11,7 +12,7 @@ class MonitoringOrder extends AppModel {
 				WHERE
 					organization_id = ".(int)$user->organization['Organization']['id']."
 					and order_id = ".(int)$order_id;
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		try {
 			$result = $this->query($sql);
 		}

@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class Cash extends AppModel {
 	
 	/*
@@ -8,7 +9,7 @@ class Cash extends AppModel {
 	*/
 	public function get_totale_cash($user) {
 		
-		$options = array();
+		$options = [];
 		$options['fields'] = array('SUM(Cash.importo) AS totale_importo');
 		$options['conditions'] = array('Cash.organization_id' => $user->organization['Organization']['id']);
 		$options['recursive'] = -1;
@@ -20,14 +21,13 @@ class Cash extends AppModel {
 	}
 	
 	/*
-	 *  NON UTILIZZATA 
 	 *      calcolare il totale in cassa di un utente
 	 *  	le voci di cassa generiche (user_id=0) possono avere + occorrenze
 	 *  	le voci di cassa degli utenti hanno una sola occorrenza
 	*/
 	public function get_totale_cash_to_user($user, $user_id, $debug = false) {
 	
-		$options = array();
+		$options = [];
 		if($user_id==0)
 			$options['fields'] = array('SUM(Cash.importo) AS totale_importo');
 		else 
@@ -37,14 +37,14 @@ class Cash extends AppModel {
 		);
 		$options['recursive'] = -1;
 		$results = current($this->find('first', $options));
-/*
+
 		if($debug) {
 			echo "<pre>";
 			print_r($options);
 			print_r($results);
 			echo "</pre>";
 		}
-*/
+
 		if(empty($results['totale_importo'])) $results = 0;
 		else $results = $results['totale_importo'];
 		
@@ -106,7 +106,7 @@ class Cash extends AppModel {
 		return $results;
 	}
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['Cash']['importo']))
 			$this->data['Cash']['importo'] = $this->importoToDatabase($this->data['Cash']['importo']);
 	

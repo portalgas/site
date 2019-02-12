@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdExportDoc extends AppModel {
 
 	public $useTable = 'prod_deliveries';
@@ -61,7 +62,7 @@ class ProdExportDoc extends AppModel {
 		$user_id_old = 0;
 			
 		$this->exportRowsNum = -1;
-		$this->exportRows = array();
+		$this->exportRows = [];
 		
 		foreach($results as $numResult => $result) {
 			
@@ -80,7 +81,7 @@ class ProdExportDoc extends AppModel {
 					/*
 					 * creo il sub totale per ogni utente
 					 */
-					$this->__calcolaSubTotaleUser($user_id_old, $tot_qta_single_user, $tot_importo_single_user, $debug);
+					$this->_calcolaSubTotaleUser($user_id_old, $tot_qta_single_user, $tot_importo_single_user, $debug);
 				
 					$tot_qta_single_user = 0;
 					$tot_importo_single_user = 0;	
@@ -211,7 +212,7 @@ class ProdExportDoc extends AppModel {
 		/*
 		 * per l'ultimo utente riporto i sub-totali
 		*/
-		$this->__calcolaSubTotaleUser($result['User']['id'], $tot_qta_single_user, $tot_importo_single_user, $debug);
+		$this->_calcolaSubTotaleUser($result['User']['id'], $tot_qta_single_user, $tot_importo_single_user, $debug);
 		
 		if(!empty($tot_qta) || !empty($tot_importo)) {					
 			$this->exportRowsNum++;
@@ -229,10 +230,10 @@ class ProdExportDoc extends AppModel {
 		return $this->exportRows;
 	}
 	
-	private function __calcolaSubTotaleUser($user_id, $tot_qta_single_user, $tot_importo_single_user, $debug) {
+	private function _calcolaSubTotaleUser($user_id, $tot_qta_single_user, $tot_importo_single_user, $debug) {
 		
 		if($debug) {
-			echo '<h2>__calcolaSubTotaleUser()</h3>';
+			echo '<h2>_calcolaSubTotaleUser()</h3>';
 			echo 'UTENTE '.$user_id.' -  sum(ProdCart.importo) '.$tot_importo_single_user;
 		}
 		if(empty($tot_qta_single_user) && empty($tot_importo_single_user)) return;

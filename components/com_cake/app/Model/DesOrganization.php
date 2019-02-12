@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesOrganization extends AppModel {
 
 	/*
@@ -15,8 +16,8 @@ class DesOrganization extends AppModel {
    		App::import('Model', 'DesSupplier');
   		$DesSupplier = new DesSupplier();
    		
-   		$options = array();
-   		$options['conditions'] = array();
+   		$options = [];
+   		$options['conditions'] = [];
 		if(isset($conditions['DesSupplier.id']))
 			$options['conditions'] += array('DesSupplier.id' => $conditions['DesSupplier.id']);
    		if(!empty($user->des_id))
@@ -38,7 +39,7 @@ class DesOrganization extends AppModel {
    		App::import('Model', 'DesOrganization');
   		$DesOrganization = new DesOrganization();
    		
-   		$options = array();
+   		$options = [];
    		$options['conditions'] = array('DesOrganization.des_id' => $des_id);
    		$options['recursive'] = 0;
    		
@@ -53,6 +54,28 @@ class DesOrganization extends AppModel {
 
 		return $results;
 	}
+
+	/*
+	 * tutti i DES di cui fa parte un GAS
+	 * gestisco che non abbia ancora scelto quale utilizza ($user->des_id) ma li estraggo tutti
+	 */
+	public function getAllDes($user, $debug = false) {
+		
+   		$options = [];
+   		$options['conditions'] = array('DesOrganization.organization_id' => $user->organization['Organization']['id']);
+   		$options['recursive'] = -1;
+   		
+   		$results = $this->find('all', $options);
+   		 
+		if($debug) {
+			echo "<pre>DesOrganization->getAllDes \n ";
+			print_r($results);
+			echo "</pre>";
+		}   		
+
+		return $results;
+	}
+
 	
 	public $validate = array(
 		'des_id' => array(

@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class OrganizationsPayment extends AppModel {
 
     /*
@@ -8,7 +9,7 @@ class OrganizationsPayment extends AppModel {
      */
     public function isPaymentComplete($user) {
         
-        $options = array();
+        $options = [];
         $options['conditions'] = array('OrganizationsPayment.id' => $user->organization['Organization']['id'],
 										'DATE(OrganizationsPayment.created) <= CURDATE() - INTERVAL '.Configure::read('GGOrganizationsPayment').' DAY');
         $options['fields'] = array('OrganizationsPayment.paramsPay');

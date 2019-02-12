@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class BackupArticlesOrder extends AppModel {
 
 	public $belongsTo = array(

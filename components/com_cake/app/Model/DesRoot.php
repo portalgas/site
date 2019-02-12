@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesRoot extends AppModel {
 	
 	public $useTable = 'des';

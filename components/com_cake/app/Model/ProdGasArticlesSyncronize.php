@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdGasArticlesSyncronize extends AppModel {
 
     public $useTable = 'prod_gas_articles';
@@ -29,11 +30,12 @@ class ProdGasArticlesSyncronize extends AppModel {
 	 */
 	public function syncronize_update($user, $organization_id, $prod_gas_article_id, $category_article_id=0, $debug=false) {
 
-		$msg_esito = "";
+		// $debug = true;
 		
-        if(empty($prod_gas_article_id) || empty($category_article_id)) {
-            $this->Session->setFlash(__('msg_error_params'));
-            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+		$msg_esito = "";
+
+        if(empty($prod_gas_article_id) /* || empty($category_article_id) */) {
+            return __('msg_error_params');
         }
 		
 		App::import('Model', 'Article');
@@ -42,15 +44,15 @@ class ProdGasArticlesSyncronize extends AppModel {
 		$Article->bindModel(array('belongsTo' => array('ProdGasArticle' => array(
 														'className' => 'ProdGasArticle',
 														'foreignKey' => 'prod_gas_article_id'))));
-		$Article->unbindModel(array('belongsTo' => array('SuppliersOrganization', 'CategoriesArticle')));
+		$Article->unbindModel(['belongsTo' => ['SuppliersOrganization', 'CategoriesArticle']]);
 		$Article->unbindModel(array('hasOne' => array('ArticlesArticlesType', 'ArticlesOrder')));
 		$Article->unbindModel(array('hasMany' => array('ArticlesArticlesType', 'ArticlesOrder'))); 
 		$Article->unbindModel(array('hasAndBelongsToMany' => array('ArticlesType', 'Order'))); 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $organization_id,
 									   'ProdGasArticle.id' => $prod_gas_article_id,
-									   'ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id'],
-									   'Article.supplier_id' => $user->supplier['Supplier']['id']);
+									   'ProdGasArticle.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
+									   'Article.supplier_id' => $user->organization['Supplier']['Supplier']['id']);
 		$options['recursive'] = 0;
 		$results = $Article->find('first', $options);	
 
@@ -67,13 +69,13 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		/*
 		 * override Article
 		 */
-		$row = array();
+		$row = [];
 		$row['Article'] = $results['Article']; 
 		
 		$row['Article']['category_article_id'] = $category_article_id;
@@ -90,7 +92,8 @@ class ProdGasArticlesSyncronize extends AppModel {
 		$row['Article']['qta_multipli'] = $results['ProdGasArticle']['qta_multipli'];
 		$row['Article']['bio'] = $results['ProdGasArticle']['bio'];
 		
-		$row['Article']['flag_presente_articlesorders'] = 'Y';
+		// $row['Article']['flag_presente_articlesorders'] = 'Y'; non + ho la funzione apposita syncronize_flag_presente_articlesorders
+		$row['Article']['stato'] = 'Y';
 		
 		$Article->set($row);
 		if(!$Article->validates()) {
@@ -103,7 +106,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		/* 
@@ -120,10 +123,10 @@ class ProdGasArticlesSyncronize extends AppModel {
 				if(!$debug) 
 					return $msg_esito;				
 				else
-					die($msg_esito);
+					self::x($msg_esito);
 				*/
 				if($debug) 
-					die($msg_esito);			
+					self::x($msg_esito);			
 			}
 		}
 		
@@ -140,7 +143,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 				
 		if($debug)
@@ -159,8 +162,8 @@ class ProdGasArticlesSyncronize extends AppModel {
 
 		$msg_esito = "";
 		
-        if(empty($organization_id) || empty($prod_gas_article_id) || empty($category_article_id)) {
-            return false;
+        if(empty($organization_id) || empty($prod_gas_article_id)) {
+             return __('msg_error_params');
         }
 
 		App::import('Model', 'Article');
@@ -173,9 +176,9 @@ class ProdGasArticlesSyncronize extends AppModel {
  		App::import('Model', 'ProdGasArticle');
 		$ProdGasArticle = new ProdGasArticle;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdGasArticle.id' => $prod_gas_article_id,
-									   'ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id']);
+									   'ProdGasArticle.supplier_id' => $user->organization['Supplier']['Supplier']['id']);
 		$options['recursive'] = -1;
 		$results = $ProdGasArticle->find('first', $options);	
 
@@ -192,15 +195,15 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		/*
 		 * ctrl che l'articolo del produttore non sia gia' associato
 		 */	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.prod_gas_article_id' => $prod_gas_article_id,
-									   'Article.supplier_id' => $user->supplier['Supplier']['id'],
+									   'Article.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
 									   'Article.organization_id' => $organization_id);
 		$options['recursive'] = -1;
 		$articlesCtrlResults = $Article->find('first', $options);		
@@ -210,7 +213,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);			
+				self::x($msg_esito);			
 		} 
 		
 		/*
@@ -222,14 +225,14 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);			
+				self::x($msg_esito);			
 		}
 		
 		/*
 		 * popolo Article
 		 */		
-		$row = array();
-		$row['Article']['id'] = $this->__getMaxIdOrganizationId($organization_id);
+		$row = [];
+		$row['Article']['id'] = $this->_getMaxIdOrganizationId($organization_id);
 		$row['Article']['organization_id'] = $organization_id;
 		$row['Article']['supplier_organization_id'] = $suppliersOrganizationsResults['SuppliersOrganization']['id'];
 		$row['Article']['prod_gas_article_id'] = $results['ProdGasArticle']['id'];
@@ -269,7 +272,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 			
 		/* 
@@ -286,10 +289,10 @@ class ProdGasArticlesSyncronize extends AppModel {
 				if(!$debug) 
 					return $msg_esito;				
 				else
-					die($msg_esito);
+					self::x($msg_esito);
 				*/
 				if($debug) 
-					die($msg_esito);
+					self::x($msg_esito);
 			}			
 		}
 		
@@ -306,11 +309,11 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
-		if($debug)
-			exit;
+		//if($debug)
+		//	exit;
 		
 		return true;
 	} 	
@@ -323,7 +326,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 		$msg_esito = "";
 		
         if(empty($organization_id) || empty($article_id)) {
-            return false;
+             return __('msg_error_params');
         }
 
 		$tmp_user->organization['Organization']['id'] =  $organization_id; 
@@ -341,13 +344,13 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);			
+				self::x($msg_esito);			
 		}
 					
 		/*
 		 * Article prima del salvataggio
 		*/
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $organization_id,
 									  'Article.id' => $article_id);
 		$options['recursive'] = -1;
@@ -358,12 +361,15 @@ class ProdGasArticlesSyncronize extends AppModel {
 		 * il delete lo faccio dopo se no non lo trovo!
 		 */
 		if($Article->syncronizeArticlesOrder($tmp_user, $article_id, 'DELETE', $debug)) {
+			/*
+			 * potrei non trovarlo tra quelli ordinati
 			$msg_esito = "Articolo non sincronizzato con gli articoli degli ordini associati!";
 
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);			
+				self::x($msg_esito);
+			*/			
 		}
 		
 		if(!$Article->delete($organization_id, $article_id)) {
@@ -372,7 +378,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);			
+				self::x($msg_esito);			
 		}
 					
 						
@@ -395,12 +401,12 @@ class ProdGasArticlesSyncronize extends AppModel {
 				if(!$debug) 
 					return $msg_esito;				
 				else
-					die($msg_esito);			
+					self::x($msg_esito);			
 			} 
 		} // if(!empty($results['Article']['img1']))
 		
-		if($debug)
-			exit;
+		//if($debug)
+		//	exit;
 		
 		return true;
 	} 
@@ -413,7 +419,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 		$msg_esito = "";
 		
         if(empty($organization_id) || empty($article_id)) {
-            return false;
+            return __('msg_error_params');
         }
 
 		$tmp_user->organization['Organization']['id'] =  $organization_id; 
@@ -424,13 +430,16 @@ class ProdGasArticlesSyncronize extends AppModel {
 		/*
 		 * Article prima del salvataggio
 		*/
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $organization_id,
 									  'Article.id' => $article_id);
 		$options['recursive'] = -1;
 		$results = $Article->find('first', $options);
-				
-		$results['Article']['flag_presente_articlesorders'] = 'N';
+			
+		if($results['Article']['flag_presente_articlesorders'] == 'N')
+			$results['Article']['flag_presente_articlesorders']='Y';
+		else
+			$results['Article']['flag_presente_articlesorders']='N';
 		
 		$Article->set($results);
 		if(!$Article->validates()) {
@@ -443,7 +452,7 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		if($debug) {
@@ -459,17 +468,11 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 				
-		if($debug)
-			exit;
-		
-		return true;
-		
-		
-		if($debug)
-			exit;
+		//if($debug)
+		//	exit;
 		
 		return true;
 	} 
@@ -486,11 +489,11 @@ class ProdGasArticlesSyncronize extends AppModel {
 					".Configure::read('DB.prefix')."articles
 				SET
 					prod_gas_article_id = ".$prod_gas_article_id.",
-					supplier_id = ".$user->supplier['Supplier']['id']." 
+					supplier_id = ".$user->organization['Supplier']['Supplier']['id']." 
 				WHERE
 				    organization_id = ".(int)$organization_id."
 					and id = ".$article_id;
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		try {
 			$results = $this->query($sql);
 		}
@@ -500,21 +503,21 @@ class ProdGasArticlesSyncronize extends AppModel {
 			if($debug) echo '<br />'.$e;
 		}
 
-		if($debug)
-			exit;
+		//if($debug)
+		//	exit;
 		
 		return true;
 	} 
 
 	
-	private function __getMaxIdOrganizationId($organization_id) {
+	private function _getMaxIdOrganizationId($organization_id) {
     	
     	$maxId = 1;
     	
 		App::import('Model', 'Article');
 		$Article = new Article;
 		
-		$options = array();
+		$options = [];
      	$options['fields'] = array('MAX(Article.id)+1 AS maxId');
     	$options['conditions'] = array('Article.organization_id' => $organization_id);
     	$options['recursive'] = -1;
@@ -557,5 +560,333 @@ class ProdGasArticlesSyncronize extends AppModel {
 		}
 		
 		return $results;
-	}	
+	}
+	
+	/*
+	 * articleOrders
+	 */	
+	 public function syncronize_articles_orders_update($user, $organization_id, $order_id, $article_organization_id, $article_id, $prod_gas_article_id, $debug=false) {
+		
+		// $debug = true;
+		
+		$msg_esito = "";
+
+        if(empty($organization_id) || empty($order_id) || empty($article_organization_id) || empty($article_id) || empty($prod_gas_article_id)) {
+            return __('msg_error_params');
+        }
+		
+		App::import('Model', 'ArticlesOrder');
+		$ArticlesOrder = new ArticlesOrder;
+		
+		App::import('Model', 'ProdGasArticle');
+		$ProdGasArticle = new ProdGasArticle;
+
+		$options = [];
+		$options['conditions'] = array('ArticlesOrder.organization_id' => $organization_id,
+									   'ArticlesOrder.order_id' => $order_id,
+									   'ArticlesOrder.article_organization_id' => $article_organization_id,
+									   'ArticlesOrder.article_id' => $article_id);
+		$options['recursive'] = -1;
+		$articlesOrderResults = $ArticlesOrder->find('first', $options);	
+
+		if($debug) {
+			echo "<pre>ArticlesOrder Originale \n";
+			print_r($options['conditions']);
+			print_r($articlesOrderResults);
+			echo "</pre>";			
+		}
+		
+		if(empty($articlesOrderResults)) {
+			$msg_esito = "Articolo associato all'ordine $order_id non trovato!";
+
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+
+		$options = [];
+		$options['conditions'] = array('ProdGasArticle.supplier_id' => $user->organization['Supplier']['Supplier']['id'],
+									   'ProdGasArticle.id' => $prod_gas_article_id);
+		$options['recursive'] = -1;
+		
+		$prodGasArticleResults = $ProdGasArticle->find('first', $options);	
+
+		if($debug) {
+			echo "<pre>prodGasArticleResults master \n";
+			print_r($options['conditions']);
+			print_r($prodGasArticleResults);
+			echo "</pre>";			
+		}
+		
+		if(empty($prodGasArticleResults)) {
+			$msg_esito = "Articolo del produttore $prod_gas_article_id non trovato!";
+
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+
+		
+		
+		
+		/*
+		 * override ArticleOrders
+		 */
+		$articlesOrderResults['ArticlesOrder']['organization_id'] = $organization_id;
+		$articlesOrderResults['ArticlesOrder']['order_id'] = $order_id;
+		$articlesOrderResults['ArticlesOrder']['name'] = $prodGasArticleResults['ProdGasArticle']['name'];
+		$articlesOrderResults['ArticlesOrder']['prezzo'] = $prodGasArticleResults['ProdGasArticle']['prezzo'];
+		$articlesOrderResults['ArticlesOrder']['pezzi_confezione'] = $prodGasArticleResults['ProdGasArticle']['pezzi_confezione'];
+		$articlesOrderResults['ArticlesOrder']['qta_minima'] = $prodGasArticleResults['ProdGasArticle']['qta_minima'];
+		$articlesOrderResults['ArticlesOrder']['qta_multipli'] = $prodGasArticleResults['ProdGasArticle']['qta_multipli'];
+		$articlesOrderResults['ArticlesOrder']['stato'] = $prodGasArticleResults['ProdGasArticle']['stato'];
+		if($debug) {
+			echo "<pre>";
+			print_r($articlesOrderResults);
+			echo "</pre>";
+		}		
+		$ArticlesOrder->set($articlesOrderResults);
+		if(!$ArticlesOrder->validates()) {
+			$errors = $ArticlesOrder()->validationErrors;
+			
+			foreach($errors as $key => $value) 
+				foreach($value as $key2 => $msg) 
+					$msg_esito .= $msg.'<br />';
+				
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+		
+		if($debug) {
+			echo "<pre>ArticlesOrder SAVE to UPDATE \n";
+			print_r($articlesOrderResults);
+			echo "</pre>";			
+		}
+		
+		$ArticlesOrder->create();
+		if(!$ArticlesOrder->save($articlesOrderResults)) {
+			$msg_esito .= "Articolo dell'ordine del produttore con ID $prod_gas_article_id non salvato!";
+			
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+				
+		if($debug)
+			exit;
+		
+		return true;	 
+	 }
+
+	 public function syncronize_articles_orders_insert($user, $organization_id, $order_id, $prod_gas_article_id, $debug=false) {
+		$msg_esito = "";
+
+        if(empty($organization_id) || empty($order_id) || empty($prod_gas_article_id)) {
+            return __('msg_error_params');
+        }
+		
+		App::import('Model', 'ArticlesOrder');
+		$ArticlesOrder = new ArticlesOrder;
+		
+		App::import('Model', 'Article');
+		$Article = new Article;
+
+		$options = [];
+		$options['conditions'] = array('Article.organization_id' => $organization_id,
+									   'Article.prod_gas_article_id' => $prod_gas_article_id);
+		$options['recursive'] = -1;
+		
+		$articleResults = $Article->find('first', $options);	
+
+		if($debug) {
+			echo "<pre>articleResults master \n";
+			print_r($options['conditions']);
+			print_r($articleResults);
+			echo "</pre>";			
+		}
+		
+		if(empty($articleResults)) {
+			$msg_esito = "Articolo del produttore $prod_gas_article_id non trovato!";
+
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+
+		
+		
+		
+		/*
+		 * insert ArticleOrders
+		 */
+		$articlesOrderResults = []; 
+		$articlesOrderResults['ArticlesOrder']['organization_id'] = $organization_id;
+		$articlesOrderResults['ArticlesOrder']['order_id'] = $order_id;
+		$articlesOrderResults['ArticlesOrder']['article_organization_id'] = $articleResults['Article']['organization_id'];
+		$articlesOrderResults['ArticlesOrder']['article_id'] = $articleResults['Article']['id'];
+		$articlesOrderResults['ArticlesOrder']['name'] = $articleResults['Article']['name'];
+		$articlesOrderResults['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo'];
+		$articlesOrderResults['ArticlesOrder']['pezzi_confezione'] = $articleResults['Article']['pezzi_confezione'];
+		$articlesOrderResults['ArticlesOrder']['qta_minima'] = $articleResults['Article']['qta_minima'];
+		$articlesOrderResults['ArticlesOrder']['qta_multipli'] = $articleResults['Article']['qta_multipli'];
+		$articlesOrderResults['ArticlesOrder']['stato'] = $articleResults['Article']['stato'];
+		
+		$ArticlesOrder->set($articlesOrderResults);
+		if(!$ArticlesOrder->validates()) {
+			$errors = $ArticlesOrder()->validationErrors;
+			
+			foreach($errors as $key => $value) 
+				foreach($value as $key2 => $msg) 
+					$msg_esito .= $msg.'<br />';
+				
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+		
+		if($debug) {
+			echo "<pre>ArticlesOrder SAVE to UPDATE \n";
+			print_r($articlesOrderResults);
+			echo "</pre>";			
+		}
+		
+		$ArticlesOrder->create();
+		if(!$ArticlesOrder->save($articlesOrderResults)) {
+			$msg_esito .= "Articolo associato all'ordine del produttore con ID $prod_gas_article_id non salvato!";
+			
+			if(!$debug) 
+				return $msg_esito;				
+			else
+				self::x($msg_esito);
+		}
+				
+		//if($debug)
+		//	exit;
+		
+		return true;	 
+	 }
+	 
+	 public function syncronize_articles_orders_delete($userOrganization, $organization_id, $order_id, $article_organization_id, $article_id, $debug=false) {
+		$msg_esito = "";
+
+        if(empty($organization_id) || empty($order_id) || empty($article_organization_id) || empty($article_id)) {
+            return __('msg_error_params');
+        }
+		
+		App::import('Model', 'ArticlesOrder');
+		$ArticlesOrder = new ArticlesOrder;
+		
+		$msg_esito = $ArticlesOrder->delete_and_carts($userOrganization, $order_id, $article_organization_id, $article_id, $des_order_id, $debug);
+	
+		//if($debug)
+		//	exit;
+		
+		return true;	 
+	 }	 
+	 
+	 /*
+	  * nel contesto della gestione di un articolo posso gia' sincronizzare
+	  * key action-organization_id-order_id
+	  */
+	 public function syncronize_to_article($user, $prod_gas_article_id, $data_prodGasArticlesSyncronize, $debug=false) {
+	 
+	 	// $debug = true;
+ 
+ 		$msg = "";
+ 		
+ 		if($debug) {
+			echo "<pre>";
+			print_r($data_prodGasArticlesSyncronize);
+			echo "</pre>";
+		}
+
+		if(!empty($data_prodGasArticlesSyncronize)) {
+			foreach($data_prodGasArticlesSyncronize as $key => $value) {
+				if($value=='Y') {
+					
+					$category_article_id = 0;
+					$order_id = 0;
+					
+					if(strpos($key, "-")!==false) {
+						list($action, $organization_id, $order_id) = explode('-', $key);
+					}
+					
+					if($debug) {
+						echo '<br />action '.$action.' - organization_id '.$organization_id.' - order_id '.$order_id.' - value '.$value;
+					}
+
+					/*
+					 * dati articolo solo se update, in insert non esiste ancora
+					 */
+					switch($action) {
+						case "syncronize_update":
+						case "syncronize_articles_orders_update":
+							App::import('Model', 'Article');
+							$Article = new Article;
+					
+							$options = [];
+							$options['conditions'] = array('Article.organization_id' => $organization_id,
+														   'Article.prod_gas_article_id' => $prod_gas_article_id);
+							$options['recursive'] = -1;
+							$articleResults = $Article->find('first', $options);
+							if($debug) {
+								echo "<pre>";
+								print_r($options);
+								print_r($articleResults);
+								echo "</pre>";
+							}						
+							
+							if(empty($articleResults))
+								self::x("Articolo non trovato con prod_gas_article_id ".$prod_gas_article_id);
+									
+							$article_organization_id = $articleResults['Article']['organization_id'];
+							$article_id = $articleResults['Article']['id'];
+							$category_article_id = $articleResults['Article']['category_article_id'];
+						break;
+					}
+			 		
+						
+					switch($action) {
+						case "syncronize_update":
+						 	$this->syncronize_update($user, $organization_id, $prod_gas_article_id, $category_article_id, $debug);
+						break;
+						case "syncronize_articles_orders_update":
+							/*
+							 * se non e' stato aggiornato l'articolo, prima lo aggiorno
+							 */							
+							if($data_prodGasArticlesSyncronize['syncronize_update-'.$organization_id.'-0']=='N')
+								$this->syncronize_update($user, $organization_id, $prod_gas_article_id, $category_article_id, $debug);
+							 
+							$this->syncronize_articles_orders_update($user, $organization_id, $order_id, $article_organization_id, $article_id, $prod_gas_article_id, $debug);
+						break;
+						case "syncronize_insert":
+							$this->syncronize_insert($user, $organization_id, $prod_gas_article_id, $category_article_id, $debug);
+						break;
+						case "syncronize_articles_orders_insert":
+							/*
+							 * se non e' stato inserito l'articolo, prima lo inserisco
+							 */
+							if($data_prodGasArticlesSyncronize['syncronize_insert-'.$organization_id.'-0']=='N')
+								$this->syncronize_insert($user, $organization_id, $prod_gas_article_id, $category_article_id, $debug);
+								
+							$this->syncronize_articles_orders_insert($user, $organization_id, $order_id, $prod_gas_article_id, $debug);
+						break;
+					}
+					
+				} // end if($value=='Y') 
+			} // loop
+		}
+		
+		if($debug)
+			exit;
+			
+		return true;
+	}
 }

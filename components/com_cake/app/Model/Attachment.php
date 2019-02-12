@@ -1,17 +1,6 @@
 <?php
-/**
- * Attachment Model
- * 
- * PHP Version 5.3+
- *
- * @category Plugin
- * @package  Attachment.Model
- * @author   Vinícius Krolow <krolow@gmail.com>
- * @license  GNU GENERAL PUBLIC LICENSE
- * @link     https://github.com/krolow/Attach
- */
-
 App::uses('AppModel', 'Model');
+
 
 /**
  * Attachment Model

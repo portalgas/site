@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 /* 
  * tabelle da importare (db.Sql297434_4)
  *    lacavagnetta_anagrafiche
@@ -23,14 +24,14 @@ App::uses('AppModel', 'Model');
 class DatabaseDate extends AppModel {
 
 	public $useTable = false;
-	private $dataProfile = array();
+	private $dataProfile = [];
 	
 	/* campo joomla.users.tmp_migration_codice contiente lacavagnetta_anagrafiche.codice, servira' per la migrazione dei referenti */
 	public function executeMigrationEg3Users($user,$group_id_root,$group_id_user,$parameters) {	
 		echo '<h1>Eseguo executeMigrationEg3Users, organization '.$user->organization['Organization']['id'].'</h1>';
 	
 		$continue = false;
-		$continue = $this->__ctrl_organization_j_group_registred($user);
+		$continue = $this->_ctrl_organization_j_group_registred($user);
 		
 		if($continue) {
 			$sql = 'SELECT 
@@ -63,14 +64,14 @@ class DatabaseDate extends AppModel {
 				 * 					#__users
 				 * 					#__user_profiles
 				 */
-				$userTable = JTable::getInstance('User', 'JTable', $config = array());
+				$userTable = JTable::getInstance('User', 'JTable', $config = []);
 				$params = JComponentHelper::getParams('com_users');
 	
 				jimport('joomla.user.helper');
 				
 				foreach ($results as $numResult => $result) {
 					$continue = false;
-					$data = array();
+					$data = [];
 					
 					$userTable->set('id',0);
 					
@@ -84,7 +85,7 @@ class DatabaseDate extends AppModel {
 					$data['organization_id'] = $user->organization['Organization']['id'];
 					
 					$data['groups'] = array(Configure::read('group_id_user'));
-					$data['name'] = $this->__setUserName($user, $result);
+					$data['name'] = $this->_setUserName($user, $result);
 					$data['username'] = $result['email'];
 					$data['email'] = $result['email'];
 			
@@ -114,7 +115,7 @@ class DatabaseDate extends AppModel {
 					// Check the data.
 					if ($continue) {
 						if(!$userTable->check()) {
-						//if(!$this->__check($db, $userTable, $user)) {
+						//if(!$this->_check($db, $userTable, $user)) {
 							echo ' <span style="color:yellow;background-color: #000000;">ALERT</span> userTable->check '.$data['name'].' (forse user gia\' esistente)';
 							$continue = false;
 						}
@@ -139,7 +140,7 @@ class DatabaseDate extends AppModel {
 						echo '	- USERID '.$user_id;
 			
 						/*						 * aggiungo gruppo joomla __user_usergroup_map GasPages[nome organizazione]						*/
-						$continue = $this->__user_set_j_group_registred($user, $user_id);					}
+						$continue = $this->_user_set_j_group_registred($user, $user_id);					}
 					
 										
 					if($continue) {								
@@ -154,7 +155,7 @@ class DatabaseDate extends AppModel {
 						if (!$db->query())  echo 'error UPDATE users.codice<br />';
 	
 						/*						 * user_profiles						*/
-						$this->__user_set_profile($user, $user_id, $result, $parameters);	
+						$this->_user_set_profile($user, $user_id, $result, $parameters);	
 					} 
 					
 				} // end foreach
@@ -180,7 +181,7 @@ class DatabaseDate extends AppModel {
 					WHERE 
 						organization_id = ".(int)$user->organization['Organization']['id']."
 						and id = ".$result['User']['id'];
-			echo '<br />'.$sql;		
+			self::d($sql, false);		
 			$resultsUpdate = $this->query($sql);
 		}		}
 	
@@ -241,7 +242,7 @@ class DatabaseDate extends AppModel {
 				/* get joomla users */
 				$db = JFactory::getDbo();
 				$sql = 'SELECT u.* FROM '.Configure::read('DB.portalPrefix').'users u WHERE u.organization_id = '.$user->organization['Organization']['id'].' AND u.tmp_migration_codice = \''.$result['lacavagnetta_referenti']['codanag'].'\'';
-				echo '<br />'.$sql;
+				self::d($sql, false);
 				$db->setQuery($sql);
 				
 				$resultId = $db->loadAssocList();
@@ -427,14 +428,14 @@ class DatabaseDate extends AppModel {
 			}
 			
 			foreach ($results as $numResult => $result) {
-					$data = array();
+					$data = [];
 
 					echo '  '.($numResult+1).') codice '.$result['lacavagnetta_tipiarticoli']['codice'].' - descrizione '.$result['lacavagnetta_tipiarticoli']['descrizione'].'<br/>';
 
 					$data['CategoriesArticle']['organization_id'] = $user->organization['Organization']['id'];
 					$data['CategoriesArticle']['name'] = $result['lacavagnetta_tipiarticoli']['descrizione'];
 					$data['CategoriesArticle']['tmp_migration_codice'] = $result['lacavagnetta_tipiarticoli']['codice'];
-					$parent_id = $this->__categoryArticlesAdd($data);
+					$parent_id = $this->_categoryArticlesAdd($data);
 
 					/*					 * estraggo le categorie FIGLI					*/
 					$sql = "SELECT 
@@ -454,7 +455,7 @@ class DatabaseDate extends AppModel {
 								$data['CategoriesArticle']['parent_id'] = $parent_id;
 								$data['CategoriesArticle']['name'] = $subResult['lacavagnetta_catmerceologica']['descrizione'];
 								$data['CategoriesArticle']['tmp_migration_codice'] = $subResult['lacavagnetta_catmerceologica']['codice'];
-								$this->__categoryArticlesAdd($data);
+								$this->_categoryArticlesAdd($data);
 						}
 					}
 			}
@@ -493,7 +494,7 @@ class DatabaseDate extends AppModel {
 		} 
 	}
 	
-	private function __setUserName($user,$result) {
+	private function _setUserName($user,$result) {
 		$name = "";
 				switch ($user->organization['Organization']['id']) {
 			case 1:
@@ -509,7 +510,7 @@ class DatabaseDate extends AppModel {
 		return $name;
 	}
 	
-	private function __categoryArticlesAdd($data) {
+	private function _categoryArticlesAdd($data) {
 		App::import('Model', 'CategoriesArticle');
 		$CategoriesArticle = new CategoriesArticle;
 		$result = $CategoriesArticle->save($data);
@@ -518,7 +519,7 @@ class DatabaseDate extends AppModel {
 		return $insertId;
 	}
 
-	private function __pulisciDaValueNull($value) {
+	private function _pulisciDaValueNull($value) {
 		if($value==null) $value = "";
 		return $value;
 	}
@@ -526,7 +527,7 @@ class DatabaseDate extends AppModel {
 	/*
 	 * preso da libraries/joomla/database/table/user.php
 	 */
-	private function __check($db, $userTable, $user)	{		// Validate user information		if (trim($userTable->name) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));			return false;		}			if (trim($userTable->username) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));			return false;		}			if (preg_match("#[<>\"'%;()&]#i", $userTable->username) || strlen(utf8_decode($userTable->username)) < 2)		{			$userTable->setError(JText::sprintf('JLIB_DATABASE_ERROR_VALID_AZ09', 2));			return false;		}			if ((trim($userTable->email) == "") || !JMailHelper::isEmailAddress($userTable->email))		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));			return false;		}			// Set the registration timestamp		if ($userTable->registerDate == null || $userTable->registerDate == $db->getNullDate())		{			$userTable->registerDate = JFactory::getDate()->toSql();		}			// check for existing username		$query = $db->getQuery(true);		$query->select($db->quoteName('id'));		$query->from($db->quoteName('#__users'));		$query->where($db->quoteName('username') . ' = ' . $db->quote($userTable->username));		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
+	private function _check($db, $userTable, $user)	{		// Validate user information		if (trim($userTable->name) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));			return false;		}			if (trim($userTable->username) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));			return false;		}			if (preg_match("#[<>\"'%;()&]#i", $userTable->username) || strlen(utf8_decode($userTable->username)) < 2)		{			$userTable->setError(JText::sprintf('JLIB_DATABASE_ERROR_VALID_AZ09', 2));			return false;		}			if ((trim($userTable->email) == "") || !JMailHelper::isEmailAddress($userTable->email))		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));			return false;		}			// Set the registration timestamp		if ($userTable->registerDate == null || $userTable->registerDate == $db->getNullDate())		{			$userTable->registerDate = JFactory::getDate()->toSql();		}			// check for existing username		$query = $db->getQuery(true);		$query->select($db->quoteName('id'));		$query->from($db->quoteName('#__users'));		$query->where($db->quoteName('username') . ' = ' . $db->quote($userTable->username));		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
 		
 		// fractis
 		$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);
@@ -539,7 +540,7 @@ class DatabaseDate extends AppModel {
 	/*
 	 * aggiungo l'utente nel gruppo Registration->GasPage.. per il front-end (profilazione menu, ex "acquista", "stampe")
 	 */
-	private function __ctrl_organization_j_group_registred($user) {
+	private function _ctrl_organization_j_group_registred($user) {
 		
 		$result = false;
 		
@@ -549,7 +550,7 @@ class DatabaseDate extends AppModel {
 					".Configure::read('DB.prefix')."organizations Organization 
 				WHERE 
 					id = ".(int)$user->organization['Organization']['id'];
-		//echo '<br />'.$sql;
+		self::d($sql, false);
 		$results = $this->query($sql);
 		if(empty($results) || empty($results[0]['Organization']['j_group_registred'])) {
 			$result = false;
@@ -564,7 +565,7 @@ class DatabaseDate extends AppModel {
 	/*
 	 * codice uguale in CsvImport::admin_users_insert()
 	 */
-	private function __user_set_j_group_registred($user, $user_id, $debug=false) {
+	private function _user_set_j_group_registred($user, $user_id, $debug=false) {
 		
 		$result = false;
 		
@@ -574,7 +575,7 @@ class DatabaseDate extends AppModel {
 		$sql = "SELECT ".Configure::read('DB.portalPrefix')."group_registred  
 				FROM ".Configure::read('DB.prefix')."organizations Organization 
 				WHERE id = ".(int)$user->organization['Organization']['id'];
-		//echo '<br />'.$sql;
+		self::d($sql, false);
 		$results = $this->query($sql);
 		if(!empty($results) && !empty($results[0]['Organization']['j_group_registred'])) {
 			$User->joomlaBatchUser($results[0]['Organization']['j_group_registred'], $user_id, 'add');
@@ -594,30 +595,30 @@ class DatabaseDate extends AppModel {
 	 * Codice preso da Eg3.descrizione (054 Rossi Mario)
 	 * Dati anagrafici
 	 */
-	private function __user_set_profile($user, $user_id, $result, $parameters, $debug=false) {
+	private function _user_set_profile($user, $user_id, $result, $parameters, $debug=false) {
 
 			$db = JFactory::getDbo();
 		
 			if(empty($result['indirizzo']))
 				$this->dataProfile['address'] = '';
 			else
-				$this->dataProfile['address'] = $this->__pulisciDaValueNull($result['indirizzo']);
-			$this->dataProfile['city'] = $this->__pulisciDaValueNull($result['localita']);
-			$this->dataProfile['postal_code'] = $this->__pulisciDaValueNull($result['cap']);
-			$this->dataProfile['region'] = $this->__pulisciDaValueNull($result['provincia']);
+				$this->dataProfile['address'] = $this->_pulisciDaValueNull($result['indirizzo']);
+			$this->dataProfile['city'] = $this->_pulisciDaValueNull($result['localita']);
+			$this->dataProfile['postal_code'] = $this->_pulisciDaValueNull($result['cap']);
+			$this->dataProfile['region'] = $this->_pulisciDaValueNull($result['provincia']);
 			$this->dataProfile['country'] = 'Italia';
-			$this->dataProfile['phone'] = $this->__pulisciDaValueNull($result['telefono']);
+			$this->dataProfile['phone'] = $this->_pulisciDaValueNull($result['telefono']);
 			if(empty($result['telefono']))
 				$this->dataProfile['phone'] = '';
 			else
-				$this->dataProfile['phone'] = $this->__pulisciDaValueNull($result['telefono']);
+				$this->dataProfile['phone'] = $this->_pulisciDaValueNull($result['telefono']);
 			if(empty($result['telefono2']))
 				$this->dataProfile['phone2'] = '';
 			else
-				$this->dataProfile['phone2'] = $this->__pulisciDaValueNull($result['telefono2']);
+				$this->dataProfile['phone2'] = $this->_pulisciDaValueNull($result['telefono2']);
 			$this->dataProfile['aboutme'] = '';
 			
-			$data = array();
+			$data = [];
 			$data['id'] = $user_id;
 			$data['profile']['address'] = $this->dataProfile['address'];
 			$data['profile']['city'] = $this->dataProfile['city'];
@@ -640,7 +641,7 @@ class DatabaseDate extends AppModel {
 						  " AND profile_key LIKE 'profile.%'");
 			if (!$db->query())  echo 'error DELETE __user_profiles<br />';
 			
-			$tuples = array();
+			$tuples = [];
 			$order	= 1;
 			
 			foreach ($data['profile'] as $k => $v) 	{

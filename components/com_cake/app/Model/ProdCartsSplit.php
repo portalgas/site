@@ -9,7 +9,7 @@ class ProdCartsSplit extends ProdCartsSplitMultiKey {
 	 */
 	public function select_to_delivery($user, $prod_delivery_id, $user_id=0) {
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdCartsSplit.organization_id' => $user->organization['Organization']['id'],
 									    'ProdCartsSplit.prod_delivery_id' => $prod_delivery_id);
 		if(!empty($user_id)) $options['conditions'] += array('ProdCartsSplit.user_id' => $user_id); 
@@ -28,14 +28,14 @@ class ProdCartsSplit extends ProdCartsSplitMultiKey {
 					WHERE
 						organization_id = ".(int)$user->organization['Organization']['id']."
 						and prod_delivery_id = ".(int)$prod_delivery_id;
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$result = $this->query($sql);
 				
 				$sql = "UPDATE ".Configure::read('DB.prefix')."prod_carts SET importo_forzato = 0  
 					WHERE
 						organization_id = ".(int)$user->organization['Organization']['id']."
 						and prod_delivery_id = ".(int)$prod_delivery_id;
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$result = $this->query($sql);				
 		}
 		catch (Exception $e) {
@@ -54,7 +54,7 @@ class ProdCartsSplit extends ProdCartsSplitMultiKey {
 			App::import('Model', 'ProdDelivery');
 			$ProdDelivery = new ProdDelivery;
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('ProdDelivery.organization_id' => $user->organization['Organization']['id'],
 											'ProdDelivery.id' => $prod_delivery_id);
 			$options['recursive'] = -1;
@@ -71,7 +71,7 @@ class ProdCartsSplit extends ProdCartsSplitMultiKey {
 			App::import('Model', 'ProdCart');
 			$ProdCart = new ProdCart;
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('ProdCart.organization_id' => $user->organization['Organization']['id'],
 											'ProdCart.prod_delivery_id' => $prod_delivery_id,
 											'ProdCart.stato' => 'Y',
@@ -87,7 +87,7 @@ class ProdCartsSplit extends ProdCartsSplitMultiKey {
 					$qta = $result['ProdCart']['qta'];
 				
 				for ($i = 1; $i <= $qta; $i++) {
-					$data = array();
+					$data = [];
 					
 					$data['ProdCartsSplit']['organization_id'] = $result['ProdCart']['organization_id'];
 					$data['ProdCartsSplit']['user_id'] = $result['ProdCart']['user_id'];

@@ -3,6 +3,49 @@ App::uses('AppModel', 'Model');
 
 class OrganizationsPay extends AppModel {
 
+	public function getImporto($organization_id, $year, $tot_users) {
+	
+		$results = [];
+		
+		if($year < Configure::read('OrganizationPayFasceYearStart')) {
+			/*
+			 * calcolo a persona
+			 */
+			$results['importo'] = (Configure::read('costToUser') * (float)$tot_users);
+			
+			if($results['importo'] > Configure::read('OrganizationPayImportMax')) {
+				$results['importo'] = Configure::read('OrganizationPayImportMax');
+				$results['importo_nota'] = ' <span>(max)</span>';
+			}
+			else
+				$results['importo_nota'] = '';
+			
+			$results['importo_e'] = number_format($results['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+		}
+		else {	
+			/*
+			 * calcolo a fasce
+			 */	
+			 if($tot_users<=25) 
+				$imp = 25;
+			 else
+			 if($tot_users>25 && $tot_users<=50) 
+				$imp = 50;
+			 else
+			 if($tot_users>50 && $tot_users<=75) 
+				$imp = 75;
+			 else
+			 if($tot_users>75) 
+				$imp = 100;
+			
+			$results['importo'] = $imp;	
+			$results['importo_e'] = number_format($imp,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			$results['importo_nota'] = '';
+		}
+		
+		return $results;
+	}
+	
 	/*
 	 * calcola il totale di utenti attivi di un organization
 	 */
@@ -11,11 +54,10 @@ class OrganizationsPay extends AppModel {
 		App::import('Model', 'User');
         $User = new User;
 		
-		$options = array();
-		$options['conditions'] = array('User.organization_id' => $organization_id,
-									   'User.block' => 0);
+		$options = [];
+		$options['conditions'] = ['User.organization_id' => $organization_id,
+								  'User.block' => 0];
 		$options['recursive'] = -1;
-	
         $totale = $User->find('count', $options);
 		
 		return $totale;
@@ -29,7 +71,7 @@ class OrganizationsPay extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => $organization_id);
 		$options['recursive'] = -1;
 	
@@ -46,7 +88,7 @@ class OrganizationsPay extends AppModel {
 		App::import('Model', 'Article');
         $Article = new Article;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $organization_id);
 		$options['recursive'] = -1;
 	
@@ -65,7 +107,7 @@ class OrganizationsPay extends AppModel {
 		
 		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization')));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $organization_id,
 									   'Delivery.organization_id' => $organization_id);
 		if(!empty($year)) {
@@ -90,7 +132,7 @@ class OrganizationsPay extends AppModel {
 		
 		$StatOrder->unbindModel(array('belongsTo' => array('SuppliersOrganization')));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('StatOrder.organization_id' => $organization_id,
 									   'StatDelivery.organization_id' => $organization_id);
 		if(!empty($year)) 

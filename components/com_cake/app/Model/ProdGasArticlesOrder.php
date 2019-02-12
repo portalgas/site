@@ -3,6 +3,8 @@ App::uses('AppModel', 'Model');
 
 class ProdGasArticlesOrder extends Model {	
 	
+	public $useTable = 'articles_orders';
+	
 	public $validate = array(
 		'supplier_id' => array(
 			'numeric' => array(

@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class BackupOrder extends AppModel {
 
 	public $useTable = false;
@@ -14,7 +15,7 @@ class BackupOrder extends AppModel {
 					 WHERE
 						`Order`.organization_id = ".(int)$user->organization['Organization']['id']." 
 						AND `Order`.id = ".$order_id." )";		 	
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
 			$results = $this->query($sql);
 		
 			
@@ -24,7 +25,7 @@ class BackupOrder extends AppModel {
 					 WHERE
 						ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']." 
 						AND ArticlesOrder.order_id = ".$order_id." )";
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
 			$results = $this->query($sql);
 			
 		
@@ -34,7 +35,7 @@ class BackupOrder extends AppModel {
 					 WHERE
 						Cart.organization_id = ".(int)$user->organization['Organization']['id']." 
 						AND Cart.order_id = ".$order_id." )";	 	
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
 			$results = $this->query($sql);
 		}
 		catch (Exception $e) {

@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesArticlesSyncronize extends AppModel {
 
     public $useTable = 'articles';
@@ -32,7 +33,7 @@ class DesArticlesSyncronize extends AppModel {
 		
 		App::import('Model', 'Article');
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $master_organization_id,
 									   'Article.id' => $master_article_id);
 		$options['recursive'] = -1;
@@ -52,13 +53,13 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		/*
 		 * my Article
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $user->organization['Organization']['id'],
 									   'Article.id' => $article_id);
 		$options['recursive'] = -1;
@@ -94,7 +95,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		/* 
@@ -116,10 +117,10 @@ class DesArticlesSyncronize extends AppModel {
 				if(!$debug) 
 					return $msg_esito;				
 				else
-					die($msg_esito);
+					self::x($msg_esito);
 				*/
 				if($debug) 
-					die($msg_esito);			
+					self::x($msg_esito);			
 			}
 		}
 		
@@ -136,7 +137,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 				
 		if($debug)
@@ -166,7 +167,7 @@ class DesArticlesSyncronize extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;	
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $master_organization_id,
 									   'Article.id' => $master_article_id);
 		$options['recursive'] = -1;
@@ -179,14 +180,14 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 
 
 		/*
 		 * get elenco propri Articles 
 		 */	
-   		$options = array();
+   		$options = [];
    		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
 										'SuppliersOrganization.supplier_id' => $supplier_id);
    		$options['fields'] = array('SuppliersOrganization.id');
@@ -196,11 +197,11 @@ class DesArticlesSyncronize extends AppModel {
 		/*
 		 * popolo Article
 		 */		
-		$row = array();
+		$row = [];
 		
 		$row['Article'] = $masterResults['Article'];
 
-		$row['Article']['id'] = $this->__getMaxIdOrganizationId($user->organization['Organization']['id']);
+		$row['Article']['id'] = $this->_getMaxIdOrganizationId($user->organization['Organization']['id']);
 		$row['Article']['organization_id'] = $user->organization['Organization']['id'];
 		$row['Article']['supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];		
 		$row['Article']['category_article_id'] = $category_article_id;
@@ -216,7 +217,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 			
 		/* 
@@ -237,10 +238,10 @@ class DesArticlesSyncronize extends AppModel {
 				if(!$debug) 
 					return $msg_esito;				
 				else
-					die($msg_esito);
+					self::x($msg_esito);
 				*/
 				if($debug) 
-					die($msg_esito);
+					self::x($msg_esito);
 			}			
 		}
 		
@@ -257,7 +258,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		if($debug)
@@ -285,7 +286,7 @@ class DesArticlesSyncronize extends AppModel {
 		/*
 		 * Article prima del salvataggio
 		*/
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $user->organization['Organization']['id'],
 									  'Article.id' => $article_id);
 		$options['recursive'] = -1;
@@ -304,7 +305,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 		
 		if($debug) {
@@ -320,7 +321,7 @@ class DesArticlesSyncronize extends AppModel {
 			if(!$debug) 
 				return $msg_esito;				
 			else
-				die($msg_esito);
+				self::x($msg_esito);
 		}
 				
 		if($debug)
@@ -335,14 +336,14 @@ class DesArticlesSyncronize extends AppModel {
 		return true;
 	} 
 	
-	private function __getMaxIdOrganizationId($organization_id) {
+	private function _getMaxIdOrganizationId($organization_id) {
     	
     	$maxId = 1;
     	
 		App::import('Model', 'Article');
 		$Article = new Article;
 		
-		$options = array();
+		$options = [];
      	$options['fields'] = array('MAX(Article.id)+1 AS maxId');
     	$options['conditions'] = array('Article.organization_id' => $organization_id);
     	$options['recursive'] = -1;

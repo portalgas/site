@@ -9,7 +9,7 @@ class CartsSplit extends CartsSplitMultiKey {
 	 */
 	public function select_to_order($user, $order_id, $user_id=0) {
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('CartsSplit.organization_id' => $user->organization['Organization']['id'],
 									    'CartsSplit.order_id' => $order_id);
 		if(!empty($user_id)) $options['conditions'] += array('CartsSplit.user_id' => $user_id); 
@@ -28,14 +28,14 @@ class CartsSplit extends CartsSplitMultiKey {
 					WHERE
 						organization_id = ".(int)$user->organization['Organization']['id']."
 						and order_id = ".(int)$order_id;
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$result = $this->query($sql);
 				
 				$sql = "UPDATE ".Configure::read('DB.prefix')."carts SET importo_forzato = 0  
 					WHERE
 						organization_id = ".(int)$user->organization['Organization']['id']."
 						and order_id = ".(int)$order_id;
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$result = $this->query($sql);				
 		}
 		catch (Exception $e) {
@@ -54,7 +54,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			App::import('Model', 'Cart');
 			$Cart = new Cart;
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('Cart.organization_id' => $user->organization['Organization']['id'],
 											'Cart.order_id' => $order_id,
 											'Cart.stato' => 'Y',
@@ -70,7 +70,7 @@ class CartsSplit extends CartsSplitMultiKey {
 					$qta = $result['Cart']['qta'];
 				
 				for ($i = 1; $i <= $qta; $i++) {
-					$data = array();
+					$data = [];
 					
 					$data['CartsSplit']['organization_id'] = $result['Cart']['organization_id'];
 					$data['CartsSplit']['user_id'] = $result['Cart']['user_id'];

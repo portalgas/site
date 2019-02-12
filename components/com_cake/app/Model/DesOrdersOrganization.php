@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class DesOrdersOrganization extends AppModel {
  
 	public $actsAs = array('Data');
@@ -13,11 +14,11 @@ class DesOrdersOrganization extends AppModel {
 
 		$this->unbindModel(array('belongsTo' => array('Organization', 'De', 'Order')));
 
-		$options = array();
-		$options['conditions'] = array('DesOrdersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   'DesOrdersOrganization.order_id' => $order_id);
+		$options = [];
+		$options['conditions'] = ['DesOrdersOrganization.organization_id' => $user->organization['Organization']['id'],
+								   'DesOrdersOrganization.order_id' => $order_id];
 		if(!empty($user->des_id))
-			$options['conditions'] += array('DesOrdersOrganization.des_id' => $user->des_id);	    								   	   
+			$options['conditions'] += ['DesOrdersOrganization.des_id' => $user->des_id];	    								   	   
 
 		$options['recursive'] = 1;								
 		$desOrdersOrganizationResults = $this->find('first', $options);
@@ -37,7 +38,7 @@ class DesOrdersOrganization extends AppModel {
 		foreach ($results as $key => $val) {
 			if(!empty($val)) {
 				if (isset($val['DesOrdersOrganization']['data'])) {
-					if(!empty($val['DesOrdersOrganization']['data']) && $val['DesOrdersOrganization']['data']!='0000-00-00') 
+					if(!empty($val['DesOrdersOrganization']['data']) && $val['DesOrdersOrganization']['data']!=Configure::read('DB.field.date.empty')) 
 						$results[$key]['DesOrdersOrganization']['daysToEndConsegna'] = $this->utilsCommons->dayDiffToDate(date("Y-m-d"),$val['DesOrdersOrganization']['data']);
 					else
 						$results[$key]['DesOrdersOrganization']['daysToEndConsegna'] = '';

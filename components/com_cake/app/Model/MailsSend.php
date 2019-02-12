@@ -4,8 +4,8 @@ App::uses('AppModel', 'Model');
 class MailsSend extends AppModel {
 
 	public $useTable = 'deliveries';
-	public $actsAs = array('Data');
-	public $virtualFields = array('luogoData' => "CONCAT_WS(' - ',Doc.luogo,DATE_FORMAT(Doc.data, '%W, %e %M %Y'))");
+	public $actsAs = ['Data'];
+	public $virtualFields = ['luogoData' => "CONCAT_WS(' - ',Doc.luogo,DATE_FORMAT(Doc.data, '%W, %e %M %Y'))"];
 			
 	/*
 	 * invio mail 
@@ -15,7 +15,7 @@ class MailsSend extends AppModel {
 	*/
 	public function mailUsersOrdersOpen($organization_id, $user, $debug=false) {
 
-            date_default_timezone_set('Europe/Rome');
+			date_default_timezone_set('Europe/Rome');
 
             try {
                     if($debug)
@@ -59,34 +59,33 @@ class MailsSend extends AppModel {
                                 and SupplierOrganization.mail_order_open = 'Y'
                                 and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
                                 and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
-                                and  `Order`.state_code != 'CREATE-INCOMPLETE' 
+                                and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
                                 and (`Order`.data_inizio = CURDATE() - INTERVAL ".Configure::read('GGMailToAlertOrderOpen')." DAY OR `Order`.mail_open_send = 'Y')	
                                 order by Delivery.data, Supplier.name ";
-                    // if($debug) echo $sql."\n";
+                    // self::d($sql, $debug);
                     $orderCtrlResults = $Order->query($sql);
                     
                     if(!empty($orderCtrlResults)) {
                         if($debug)
 							echo "Trovati ".count($orderCtrlResults)." ordini \n";
                         
-                        $subject_mail = $this->_organizationNameError($user->organization).", ordini che si aprono oggi";
-                        $Email->subject($subject_mail);
-                        $Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))));
+                        $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))]);
 
                         if(!Configure::read('mail.send'))  $Email->transport('Debug');
 
                         /*
                          * ciclo UTENTI
                          */
-                        $usersResults = $this->_getUsers($organization_id);
+                        $usersResults = $User->getUsersToMail($organization_id);
 
                         foreach($usersResults as $numResult => $usersResult) {
 
                             $mail = $usersResult['User']['email'];
+                            $mail2 = $usersResult['UserProfile']['email'];
                             $name = $usersResult['User']['name'];
                             $username = $usersResult['User']['username'];
                             
-                            $Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+                            $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 
                             if($debug)
 								echo '<br />'.$numResult.") tratto l'utente ".$name.', username '.$username." \n";
@@ -115,7 +114,7 @@ class MailsSend extends AppModel {
 										and SupplierOrganization.mail_order_open = 'Y'
 										and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
 										and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
-										and  `Order`.state_code != 'CREATE-INCOMPLETE' 
+										and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE' 
 										and (`Order`.data_inizio = CURDATE() - INTERVAL ".Configure::read('GGMailToAlertOrderOpen')." DAY OR `Order`.mail_open_send = 'Y')
 
 										and `Order`.supplier_organization_id not in (
@@ -123,7 +122,7 @@ class MailsSend extends AppModel {
 											FROM ".Configure::read('DB.prefix')."bookmarks_mails where user_id = ".$usersResult['User']['id']." and organization_id = $organization_id and order_open = 'N')
 
 										order by Delivery.data, Supplier.name "; 
-							// if($debug) echo $sql."\n";
+							// self::d($sql, $debug);
 							$orderResults = $Order->query($sql);
 							
 							if(!empty($orderResults)) { 
@@ -162,10 +161,15 @@ class MailsSend extends AppModel {
 										else
 												$body_mail .= "<br />\nPer la consegna di <b>".CakeTime::format($result['Delivery']['data'], "%A %e %B %Y")."</b> a ".$result['Delivery']['luogo']."<br />\n";
 
-										if(count($orderResults)==1)
+										if(count($orderResults)==1) {
 												$body_mail .= "si <span style='color:green;'>apre</span> oggi il periodo d'ordine nei confronti del seguente produttore:<br />\n<br />\n";
-										else
+												$subject_mail = $result['SupplierOrganization']['name'].", ordine che si apre oggi";
+										} 
+										else {
 												$body_mail .= "si <span style='color:green;'>apre</span> oggi il periodo d'ordine nei confronti dei seguenti produttori: <br />\n<br />\n";
+												$subject_mail = $this->_organizationNameError($user->organization).", ordini che si aprono oggi";												
+										}
+										$Email->subject($subject_mail);
 
 									} // end if($delivery_id_old==0 || $delivery_id_old != $result['Delivery']['id'])
 
@@ -181,6 +185,8 @@ class MailsSend extends AppModel {
 
 									if(!empty($result['Supplier']['img1']) && file_exists($this->AppRoot.Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+									else
+										$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';										
 
 									$body_mail .= "<br />\n";
 
@@ -219,7 +225,7 @@ class MailsSend extends AppModel {
 
 								if($debug && $numResult==1) echo $body_mail_final;
 
-								$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
 
 							}   
 							else {
@@ -297,21 +303,18 @@ class MailsSend extends AppModel {
                                 and SupplierOrganization.stato = 'Y'
                                 and SupplierOrganization.mail_order_close = 'Y'
                                 and `Order`.data_fine = CURDATE() + INTERVAL ".Configure::read('GGMailToAlertOrderClose')." DAY 
-                                and  `Order`.state_code != 'CREATE-INCOMPLETE' 
+                                and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
                                 and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
                                 and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
                                 order by Delivery.data, Supplier.name ";
-                    // if($debug) echo $sql."\n";  
+                    // self::d($sql, $debug);
                     $orderCtrlResults = $Order->query($sql);
                     
 					if(!empty($orderCtrlResults)) {
                         if($debug)
 							echo "Trovati ".count($orderCtrlResults)." ordini \n";
 
-                        $subject_mail = $this->_organizationNameError($user->organization).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
-                        $Email->subject($subject_mail);
-
-                        $Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))));
+                        $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))]);
 
                         $data_oggi = date("Y-m-d");
                         $data_oggi_incrementata = date('Y-m-d', strtotime('+'.(Configure::read('GGMailToAlertOrderClose')).' day', strtotime($data_oggi)));
@@ -319,15 +322,16 @@ class MailsSend extends AppModel {
                         /*
                          * ciclo UTENTI
                          */
-                        $usersResults = $this->_getUsers($organization_id);
+                        $usersResults = $User->getUsersToMail($organization_id);	
 
                         foreach($usersResults as $numResult => $usersResult) {
 
                             $mail = $usersResult['User']['email'];
+							$mail2 = $usersResult['UserProfile']['email'];
                             $name = $usersResult['User']['name'];
                             $username = $usersResult['User']['username'];
 
-                            $Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+                            $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
                             
                             if($debug)
 								echo '<br />'.$numResult.") tratto l'utente ".$name.', username '.$username." \n";
@@ -364,7 +368,7 @@ class MailsSend extends AppModel {
 											FROM ".Configure::read('DB.prefix')."bookmarks_mails where user_id = ".$usersResult['User']['id']." and organization_id = $organization_id and order_close = 'N')
 												
 										order by Delivery.data, Supplier.name ";
-							// if($debug) echo $sql."\n";
+							// self::d($sql, $debug);
 							$orderResults = $Order->query($sql);
 							
 							if(!empty($orderResults)) { 
@@ -402,10 +406,15 @@ class MailsSend extends AppModel {
 
 												$body_mail .= "si <span style='color:red'>chiudera'</span> tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni, ".CakeTime::format($data_oggi_incrementata,"%A %e %B %Y").", il periodo d'ordine nei confronti ";
 
-												if(count($orderResults)==1)
+												if(count($orderResults)==1) {
 														$body_mail .= "del seguente produttore: <br />\n<br />\n";
-												else
+														$subject_mail = $result['SupplierOrganization']['name'].", ordine che si chiuderà tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
+												}
+												else {
 														$body_mail .= "dei seguenti produttori: <br />\n<br />\n";
+														$subject_mail = $this->_organizationNameError($user->organization).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
+												}
+												$Email->subject($subject_mail);												
 										}
 										
 										//$body_mail .= ($numResult+1).") ".$result['SupplierOrganization']['name'];
@@ -416,6 +425,8 @@ class MailsSend extends AppModel {
 
 										if(!empty($result['Supplier']['img1']) && file_exists($this->AppRoot.Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 												$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+										else
+											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 
 										$body_mail .= "<br />\n";
 
@@ -445,7 +456,7 @@ class MailsSend extends AppModel {
 
 								if($debug && $numResult==1) echo $body_mail_final; 
 
-								$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
 							}   
 							else { 
 							   if($debug)
@@ -475,8 +486,8 @@ class MailsSend extends AppModel {
 		}			
 	}
 	
-	public $hasMany = array(
-			'Order' => array(
+	public $hasMany = [
+			'Order' => [
 					'className' => 'Order',
 					'foreignKey' => 'delivery_id',
 					'dependent' => false,
@@ -488,6 +499,6 @@ class MailsSend extends AppModel {
 					'exclusive' => '',
 					'finderQuery' => '',
 					'counterQuery' => ''
-			)
-	);
+			]
+	];
 }

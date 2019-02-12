@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdDelivery extends AppModel {
 
 	public $validate = array(
@@ -131,7 +132,7 @@ class ProdDelivery extends AppModel {
 		return $results;
 	}
 
-	public function beforeValidate($options = array()) {
+	public function beforeValidate($options = []) {
 			
 		if (!empty($this->data['ProdDelivery']['data_inizio']))
 			$this->data['ProdDelivery']['data_inizio'] = $this->data['ProdDelivery']['data_inizio_db'];
@@ -142,7 +143,7 @@ class ProdDelivery extends AppModel {
 		return true;
 	}
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['ProdDelivery']['data_inizio']))
 			$this->data['ProdDelivery']['data_inizio'] = $this->data['ProdDelivery']['data_inizio_db'];
 		 

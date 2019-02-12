@@ -5,22 +5,22 @@ class ProdGasArticlesPromotion extends AppModel {
 
    public $name = 'ProdGasArticlesPromotion';
    
-	public $belongsTo = array(
-		'ProdGasArticle' => array(
-			'className' => 'ProdGasArticle',
-			'foreignKey' => 'prod_gas_article_id',
-			'conditions' => 'ProdGasArticle.supplier_id = ProdGasArticlesPromotion.supplier_id',
+	public $belongsTo = [
+		'Article' => [
+			'className' => 'Article',
+			'foreignKey' => 'article_id',
+			'conditions' => 'Article.organization_id = ProdGasArticlesPromotion.organization_id',
 			'fields' => '',
 			'order' => ''
-		),
-		'ProdGasPromotion' => array(
+		],
+		'ProdGasPromotion' => [
 			'className' => 'ProdGasPromotion',
 			'foreignKey' => 'prod_gas_promotion_id',
-			'conditions' => 'ProdGasPromotion.supplier_id = ProdGasArticlesPromotion.supplier_id',
+			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
-	);
+		]
+	];
 
 	public function afterFind($results, $primary = true) {
 		
@@ -56,7 +56,7 @@ class ProdGasArticlesPromotion extends AppModel {
 		return $results;
 	}
 			
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['ProdGasArticlesPromotion']['importo']))
 			$this->data['ProdGasArticlesPromotion']['importo'] = $this->importoToDatabase($this->data['ProdGasArticlesPromotion']['importo']);
 
@@ -65,5 +65,4 @@ class ProdGasArticlesPromotion extends AppModel {
 
 	    return true;
 	}
-	
 }

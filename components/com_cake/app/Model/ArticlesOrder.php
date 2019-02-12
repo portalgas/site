@@ -430,7 +430,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
      * stesso risultato di getArticoliEventualiAcquistiNoFilterInOrdine ma gestisco i filtri (non gestivo ArticleType) 
      */
 
-    public function getArticoliEventualiAcquistiInOrdinePromotion($user, $prod_gas_promotion_id, $options, $debug = false) {
+    public function getArticoliEventualiAcquistiInOrdinePromotion($user, $order_id, $prod_gas_promotion_id, $options, $debug = false) {
 
         $results = [];
 
@@ -457,15 +457,15 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 			AND Cart.deleteToReferent = 'N')";
             }
             $sql .= "WHERE 
-                        ProdGasArticlesPromotion.supplier_id = Article.supplier_organization_id
-                        AND ProdGasArticlesPromotion.prod_gas_article_id = Article.prod_gas_article_id
-                        AND ArticlesOrder.organization_id = " . $user->organization['Organization']['id'] . " 
+                        ArticlesOrder.organization_id = ".$user->organization['Organization']['id']." 
+                        AND ProdGasArticlesPromotion.organization_id = Article.organization_id
+                        AND ProdGasArticlesPromotion.article_id = Article.id                        
                         AND Article.organization_id = ArticlesOrder.article_organization_id 
                         AND ArticlesOrder.article_id = Article.id 
                         AND ArticlesOrder.stato != 'N' 
                         AND Article.stato = 'Y' 
-                        AND ArticlesOrder.order_id = " . $options['conditions']['ArticlesOrder.order_id'] . " 
-                        AND ProdGasArticlesPromotion.prod_gas_promotion_id = " . $prod_gas_promotion_id;
+                        AND ArticlesOrder.order_id = ".$order_id." 
+                        AND ProdGasArticlesPromotion.prod_gas_promotion_id = ".$prod_gas_promotion_id;
 
             if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
                 $sql .= " AND ArticlesArticlesType.organization_id = " . $user->organization['Organization']['id'] . "
@@ -488,7 +488,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                 $sql .= " AND Article.category_id = " . $options['conditions']['Article.category_id'];
 
             $sql .= " ORDER BY " . $options['order'];
-            // echo '<br />getArticoliEventualiAcquistiInOrdinePromotion '.$sql;
+            self::d('getArticoliEventualiAcquistiInOrdinePromotion '.$sql, $debug);
             $results = $this->query($sql);
 
             /*
@@ -654,7 +654,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         App::import('Model', 'Cart');
         $Cart = new Cart();
 
-        $Cart->unbindModel(array('belongsTo' => array('Order')));
+        $Cart->unbindModel(['belongsTo' => ['Order']]);
         $options['conditions'] = array('Cart.organization_id' => $user->organization['Organization']['id'],
             'ArticlesOrder.stato != ' => 'N',
             'Article.stato' => 'Y'
@@ -1050,4 +1050,11 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         }
         return $results;
     }
+    
+	public function beforeSave($options = []) {
+		if (!empty($this->data['ArticlesOrder']['prezzo']))
+	    	$this->data['ArticlesOrder']['prezzo'] = $this->importoToDatabase($this->data['ArticlesOrder']['prezzo']);
+
+	    return true;
+	}
 }

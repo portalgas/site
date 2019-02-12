@@ -1,31 +1,29 @@
 <?php
 App::uses('AppModel', 'Model');
 
-class De extends AppModel {
-	
+class De extends AppModel {	
+		
 	public function getArticoliAcquistatiDaUtenteInDesOrdine($user, $conditions, $orderBy) {
 		
 		App::import('Model', 'Cart');
 		$Cart = new Cart();
 		
-		$belongsTo = array(
-				'className' => 'Organization',
-				'foreignKey' => '',
-				'conditions' => array('Organization.id = Cart.organization_id'),
-				'fields' => '',
-				'order' => '');
+		$belongsTo = ['className' => 'Organization',
+					'foreignKey' => '',
+					'conditions' => array('Organization.id = Cart.organization_id'),
+					'fields' => '',
+					'order' => ''];
 		$Cart->bindModel(array('belongsTo' => array('Organization' => $belongsTo)));				
-		$Cart->unbindModel(array('belongsTo' => array('Order')));
+		$Cart->unbindModel(['belongsTo' => ['Order']]);
 		
-		$options['conditions'] = array('ArticlesOrder.stato != ' => 'N',
-										'Article.stato' => 'Y'
-										);
+		$options['conditions'] = ['ArticlesOrder.stato != ' => 'N',
+								  'Article.stato' => 'Y'];
 		/*
 		 * filtro per tutti gli ordini in DesOrder
 		 */								
-		if(isset($conditions['Cart.order_id']))       	  $options['conditions'] += array('Cart.order_id IN ('.$conditions['Cart.order_id'].')');
-		if(isset($conditions['Cart.stato']))          	  $options['conditions'] += array('Cart.stato' => $conditions['Cart.stato']);
-		if(isset($conditions['Cart.deleteToReferent']))   $options['conditions'] += array('Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']);
+		if(isset($conditions['Cart.order_id']))       	  $options['conditions'] += ['Cart.order_id IN ('.$conditions['Cart.order_id'].')'];
+		if(isset($conditions['Cart.stato']))          	  $options['conditions'] += ['Cart.stato' => $conditions['Cart.stato']];
+		if(isset($conditions['Cart.deleteToReferent']))   $options['conditions'] += ['Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']];
 				
 		$options['recursive'] = 0;
 		$options['order'] = $orderBy;
@@ -53,8 +51,9 @@ class De extends AppModel {
 		
 			$newResults[$result['Article']['id']]['Article'] = $result['Article'];
 
-			$newResults[$result['Article']['id']]['ArticlesOrder']['article_organzation__id'] = $result['ArticlesOrder']['article_organzation__id'];
-			$newResults[$result['Article']['id']]['ArticlesOrder']['article_id'] = $result['Article']['ArticlesOrder'];
+			$newResults[$result['Article']['id']]['ArticlesOrder']['article_organization_id'] = $result['ArticlesOrder']['article_organization_id'];
+			$newResults[$result['Article']['id']]['ArticlesOrder']['article_id'] = $result['ArticlesOrder']['article_id'];
+			$newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['ArticlesOrder']['name'];
 			$newResults[$result['Article']['id']]['ArticlesOrder']['pezzi_confezione'] = $result['ArticlesOrder']['pezzi_confezione'];
 			$newResults[$result['Article']['id']]['ArticlesOrder']['prezzo'] = $result['ArticlesOrder']['prezzo'];
 			
@@ -97,7 +96,7 @@ class De extends AppModel {
 		/*
 		 * aggrego per Articles
 		 */
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResult => $result) {
 			$newResults[$result['Article']['id']]['Article'] = $result['Article'];
 		}

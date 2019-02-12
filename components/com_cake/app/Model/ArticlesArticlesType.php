@@ -1,10 +1,11 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ArticlesArticlesType extends AppModel {
 
 	/*	 * estraggo gli ArticlesType di un aticolo	*/	public function getArticlesArticlesTypes($user, $article_id) {	
-		$results = array();
+		$results = [];
 		try {			$conditions = array('ArticlesArticlesType.organization_id' => $user->organization['Organization']['id'],								'ArticlesArticlesType.article_id' => $article_id);
 			$this->unbindModel(array('belongsTo' => array('Article')));
 			$results = $this->find('all', array('conditions' => $conditions,															'order_by' => 'ArticlesType.sort',															'recursive' => 0));
