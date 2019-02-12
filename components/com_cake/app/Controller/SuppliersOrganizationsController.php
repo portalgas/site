@@ -32,43 +32,80 @@ class SuppliersOrganizationsController extends AppController {
 	}
 
 	public function admin_index() {
-		
-		$FilterSuppliersOrganizationName=null;
+
+		$FilterSuppliersOrganizationId=null;
 		$FilterSuppliersOrganizationCategoryId=null;
+		$FilterSuppliersOrganizationStato = 'ALL';
 		$SqlLimit = 20;
 
-		$conditions[] = array('SuppliersOrganization.organization_id = '.(int)$this->user->organization['Organization']['id']);
+		$conditions[] = array('SuppliersOrganization.organization_id' => (int)$this->user->organization['Organization']['id']); 
 
+		/*
+		 * get elenco produttori filtrati
+		*/
 		if($this->isSuperReferente()) {
-			/* recupero dati dalla Session gestita in appController::beforeFilter */
-			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {
-				$FilterSuppliersOrganizationName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');
-				if(!empty($FilterSuppliersOrganizationName)) $conditions[] = array('SuppliersOrganization.name LIKE '=>'%'.$FilterSuppliersOrganizationName.'%');
-			}
-
-			if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
-				if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryId')) {
-					$FilterSuppliersOrganizationCategoryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'CategoryId');
-					$conditions[] = array('SuppliersOrganization.category_supplier_id'=>$FilterSuppliersOrganizationCategoryId);
-				}
-			}
-							
-			/* filtro */
-			$this->set('FilterSuppliersOrganizationName', $FilterSuppliersOrganizationName);
-			$this->set('FilterSuppliersOrganizationCategoryId', $FilterSuppliersOrganizationCategoryId);
-			
-			App::import('Model', 'CategoriesSupplier');
-			$CategoriesSupplier = new CategoriesSupplier;
-	
-			$options = array();
-			$options['order'] = array('CategoriesSupplier.name');
-			$categories = $CategoriesSupplier->find('list', $options);
-			$this->set(compact('categories'));			
+			App::import('Model', 'SuppliersOrganization');
+			$SuppliersOrganization = new SuppliersOrganization;
+				
+			$options = [];
+			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+											'SuppliersOrganization.stato' => 'Y');
+			$options['recursive'] = -1;
+			$options['order'] = array('SuppliersOrganization.name');
+			$results = $SuppliersOrganization->find('list', $options);
+			$this->set('ACLsuppliersOrganization',$results);
 		}
 		else {
-			$conditions[] = array('SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
+			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
+			$conditions[] = ['SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
+		}
+		
+		/* recupero dati dalla Session gestita in appController::beforeFilter */
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Id')) {
+			$FilterSuppliersOrganizationId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Id');
+			if(!empty($FilterSuppliersOrganizationId)) $conditions[] = array('SuppliersOrganization.id' => $FilterSuppliersOrganizationId);
 		}
 
+		if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
+			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryId')) {
+				$FilterSuppliersOrganizationCategoryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'CategoryId');
+				$conditions[] = array('SuppliersOrganization.category_supplier_id'=>$FilterSuppliersOrganizationCategoryId);
+			}
+		}
+		
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Stato')) {
+			$FilterSuppliersOrganizationStato = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Stato');
+			if($FilterSuppliersOrganizationStato!='ALL')
+				$conditions[] = array('SuppliersOrganization.stato' => $FilterSuppliersOrganizationStato);
+		}
+		else {
+			if(!empty($FilterSuppliersOrganizationStato) && $FilterSuppliersOrganizationStato!='ALL')  // cosi' di default e' ALL
+				$conditions[] = array('SuppliersOrganization.stato' => $FilterSuppliersOrganizationStato);
+		}
+		
+		/* filtro */
+		$this->set('FilterSuppliersOrganizationId', $FilterSuppliersOrganizationId);
+		$this->set('FilterSuppliersOrganizationCategoryId', $FilterSuppliersOrganizationCategoryId);
+		$this->set('FilterSuppliersOrganizationStato', $FilterSuppliersOrganizationStato);
+		
+		App::import('Model', 'CategoriesSupplier');
+		$CategoriesSupplier = new CategoriesSupplier;
+
+		$options = [];
+		$options['order'] = array('CategoriesSupplier.name');
+		$categories = $CategoriesSupplier->find('list', $options);
+		$this->set(compact('categories'));	
+
+		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];
+		$this->set(compact('stato'));
+		
+		
+		/*
+		echo "<pre>";
+		print_r($conditions);
+		echo "</pre>";
+		*/
+		
 		$this->SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
 		$this->SuppliersOrganization->recursive = 0; 
         $this->paginate = array('conditions' => array($conditions),'order'=>'SuppliersOrganization.name','limit' => $SqlLimit);
@@ -126,23 +163,30 @@ class SuppliersOrganizationsController extends AppController {
 	/*
 	 * elenco dei Suppliers disponibili, non ancora associati 
 	 * $duplicateSuppliersId se arrivo da SuppliersOrganization::add e ho inserito un dato duplicato
+	 * can_promotions redita quelli del GAS
+	 * x root, se arrivo da ProdGasSuppliersImports::index $search e' il nome del produttore
 	 */
-	public function admin_add_index() {
+	public function admin_add_index($search='') {
 		
 		$debug = false;
 
+		$search = str_replace('Azienda ', '', $search);
+		$search = str_replace('azienda', '', $search);
+		$search = str_replace('Az. ', '', $search);
+		$search = str_replace('Agricola ', '', $search);
+		$search = str_replace('agricola ', '', $search);
+		$search = str_replace('Agr. ', '', $search);
+		$search = str_replace('Ag. ', '', $search);
+		$this->set(compact('search'));
+		self::d($search, $debug);
+		
 		App::import('Model', 'Supplier');
 		$Supplier = new Supplier;
 			
 		if ($this->request->is('post') || $this->request->is('put')) {
-			
-			if($debug) {
-				echo '<h2>->request->data </h2>';
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
-			
+		
+			self::d($this->request->data,$debug);
+
 			$supplier_id = $this->request->data['supplier_id'];
 			$Supplier->id = $supplier_id;
 			if (!$Supplier->exists()) {
@@ -150,34 +194,92 @@ class SuppliersOrganizationsController extends AppController {
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
 			
-			$options = array();
-			$options['conditions'] = array('Supplier.id' => $supplier_id);			
+			$options = [];
+			$options['conditions'] = ['Supplier.id' => $supplier_id];			
 			$options['recursive'] = -1;
 			$results = $Supplier->find('first', $options);
-			if($debug) {
-				echo '<h2>Dati produttore MASTER</h2>';
-				echo "<pre>";
-				print_r($results);
-				echo "</pre>";
-			}
 			
-			$data = array();
+			self::d($results, $debug);
+
+			$data = [];
 			$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
 			$data['SuppliersOrganization']['supplier_id'] = $results['Supplier']['id'];
 			$data['SuppliersOrganization']['name'] = $results['Supplier']['name'];
 			$data['SuppliersOrganization']['category_supplier_id'] = $results['Supplier']['category_supplier_id'];
+			
+			/*
+			 * eredita quelli del produttore
+			 */ 
+			$data['SuppliersOrganization']['can_promotions'] = $results['Supplier']['can_promotions'];
+			
+			/*
+			 * il produttore importata a i valori di defautl
+			 */ 
+			$data['SuppliersOrganization']['frequenza'] = '';
+			$data['SuppliersOrganization']['can_view_orders'] = Configure::read('SupplierDefaultCanViewOrders');
+			$data['SuppliersOrganization']['can_view_orders_users'] = Configure::read('SupplierDefaultCanViewOrdersUsers');
+			$data['SuppliersOrganization']['mail_order_open'] = Configure::read('SupplierDefaultMailOrderOpen');
+			$data['SuppliersOrganization']['mail_order_close'] = Configure::read('SupplierDefaultMailOrderClose');
 			$data['SuppliersOrganization']['stato'] = 'Y';
-			$data['SuppliersOrganization']['mail_order_open'] = 'Y';
-			$data['SuppliersOrganization']['mail_order_close'] = 'Y';
+			
+			if($results['Supplier']['owner_organization_id']==0) {
+				$data['SuppliersOrganization']['owner_articles'] = 'REFERENT';
+				/*
+				 * dopo il salvataggio recupero SupplierOrganization.id e aggiorno
+				 */
+				$data['SuppliersOrganization']['owner_supplier_organization_id'] = 0;
+				$data['SuppliersOrganization']['owner_organization_id'] = 0;
+			}
+			else {
+				$data['SuppliersOrganization']['owner_articles'] = 'SUPPLIER';
+				
+				$data['SuppliersOrganization']['owner_supplier_organization_id'] = 0;
+				$data['SuppliersOrganization']['owner_organization_id'] = $results['Supplier']['owner_organization_id'];
+				
+				/* 
+				 * aggiorno SuppliersOrganization con chi gestisce il listino articoli (ora lui) owner_... 
+				 */
+				$options = [];
+				$options['conditions'] = ['SuppliersOrganization.organization_id' => $results['Supplier']['owner_organization_id'],
+										   'SuppliersOrganization.supplier_id' => $results['Supplier']['id']];
+				$options['recursive'] = -1;
+				$suppliersOrganizationResults = $this->SuppliersOrganization->find('first', $options);	
+				if(empty($suppliersOrganizationResults)) {
+					
+					// self::x("SuppliersOrganizations::add_index produttore non completo!");
+					 /*
+					  * l'organization del PRODUTTORE non ha associato il produttore (SuppliersOrganization vuoto) => lo creo
+					  */
+					$dataProd = $data;
+					$dataProd['SuppliersOrganization']['owner_articles'] = 'REFERENT';
+					$dataProd['SuppliersOrganization']['organization_id'] = $results['Supplier']['owner_organization_id'];
+					$dataProd['SuppliersOrganization']['supplier_id'] = $results['Supplier']['id'];
+					
+					$this->SuppliersOrganization->create();
+					if ($this->SuppliersOrganization->save($dataProd)) {
+						$supplier_organization_id = $this->SuppliersOrganization->id;
+						
+						self::d("Inserito SuppliersOrganization.id [$supplier_organization_id] associato all'organization del PRODUTTORE", $debug);
+						
+						$dataProd['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;
+						$data['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;	
+						
+						if (!$this->SuppliersOrganization->save($dataProd)) {
+							$continua = false;
+						}
+					}
+					else 
+						$continua = false;
+				}
+				else
+					$data['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];			
+			}	
+
 			$this->SuppliersOrganization->create();
 			
-			if($debug) {
-				echo '<h2>Dati produttore SLAVE</h2>';
-				echo "<pre>";
-				print_r($data);
-				echo "</pre>";
-			}
-			
+			self::d('Dati produttore SLAVE', $debug);
+			self::d($data, $debug); 
+
 			if ($this->SuppliersOrganization->save($data)) {
 				
 				/*
@@ -186,12 +288,36 @@ class SuppliersOrganizationsController extends AppController {
 				*/
 				$supplier_organization_id = $this->SuppliersOrganization->id;
 				
-				if($debug) echo "<br />supplier_articles ".$this->request->data['SuppliersOrganization']['supplier_articles'];
+				self::d("Inserito SuppliersOrganization.id [$supplier_organization_id]", $debug);
 				
+				if($data['SuppliersOrganization']['owner_supplier_organization_id'] == 0 && $data['SuppliersOrganization']['owner_organization_id'] == 0) {
+					/* 
+					 * aggiorno SuppliersOrganization con chi gestisce il listino articoli (ora lui) owner_... 
+					 */
+					 $options = [];
+					 $options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+					 						   'SuppliersOrganization.id' => $supplier_organization_id];
+					 $options['recursive'] = -1;
+					 $suppliersOrganizationResults = $this->SuppliersOrganization->find('first', $options);	
+					
+					$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;
+					$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $this->user->organization['Organization']['id'];
+					self::d($suppliersOrganizationResults, $debug);
+					
+					if (!$this->SuppliersOrganization->save($suppliersOrganizationResults)) {
+						$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
+						$continua = false;
+					} 					
+				} // end if($data['SuppliersOrganization']['owner_supplier_organization_id'] == 0 && $data['SuppliersOrganization']['owner_organization_id'] == 0) 
+				
+				self::d("supplier_articles ".$this->request->data['SuppliersOrganization']['supplier_articles']." se Y importo anche gli articoli del produttore", $debug);
+								
 				/*
 				 * importo anche gli articoli del produttore
 				 */
-				if($this->request->data['SuppliersOrganization']['supplier_articles']=='Y') {
+				$organization_id = $this->request->data['organization_id'];
+	 
+				if($this->request->data['SuppliersOrganization']['supplier_articles']=='Y' && !empty($organization_id)) {
 					
 					App::import('Model', 'SuppliersOrganization');
 					$SuppliersOrganization = new SuppliersOrganization;
@@ -199,9 +325,9 @@ class SuppliersOrganizationsController extends AppController {
 					$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'Supplier', 'CategoriesSupplier')));
 					$SuppliersOrganization->unbindModel(array('hasMany' => array('Order', 'SuppliersOrganizationsReferent')));
 						
-					$options = array();
-					$options['conditions'] = array('SuppliersOrganization.organization_id !=' => $this->user->organization['Organization']['id'], /* non prendo quello dello user perche' devo ancora associarlo */
-													'SuppliersOrganization.supplier_id' => $supplier_id);
+					$options = [];
+					$options['conditions'] = ['SuppliersOrganization.organization_id' => $organization_id,
+											  'SuppliersOrganization.supplier_id' => $supplier_id];
 					$options['recursive'] = 1;
 					$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 					
@@ -209,6 +335,8 @@ class SuppliersOrganizationsController extends AppController {
 					
 					if(isset($suppliersOrganizationResults['Article']))
 					foreach ($suppliersOrganizationResults['Article'] as $numResult  => $article) {
+					
+						$debugArticleCopy = false;
 					
 						/*
 						 * non gli passo organization_id dell'utente ma dell'organization da cui copio i prodotti 
@@ -219,24 +347,20 @@ class SuppliersOrganizationsController extends AppController {
 						
 						$Article = new Article;
 						
-						$articleCopy = array();
-						$articleCopy = $Article->copy_prepare($user, $id, $debug);
+						$articleCopy = [];
+						$articleCopy = $Article->copy_prepare($user, $id, $organization_id, $debugArticleCopy);
 						$articleCopy['Article']['id'] = $Article->getMaxIdOrganizationId($this->user->organization['Organization']['id']);
 						$articleCopy['Article']['organization_id'] = $this->user->organization['Organization']['id'];
 						$articleCopy['Article']['supplier_organization_id'] = $supplier_organization_id;
 						
-						$articleCopy = $Article->copy_img($this->user, $user->organization['Organization']['id'], $articleCopy, $debug);
-						$articleCopy = $Article->copy_article_type($this->user, $articleCopy, $debug);
+						$articleCopy = $Article->copy_img($this->user, $user->organization['Organization']['id'], $articleCopy, $debugArticleCopy);
+						$articleCopy = $Article->copy_article_type($this->user, $articleCopy, $debugArticleCopy);
 						
-						if($debug) {
-							echo '<h1>articolo SLAVE (nuovo dalla copia del MASTER)</h1>';
-							echo "<pre>";
-							print_r($articleCopy);
-							echo "</pre>";
-						}
+						self::d('articolo SLAVE (nuovo dalla copia del MASTER)', $debug);
+						self::d($articleCopy, $debug);
 						
 						$Article->create();
-						$Article->save($articleCopy['Article'], array('validate' => false));	
+						$Article->save($articleCopy['Article'], ['validate' => false]);	
 					}	
 					
 					$this->Session->setFlash(__('The supplier organization and articles has been saved'));
@@ -251,7 +375,7 @@ class SuppliersOrganizationsController extends AppController {
 					App::import('Model', 'SuppliersOrganizationsReferent');
 					$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 					
-					$data = array();
+					$data = [];
 					$data['SuppliersOrganizationsReferent']['supplier_organization_id'] = $supplier_organization_id;
 					$data['SuppliersOrganizationsReferent']['type'] = 'REFERENTE';
 					$data['SuppliersOrganizationsReferent']['user_id'] = $this->user->get('id');
@@ -322,7 +446,7 @@ class SuppliersOrganizationsController extends AppController {
 			if(!empty($FilterSuppliersOrganizationCap)) $sql .= " AND Supplier.cap = '".$FilterSuppliersOrganizationCap."' ";
 			
 		$sql .= " ORDER BY Supplier.name";
-		if($debug) echo '<br />'.$sql;
+		self::d($sql, $debug);
 		$results = $this->SuppliersOrganization->query($sql);
 		$this->set('results', $results);
 		
@@ -335,7 +459,7 @@ class SuppliersOrganizationsController extends AppController {
 		App::import('Model', 'CategoriesSupplier');
 		$CategoriesSupplier = new CategoriesSupplier;
 
-		$options = array();
+		$options = [];
 		$options['order'] = array('CategoriesSupplier.name');
 		$categories = $CategoriesSupplier->find('list', $options);
 		
@@ -376,11 +500,8 @@ class SuppliersOrganizationsController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			if($debug) {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";				
-			}
+			$continua = true;
+			self::d($this->request->data, $debug);
 			
 			$sort = $this->request->data['Supplier']['sort'];
 			$direction = $this->request->data['Supplier']['direction'];
@@ -401,24 +522,47 @@ class SuppliersOrganizationsController extends AppController {
 			$data['Supplier']['j_content_id'] = 0;
 			$data['Supplier']['lat'] ='';
 			$data['Supplier']['lng'] = '';
+
+			/*
+			 * il produttore creato, se il GAS lo crea e abilita can_promotions, il Supplier erederdita 
+			 */			
+			$data['Supplier']['can_promotions'] = $this->request->data['Supplier']['prod_gas_supplier_can_promotions'];
+			$data['Supplier']['owner_organization_id'] = 0; // id del Organization.type = PRODGAS
+			
+			/*
+			 * il produttore creato a i valori di defautl
+			 */ 			
 			$data['Supplier']['stato'] = 'T';
-			$Supplier->create();
-			if($debug) {
-				echo "<pre>";
-				print_r($data);
-				echo "</pre>";
-			}
-			if (!$Supplier->save($data)) {
+			
+			/*
+			 * richiamo la validazione 
+			 */
+			$msg_errors = $Supplier->getMessageErrorsToValidate($Supplier, $data);
+			if(!empty($msg_errors)) {
+				self::d($data, $debug);
+				self::d($msg_errors, $debug);
 				$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
-			} else {
+				$continua = false;
+			}
+
+			if($continua) {
+				$Supplier->create();
+				self::d($this->request->data, $debug);
+				if (!$Supplier->save($data)) {
+					$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
+				$continua = false;
+			} 
+			
+			if($continua) {
 				$this->Session->setFlash(__('The supplier has been saved'));
 				
 				$supplier_id = $Supplier->getLastInsertId();
+				self::d("Inserito Supplier.id [$supplier_id]", $debug);	
 					
 				/*
 				 * inserisco in SuppliersOrgnization
 				*/			
-				$data = array();
+				$data = [];
 				$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
 				$data['SuppliersOrganization']['supplier_id'] = $supplier_id;
 				$data['SuppliersOrganization']['name'] = $this->request->data['Supplier']['name'];
@@ -427,26 +571,73 @@ class SuppliersOrganizationsController extends AppController {
 				else
 					$data['SuppliersOrganization']['category_supplier_id'] = 0;
 				$data['SuppliersOrganization']['frequenza'] = $this->request->data['Supplier']['frequenza'];
+				$data['SuppliersOrganization']['can_promotions'] = Configure::read('SupplierDefaultCanPromotions');
 				$data['SuppliersOrganization']['stato'] = 'Y';
 				$data['SuppliersOrganization']['mail_order_open'] = $this->request->data['Supplier']['mail_order_open'];
 				$data['SuppliersOrganization']['mail_order_close'] = $this->request->data['Supplier']['mail_order_close'];
-				$data['SuppliersOrganization']['owner_articles'] = $this->request->data['Supplier']['prod_gas_supplier_owner_articles'];
+				/*
+				 * ora i radio e' disabled
+				 * $data['SuppliersOrganization']['owner_articles'] = $this->request->data['Supplier']['prod_gas_supplier_owner_articles'];
+				 */
+				$data['SuppliersOrganization']['owner_articles'] = 'REFERENT'; 
 				$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['Supplier']['prod_gas_supplier_can_view_orders'];
 				$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['Supplier']['prod_gas_supplier_can_view_orders_users'];
+				$data['SuppliersOrganization']['can_promotions'] = $this->request->data['Supplier']['prod_gas_supplier_can_promotions'];
 				
+				/*
+				 * dopo il salvataggio recupero SupplierOrganization.id e aggiorno
+				 */
+				$data['SuppliersOrganization']['owner_supplier_organization_id'] = 0;
+				$data['SuppliersOrganization']['owner_organization_id'] = 0;
+				
+				/*
+				 * richiamo la validazione 
+				 */
+				$msg_errors = $this->SuppliersOrganization->getMessageErrorsToValidate($Supplier, $data);
+				if(!empty($msg_errors)) {
+					self::d($data, $debug);
+					self::d($msg_errors, $debug);
+					$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
+					$continua = false;
+				}	
+			}
+				
+			if($continua) {			
 				$this->SuppliersOrganization->create();
-				if($debug) {
-					echo "<pre>";
-					print_r($data);
-					echo "</pre>";
-				}
+				self::d($data, $debug);
+					
 				if (!$this->SuppliersOrganization->save($data)) {
 					$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
-				} else {
+					$continua = false;
+				} 
+			}
+			
+			if($continua) {
 					$this->Session->setFlash(__('The supplier has been saved'));
 				
 					$supplier_organization_id = $this->SuppliersOrganization->getLastInsertId();
+					self::d("Inserito SuppliersOrganization.id [$supplier_organization_id]", $debug);
 					
+					/* 
+					 * aggiorno SuppliersOrganization con chi gestisce il listino articoli (ora lui) owner_... 
+					 */
+					 $options = [];
+					 $options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+					 						   'SuppliersOrganization.id' => $supplier_organization_id];
+					 $options['recursive'] = -1;
+					 $suppliersOrganizationResults = $this->SuppliersOrganization->find('first', $options);	
+					
+					$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;
+					$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $this->user->organization['Organization']['id'];
+					self::d($suppliersOrganizationResults, $debug);
+					
+					if (!$this->SuppliersOrganization->save($suppliersOrganizationResults)) {
+						$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
+						$continua = false;
+					} 					
+				}
+				
+				if($continua) {						
 					/*
 					 * REFERENTE, COREFERENTE lato front-end viene evidenziata la differenza
 					*/
@@ -457,7 +648,7 @@ class SuppliersOrganizationsController extends AppController {
 							
 					foreach ($types as $type => $value) {
 						
-						if($debug) echo "<br />$type => $value";
+						self::d("$type => $value", $debug);
 
 						if(!empty($this->request->data['referent_user_ids-'.$type])) {
 					
@@ -465,7 +656,7 @@ class SuppliersOrganizationsController extends AppController {
 					
 							$arr_referenti = explode(',', $this->request->data['referent_user_ids-'.$type]);
 
-							$data = array();
+							$data = [];
 							$data['SuppliersOrganizationsReferent']['supplier_organization_id'] = $supplier_organization_id;
 							$data['SuppliersOrganizationsReferent']['type'] = 'REFERENTE';
 							$data['SuppliersOrganizationsReferent']['group_id'] = Configure::read('group_id_referent');
@@ -474,7 +665,7 @@ class SuppliersOrganizationsController extends AppController {
 								$SuppliersOrganizationsReferent->insert($this->user, $data, $debug);
 							}
 						}
-					}
+					} // foreach ($types as $type => $value) 
 
 					$this->reloadUserParams();
 					
@@ -504,7 +695,7 @@ class SuppliersOrganizationsController extends AppController {
 							App::import('Model', 'CategoriesSupplier');
 							$CategoriesSupplier = new CategoriesSupplier;
 
-							$options = array();
+							$options = [];
 							$options['conditions'] = array('CategoriesSupplier.id' => $this->request->data['Supplier']['category_supplier_id']);
 							$options['fields'] = array('CategoriesSupplier.name');
 							$options['order'] = array('CategoriesSupplier.name');
@@ -515,23 +706,27 @@ class SuppliersOrganizationsController extends AppController {
 					
 					$Email->subject($subject_mail);
 					if(!empty($this->user->organization['Organization']['www']))
-						$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+						$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 					else
-						$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+						$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 											
 					foreach ($userResults as $userResult)  {
 						$name = $userResult['User']['name'];
 						$mail = $userResult['User']['email'];
 							
 						if(!empty($mail)) {
-							$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+							$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 							$Email->to($mail);
 							
 							$Mail->send($Email, $mail, $body_mail, $debug);							
 						} // end if(!empty($mail))
 					} // end foreach ($userResults as $userResult)
 						
-					$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=SuppliersOrganizationsJcontents&action=edit&supplier_organization_id='.$supplier_organization_id);
+					$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=SuppliersOrganizationsJcontents&action=edit&supplier_organization_id='.$supplier_organization_id;	
+					if(!$debug)
+						$this->myRedirect($url);
+					else
+						self::d($url, $debug);	
 				}
 			}
 		}
@@ -539,17 +734,26 @@ class SuppliersOrganizationsController extends AppController {
 		App::import('Model', 'CategoriesSupplier');
 		$CategoriesSupplier = new CategoriesSupplier;
 
-		$options = array();
+		$options = [];
 		$options['order'] = array('CategoriesSupplier.name');
 		$categories = $CategoriesSupplier->find('list', $options);
 		$this->set(compact('categories'));			
+
+        App::import('Model', 'SuppliersDeliveriesType');
+        $SuppliersDeliveriesType = new SuppliersDeliveriesType;
+
+        $options = [];
+        $options['order'] = array('SuppliersDeliveriesType.sort');
+        $suppliersDeliveriesType = $SuppliersDeliveriesType->find('list', $options);
+        $this->set(compact('suppliersDeliveriesType'));
 
 		$mail_order_open = ClassRegistry::init('SuppliersOrganization')->enumOptions('mail_order_open');
 		$mail_order_close = ClassRegistry::init('SuppliersOrganization')->enumOptions('mail_order_close');
 		$prod_gas_supplier_owner_articles = ClassRegistry::init('SuppliersOrganization')->enumOptions('owner_articles');
 		$prod_gas_supplier_can_view_orders = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_view_orders');
-		$prod_gas_supplier_can_view_orders_users = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_view_orders_users');	
-		$this->set(compact('stato', 'mail_order_open', 'mail_order_close', 'prod_gas_supplier_owner_articles', 'prod_gas_supplier_can_view_orders', 'prod_gas_supplier_can_view_orders_users'));
+		$prod_gas_supplier_can_view_orders_users = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_view_orders_users');
+		$prod_gas_supplier_can_promotions = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_promotions');	
+		$this->set(compact('stato', 'mail_order_open', 'mail_order_close', 'prod_gas_supplier_owner_articles', 'prod_gas_supplier_can_view_orders', 'prod_gas_supplier_can_view_orders_users', 'prod_gas_supplier_can_promotions'));
 			
 		/*
 		 *  elenco users per gestione referenti
@@ -560,7 +764,7 @@ class SuppliersOrganizationsController extends AppController {
 		/*
 		 * imposto gia' l'utente come referente
 		 */
-		$referents = array();
+		$referents = [];
 		$referents[$this->user->get('id')] = $this->user->get('name'); 
 		
 		$user_id = $this->user->get('id');
@@ -602,16 +806,29 @@ class SuppliersOrganizationsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
+	    App::import('Model', 'SuppliersDeliveriesType');
+        $SuppliersDeliveriesType = new SuppliersDeliveriesType;
+		
 		/*
 		 * dati produttore
 		 */
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-									'SuppliersOrganization.id' => $supplier_orgaqnization_id);
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $supplier_orgaqnization_id];
 		$options['recursive'] = 0;
 			
 		$this->SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
 		$results = $this->SuppliersOrganization->find('first', $options);
+		
+		/*
+		 * distribuzione
+		 */
+        $options = [];
+		$options['conditions'] = ['SuppliersDeliveriesType.id' => $results['Supplier']['delivery_type_id']];
+		$options['recursive'] = -1;
+        $suppliersDeliveriesTypesResults = $SuppliersDeliveriesType->find('first', $options);
+		$results['SuppliersDeliveriesType'] = $suppliersDeliveriesTypesResults['SuppliersDeliveriesType'];
+		
 		$this->set(compact('results'));
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -619,169 +836,148 @@ class SuppliersOrganizationsController extends AppController {
 			$msg = "";
 			$esito = true;
 			
-			if($debug) {
-				echo '<h2>this->request->data</h2>';
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			self::d("this->request->data", $debug);
+			self::d($this->request->data, $debug);
 			
 			/*
 			 * Temporaneo / Page => posso modificare tutto
 			 */ 
-			if($results['Supplier']['stato']=='T' || $results['Supplier']['stato']=='PG') {
+			switch($results['Supplier']['stato']) {
+				case 'T':
+				case 'PG':
 				
-				$data = array();
-				$data['Supplier']['id'] = $results['SuppliersOrganization']['supplier_id'];
-				if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
-					$data['Supplier']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
-				else
-					$data['Supplier']['category_supplier_id'] = 0;
-				$data['Supplier']['name'] = $this->request->data['SuppliersOrganization']['name'];
-				$data['Supplier']['nome'] = $this->request->data['SuppliersOrganization']['nome'];
-				$data['Supplier']['cognome'] = $this->request->data['SuppliersOrganization']['cognome'];
-				$data['Supplier']['descrizione'] = $this->request->data['SuppliersOrganization']['descrizione'];
-				$data['Supplier']['indirizzo'] = $this->request->data['SuppliersOrganization']['indirizzo'];
-				$data['Supplier']['localita'] = $this->request->data['SuppliersOrganization']['localita'];
-				$data['Supplier']['cap'] = $this->request->data['SuppliersOrganization']['cap'];
-				$data['Supplier']['provincia'] = $this->request->data['SuppliersOrganization']['provincia'];
-				$data['Supplier']['lat'] = '';
-				$data['Supplier']['lng'] = '';
-				$data['Supplier']['telefono'] = $this->request->data['SuppliersOrganization']['telefono'];
-				$data['Supplier']['telefono2'] = $this->request->data['SuppliersOrganization']['telefono2'];
-				$data['Supplier']['fax'] = $this->request->data['SuppliersOrganization']['fax'];
-				$data['Supplier']['mail'] = $this->request->data['SuppliersOrganization']['mail'];
-				if(!empty($this->request->data['SuppliersOrganization']['www']))
-					$data['Supplier']['www'] = $this->traslateWww($this->request->data['SuppliersOrganization']['www']);
-				$data['Supplier']['nota'] = $this->request->data['SuppliersOrganization']['nota'];
-				$data['Supplier']['cf'] = $this->request->data['SuppliersOrganization']['cf'];
-				$data['Supplier']['piva'] = $this->request->data['SuppliersOrganization']['piva'];
-				$data['Supplier']['conto'] = $this->request->data['SuppliersOrganization']['conto'];
-
-				$data['Supplier']['j_content_id'] = $results['Supplier']['j_content_id'];
-				$data['Supplier']['img1'] = $results['Supplier']['img1'];
-				$data['Supplier']['stato'] = $results['Supplier']['stato'];
-				
-				if($debug) {
-					echo '<h2>Supplier</h2>';
-					echo "<pre>";
-					print_r($data);
-					echo "</pre>";
-				}
-				
-				App::import('Model', 'Supplier');
-				$Supplier = new Supplier;
-				
-				$Supplier->set($data);
-				if(!$Supplier->validates()) {
-				
-						$errors = $Supplier->validationErrors;
-						$tmp = '';
-						$flatErrors = Set::flatten($errors);
-						if(count($errors) > 0) { 
-							$tmp = '';
-							foreach($flatErrors as $key => $value) 
-								$tmp .= __($key).' '.$value.' - ';
-						}
-						$msg .= "Produttore non inserito: dati non validi, $tmp<br />";
-						$esito = false;
-				}
-				
-				if($esito) {
-					$Supplier->create();
-					if (!$Supplier->save($data))  {
-						$esito = false;
-						$msg = __('The supplier could not be saved. Please, try again.');
-					}
-				}
-				
-				if($esito) {		
-					$data = array();
-					$data['SuppliersOrganization']['id'] = $results['SuppliersOrganization']['id'];
-					$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
-					$data['SuppliersOrganization']['supplier_id'] = $results['SuppliersOrganization']['supplier_id'];
-					$data['SuppliersOrganization']['name'] = $this->request->data['SuppliersOrganization']['name'];
-					$data['SuppliersOrganization']['frequenza'] = $this->request->data['SuppliersOrganization']['frequenza'];
-					$data['SuppliersOrganization']['stato'] = $results['SuppliersOrganization']['stato'];
-					$data['SuppliersOrganization']['mail_order_open'] = $results['SuppliersOrganization']['mail_order_open'];
-					$data['SuppliersOrganization']['mail_order_close'] = $results['SuppliersOrganization']['mail_order_close'];
-					$data['SuppliersOrganization']['owner_articles'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_owner_articles'];
-					$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders'];
-					$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders_users'];					
+					$data = [];
+					$data['Supplier']['id'] = $results['SuppliersOrganization']['supplier_id'];
 					if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
-						$data['SuppliersOrganization']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
+						$data['Supplier']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
 					else
-						$data['SuppliersOrganization']['category_supplier_id'] = 0;
+						$data['Supplier']['category_supplier_id'] = 0;
+					$data['Supplier']['name'] = $this->request->data['SuppliersOrganization']['name'];
+					$data['Supplier']['nome'] = $this->request->data['SuppliersOrganization']['nome'];
+					$data['Supplier']['cognome'] = $this->request->data['SuppliersOrganization']['cognome'];
+					$data['Supplier']['descrizione'] = $this->request->data['SuppliersOrganization']['descrizione'];
+					$data['Supplier']['indirizzo'] = $this->request->data['SuppliersOrganization']['indirizzo'];
+					$data['Supplier']['localita'] = $this->request->data['SuppliersOrganization']['localita'];
+					$data['Supplier']['cap'] = $this->request->data['SuppliersOrganization']['cap'];
+					$data['Supplier']['provincia'] = $this->request->data['SuppliersOrganization']['provincia'];
+					$data['Supplier']['lat'] = '';
+					$data['Supplier']['lng'] = '';
+					$data['Supplier']['telefono'] = $this->request->data['SuppliersOrganization']['telefono'];
+					$data['Supplier']['telefono2'] = $this->request->data['SuppliersOrganization']['telefono2'];
+					$data['Supplier']['fax'] = $this->request->data['SuppliersOrganization']['fax'];
+					$data['Supplier']['mail'] = $this->request->data['SuppliersOrganization']['mail'];
+					if(!empty($this->request->data['SuppliersOrganization']['www']))
+						$data['Supplier']['www'] = $this->traslateWww($this->request->data['SuppliersOrganization']['www']);
+					$data['Supplier']['nota'] = $this->request->data['SuppliersOrganization']['nota'];
+					$data['Supplier']['cf'] = $this->request->data['SuppliersOrganization']['cf'];
+					$data['Supplier']['piva'] = $this->request->data['SuppliersOrganization']['piva'];
+					$data['Supplier']['conto'] = $this->request->data['SuppliersOrganization']['conto'];
+					$data['Supplier']['delivery_type_id'] = $this->request->data['SuppliersOrganization']['delivery_type_id'];
+
+					$data['Supplier']['j_content_id'] = $results['Supplier']['j_content_id'];
+					$data['Supplier']['img1'] = $results['Supplier']['img1'];
+					$data['Supplier']['stato'] = $results['Supplier']['stato'];
 					
-					if($debug) {
-						echo '<h2>SuppliersOrganization</h2>';
-						echo "<pre>";
-						print_r($data);
-						echo "</pre>";
+					/*
+					 * il produttore creato ancora i Temporaneo, se il GAS lo crea e abilita can_promotions, il Supplier erederdita 
+					 */					
+					$data['Supplier']['can_promotions'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_promotions'];
+					$data['Supplier']['owner_organization_id'] = 0; // id del Organization.type = PRODGAS
+					
+					self::d($data, $debug);
+					
+					App::import('Model', 'Supplier');
+					$Supplier = new Supplier;
+				
+					$msg_errors = $Supplier->getMessageErrorsToValidate($Supplier, $data);
+					if(!empty($msg_errors)) {
+						self::d($msg_errors, $debug);
+						$msg = __('The supplier could not be saved. Please, try again.').'<br />'.$msg_errors;
+						$esito = false;
 					}
-						
-					$this->SuppliersOrganization->set($data);
-					if(!$this->SuppliersOrganization->validates()) {
 					
-							$errors = $this->SuppliersOrganization->validationErrors;
-							$tmp = '';
-							$flatErrors = Set::flatten($errors);
-							if(count($errors) > 0) { 
-								$tmp = '';
-								foreach($flatErrors as $key => $value) 
-									$tmp .= __($key).' '.$value.' - ';
-							}
-							$msg .= "Produttore non inserito: dati non validi, $tmp<br />";
-							$esito = false;
-					}	
-					
-					if($esito) {					
-						$this->SuppliersOrganization->create();
-						if ($this->SuppliersOrganization->save($data))
-							$esito = true;
-						else {
+					if($esito) {
+						$Supplier->create();
+						if (!$Supplier->save($data))  {
 							$esito = false;
 							$msg = __('The supplier could not be saved. Please, try again.');
 						}
 					}
-				}
-			}
-			else {
-			   /*
-				* 	posso modificare solo FREQUENZA o lo stato (N, PG o T)
-				*/	
-				$data = array();
-				$data['SuppliersOrganization']['id'] = $results['SuppliersOrganization']['id'];
-				$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
-				$data['SuppliersOrganization']['frequenza'] = $this->request->data['SuppliersOrganization']['frequenza'];
-				$data['SuppliersOrganization']['mail_order_open'] = $this->request->data['SuppliersOrganization']['mail_order_open'];
-				$data['SuppliersOrganization']['mail_order_close'] = $this->request->data['SuppliersOrganization']['mail_order_close'];
-				$data['SuppliersOrganization']['owner_articles'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_owner_articles'];
-				$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders'];
-				$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders_users'];				
-				if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
-					$data['SuppliersOrganization']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
-				else
-					$data['SuppliersOrganization']['category_supplier_id'] = 0;				
-				$data['SuppliersOrganization']['stato'] = $this->request->data['SuppliersOrganization']['stato'];
 				
-				if($debug) {
-					echo '<h2>SuppliersOrganization</h2>';
-					echo "<pre>";
-					print_r($data);
-					echo "</pre>";
-				}
-											
-				$this->SuppliersOrganization->create();
-				if ($this->SuppliersOrganization->save($data)) 
-					$esito = true;
-				else
-					$esito = false;
-			} // end if stato 
+					if($esito) {		
+						$data = [];
+						$data['SuppliersOrganization'] = $results['SuppliersOrganization'];
+						$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
+						$data['SuppliersOrganization']['name'] = $this->request->data['SuppliersOrganization']['name'];
+						$data['SuppliersOrganization']['frequenza'] = $this->request->data['SuppliersOrganization']['frequenza'];
+						/*
+						 * ora i radio e' disabled
+						 * $data['SuppliersOrganization']['owner_articles'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_owner_articles'];
+						 */
+						$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders'];
+						$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders_users'];					
+						$data['SuppliersOrganization']['can_promotions'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_promotions'];
+						if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
+							$data['SuppliersOrganization']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
+						else
+							$data['SuppliersOrganization']['category_supplier_id'] = 0;
+						
+						self::d($data, $debug);
+							
+						$msg_errors = $this->SuppliersOrganization->getMessageErrorsToValidate($this->SuppliersOrganization, $data);
+						if(!empty($msg_errors)) {
+							self::d($msg_errors, $debug);
+							$msg = __('The supplier could not be saved. Please, try again.').'<br />'.$msg_errors;
+							$esito = false;
+						}
+					
+						if($esito) {					
+							$this->SuppliersOrganization->create();
+							if ($this->SuppliersOrganization->save($data))
+								$esito = true;
+							else {
+								$esito = false;
+								$msg = __('The supplier could not be saved. Please, try again.');
+							}
+						}
+					}
+				break;
+				default: // Supplier.stato Y
+				   /*
+					* 	posso modificare solo FREQUENZA o lo stato (N, PG o T)
+					*/	
+					$data = [];
+					$data['SuppliersOrganization'] = $results['SuppliersOrganization'];
+					$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
+					$data['SuppliersOrganization']['frequenza'] = $this->request->data['SuppliersOrganization']['frequenza'];
+					$data['SuppliersOrganization']['mail_order_open'] = $this->request->data['SuppliersOrganization']['mail_order_open'];
+					$data['SuppliersOrganization']['mail_order_close'] = $this->request->data['SuppliersOrganization']['mail_order_close'];
+					/*
+					 * ora i radio e' disabled
+					 * $data['SuppliersOrganization']['owner_articles'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_owner_articles'];
+					 */
+					$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders'];
+					$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders_users'];				
+					$data['SuppliersOrganization']['can_promotions'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_promotions'];
+					if($this->user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
+						$data['SuppliersOrganization']['category_supplier_id'] = $this->request->data['SuppliersOrganization']['category_supplier_id'];
+					else
+						$data['SuppliersOrganization']['category_supplier_id'] = 0;				
+					$data['SuppliersOrganization']['stato'] = $this->request->data['SuppliersOrganization']['stato'];
+					
+					self::d($data, $debug);
+												
+					$this->SuppliersOrganization->create();
+					if ($this->SuppliersOrganization->save($data)) 
+						$esito = true;
+					else
+						$esito = false;
+				break;
+			} // switch($results['Supplier']['stato'])
 			
 			if($esito) {
 				$this->Session->setFlash(__('The supplier has been saved'));
-				if(!$debug) $this->myRedirect(array('action' => 'index'));
+				if(!$debug) $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash($msg);
 			}
@@ -794,15 +990,21 @@ class SuppliersOrganizationsController extends AppController {
 		$prod_gas_supplier_owner_articles = ClassRegistry::init('SuppliersOrganization')->enumOptions('owner_articles');
 		$prod_gas_supplier_can_view_orders = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_view_orders');
 		$prod_gas_supplier_can_view_orders_users = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_view_orders_users');
-		$this->set(compact('stato', 'mail_order_open', 'mail_order_close', 'prod_gas_supplier_owner_articles', 'prod_gas_supplier_can_view_orders', 'prod_gas_supplier_can_view_orders_users'));
+		$prod_gas_supplier_can_promotions = ClassRegistry::init('SuppliersOrganization')->enumOptions('can_promotions');
+		$this->set(compact('stato', 'mail_order_open', 'mail_order_close', 'prod_gas_supplier_owner_articles', 'prod_gas_supplier_can_view_orders', 'prod_gas_supplier_can_view_orders_users', 'prod_gas_supplier_can_promotions'));
 		
 		App::import('Model', 'CategoriesSupplier');
 		$CategoriesSupplier = new CategoriesSupplier;
 
-		$options = array();
+		$options = [];
 		$options['order'] = array('CategoriesSupplier.name');
 		$categories = $CategoriesSupplier->find('list', $options);
 		$this->set(compact('categories'));			
+		
+        $options = [];
+        $options['order'] = array('SuppliersDeliveriesType.sort');
+        $suppliersDeliveriesType = $SuppliersDeliveriesType->find('list', $options);
+        $this->set(compact('suppliersDeliveriesType'));
 		
 		/*
 		 * parametri di ricerca da ripassare a admin_index
@@ -828,14 +1030,8 @@ class SuppliersOrganizationsController extends AppController {
 		$totArticlesAttivi = $totArticlesAttivi['totArticles'];
 		$this->set(compact('totArticlesAttivi'));
 
-		if($debug) {
-			echo '<h2>SuppliersOrganization->find</h2>';
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";				
-			echo '<h3>totArticlesAttivi '.$totArticlesAttivi.'</h3>';
-		}
-				
+		self::d([$results, 'totArticlesAttivi '.$totArticlesAttivi], $debug);
+		
 		/*
 		 * se e' TEMPORANEO (non ancora validato da admin) o PG (pagina di un GAS) posso modificarlo
 		*/
@@ -846,17 +1042,11 @@ class SuppliersOrganizationsController extends AppController {
 	}
 
 	/*
-	 * suppliers_organizations_Trigger
-	 *		suppliers_organizations_referents
-	 *    articles
-	 *				article_orders
-	 *				storerooms
-	 *    orders
-	 *				summary_orders
-	 *				articles_orders
-	 *						carts
-    */
+	 * se e' solo il GAS ad utilizzarlo cancello anche Supplier
+	 */
 	public function admin_delete($id = null) {
+		
+		$debug=false;
 		
 		$this->SuppliersOrganization->id = $id;
   		if (!$this->SuppliersOrganization->exists($this->user->organization['Organization']['id'])) {
@@ -864,23 +1054,59 @@ class SuppliersOrganizationsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 
-		if ($this->request->is('post') || $this->request->is('put')) {
-			if ($this->SuppliersOrganization->delete()) 
-				$this->Session->setFlash(__('Delete Supplier Organization'));   
-			else
-				$this->Session->setFlash(__('Supplier was not deleted'));
-			$this->myRedirect(array('action' => 'index'));
-		}
-
 		$this->SuppliersOrganization->hasMany['Article']['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id']);
 		$this->SuppliersOrganization->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id']);
 		$this->SuppliersOrganization->hasMany['SuppliersOrganizationsReferent']['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id']);
-				
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										'SuppliersOrganization.id' => $id);
+		
+		$options = [];		
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $id];
 		$options['recursive'] = 1;
 		$results = $this->SuppliersOrganization->find('first', $options);
-	
+		self::d($results, $debug);
+		
 		$this->set(compact('results'));
+		
+		if ($this->request->is('post') || $this->request->is('put')) {
+			if ($this->SuppliersOrganization->delete()) { 
+				$this->Session->setFlash(__('Delete Supplier Organization'));
+			
+				/*
+				 * ctrl se il Supplier e' condiviso da altri GAS
+				*/
+				App::import('Model', 'Supplier');
+				$Supplier = new Supplier;
+						
+				$options = [];		
+				$options['conditions'] = ['SuppliersOrganization.organization_id != ' => $this->user->organization['Organization']['id'],
+										  'SuppliersOrganization.supplier_id' => $results['SuppliersOrganization']['supplier_id']];
+				$options['recursive'] = -1;
+				$suppliersOrganizationCount = $this->SuppliersOrganization->find('count', $options);
+				self::d("Cerco se il Supplier ".$results['SuppliersOrganization']['supplier_id']." e' condiviso da altri GAS", $debug);
+				self::d($options['conditions'], $debug);
+				self::d($suppliersOrganizationCount, $debug);
+				
+				if($suppliersOrganizationCount==0) {
+				
+					self::d("il Supplier NON e' condiviso da altri GAS => delete", $debug);
+				
+					/*
+					 * il Supplier NON e' condiviso da altri GAS => delete
+					 */
+					App::import('Model', 'Supplier');
+					$Supplier = new Supplier;
+						
+					$Supplier->id = $results['SuppliersOrganization']['supplier_id'];
+					if(!$Supplier->delete()) {
+					
+					} 					
+				} // end if($suppliersOrganizationCount==0)	
+			}	   
+			else
+				$this->Session->setFlash(__('Supplier was not deleted'));
+				
+			if(!$debug)
+				$this->myRedirect(['action' => 'index']);
+		}
 	}
 }

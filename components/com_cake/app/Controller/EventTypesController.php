@@ -45,7 +45,7 @@ class EventTypesController extends AppController {
 			$this->EventType->create();
 			if ($this->EventType->save($this->request->data)) {
 				$this->Session->setFlash(__('The event type has been saved', true));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The event type could not be saved. Please, try again.', true));
 			}
@@ -69,20 +69,18 @@ class EventTypesController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			$this->request->data['EventType']['organization_id'] = $this->user->organization['Organization']['id'];
-			/*
-			echo "<pre>";
-			print_r($this->request->data);
-			echo "</pre>";
-			*/
+			
+			self::d($this->request->data,false);
+		
 			if ($this->EventType->save($this->request->data)) {
 				$this->Session->setFlash(__('The event type has been saved', true));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The event type could not be saved. Please, try again.', true));
 			}
 		} // if ($this->request->is('post') || $this->request->is('put')) 		
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('EventType.id' => $id);
 		$this->request->data = $this->EventType->find('first', $options);
 	}
@@ -97,7 +95,7 @@ class EventTypesController extends AppController {
 			$this->myRedirect(array('action'=>'index'));
 		}
 		$this->Session->setFlash(__('Event type was not deleted', true));
-		$this->myRedirect(array('action' => 'index'));
+		$this->myRedirect(['action' => 'index']);
 	}
 }
 ?>

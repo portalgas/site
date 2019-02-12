@@ -20,7 +20,7 @@ class DesRootController extends AppController {
         App::import('Model', 'Organization');
         $Organization = new Organization;
 		
-        $options = array();
+        $options = [];
         $options['order'] = array('DesRoot.name');
         $options['recursive'] = 1;
         $results = $this->DesRoot->find('all', $options);
@@ -28,7 +28,7 @@ class DesRootController extends AppController {
 		foreach ($results as $numResult => $result) {
 	
 			foreach ($result['DesOrganization'] as $numResult2 => $org) {
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('Organization.id' => $org['organization_id']);
 				$options['recursive'] = -1;
 				$organizationResults = $Organization->find('first', $options);
@@ -38,11 +38,7 @@ class DesRootController extends AppController {
 		
 		}
 		
-		/*
-		echo "<pre>";
-        print_r($results);
-        echo "</pre>";
-		*/
+		self::d($results,false);
 		
         $this->set(compact('results'));
     }

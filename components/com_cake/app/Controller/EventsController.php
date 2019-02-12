@@ -38,7 +38,7 @@ class EventsController extends AppController {
 								'limit' => 25,
 								'order' => array('Event.start' => 'asc', 'Event.end' => 'asc'));
 	    $results = $this->paginate('Event');
-		$results = $this->__getEventsUsers($results);
+		$results = $this->_getEventsUsers($results);
 		$this->set('results', $results);
 	}
 	
@@ -49,7 +49,7 @@ class EventsController extends AppController {
 								'limit' => 25,
 								'order' => array('Event.start' => 'desc', 'Event.end' => 'desc'));
 	    $results = $this->paginate('Event');
-		$results = $this->__getEventsUsers($results);
+		$results = $this->_getEventsUsers($results);
 		$this->set('results', $results);
 	}
 
@@ -58,7 +58,7 @@ class EventsController extends AppController {
 		/*
 		 * attivita del GAS
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Event.organization_id' => $this->user->organization['Organization']['id'], 
 									   'Event.isVisibleFrontEnd' => 'Y',
 										'DATE(Event.end) >= CURDATE()');
@@ -66,12 +66,12 @@ class EventsController extends AppController {
 		$options['order'] = array('Event.start', 'Event.end');
 	    
 		$currentResults = $this->Event->find('all', $options);
-		$currentResults = $this->__getEventsUsers($currentResults);
+		$currentResults = $this->_getEventsUsers($currentResults);
 		
 		/*
 		 * attivita STORICHE
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Event.organization_id' => $this->user->organization['Organization']['id'], 
 									   'Event.isVisibleFrontEnd' => 'Y', 
 										'DATE(Event.end) < CURDATE()');
@@ -79,25 +79,22 @@ class EventsController extends AppController {
 		$options['order'] = array('Event.start', 'Event.end');
 	    
 		$historyResults = $this->Event->find('all', $options);
-		$historyResults = $this->__getEventsUsers($historyResults);
+		$historyResults = $this->_getEventsUsers($historyResults);
 		
 		$results['current'] = $currentResults;
 		$results['history'] = $historyResults;
 		$this->set('results', $results);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results, false);
 		
         /*
          * R E Q U E S T - P A Y M E N T S - dello U S E R 
          */
-        if ($this->user->organization['Organization']['payToDelivery'] == 'POST' || $this->user->organization['Organization']['payToDelivery'] == 'ON-POST') {
+        if ($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery'] == 'ON-POST') {
             App::import('Model', 'SummaryPayment');
             $SummaryPayment = new SummaryPayment;
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
                 'RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
                 'SummaryPayment.stato !=' => 'PAGATO',
@@ -120,6 +117,15 @@ class EventsController extends AppController {
 			
 			$this->request->data['Event']['organization_id'] = $this->user->organization['Organization']['id'];
 			
+			self::d(["BEFORE this->request->data",$this->request->data],$debug);
+						
+			$this->request->data['Event']['start'] = $this->request->data['Event']['start_db'].' '.$this->request->data['Event']['start']['hour'].':'.$this->request->data['Event']['start']['min'].':00';
+			$this->request->data['Event']['end'] = $this->request->data['Event']['end_db'].' '.$this->request->data['Event']['end']['hour'].':'.$this->request->data['Event']['end']['min'].':00';
+			$this->request->data['Event']['date_alert_mail'] = $this->request->data['Event']['date_alert_mail_db'];
+			$this->request->data['Event']['date_alert_fe'] = $this->request->data['Event']['date_alert_fe_db'];
+			
+			self::d($this->request->data,$debug);
+			
 			$this->Event->create();
 			if ($this->Event->save($this->request->data)) {
 				
@@ -136,7 +142,7 @@ class EventsController extends AppController {
 				}  
 		
 				$this->Session->setFlash(__('The event has been saved', true));
-				if(!$debug) $this->myRedirect(array('action' => 'index'));
+				if(!$debug) $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The event could not be saved. Please, try again.', true));
 			}
@@ -150,7 +156,7 @@ class EventsController extends AppController {
 		/*
 		 *  User responsabile 
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
 									   'User.block' => '0');
 		$options['fields'] = array('User.id', 'User.name');							   
@@ -162,7 +168,7 @@ class EventsController extends AppController {
 		/*
 		 * users
 		 */					
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
 									   'User.block' => '0');
 		$options['fields'] = array('User.id', 'User.name');							   
@@ -193,11 +199,12 @@ class EventsController extends AppController {
 			
 			$this->request->data['Event']['organization_id'] = $this->user->organization['Organization']['id'];
 			
-			if($debug) {
-				echo "<pre>this->request->data \n ";
-				print_r($this->request->data);
-				echo "</pre>";			
-			}
+			$this->request->data['Event']['start'] = $this->request->data['Event']['start_db'].' '.$this->request->data['Event']['start']['hour'].':'.$this->request->data['Event']['start']['min'].':00';
+			$this->request->data['Event']['end'] = $this->request->data['Event']['end_db'].' '.$this->request->data['Event']['end']['hour'].':'.$this->request->data['Event']['end']['min'].':00';
+			$this->request->data['Event']['date_alert_mail'] = $this->request->data['Event']['date_alert_mail_db'];
+			$this->request->data['Event']['date_alert_fe'] = $this->request->data['Event']['date_alert_fe_db'];
+		
+			self::d($this->request->data,$debug);
 			
 			if ($this->Event->save($this->request->data)) {
 								
@@ -212,13 +219,13 @@ class EventsController extends AppController {
 				} 
 		
 				$this->Session->setFlash(__('The event has been saved', true));
-				if(!$debug) $this->myRedirect(array('action' => 'index'));
+				if(!$debug) $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The event could not be saved. Please, try again.', true));
 			}
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 			
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Event.id' => $event_id);
 		$this->request->data = $this->Event->find('first', $options);
 		
@@ -227,11 +234,11 @@ class EventsController extends AppController {
 		/*
 		 * users gia' associati
 		 */
-		$newEventsUsersResults = array();
+		$newEventsUsersResults = [];
 		App::import('Model', 'EventsUser');
 		$EventsUser = new EventsUser;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('EventsUser.organization_id' => $this->user->organization['Organization']['id'],
 									   'EventsUser.event_id' => $event_id);
 		$eventsUsersResults = $EventsUser->find('all', $options);
@@ -250,7 +257,7 @@ class EventsController extends AppController {
 		/*
 		 *  User responsabile 
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
 									   'User.block' => '0');
 		$options['fields'] = array('User.id', 'User.name');
@@ -263,7 +270,7 @@ class EventsController extends AppController {
 		/*
 		 * users da associare
 		 */					
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
 									   'User.block' => '0');
 		if(!empty($events_users_ids)) {
@@ -274,11 +281,6 @@ class EventsController extends AppController {
 		$options['order'] = array('User.name');
 		$options['recursive'] = -1;		
 		$usersResults = $User->find('list', $options);
-		/*
-		echo "<pre>";
-		print_r($options);
-		echo "</pre>";
-		*/
 		
 		$this->set('usersResults', $usersResults);
 		$this->set('eventUsersResults', $newEventsUsersResults);	
@@ -297,7 +299,7 @@ class EventsController extends AppController {
 			$this->myRedirect(array('action'=>'index'));
 		}
 		$this->Session->setFlash(__('Event was not deleted', true));
-		$this->myRedirect(array('action' => 'index'));
+		$this->myRedirect(['action' => 'index']);
 	}
 	
     // The feed action is called from "webroot/js/ready.js" to get the list of events (JSON)
@@ -308,19 +310,14 @@ class EventsController extends AppController {
 		$start = $this->request->params['pass']['start'];
 		$end = $this->request->params['pass']['end'];
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Event.organization_id' => $this->user->organization['Organization']['id'],
 									  'UNIX_TIMESTAMP(start) >=' => $start, 
 									   'UNIX_TIMESTAMP(start) <=' => $end);
 		$options['conditions'] = 1;
 		$events = $this->Event->find('all', $options);
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($conditions);
-			print_r($events);
-			echo "</pre>";			
-		}
+		self::d([$data,$events],$debug);
 
 		foreach($events as $event) {
 			if($event['Event']['all_day'] == 1) {
@@ -343,13 +340,8 @@ class EventsController extends AppController {
 			);
 		}
 
-		if($debug) {
-			echo "<pre>";
-			print_r($data);
-			echo "</pre>";	
-			echo json_encode($data);			
-		}
-		
+		self::d([$data,json_encode($data)],$debug);
+				
 		$this->layout = "ajax";
 		$this->set("json", json_encode($data));
 	}
@@ -366,13 +358,13 @@ class EventsController extends AppController {
 	/*
 	*  ottengo gli users associati ad un evento
 	*/
-	private function __getEventsUsers($results, $debug=false) {
+	private function _getEventsUsers($results, $debug=false) {
 
 		App::import('Model', 'EventsUser');
 		
 		foreach($results as $numResult => $result) {
 
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('EventsUser.organization_id' => $this->user->organization['Organization']['id'],
 										   'EventsUser.event_id' => $result['Event']['id']);
 			$options['order'] = array('User.name');
@@ -384,12 +376,9 @@ class EventsController extends AppController {
 			
 			$results[$numResult]['Event']['EventsUser'] = $eventsUserResults;
 		}
-		if($debug) {
-			echo "<pre>__getEventsUsers \n ";
-			print_r($results);
-			echo "</pre>";			
-		}
-
+		
+		self::d($results, $debug);
+		
 		return $results;
 	}
 }

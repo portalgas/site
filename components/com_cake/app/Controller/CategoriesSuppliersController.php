@@ -6,7 +6,7 @@ jimport( 'joomla.application.categories' );
  */
 class CategoriesSuppliersController extends AppController {
 
-	private $jCategories = Array();
+	private $jCategories = [];
 	
 	public $name = 'CategoriesSuppliers';
 
@@ -25,9 +25,9 @@ class CategoriesSuppliersController extends AppController {
     public function admin_index() {        
     	
     	$totSuppliers = 0;  	
-    	$results = array();
-    	$resultsAdd = array();
-    	$resultsTotSupplier = array();
+    	$results = [];
+    	$resultsAdd = [];
+    	$resultsTotSupplier = [];
         
     	$results = $this->CategoriesSupplier->generateTreeList(null, null, null, '&nbsp;&nbsp;&nbsp;');    	
     	foreach ($results as $key => $value) {
@@ -43,15 +43,15 @@ class CategoriesSuppliersController extends AppController {
         			WHERE 
         				CategoriesSupplier.j_category_id = JCategory.id 
         				AND CategoriesSupplier.id = ".$key;
-        	// echo '<br />'.$sql;
+        	self::d($sql, false);
         	try {        		$jResults = $this->CategoriesSupplier->query($sql);
         		if(!empty($jResults)) {        			$jResults = current($jResults);        			$resultsAdd[$key]['j_id'] = $jResults['JCategory']['id'];        			$resultsAdd[$key]['j_title'] = $jResults['JCategory']['title'];        		}        		else {        			$resultsAdd[$key]['j_id'] = "";        			$resultsAdd[$key]['j_title'] = "";        		}	        	}        	catch (Exception $e) {        		CakeLog::write('error',$sql);        		CakeLog::write('error',$e);        	}
         	/*        	 * ottengo il totale dei produttori associati        	*/        	
-        	$sql = "SELECT        				count(Supplier.id) as totSupplier         			FROM        				".Configure::read('DB.prefix')."categories_suppliers CategoriesSupplier,        				".Configure::read('DB.prefix')."suppliers Supplier         			WHERE        				Supplier.category_supplier_id = CategoriesSupplier.id           				AND CategoriesSupplier.id = ".$key;        	// echo '<br />'.$sql;
+        	$sql = "SELECT        				count(Supplier.id) as totSupplier         			FROM        				".Configure::read('DB.prefix')."categories_suppliers CategoriesSupplier,        				".Configure::read('DB.prefix')."suppliers Supplier         			WHERE        				Supplier.category_supplier_id = CategoriesSupplier.id           				AND CategoriesSupplier.id = ".$key;        	self::d($sql, false);
         	try {        		$totResults = $this->CategoriesSupplier->query($sql);
         		if(!empty($totResults)) {        			$totResults = current($totResults);        			$resultsTotSupplier[$key]['totSupplier'] = $totResults[0]['totSupplier'];        		}        		else {        			$resultsTotSupplier[$key]['totSupplier'] = 0;        		}        		        	}        	catch (Exception $e) {        		CakeLog::write('error',$sql);        		CakeLog::write('error',$e);        	}        	 
         }        
-        /*         * ottengo il totale dei produttori        */        $sql = "SELECT        			count(Supplier.id) as totSupplier         		FROM        			".Configure::read('DB.prefix')."suppliers Supplier";        // echo '<br />'.$sql;
+        /*         * ottengo il totale dei produttori        */        $sql = "SELECT        			count(Supplier.id) as totSupplier         		FROM        			".Configure::read('DB.prefix')."suppliers Supplier";        self::d($sql, false);
         try {			$totResults = $this->CategoriesSupplier->query($sql);
 	        if(!empty($totResults)) {
 	        	$totResults = current($totResults);
@@ -76,7 +76,7 @@ class CategoriesSuppliersController extends AppController {
 			$this->CategoriesSupplier->create();
 			if ($this->CategoriesSupplier->save($this->request->data)) {
 				$this->Session->setFlash(__('The category has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
@@ -84,7 +84,7 @@ class CategoriesSuppliersController extends AppController {
 		$parents = $this->CategoriesSupplier->generateTreeList(null, null, null, '&nbsp;&nbsp;&nbsp;');
 		$this->set(compact('parents'));
 		
-		/* parametri per joomla */		$j_categories = $this->__getJCategoryItems(Configure::read('JCategoryIdRoot'));		$this->set(compact('j_categories'));
+		/* parametri per joomla */		$j_categories = $this->_getJCategoryItems(Configure::read('JCategoryIdRoot'));		$this->set(compact('j_categories'));
 	}
 
 	public function admin_edit($id = null) {
@@ -96,7 +96,7 @@ class CategoriesSuppliersController extends AppController {
 			$this->CategoriesSupplier->create();
 			if ($this->CategoriesSupplier->save($this->request->data)) {
 				$this->Session->setFlash(__('The category has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
@@ -107,7 +107,7 @@ class CategoriesSuppliersController extends AppController {
 		$parents = $this->CategoriesSupplier->generateTreeList(null, null, null, '&nbsp;&nbsp;&nbsp;');
 		$this->set(compact('parents'));
 		
-		/* parametri per joomla */		$j_categories = $this->__getJCategoryItems(Configure::read('JCategoryIdRoot'));		$this->set(compact('j_categories'));
+		/* parametri per joomla */		$j_categories = $this->_getJCategoryItems(Configure::read('JCategoryIdRoot'));		$this->set(compact('j_categories'));
 	}
 
 	/*
@@ -123,14 +123,14 @@ class CategoriesSuppliersController extends AppController {
 				$this->Session->setFlash(__('Delete Category'));
 			else
 				$this->Session->setFlash(__('Category was not deleted'));
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		}
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('CategoriesSupplier.id' => $id);		$options['recursive'] = 1;		$results = $this->CategoriesSupplier->find('first', $options);		$this->set(compact('results'));
 	}	
 
-	private function __getJCategoryItems($j_category_id=0, $recursive = false)	{		$categories = JCategories::getInstance('Content');		$this->_parent = $categories->get($j_category_id);		if(is_object($this->_parent))		{			$this->_items = $this->_parent->getChildren($recursive);		}		else		{			$this->_items = false;		}			return $this->__loadJCats($this->_items);	}	
+	private function _getJCategoryItems($j_category_id=0, $recursive = false)	{		$categories = JCategories::getInstance('Content');		$this->_parent = $categories->get($j_category_id);		if(is_object($this->_parent))		{			$this->_items = $this->_parent->getChildren($recursive);		}		else		{			$this->_items = false;		}			return $this->_loadJCats($this->_items);	}	
 	
-	private function __loadJCats($cats = array())	{		if(is_array($cats))		{			$return = array();			foreach($cats as $JCatNode)			{				$this->jCategories[$JCatNode->id] = str_repeat('-',$JCatNode->level).$JCatNode->title;				if($JCatNode->hasChildren()) {					$JCatNodeChild = $this->__loadJCats($JCatNode->getChildren());					if(!empty($JCatNodeChild->id))						$this->jCategories[$JCatNodeChild->id] = str_repeat('-',$JCatNodeChild->level).$JCatNodeChild->title;				}			}				return $this->jCategories;		}			return false;	}		private function __loadJCatsDisabled($cats = array())	{		if(is_array($cats))		{			$i = 0;			$return = array();			foreach($cats as $JCatNode)			{				$return[$i]->id    = $JCatNode->id;				$return[$i]->title = $JCatNode->title;				$return[$i]->level = $JCatNode->level;				if($JCatNode->hasChildren())					$return[$i]->children = $this->__loadJCatsDisabled($JCatNode->getChildren());				else					$return[$i]->children = false;					$i++;			}				return $return;		}			return false;	}	
+	private function _loadJCats($cats = [])	{		if(is_array($cats))		{			$return = [];			foreach($cats as $JCatNode)			{				$this->jCategories[$JCatNode->id] = str_repeat('-',$JCatNode->level).$JCatNode->title;				if($JCatNode->hasChildren()) {					$JCatNodeChild = $this->_loadJCats($JCatNode->getChildren());					if(!empty($JCatNodeChild->id))						$this->jCategories[$JCatNodeChild->id] = str_repeat('-',$JCatNodeChild->level).$JCatNodeChild->title;				}			}				return $this->jCategories;		}			return false;	}		private function _loadJCatsDisabled($cats = [])	{		if(is_array($cats))		{			$i = 0;			$return = [];			foreach($cats as $JCatNode)			{				$return[$i]->id    = $JCatNode->id;				$return[$i]->title = $JCatNode->title;				$return[$i]->level = $JCatNode->level;				if($JCatNode->hasChildren())					$return[$i]->children = $this->_loadJCatsDisabled($JCatNode->getChildren());				else					$return[$i]->children = false;					$i++;			}				return $return;		}			return false;	}	
 }

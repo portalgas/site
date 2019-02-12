@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 
 class AjaxController extends AppController {
@@ -323,7 +322,9 @@ class AjaxController extends AppController {
 		if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
 			switch ($orderResults['Order']['state_code']) {
 				case 'TO-PAYMENT': 
+				case 'USER-PAID': 
 				case 'SUPPLIER-PAID': 
+				case 'WAIT-REQUEST-PAYMENT-CLOSE': 
 					$request_payment_id = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $order_id);
 					$requestPaymentResults = $RequestPayment->getAllDetails($this->user, $request_payment_id);
 					self::d($requestPaymentResults, false);
@@ -385,7 +386,9 @@ class AjaxController extends AppController {
 				
 				switch ($orderResults['Order']['state_code']) {
 					case 'TO-PAYMENT': 
+					case 'USER-PAID': 
 					case 'SUPPLIER-PAID': 
+					case 'WAIT-REQUEST-PAYMENT-CLOSE':
 						$options = [];
 						$options['conditions'] = array('SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
 													   'SummaryPayment.user_id' => $result['SummaryOrder']['user_id'],
@@ -710,9 +713,9 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
-        $Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));
-        $Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
-        $Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
+        $Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 
         $options = [];
         $options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
@@ -811,9 +814,9 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
-        $Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));
-        $Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
-        $Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
+        $Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 
         $options = [];
         $options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
@@ -1653,11 +1656,11 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $conditions = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
+        $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
             /* 'User.block'=> 0, */
-            'lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%');
+            'lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
 
-        $this->set('results', $User->find('all', array('conditions' => $conditions, 'fields' => array('username'))));
+        $this->set('results', $User->find('all', ['conditions' => $conditions, 'fields' => ['User.username']]));
 
         $this->layout = 'ajax';
         $this->render('/Ajax/autocomplete_users_username');
@@ -1667,16 +1670,116 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $conditions = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
+        $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
             /* 'User.block'=> 0, */
-            'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%');
+            'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
 
-        $this->set('results', $User->find('all', array('conditions' => $conditions, 'fields' => array('name'))));
+        $this->set('results', $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]));
 
         $this->layout = 'ajax';
         $this->render('/Ajax/autocomplete_users_name');
     }
 
+	/*
+	 * DES 
+	 */
+    public function admin_autoCompleteDesUsers_username($format = 'notmpl', $q) {
+		
+		$results = [];
+		
+        /* ctrl ACL */
+		if ($this->user->organization['Organization']['hasDes'] == 'N' || $this->user->organization['Organization']['hasDesUserManager'] != 'Y' || empty($this->user->des_id)) {
+            $this->Session->setFlash(__('msg_not_organization_config'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+		
+        if (!$this->isManagerUserDes()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+        /* ctrl ACL */
+		
+        App::import('Model', 'DesOrganization');
+        $DesOrganization = new DesOrganization;
+				
+        App::import('Model', 'User');
+        $User = new User;
+		
+        /*
+         * tutti i GAS del DES
+         */
+        $options = [];
+        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
+        $options['recursive'] = 1;
+        $desOrganizationsResults = $DesOrganization->find('all', $options);
+		if(!empty($desOrganizationsResults)) {
+			$organization_ids = [];
+			foreach ($desOrganizationsResults as $desOrganizationsResult) {    
+				array_push($organization_ids, $desOrganizationsResult['Organization']['id']);
+			}
+			
+			$conditions = ['User.organization_id IN ' => $organization_ids,
+							/* 'User.block'=> 0, */
+							'lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+
+			$results = $User->find('all', ['conditions' => $conditions, 'fields' => ['User.username']]);			
+		}
+		
+        $this->set(compact('results'));
+		$this->layout = 'ajax';
+        $this->render('/Ajax/autocomplete_users_username');
+    }
+
+	/*
+	 * DES 
+	 */
+    public function admin_autoCompleteDesUsers_name($format = 'notmpl', $q) {		
+        
+		$results = [];
+		
+        /* ctrl ACL */
+		if ($this->user->organization['Organization']['hasDes'] == 'N' || $this->user->organization['Organization']['hasDesUserManager'] != 'Y' || empty($this->user->des_id)) {
+            $this->Session->setFlash(__('msg_not_organization_config'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+		
+        if (!$this->isManagerUserDes()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+        /* ctrl ACL */
+		
+        App::import('Model', 'DesOrganization');
+        $DesOrganization = new DesOrganization;
+				
+        App::import('Model', 'User');
+        $User = new User;
+		
+        /*
+         * tutti i GAS del DES
+         */
+        $options = [];
+        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
+        $options['recursive'] = 1;
+        $desOrganizationsResults = $DesOrganization->find('all', $options);
+		if(!empty($desOrganizationsResults)) {
+			$organization_ids = [];
+			foreach ($desOrganizationsResults as $desOrganizationsResult) {    
+				array_push($organization_ids, $desOrganizationsResult['Organization']['id']);
+			}
+			
+			$conditions = ['User.organization_id IN ' => $organization_ids,
+							/* 'User.block'=> 0, */
+							'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+
+			$results = $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]);
+		}
+		
+		$this->set(compact('results'));
+        $this->layout = 'ajax';
+        $this->render('/Ajax/autocomplete_users_name');
+    }
+		
     public function admin_autoCompleteRequestPayment_name($format = 'notmpl', $q) {
         App::import('Model', 'User');
         $User = new User;

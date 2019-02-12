@@ -34,11 +34,9 @@ class ConfigurationsController extends AppController {
 		// Make sure we have at least MySQL 4.1.2
 		$db = JFactory::getDbo();
 		$old_collation = $db->getCollation();
-		if($debug) {
-			echo "<pre>old_collation ";
-			print_r($old_collation);
-			echo "</pre>";			
-		}
+		
+		self::d($old_collation,$debug);
+		
 		if ($old_collation == 'N/A (mySQL < 4.1.2)')
 		{
 			// We can't change the collation on MySQL versions earlier than 4.1.2
@@ -61,7 +59,7 @@ class ConfigurationsController extends AppController {
 		$db->execute();
 	
 		// Get all tables
-		$tables = $this->__findTables($db, $debug);
+		$tables = $this->_findTables($db, $debug);
 		$queryStack = '';
 		if (!empty($tables))
 		{
@@ -73,7 +71,7 @@ class ConfigurationsController extends AppController {
 				if($debug) echo '<br /> '.$sql;
 				$db->setQuery($sql);
 				$columns = $db->loadAssocList();
-				$mods = array(); // array to hold individual MODIFY COLUMN commands
+				$mods = []; // array to hold individual MODIFY COLUMN commands
 				if (is_array($columns))
 				{
 					foreach ($columns as $column)
@@ -135,7 +133,7 @@ class ConfigurationsController extends AppController {
 		$this->render('admin_index');
 	}
 	
-	private function __findTables($db, $debug) {
+	private function _findTables($db, $debug) {
 	
 		$sql = "show tables";
 		if($debug) echo '<br /> '.$sql;

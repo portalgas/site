@@ -116,7 +116,7 @@ class DatabaseDateController extends AppController {
 
 	public function admin_migration_eg3_users() {		if ($this->request->is('post') || $this->request->is('put')) {
 			
-			$parameters = array();
+			$parameters = [];
 			if(isset($this->request->data['hasArticlesOrder']) && !empty($this->request->data['hasArticlesOrder']))
 				$parameters += array('hasArticlesOrder' => $this->request->data['hasArticlesOrder']);
 				
@@ -189,7 +189,7 @@ class DatabaseDateController extends AppController {
 					WHERE 
 						organization_id = ".(int)$this->user->organization['Organization']['id']."
 						AND block = 0";
-			//echo '<br />'.$sql;
+			self::d($sql, false);
 			$totJoomla = current($this->DatabaseDate->query($sql));
 			
 			/*

@@ -21,30 +21,30 @@ class AjaxCartsController extends AppController {
     * user_id in Session
     */
     public function managementCartSimple($rowId, $order_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
-    	$this->__managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
-    	$this->__readRow($rowId, $order_id, $article_organization_id, $article_id);
+    	$this->_managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
+    	$this->_readRow($rowId, $order_id, $article_organization_id, $article_id);
     	
     	$this->layout = 'ajax';
     	$this->render('/Layouts/ajax_rowecomm_frontend_simple');
     }
 
     public function managementCartValidationSimple($rowId, $order_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
-    	$this->__managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
-    	$this->__readRowValidation($rowId, $order_id, $article_organization_id, $article_id);
+    	$this->_managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
+    	$this->_readRowValidation($rowId, $order_id, $article_organization_id, $article_id);
     	
     	$this->layout = 'ajax';
     	$this->render('/Layouts/ajax_rowecomm_frontend_validation_simple');
     }
     
     public function managementCartComplete($rowId, $order_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
-    	$this->__managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
-    	$this->__readRow($rowId, $order_id, $article_organization_id, $article_id);
+    	$this->_managementCart($rowId, $order_id, $article_organization_id, $article_id, $qta);
+    	$this->_readRow($rowId, $order_id, $article_organization_id, $article_id);
     	
     	$this->layout = 'ajax';
     	$this->render('/Layouts/ajax_rowecomm_frontend_complete');
     }    
     
-    private function __managementCart($rowId, $order_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
+    private function _managementCart($rowId, $order_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
    
     	$user_id = $this->user->get('id');
 
@@ -73,11 +73,11 @@ class AjaxCartsController extends AppController {
      * rileggo i dati della riga
      * Order.order_state_id = OPEN
     */
-    private function __readRow($rowId, $order_id, $article_organization_id, $article_id) {
+    private function _readRow($rowId, $order_id, $article_organization_id, $article_id) {
     	
     	$user_id = $this->user->get('id');
     	
-    	$results = array();
+    	$results = [];
     
     	/*
     	 * dati dell'ordine
@@ -85,7 +85,7 @@ class AjaxCartsController extends AppController {
     	App::import('Model', 'Order');
     	$Order = new Order;
     	
-    	$options = array();
+    	$options = [];
     	$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
     			'Order.id' => $order_id,
     			'Order.order_state_id' => Configure::read('OPEN'));
@@ -97,7 +97,7 @@ class AjaxCartsController extends AppController {
     		App::import('Model', 'ArticlesOrder');
     		$ArticlesOrder = new ArticlesOrder;
     
-    		$options = array();
+    		$options = [];
     		$options['conditions'] = array('Cart.user_id' => $user_id,
     				'ArticlesOrder.order_id' => $order_id,
     				'Article.organization_id' => $article_organization_id,
@@ -112,11 +112,11 @@ class AjaxCartsController extends AppController {
      * rileggo i dati della riga 
      * Order.order_state_id = PROCESSED-REFERENTE-BEFORE-DELIVERY
     */
-    private function __readRowValidation($rowId, $order_id, $article_organization_id, $article_id) {
+    private function _readRowValidation($rowId, $order_id, $article_organization_id, $article_id) {
     	 
     	$user_id = $this->user->get('id');
     	 
-    	$results = array();
+    	$results = [];
     
     	/*
     	 * dati dell'ordine
@@ -124,7 +124,7 @@ class AjaxCartsController extends AppController {
     	App::import('Model', 'Order');
     	$Order = new Order;
     
-    	$options = array();
+    	$options = [];
     	$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
     			'Order.id' => $order_id,
     			'Order.order_state_id' => Configure::read('PROCESSED-REFERENTE-BEFORE-DELIVERY'));
@@ -186,7 +186,7 @@ class AjaxCartsController extends AppController {
      	/*
      	 * gestione RowEcomm
      	 */
-    	$this->set('results',$this->__prepareResultsToRowEcomm($order_id, $article_organization_id, $article_id, $user_id, $qta));
+    	$this->set('results',$this->_prepareResultsToRowEcomm($order_id, $article_organization_id, $article_id, $user_id, $qta));
 
 		/*
     	 * rowId creato in RowEcommHelper::__setRowId()
@@ -219,7 +219,7 @@ class AjaxCartsController extends AppController {
     /*
      * utilizzata solo da back-office
      */
-    private function __prepareResultsToRowEcomm($order_id, $article_organization_id, $article_id, $user_id, $qta) {
+    private function _prepareResultsToRowEcomm($order_id, $article_organization_id, $article_id, $user_id, $qta) {
 
     	/*
 	   	 * rileggo la riga dal database aggiornata ([Order] [Article] [ArticlesOrder] [Cart] [User])
@@ -241,11 +241,7 @@ class AjaxCartsController extends AppController {
 		    		   'Cart' => $results['Cart'],
 		    		   'User' => $results['User']);
     	
-    	/*
-    	 echo "<pre>AjaxCartsController::__prepareResultsToRowEcomm ";
-    	print_r($order);
-    	echo "</pre>";
-    	*/
+    	self::d($order, false);
     	
     	return $order;
     }

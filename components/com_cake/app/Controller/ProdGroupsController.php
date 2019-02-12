@@ -29,7 +29,7 @@ class ProdGroupsController extends AppController {
 			$this->ProdGroup->create();
 			if ($this->ProdGroup->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod group has been saved.'));
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod group could not be saved. Please, try again.'));
 			}
@@ -49,7 +49,7 @@ class ProdGroupsController extends AppController {
 			if ($this->ProdGroup->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod group has been saved.'));
 				echo "eee";
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod group could not be saved. Please, try again.'));
 			}
@@ -71,5 +71,5 @@ class ProdGroupsController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The prod group could not be deleted. Please, try again.'));
 		}
-		return $this->myRedirect(array('action' => 'index'));
+		return $this->myRedirect(['action' => 'index']);
 	}}

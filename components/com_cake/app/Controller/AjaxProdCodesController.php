@@ -44,7 +44,7 @@ class AjaxProdCodesController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 				'ProdDelivery.id' => $prod_delivery_id);
 		$options['fields'] = array('ProdDelivery.prod_group_id');
@@ -63,7 +63,7 @@ class AjaxProdCodesController extends AppController {
 			App::import('Model', 'ProdUsersGroup');
 			$ProdUsersGroup = new ProdUsersGroup;
 	
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('ProdUsersGroup.organization_id' => (int)$this->user->organization['Organization']['id'],
 					'ProdUsersGroup.prod_group_id' => $prod_group_id,
 					'User.block' => 0);
@@ -75,11 +75,11 @@ class AjaxProdCodesController extends AppController {
 		}
 		else
 		if($reportOptions=='report-users-cart') {
-			$conditions = array();
+			$conditions = [];
 			$conditions = array('ProdDeliveriesArticle.prod_delivery_id' => $prod_delivery_id);
 			$results = $User->getUserWithCartByProdDelivery($this->user ,$conditions);
 	
-			$users = array();
+			$users = [];
 			$users += array('ALL' => 'Tutti gli utenti che hanno effettuato acquisti');
 			foreach($results as $key => $results2)
 				$users[$results2['User']['id']] = $results2['User']['name'];
@@ -153,7 +153,7 @@ class AjaxProdCodesController extends AppController {
 		}
 	
 		$ProdCartsSplit->unbindModel(array('belongsTo' => array('ProdDelivery')));
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdCartsSplit.organization_id' => $this->user->organization['Organization']['id'],
 									'ProdCartsSplit.prod_delivery_id' => $prod_delivery_id);
 		$options['recursive'] = 1;
@@ -206,7 +206,7 @@ class AjaxProdCodesController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'ProdDelivery.id' => $prod_delivery_id);
 		$options['recursive'] = -1;
@@ -249,7 +249,7 @@ class AjaxProdCodesController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'ProdDelivery.id' => $prod_delivery_id);
 		$options['recursive'] = -1;
@@ -403,7 +403,7 @@ class AjaxProdCodesController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdCart.organization_id' => $this->user->organization['Organization']['id'],
 										'ProdCart.prod_delivery_i' => $prod_delivery_i,
 										'ProdCart.article_organization_id' => $article_organization_id,

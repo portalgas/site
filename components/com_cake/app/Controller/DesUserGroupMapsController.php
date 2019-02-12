@@ -13,7 +13,7 @@ class DesUserGroupMapsController extends AppController {
         }
 
 		if(empty($this->user->des_id)) {
-            $this->Session->setFlash(__('Devi scegliere il tuo DES'));
+            $this->Session->setFlash(__('msg_des_choice'));
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Des&action=index';
 			$this->myRedirect($url);
         }
@@ -253,7 +253,7 @@ class DesUserGroupMapsController extends AppController {
         App::import('Model', 'DesSupplier');
         $DesSupplier = new DesSupplier;
 
-        $options = array();
+        $options = [];
         $options['recursive'] = -1;
         $options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id);
         $ACLsuppliersIdsDes = $this->user->get('ACLsuppliersIdsDes');
@@ -265,12 +265,7 @@ class DesUserGroupMapsController extends AppController {
 
         $results = $DesSupplier->find('all', $options);
 
-        if ($debug) {
-            echo "<pre>UsersGroupMapsController::ctrl_roles_assigned \r ";
-            print_r($options);
-            print_r($results);
-            echo "</pre>";
-        }
+        self::d([$options, $results], $debug);
 
         $this->set('results', $results);
     }
@@ -301,7 +296,7 @@ class DesUserGroupMapsController extends AppController {
             /*
              * ricavo il produttore del gas SuppliersOrganization.id per poi verificare i referenti (SuppliersOrganizationsReferent)
              */
-            $options = array();
+            $options = [];
             $options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id,
                 'DesSupplier.id' => $des_supplier_id);
             $options['fields'] = array('DesSupplier.supplier_id');
@@ -311,7 +306,7 @@ class DesUserGroupMapsController extends AppController {
 
             $supplier_id = $desSupplierResults['DesSupplier']['supplier_id'];
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
                 'SuppliersOrganization.supplier_id' => $supplier_id);
             $options['fields'] = array('SuppliersOrganization.id');
@@ -326,7 +321,7 @@ class DesUserGroupMapsController extends AppController {
                 /*
                  * group_id_referent
                  */
-                $options = array();
+                $options = [];
                 $options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
                     'SuppliersOrganizationsReferent.supplier_organization_id' => $supplier_organization_id,
                     'SuppliersOrganizationsReferent.user_id' => $user_id,
@@ -335,13 +330,8 @@ class DesUserGroupMapsController extends AppController {
                 $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
                 $suppliersOrganizationsReferentResults = $SuppliersOrganizationsReferent->find('first', $options);
 
-                if ($debug) {
-                    echo "<pre>UsersGroupMapsController::ctrl_roles_assigned_details_users group_id_referent \r ";
-                    print_r($options);
-                    print_r($suppliersOrganizationsReferentResults);
-                    echo "</pre>";
-                }
-
+				self::d([$options, $suppliersOrganizationsReferentResults],$debug);
+				
                 if (!empty($suppliersOrganizationsReferentResults))
                     $results[$user_id]['User']['GroupOrder'] = array(Configure::read('group_id_referent'));
 
@@ -349,19 +339,12 @@ class DesUserGroupMapsController extends AppController {
                 /*
                  * group_id_super_referent
                  */
-                $options = array();
+                $options = [];
                 $options['conditions'] = array('UserGroupMap.user_id' => $user_id,
                     'UserGroupMap.group_id' => Configure::read('group_id_super_referent'));
                 $options['recursive'] = -1;
                 $UserGroupMap = new UserGroupMap;
                 $UserGroupMapResults = $UserGroupMap->find('first', $options);
-
-                if ($debug) {
-                    echo "<pre>UsersGroupMapsController::ctrl_roles_assigned_details_users group_id_super_referent \r ";
-                    print_r($options);
-                    print_r($UserGroupMapResults);
-                    echo "</pre>";
-                }
 
                 if (!empty($UserGroupMapResults)) {
                     if (isset($results[$user_id]['GroupOrder']))
@@ -372,11 +355,8 @@ class DesUserGroupMapsController extends AppController {
             } // loop users 
         }  // end if(!empty($results))
 
-        if ($debug) {
-            echo "<pre>UsersGroupMapsController::ctrl_roles_assigned_details_users \r ";
-            print_r($results);
-            echo "</pre>";
-        }
+        self::d($results, $debug);
+
         $this->set('results', $results);
 
         $this->set('userGroups', $this->userGroups);

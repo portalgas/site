@@ -27,13 +27,13 @@ class ValidateDatesController extends AppController {
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('RequestPayment.organization_id' => $this->user->organization['Organization']['id']);
         $options['fields'] = array('RequestPayment.id', 'RequestPayment.num');
 		$options['order'] = array('RequestPayment.num');
         $options['recursive'] = -1;
 		$results = $RequestPayment->find('all', $options);
-        $newResults = array();
+        $newResults = [];
 		foreach ($results as $result) 
 			$newResults[$result['RequestPayment']['id']] = "Richiesta di pagamento num ".$result['RequestPayment']['num'];
 
@@ -51,7 +51,10 @@ class ValidateDatesController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 
-		$options = array();
+		App::import('Model', 'Organization');
+		$Organization = new Organization;
+		
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
 										'Delivery.sys'=> 'N');	
@@ -60,6 +63,9 @@ class ValidateDatesController extends AppController {
 		$options['recursive'] = -1;
 		$results = $Delivery->find('list', $options);
 		$this->set('deliveries', $results);
+		
+		$organizationPayToDelivery = $Organization->getPayToDelivery($this->user->organization['Template']['payToDelivery']);
+		$this->set('organizationPayToDelivery', $organizationPayToDelivery);
 	}
 		
 	function admin_ajax_index_request_payments($request_payment_id=0) {
@@ -69,18 +75,18 @@ class ValidateDatesController extends AppController {
 		
 		App::import('Model', 'Order');
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
 										'RequestPaymentsOrder.request_payment_id' => $request_payment_id);
 		$options['recursive'] = -1;
 		$results = $RequestPaymentsOrder->find('all', $options);
 		
-		$newResults = array();
+		$newResults = [];
 		foreach ($results as $numResult => $result) {
 		
 			$order_id = $result['RequestPaymentsOrder']['order_id'];
 
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 											'Order.id' => $order_id,
 											'Order.isVisibleBackOffice'=> 'Y');
@@ -88,7 +94,7 @@ class ValidateDatesController extends AppController {
 			$orderResults = $Order->find('first', $options);
 
 			$newResults[$numResult] = $orderResults;
-			$newResults[$numResult] = $this->__getSummaryOrderImporto($orderResults);
+			$newResults[$numResult] = $this->_getSummaryOrderImporto($orderResults);
 		} // foreach ($results as $numResult => $result)
 			
 		/*
@@ -98,8 +104,8 @@ class ValidateDatesController extends AppController {
 		*/
 		$this->set('results', $newResults);
 		
-		$this->render('admin_ajax_results');
 		$this->layout = 'ajax';
+		$this->render('admin_ajax_results');
 	}	
 	
 	function admin_ajax_index_deliveries($delivery_id=0) {
@@ -107,7 +113,20 @@ class ValidateDatesController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;		
 		
-		$options = array();
+		App::import('Model', 'Cart');
+		$Cart = new Cart;	
+		
+		App::import('Model', 'SummaryOrder');
+		$SummaryOrder = new SummaryOrder;		
+		
+		$SummaryOrder->unbindModel(['belongsTo' => ['Delivery', 'Order']]);
+		
+		App::import('Model', 'RequestPaymentsOrder');
+		$RequestPaymentsOrder = new RequestPaymentsOrder;
+		
+		$RequestPaymentsOrder->unbindModel(['belongsTo' => ['Order']]);
+		
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 										'Order.delivery_id' => $delivery_id,
 										'Order.isVisibleBackOffice'=> 'Y');
@@ -123,8 +142,40 @@ class ValidateDatesController extends AppController {
 		
 			$order_id = $result['Order']['id'];
 
-			$orderResults[$numResult] = $this->__getSummaryOrderImporto($result);
-	
+			$orderResults[$numResult] = $this->_getSummaryOrderImporto($result);
+
+			$conditions = []; 
+			$conditions['Order.id'] = $order_id;
+			$orderResults[$numResult]['Cart']['totImporto'] = $Cart->getTotImporto($this->user, $conditions);
+			$orderResults[$numResult]['Cart']['totImporto_e'] = number_format($orderResults[$numResult]['Cart']['totImporto'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			
+			/*
+			 * summaryOrder
+			 */
+			$options = [];
+			$options['conditions'] = array('SummaryOrder.organization_id' => $this->user->organization['Organization']['id'],
+											'SummaryOrder.delivery_id' => $delivery_id,
+											'SummaryOrder.order_id'=> $order_id);
+			$options['recursive'] = 1;
+			$options['order'] = array('SummaryOrder.user_id ASC'); 
+			$summaryOrderResults = $SummaryOrder->find('all', $options);
+		
+			$orderResults[$numResult]['SummaryOrder'] = $summaryOrderResults;
+		
+			/*
+			 *
+			 */
+			$requestPaymentsOrderResults = []; 
+			if($this->user->organization['Template']['payToDelivery']=='POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+				$options = [];
+				$options['conditions'] = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
+										  'RequestPaymentsOrder.delivery_id' => $delivery_id,
+										  'RequestPaymentsOrder.order_id', $order_id];
+				$options['recursive'] = 0;
+				$requestPaymentsOrderResults = $RequestPaymentsOrder->find('first', $options);	
+			}
+			$orderResults[$numResult]['RequestPayment'] = $requestPaymentsOrderResults;
+			
 		} // foreach ($results as $numResult => $result)
 			
 		/*
@@ -137,11 +188,11 @@ class ValidateDatesController extends AppController {
 		$this->set('isRoot', $this->isRoot());
 		$this->set('isManager', $this->isManager());
 		
-		$this->render('admin_ajax_results');
 		$this->layout = 'ajax';
+		$this->render('admin_ajax_results');
 	}
 
-	private function __getSummaryOrderImporto($orderResults) {
+	private function _getSummaryOrderImporto($orderResults) {
 		
 		App::import('Model', 'SummaryOrder');
 		$SummaryOrder = new SummaryOrder;
@@ -154,7 +205,7 @@ class ValidateDatesController extends AppController {
 				WHERE
 					SummaryOrder.organization_id = ".(int)$this->user->organization['Organization']['id']."
 					and SummaryOrder.order_id = ".(int)$orderResults['Order']['id'];
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		$tot_importo_rimborsate = current($SummaryOrder->query($sql));
 		if(!empty($tot_importo_rimborsate[0]['tot_importo_rimborsate']))
 			$orderResults['Order']['tot_importo_rimborsate'] = $tot_importo_rimborsate[0]['tot_importo_rimborsate']; 

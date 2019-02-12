@@ -40,7 +40,7 @@ class RestsController extends AppController {
        jimport( 'joomla.user.authentication');
        $auth = & JAuthentication::getInstance();
        $credentials = array( 'username' => $username, 'password' => $password );
-       $options = array();
+       $options = [];
        $response = $auth->authenticate($credentials, $options);
 
 	   if(isset($response->password))
@@ -102,13 +102,12 @@ class RestsController extends AppController {
 		App::import('Model', 'Organization');
 		$Organization = new Organization;		
 		
-		$options = array();
-		$options['conditions'] = array('Organization.stato' => 'Y');
-		
+		$options = [];
+        $options['conditions'] = ['Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+		$options['fields'] = ['Organization.id', 'Organization.name', 'Organization.descrizione', 'Organization.indirizzo', 'Organization.localita', 'Organization.cap', 'Organization.provincia',
+							   'Organization.mail', 'Organization.www', 'Organization.www2'];
+        $options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
-		$options['fields'] = array('Organization.id', 'Organization.name', 'Organization.descrizione', 'Organization.indirizzo', 'Organization.localita', 'Organization.cap', 'Organization.provincia',
-								    'Organization.mail', 'Organization.www', 'Organization.www2');
-		$options['order'] = array('Organization.name');
 		$results = $Organization->find('all', $options);
 		
 		$json = json_encode($results);
@@ -126,15 +125,13 @@ class RestsController extends AppController {
 		App::import('Model', 'Organization');
 		$Organization = new Organization;		
 		
-		$options = array();
-		$options['conditions'] = array('Organization.id' => $organization_id,
-									   'Organization.stato' => 'Y');
-		
-		$options['recursive'] = -1;
-		$options['fields'] = array('Organization.id', 'Organization.name', 'Organization.indirizzo', 'Organization.localita', 'Organization.cap', 'Organization.provincia',
+		$options = [];
+        $options['conditions'] = ['Organization.id' => $organization_id,  'Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+		$options['fields'] = ['Organization.id', 'Organization.name', 'Organization.indirizzo', 'Organization.localita', 'Organization.cap', 'Organization.provincia',
 								    'Organization.mail', 'Organization.www', 'Organization.www2',
-									'Organization.img1', 
-									);
+									'Organization.img1'];
+        $options['order'] = ['Organization.name'];			
+		$options['recursive'] = -1;
 		$results = $Organization->find('all', $options);
 		
 		$json = json_encode($results);
@@ -149,7 +146,7 @@ class RestsController extends AppController {
 	 */
 	public function deliveries($organization_id) {
 
-		$json = array();
+		$json = [];
 		
 		if(empty($organization_id)) {
 			$this->set('json', $json);
@@ -162,21 +159,21 @@ class RestsController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => $user->organization['Organization']['id'],
-									   'Delivery.isVisibleFrontEnd' => 'Y',
-									   'Delivery.stato_elaborazione'=> 'OPEN',
-										'Delivery.sys'=> 'N',
-										'DATE(Delivery.data) >= CURDATE() - INTERVAL '.Configure::read('GGinMenoPerEstrarreDeliveriesInTabs').' DAY');
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+								   'Delivery.isVisibleFrontEnd' => 'Y',
+								   'Delivery.stato_elaborazione'=> 'OPEN',
+									'Delivery.sys'=> 'N',
+									'DATE(Delivery.data) >= CURDATE() - INTERVAL '.Configure::read('GGinMenoPerEstrarreDeliveriesInTabs').' DAY'];
 		$options['recursive'] = -1;
-		$options['order'] = array('Delivery.data');
+		$options['order'] = ['Delivery.data'];
 		$results = $Delivery->find('all', $options);
 
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResults => $result) {
 		
 			$newResults[$numResults] = $result;
-			$newResults[$numResults]['Delivery']['nota'] = $this->__pulisciCampo($result['Delivery']['nota']);
+			$newResults[$numResults]['Delivery']['nota'] = $this->_pulisciCampo($result['Delivery']['nota']);
 		}
 
 		/*
@@ -217,7 +214,7 @@ class RestsController extends AppController {
 	 */
 	public function orders($organization_id, $delivery_id) {
 
-		$json = array();
+		$json = [];
 				
 		if(empty($organization_id) || empty($delivery_id)) {
 			$this->set('json', $json);
@@ -232,7 +229,7 @@ class RestsController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => $user->organization['Organization']['id'],
 									   'Delivery.isVisibleFrontEnd' => 'Y',
 									   'Delivery.stato_elaborazione'=> 'OPEN',
@@ -244,18 +241,18 @@ class RestsController extends AppController {
 		$options['order'] = array('Order.data_fine');
 		$results = $Order->find('all', $options);
 
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResults => $result) {
 		
 			$newResults[$numResults] = $result;
-			$newResults[$numResults]['Order']['nota'] = $this->__pulisciCampo($result['Order']['nota']);
+			$newResults[$numResults]['Order']['nota'] = $this->_pulisciCampo($result['Order']['nota']);
 					
 			/*
 			 * produttore
 			 */
 			$Supplier = new Supplier;
 
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
 			$options['recursive'] = -1;
 			$options['fields'] = array('Supplier.name', 'Supplier.img1');
@@ -287,20 +284,20 @@ class RestsController extends AppController {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;		
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array(// 'Cart.user_id' => $this->user->id,
 										'Cart.deleteToReferent' => 'N', 
 										'ArticlesOrder.order_id' => $order_id);
 		
 		$options['order'] = 'Article.name';
-		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $options);
+		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $order_id, $organization_id, $options);
 
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResults => $result) {
 		
 			$newResults[$numResults] = $result;
-			$newResults[$numResults]['Article']['nota'] = ''; // $this->__pulisciCampo($result['Article']['nota']);
-			$newResults[$numResults]['Article']['ingredienti'] = ''; // $this->__pulisciCampo($result['Article']['ingredienti']);
+			$newResults[$numResults]['Article']['nota'] = ''; // $this->_pulisciCampo($result['Article']['nota']);
+			$newResults[$numResults]['Article']['ingredienti'] = ''; // $this->_pulisciCampo($result['Article']['ingredienti']);
 			$newResults[$numResults]['Article']['prezzoUm'] = $this->utilsCommons->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);
 			
 		}
@@ -318,7 +315,55 @@ class RestsController extends AppController {
 		$this->render('/Rests/index');			
 	}
 	
-	private function __pulisciCampo($str) {
+	 /*
+	  *  next.portalgas.it/api/cash_ctrl_limit?format=notmpl
+	 */
+	public function cash_ctrl_limit() {
+	
+		$debug = false;
+		$results = [];
+		$continua = true;
+		
+		/*
+		echo "<pre>";
+		print_r($this->user);
+		echo "</pre>";
+		*/
+		
+		if(!isset($this->user) || empty($this->user->id)) {
+			$results['code'] = 500;
+			$results['msg'] = __('msg_rest_not_permission'); // msg_not_permission msg_rest_error_params
+			$continua = false;
+		}
+		
+		if($continua) {
+				
+			App::import('Model', 'CashesUser');
+			$CashesUser = new CashesUser;
+				
+			$results = $CashesUser->getUserData($this->user);
+			
+			 /*
+			  * totale importo acquisti
+			  */
+			$results['user_tot_importo_acquistato'] = $CashesUser->getTotImportoAcquistato($this->user, $this->user->id);
+			
+			$cashesUserResults['limit_type'] = $results['user_limit_type'];
+			$cashesUserResults['limit_after'] = $results['user_limit_after'];
+			
+			$results['ctrl_limit'] = $CashesUser->ctrlLimit($this->user, $results['organization_cash_limit'], $results['organization_limit_cash_after'], $cashesUserResults, $results['user_cash'], $results['user_tot_importo_acquistato'], $debug);
+			  
+			self::d($results, false);
+		}
+		
+		$json = json_encode($results);
+		$this->set('json', $json);
+				
+		$this->layout = 'json';
+		$this->render('/Rests/index');			
+	}
+	
+	private function _pulisciCampo($str) {
 	
 		$str = str_replace("\r\n", "", $str);
 		$str = str_replace("\r", "", $str);

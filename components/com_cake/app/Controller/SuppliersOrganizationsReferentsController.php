@@ -50,7 +50,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		$FilterSuppliersOrganizationsReferentUserName=null;
 		
 		$resultsFound = '';
-		$results = array();
+		$results = [];
 		$SqlLimit = 20;
 		
 		$conditions = array('SuppliersOrganizationsReferent.organization_id' => (int)$this->user->organization['Organization']['id'],
@@ -120,7 +120,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 				/*
 				 * Suppliers per l'immagine
 				* */
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
 				$options['fields'] = array('Supplier.img1');
 				$options['recursive'] = -1;
@@ -141,7 +141,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		*		Referente
 		*		SuperReferente
 		*/		
-		$resultsACLsuppliersOrganization = array();
+		$resultsACLsuppliersOrganization = [];
 		if($this->userGroups[$group_id]['join'] == 'Supplier') {
 			if($this->isSuperReferente()) 
 				$resultsACLsuppliersOrganization = $Supplier->getListSuppliers($this->user, false);
@@ -189,7 +189,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 			$supplier_organization_id = $this->request->data['SuppliersOrganizationsReferent']['supplier_organization_id'];
 			$group_id = $this->request->data['SuppliersOrganizationsReferent']['group_id'];
 			
-			$data = array();
+			$data = [];
 			$data['SuppliersOrganizationsReferent']['supplier_organization_id'] = $supplier_organization_id;
 				
 			/*
@@ -219,7 +219,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 								AND group_id = $group_id
 								AND type = '".$type."'
 								AND user_id NOT IN (".$this->request->data['referent_user_ids-'.$type].")";
-						if($debug) echo '<br />'.$sql;
+						self::d($sql, $debug);
 						$result = $this->SuppliersOrganizationsReferent->query($sql);
 					}
 					catch (Exception $e) {
@@ -242,7 +242,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 													AND supplier_organization_id = $supplier_organization_id
 													AND group_id = $group_id
 													AND type = '".$type."'";
-						if($debug) echo '<br />'.$sql;
+						self::d($sql, $debug);
 						$result = $this->SuppliersOrganizationsReferent->query($sql);
 					}
 					catch (Exception $e) {
@@ -264,7 +264,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		App::import('Model', 'Supplier');
 		$Supplier = new Supplier;
 		
-		$resultsACLsuppliersOrganization = array();
+		$resultsACLsuppliersOrganization = [];
 		if($this->userGroups[$group_id]['join'] == 'Supplier') {
 			if($this->isSuperReferente()) 
 				$resultsACLsuppliersOrganization = $Supplier->getListSuppliers($this->user);
@@ -285,7 +285,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		
 		$debug = false;
 		
-		$referents = array();
+		$referents = [];
 		$referenti_ids = '';
 		if(!empty($supplier_organization_id)) {
 			/*
@@ -335,6 +335,8 @@ class SuppliersOrganizationsReferentsController extends AppController {
 	
 	/*	 * key = $_organization_id, $user_id, $supplier_organization_id	*/
 	public function admin_delete($user_id=0, $supplier_organization_id=0, $group_id=0, $type) {
+		
+		$debug = false;
 		$msg = "";
 		
 		if(!$this->SuppliersOrganizationsReferent->exists($this->user->organization['Organization']['id'], $user_id, $group_id, $supplier_organization_id, $type)) {
@@ -350,7 +352,13 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		$options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],									   'SuppliersOrganizationsReferent.user_id' => $user_id,
 									   'SuppliersOrganizationsReferent.group_id' => $group_id);
 		$totRows = $this->SuppliersOrganizationsReferent->find('count', $options);
-		if($totRows==1) {
+		if($debug) {
+			echo "<pre>";
+			print_r($options);
+			print_r($totRows);
+			echo "</pre>";
+		}
+		if($totRows==1) { // se 1 sola occorrenza (quella che poi cancellero') lo cancello dal gruppo di joomla
 			App::import('Model', 'User');
 			$User = new User;
 			
@@ -375,6 +383,4 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		$this->Session->setFlash(__('Supplier organization referent was not deleted'));
 		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=index&group_id='.$group_id);	
 	}	
-	
-
 }

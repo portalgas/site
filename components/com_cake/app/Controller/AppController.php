@@ -80,6 +80,17 @@ class AppController extends Controller {
 
         date_default_timezone_set('Europe/Rome');
 
+		/*
+		 * gestione sito offline
+		 */
+        $actionWithPermission = ['admin_msg_stop', 'msg_stop', 'admin_choice'];
+
+        if (Configure::read('sys_site_offline') == 'Y' && !in_array($this->action, $actionWithPermission)) {
+            $this->Session->setFlash(__('msg_site_offline'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+ 
+ 
 		$browsers = $this->getBrowser();
 		$this->set(compact('browsers'));
 		
@@ -236,7 +247,7 @@ class AppController extends Controller {
 				
 				break;
 				default:
-				//	self::x(__('msg_error_org_type'));
+				//	self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 				break;				
             }
 
@@ -566,6 +577,20 @@ class AppController extends Controller {
             return 0;
     }
 
+	public function isManagerUserDes() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_user_manager_des'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+    
+	public function isUserFlagPrivay() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_user_flag_privacy'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+	
     /*
      * gestisce i calendar events
      */
@@ -583,9 +608,8 @@ class AppController extends Controller {
      * 		- Organization.hasArticlesOrder
      * 		- User.hasArticlesOrder
      * 
-     * anche in AppHelper
-     */
-
+     * anche in AppHelper, AppModel
+     */ 
     public function isUserPermissionArticlesOrder($user) {
         if ($user->organization['Organization']['hasArticlesOrder'] == 'Y' && $user->user['User']['hasArticlesOrder'] == 'Y')
             return true;
@@ -595,7 +619,7 @@ class AppController extends Controller {
 
     /* ovveride lib/Cake/Controller/Controller.php 
      * code original 
-     * 		$this->myRedirect(array('action' => 'index'));
+     * 		$this->myRedirect(['action' => 'index']);
      * cake imposta il controller e l'action nell'url /cake/user/index
      * qui si impostano nella queryString /administrator/index.php?option=com_cake&controller=Articles&action=context_articles_index&id=64&direction:asc
      * */
@@ -713,7 +737,10 @@ class AppController extends Controller {
      * idem model
      */
 
-    public function importoToDatabase($importo) {
+    public function importoToDatabase($importo, $debug=false) {
+    	
+    	self::l('importoToDatabase PRE '.$importo, $debug);
+    	
         // elimino le migliaia
         $importo = str_replace('.', '', $importo);
 
@@ -722,6 +749,8 @@ class AppController extends Controller {
 
         if (strpos($importo, '.') === false)
             $importo = $importo . '.00';
+
+		self::l('importoToDatabase POST '.$importo, $debug);
 
         return $importo;
     }
@@ -771,11 +800,11 @@ class AppController extends Controller {
         $DesSupplier = new DesSupplier;
 
         $options = [];
-        $options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id,
-            'DesSupplier.id IN (' . $this->user->get('ACLsuppliersIdsDes') . ')',
-            "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
-        $options['fields'] = array('DesSupplier.id', 'Supplier.name');
-        $options['order'] = array('Supplier.name');
+        $options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id,
+								'DesSupplier.id IN (' . $this->user->get('ACLsuppliersIdsDes') . ')',
+								"(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')"];
+        $options['fields'] = ['DesSupplier.id', 'Supplier.name'];
+        $options['order'] = ['Supplier.name'];
         $options['recursive'] = 1;
         $ACLsuppliersIdsDes = $DesSupplier->find('list', $options);
 
@@ -793,7 +822,7 @@ class AppController extends Controller {
 
     public function getToUrlControllerAction($url) {
 
-        $pageCurrent = array('controller' => '', 'action' => '');
+        $pageCurrent = ['controller' => '', 'action' => ''];
 
         if (!empty($url)) {
             $arrayUrl = parse_url($url);
@@ -930,8 +959,8 @@ class AppController extends Controller {
         /*
          * permission per abilitazione modifica del carrello
          */
-        $permissions = array('isReferentGeneric' => $this->isReferentGeneric(),
-							 'isTesoriereGeneric' => $this->isTesoriereGeneric());
+        $permissions = ['isReferentGeneric' => $this->isReferentGeneric(),
+						 'isTesoriereGeneric' => $this->isTesoriereGeneric()];
         $this->set('permissions', $permissions);
 
         /*
@@ -955,8 +984,8 @@ class AppController extends Controller {
         $ProdDelivery = new ProdDelivery;
 
         $options = [];
-        $options['conditions'] = array('ProdDelivery.organization_id' => (int) $user->organization['Organization']['id'],
-            'ProdDelivery.id' => $prod_delivery_id);
+        $options['conditions'] = ['ProdDelivery.organization_id' => (int) $user->organization['Organization']['id'],
+								  'ProdDelivery.id' => $prod_delivery_id];
         if (isset($opts['conditions']))
             $options['conditions'] += $opts['conditions'];
         $options['recursive'] = 1;
@@ -1153,4 +1182,37 @@ class AppController extends Controller {
         return $results;
     }
 	
+	/* 
+	 * ctrl se lo user puo' utilizzare quel organization_id 
+	 *	DES quando utilizza piu' GAS
+	 */ 
+	public function aclOrganizationIdinUso($organization_id=0, $debug=false) {
+	
+        if (empty($organization_id) || $this->isRoot()) {
+            $organization_id = $this->user->organization['Organization']['id'];
+        }
+		else {
+			/* DES */	
+			if ($this->user->organization['Organization']['hasDes'] == 'N' || $this->user->organization['Organization']['hasDesUserManager'] != 'Y' || empty($this->user->des_id)) {
+	            return false;
+	        }
+		
+	        App::import('Model', 'DesOrganization');
+	        $DesOrganization = new DesOrganization;
+					
+	        /*
+	         * tutti i GAS del DES
+	         */
+	        $options = [];
+	        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
+									  'DesOrganization.organization_id' => $organization_id];
+	        $options['recursive'] = 1;
+	        $desOrganizationsResults = $DesOrganization->find('first', $options);
+			if(empty($desOrganizationsResults)) {
+	            return false;		
+			}	        
+		}
+				
+		return $organization_id;
+	}
 }

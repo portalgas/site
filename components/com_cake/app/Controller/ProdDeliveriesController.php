@@ -32,7 +32,7 @@ class ProdDeliveriesController extends AppController {
 		App::import('Model', 'ProdUsersGroup');
 		$ProdUsersGroup = new ProdUsersGroup;
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdUsersGroup.organization_id' => $this->user->organization['Organization']['id'],
 										'ProdUsersGroup.user_id' => $this->user->id);
 		$options['recursive'] = -1;
@@ -57,7 +57,7 @@ class ProdDeliveriesController extends AppController {
 		/*
 		 * dati della consegna
 		*/
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => $this->user->organization['Organization']['id'],
 				'ProdDelivery.prod_group_id' => $prod_group_id,
 				'ProdDelivery.prod_delivery_state_id' => Configure::read('OPEN'),
@@ -80,13 +80,13 @@ class ProdDeliveriesController extends AppController {
 		/*
 		 * articoli associati alla consegna
 		 */
-		$results = array();
+		$results = [];
 		$prod_delivery_id = $prodDelivery['ProdDelivery']['id'];
 		
 		App::import('Model', 'ProdDeliveriesArticle');
 		$ProdDeliveriesArticle = new ProdDeliveriesArticle;
 			
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdCart.user_id' => $this->user->id,
 										'ProdCart.deleteToReferent' => 'N',
 										'ProdCart.prod_delivery_id' => $prod_delivery_id,
@@ -209,7 +209,7 @@ class ProdDeliveriesController extends AppController {
 		$ricorrenza_type = ClassRegistry::init('ProdDelivery')->enumOptions('ricorrenza_type');
 		$this->set(compact('ricorrenza_type'));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdGroup.organization_id' => $this->user->organization['Organization']['id']);
 		$options['fields'] = array('ProdGroup.id', 'ProdGroup.name');
 		$options['order'] = 'ProdGroup.name ASC';
@@ -237,7 +237,7 @@ class ProdDeliveriesController extends AppController {
 			
 			if ($this->ProdDelivery->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod delivery has been saved.'));
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod delivery could not be saved. Please, try again.'));
 			}
@@ -265,7 +265,7 @@ class ProdDeliveriesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The prod delivery could not be deleted. Please, try again.'));
 		}
-		return $this->myRedirect(array('action' => 'index'));
+		return $this->myRedirect(['action' => 'index']);
 	}
 	
 	/*  creo sotto menu degli ordini profilato
@@ -309,8 +309,7 @@ class ProdDeliveriesController extends AppController {
 		$prodDeliveriesStates = $ProdDeliveriesState->getProdDeliveriesState($type);
 		$this->set('prodDeliveriesStates',$prodDeliveriesStates);
 	
-		$this->render('admin_sotto_menu');
-		
 		$this->layout = 'ajax';
+		$this->render('admin_sotto_menu');
 	}	
 }

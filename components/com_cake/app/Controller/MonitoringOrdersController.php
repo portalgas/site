@@ -56,7 +56,7 @@ class MonitoringOrdersController extends AppController {
 		
 		$Order->bindModel(array('belongsTo' => array('MonitoringOrder' => $belongsTo)));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 									   'Order.state_code != ' => 'CLOSE',
 									   'MonitoringOrder.user_id' => $this->user->id);
@@ -81,11 +81,7 @@ class MonitoringOrdersController extends AppController {
 				$results[$numResult]['Order']['importo_massimo_current'] = 0;
 		}
 
-		/*
-		echo "<pre> ";
-		print_r($results);
-		echo "</pre>";
-		*/
+		self::d($results, false);
 		
 		$this->set(compact('results'));
 	}
@@ -127,7 +123,7 @@ class MonitoringOrdersController extends AppController {
 							/*
 							 * lo inserisco
 							 */
-							$row = array();
+							$row = [];
 							$row['MonitoringOrder']['organization_id'] = $this->user->organization['Organization']['id'];
 							$row['MonitoringOrder']['order_id'] = $order_id;
 							$row['MonitoringOrder']['user_id'] = $this->user->id;
@@ -154,7 +150,7 @@ class MonitoringOrdersController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
 										'Delivery.sys'=> 'N',
@@ -167,7 +163,7 @@ class MonitoringOrdersController extends AppController {
 		/*
 		 * ctrl se inserire anche la consegna Da definire, ctrl se ha ordini
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
 										'Delivery.sys' => 'Y');
@@ -216,17 +212,15 @@ class MonitoringOrdersController extends AppController {
 		
 		$Order->bindModel(array('belongsTo' => array('MonitoringOrder' => $belongsTo)));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 										'Order.delivery_id' => $delivery_id);
 		$options['order'] = array('Delivery.data asc, Order.data_inizio');
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results, false);
+		
 		$this->set('results', $results);
 		
 		$this->layout = 'ajax';			

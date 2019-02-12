@@ -19,7 +19,7 @@ class ProdCartsController extends AppController {
 			$this->ProdCart->create();
 			if ($this->ProdCart->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod cart has been saved.'));
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod cart could not be saved. Please, try again.'));
 			}
@@ -38,7 +38,7 @@ class ProdCartsController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->ProdCart->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod cart has been saved.'));
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod cart could not be saved. Please, try again.'));
 			}
@@ -64,7 +64,7 @@ class ProdCartsController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The prod cart could not be deleted. Please, try again.'));
 		}
-		return $this->myRedirect(array('action' => 'index'));
+		return $this->myRedirect(['action' => 'index']);
 	}
 
 	/*
@@ -105,9 +105,9 @@ class ProdCartsController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 				
-		$options = array();
+		$options = [];
 		$options['conditions'] = array ('ProdDelivery.stato_elaborazione' => 'OPEN',);
-		$this->__boxProdDelivery($this->user, $this->prod_delivery_id, $options);
+		$this->_boxProdDelivery($this->user, $this->prod_delivery_id, $options);
 		
 		$htmlLegenda = $this->utilsCommons->getLegendaProdDeliveriesState();
 		$this->set('htmlLegenda',$htmlLegenda);
@@ -125,9 +125,9 @@ class ProdCartsController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array ('ProdDelivery.stato_elaborazione' => 'OPEN',);
-		$this->__boxProdDelivery($this->user, $this->prod_delivery_id, $options);
+		$this->_boxProdDelivery($this->user, $this->prod_delivery_id, $options);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			 

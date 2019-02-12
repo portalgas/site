@@ -5,9 +5,9 @@ class ProdGasOrdersController extends AppController {
 														
 	public function beforeFilter() {
 		parent::beforeFilter();
-		
+
 		/* ctrl ACL */
-		if(empty($this->user->supplier['Supplier'])) {
+		if($this->user->organization['Organization']['type']!='PRODGAS') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}	
@@ -27,14 +27,21 @@ class ProdGasOrdersController extends AppController {
         }
 		
 		// ACL 
-		App::import('Model', 'ProdGasSupplier');
-		$ProdGasSupplier = new ProdGasSupplier;
+		App::import('Model', 'ProdGasSuppliersImport');
+		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
 
-		$organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
-		if($organizationResults['SuppliersOrganization']['can_view_orders']!='Y' && $organizationResults['SuppliersOrganization']['can_view_orders_users']!='Y') {
+		// precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
+		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, [], $debug);
+		
+		$currentOrganization = $organizationResults['Supplier']['Organization'];
+		$currentOrganization = current($currentOrganization);
+		self::d($currentOrganization, $debug);
+				
+		if($currentOrganization['SuppliersOrganization']['can_view_orders']!='Y' && $currentOrganization['SuppliersOrganization']['can_view_orders_users']!='Y') {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));			
 		}
+		$this->set(compact('currentOrganization'));
 		// ACL
 		
 		/*
@@ -44,21 +51,18 @@ class ProdGasOrdersController extends AppController {
 		$Order = new Order;
 
 		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization',)));
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' =>  $organization_id,
-									   'Delivery.isVisibleBackOffice'=>'Y',
-									   'Delivery.stato_elaborazione'=>'OPEN',
-									   'Order.organization_id' => $organization_id,
-									   'Order.supplier_organization_id' => $organizationResults['SuppliersOrganization']['id']);
-		$options['order'] = array('Delivery.data asc, Delivery.id, Order.data_inizio asc');
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' =>  $organization_id,
+								   'Delivery.isVisibleBackOffice'=>'Y',
+								   'Delivery.stato_elaborazione'=>'OPEN',
+								   'Order.organization_id' => $organization_id,
+								   'Order.supplier_organization_id' => $currentOrganization['SuppliersOrganization']['id']];
+		$options['order'] = ['Delivery.data asc, Delivery.id, Order.data_inizio asc'];
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);	
 		$this->set(compact('results'));
-		/*
-		echo "<pre>results \n";
-		print_r($results);
-		echo "</pre>";		
-		*/
+		
+		self::d($results,false);
 		
 		/*
 		 * dati GAS con il quale sto lavorando
@@ -66,7 +70,7 @@ class ProdGasOrdersController extends AppController {
 		App::import('Model', 'Organization');
 		$Organization = new Organization;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Organization.id' => $organization_id);
 		$organizations = $Organization->find('first', $options);
 		$this->set(compact('organizations'));		 		
@@ -99,7 +103,7 @@ class ProdGasOrdersController extends AppController {
 		$Order = new Order;
 
 		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization',)));
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' =>  $organization_id,
 									   'Delivery.isVisibleBackOffice'=>'Y',
 									   'Delivery.stato_elaborazione'=>'OPEN',
@@ -109,10 +113,7 @@ class ProdGasOrdersController extends AppController {
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);	
 		$this->set(compact('results'));
-		/*
-		echo "<pre>results \n";
-		print_r($results);
-		echo "</pre>";		
-		*/
+		
+		self::d($results,false);
 	}		
 }

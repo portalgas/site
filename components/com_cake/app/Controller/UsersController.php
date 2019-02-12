@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 App::import('Vendor', 'ImageTool');
 
@@ -11,6 +10,8 @@ class UsersController extends AppController {
 
     public function admin_index() {
 
+		$debug = false;
+		
         $this->set('isManager', $this->isManager());
 
         $FilterUserUserGroups = null;
@@ -21,28 +22,41 @@ class UsersController extends AppController {
         /*
          * filtri per gruppo
          */
-        $userGroups = array(Configure::read('group_id_user') => __("UserGroupsUser"),
-            Configure::read('group_id_manager') => __("UserGroupsManager"),
-            Configure::read('group_id_manager_delivery') => __("UserGroupsManagerDelivery"),
-            Configure::read('group_id_referent') => __("UserGroupsReferent"),
-            Configure::read('group_id_super_referent') => __("UserGroupsSuperReferent"),
-            Configure::read('group_id_tesoriere') => __("UserGroupsTesoriere"),
-            Configure::read('group_id_generic') => __("UserGroupsGeneric"));
+		switch($this->user->organization['Organization']['type']) {
+			case 'GAS':
+				$userGroups = [Configure::read('group_id_user') => __("UserGroupsUser"),
+								Configure::read('group_id_manager') => __("UserGroupsManager"),
+								Configure::read('group_id_manager_delivery') => __("UserGroupsManagerDelivery"),
+								Configure::read('group_id_referent') => __("UserGroupsReferent"),
+								Configure::read('group_id_super_referent') => __("UserGroupsSuperReferent"),
+								Configure::read('group_id_tesoriere') => __("UserGroupsTesoriere"),
+								Configure::read('group_id_generic') => __("UserGroupsGeneric")];
+			break;
+			case 'PRODGAS':
+				$userGroups = [Configure::read('prod_gas_supplier_manager') => __("HasUserGroupsRootSupplier"),
+								Configure::read('group_id_manager') => __("UserGroupsManager"),
+								Configure::read('group_id_super_referent') => __("UserGroupsSuperReferent")];
+			break;
+			case 'PROD':
+			
+			break;
+		} 
+
 
         /*
          * referente cassa (pagamento degli utenti alla consegna)
          */
-        if ($this->user->organization['Organization']['payToDelivery'] == 'ON' || $this->user->organization['Organization']['payToDelivery'] == 'ON-POST')
-            $userGroups += array(Configure::read('group_id_cassiere') => __("UserGroupsCassiere"));
+        if ($this->user->organization['Template']['payToDelivery'] == 'ON' || $this->user->organization['Template']['payToDelivery'] == 'ON-POST')
+            $userGroups += [Configure::read('group_id_cassiere') => __("UserGroupsCassiere")];
 
         $this->set(compact('userGroups'));
 
         /*
          * conditions
          */
-        $conditions = array();
-        $conditions[] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 1);
+        $conditions = [];
+        $conditions[] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+							'User.block' => 1];
 
         /* recupero dati dalla Session gestita in appController::beforeFilter */
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Username')) {
@@ -55,17 +69,15 @@ class UsersController extends AppController {
         }
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'UserGroups')) {
             $FilterUserUserGroups = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'UserGroups');
-            /*
-              echo "<pre>";
-              print_r($FilterUserUserGroups);
-              echo "</pre>";
-             */
+            
+			self::d($FilterUserUserGroups, $debug);
             $conditions['UserGroup.group_id'] = $FilterUserUserGroups;
         }
 
 
         if (empty($FilterUserUserGroups))
-            $FilterUserUserGroups = Configure::read('group_id_user') . ',' .
+            $FilterUserUserGroups = Configure::read('prod_gas_supplier_manager') . ',' . 
+					Configure::read('group_id_user') . ',' .
                     Configure::read('group_id_manager') . ',' .
                     Configure::read('group_id_manager_delivery') . ',' .
                     Configure::read('group_id_referent') . ',' .
@@ -81,11 +93,8 @@ class UsersController extends AppController {
 
         $results = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
         $this->set('results', $results);
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
+        
+		self::d($results, false);
     }
 
     public function admin_index_block() {
@@ -94,12 +103,12 @@ class UsersController extends AppController {
 
         $SqlLimit = 50;
 
-        $conditions = array();
-        $conditions[] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 1);
+        $conditions = [];
+        $conditions[] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+						'User.block' => 1];
 
         $this->User->recursive = 0;
-        $this->paginate = array('conditions' => array($conditions), 'order' => Configure::read('orderUser'), 'limit' => $SqlLimit);
+        $this->paginate = ['conditions' => $conditions, 'order' => Configure::read('orderUser'), 'limit' => $SqlLimit];
         $results = $this->paginate('User');
 
         /*
@@ -117,6 +126,130 @@ class UsersController extends AppController {
         $this->set('SqlLimit', $SqlLimit);
     }
 
+    public function admin_index_flag_privacy() {
+		
+        if((empty($this->user->organization['Organization']['hasUserFlagPrivacy']) || $this->user->organization['Organization']['hasUserFlagPrivacy'] == 'N') && 
+		   (empty($this->user->organization['Organization']['hasUserRegistrationExpire']) || $this->user->organization['Organization']['hasUserRegistrationExpire'] == 'N')) {
+            $this->Session->setFlash(__('msg_not_organization_config'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+
+        if(isset($this->user->organization['Organization']['hasUserFlagPrivacy']) && $this->user->organization['Organization']['hasUserFlagPrivacy'] == 'Y') {
+        	
+			App::import('Model', 'UserGroupMap');
+		  	$UserGroupMap = new UserGroupMap();
+		  	
+		  	$ctrlUserFlagPrivacys = $UserGroupMap->getUserFlagPrivacys($this->user);
+	        $this->set(compact('ctrlUserFlagPrivacys'));
+        } 
+					
+        $this->set('isManager', $this->isManager());
+
+        $FilterUserUsername = '';
+        $FilterUserName = '';
+        $FilterUserProfileCF = '';
+        $FilterUserBlock = 'ALL';
+        $FilterUserSort = Configure::read('orderUser');		
+        $FilterUserHasUserFlagPrivacy = 'ALL';
+        $FilterUserHasUserRegistrationExpire = 'ALL';
+
+        /*
+         * conditions
+         */
+        $conditions = [];
+
+        /* recupero dati dalla Session gestita in appController::beforeFilter */
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Username')) {
+            $FilterUserUsername = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Username');
+            $conditions['User.username'] = "User.username LIKE '%" . $FilterUserUsername . "%'";
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
+            $FilterUserName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
+            $conditions['User.name'] = "User.name LIKE '%" . $FilterUserName . "%'";
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'ProfileCF')) {
+            $FilterUserProfileCF = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'ProfileCF');
+            $conditions['UserProfile.CF'] = $FilterUserProfileCF;
+        }        
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
+            $FilterUserBlock = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Block');
+            if ($FilterUserBlock != 'ALL')
+                $conditions['User.block'] = "User.block = $FilterUserBlock";  // 0 attivi / 1 disattivati
+            else
+                $conditions['User.block'] = "User.block IN ('0','1')";
+        }
+        else {
+            $FilterUserBlock = 'ALL';
+            $conditions['User.block'] = "User.block IN ('0','1')"; // di default li prende tutti
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserFlagPrivacy')) {
+            $FilterUserHasUserFlagPrivacy = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserFlagPrivacy');
+            $conditions['UserProfile.UserFlagPrivacy'] = $FilterUserHasUserFlagPrivacy;
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserRegistrationExpire')) {
+            $FilterUserHasUserRegistrationExpire = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserRegistrationExpire');
+            $conditions['UserProfile.UserRegistrationExpire'] = $FilterUserHasUserRegistrationExpire;
+        }
+		
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Sort')) 
+            $FilterUserSort = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Sort');
+        else 
+            $FilterUserSort = Configure::read('orderUser');
+        
+        /* filtro */
+        $this->set('FilterUserUsername', $FilterUserUsername);
+        $this->set('FilterUserName', $FilterUserName);
+        $this->set('FilterUserProfileCF', $FilterUserProfileCF);
+        $this->set('FilterUserBlock', $FilterUserBlock);
+        $this->set('FilterUserHasUserFlagPrivacy', $FilterUserHasUserFlagPrivacy);
+        $this->set('FilterUserHasUserRegistrationExpire', $FilterUserHasUserRegistrationExpire);
+        $this->set('FilterUserSort', $FilterUserSort);
+
+        $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];
+        $hasUserFlagPrivacys = ['ALL' => 'Tutti', 'Y' => __('Y'), 'N' => __('No')];
+        $hasUserRegistrationExpires = ['ALL' => 'Tutti', 'Y' => __('Y'), 'N' => __('No')];
+        $this->set(compact('block', 'hasUserFlagPrivacys', 'hasUserRegistrationExpires'));
+
+        $sorts = [Configure::read('orderUser') => __('Name'), 
+                        'User.registerDate' => __('registerDate'), 
+                       /* 'Profile.dataRichEnter' => __('dataRichEnter'), 
+                        'Profile.dataEnter' => __('dataEnter'), 
+                        'Profile.dataRichExit' => __('dataRichExit'), 
+                        'Profile.dataExit' => __('dataExit')*/
+                    ];
+        $this->set('sorts', $sorts);
+                
+        self::d($conditions, $debug);
+
+		$results = [];
+		
+		App::import('Model', 'Cart');
+		$Cart = new Cart;
+		
+        App::import('Model', 'Organization');
+        $Organization = new Organization;
+		
+        $options = [];
+        $options['conditions'] = ['Organization.id' => $this->user->organization['Organization']['id']];
+        $options['recursive'] = -1;
+        $results = $Organization->find('first', $options);
+		
+        $userResults = $this->User->getUsersComplete($this->user, $conditions, $FilterUserSort, false);
+		if(!empty($userResults)) {
+			$results['User'] = $userResults;
+			
+			foreach($results['User'] as $numResult2 => $result) {
+				
+				$tmp->user->organization['Organization']['id'] = $result['User']['organization_id']; 
+				$cartResults = $Cart->getLastCartDateByUser($tmp->user, $result['User']['id'], $debug);
+				$results['User'][$numResult2] += $cartResults; 
+			}
+		}
+		self::d($results, $debug);
+		
+        $this->set(compact('results'));
+    }
+	
     public function admin_index_date() {
 
         $this->set('isManager', $this->isManager());
@@ -129,7 +262,7 @@ class UsersController extends AppController {
         /*
          * conditions
          */
-        $conditions = array();
+        $conditions = [];
 
         /* recupero dati dalla Session gestita in appController::beforeFilter */
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Username')) {
@@ -163,25 +296,19 @@ class UsersController extends AppController {
         $this->set('FilterUserBlock', $FilterUserBlock);
         $this->set('FilterUserSort', $FilterUserSort);
 
-        $block = array('ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi');
+        $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];
         $this->set('block', $block);
 
-        $sorts = array(Configure::read('orderUser') => __('Name'), 
+        $sorts = [Configure::read('orderUser') => __('Name'), 
                         'User.registerDate' => __('registerDate'), 
                        /* 'Profile.dataRichEnter' => __('dataRichEnter'), 
                         'Profile.dataEnter' => __('dataEnter'), 
                         'Profile.dataRichExit' => __('dataRichExit'), 
                         'Profile.dataExit' => __('dataExit')*/
-                        );
+                    ];
         $this->set('sorts', $sorts);
-
-        
                 
-        /*
-          echo "<pre>";
-          print_r($conditions);
-          echo "</pre>";
-         */
+        self::d($conditions, $debug);
 
         $results = $this->User->getUsersComplete($this->user, $conditions, $FilterUserSort, false);
         $this->set('results', $results);
@@ -191,21 +318,43 @@ class UsersController extends AppController {
 
         $debug = false;
 
+        $organization_id = $this->request->data['organization_id'];
+		/*
+		 * ACL
+		*/ 		
+		if($organization_id!=$this->user->organization['Organization']['id']) {
+			
+			$continua = true;
+			
+			if(!$this->isManagerUserDes())
+				$continua = false;
+			
+			if($continua) {
+				$continua = $this->aclOrganizationIdinUso($organization_id);
+			}
+
+			if(!$continua) {
+				$this->Session->setFlash(__('msg_not_permission'));
+				$this->myRedirect(Configure::read('routes_msg_stop'));				
+			}			
+		}
+		/*
+		 * ACL
+		*/ 
+		
         $user_id = $this->request->data['user_id'];
         $field_db = 'profile.' . $this->request->data['field_db'];
         $data_db = $this->request->data['data_db'];
 
         $sql = 'SELECT * from ' . Configure::read('DB.portalPrefix') . 'user_profiles WHERE user_id = ' . $user_id . ' and profile_key = "' . $field_db . '"';
-        if ($debug)
-            echo "\n " . $sql;
+        self::d($sql, $debug);
         $executeSql = $this->User->query($sql);
 
         if (empty($executeSql))
             $sql = 'INSERT INTO ' . Configure::read('DB.portalPrefix') . 'user_profiles (user_id,profile_key,profile_value) VALUES (' . $user_id . ', "' . $field_db . '", "\"' . $data_db . '\"")';
         else
             $sql = 'UPDATE ' . Configure::read('DB.portalPrefix') . 'user_profiles SET profile_value = "\"' . $data_db . '\"" WHERE user_id = ' . $user_id . ' AND profile_key = "' . $field_db . '"';
-        if ($debug)
-            echo "\n " . $sql;
+        self::d($sql, $debug);
         $executeSql = $this->User->query($sql);
 
 
@@ -230,20 +379,16 @@ class UsersController extends AppController {
 
             $msg = '';
 
-            if ($debug) {
-                echo "<pre>";
-                print_r($this->request->data);
-                echo "</pre>";
-            }
+            self::d($this->request->data, $debug);
 
             /*
-             * 	$file1 = array(
+             * 	$file1 = [
              * 		'name' => 'immagine.jpg',
              * 		'type' => 'image/jpeg',
              * 		'tmp_name' => /tmp/phpsNYCIB',
              * 		'error' => 0,
              * 		'size' => 41737,
-             * 	);
+             * 	];
              *
              * UPLOAD_ERR_OK (0): Non vi sono errori, l’upload e' stato eseguito con successo;
              * UPLOAD_ERR_INI_SIZE (1): Il file inviato eccede le dimensioni specificate nel parametro upload_max_filesize di php.ini;
@@ -275,23 +420,14 @@ class UsersController extends AppController {
                         foreach ($arr_extension as $estensione)
                             $msg .= '.' . $estensione . '&nbsp;';
 
-                        if ($debug) {
-                            echo "<br />ext " . $ext;
-                            echo "<br />type " . $type;
-                            echo "<br />msg " . $msg;
-                            exit;
-                        }
+                        self::d([$ext, $type, $msg], $debug);
                     }
 
                     if (empty($msg)) {
 
                         $fileNewName = $user_id . '.' . $ext;
-                        if ($debug) {
-                            echo "<br />path_upload " . $path_upload;
-                            echo "<br />ext " . $ext;
-                            echo "<br />fileNewName " . $fileNewName;
-                        }
-
+                        self::d(['path_upload '.$path_upload, 'ext '.$ext, 'fileNewName '.$fileNewName], $debug);
+                           
                         if (!move_uploaded_file($file1['tmp_name'], $path_upload . $fileNewName))
                             $msg = $file1['error'];
                         else {
@@ -299,26 +435,19 @@ class UsersController extends AppController {
                             $info = getimagesize($path_upload . $fileNewName);
                             $width = $info[0];
                             $height = $info[1];
-                            if ($debug) {
-                                echo "<pre>";
-                                print_r($info);
-                                echo "</pre>";
-                            }
-
+                            self::d($info, $debug);
 
                             /*
                              * ridimensiona img
                              */
                             if ($width > Configure::read('App.web.img.upload.width.user')) {
-                                $status = ImageTool::resize(array(
+                                $status = ImageTool::resize([
                                             'input' => $path_upload . $fileNewName,
                                             'output' => $path_upload . $fileNewName,
                                             'width' => Configure::read('App.web.img.upload.width.user'),
-                                            'height' => ''
-                                ));
+                                            'height' => '']);
 
-                                if ($debug)
-                                    echo "<br />ridimensiono " . $status;
+                                self::d("ridimensiono " . $status, $debug);
                             }
 
                             $msg = "Immagine caricata correttamente";
@@ -332,19 +461,18 @@ class UsersController extends AppController {
                 if ($msg == UPLOAD_ERR_OK)
                     $msg = "Immagine caricata correttamente";
 
-                if ($debug)
-                    echo "<br />msg " . $msg;
+                self::d("msg " . $msg, $debug);
 
                 $this->Session->setFlash($msg);
             } // end if(!empty($this->request->data['Document']['file1']['name']))
         } // end if ($this->request->is('post') || $this->request->is('put'))
 
-        $options = array();
-        $options['conditions'] = array('User.id' => $user_id,
-            'User.organization_id' => (int) $this->user->organization['Organization']['id']);
+        $options = [];
+        $options['conditions'] = ['User.id' => $user_id,
+								  'User.organization_id' => (int) $this->user->organization['Organization']['id']];
         $options['recursive'] = -1;
 
-        $this->User->unbindModel(array('hasMany' => array('Cart')));
+        $this->User->unbindModel(['hasMany' => ['Cart']]);
         $results = $this->User->find('first', $options);
 
         /*
@@ -359,9 +487,7 @@ class UsersController extends AppController {
         /*
          * G R O U P
          */
-        $sql = "SELECT
-                        `Group`.title
-                FROM
+        $sql = "SELECT `Group`.title FROM
                         " . Configure::read('DB.portalPrefix') . "users User,
                         " . Configure::read('DB.portalPrefix') . "user_usergroup_map UserGroup,
                         " . Configure::read('DB.portalPrefix') . "usergroups AS `Group`
@@ -371,7 +497,7 @@ class UsersController extends AppController {
                         AND UserGroup.group_id = `Group`.id
                         AND User.id = $user_id 
                         ORDER BY `Group`.title ";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         try {
             $groupResults = $this->User->query($sql);
         } catch (Exception $e) {
@@ -405,7 +531,7 @@ class UsersController extends AppController {
                         AND SuppliersOrganization.stato = 'Y' 
                         AND User.id = $user_id 
                 ORDER BY SuppliersOrganization.name ";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         try {
             $supplierResults = $this->User->query($sql);
         } catch (Exception $e) {
@@ -425,9 +551,9 @@ class UsersController extends AppController {
     }
 
     public function gmaps() {
-        $options = array();
-        $options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
-            'User.block' => 0);
+        $options = [];
+        $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
+								  'User.block' => 0];
         $options['order'] = Configure::read('orderUser');
         $options['recursive'] = -1;
         $results = $this->User->find('all', $options);
@@ -437,7 +563,7 @@ class UsersController extends AppController {
          */
         jimport('joomla.user.helper');
         $i = 0;
-        $newResults = array();
+        $newResults = [];
         foreach ($results as $numResult => $result) {
 
             $userTmp = JFactory::getUser($result['User']['id']);
@@ -476,7 +602,7 @@ class UsersController extends AppController {
                                 AND SuppliersOrganization.stato = 'Y' 
                                 AND User.id = " . $result['User']['id'] . " 
                         ORDER BY SuppliersOrganization.name ";
-                // echo '<br />'.$sql;
+                self::d($sql, false);
                 try {
                     $supplierResults = $this->User->query($sql);
                 } catch (Exception $e) {
@@ -509,12 +635,12 @@ class UsersController extends AppController {
         App::import('Model', 'BookmarksMail');
         $BookmarksMail = new BookmarksMail;
 
-        $options = array();
-        $options['conditions'] = array('BookmarksMail.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'BookmarksMail.user_id' => $this->user->id);
+        $options = [];
+        $options['conditions'] = ['BookmarksMail.organization_id' => (int) $this->user->organization['Organization']['id'],
+								  'BookmarksMail.user_id' => $this->user->id];
 
-        $options['order'] = array('BookmarksMail.supplier_organization_id');
-        $options['fields'] = array('BookmarksMail.supplier_organization_id', 'BookmarksMail.order_open', 'BookmarksMail.order_close');
+        $options['order'] = ['BookmarksMail.supplier_organization_id'];
+        $options['fields'] = ['BookmarksMail.supplier_organization_id', 'BookmarksMail.order_open', 'BookmarksMail.order_close'];
         $options['recursive'] = -1;
         $bookmarksMailResults = $BookmarksMail->find('all', $options);
 
@@ -526,13 +652,13 @@ class UsersController extends AppController {
 
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
-        $SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
+        $SuppliersOrganization->unbindModel(['belongsTo' => ['Organization']]);
 
-        $options = array();
-        $options['conditions'] = array('SuppliersOrganization.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'SuppliersOrganization.stato' => 'Y',
-            'Supplier.stato' => 'Y'); // escludo i Temporanei perche' possono essere produttori di appoggio utilizzati dal gas
-        $options['order'] = array('SuppliersOrganization.name');
+        $options = [];
+        $options['conditions'] = ['SuppliersOrganization.organization_id' => (int) $this->user->organization['Organization']['id'],
+								'SuppliersOrganization.stato' => 'Y',
+								'Supplier.stato' => 'Y']; // escludo i Temporanei perche' possono essere produttori di appoggio utilizzati dal gas
+        $options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = 0;
         $suppliersOrganizationResults = $SuppliersOrganization->find('all', $options);
 
@@ -555,11 +681,9 @@ class UsersController extends AppController {
                 }
             }
         }
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
+       
+		self::d($results, false);
+	   
         $this->set(compact('results'));
 
         $this->layout = 'default_front_end';
@@ -569,7 +693,6 @@ class UsersController extends AppController {
      * $field order_open / order_close
      * $value Y / N
      */
-
     public function bookmarks_mails_update($supplier_organization_id, $field, $value) {
 
         App::import('Model', 'BookmarksMail');
@@ -580,5 +703,88 @@ class UsersController extends AppController {
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
     }
+    
+	/* 
+	 * passato un campo (User.block) inverte il valore Y => N
+	 */
+    public function admin_inverseValue($organization_id, $user_id, $field, $format='notmpl') {
 
+		$debug = false;
+		
+        if (empty($organization_id) && empty($user_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        /* ctrl ACL */
+		if ($this->user->organization['Organization']['hasDes'] == 'N' || $this->user->organization['Organization']['hasDesUserManager'] != 'Y' || empty($this->user->des_id)) {
+            $this->Session->setFlash(__('msg_not_organization_config'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+		
+        if (!$this->isManagerUserDes()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+        /* ctrl ACL */
+		
+        App::import('Model', 'DesOrganization');
+        $DesOrganization = new DesOrganization;
+				
+        /*
+         * tutti i GAS del DES
+         */
+        $options = [];
+        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
+								  'DesOrganization.organization_id' => $organization_id];
+        $options['recursive'] = 1;
+        $desOrganizationsResults = $DesOrganization->find('first', $options);
+		if(empty($desOrganizationsResults)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
+        $options = [];
+        $options['conditions'] = ['User.organization_id' => $organization_id,
+								  'User.id' => $user_id];
+        $options['recursive'] = -1;
+        $userResults = $this->User->find('first', $options);
+		if(empty($userResults)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+		
+		self::d($field);
+		self::d($userResults);
+
+		if(isset($userResults['User'][$field])) {
+
+			self::d($userResults['User'][$field]);
+
+			switch ($userResults['User'][$field]) {
+				case '0':
+					$userResults['User'][$field] = '1';
+				break;
+				case '1':
+					$userResults['User'][$field] = '0';
+				break;
+				default:
+					$userResults['User'][$field] = '0';
+				break;
+			}
+
+			self::d($userResults['User'][$field]);
+			self::d($userResults);
+			
+			$this->User->create();
+			if (!$this->User->save($userResults)) {
+			}
+		
+		}
+
+        $this->set('content_for_layout', '');
+
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');
+   }    
 }

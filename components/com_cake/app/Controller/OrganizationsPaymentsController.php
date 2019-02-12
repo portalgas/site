@@ -22,7 +22,7 @@ class OrganizationsPaymentsController extends AppController {
 			/*
 			 *  pay
 			 */
-			$paramsPay = array();
+			$paramsPay = [];
 			$paramsPay += array('payMail' => $this->request->data['OrganizationsPayment']['payMail']);
 			$paramsPay += array('payContatto' => $this->request->data['OrganizationsPayment']['payContatto']);
 			$paramsPay += array('payIntestatario' => $this->request->data['OrganizationsPayment']['payIntestatario']);
@@ -34,12 +34,7 @@ class OrganizationsPaymentsController extends AppController {
 			$paramsPay += array('payPiva' => $this->request->data['OrganizationsPayment']['payPiva']);
 			$this->request->data['OrganizationsPayment']['paramsPay'] = json_encode($paramsPay);
 			
-			if($debug) {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-				exit;
-			}
+			self::d($this->request->data, $debug);
 			
 			$this->request->data['OrganizationsPayment']['id'] = $this->user->organization['Organization']['id'];
 			
@@ -51,19 +46,31 @@ class OrganizationsPaymentsController extends AppController {
 			}			
 		} // POST
 		
-		$options = array();
-		$options['conditions'] = array('OrganizationsPayment.id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['OrganizationsPayment.id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 	
         $this->request->data = $this->OrganizationsPayment->find('first', $options);
 		
 		$paramsPay = json_decode($this->request->data['OrganizationsPayment']['paramsPay'], true);
 		$this->request->data['OrganizationsPayment'] += $paramsPay;
-		/*
-  		echo "<pre>";
-		print_r($this->request->data);
-        echo "</pre>";
-		*/
+		
+		App::import('Model', 'Template');
+        $Template = new Template;
+		
+		$options = [];
+		$options['conditions'] = ['Template.id' => $this->request->data['OrganizationsPayment']['template_id']];
+		$options['recursive'] = -1;
+        $templateResults = $Template->find('first', $options);
+		
+		$this->request->data += $templateResults;
+				
+		self::d($this->request->data, $debug);
+
+		$options = [];
+		$options['recursive'] = -1;
+        $templateResults = $Template->find('all', $options);
+		$this->set('templateResults',$templateResults);
 	
 		$table_plan = & JTable::getInstance('Content', 'JTable');
 		$table_plan_return  = $table_plan->load(array('id'=>103));
@@ -75,9 +82,9 @@ class OrganizationsPaymentsController extends AppController {
 	/*
 	 * insert/update articolo in joomla
 	 */			
-	private function __gestJContent($data, $results, $debug=false) {
+	private function _gestJContent($data, $results, $debug=false) {
 
-		$table = JTable::getInstance('Content', 'JTable', array());
+		$table = JTable::getInstance('Content', 'JTable', []);
 		
 		$data = array(
 				'catid' => $results['CategoriesSupplier']['j_category_id'],

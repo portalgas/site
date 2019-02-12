@@ -1,12 +1,6 @@
 <?php
-
 App::uses('AppController', 'Controller');
 
-/**
- * Organizations Controller
- *
- * @property Organization $Organization
- */
 class OrganizationsController extends AppController {
 
     public function beforeFilter() {
@@ -36,33 +30,58 @@ class OrganizationsController extends AppController {
             $this->Session->setFlash(__('Organizzazione scelta'));
             $this->myRedirect(Configure::read('routes_default'));
         } else {
-            $options = array();
-            //$options['conditions'] = array('Organization.stato' => 'Y');
-            $options['order'] = array('Organization.name');
-            $results = $this->Organization->find('all', $options);
+            $options = [];
+            $options['conditions'] = ['Organization.type' => 'GAS'];
+            $options['order'] = ['Organization.name'];
+            $gasResults = $this->Organization->find('all', $options);
+			
+            $options = [];
+            $options['conditions'] = ['Organization.type' => 'PRODGAS'];
+            $options['order'] = ['Organization.name'];
+            $prodgasResults = $this->Organization->find('all', $options);
 
-            $tmp = array();
-            foreach ($results as $result) {
+            $gasTmp = [];
+            foreach ($gasResults as $result) {
+				
+				$paramsConfig = json_decode($result['Organization']['paramsConfig'], true);
+  
                 $label = $result['Organization']['name'] . ' ' . $result['Organization']['localita'] . ' (' . $result['Organization']['provincia'] . ')';
+				
+				//$payToDelivery = $this->Organization->getPayToDelivery($paramsConfig['payToDelivery']);
+				//$label .= ' '.__('Payment').' '.$payToDelivery;
+				$label .= ' '.$result['Template']['name'];
+				$label .= ' ('.$result['Template']['id'].')';
+				
                 if ($result['Organization']['stato'] == 'N')
                     $label .= " - NON ATTIVA";
-                $tmp[$result['Organization']['id']] = $label;
+                $gasTmp[$result['Organization']['id']] = $label;
             }
 
-            $organizations = array(0 => 'Nessuna organizzazione');
-            $organizations += $tmp;
+            $prodgasTmp = [];
+            foreach ($prodgasResults as $result) {
+				
+                $label = $result['Organization']['name'];
+				
+                if ($result['Organization']['stato'] == 'N')
+                    $label .= " - NON ATTIVA";
+                $prodgasTmp[$result['Organization']['id']] = $label;
+            }
+			
+            $organizations = [0 => 'Nessuna organizzazione',
+							  'GAS' => $gasTmp,
+							  'PRODGAS' => $prodgasTmp];
 
             $this->set(compact('organizations'));
         }
     }
 
-    public function admin_index() {
+    public function admin_index($type='GAS') {
 
-        $this->paginate = array('recursive' => 0,
-            'order' => 'Organization.id desc',
-            'limit' => 100);
+        $this->paginate = ['recursive' => 0,
+        					'conditions' => ['Organization.type' => $type],
+				            'order' => 'Organization.id desc',
+				            'limit' => 100];
         $results = $this->paginate('Organization');
-
         foreach ($results as $numResult => $result) {
 
             $paramsConfig = json_decode($result['Organization']['paramsConfig'], true);
@@ -83,7 +102,7 @@ class OrganizationsController extends AppController {
                 $results[$numResult]['Organization'] += $paramsPay;
                 unset($results[$numResult]['Organization']['paramsPay']);
             } else
-                $paramsPay = array();
+                $paramsPay = [];
         }
 
         $this->set('results', $results);
@@ -93,93 +112,284 @@ class OrganizationsController extends AppController {
          * se lo faccio in admin_edit tiene quelli vecchi
          */
         $this->reloadUserParams();
-
-        $this->set('templates', Configure::read('templates'));
     }
 
+   public function admin_step_add() {
+   
+	   $results = $this->Organization->find('all', ['fields' => ['MAX(Organization.id) AS max_id']]);
+	
+	   $max_id = $results[0][0]['max_id'];
+	   $max_id++;
+	   $this->set('max_id', $max_id);
+   }
+
+	/*
+	 * ctrl se i dati sono coerenti con il template
+	 */
+    public function admin_index_ctrl() {
+
+		$debug = false;
+		
+		App::import('Model', 'UserGroupMap');
+		$UserGroupMap = new UserGroupMap;
+		
+        $this->paginate = ['conditions' => ['Organization.type' => 'GAS'],
+							'recursive' => 0,
+							'order' => 'Organization.id desc',
+							'limit' => 100];
+        $results = $this->paginate('Organization');
+
+        foreach ($results as $numResult => $result) {
+
+			$tmp_user = new \stdClass(); 
+			$tmp_user->organization['Organization']['id'] = $result['Organization']['id'];
+			
+            $paramsConfig = json_decode($result['Organization']['paramsConfig'], true);
+            $paramsFields = json_decode($result['Organization']['paramsFields'], true);
+            
+			/*
+              echo "<pre>";
+              print_r($paramsConfig);
+              print_r($paramsFields);
+              echo "</pre>";
+            */
+			
+            $results[$numResult]['Organization'] += $paramsConfig;
+            $results[$numResult]['Organization'] += $paramsFields;
+
+            unset($results[$numResult]['Organization']['paramsConfig']);
+            unset($results[$numResult]['Organization']['paramsFields']);
+
+            if (!empty($result['Organization']['paramsPay'])) {
+                $paramsPay = json_decode($result['Organization']['paramsPay'], true);
+                $results[$numResult]['Organization'] += $paramsPay;
+                unset($results[$numResult]['Organization']['paramsPay']);
+            } else
+                $paramsPay = [];
+			
+			/*
+			 * ctrl user Assistente
+			 */
+			$UserAssistenteResults = [];
+			$sql = "SELECT User.* 
+					FROM
+					".Configure::read('DB.portalPrefix')."user_usergroup_map m,
+					".Configure::read('DB.portalPrefix')."usergroups g,
+					".Configure::read('DB.portalPrefix')."users User
+						WHERE
+						m.user_id = User.id
+						and m.group_id = g.id
+						and m.group_id = ".Configure::read('group_id_manager')."
+						and User.block = 0
+						and User.organization_id = ".(int)$result['Organization']['id']."
+						and User.email like '%.portalgas.it' "; // Assistente PortAlGas
+			self::d($sql, $debug);
+			try {
+				$userAssistenteResults = $this->Organization->query($sql);			
+			}
+			catch (Exception $e) {
+				CakeLog::write('error',$sql);
+				CakeLog::write('error',$e);
+			}
+			$results[$numResult]['Organization']['userAssistenteResults'] = $userAssistenteResults;
+			
+			/*
+			 * ctrl storeroom
+			 */
+			if($paramsConfig['hasStoreroom']=='Y' || $paramsConfig['hasStoreroomFrontEnd']=='Y')  {
+			
+				$storeroom_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_storeroom'), $debug);
+				
+				$results[$numResult]['Organization']['storeroom_tot_users'] = $storeroom_tot_users;
+				
+				if($storeroom_tot_users==1)
+					$results[$numResult]['Organization']['ctrl_storeroom'] = 'OK';
+				else
+					$results[$numResult]['Organization']['ctrl_storeroom'] = 'KO';
+			}
+			else
+				$results[$numResult]['Organization']['ctrl_storeroom'] = 'OK';
+		
+			/*
+			 * ctrl ruoli 
+			 */
+			App::import('Model', 'Template');
+			$Template = new Template;
+			
+			$options = [];
+			$options['conditions'] = ['Template.id' => $result['Organization']['template_id']];
+			$options['recursive'] = -1;
+			$templateResults = $Template->find('first', $options);
+			if(empty($templateResults))
+				self::x("Organization::validateData() templateResults empty!");
+			
+			$tesoriere_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_tesoriere'), $debug);
+			$cassiere_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_cassiere'), $debug);
+			
+			/*
+			 * cassiere
+			 */ 
+			if($templateResults['Template']['hasCassiere'] == 'Y') {
+				if($cassiere_tot_users==0) {
+					$results[$numResult]['Organization']['ctrl_hasCassiere'] = 'KO';
+				} 
+				else
+					$results[$numResult]['Organization']['ctrl_hasCassiere'] = 'OK';				
+			}
+			else {
+				$results[$numResult]['Organization']['ctrl_hasCassiere'] = 'OK';
+			}
+
+			/*
+			 * tesoriere
+			 */ 					
+			if($templateResults['Template']['hasTesoriere'] == 'Y') {
+				if($tesoriere_tot_users==0) {
+					$results[$numResult]['Organization']['ctrl_hasTesoriere'] = 'KO';
+				}
+				else
+					$results[$numResult]['Organization']['ctrl_hasTesoriere'] = 'OK';	
+			}
+			else {
+				$results[$numResult]['Organization']['ctrl_hasTesoriere'] = 'OK';	
+			}
+					
+			/*
+			 * ctrl pay POST ON ON-POST
+			 * non + =< lo faccio dal templates
+			switch($result['Template']['payToDelivery']) {
+				case "POST":
+					$tesoriere_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_tesoriere'), $debug);
+					
+					if($tesoriere_tot_users==0)
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'KO';
+					else
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'OK';					
+				break;
+				case "ON":
+					
+					
+					if($cassiere_tot_users==0)
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'KO';
+					else
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'OK';	
+				
+				break;
+				case "ON-POST":
+					$tesoriere_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_tesoriere'), $debug);
+					
+					if($tesoriere_tot_users==0)
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'KO';
+					else
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'OK';	
+					
+					$cassiere_tot_users = $UserGroupMap->getTotUserByGroupId($tmp_user, Configure::read('group_id_cassiere'), $debug);
+					
+					if($cassiere_tot_users==0)
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'KO';
+					else
+						$results[$numResult]['Organization']['ctrl_payToDelivery'] = 'OK';		
+				break;
+				default:
+					self::x("Per Organization ".$result['Organization']['id']." payToDelivery NON permesso ".$paramsConfig['payToDelivery']);
+				break;
+			}
+			*/
+			
+        }
+        
+		self::d($results, false);
+		
+        $this->set('results', $results);
+    }
+	
     public function admin_add() {
 
         $debug = false;
 
         if ($this->request->is('post') || $this->request->is('put')) {
 
-            $this->__prepare_request_data();
+            $this->request->data = $this->Organization->validateData($this->request->data, $debug);
 
-            $paramsConfig = array();
-            $paramsConfig += array('hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']);
-            $paramsConfig += array('hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']);
-            $paramsConfig += array('hasVisibility' => $this->request->data['Organization']['hasVisibility']);
-            $paramsConfig += array('hasTrasport' => $this->request->data['Organization']['hasTrasport']);
-            $paramsConfig += array('hasCostMore' => $this->request->data['Organization']['hasCostMore']);
-            $paramsConfig += array('hasCostLess' => $this->request->data['Organization']['hasCostLess']);
-            $paramsConfig += array('hasValidate' => $this->request->data['Organization']['hasValidate']);
-            $paramsConfig += array('hasStoreroom' => $this->request->data['Organization']['hasStoreroom']);
-            $paramsConfig += array('hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']);
-            $paramsConfig += array('payToDelivery' => $this->request->data['Organization']['payToDelivery']);
-            $paramsConfig += array('hasDes' => $this->request->data['Organization']['hasDes']);
-            $paramsConfig += array('hasDesReferentAllGas' => $this->request->data['Organization']['hasDesReferentAllGas']);
-            $paramsConfig += array('prodSupplierOrganizationId' => $this->request->data['Organization']['prodSupplierOrganizationId']);
+            $paramsConfig = [];
+            $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
+            $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
+            $paramsConfig += ['hasVisibility' => $this->request->data['Organization']['hasVisibility']];
+            $paramsConfig += ['hasTrasport' => $this->request->data['Organization']['hasTrasport']];
+            $paramsConfig += ['hasCostMore' => $this->request->data['Organization']['hasCostMore']];
+            $paramsConfig += ['hasCostLess' => $this->request->data['Organization']['hasCostLess']];
+            $paramsConfig += ['hasValidate' => $this->request->data['Organization']['hasValidate']];
+            $paramsConfig += ['hasStoreroom' => $this->request->data['Organization']['hasStoreroom']];
+            $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
+            $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
+            $paramsConfig += ['canOrdersDelete' => $this->request->data['Organization']['canOrdersDelete']];
+            $paramsConfig += ['cashLimit' => $this->request->data['Organization']['cashLimit']];
+            $paramsConfig += ['limitCashAfter' => $this->request->data['Organization']['limitCashAfter']];
+            $paramsConfig += ['hasDes' => $this->request->data['Organization']['hasDes']];
+            $paramsConfig += ['hasDesReferentAllGas' => $this->request->data['Organization']['hasDesReferentAllGas']];
+            $paramsConfig += ['hasDesUserManager' => $this->request->data['Organization']['hasDesUserManager']];
+            $paramsConfig += ['prodSupplierOrganizationId' => $this->request->data['Organization']['prodSupplierOrganizationId']];
+            $paramsConfig += ['hasUsersRegistrationFE' => $this->request->data['Organization']['hasUsersRegistrationFE']];
 
+			$paramsConfig += ['hasUserFlagPrivacy' => $this->request->data['Organization']['hasUserFlagPrivacy']];
+			$paramsConfig += ['hasUserRegistrationExpire' => $this->request->data['Organization']['hasUserRegistrationExpire']];
+			$paramsConfig += ['userRegistrationExpireDate' => $this->request->data['Organization']['userRegistrationExpireDate']];
+			
             /*
              * ruoli
              * di default gasManager, gasManagerDelivery, gasReferente, gasSuperReferente, utenti
              */
             // referente cassa (pagamento degli utenti alla consegna)
-            $paramsConfig += array('hasUserGroupsCassiere' => $this->request->data['Organization']['hasUserGroupsCassiere']);
+            $paramsConfig += ['hasUserGroupsCassiere' => $this->request->data['Organization']['hasUserGroupsCassiere']];
 
             /*
              * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
              * 		gestisce anche il pagamento del suo produttore
              */
-            $paramsConfig += array('hasUserGroupsReferentTesoriere' => $this->request->data['Organization']['hasUserGroupsReferentTesoriere']);
+            $paramsConfig += ['hasUserGroupsReferentTesoriere' => $this->request->data['Organization']['hasUserGroupsReferentTesoriere']];
 
             // tesoriere per pagamento ai fornitori
-            $paramsConfig += array('hasUserGroupsTesoriere' => $this->request->data['Organization']['hasUserGroupsTesoriere']);
-            $paramsConfig += array('hasUserGroupsStoreroom' => $this->request->data['Organization']['hasUserGroupsStoreroom']);
+            $paramsConfig += ['hasUserGroupsTesoriere' => $this->request->data['Organization']['hasUserGroupsTesoriere']];
+            $paramsConfig += ['hasUserGroupsStoreroom' => $this->request->data['Organization']['hasUserGroupsStoreroom']];
 
             $this->request->data['Organization']['paramsConfig'] = json_encode($paramsConfig);
 
-            $paramsFields = array();
-            $paramsFields += array('hasFieldArticleCodice' => $this->request->data['Organization']['hasFieldArticleCodice']);
-            $paramsFields += array('hasFieldArticleIngredienti' => $this->request->data['Organization']['hasFieldArticleIngredienti']);
-            $paramsFields += array('hasFieldArticleAlertToQta' => $this->request->data['Organization']['hasFieldArticleAlertToQta']);
-            $paramsFields += array('hasFieldPaymentPos' => $this->request->data['Organization']['hasFieldPaymentPos']);
-            $paramsFields += array('paymentPos' => $this->request->data['Organization']['paymentPos']);
-            $paramsFields += array('hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']);
-            $paramsFields += array('hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']);
-            $paramsFields += array('hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']);
+            $paramsFields = [];
+            $paramsFields += ['hasFieldArticleCodice' => $this->request->data['Organization']['hasFieldArticleCodice']];
+            $paramsFields += ['hasFieldArticleIngredienti' => $this->request->data['Organization']['hasFieldArticleIngredienti']];
+            $paramsFields += ['hasFieldArticleAlertToQta' => $this->request->data['Organization']['hasFieldArticleAlertToQta']];
+            $paramsFields += ['hasFieldPaymentPos' => $this->request->data['Organization']['hasFieldPaymentPos']];
+            $paramsFields += ['paymentPos' => $this->request->data['Organization']['paymentPos']];
+            $paramsFields += ['hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']];
+            $paramsFields += ['hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']];
+            $paramsFields += ['hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']];
             $this->request->data['Organization']['paramsFields'] = json_encode($paramsFields);
 
             /*
              *  pay
              */
-            $paramsPay = array();
-            $paramsPay += array('payMail' => $this->request->data['Organization']['payMail']);
-            $paramsPay += array('payContatto' => $this->request->data['Organization']['payContatto']);
-            $paramsPay += array('payIntestatario' => $this->request->data['Organization']['payIntestatario']);
-            $paramsPay += array('payIndirizzo' => $this->request->data['Organization']['payIndirizzo']);
-            $paramsPay += array('payCap' => $this->request->data['Organization']['payCap']);
-            $paramsPay += array('payCitta' => $this->request->data['Organization']['payCitta']);
-            $paramsPay += array('payProv' => $this->request->data['Organization']['payProv']);
-            $paramsPay += array('payCf' => $this->request->data['Organization']['payCf']);
-            $paramsPay += array('payPiva' => $this->request->data['Organization']['payPiva']);
+            $paramsPay = [];
+            $paramsPay += ['payMail' => $this->request->data['Organization']['payMail']];
+            $paramsPay += ['payContatto' => $this->request->data['Organization']['payContatto']];
+            $paramsPay += ['payIntestatario' => $this->request->data['Organization']['payIntestatario']];
+            $paramsPay += ['payIndirizzo' => $this->request->data['Organization']['payIndirizzo']];
+            $paramsPay += ['payCap' => $this->request->data['Organization']['payCap']];
+            $paramsPay += ['payCitta' => $this->request->data['Organization']['payCitta']];
+            $paramsPay += ['payProv' => $this->request->data['Organization']['payProv']];
+            $paramsPay += ['payCf' => $this->request->data['Organization']['payCf']];
+            $paramsPay += ['payPiva' => $this->request->data['Organization']['payPiva']];
             $this->request->data['Organization']['paramsPay'] = json_encode($paramsPay);
 
-            if ($debug) {
-                echo "<pre>";
-                print_r($this->request->data);
-                echo "</pre>";
-                exit;
-            }
+            self::d($this->request->data, $debug);
 
             $this->Organization->create();
             if ($this->Organization->save($this->request->data)) {
                 $this->Session->setFlash(__('The organization has been saved'));
-                $this->myRedirect(array('action' => 'index'));
+                $this->myRedirect(['action' => 'index']);
             } else {
                 $this->Session->setFlash(__('The organization could not be saved. Please, try again.'));
             }
-        }
+        } // end if ($this->request->is('post') || $this->request->is('put')) 
 
         /*
          * fields default
@@ -188,51 +398,71 @@ class OrganizationsController extends AppController {
         $this->request->data['Organization']['hasUserGroupsReferentTesoriere'] = 'N';
         $this->request->data['Organization']['hasUserGroupsTesoriere'] = 'Y';
         $this->request->data['Organization']['hasUserGroupsStoreroom'] = 'Y';
-        $this->request->data['Organization']['payToDelivery'] = 'ON';
-
+        $this->request->data['Organization']['canOrdersClose'] = 'ALL';
+        $this->request->data['Organization']['canOrdersDelete'] = 'ALL';
+        $this->request->data['Organization']['cashLimit'] = 'LIMIT-NO';
+		$this->request->data['Organization']['limitCashAfter'] = '0.00';
+		
         /*
          * configuration
          */
-        $hasBookmarsArticles = array('Y' => 'Si', 'N' => 'No');
-        $hasArticlesOrder = array('Y' => 'Si', 'N' => 'No');
-        $hasVisibility = array('Y' => 'Si', 'N' => 'No');
-        $hasTrasport = array('Y' => 'Si', 'N' => 'No');
-        $hasCostMore = array('Y' => 'Si', 'N' => 'No');
-        $hasCostLess = array('Y' => 'Si', 'N' => 'No');
-        $hasValidate = array('Y' => 'Si', 'N' => 'No');
-        $hasStoreroom = array('Y' => 'Si', 'N' => 'No');
-        $hasStoreroomFrontEnd = array('Y' => 'Si', 'N' => 'No');
-        $payToDelivery = array('BEFORE' => 'prima della consegna', 'ON' => 'alla consegna', 'POST' => 'dopo la consegna', 'ON-POST' => 'alla consegna o dopo la consegna');
-        $hasDes = array('Y' => 'Si', 'N' => 'No');
-        $hasDesReferentAllGas = array('Y' => 'Si', 'N' => 'No');
+        $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
+        $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
+        $hasVisibility = ['Y' => 'Si', 'N' => 'No'];
+        $hasTrasport = ['Y' => 'Si', 'N' => 'No'];
+        $hasCostMore = ['Y' => 'Si', 'N' => 'No'];
+        $hasCostLess = ['Y' => 'Si', 'N' => 'No'];
+        $hasValidate = ['Y' => 'Si', 'N' => 'No'];
+        $hasStoreroom = ['Y' => 'Si', 'N' => 'No'];
+        $hasStoreroomFrontEnd = ['Y' => 'Si', 'N' => 'No'];
+        $canOrdersClose = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
+        $canOrdersDelete = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
+        $cashLimit = $this->Organization->getCashLimit();
+        $limitCashAfter = '0.00';
+        $hasDes = ['Y' => 'Si', 'N' => 'No'];
+        $hasDesReferentAllGas = ['Y' => 'Si', 'N' => 'No'];
+		$hasDesUserManager = ['Y' => 'Si', 'N' => 'No']; 
         $prodSupplierOrganizationId = 0;
+		$hasUsersRegistrationFE = ['Y' => 'Si', 'N' => 'No'];
 
+		$hasUserFlagPrivacy = ['Y' => 'Si', 'N' => 'No'];
+		$hasUserRegistrationExpire = ['Y' => 'Si', 'N' => 'No'];
+		$userRegistrationExpireDate = '';
+		
         /*
          * ruoli
          */
-        $hasUserGroupsCassiere = array('Y' => 'Si', 'N' => 'No');
-        $hasUserGroupsReferentTesoriere = array('Y' => 'Si', 'N' => 'No');
-        $hasUserGroupsTesoriere = array('Y' => 'Si', 'N' => 'No');
-        $hasUserGroupsStoreroom = array('Y' => 'Si', 'N' => 'No');
+        $hasUserGroupsCassiere = ['Y' => 'Si', 'N' => 'No'];
+        $hasUserGroupsReferentTesoriere = ['Y' => 'Si', 'N' => 'No'];
+        $hasUserGroupsTesoriere = ['Y' => 'Si', 'N' => 'No'];
+        $hasUserGroupsStoreroom = ['Y' => 'Si', 'N' => 'No'];
 
         /*
          * fields
          */
-        $hasFieldArticleCodice = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldArticleIngredienti = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldArticleAlertToQta = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldPaymentPos = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldArticleCategoryId = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldSupplierCategoryId = array('Y' => 'Si', 'N' => 'No');
-        $hasFieldFatturaRequired = array('Y' => 'Si', 'N' => 'No');
+        $hasFieldArticleCodice = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldArticleIngredienti = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldArticleAlertToQta = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldPaymentPos = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldArticleCategoryId = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldSupplierCategoryId = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'payToDelivery', 'hasDes', 'hasDesReferentAllGas', 'prodSupplierOrganizationId', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato'));
+        $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
-        $this->set('templates', Configure::read('templates'));
+		/*
+		 * template
+		 */ 
+		 $options = [];
+		 $options = ['order' => 'Template.name asc'];
+		 $templates = $this->Organization->Template->find('list', $options);		
+         $this->set('templates', $templates);
     }
 
     public function admin_edit($id = null) {
+
+		$debug = false;
 
         $this->Organization->id = $id;
         if (!$this->Organization->exists()) {
@@ -242,38 +472,48 @@ class OrganizationsController extends AppController {
 
         if ($this->request->is('post') || $this->request->is('put')) {
 
-            $this->__prepare_request_data();
+            $this->request->data = $this->Organization->validateData($this->request->data, $debug);
 
-            $paramsConfig = array();
-            $paramsConfig += array('hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']);
-            $paramsConfig += array('hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']);
-            $paramsConfig += array('hasVisibility' => $this->request->data['Organization']['hasVisibility']);
-            $paramsConfig += array('hasTrasport' => $this->request->data['Organization']['hasTrasport']);
-            $paramsConfig += array('hasCostMore' => $this->request->data['Organization']['hasCostMore']);
-            $paramsConfig += array('hasCostLess' => $this->request->data['Organization']['hasCostLess']);
-            $paramsConfig += array('hasValidate' => $this->request->data['Organization']['hasValidate']);
-            $paramsConfig += array('hasStoreroom' => $this->request->data['Organization']['hasStoreroom']);
-            $paramsConfig += array('hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']);
-            $paramsConfig += array('payToDelivery' => $this->request->data['Organization']['payToDelivery']);
-            $paramsConfig += array('hasDes' => $this->request->data['Organization']['hasDes']);
-            $paramsConfig += array('hasDesReferentAllGas' => $this->request->data['Organization']['hasDesReferentAllGas']);
-            $paramsConfig += array('prodSupplierOrganizationId' => $this->request->data['Organization']['prodSupplierOrganizationId']);
+            $paramsConfig = [];
+            $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
+            $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
+            $paramsConfig += ['hasVisibility' => $this->request->data['Organization']['hasVisibility']];
+            $paramsConfig += ['hasTrasport' => $this->request->data['Organization']['hasTrasport']];
+            $paramsConfig += ['hasCostMore' => $this->request->data['Organization']['hasCostMore']];
+            $paramsConfig += ['hasCostLess' => $this->request->data['Organization']['hasCostLess']];
+            $paramsConfig += ['hasValidate' => $this->request->data['Organization']['hasValidate']];
+            $paramsConfig += ['hasStoreroom' => $this->request->data['Organization']['hasStoreroom']];
+            $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
+            $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
+            $paramsConfig += ['canOrdersDelete' => $this->request->data['Organization']['canOrdersDelete']];
+            $paramsConfig += ['cashLimit' => $this->request->data['Organization']['cashLimit']];
+            $paramsConfig += ['limitCashAfter' => $this->request->data['Organization']['limitCashAfter']];
+            $paramsConfig += ['hasDes' => $this->request->data['Organization']['hasDes']];
+            $paramsConfig += ['hasDesReferentAllGas' => $this->request->data['Organization']['hasDesReferentAllGas']];
+            $paramsConfig += ['hasDesUserManager' => $this->request->data['Organization']['hasDesUserManager']];
+            $paramsConfig += ['prodSupplierOrganizationId' => $this->request->data['Organization']['prodSupplierOrganizationId']];
+            $paramsConfig += ['hasUsersRegistrationFE' => $this->request->data['Organization']['hasUsersRegistrationFE']];
 
+			$paramsConfig += ['hasUserFlagPrivacy' => $this->request->data['Organization']['hasUserFlagPrivacy']];
+            $paramsConfig += ['hasUserRegistrationExpire' => $this->request->data['Organization']['hasUserRegistrationExpire']];
+            $paramsConfig += ['userRegistrationExpireDate' => $this->request->data['Organization']['userRegistrationExpireDate']];
+            
+			
             /*
              * ruoli
              * di default gasManager, gasManagerDelivery, gasReferente, gasSuperReferente, utenti
              */
             // referente cassa (pagamento degli utenti alla consegna)
-            $paramsConfig += array('hasUserGroupsCassiere' => $this->request->data['Organization']['hasUserGroupsCassiere']);
+            $paramsConfig += ['hasUserGroupsCassiere' => $this->request->data['Organization']['hasUserGroupsCassiere']];
             /*
              * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
              * 		gestisce anche il pagamento del suo produttore
              */
-            $paramsConfig += array('hasUserGroupsReferentTesoriere' => $this->request->data['Organization']['hasUserGroupsReferentTesoriere']);
+            $paramsConfig += ['hasUserGroupsReferentTesoriere' => $this->request->data['Organization']['hasUserGroupsReferentTesoriere']];
 
             // tesoriere per pagamento ai fornitori
-            $paramsConfig += array('hasUserGroupsTesoriere' => $this->request->data['Organization']['hasUserGroupsTesoriere']);
-            $paramsConfig += array('hasUserGroupsStoreroom' => $this->request->data['Organization']['hasUserGroupsStoreroom']);
+            $paramsConfig += ['hasUserGroupsTesoriere' => $this->request->data['Organization']['hasUserGroupsTesoriere']];
+            $paramsConfig += ['hasUserGroupsStoreroom' => $this->request->data['Organization']['hasUserGroupsStoreroom']];
             /*
             echo "<pre>";
             print_r($paramsConfig);
@@ -281,35 +521,35 @@ class OrganizationsController extends AppController {
             */            
             $this->request->data['Organization']['paramsConfig'] = json_encode($paramsConfig);
 
-            $paramsFields = array();
-            $paramsFields += array('hasFieldArticleCodice' => $this->request->data['Organization']['hasFieldArticleCodice']);
-            $paramsFields += array('hasFieldArticleIngredienti' => $this->request->data['Organization']['hasFieldArticleIngredienti']);
-            $paramsFields += array('hasFieldArticleAlertToQta' => $this->request->data['Organization']['hasFieldArticleAlertToQta']);
-            $paramsFields += array('hasFieldPaymentPos' => $this->request->data['Organization']['hasFieldPaymentPos']);
-            $paramsFields += array('paymentPos' => $this->request->data['Organization']['paymentPos']);
-            $paramsFields += array('hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']);
-            $paramsFields += array('hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']);
-            $paramsFields += array('hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']);
+            $paramsFields = [];
+            $paramsFields += ['hasFieldArticleCodice' => $this->request->data['Organization']['hasFieldArticleCodice']];
+            $paramsFields += ['hasFieldArticleIngredienti' => $this->request->data['Organization']['hasFieldArticleIngredienti']];
+            $paramsFields += ['hasFieldArticleAlertToQta' => $this->request->data['Organization']['hasFieldArticleAlertToQta']];
+            $paramsFields += ['hasFieldPaymentPos' => $this->request->data['Organization']['hasFieldPaymentPos']];
+            $paramsFields += ['paymentPos' => $this->request->data['Organization']['paymentPos']];
+            $paramsFields += ['hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']];
+            $paramsFields += ['hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']];
+            $paramsFields += ['hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']];
             $this->request->data['Organization']['paramsFields'] = json_encode($paramsFields);
 
             /*
              *  pay
              */
-            $paramsPay = array();
-            $paramsPay += array('payMail' => $this->request->data['Organization']['payMail']);
-            $paramsPay += array('payContatto' => $this->request->data['Organization']['payContatto']);
-            $paramsPay += array('payIntestatario' => $this->request->data['Organization']['payIntestatario']);
-            $paramsPay += array('payIndirizzo' => $this->request->data['Organization']['payIndirizzo']);
-            $paramsPay += array('payCap' => $this->request->data['Organization']['payCap']);
-            $paramsPay += array('payCitta' => $this->request->data['Organization']['payCitta']);
-            $paramsPay += array('payProv' => $this->request->data['Organization']['payProv']);
-            $paramsPay += array('payCf' => $this->request->data['Organization']['payCf']);
-            $paramsPay += array('payPiva' => $this->request->data['Organization']['payPiva']);
+            $paramsPay = [];
+            $paramsPay += ['payMail' => $this->request->data['Organization']['payMail']];
+            $paramsPay += ['payContatto' => $this->request->data['Organization']['payContatto']];
+            $paramsPay += ['payIntestatario' => $this->request->data['Organization']['payIntestatario']];
+            $paramsPay += ['payIndirizzo' => $this->request->data['Organization']['payIndirizzo']];
+            $paramsPay += ['payCap' => $this->request->data['Organization']['payCap']];
+            $paramsPay += ['payCitta' => $this->request->data['Organization']['payCitta']];
+            $paramsPay += ['payProv' => $this->request->data['Organization']['payProv']];
+            $paramsPay += ['payCf' => $this->request->data['Organization']['payCf']];
+            $paramsPay += ['payPiva' => $this->request->data['Organization']['payPiva']];
             $this->request->data['Organization']['paramsPay'] = json_encode($paramsPay);
 
             $this->Organization->create();
             if ($this->Organization->save($this->request->data)) {
-
+            
                 /*
                  * ctrl se ho modificato l'organizzazione che sto usando
                  */
@@ -318,7 +558,7 @@ class OrganizationsController extends AppController {
                 } else
                     $this->Session->setFlash(__('The organization has been saved'));
 
-                $this->myRedirect(array('action' => 'index'));
+                $this->myRedirect(['action' => 'index']);
             } else {
                 $this->Session->setFlash(__('The organization could not be saved. Please, try again.'));
             }
@@ -344,118 +584,72 @@ class OrganizationsController extends AppController {
             /*
              * configurazione
              */
-            $hasBookmarsArticles = array('Y' => 'Si', 'N' => 'No');
-            $hasArticlesOrder = array('Y' => 'Si', 'N' => 'No');
-            $hasVisibility = array('Y' => 'Si', 'N' => 'No');
-            $hasTrasport = array('Y' => 'Si', 'N' => 'No');
-            $hasCostMore = array('Y' => 'Si', 'N' => 'No');
-            $hasCostLess = array('Y' => 'Si', 'N' => 'No');
-            $hasValidate = array('Y' => 'Si', 'N' => 'No');
-            $hasStoreroom = array('Y' => 'Si', 'N' => 'No');
-            $hasStoreroomFrontEnd = array('Y' => 'Si', 'N' => 'No');
-            $payToDelivery = array('BEFORE' => 'prima della consegna', 'ON' => 'alla consegna', 'POST' => 'dopo la consegna', 'ON-POST' => 'alla consegna o dopo la consegna');
-            $hasDes = array('Y' => 'Si', 'N' => 'No');
-            $hasDesReferentAllGas = array('Y' => 'Si', 'N' => 'No');
+            $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
+            $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
+            $hasVisibility = ['Y' => 'Si', 'N' => 'No'];
+            $hasTrasport = ['Y' => 'Si', 'N' => 'No'];
+            $hasCostMore = ['Y' => 'Si', 'N' => 'No'];
+            $hasCostLess = ['Y' => 'Si', 'N' => 'No'];
+            $hasValidate = ['Y' => 'Si', 'N' => 'No'];
+            $hasStoreroom = ['Y' => 'Si', 'N' => 'No'];
+            $hasStoreroomFrontEnd = ['Y' => 'Si', 'N' => 'No'];
+            $canOrdersClose = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
+			$canOrdersDelete = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
+			$cashLimit = $this->Organization->getCashLimit();
+	        $limitCashAfter = '0.00';            
+			$hasDes = ['Y' => 'Si', 'N' => 'No'];
+            $hasDesReferentAllGas = ['Y' => 'Si', 'N' => 'No'];
+			$hasDesUserManager = ['Y' => 'Si', 'N' => 'No'];
             $prodSupplierOrganizationId = 0;
+			$hasUsersRegistrationFE = ['Y' => 'Si', 'N' => 'No'];
 
+			$hasUserFlagPrivacy = ['Y' => 'Si', 'N' => 'No'];
+			$hasUserRegistrationExpire = ['Y' => 'Si', 'N' => 'No'];
+			$userRegistrationExpireDate = '';
+			
             /*
              * ruoli
              */
             if ($this->request->data['Organization']['type'] == 'GAS') {
-                $hasUserGroupsCassiere = array('Y' => 'Si', 'N' => 'No');
-                $hasUserGroupsReferentTesoriere = array('Y' => 'Si', 'N' => 'No');
+                $hasUserGroupsCassiere = ['Y' => 'Si', 'N' => 'No'];
+                $hasUserGroupsReferentTesoriere = ['Y' => 'Si', 'N' => 'No'];
 
-                $hasUserGroupsTesoriere = array('Y' => 'Si', 'N' => 'No');
+                $hasUserGroupsTesoriere = ['Y' => 'Si', 'N' => 'No'];
 
-                $hasUserGroupsStoreroom = array('Y' => 'Si', 'N' => 'No');
+                $hasUserGroupsStoreroom = ['Y' => 'Si', 'N' => 'No'];
             } else
             if ($this->request->data['Organization']['type'] == 'PROD') {
-                $hasUserGroupsCassiere = array('N' => 'No');
-                $hasUserGroupsReferentTesoriere = array('N' => 'No');
+                $hasUserGroupsCassiere = ['N' => 'No'];
+                $hasUserGroupsReferentTesoriere = ['N' => 'No'];
 
-                $hasUserGroupsTesoriere = array('Y' => 'Si');
+                $hasUserGroupsTesoriere = ['Y' => 'Si'];
 
-                $hasUserGroupsStoreroom = array('Y' => 'Si', 'N' => 'No');
+                $hasUserGroupsStoreroom = ['Y' => 'Si', 'N' => 'No'];
             }
 
             /*
              * fields
              */
-            $hasFieldArticleCodice = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldArticleIngredienti = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldArticleAlertToQta = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldPaymentPos = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldArticleCategoryId = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldSupplierCategoryId = array('Y' => 'Si', 'N' => 'No');
-            $hasFieldFatturaRequired = array('Y' => 'Si', 'N' => 'No');
+            $hasFieldArticleCodice = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldArticleIngredienti = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldArticleAlertToQta = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldPaymentPos = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldArticleCategoryId = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldSupplierCategoryId = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
-            $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'payToDelivery', 'hasDes', 'hasDesReferentAllGas', 'prodSupplierOrganizationId', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato'));
+            $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
-            $this->set('templates', Configure::read('templates'));
+			/*
+			 * template
+			 */ 
+			 $options = [];
+			 $options = ['order' => 'Template.name asc'];
+			 $templates = $this->Organization->Template->find('list', $options);		
+	         $this->set('templates', $templates);            
         }
     }
-
-    private function __prepare_request_data() {
-        if ($this->request->data['Organization']['j_group_registred'] == null)
-            $this->request->data['Organization']['j_group_registred'] = 0;
-
-        if ($this->request->data['Organization']['payToDelivery'] == 'ON') {
-            // referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
-            $this->request->data['Organization']['hasUserGroupsReferentTesoriere'] = 'N';
-        } else
-        if ($this->request->data['Organization']['payToDelivery'] == 'POST') {
-            // referente cassa (pagamento degli utenti alla consegna)
-            // $this->request->data['Organization']['hasUserGroupsCassiere'] = 'N';
-        } else
-        if ($this->request->data['Organization']['payToDelivery'] == 'ON-POST') {
-            
-        }
-
-        if ($this->request->data['Organization']['type'] == 'GAS') {
-            $this->request->data['Organization']['prodSupplierOrganizationId'] = 0;
-        } else
-        if ($this->request->data['Organization']['type'] == 'PROD') {
-
-            /*
-             * configurazioni
-             */
-            $this->request->data['Organization']['hasBookmarsArticles'] = 'Y';
-            $this->request->data['Organization']['hasArticlesOrder'] = 'Y';
-
-            $this->request->data['Organization']['hasTrasport'] = 'N';
-            $this->request->data['Organization']['hasCostMore'] = 'N';
-            $this->request->data['Organization']['hasCostLess'] = 'N';
-            $this->request->data['Organization']['hasValidate'] = 'N';
-            $this->request->data['Organization']['hasStoreroom'] = 'N';
-            $this->request->data['Organization']['hasStoreroomFrontEnd'] = 'N';
-            $this->request->data['Organization']['payToDelivery'] = 'POST';
-            $this->request->data['Organization']['hasDes'] = 'N';
-            $this->request->data['Organization']['hasDesReferentAllGas'] = 'N';
-
-            /*
-             * ruoli
-             */
-            $this->request->data['Organization']['hasUserGroupsCassiere'] = 'Y';
-            $this->request->data['Organization']['hasUserGroupsReferentTesoriere'] = 'N';
-            $this->request->data['Organization']['hasUserGroupsStoreroom'] = 'Y';
-
-            $this->request->data['Organization']['hasUserGroupsTesoriere'] = 'Y';
-        }
-
-        /*
-          echo "<pre>";
-          print_r($this->request->data['Organization']);
-          echo "</pre>";
-         */
-    }
-
-    /*
-     * organizations_Trigger
-     * 		suppliers_organizations 
-     * 		users
-     *     deliveries
-     */
 
     public function admin_delete($id = null) {
 
@@ -470,10 +664,10 @@ class OrganizationsController extends AppController {
                 $this->Session->setFlash(__('Delete Organization'));
             else
                 $this->Session->setFlash(__('Organization was not deleted'));
-            $this->myRedirect(array('action' => 'index'));
+            $this->myRedirect(['action' => 'index']);
         }
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Organization.id' => $id);
         $options['recursive'] = 1;
         $results = $this->Organization->find('first', $options);
@@ -481,15 +675,213 @@ class OrganizationsController extends AppController {
     }
 
 	public function gmaps() {
-		$options = array();
-		$options['conditions'] = array('Organization.type' => 'GAS',
-									   'Organization.stato' => 'Y');
-		$options['order'] = array('Organization.name');
+		$options = [];
+        $options['conditions'] = ['Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+        $options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
 		$results = $this->Organization->find('all', $options);
 
 		$this->set('results', $results);
 	
 		$this->layout = 'default_front_end';
+	}
+
+	public function admin_ajax_joomla_group($title_group) {
+
+		$debug = false;
+		
+		$id_group = 0;
+		$results = [];
+		
+		if(!empty($title_group)) {
+					
+			$title = 'GasPages'.$title_group;
+						
+			JModelLegacy::addIncludePath( JPATH_ADMINISTRATOR .'/components/com_users/models/', 'UsersModel' );
+
+			$groupModel = JModelLegacy::getInstance( 'Group', 'UsersModel' );
+			$groupData = array(
+				'title' => $title,
+				'parent_id' => Configure::read('group_id_user')); // group 	Registered
+
+			$esito = $groupModel->save( $groupData );
+			if($esito==1) {
+				$sql = "SELECT * FROM ".Configure::read('DB.portalPrefix')."usergroups where title = '$title';";
+				$results = $this->Organization->query($sql);
+				
+				self::d([$sql, $results], $debug);
+								
+				if(!empty($results) && isset($results[0])) {
+					$id_group = $results[0]['j_usergroups']['id'];
+					
+					$title = 'Registred'.$title_group;
+					
+					/*
+					 * insert level
+					 */
+					$sql = "INSERT INTO ".Configure::read('DB.portalPrefix')."viewlevels (title, ordering, rules) values ('".$title."', 0, '[".$id_group."]');";
+					
+					self::d($sql, $debug);
+					
+					$insertResults = $this->Organization->query($sql);
+				}
+			}			
+		}
+	
+		$this->set('sql', $sql);
+		$this->set('id_group', $id_group);
+
+		if($debug) {
+			echo "<pre>Organizations::admin_ajax_joomla_group() id_group \n ";
+			print_r($id_group);
+			echo "</pre>";		
+		}
+					
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_joomla_group');
+	}
+	
+	public function admin_ajax_joomla_category($title_group) {
+
+		$sql = '';
+		$id_category = 0;
+		$results = [];
+		
+		if(!empty($title_group)) {
+			
+		  $title = 'Pages '.$title_group;
+			
+		  $basePath = JPATH_ADMINISTRATOR . '/components/com_categories';
+		  require_once $basePath . '/tables/category.php';
+		  $db =& JFactory::getDbo();
+		  $catmodel = new CategoriesTableCategory($db);
+		  $catData = array(
+			 'id' => 0,
+			 'parent_id' => 1,
+			 'level' => 1,
+			 'checked_out' => 0,
+			 'checked_out_time' => Configure::read('DB.field.datetime.empty'),
+			 'path' => 'gas-'.strtolower($title_group),
+			 'extension' => 'com_content',
+			 'title' => $title,
+			 'alias' => 'gas-'.strtolower($title_group),
+			 'description' => '',
+			 'published' => 1,
+			 'params' => '{"category_layout":"","image":""}',
+			 'metadata' => '{"author":"","robots":""}',
+			 'language' => '*'
+		  );
+		  $esito = $catmodel->save( $catData);
+	  
+		  if($esito==1) {
+				$sql = "SELECT * FROM ".Configure::read('DB.portalPrefix')."categories where title = '$title';";
+				$results = $this->Organization->query($sql);
+								
+				if(!empty($results) && isset($results[0])) {
+					$id_category = $results[0]['j_categories']['id'];
+					
+					/*
+					 * bugs
+					 */
+					 $sql = "UPDATE ".Configure::read('DB.portalPrefix')."categories SET parent_id=1, level=1 WHERE ID= ".$id_category." ;";
+					 $updateResults = $this->Organization->query($sql);
+				}
+			}			
+		}
+	
+		$this->set('sql', $sql);
+		$this->set('id_category', $id_category);
+		
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_joomla_category');
+	}
+
+	public function admin_ajax_joomla_menu($organizationId, $gasAlias, $gasUpperCase, $gasAliaSEO) {
+
+		$sql = '';
+		$results = [];
+		
+		if(!empty($organizationId) && !empty($gasAlias) && !empty($gasUpperCase) && !empty($gasAliaSEO)) {
+			
+			$sql = "SELECT id FROM ".Configure::read('DB.portalPrefix')."template_styles where params like '{\"organizationId\":".$organizationId."%';";
+			$results = $this->Organization->query($sql);
+			if(!empty($results) && isset($results[0])) {
+				$id_template_styles = $results[0]['j_template_styles']['id'];
+				// echo $id_template_styles;
+			}
+			
+			$sql = "SELECT id FROM ".Configure::read('DB.portalPrefix')."viewlevels where title = 'Registred".$gasUpperCase."';";
+			$results = $this->Organization->query($sql);
+			if(!empty($results) && isset($results[0])) {
+				$id_viewlevels = $results[0]['j_viewlevels']['id'];
+				// echo $id_viewlevels;
+			}
+
+			/*
+			 * menutype string(24)
+			 */
+			$topmenu_name = 'topmenu-'.$gasAliaSEO;
+			if(strlen($topmenu_name)>24)
+				$topmenu_name = substr ($topmenu_name, 0, 24);
+			
+			$sql = ""; 
+		    $sql .= "INSERT ".Configure::read('DB.portalPrefix')."menu_types (menutype, title) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
+		  	// $insertResults = $this->Organization->query($sql);
+			
+			$sql .= "<h2>Seleziono tutte le voce del menù Top menu Gas GassePiossasco e \"Seleziona il menu per Spostare/Copiare\"</h2>";
+			
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set title = '".$gasUpperCase."' where menutype = '$topmenu_name' and title like '%(2)'; <br />";
+			
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set alias = REPLACE(alias, 'gassepiossasco-2', '".$gasAlias."') where menutype = '$topmenu_name'; <br />";
+			
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set path = REPLACE(path, 'gassepiossasco-2', '".$gasAlias."') where menutype = '$topmenu_name'; <br />";
+			 
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set alias = REPLACE(alias, 'gassepiossasco', '".$gasAlias."') where menutype = '$topmenu_name'; <br />";
+			
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set path = REPLACE(path, 'gassepiossasco', '".$gasAlias."') where menutype = '$topmenu_name'; <br />";
+			 
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set params = REPLACE(params, 'GassePiossasco', '".$gasUpperCase."') where menutype = '$topmenu_name'; <br />";
+			 
+			// template 			 
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set template_style_id = $id_template_styles where menutype = '$topmenu_name';<br />";
+
+			// livello d'accesso 			 
+			$sql .= "UPDATE ".Configure::read('DB.portalPrefix')."menu set access = $id_viewlevels where access!=1 and menutype = '$topmenu_name';<br />";
+		}
+	
+		$this->set('sql', $sql);
+		
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_joomla_menu');
 	}	
+		
+	public function admin_get_user_details($q='', $format = 'notmpl') {
+		
+		/*
+		 * elenco di tutti i gruppi dell'organization userGroupsComponent
+		*/
+		$this->set('userGroups',$this->userGroups);
+		
+		$debug=false;
+		
+        App::import('Model', 'User');
+        $User = new User;
+
+		$User->unbindModel(['hasMany' => ['Cart']]);
+		$User->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'organization_id']]]);
+
+        $options = [];
+		$options['conditions'] = ['OR' => ['lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+								           'lower(User.email) LIKE' => '%' . strtolower(addslashes($q)) . '%']];
+		$options['recursive'] = 1;
+        $results = $User->find('all', $options);
+
+		self::d($options, $debug);
+		self::d($results, $debug);
+		
+		$this->set('results', $results);
+		
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_user_details');		
+	}
 }

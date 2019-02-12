@@ -25,7 +25,7 @@ class ProdUsersGroupsController extends AppController {
 		App::import('Model', 'ProdGroup');
 		$ProdGroup = new ProdGroup;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdGroup.organization_id' => $this->user->organization['Organization']['id'],
 									   'ProdGroup.id' => $prod_group_id);
 		$options['recursive'] = -1;
@@ -35,13 +35,13 @@ class ProdUsersGroupsController extends AppController {
 		/*
 		 * users associati
 		 */
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdUsersGroup.organization_id' => $this->user->organization['Organization']['id'],
 						    			'ProdUsersGroup.prod_group_id' => $prod_group_id,
 										'User.block' => 0);
 		$options['recursive'] = 0;
 		$results = $this->ProdUsersGroup->find('all', $options);
-		$prodUsersGroups = array();
+		$prodUsersGroups = [];
 		foreach ($results as $numResult => $result) {
 			$prodUsersGroups[$numResult] = $result;
 			$prodUsersGroups[$numResult]['User']['label'] = $this->ProdUsersGroup->getUserLabel($result);
@@ -92,7 +92,7 @@ class ProdUsersGroupsController extends AppController {
 			else
 				$this->Session->setFlash(__('The prod users group has been saved.'));
 				
-			return $this->myRedirect(array('action' => 'index'));	
+			return $this->myRedirect(['action' => 'index']);	
 		} // end if ($this->request->is('post')) 
 
 		/*
@@ -101,7 +101,7 @@ class ProdUsersGroupsController extends AppController {
 		App::import('Model', 'ProdGroup');
 		$ProdGroup = new ProdGroup;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdGroup.organization_id' => $this->user->organization['Organization']['id'],
 										'ProdGroup.id' => $prod_group_id);
 		$options['recursive'] = -1;
@@ -126,7 +126,7 @@ class ProdUsersGroupsController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The prod users group could not be deleted. Please, try again.'));
 		}
-		return $this->myRedirect(array('action' => 'index'));
+		return $this->myRedirect(['action' => 'index']);
 	}
 	
 	public function admin_sort_users($prod_group_id, $original_sort, $new_sort) {
@@ -162,11 +162,8 @@ class ProdUsersGroupsController extends AppController {
 		 */
 		$data['ProdUsersGroup']['id'] = $id_original_sort;
 		$data['ProdUsersGroup']['sort'] = $new_sort;
-		if($debug) {
-			echo "<pre>";
-			print_r($data);
-			echo "</pre>";
-		}
+		
+		self::d($data,$debug);
 				
 		$this->ProdUsersGroup->create();
 		$this->ProdUsersGroup->save($data);
@@ -176,11 +173,8 @@ class ProdUsersGroupsController extends AppController {
 		*/
 		$data['ProdUsersGroup']['id'] = $id_new_sort;
 		$data['ProdUsersGroup']['sort'] = $original_sort;
-		if($debug) {
-			echo "<pre>";
-			print_r($data);
-			echo "</pre>";
-		}
+		
+		self::d($data,$debug);
 				
 		$this->ProdUsersGroup->create();
 		$this->ProdUsersGroup->save($data);

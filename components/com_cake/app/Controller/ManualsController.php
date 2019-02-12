@@ -17,7 +17,7 @@ class ManualsController extends AppController {
 		$this->set('isCassiere',$this->isCassiereGeneric());
 		$this->set('isStoreroom',$this->isStoreroom());
 		
-		if(empty($this->user->supplier['Supplier'])) 
+		if(empty($this->user->organization['Supplier'])) 
 			$this->render('admin_index');
 		else
 			$this->render('admin_prod_gas_index');

@@ -32,7 +32,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			
 		$this->set('supplier_organization_id', $supplier_organization_id);
 					/*		 * dati produttore		*/
-		$results = $this->__getDatiProduttore($this->user, $supplier_organization_id, $debug);
+		$results = $this->_getDatiProduttore($this->user, $supplier_organization_id, $debug);
 		$this->set('results', $results);
 			
 		
@@ -71,7 +71,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 					}
 				}	
 				
-				$j_content_id = $this->__gestJContent($this->request->data, $results, $debug);
+				$j_content_id = $this->_gestJContent($this->request->data, $results, $debug);
 			}
 			
 			if($j_content_id > 0) 
@@ -81,7 +81,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 				$fileName = Configure::read('App.prefix.upload.content').$results['Supplier']['id'];			
 			}				
 			
-			$esito = $this->__gestImg($this->request->data, $fileName, $debug);
+			$esito = $this->_gestImg($this->request->data, $fileName, $debug);
 			if(!empty($esito['ERROR']))
 				$msg .= $esito['ERROR'];
 			$fileName = $esito['FILE-NAME'];
@@ -92,7 +92,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			App::import('Model', 'Supplier');
 			$Supplier = new Supplier;
 			
-			$data = array();
+			$data = [];
 			if(!empty($this->request->data['Document']['img1']['name']))  
 				$data['Supplier']['img1'] = $fileName;
 			
@@ -110,7 +110,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			 * creo occorrenza in SuppliersOrganizationsJcontent
 			 */
 			if(!empty($this->request->data['SuppliersOrganizationsJcontent']['introtext'])) {
-				$data = array();
+				$data = [];
 				if(!empty($results['SuppliersOrganizationsJcontent']['id']))
 					$data['SuppliersOrganizationsJcontent']['id'] = $results['SuppliersOrganizationsJcontent']['id'];
 				
@@ -141,12 +141,12 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			if(!$debug) 
 				$this->myRedirect(array('controller' => 'SuppliersOrganizations', 'action' => 'index', $supplier_organization_id));					} // end if ($this->request->is('post') || $this->request->is('put')) 	}
 
-	private function __getDatiProduttore($user, $supplier_organization_id, $debug=false) {
+	private function _getDatiProduttore($user, $supplier_organization_id, $debug=false) {
 		
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
 									   'SuppliersOrganization.id' => $supplier_organization_id);
 		$options['recursive'] = 0;
@@ -155,7 +155,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 		$results = $SuppliersOrganization->find('first', $options);
 
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganizationsJcontent.organization_id' => $user->organization['Organization']['id'],
 									   'SuppliersOrganizationsJcontent.supplier_organization_id' => $supplier_organization_id);
 		$options['recursive'] = -1;	
@@ -174,18 +174,14 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			$results['SuppliersOrganizationsJcontent']['text'] = '';
 		}
 
-		if($debug) {
-			echo "dati produttore <pre>";
-			print_r($results);
-			echo "</pre>";
-		}	
+		self::d($results, $debug);
 		
 		return $results;
 	}
 	
-	private function __gestImg($data, $fileName, $debug=false) {
+	private function _gestImg($data, $fileName, $debug=false) {
 
-		$msg = array();
+		$msg = [];
 		
 		/*
 		 * 	$img1 = array(
@@ -277,9 +273,9 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 	/*
 	 * insert/update articolo in joomla
 	 */			
-	private function __gestJContent($data, $results, $debug=false) {
+	private function _gestJContent($data, $results, $debug=false) {
 
-		$table = JTable::getInstance('Content', 'JTable', array());
+		$table = JTable::getInstance('Content', 'JTable', []);
 		
 		$data = array(
 				'catid' => $results['CategoriesSupplier']['j_category_id'],

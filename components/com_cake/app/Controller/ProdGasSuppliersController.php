@@ -7,7 +7,7 @@ class ProdGasSuppliersController extends AppController {
 		parent::beforeFilter();
 		
 		/* ctrl ACL */
-		if(empty($this->user->supplier['Supplier'])) {
+		if($this->user->organization['Organization']['type']!='PRODGAS') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}	
@@ -15,15 +15,18 @@ class ProdGasSuppliersController extends AppController {
 	}
 	
 	public function admin_index() { 
-	
+				
 		$debug = false;
 
-		$results = $this->ProdGasSupplier->getOrganizationsAssociate($this->user, 0, $debug);
-		if($debug) {
-			echo "<pre>getOrganizationsAssociate \n";
-			print_r($results);
-			echo "</pre>";
-		}
+		// precedente versione $results = $this->ProdGasSupplier->getOrganizationsAssociate($this->user, 0, $debug);
+		
+		App::import('Model', 'ProdGasSuppliersImport');
+		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
+		
+		$results = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], 0, [], $debug);
+		
+		self::d($results, $debug);
+
 		$this->set(compact('results'));	}
 	
 	/*
@@ -39,10 +42,7 @@ class ProdGasSuppliersController extends AppController {
         }
 		
 		// ACL 
-		App::import('Model', 'ProdGasSupplier');
-		$ProdGasSupplier = new ProdGasSupplier;
-
-		$organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
+		$organizationResults = $this->ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
 		if($organizationResults['SuppliersOrganization']['can_view_orders']!='Y' && $organizationResults['SuppliersOrganization']['can_view_orders_users']!='Y') {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));			
@@ -57,20 +57,17 @@ class ProdGasSuppliersController extends AppController {
 		$Order = new Order;
 
 		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization',)));
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' =>  $organization_id,
-									   'Delivery.isVisibleBackOffice'=>'Y',
-									   'Delivery.stato_elaborazione'=>'OPEN',
-									   'Order.organization_id' => $organization_id,
-									   'Order.supplier_organization_id' => $organizationResults['SuppliersOrganization']['id']);
-		$options['order'] = array('Delivery.data asc, Delivery.id, Order.data_inizio asc');
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' =>  $organization_id,
+								   'Delivery.isVisibleBackOffice'=>'Y',
+								   'Delivery.stato_elaborazione'=>'OPEN',
+								   'Order.organization_id' => $organization_id,
+								   'Order.supplier_organization_id' => $organizationResults['SuppliersOrganization']['id']];
+		$options['order'] = ['Delivery.data asc, Delivery.id, Order.data_inizio asc'];
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);	
 		$this->set(compact('results'));
-		/*
-		echo "<pre>results \n";
-		print_r($results);
-		echo "</pre>";		
-		*/
+		
+		self::d($results, false);
 	}	
 }

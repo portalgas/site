@@ -26,26 +26,22 @@ class DesController extends AppController {
         App::import('Model', 'DesOrganization');
         $DesOrganization = new DesOrganization;
 
-        $options = array();
-        $options['conditions'] = array('De.id' => $this->user->des_id);
+        $options = [];
+        $options['conditions'] = ['De.id' => $this->user->des_id];
         $options['recursive'] = -1;
         $desResults = $this->De->find('first', $options);
 
         /*
          * tutti i GAS del DES
          */
-        $options = array();
+        $options = [];
         $options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id);
         $options['order'] = array('Organization.name' => 'asc');
         $options['recursive'] = 1;
         $desOrganizationsResults = $DesOrganization->find('all', $options);
 
-        /*
-          echo "<pre>";
-          print_r($desOrganizationsResults);
-          echo "</pre>";
-         */
-
+        self::d($desOrganizationsResults,false);
+		
         $this->set(compact('desResults', 'desOrganizationsResults'));
     }
 }

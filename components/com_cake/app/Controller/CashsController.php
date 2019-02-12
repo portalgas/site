@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 
 class CashsController extends AppController {
@@ -18,20 +17,16 @@ class CashsController extends AppController {
 
     public function admin_index() {
 
-        $conditions = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+        $conditions = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
                 // 'User.block' => 0  lo metto nel model se no non mi prende quelli con user_id = 0
-        );
+        ];
 
         $this->Cash->recursive = 1;
-        $this->paginate = array('limit' => 250, 'conditions' => $conditions, 'order' => Configure::read('orderUser'));
+        $this->paginate = ['limit' => 250, 'conditions' => $conditions, 'order' => Configure::read('orderUser')];
         $results = $this->paginate('Cash');
         $this->set(compact('results'));
 
-       /*  
-       echo "<pre>";
-   	   print_r($results);
-       echo "</pre>";
-       */        
+       self::d($results, false);
     }
 
     public function admin_index_quick() {
@@ -39,9 +34,9 @@ class CashsController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $options = array();
-        $options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
-            'User.block' => 0);
+        $options = [];
+        $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
+								  'User.block' => 0];
 
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
@@ -49,9 +44,9 @@ class CashsController extends AppController {
 
         foreach ($results as $numResult => $result) {
 
-            $options = array();
-            $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
-                'Cash.user_id' => $result['User']['id']);
+            $options = [];
+            $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+									  'Cash.user_id' => $result['User']['id']];
             $userResults = $this->Cash->find('first', $options);
             if (!empty($userResults))
                 $results[$numResult]['Cash'] = $userResults['Cash'];
@@ -74,10 +69,9 @@ class CashsController extends AppController {
         /*
          *   ctrl se insert / update 
          */
-        $options = array();
-        $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
-            							'Cash.user_id' => $user_id);
-
+        $options = [];
+        $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+            					  'Cash.user_id' => $user_id];
         $options['recursive'] = -1;
         $results = $this->Cash->find('first', $options);
         if (!empty($results)) {
@@ -100,11 +94,9 @@ class CashsController extends AppController {
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['importo'] = $this->importoToDatabase($value);
-        /*
-          echo "<pre>";
-          print_r($data);
-          echo "</pre>";
-         */
+        
+		self::d($data, false);
+		
         $this->Cash->create();
         $this->Cash->save($data);
 
@@ -123,7 +115,7 @@ class CashsController extends AppController {
         /*
          *   ctrl se insert / update 
          */
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
             							'Cash.user_id' => $user_id);
 
@@ -139,19 +131,20 @@ class CashsController extends AppController {
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['nota'] = $value; // '".addslashes($nota)."' 
-        /*
-          echo "<pre>";
-          print_r($data);
-          echo "</pre>";
-         */
+        
+		self::d($data, false);
+		
         $this->Cash->create();
         $this->Cash->save($data);
 
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
     }
-
-    public function admin_add() {
+	
+	/*
+	 * se if(!empty($user_id)) h gia' lo user settato 
+	 */
+    public function admin_add($user_id=0) {
 
         if ($this->request->is('post') || $this->request->is('put')) {
 
@@ -165,7 +158,7 @@ class CashsController extends AppController {
             $this->Cash->create();
             if ($this->Cash->save($this->request->data)) {
                 $this->Session->setFlash(__('The cash has been saved'));
-                $this->myRedirect(array('action' => 'index'));
+                $this->myRedirect(['action' => 'index']);
             } else {
                 $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
             }
@@ -175,7 +168,7 @@ class CashsController extends AppController {
          * estraggo tutti gli utenti senza associazione ad una voce di spesa 
          * != 0 per escludere la voce di spesa generica
          */
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
                                         'Cash.user_id != ' => 0);
         $options['fields'] = array('user_id');
@@ -183,19 +176,14 @@ class CashsController extends AppController {
         $options['order'] = Configure::read('orderUser');
         $results = $this->Cash->find('all', $options);
 
-        /*
-          echo "<pre>";
-          print_r($options);
-          print_r($results);
-          echo "</pre>";
-         */
-
+        self::d([$options, $results], false);
+		
         $user_ids = '';
         foreach ($results as $result) {
             $user_ids .= $result['Cash']['user_id'] . ',';
         }
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
             'User.block' => 0);
 
@@ -210,12 +198,42 @@ class CashsController extends AppController {
         $users = $this->Cash->User->find('list', $options);
 
         $this->set('users', $users);
+        $this->set('user_id', $user_id);
 
         $results = $this->Cash->get_totale_cash($this->user);
         $totale_importo = $results['totale_importo'];
         $this->set('totale_importo', $totale_importo);
     }
 
+    public function admin_edit_by_user_id($user_id=0) {
+
+       if (empty($user_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        $options = [];
+        $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+            						   'Cash.user_id' => $user_id);
+        $options['fields'] = array('id');
+        $options['recursive'] = -1;
+        $cashResults = $this->Cash->find('first', $options);
+        
+		self::d([$options, $cashResults], false);
+	
+        if(empty($cashResults)) {
+        	/*
+        	 * non ho ancora creato un occorrenza 
+        	 */ 
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Cashs&action=add&user_id='.$user_id;        	 
+        }
+        else {
+			$cash_id = $cashResults['Cash']['id'];
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Cashs&action=edit&id='.$cash_id;		
+		}					
+		$this->myRedirect($url);
+	}
+ 
 	/*
 	 * Cash precedente lo salvo in CashesHistories
 	 */
@@ -244,13 +262,13 @@ class CashsController extends AppController {
             $this->Cash->create();
             if ($this->Cash->save($this->request->data)) {
                 $this->Session->setFlash(__('The cash has been saved'));
-                $this->myRedirect(array('action' => 'index'));
+                $this->myRedirect(['action' => 'index']);
             } else {
                 $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
             }
         } // edn if ($this->request->is('post') || $this->request->is('put'))
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
             'User.block' => 0);
         $options['fields'] = array('id', 'name');
@@ -263,7 +281,7 @@ class CashsController extends AppController {
 		/*
 		 * dati Cash
 		 */
-        $options = array();
+        $options = [];
         $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
 							            'Cash.id' => $id);
         $this->request->data = $this->Cash->find('first', $options);
@@ -278,7 +296,7 @@ class CashsController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
             'User.id' => $this->request->data['Cash']['user_id']);
         $options['recursive'] = -1;
@@ -305,7 +323,7 @@ class CashsController extends AppController {
             $this->Session->setFlash(__('Delete Cash'));
         else
             $this->Session->setFlash(__('Cash was not deleted'));
-        $this->myRedirect(array('action' => 'index'));
+        $this->myRedirect(['action' => 'index']);
     }
 
 }

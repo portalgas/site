@@ -21,8 +21,9 @@ class OrganizationsPaysController extends AppController {
 		App::import('Model', 'Organization');
         $Organization = new Organization;
 		
-		$options = array();
-		$options['order'] = array('Organization.name');
+		$options = [];
+        $options['conditions'] = ['Organization.type' => 'GAS'];
+        $options['order'] = ['Organization.name'];		
 		$options['recursive'] = -1;
 	
         $results = $Organization->find('all', $options);
@@ -30,11 +31,13 @@ class OrganizationsPaysController extends AppController {
 		/*
 		 *  prima riga ha i calcoli futuri
 		 */ 
-		 $resultsNew = array();
+		 $resultsNew = [];
 		 foreach($results as $numResult => $result) {
 			$organization_id = $result['Organization']['id'];			
 			
 			$tot_users = $this->OrganizationsPay->totUsers($organization_id);
+			if($organization_id==37)
+				$tot_users = 24;
 			
 			/*
 			 * tolgo info@nomegas.portalgas.it
@@ -67,15 +70,19 @@ class OrganizationsPaysController extends AppController {
 					$paramsPay = json_decode($result['Organization']['paramsPay'], true);
 					$resultsNew[$numResult]['Organization'] += $paramsPay;	  
 			}
-					
+				
+			$importoResults = $this->OrganizationsPay->getImporto($organization_id, $year, $tot_users);
+			$resultsNew[$numResult]['OrganizationsPay']['importo'] = $importoResults['importo'];
+			$resultsNew[$numResult]['OrganizationsPay']['importo_e'] = $importoResults['importo_e'];
+			$resultsNew[$numResult]['OrganizationsPay']['importo_nota'] = $importoResults['importo_nota'];			
 		 }
 
 		 /*
 		  * righe successive con i pagamenti effettuati
 		  */
-		 $results = array(); 
+		 $results = []; 
 				
-		$options = array();
+		$options = [];
 		$options['order'] = array('OrganizationsPay.year','Organization.name');
 		$options['recursive'] = 1;
 		 
@@ -88,13 +95,16 @@ class OrganizationsPaysController extends AppController {
 			if(!empty($result['Organization']['paramsPay'])) {
 	    		$paramsPay = json_decode($result['Organization']['paramsPay'], true);
 	    		$resultsNew[$numResult]['Organization'] += $paramsPay;	  
-		    }		
+		    }	
+
+			$importoResults = $this->OrganizationsPay->getImporto($result['Organization']['id'], $result['OrganizationsPay']['year'], $result['OrganizationsPay']['tot_users']);
+			$resultsNew[$numResult]['OrganizationsPay']['importo'] = $importoResults['importo'];
+			$resultsNew[$numResult]['OrganizationsPay']['importo_e'] = $importoResults['importo_e'];
+			$resultsNew[$numResult]['OrganizationsPay']['importo_nota'] = $importoResults['importo_nota'];				
 		}
-		/*
-  		echo "<pre>";
-		print_r($results);
-        echo "</pre>";
-		*/
+		
+		self::d($resultsNew, false);
+		
         $this->set('results', $resultsNew);
 	}
 	
@@ -105,13 +115,14 @@ class OrganizationsPaysController extends AppController {
 		
 		$year = date('Y');
 		
-		$options = array();
-		$options['order'] = array('Organization.name');
+		$options = [];
+        $options['conditions'] = ['Organization.type' => 'GAS'];
+        $options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
 	
         $organizations = $Organization->find('all', $options);
 		
-		$organizationsNew = array();
+		$organizationsNew = [];
         foreach($organizations as $organization) {
         	$organizationsNew[$organization['Organization']['id']] = $organization['Organization']['name'].' ('.$organization['Organization']['id'].')';
         }		
@@ -171,7 +182,7 @@ class OrganizationsPaysController extends AppController {
 			$this->set('nota', $nota);
 			$this->set('nota2', $nota2);
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('Organization.id' => $organization_id);
 			$options['recursive'] = -1;
 		

@@ -21,20 +21,20 @@ class AjaxProdCartsController extends AppController {
      * user_id in Session
      */
     public function managementCartSimple($rowId, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
-    	$this->__managementCart($rowId, $prod_delivery_id, $article_organization_id, $article_id, $qta);
+    	$this->_managementCart($rowId, $prod_delivery_id, $article_organization_id, $article_id, $qta);
     	 
     	$this->layout = 'ajax';
     	$this->render('/Layouts/AjaxProd/rowecomm_prod_frontend_simple');
     }
      
     public function managementCartComplete($rowId, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
-    	$this->__managementCart($rowId, $prod_delivery_id, $article_organization_id, $article_id, $qta);
+    	$this->_managementCart($rowId, $prod_delivery_id, $article_organization_id, $article_id, $qta);
     
     	$this->layout = 'ajax';
     	$this->render('/Layouts/AjaxProd/rowecomm_prod_frontend_complete');
     }
 
-    private function __managementCart($rowId, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
+    private function _managementCart($rowId, $prod_delivery_id=0, $article_organization_id=0, $article_id=0, $qta=0) {
     	 
     	$user_id = $this->user->get('id');
     
@@ -55,7 +55,7 @@ class AjaxProdCartsController extends AppController {
     	/*
     	 * rileggo i dati della riga
     	*/
-    	$results = array();
+    	$results = [];
     
     	/*
     	 * dati della consegna
@@ -115,7 +115,7 @@ class AjaxProdCartsController extends AppController {
     	/*
     	 * gestione RowEcomm
     	* */
-    	$this->set('results',$this->__prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta));    	     	
+    	$this->set('results',$this->_prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta));    	     	
     	/*
     	 * rowId creato in RowEcommHelper::__setRowId()
     	 * 			prodDeliveriesArticle.prod_delivery_id prodDeliveriesArticle.article_id  prodDeliveriesArticle.stato numProdDeliveriesArticle	 
@@ -160,7 +160,7 @@ class AjaxProdCartsController extends AppController {
      	/*
      	 * gestione RowEcomm
      	 */
-    	$this->set('results',$this->__prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta));
+    	$this->set('results',$this->_prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta));
 
 		/*
     	 * rowId creato in RowEcommHelper::__setRowId()
@@ -190,7 +190,7 @@ class AjaxProdCartsController extends AppController {
     		$this->render('/Layouts/AjaxProd/rowecomm_backoffice_report_users');	 
     }   
     
-    private function __prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta) {
+    private function _prepareResultsToRowEcomm($prod_delivery_id, $article_organization_id, $article_id, $user_id, $qta) {
     	    	/*
     	 * rileggo la riga dal database aggiornata ([ProdDelivery] [Article] [ProdDeliveriesArticle])
     	*/
@@ -217,12 +217,8 @@ class AjaxProdCartsController extends AppController {
 	    	$results = current($results);
     	}
     	
-    	/*
-    	 echo "<pre>AjaxProdCartsController::__prepareResultsToRowEcomm ";
-    	print_r($results);
-    	echo "</pre>";
-    	*/
-    	
+    	self::d($results, false);
+		
     	return $results;
     }
 }  

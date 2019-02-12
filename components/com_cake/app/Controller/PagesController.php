@@ -60,7 +60,7 @@ class PagesController extends AppController {
                     $UserGroup = new UserGroup;
 
                     $options = [];
-                    $options['conditions'] = array('UserGroup.id' => $group_id);
+                    $options['conditions'] = ['UserGroup.id' => $group_id];
                     $options['recursive'] = -1;
                     $results = $UserGroup->find('first', $options);
 
@@ -99,14 +99,14 @@ class PagesController extends AppController {
                 $subject_mail = "Page " . $this->action;
                 $Email->subject($subject_mail);
                 if (!empty($this->user->organization['Organization']['www']))
-                    $Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+                    $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
                 else
-                    $Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+                    $Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
                 $name = Configure::read('SOC.name');
                 $mail = Configure::read('SOC.mail');
 
-                $Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+                $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
                 $Email->to($mail);
 
                 $Mail->send($Email, $mail, $body_mail, $debug);
@@ -145,7 +145,7 @@ class PagesController extends AppController {
 
             if (!$OrganizationsPayment->isPaymentComplete($this->user)) {
                 $this->Session->setFlash(__('msg_organization_payment_incomplete'));
-                $this->myRedirect(array('controller' => 'OrganizationsPayments', 'action' => 'edit', 'admin' => true));
+                $this->myRedirect(['controller' => 'OrganizationsPayments', 'action' => 'edit', 'admin' => true]);
             }
         }
 
@@ -186,22 +186,22 @@ class PagesController extends AppController {
                 if (!empty($ids)) {
                     $ids = substr($ids, 0, (strlen($ids) - 1));
 
-                    $options['conditions'] += array('0' => 'Order.supplier_organization_id IN (' . $ids . ')');
+                    $options['conditions'] += ['0' => 'Order.supplier_organization_id IN (' . $ids . ')'];
                 } else {
                     /*
                      * se super-ref non e' referenti di alcun produttore non vede gli ordini
                      */
-                    $options['conditions'] += array('0' => 'Order.supplier_organization_id IN (-1)');
+                    $options['conditions'] += ['0' => 'Order.supplier_organization_id IN (-1)'];
                 }
             } else {
-                $options['conditions'] += array('Order.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')');
+                $options['conditions'] += ['Order.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')'];
             }
 
-            $options['conditions'] += array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
-                'Order.organization_id' => $this->user->organization['Organization']['id'],
-                '1' => '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')',
-                'Delivery.isVisibleBackOffice' => 'Y',
-                'Delivery.stato_elaborazione' => 'OPEN');
+            $options['conditions'] += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+						                'Order.organization_id' => $this->user->organization['Organization']['id'],
+						                '1' => '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')',
+						                'Delivery.isVisibleBackOffice' => 'Y',
+						                'Delivery.stato_elaborazione' => 'OPEN'];
             $options['recursive'] = 0;
             $options['limit'] = 10;
             $results = $Order->find('all', $options);
@@ -281,7 +281,7 @@ class PagesController extends AppController {
                 $UserGroup = new UserGroup;
 
                 $options = [];
-                $options['conditions'] = array('UserGroup.id' => $group_id);
+                $options['conditions'] = ['UserGroup.id' => $group_id];
                 $options['recursive'] = -1;
                 $results = $UserGroup->find('first', $options);
 
@@ -335,9 +335,41 @@ class PagesController extends AppController {
     }
 
     /*
-     * Organization.type = PROD pagina per l'utente se non c'e' una consegna per il suo gruppo
+     * $this->user->organization['Organization']['hasUserFlagPrivacy'] = Y
      */
+	public function msg_user_flag_privacy() {
+	
+		// $debug=true;
+		
+		if ($this->request->is('post') || $this->request->is('put')) {
+			
+			self::d($this->request->data, false);
 
+			App::import('Model', 'UserProfile');
+			$UserProfile = new UserProfile;
+						 
+			$UserProfile->setValue($this->user, $this->user->id, 'hasUserFlagPrivacy', 'Y', $debug);
+			$UserProfile->setValue($this->user, $this->user->id, 'dataUserFlagPrivacy', date('Y-m-d H:i:s'), $debug);
+			
+			$this->Session->setFlash(__('msg_user_registration_expire_success'));
+			$this->myRedirect(Configure::read('routes_fe_default'));
+		}
+        	
+		App::import('Model', 'UserGroupMap');
+	  	$UserGroupMap = new UserGroupMap();
+
+	  	$userFlagPrivacy = [];
+	  	$userFlagPrivacy = $UserGroupMap->getUserFlagPrivacy($this->user);
+	  	$this->set(compact('userFlagPrivacy'));
+		        	
+		$this->layout = 'default_front_end';
+        $this->render('/Pages/msg_user_flag_privacy');
+    }
+	
+    public function msg_user_registration_expire() {
+        $this->render('/Pages/msg_user_registration_expire');
+    }
+	
     public function msg_frontend_prod_delivery_not() {
         $this->layout = 'default_front_end';
     }
@@ -353,7 +385,7 @@ class PagesController extends AppController {
     public function admin_msg_exclamation() {
         $this->render('/Pages/msg_exclamation');
     }
-
+   
     public function error_permission_guest() {
         $msgArray = CakeSession::read('Message');
         if (empty($msgArray) || !isset($msgArray['Message']['flash']))
@@ -402,9 +434,9 @@ class PagesController extends AppController {
             $User = new User;
 
             $options = [];
-            $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-                'User.block' => 0);
-            $options['fields'] = array('id', 'name');
+            $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+                					  'User.block' => 0];
+            $options['fields'] = ['User.id', 'name'];
             $options['recursive'] = -1;
             $options['order'] = Configure::read('orderUser');
             $users = $User->find('list', $options);
@@ -422,8 +454,8 @@ class PagesController extends AppController {
                 $RequestPayment = new RequestPayment;
 
                 $options = [];
-                $options['conditions'] = array('RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
-                    'RequestPayment.stato_elaborazione' => 'OPEN');
+                $options['conditions'] = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
+                    					  'RequestPayment.stato_elaborazione' => 'OPEN'];
                 $options['order'] = 'RequestPayment.created DESC';
                 $options['recursive'] = -1;
                 $tmpResults = $RequestPayment->find('all', $options);
@@ -464,11 +496,11 @@ class PagesController extends AppController {
             $SummaryPayment = new SummaryPayment;
 
             $options = [];
-            $options['conditions'] = array('SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
-                'RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
-                'SummaryPayment.stato !=' => 'PAGATO',
-                'RequestPayment.stato_elaborazione' => 'OPEN',
-                'User.id' => $user_id);
+            $options['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+						                'RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
+						                'SummaryPayment.stato !=' => 'PAGATO',
+						                'RequestPayment.stato_elaborazione' => 'OPEN',
+						                'User.id' => $user_id];
             $options['order'] = 'RequestPayment.created DESC';
             $options['recursive'] = 1;
             $requestPaymentsResults = $SummaryPayment->find('all', $options);
@@ -479,12 +511,12 @@ class PagesController extends AppController {
          * D E L I V E R I E S
          */
         $options = [];
-        $options['conditions'] = array('Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+        $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
             'Delivery.isVisibleBackOffice' => 'Y',
             'Delivery.sys' => 'N',
-            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY ');
-        $options['order'] = array('Delivery.data ASC');
-        $options['fields'] = array('Delivery.id', 'Delivery.luogoData');
+            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY '];
+        $options['order'] = ['Delivery.data' => 'asc'];
+        $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
         $options['recursive'] = 1;
         $deliveries = $Delivery->find('list', $options);
 
@@ -492,11 +524,11 @@ class PagesController extends AppController {
          * ctrl se inserire anche la consegna Da definire, ctrl se ha ordini
          */
         $options = [];
-        $options['conditions'] = array('Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Delivery.isVisibleBackOffice' => 'Y',
-            'Delivery.sys' => 'Y');
-        $options['order'] = array('data ASC');
-        //$options['fields'] = array('id', 'luogoData');
+        $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+						            'Delivery.isVisibleBackOffice' => 'Y',
+						            'Delivery.sys' => 'Y'];
+        $options['order'] = ['Delivery.data ASC'];
+        //$options['fields'] = ['id', 'luogoData'];
         $options['recursive'] = 1;
         $deliveriesSys = $Delivery->find('all', $options);
         if (!empty($deliveriesSys[0]['Order'])) {
@@ -531,14 +563,13 @@ class PagesController extends AppController {
         $Order = new Order;
 
         $options = [];
-        $options['conditions'] = array('Order.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Order.isVisibleBackOffice' => 'Y',
-            'Delivery.isVisibleBackOffice' => 'Y',
-            'Delivery.stato_elaborazione' => 'OPEN',
-        );
+        $options['conditions'] = ['Order.organization_id' => (int) $this->user->organization['Organization']['id'],
+					            'Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+					            'Order.isVisibleBackOffice' => 'Y',
+					            'Delivery.isVisibleBackOffice' => 'Y',
+					            'Delivery.stato_elaborazione' => 'OPEN'];
 
-        $options['order'] = array('Delivery.data ASC, Order.data_inizio ASC');
+        $options['order'] = ['Delivery.data ASC, Order.data_inizio ASC'];
         $options['recursive'] = 1;
         $results = $Order->find('all', $options);
         $orders = [];
@@ -549,7 +580,7 @@ class PagesController extends AppController {
                 else
                     $label = $result['Delivery']['luogo'];
 
-                if ($result['Order']['data_fine_validation'] != '0000-00-00')
+                if ($result['Order']['data_fine_validation'] != Configure::read('DB.field.date.empty'))
                     $data_fine = $result['Order']['data_fine_validation_'];
                 else
                     $data_fine = $result['Order']['data_fine_'];
@@ -561,12 +592,12 @@ class PagesController extends AppController {
         /*
          * filtri per anagrafica utenti
          */
-        $filterUserGroups = array(Configure::read('group_id_user') => __("UserGroupsUser"),
+        $filterUserGroups = [Configure::read('group_id_user') => __("UserGroupsUser"),
             Configure::read('group_id_manager') => __("UserGroupsManager"),
             Configure::read('group_id_manager_delivery') => __("UserGroupsManagerDelivery"),
             Configure::read('group_id_referent') => __("UserGroupsReferent"),
             Configure::read('group_id_super_referent') => __("UserGroupsSuperReferent"),
-            Configure::read('group_id_tesoriere') => __("UserGroupsTesoriere"));
+            Configure::read('group_id_tesoriere') => __("UserGroupsTesoriere")];
 
         /*
          * referente cassa (pagamento degli utenti alla consegna)
@@ -587,7 +618,7 @@ class PagesController extends AppController {
 								  'DocsCreateUser.user_id' => $this->user->id,
 								  'DocsCreate.stato' => 'Y',
 								  'DocsCreate.organization_id' => $this->user->organization['Organization']['id']];
-		$options['order'] = array('DocsCreate.created ASC');
+		$options['order'] = ['DocsCreate.created ASC'];
 		$options['recursive'] = 1;
 		$docsCreatesResults = $DocsCreateUser->find('all', $options);
 		
@@ -601,7 +632,39 @@ class PagesController extends AppController {
 		/*
 		 * storeroom
 		 */
-		$this->_export_docs_storeroom();		 
+		$this->_export_docs_storeroom();
+		
+        /*
+         * gestione desUserManager 
+         */
+        $organizationsResults = [];
+        if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
+            $this->user->organization['Organization']['hasDesUserManager'] == 'Y' && 
+            !empty($this->user->des_id) && 
+            $this->isManagerUserDes()
+            ) {
+            
+	        App::import('Model', 'DesOrganization');
+	        $DesOrganization = new DesOrganization;
+	                    
+	        /*
+	         * tutti i GAS del DES
+	         */
+	        $options = [];
+	        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
+	        $options['order'] = ['Organization.name' => 'asc'];
+	        $options['recursive'] = 1;
+	        $desOrganizationsResults = $DesOrganization->find('all', $options);
+	        if(!empty($desOrganizationsResults)) 
+	        foreach($desOrganizationsResults as $desOrganizationsResult)
+	        	$organizationsResults[$desOrganizationsResult['Organization']['id']] = $desOrganizationsResult['Organization']['name'];            
+        }
+        
+        if(empty($organizationsResults)) {
+        	$organizationsResults[$this->user->organization['Organization']['id']] = $this->user->organization['Organization']['name'];
+        }
+        
+        $this->set(compact('organizationsResults'));		
     }
 
     public function admin_utility_docs_cassiere() {
@@ -685,8 +748,8 @@ class PagesController extends AppController {
             $Cash = new Cash;
 
             $options = [];
-            $options['conditions'] = array('User.organization_id' => $this->user->organization['Organization']['id'],
-                'User.block' => 0);
+            $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
+                					  'User.block' => 0];
 
             $options['recursive'] = -1;
             $options['order'] = Configure::read('orderUser');
@@ -695,8 +758,8 @@ class PagesController extends AppController {
             foreach ($cashs as $numResult => $result) {
 
                 $options = [];
-                $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
-                    'Cash.user_id' => $result['User']['id']);
+                $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+                    					  'Cash.user_id' => $result['User']['id']];
                 $userResults = $Cash->find('first', $options);
                 if (!empty($userResults))
                     $cashs[$numResult]['Cash'] = $userResults['Cash'];
@@ -762,9 +825,9 @@ class PagesController extends AppController {
 		            $User = new User;
 		
 		            $options = [];
-		            $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-		                'User.block' => 0);
-		            $options['fields'] = array('id', 'name');
+		            $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+		                					'User.block' => 0];
+		            $options['fields'] = ['User.id', 'User.name'];
 		            $options['recursive'] = -1;
 		            $options['order'] = Configure::read('orderUser');
 		            $users = $User->find('list', $options);
@@ -815,10 +878,10 @@ class PagesController extends AppController {
          * estraggo solo i produttori del referente per una stampa piu' completa
          */
         $options = [];
-        $options['conditions'] = array('SuppliersOrganization.organization_id = ' . (int) $this->user->organization['Organization']['id'],
+        $options['conditions'] = ['SuppliersOrganization.organization_id = ' . (int) $this->user->organization['Organization']['id'],
             'SuppliersOrganization.stato != ' => 'N',
-            'SuppliersOrganization.id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')');
-        $options['order'] = array('SuppliersOrganization.name');
+            'SuppliersOrganization.id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')'];
+        $options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = -1;
         $aclSuppliersOrganization = $SuppliersOrganization->find('list', $options);
         $this->set(compact('aclSuppliersOrganization'));
@@ -833,21 +896,54 @@ class PagesController extends AppController {
         /*
          * filtri per anagrafica utenti
          */
-        $filterUserGroups = array(Configure::read('group_id_user') => __("UserGroupsUser"),
+        $filterUserGroups = [Configure::read('group_id_user') => __("UserGroupsUser"),
             Configure::read('group_id_manager') => __("UserGroupsManager"),
             Configure::read('group_id_manager_delivery') => __("UserGroupsManagerDelivery"),
             Configure::read('group_id_referent') => __("UserGroupsReferent"),
             Configure::read('group_id_super_referent') => __("UserGroupsSuperReferent"),
             Configure::read('group_id_tesoriere') => __("UserGroupsTesoriere"),
-            Configure::read('group_id_generic') => __("UserGroupsGeneric"));
+            Configure::read('group_id_generic') => __("UserGroupsGeneric")];
 
         /*
          * referente cassa (pagamento degli utenti alla consegna)
          */
         if ($this->user->organization['Template']['payToDelivery'] == 'ON' || $this->user->organization['Template']['payToDelivery'] == 'ON-POST')
-            $filterUserGroups += array(Configure::read('group_id_cassiere') => __("UserGroupsCassiere"));
+            $filterUserGroups += [Configure::read('group_id_cassiere') => __("UserGroupsCassiere")];
 
         $this->set(compact('filterUserGroups'));
+        
+        /*
+         * gestione desUserManager 
+         */
+        $organizationsResults = [];
+        if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
+            $this->user->organization['Organization']['hasDesUserManager'] == 'Y' && 
+            !empty($this->user->des_id) && 
+            $this->isManagerUserDes()
+            ) {
+            
+	        App::import('Model', 'DesOrganization');
+	        $DesOrganization = new DesOrganization;
+	                    
+	        /*
+	         * tutti i GAS del DES
+	         */
+	        $options = [];
+	        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
+	        $options['order'] = ['Organization.name' => 'asc'];
+	        $options['recursive'] = 1;
+	        $desOrganizationsResults = $DesOrganization->find('all', $options);
+	        if(!empty($desOrganizationsResults)) 
+	        foreach($desOrganizationsResults as $desOrganizationsResult)
+	        	$organizationsResults[$desOrganizationsResult['Organization']['id']] = $desOrganizationsResult['Organization']['name'];
+	        	            
+        }
+        
+        if(empty($organizationsResults)) {
+        	$organizationsResults[$this->user->organization['Organization']['id']] = $this->user->organization['Organization']['name'];
+        }
+        
+        $this->set(compact('organizationsResults'));
     }
 
     public function admin_export_docs_storeroom() {
@@ -875,12 +971,12 @@ class PagesController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
  		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									  'Delivery.isVisibleBackOffice' => 'Y',
 									  'Delivery.isToStoreroom' => 'Y',
  									  'Delivery.sys'=> 'N',
-									  'Delivery.stato_elaborazione' => 'OPEN');
-        $options['fields'] = array('id', 'luogoData');
+									  'Delivery.stato_elaborazione' => 'OPEN'];
+        $options['fields'] = ['id', 'luogoData'];
 		$options['order'] = 'data ASC';
 		$options['recursive'] = -1;
 		$deliveriesStorerooms = $Delivery->find('list', $options);
@@ -896,7 +992,7 @@ class PagesController extends AppController {
 	            'Delivery.isVisibleBackOffice' => 'Y',
 	            'Delivery.sys' => 'N',
 	            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY ');
-	        $options['order'] = array('Delivery.data ASC');
+	        $options['order'] = ['Delivery.data' => 'asc'];
 	        $options['fields'] = array('Delivery.id', 'Delivery.luogoData');
 	        $options['recursive'] = 1;
 	        $cartsDeliveries = $Delivery->find('list', $options);

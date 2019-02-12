@@ -24,11 +24,16 @@ class OrdersController extends AppController {
 					$this->myRedirect(Configure::read('routes_msg_stop'));
 		  		}
 	   		}
-   		}   	
+   		}
+   		
+		if($this->user->organization['Organization']['type']!='GAS') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}	   		   	
    		/* ctrl ACL */  
 
    		 
-   		$actionWithPermission = array('admin_home');
+   		$actionWithPermission = ['admin_home'];
    		if(in_array($this->action, $actionWithPermission)) {
    			/*
    			 * ctrl che la consegna sia visibile in backoffice
@@ -74,6 +79,9 @@ class OrdersController extends AppController {
 	   	App::import('Model', 'DesOrdersOrganization');
 		
 		App::import('Model', 'OrderLifeCycle');
+		
+		App::import('Model', 'RequestPayment');
+		$RequestPayment = new RequestPayment;
 		
 	   	/*
 	   	 * aggiorno lo stato degli ordini
@@ -208,6 +216,16 @@ class OrdersController extends AppController {
 			 $results[$numResult]['Order']['can_state_code_to_close'] = $OrderLifeCycle->canStateCodeToClose($this->user, $result, $debug);
 			 
 			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
+			 
+			 /*
+			  * recupero richiesta di pagamento 
+			  */ 
+			$results[$numResult]['Order']['request_payment_num'] = '';
+			$results[$numResult]['Order']['request_payment_id'] = '';
+			if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+				$results[$numResult]['Order']['request_payment_num'] = $RequestPayment->getRequestPaymentNumByOrderId($this->user, $result['Order']['id']);
+				$results[$numResult]['Order']['request_payment_id'] = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $result['Order']['id']);
+			} 
 			  
 		} // loop Orders
  
@@ -308,7 +326,7 @@ class OrdersController extends AppController {
 				$options['conditions'] = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
 										  'RequestPaymentsOrder.order_id' => $result['Order']['id']];
 				$options['recursive'] = 0;
-				$RequestPaymentsOrder->unbindModel(array('belongsTo' => array('Order')));
+				$RequestPaymentsOrder->unbindModel(['belongsTo' => ['Order']]);
 				$resultsRequestPaymentsOrder = $RequestPaymentsOrder->find('first', $options);
 				
 				if(!empty($resultsRequestPaymentsOrder)) {
@@ -488,7 +506,7 @@ class OrdersController extends AppController {
 		* non piu' perche' ho Delivery.sys = Y
 		if(empty($deliveries)) {
 			$this->Session->setFlash(__('OrderNotFoundDeliveries'));
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		}
 		*/
 		$this->set(compact('deliveries'));
@@ -541,7 +559,7 @@ class OrdersController extends AppController {
 				
 		$this->set('delivery_id',$delivery_id);  
 		
-		$qta_massima_um_options = array('KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 'PZ' => 'Pezzi');
+		$qta_massima_um_options = ['KG' => 'Kg (prenderà in considerazione anche i Hg, Gr)', 'LT' => 'Lt (prenderà in considerazione anche i Hl, Ml)', 'PZ' => 'Pezzi'];
 		$this->set(compact('qta_massima_um_options'));
 		
 		/*
@@ -621,7 +639,7 @@ class OrdersController extends AppController {
 		* non piu' perche' ho Delivery.sys = Y
 		if(empty($deliveries)) {
 			$this->Session->setFlash(__('OrderNotFoundDeliveries'));
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		}
 		*/
 		$this->set(compact('deliveries'));
@@ -860,7 +878,7 @@ class OrdersController extends AppController {
 			App::import('Model', 'ProdGasPromotion');
 			$ProdGasPromotion = new ProdGasPromotion;
 			 
-			$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $supplier_id, $prod_gas_promotion_id, $this->user->organization['Organization']['id']);
+			$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $this->user->organization['Organization']['id']);
 			$this->set('promotionResults', $promotionResults);
 		}
 	}
@@ -1054,7 +1072,7 @@ class OrdersController extends AppController {
 					$User = new User;
 					
 					$conditions = [];
-					$conditions = array('ArticlesOrder.order_id' => $this->order_id);
+					$conditions = ['ArticlesOrder.order_id' => $this->order_id];
 					$results = $User->getUserWithCartByOrder($this->user ,$conditions);
 					
 					if(count($results)>0)
@@ -1099,7 +1117,7 @@ class OrdersController extends AppController {
 		 * non piu' perche' ho Delivery.sys = Y
 		if(empty($deliveries)) {
 			$this->Session->setFlash(__('OrderNotFoundDeliveries'));
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		}*/
 
 		/* 
@@ -1288,40 +1306,35 @@ class OrdersController extends AppController {
 					App::import('Model', 'User');
 					$User = new User;
 					
-					$options = [];
-					$options['conditions'] = ['User.organization_id'=>(int)$this->user->organization['Organization']['id'],
-												'User.block'=> 0];
-					$options['fields'] = ['id','name','email'];
-					$options['order'] = Configure::read('orderUser');
-					$options['recursive'] = -1;
-					$users = $User->find('all', $options);
+					$usersResults = $User->getUsersToMail($organization_id);
 					
-					if(!empty($users)) {
+					if(!empty($usersResults)) {
 		
 						$subject_mail = 'Riapertura ordine per completare i colli';
 						$Email->subject($subject_mail);
 						if(!empty($this->user->organization['Organization']['www']))
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 						else
-							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 							
 						$msg .= '<br />Inviata la mail a<br />';
 						/*
 					 	* ciclo UTENTI
 					 	*/
-						foreach($users as $numResult => $user) {
+						foreach($usersResults as $numResult => $user) {
 			
 							$mail = $user['User']['email'];
+							$mail2 = $user['UserProfile']['email'];
 							$name = $user['User']['name'];
 								
 							if(!empty($mail)) {
 								$mail_open_testo = str_replace('gg/mm/yyy', $data_fine_validation, $mail_open_testo);
 								$body_mail = $mail_open_testo;
 	
-								$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+								$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 								$Email->to($mail);
 									
-								$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
+								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail, $debug);
 							}
 							else
 								$msg .= $name.' senza indirizzo mail!<br />';
@@ -1361,7 +1374,7 @@ class OrdersController extends AppController {
 		$this->set('data_fine_validation', $data_fine_validation);
 		$this->set('data_fine_validation_db', $data_fine_validation_db);
 		
-		$invio_mail = array('Y' => 'Si', 'N' => 'No');
+		$invio_mail = ['Y' => 'Si', 'N' => 'No'];
 		$this->set(compact('invio_mail'));
 		$this->set(compact('invio_mail_default'));
 		
@@ -1484,7 +1497,7 @@ class OrdersController extends AppController {
 			$User = new User;
 
 			$conditions = [];
-			$conditions = array('ArticlesOrder.order_id' => $this->order_id);
+			$conditions = ['ArticlesOrder.order_id' => $this->order_id];
 			$users = $User->getUserWithCartByOrder($this->user ,$conditions);
 			
 			if(!empty($users)) {
@@ -1492,9 +1505,9 @@ class OrdersController extends AppController {
 				$subject_mail = "L'ordine di ".$results['SuppliersOrganization']['name']." ha cambiato consegna";
 				$Email->subject($subject_mail);
 				if(!empty($this->user->organization['Organization']['www']))
-					$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+					$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 				else
-					$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+					$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
 				$msg .= '<br />Inviata la mail a<br />';
 				/*
@@ -1510,7 +1523,7 @@ class OrdersController extends AppController {
 					if(!empty($mail)) {
 						$body_mail = $mail_open_testo;
 
-						$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 						$Email->to($mail);
 
 						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
@@ -1596,12 +1609,20 @@ class OrdersController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-	
+
+		$canOrdersDelete = true;
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle();
+		if(!$OrderLifeCycle->canOrdersDelete($this->user, $debug)) 
+			$canOrdersDelete = false;
+		$this->set(compact('canOrdersDelete'));
+			
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		
         /*
          * D.E.S.
@@ -1616,6 +1637,11 @@ class OrdersController extends AppController {
 			
 		if ($this->request->is('post') || $this->request->is('put')) {
 
+				if(!$canOrdersDelete) {
+					$this->Session->setFlash(__('msg_not_permission'));
+					$this->myRedirect(Configure::read('routes_msg_exclamation'));				
+				}
+				
 				/*
 				 * copia di backup di Order / ArticlesOrder / Cart
 				 */
@@ -1655,9 +1681,9 @@ class OrdersController extends AppController {
 						$subject_mail = "L'ordine di ".$results['SuppliersOrganization']['name']." cancellato";
 						$Email->subject($subject_mail);
 						if(!empty($this->user->organization['Organization']['www']))
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 						else
-							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
 						/*
 					 	* ciclo UTENTI
@@ -1669,7 +1695,7 @@ class OrdersController extends AppController {
 							
 							self::d('Mail a '.$mail, $debug);
 
-							$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+							$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 
 							$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 							if(isset($mailResults['OK'])) {
@@ -1741,7 +1767,7 @@ class OrdersController extends AppController {
 			setcookie('order_id', '', time() - 42000, Configure::read('App.server'));
 			$this->Session->delete('order_id');
 			
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		} // end POST
 			
 		App::import('Model', 'ArticlesOrder');
@@ -1751,7 +1777,7 @@ class OrdersController extends AppController {
 		*/
 		$ArticlesOrder = new ArticlesOrder;
 		
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Order')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Order']]);
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
 								   'ArticlesOrder.order_id' => $this->order_id,
@@ -1807,7 +1833,7 @@ class OrdersController extends AppController {
 		 * 		faccio unbindModel di Cart
 		 */
 		$ArticlesOrder = new ArticlesOrder;
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Cart', 'Order']]);
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
 									'ArticlesOrder.order_id' => $this->order_id,
@@ -1833,27 +1859,32 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
+		$canOrdersClose = true;
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle();
+		if(!$OrderLifeCycle->canOrdersClose($this->user, $debug)) 
+			$canOrdersClose = false;
+		$this->set(compact('canOrdersClose'));
+			
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
-		$this->set('results', $results);
+		$this->set(compact('results'));
 	
 		self::d($results, $debug);
 		
 		/*
 		 * msg 
-		 */
-        App::import('Model', 'OrderLifeCycle');
-        $OrderLifeCycle = new OrderLifeCycle();
-		
+		 */	 
 		$msg = $OrderLifeCycle->beforeRendering($this->user, $results, $this->request->params['controller'], $this->action);
 		if(!empty($msg['msgOrderToClose'])) 
 			$msg = $msg['msgOrderToClose'];
 		else
 			$msg = '';
 		self::d($msg, $debug);
-		$this->set('msg', $msg);
+		$this->set(compact('msg'));
 		
 		/*
 		 * se order_just_pay = Y forzo il pagamento di un produttore
@@ -1876,6 +1907,11 @@ class OrdersController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
+			if(!$canOrdersClose) {
+				$this->Session->setFlash(__('msg_not_permission'));
+				$this->myRedirect(Configure::read('routes_msg_exclamation'));				
+			}
+						
 			if($this->user->organization['Template']['orderSupplierPaid']=='Y')
 				$order_just_pay = $this->request->data['Order']['order_just_pay'];
 			if($order_just_pay=='Y')
@@ -1959,7 +1995,7 @@ class OrdersController extends AppController {
 		}
 			
 		/*
-		 * $pageCurrent = array('controller' => '', 'action' => '');
+		 * $pageCurrent = ['controller' => '', 'action' => ''];
 		 * mi serve per non rendere cliccabile il link corrente nel menu laterale
 		*/
 		$pageCurrent = $this->getToUrlControllerAction($_SERVER['HTTP_REFERER']);
@@ -2015,20 +2051,20 @@ class OrdersController extends AppController {
 		$Delivery = new Delivery;
 		
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.stato_elaborazione' => 'OPEN',
-									   'Delivery.sys' => 'N', 
-									   'DATE(Delivery.data) < CURDATE()');
-		$options['order'] = array('Delivery.data ASC');
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								   'Delivery.isVisibleBackOffice' => 'Y',
+								   'Delivery.stato_elaborazione' => 'OPEN',
+								   'Delivery.sys' => 'N', 
+								   'DATE(Delivery.data) < CURDATE()'];
+		$options['order'] = ['Delivery.data' => 'asc'];
 		$options['recursive'] = -1;
-		$options['fields'] = array('Delivery.id', 'luogoData');
+		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$deliveries = $this->Order->Delivery->find('list', $options); 
 		
 		$this->set(compact('deliveries'));
 
 	   	$options =[];
-	   	$options['conditions'] = array ('Delivery.stato_elaborazione' => 'OPEN');
+	   	$options['conditions'] = ['Delivery.stato_elaborazione' => 'OPEN'];
 	   	$this->_boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
 	   	 
 	}
@@ -2091,10 +2127,10 @@ class OrdersController extends AppController {
 			else
 				$body_mail = $mail_open_testo;
 				
-			$Email->replyTo(array($this->user->email => $this->user->email));
+			$Email->replyTo([$this->user->email => $this->user->email]);
 			$Email->subject($subject);
-			$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
-			$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+			$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 
 			/*
 			 * attachments
@@ -2161,7 +2197,7 @@ class OrdersController extends AppController {
 			
 				} catch (Exception $e) {
 					$msg = "Errore nell'invio della mail al produttore $destinatatio_mail";
-					CakeLog::write("error", $e, array("mails"));
+					CakeLog::write("error", $e, ['mails']);
 				}
 			} // if(empty($msg))
 			
@@ -2236,7 +2272,7 @@ class OrdersController extends AppController {
 		}
 		
 	   	$options =[];
-	   	$options['conditions'] = array ('Delivery.stato_elaborazione' => 'OPEN');
+	   	$options['conditions'] = ['Delivery.stato_elaborazione' => 'OPEN'];
 	   	$this->_boxOrder($this->user, $this->delivery_id, $this->order_id, $options);
 	   	 
 	}
@@ -2259,8 +2295,8 @@ class OrdersController extends AppController {
 		App::import('Model', 'SuppliersOrganizationsReferent');
 		$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 		
-		$conditions = array('User.block' => 0,
-							'SuppliersOrganization.id' => $supplier_organization_id);
+		$conditions = ['User.block' => 0,
+						'SuppliersOrganization.id' => $supplier_organization_id];
 		$suppliersOrganizationsReferent = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
 		$this->set('suppliersOrganizationsReferent', $suppliersOrganizationsReferent);
 		

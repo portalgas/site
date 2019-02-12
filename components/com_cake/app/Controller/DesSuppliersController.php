@@ -1,11 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
-/**
- * DesSuppliers Controller
- *
- * @property DesSupplier $DesSupplier
- * @property PaginatorComponent $Paginator
- */
+
 class DesSuppliersController extends AppController {
 
 	public $components = array('Paginator');
@@ -21,16 +16,16 @@ class DesSuppliersController extends AppController {
 		/* ctrl ACL */
 
 		if(empty($this->user->des_id)) {
-            $this->Session->setFlash(__('Devi scegliere il tuo DES'));
+            $this->Session->setFlash(__('msg_des_choice'));
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Des&action=index';
 			$this->myRedirect($url);
         }
 		
 		/* ctrl ACL */
 		if(!$this->isManagerDes()) {
-					 $this->Session->setFlash(__('msg_not_permission'));
-					 $this->myRedirect(Configure::read('routes_msg_stop'));
-			 }
+			 $this->Session->setFlash(__('msg_not_permission'));
+			 $this->myRedirect(Configure::read('routes_msg_stop'));
+		}
 		/* ctrl ACL */
                 
   		$this->set('isManagerDes', $this->isManagerDes());
@@ -49,18 +44,18 @@ class DesSuppliersController extends AppController {
    		App::import('Model', 'DesOrganization');
 		$DesOrganization = new DesOrganization;
 
-		$options = array();
- 		$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id);
-		$options['fields'] = array('DesOrganization.organization_id','Organization.name','Organization.img1');
+		$options = [];
+ 		$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
+		$options['fields'] = ['DesOrganization.organization_id','Organization.name','Organization.img1'];
 		$options['recursive'] = 0;
    		$desOrganizationResults = $DesOrganization->find('all', $options);
 		
 		App::import('Model', 'DesSuppliersReferent');
 		App::import('Model', 'DesOrder');
 	
-   		$options = array();
+   		$options = [];
    		$options['recursive'] = 0;
-   		$options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id);
+   		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id];
    		$results = $this->DesSupplier->find('all', $options);
 
 		foreach ($results as $numResult => $result) {
@@ -69,7 +64,7 @@ class DesSuppliersController extends AppController {
 			 * per ogni DesSuplier estraggo i DesReferenti
 			 */
 			$DesSuppliersReferent = new DesSuppliersReferent();
-			$conditions = array();
+			$conditions = [];
 			$conditions = array('DesSupplier.des_id' => $result['DesSupplier']['des_id'],
 								'DesSupplier.supplier_id' => $result['DesSupplier']['supplier_id']);
 									
@@ -79,7 +74,7 @@ class DesSuppliersController extends AppController {
 			 * per ogni DesSuplier estraggo totali DesOrder
 			 */
 			$DesOrder = new DesOrder();
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('DesOrder.des_id' => $result['DesSupplier']['des_id'],
 											'DesOrder.des_supplier_id' => $result['DesSupplier']['id']);
 			$results[$numResult]['DesOrder']['totali'] = $DesOrder->find('count', $options);
@@ -100,11 +95,9 @@ class DesSuppliersController extends AppController {
 			
 			$results[$numResult]['DesSupplier']['hasOrganizationsSupplier'] = $hasOrganizationsSupplier;
 		}
-		/*
-  		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/ 		
+		
+		self::d($results,false);
+		
    		$this->set('results', $results);
 
 	}
@@ -118,51 +111,95 @@ class DesSuppliersController extends AppController {
 		
 			if ($this->DesSupplier->save($this->request->data)) {
 				$this->Session->setFlash(__('The des supplier has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The des supplier could not be saved. Please, try again.'));
 			}
 		}
 		
-		$options = array();
-		$options['conditions'] = array("(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
+		$supplier_states = ['Y', 'T', 'PG'];
+		
+		$options = [];
+		$options['conditions'] = ['Supplier.stato' => $supplier_states];
 		$options['recursive'] = -1;
-		$options['order'] = array('Supplier.name');
+		$options['order'] = ['Supplier.name'];
 		$suppliers = $this->DesSupplier->Supplier->find('list', $options);
+		self::d($options,false);
+		self::d($suppliers,false);
 		
 		/*
 		 * escludo quelli gia' associati
 		 */
-   		$options = array();
+   		$options = [];
    		$options['recursive'] = -1;
-   		$options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id);
-   		$options['fields'] = array('DesSupplier.supplier_id', 'DesSupplier.supplier_id');
-   		$results = $this->DesSupplier->find('list', $options);
+   		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id];
+   		$options['fields'] = ['DesSupplier.supplier_id', 'DesSupplier.supplier_id'];
+   		$results = $this->DesSupplier->find('all', $options);
 		foreach($suppliers as $supplier_id => $supplier) {
 			if(in_array($supplier_id, $results))
 				unset($suppliers[$supplier_id]);
 		}
 		
-		/*
-		echo "<pre>";
-		print_r($suppliers);
-		echo "</pre>";
-		*/
+		self::d($suppliers,false);
 		
 		$this->set(compact('suppliers'));
 	}
 
 	public function admin_delete($id = null) {
+	
+		$debug = false;
+		$continua = true;
+	
 		$this->DesSupplier->id = $id;
 		if (!$this->DesSupplier->exists()) {
 			throw new NotFoundException(__('Invalid des supplier'));
 		}
 		$this->request->onlyAllow('get', 'delete');
-		if ($this->DesSupplier->delete()) {
-			$this->Session->setFlash(__('Delete DesSupplier'));
-		} else {
-			$this->Session->setFlash(__('DesSupplier was not deleted'));
+
+		/*
+		 * riporto il SuppliersOrganizations a owner_articles = REFERENT se = DES
+		 */		
+   		$options = [];
+   		$options['recursive'] = -1;
+   		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id, 
+   								   'DesSupplier.id' => $id];
+   		$options['recursive'] = -1;						   
+   		$desSupplierResults = $this->DesSupplier->find('first', $options);
+		self::d($desSupplierResults, $debug);
+
+        App::import('Model', 'SuppliersOrganization');
+        $SuppliersOrganization = new SuppliersOrganization;
+   		
+   		$options = [];
+   		$options['recursive'] = -1;
+   		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'], 
+   								   'SuppliersOrganization.supplier_id' => $desSupplierResults['DesSupplier']['supplier_id']];
+   		$options['recursive'] = -1;
+   		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+   		
+   		self::d($suppliersOrganizationResults, $debug);
+		
+		if(!empty($suppliersOrganizationResults) && 
+			$suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='DES') {
+				
+				$suppliersOrganizationResults['SuppliersOrganization']['owner_articles'] = 'REFERENT';
+				$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $this->user->organization['Organization']['id'];
+	            
+	            $SuppliersOrganization->create();
+	            if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {
+					$this->Session->setFlash(__('DesSupplier was not deleted'));
+					$continua = false;
+				}				
+			}
+		
+		if($continua) {
+			if ($this->DesSupplier->delete()) {
+				$this->Session->setFlash(__('Delete DesSupplier'));
+			} else {
+				$this->Session->setFlash(__('DesSupplier was not deleted'));
+			}
 		}
-		$this->myRedirect(array('action' => 'index'));
+		
+		$this->myRedirect(['action' => 'index']);
 	}
 }

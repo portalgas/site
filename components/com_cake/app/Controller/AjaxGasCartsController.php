@@ -312,7 +312,7 @@ class AjaxGasCartsController extends AppController {
 										'ArticlesOrder.order_id' => $order_id,
 										'Article.organization_id' => $article_organization_id,
 										'Article.id' => $article_id];
-    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $prod_gas_promotion_id, $options));
+    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order_id, $prod_gas_promotion_id, $options));
     	} // end if(!empty($order))
     	$this->set('results',$results);
     }

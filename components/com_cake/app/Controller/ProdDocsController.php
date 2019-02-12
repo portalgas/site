@@ -13,9 +13,9 @@ class ProdDocsController extends AppController {
 
 		if(empty($this->prod_delivery_id)) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
 			
-		$options = array();
+		$options = [];
 		$options['conditions'] = array ('ProdDelivery.stato_elaborazione' => 'OPEN');
-		$this->__boxProdDelivery($this->user, $this->prod_delivery_id, $options);
+		$this->_boxProdDelivery($this->user, $this->prod_delivery_id, $options);
 		
 		$this->set('prod_delivery_id', $this->prod_delivery_id);
 	}
@@ -31,9 +31,9 @@ class ProdDocsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-		$options = array();
+		$options = [];
 		$options['conditions'] = array ('ProdDelivery.stato_elaborazione' => 'CLOSE');
-		$this->__boxProdDelivery($this->user, $this->prod_delivery_id, $options);
+		$this->_boxProdDelivery($this->user, $this->prod_delivery_id, $options);
 		
 		$this->set('prod_delivery_id', $this->prod_delivery_id);
 	}

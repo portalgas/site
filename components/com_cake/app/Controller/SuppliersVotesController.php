@@ -63,13 +63,13 @@ class SuppliersVotesController extends AppController {
 			App::import('Model', 'CategoriesSupplier');
 			$CategoriesSupplier = new CategoriesSupplier;
 	
-			$options = array();
+			$options = [];
 			$options['order'] = array('CategoriesSupplier.name');
 			$categories = $CategoriesSupplier->find('list', $options);
 			$this->set(compact('categories'));			
 		}
 		else {
-			$conditions[] = array('SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
+			$conditions[] = ['SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
 		}
 
 		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
@@ -86,7 +86,7 @@ class SuppliersVotesController extends AppController {
 			/* 
 			 * SuppliersVote del proprio GAS
 			 */
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('SuppliersVote.supplier_id' => $result['SuppliersOrganization']['supplier_id'],
 										   'SuppliersVote.organization_id' => (int)$this->user->organization['Organization']['id']);
 			$options['recursivo'] = 0;
@@ -111,11 +111,9 @@ class SuppliersVotesController extends AppController {
 			else
 				$results[$numResult]['SuppliersVoteOrganization'] = '';			
 		}
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results, false);
+		
 		$this->set('results', $results);
 		$this->set('SqlLimit', $SqlLimit);
 		$this->set('isSuperReferente',$this->isSuperReferente());
@@ -152,7 +150,7 @@ class SuppliersVotesController extends AppController {
 			/*
 			 * dati produttore
 			 */		
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 										   'SuppliersOrganization.id' => $supplier_orgaqnization_id);
 			$options['recursive'] = -1;
@@ -169,7 +167,7 @@ class SuppliersVotesController extends AppController {
 			App::import('Model', 'SuppliersVote');
 			$SuppliersVote = new SuppliersVote;
 
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('SuppliersVote.organization_id' => $this->user->organization['Organization']['id'],
 										   'SuppliersVote.supplier_id' => $suppliersOrganizationsResults['SuppliersOrganization']['supplier_id']);
 			$options['recursive'] = -1;
@@ -180,12 +178,8 @@ class SuppliersVotesController extends AppController {
 			$this->set(compact('results'));
 		
 			$this->set('ACLsuppliersOrganization', '');	
-			/*
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";
-			*/
-		
+			
+			self::d($results, false);
 			
 			/* 
 			 * SuppliersVote di TUTTI i GAS
@@ -206,7 +200,7 @@ class SuppliersVotesController extends AppController {
 			 * produttore non passato => lista profilata dei produttori
 			 */
 			if($this->isSuperReferente()) {
-				$options = array();
+				$options = [];
 				$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 											   'SuppliersOrganization.stato' => 'Y');
 				$options['order'] = array('SuppliersOrganization.name');
@@ -230,7 +224,7 @@ class SuppliersVotesController extends AppController {
 				echo "</pre>";
 			}
 			
-			$data = array();
+			$data = [];
 			if(isset($suppliersVotesResults['SuppliersVote']['id']))
 				$data['SuppliersVote']['id'] = $suppliersVotesResults['SuppliersVote']['id'];
 			$data['SuppliersVote']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -255,7 +249,7 @@ class SuppliersVotesController extends AppController {
 			
 			if($esito) {
 				$this->Session->setFlash(__('The suppliers vote has been saved'));
-				if(!$debug) $this->myRedirect(array('action' => 'index'));
+				if(!$debug) $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The suppliers vote could not be saved. Please, try again.'));
 			}

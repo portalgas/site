@@ -11,7 +11,7 @@ class ProdGasArticlesController extends AppController {
 		parent::beforeFilter();
 		
 		/* ctrl ACL */
-		if(empty($this->user->supplier['Supplier'])) {
+		if($this->user->organization['Organization']['type']!='PRODGAS') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}	
@@ -19,7 +19,7 @@ class ProdGasArticlesController extends AppController {
 	}
 	
 	public function admin_index() { 
-		$conditions = $this->__admin_index_sql_conditions($this->user);
+		$conditions = $this->_admin_index_sql_conditions($this->user);
 		
 		$SqlLimit = 25;				
 		/*
@@ -61,7 +61,7 @@ class ProdGasArticlesController extends AppController {
 				foreach ($array_article_id as $id) {
 					
 					$options = array();
-					$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->supplier['Supplier']['id'],
+					$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->organization['Supplier']['Supplier']['id'],
 												   'ProdGasArticle.id' => $id);
 					$options['recursive'] = -1;
 					$articleResults = $this->ProdGasArticle->find('first', $options);	
@@ -79,7 +79,7 @@ class ProdGasArticlesController extends AppController {
 				$this->Session->setFlash($msg);
 			}	
 		}  // end if ($this->request->is('post') || $this->request->is('put'))						
-		$conditions = $this->__admin_index_sql_conditions($this->user);		
+		$conditions = $this->_admin_index_sql_conditions($this->user);		
 		$this->paginate = array('conditions' => $conditions,
 								'order' => 'ProdGasArticle.name','recursive' => -1,'limit' => $SqlLimit);
 	    $results = $this->paginate('ProdGasArticle');
@@ -99,7 +99,7 @@ class ProdGasArticlesController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {	
 
 			$msg = "";	
-			$this->request->data['ProdGasArticle']['supplier_id'] = $this->user->supplier['Supplier']['id'];
+			$this->request->data['ProdGasArticle']['supplier_id'] = $this->user->organization['Supplier']['Supplier']['id'];
 			
 			/*
 			 * il js setArticlePrezzoUmRiferimento crea ['Article']['um_riferimento']
@@ -127,20 +127,30 @@ class ProdGasArticlesController extends AppController {
 				echo "<pre>";
 				print_r($this->request->data);
 				echo "</pre>";	
-				*/				
+				*/
 				$this->ProdGasArticle->create();
 				if($this->ProdGasArticle->save($this->request->data)) {
 				
-					$id = $this->request->data['ProdGasArticle']['id'];
+					$id = $this->ProdGasArticle->getLastInsertId();
 					$msg = __('The article has been saved');
+					
+					/*
+					 * syncronize
+					 */				
+					if(isset($this->request->data['ProdGasArticlesSyncronize'])) {
+						App::import('Model', 'ProdGasArticlesSyncronize');
+						$ProdGasArticlesSyncronize = new ProdGasArticlesSyncronize;
 						
+						$ProdGasArticlesSyncronize->syncronize_to_article($this->user, $id, $this->request->data['ProdGasArticlesSyncronize'], $debug);
+					}
+											
 					/*
 					 * immagine
 					 */
 					if($continue) {
 						$arr_extensions = Configure::read('App.web.img.upload.extension');
 						$arr_contentTypes = Configure::read('ContentType.img');		 
-						$path_upload = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS;
+						$path_upload = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS;
 						
 						if(!empty($this->request->data['Document']['img1']['name'])){
 							$esito = $this->Documents->genericUpload($this->user, $this->request->data['Document']['img1'], $path_upload, 'UPLOAD', $id, $arr_extensions, $arr_contentTypes, Configure::read('App.web.img.upload.width.article'), $debug);
@@ -150,15 +160,14 @@ class ProdGasArticlesController extends AppController {
 										SET
 											img1 = '".$esito['fileNewName']."'
 										WHERE
-											supplier_id = ".$this->user->supplier['Supplier']['id']."
+											supplier_id = ".$this->user->organization['Supplier']['Supplier']['id']."
 											and id = ".$id;
 								if($debug) echo "UPDATE IMG ".$sql;
-								$uploadResults = $this->ProdGasPromotion->query($sql);						
+								$uploadResults = $this->ProdGasArticle->query($sql);						
 							}
 							else
 								$msg = $esito['msg'];
-								if($debug)
-									echo "<br  />msg UPLOAD ".$msg;
+								self::d("msg UPLOAD ".$msg, $debug);
 						}				
 					}
 				
@@ -170,7 +179,11 @@ class ProdGasArticlesController extends AppController {
 				}
 			}  // end if(!$this->ProdGasArticle->validates()) 
 		} // end if ($this->request->is('post') || $this->request->is('put'))
-				
+
+		$syncronizeResults = $this->_tabSyncronize($this->user, 0, $debug);
+		$this->set(compact('syncronizeResults'));
+		$this->set('id', 0);
+		
 		$um = ClassRegistry::init('ProdGasArticle')->enumOptions('um');
 		$this->set(compact('um'));
 		$stato = ClassRegistry::init('ProdGasArticle')->enumOptions('stato');
@@ -188,7 +201,7 @@ class ProdGasArticlesController extends AppController {
 		$continue = true;
 		
 		$options = array();
-		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->supplier['Supplier']['id'],
+		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->organization['Supplier']['Supplier']['id'],
 									   'ProdGasArticle.id' => $id);
 		$options['recursive'] = -1;
 		$results = $this->ProdGasArticle->find('first', $options);
@@ -200,8 +213,8 @@ class ProdGasArticlesController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$msg = "";
-			
-			$this->request->data['ProdGasArticle']['supplier_id'] = $this->user->supplier['Supplier']['id'];			
+
+			$this->request->data['ProdGasArticle']['supplier_id'] = $this->user->organization['Supplier']['Supplier']['id'];			
 			
 			/*
 			 * il js setArticlePrezzoUmRiferimento crea ['Article']['um_riferimento']
@@ -218,7 +231,7 @@ class ProdGasArticlesController extends AppController {
 						foreach($flatErrors as $key => $value) 
 							$tmp .= $value.' - ';
 					}
-					$msg .= "Articolo non inserito: dati non validi, $tmp<br />";
+					$msg .= "Articolo non aggiornato: dati non validi, $tmp<br />";
 					$this->Session->setFlash($msg);											}			else {
 				/*
 				echo "<pre>";
@@ -228,6 +241,17 @@ class ProdGasArticlesController extends AppController {
 				$this->ProdGasArticle->create();								if($this->ProdGasArticle->save($this->request->data)) {
 				
 					$msg = __('The article has been saved');
+
+					/*
+					 * syncronize
+					 */				
+					if(isset($this->request->data['ProdGasArticlesSyncronize'])) {
+						App::import('Model', 'ProdGasArticlesSyncronize');
+						$ProdGasArticlesSyncronize = new ProdGasArticlesSyncronize;
+						
+						$ProdGasArticlesSyncronize->syncronize_to_article($this->user, $id, $this->request->data['ProdGasArticlesSyncronize'], $debug);
+					}
+					
 				
 					/*
 					 * IMG1 delete
@@ -247,7 +271,7 @@ class ProdGasArticlesController extends AppController {
 					if($continue) {
 						$arr_extensions = Configure::read('App.web.img.upload.extension');
 						$arr_contentTypes = Configure::read('ContentType.img');		 
-						$path_upload = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS;
+						$path_upload = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS;
 						
 						if(!empty($this->request->data['Document']['img1']['name'])){
 							$esito = $this->Documents->genericUpload($this->user, $this->request->data['Document']['img1'], $path_upload, 'UPLOAD', $id, $arr_extensions, $arr_contentTypes, Configure::read('App.web.img.upload.width.article'), $debug);
@@ -257,15 +281,14 @@ class ProdGasArticlesController extends AppController {
 										SET
 											img1 = '".$esito['fileNewName']."'
 										WHERE
-											supplier_id = ".$this->user->supplier['Supplier']['id']."
+											supplier_id = ".$this->user->organization['Supplier']['Supplier']['id']."
 											and id = ".$id;
 								if($debug) echo "UPDATE IMG ".$sql;
 								$uploadResults = $this->ProdGasArticle->query($sql);			
 							}
 							else
 								$msg = $esito['msg'];
-								if($debug)
-									echo "<br  />msg UPLOAD ".$msg;
+								self::d("msg UPLOAD ".$msg, $debug);
 						}				
 					}
 			
@@ -285,19 +308,22 @@ class ProdGasArticlesController extends AppController {
 		$this->request->data=$results;
 	
 		if(!empty($results['ProdGasArticle']['img1']) && 
-		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS.$results['ProdGasArticle']['img1'])) {
+		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS.$results['ProdGasArticle']['img1'])) {
 			
-			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS.$results['ProdGasArticle']['img1']);
+			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS.$results['ProdGasArticle']['img1']);
 			$this->set('file1', $file1);
 		}
+				
+		$syncronizeResults = $this->_tabSyncronize($this->user, $id, $debug);
+		$this->set(compact('syncronizeResults'));
+		$this->set('id', $id);
 				
 		$um = ClassRegistry::init('ProdGasArticle')->enumOptions('um');
 		$this->set(compact('um'));
 		
 		$stato = ClassRegistry::init('ProdGasArticle')->enumOptions('stato');
 		$this->set(compact('stato'));	
-				
-		
+						
 		/*
 		 * parametri di ricerca da ripassare a admin_index
 		 */ 
@@ -310,7 +336,7 @@ class ProdGasArticlesController extends AppController {
 		$url = "";
 		
 		$options = array();
-		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->supplier['Supplier']['id'],
+		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->organization['Supplier']['Supplier']['id'],
 									  'ProdGasArticle.id' => $id);
 		$options['recursive'] = -1;
 		$results = $this->ProdGasArticle->find('first', $options);			
@@ -370,7 +396,7 @@ class ProdGasArticlesController extends AppController {
 	
 	public function admin_delete($id) {		
 		$options = array();
-		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->supplier['Supplier']['id'],
+		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->organization['Supplier']['Supplier']['id'],
 									  'ProdGasArticle.id' => $id);
 		$options['recursive'] = -1;
 		$results = $this->ProdGasArticle->find('first', $options);			
@@ -412,9 +438,9 @@ class ProdGasArticlesController extends AppController {
 		 * img1 
 		 */
 		if(!empty($results['ProdGasArticle']['img1']) &&
-		file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS.$results['ProdGasArticle']['img1'])) {
+		file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS.$results['ProdGasArticle']['img1'])) {
 				
-			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS.$results['ProdGasArticle']['img1']);
+			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS.$results['ProdGasArticle']['img1']);
 			$this->set('file1', $file1);
 		}
 
@@ -430,14 +456,14 @@ class ProdGasArticlesController extends AppController {
 		$this->set('promotionsResults', $promotionsResults);		
 	}
 	
-	/*	 * crea sql per l'elenco articoli	*/	private function __admin_index_sql_conditions($user) {					$conditions = array();			/*
+	/*	 * crea sql per l'elenco articoli	*/	private function _admin_index_sql_conditions($user) {					$conditions = array();			/*
 		 * conditions obbligatorie
 		*/		$conditions[] = array('ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id']);		
 		/*		 * ctrl se non e' ancora stata effettuata una ricerca		* */		if(empty($conditions))			$this->set('iniCallPage', true);		else			$this->set('iniCallPage', false);			/*		echo "<pre>";		print_r($conditions);		echo "</pre>";		*/
 			return $conditions;	}	
 	private function __delete_img($prod_gas_article_id, $img1, $debug=false) {
 
-		$img_path = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->supplier['Supplier']['id'].DS;
+		$img_path = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS;
 		
 		if($debug) {
 			echo "<br >img1 $img1";
@@ -464,7 +490,7 @@ class ProdGasArticlesController extends AppController {
 					".Configure::read('DB.prefix')."prod_gas_articles
 				SET img1 = ''
 				WHERE
-					supplier_id = ".$this->user->supplier['Supplier']['id']."
+					supplier_id = ".$this->user->organization['Supplier']['Supplier']['id']."
 					AND id = ".$prod_gas_article_id;
 		if($debug) echo "<br >sql $sql";
 		try {
@@ -479,4 +505,42 @@ class ProdGasArticlesController extends AppController {
 		
 		return $esito;
 	}
+
+	/*
+	 * se il produttore ha almen un GAS owner_articles = 'SUPPLIER' gestisco il tab sincronnizzazioni
+	 */			
+	private function _tabSyncronize($user, $id=0, $debug=false) {
+		
+		$syncronizeResults = [];
+		
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;
+			
+		$permission_to_continue = false;
+	
+		$organizationsResults = $ProdGasSupplier->getOrganizationsArticlesSupplierList($user, $debug);
+		if(!empty($organizationsResults)) {
+			foreach($organizationsResults as $organization_id => $organizationsResult) {
+				$syncronizeResults[$organization_id]['Organization']['name'] = $organizationsResult; 
+				
+				$orderResults = $ProdGasSupplier->getDeliveriesWhitOrders($user, $organization_id, $id, $debug);
+				if(!empty($orderResults)) {				
+					$syncronizeResults[$organization_id]['Order'] = $orderResults;
+				}				
+			} // loop Organization
+			
+			$yes_nos = ['Y' => __('Y'), 'N' => __('No')];
+			$yes_nos_default = 'N';
+			$this->set(compact('yes_nos', 'yes_nos_default'));
+		}
+		
+		if($debug) {
+			echo "<pre>";
+			print_r($syncronizeResults);
+			echo "</pre>";
+		}
+				
+		return $syncronizeResults;
+	}
+	
 }

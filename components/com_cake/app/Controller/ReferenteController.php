@@ -36,6 +36,9 @@ class ReferenteController extends AppController {
 
 		App::import('Model', 'Order');
 		$Order = new Order;
+
+        App::import('Model', 'OrderLifeCycle');
+        $OrderLifeCycle = new OrderLifeCycle();
 		
 		$msg = '';
 		$Order->id = $this->order_id;
@@ -47,9 +50,9 @@ class ReferenteController extends AppController {
 		/*
 		 * dati dell'ordine
 		*/
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-									   'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+								  'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $Order->find('first', $options);
 		$this->set(compact('results'));
@@ -84,8 +87,7 @@ class ReferenteController extends AppController {
 					$msg = $esito['msg'];
 					$continua=false;
 				}
-				if($debug)
-					echo "<br  />msg UPLOAD ".$msg;
+				self::d("msg UPLOAD ".$msg, $debug);
 			}
 			
 			if($continua) {
@@ -101,18 +103,14 @@ class ReferenteController extends AppController {
 											
 					$esito = $this->Documents->genericUpload($this->user, $results['Order']['tesoriere_doc1'], $path_upload, 'DELETE', '', '', '', '', $debug);
 						$msg = $esito['msg'];
-						if($debug)
-							echo "<br  />msg UPLOAD ".$msg;
+						self::d("msg UPLOAD ".$msg, $debug);
 				}
 			
 
 				/*
 				 * aggiorno stato ORDER
-				*/			
-		        App::import('Model', 'OrderLifeCycle');
-		        $OrderLifeCycle = new OrderLifeCycle();
-		        
-		        $options = array();
+				*/					        
+		        $options = [];
 		        if(isset($this->request->data['Order']['file1_delete']) && $this->request->data['Order']['file1_delete']=='Y') 
 		        	$options['tesoriere_doc1'] = '';
 		        $esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'WAIT-PROCESSED-TESORIERE', $options, $debug);
@@ -143,7 +141,7 @@ class ReferenteController extends AppController {
 			}
 		} // if ($this->request->is('post') || $this->request->is('put'))
 			
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.id' => $this->order_id,
 									   'Order.organization_id' => $this->user->organization['Organization']['id']);
 		$options['recursive'] = 1;
@@ -157,10 +155,6 @@ class ReferenteController extends AppController {
 		 * calcolo il totale degli importi degli acquisti dell'ordine
 		*/
 		$importo_totale = $Order->getTotImporto($this->user, $this->order_id, $debug);
-		/* 
-		 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-		 */
-		if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
 		$this->set('importo_totale', $importo_totale);
 		
 		/*
@@ -173,9 +167,9 @@ class ReferenteController extends AppController {
 			$this->set('file1', $file1);
 		}
 
-		$msg = $Order->isOrderValidateToTrasmit($this->user, $this->order_id);
-		if(!empty($msg)) {
-			$this->set(compact('msg'));
+		$msg = $OrderLifeCycle->beforeRendering($this->user, $this->request->data, $this->request->params['controller'], $this->action);
+		if(!empty($msg['isOrderValidateToTrasmit'])) {
+			$this->set('msg', $msg['isOrderValidateToTrasmit']);
 			$this->render('/Referente/admin_no_trasmit');
 		}
 		else
@@ -209,7 +203,7 @@ class ReferenteController extends AppController {
         App::import('Model', 'OrderLifeCycle');
         $OrderLifeCycle = new OrderLifeCycle();
         
-        $options = array();
+        $options = [];
         $esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'PROCESSED-POST-DELIVERY', $options, $debug);
         if($esito['CODE']!=200) {
         	$msg = $esito['MSG'];
@@ -217,7 +211,7 @@ class ReferenteController extends AppController {
 		}        	
 		        	
 		if($continue) 
-			$msg = __("Lo stato dell'ordine è stato aggiornato: ora il referente potrà modificarlo.");
+			$msg = __('OrderStateCodeUpdateNowReferentWorking');
 		
 		$this->Session->setFlash($msg);
 		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
@@ -246,24 +240,22 @@ class ReferenteController extends AppController {
 		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
 	
 		/*
-		 * aggiorno stato ORDER
+		 * aggiorno stato ORDER =>  pulisco SummaryOrders
 		*/			
         App::import('Model', 'OrderLifeCycle');
         $OrderLifeCycle = new OrderLifeCycle();
         
-        $options = array();
+        $options = [];
         $options['data_incoming_order'] = date('Y-m-d');
         $esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'INCOMING-ORDER', $options, $debug);
         if($esito['CODE']!=200) {
         	$msg = $esito['MSG'];
         	$continue = false;
         } 
-
-		if($continue) 
-			$msg = __("Lo stato dell'ordine è stato aggiornato.");
+		else
+			$msg = __('OrderStateCodeUpdate');
 		
 		$this->Session->setFlash($msg);
-
 		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 
@@ -272,8 +264,10 @@ class ReferenteController extends AppController {
 	 * richiamato solo dal referente per riportare l'ordine 
 	 * da 'INCOMING-ORDER' a 'PROCESSED-BEFORE-DELIVERY'   la merce NON e' arrivata
 	 * 
-	 * NON cancello i dati modificati dal referente perche' l'ordine e' cmq chiuso e quelle modifiche sono forse valide
-	*/
+	 * cancello eventuali dati aggregati / trasporto ..., la merce non e' arrivata e il referente 
+	 *		puo' modificare acquisti
+	 *		dati aggregato / trasporto ... gia' calcolati possono essere errati
+	 */
 	public function admin_order_state_in_PROCESSED_BEFORE_DELIVERY() {
 	
 		$debug = false;
@@ -291,25 +285,25 @@ class ReferenteController extends AppController {
 		/*
 		 * aggiorno stato ORDER
 		*/
-		$sql = "UPDATE
-					`".Configure::read('DB.prefix')."orders`
-				SET
-					state_code = 'PROCESSED-BEFORE-DELIVERY',
-					data_incoming_order = '0000-00-00', 
-					modified = '".date('Y-m-d H:i:s')."'
-				WHERE
-					organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and id = ".(int)$this->order_id;
-	
-		$result = $Order->query($sql);
-		$this->Session->setFlash(__('Lo stato dell\'ordine è stato aggiornato.'));
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+		
+		$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'PROCESSED-BEFORE-DELIVERY');
+        if($esito['CODE']!=200) {
+        	$msg = $esito['MSG'];
+        	$continue = false;
+        } 
+		else
+			$msg = __('OrderStateCodeUpdate');
+			
+		$this->Session->setFlash($msg);
 		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 		
 	/*
 	 * payToDelivery = ON o payToDelivery = ON-POST
 	 * richiamato solo dal referente per portare l'ordine al CASSIERE
-	 * da 'INCOMING-ORDER' a 'PROCESSED-ON-DELIVERY'    ho controllato la merce arrivata e confermo gli importi
+	 * da 'INCOMING-ORDER' a 'PROCESSED-ON-DELIVERY' ho controllato la merce arrivata e confermo gli importi
 	 * 
 	 * se non e' popolato creo SummaryOrder per eventuale pagamento cassa (importo_pagato, modalita)
 	*/
@@ -319,6 +313,9 @@ class ReferenteController extends AppController {
 		
 		App::import('Model', 'Order');
 		$Order = new Order;
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
 		
 		$Order->id = $this->order_id;
 		if (!$Order->exists($this->user->organization['Organization']['id'])) {
@@ -329,9 +326,9 @@ class ReferenteController extends AppController {
 		/*
 		 * dati dell'ordine
 		*/
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-									   'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+								   'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $Order->find('first', $options);
 		$this->set(compact('results'));
@@ -339,11 +336,7 @@ class ReferenteController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			$this->request->data['Order']['id'] = $this->order_id;
-			if($debug) {
-				echo "<pre>this->request->data \n";
-				print_r($this->request->data['Order']);
-				echo "</pre>";
-			}			
+			self::d($this->request->data['Order'], $debug);
 			
 			App::import('Model', 'Tesoriere');
 			$Tesoriere = new Tesoriere;
@@ -366,8 +359,7 @@ class ReferenteController extends AppController {
 					$msg = $esito['msg'];
 					$continua=false;
 				}	
-				if($debug)
-					echo "<br  />msg UPLOAD ".$msg;
+				self::d("msg UPLOAD ".$msg, $debug);
 			}
 			
 			if($continua) {
@@ -383,44 +375,22 @@ class ReferenteController extends AppController {
 								
 					$esito = $this->Documents->genericUpload($this->user, $results['Order']['tesoriere_doc1'], $path_upload, 'DELETE', '', '', '', '', $debug);
 					$msg = $esito['msg'];
-					if($debug)
-						echo "<br  />msg UPLOAD ".$msg;
+					self::d("msg UPLOAD ".$msg, $debug);
 				}
 				 
+				if($results['Delivery']['sys']=='N') 
+					$state_code_next = 'PROCESSED-ON-DELIVERY'; // lo passo al cassiere
+				else
+					$state_code_next = 'CLOSE'; // lo chiudo NON + 
+			
 				/*
-				 * ctrl eventuali occorrenze di SummaryOrder, se non ci sono lo popolo
-				 * mi servira' per gestire la cassa
-				*/
-				if($results['Delivery']['sys']=='N')  {
-					App::import('Model', 'SummaryOrder');
-					$SummaryOrder = new SummaryOrder;				
-					$resultsSummaryOrder = $SummaryOrder->select_to_order($this->user, $this->order_id);
-					if(empty($resultsSummaryOrder))
-						$SummaryOrder->populate_to_order($this->user, $this->order_id, 0);
-						
-					if($results['Delivery']['sys']=='N') 
-						$state_code_next = 'PROCESSED-ON-DELIVERY'; // lo passo al cassiere
-					else
-						$state_code_next = 'CLOSE'; // lo chiudo NON + 
-				
-					/*
-					 * aggiorno stato ORDER
-					*/
-					$sql = "UPDATE
-								`".Configure::read('DB.prefix')."orders`
-							SET
-								state_code = '".$state_code_next."',
-								modified = '".date('Y-m-d H:i:s')."'
-							WHERE
-								organization_id = ".(int)$this->user->organization['Organization']['id']."
-								and id = ".(int)$this->order_id;
-					// echo $sql;
-					$result = $Order->query($sql);
-				} // if($results['Delivery']['sys']=='N')
+				 * aggiorno stato ORDER, gli passo order_id cosi' prende le modifiche effettuate in $Tesoriere->updateAfterUpload()
+				*/				
+				$OrderLifeCycle->stateCodeUpdate($this->user, $this->request->data['Order']['id'], $state_code_next);
 			} // end if($continua)
 				
 			if(empty($msg)) {
-				$this->Session->setFlash(__('Lo stato dell\'ordine è stato aggiornato.'));
+				$this->Session->setFlash(__('OrderStateCodeUpdate'));
 				$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 			}
 			else {
@@ -428,9 +398,9 @@ class ReferenteController extends AppController {
 			}					
 		} // end POST
 
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-									   'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.id' => $this->order_id,
+								   'Order.organization_id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$this->request->data = $Order->find('first', $options);
 		if (empty($this->request->data)) {
@@ -442,10 +412,6 @@ class ReferenteController extends AppController {
 		 * calcolo il totale degli importi degli acquisti dell'ordine
 		*/
 		$importo_totale = $Order->getTotImporto($this->user, $this->order_id, $debug);
-		/* 
-		 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-		 */
-		if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
 		$this->set('importo_totale', $importo_totale);
 		
 		/*
@@ -458,9 +424,9 @@ class ReferenteController extends AppController {
 			$this->set('file1', $file1);
 		}
 		
-		$msg = $Order->isOrderValidateToTrasmit($this->user, $this->order_id);
-		if(!empty($msg)) {
-			$this->set(compact('msg'));
+		$msg = $OrderLifeCycle->beforeRendering($this->user, $this->request->data, $this->request->params['controller'], $this->action);
+		if(!empty($msg['isOrderValidateToTrasmit'])) {
+			$this->set('msg', $msg['isOrderValidateToTrasmit']);
 			$this->render('/Referente/admin_no_trasmit');
 		}
 		else {
@@ -472,7 +438,7 @@ class ReferenteController extends AppController {
 	
 	/*
 	 * richiamato solo dal referenteTesoriere per portare l'ordine 
-	 * 	da 'PROCESSED-POST-DELIVERY' in 'TO-PAYMENT'
+	 * 	da 'PROCESSED-POST-DELIVERY' in 'TO-REQUEST-PAYMENT'
 	 */
 	public function admin_order_state_in_TO_PAYMENT() {
 
@@ -493,26 +459,18 @@ class ReferenteController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
-		
-		/*		 * ctrl eventuali occorrenze di SummaryOrder		* 		se il referenteTesoriere non e' mai passato da Carts::managementCartsGroupByUsers e' vuoto		*/
-		App::import('Model', 'SummaryOrder');		$SummaryOrder = new SummaryOrder;				$results = $SummaryOrder->select_to_order($this->user, $this->order_id);		if(empty($results))			$SummaryOrder->populate_to_order($this->user, $this->order_id, 0);				App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',
+						App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',
 							'Delivery.sys' => 'N',							'Delivery.stato_elaborazione' => 'OPEN');					$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),'conditions'=>$conditions,'order'=>'data ASC','recursive'=>-1));		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
 		
 		/*
 		 * aggiorno stato ORDER
 		*/
-		$sql = "UPDATE
-					`".Configure::read('DB.prefix')."orders`
-				SET
-					state_code = 'TO-PAYMENT',
-					modified = '".date('Y-m-d H:i:s')."'
-				WHERE
-					organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and id = ".(int)$this->order_id;
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
 		
-		$result = $Order->query($sql);
-		$this->Session->setFlash("Lo stato dell'ordine è stato aggiornato: ora si potrà richiedere il pagamento.");
-		
+		$OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'TO-REQUEST-PAYMENT');
+					
+		$this->Session->setFlash('OrderStateCodeUpdateNowRequestPayment');
 		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 }

@@ -24,7 +24,7 @@ class SummaryOrdersController extends AppController {
 	public function admin_orders_validate() {
 	
 		$debug = false;
-		$deliveries = array();
+		$deliveries = [];
 		
 		$sql = "SELECT Delivery.id, Delivery.data, Delivery.luogo, Delivery.sys   
 				FROM 
@@ -47,7 +47,7 @@ class SummaryOrdersController extends AppController {
 		
 			$sql .= " GROUP BY Delivery.id 
 					 ORDER BY Delivery.data ASC";
-		 	if($debug) echo '<br />'.$sql;
+		 	self::d($sql, $debug);
 		try {
 			$results = $this->SummaryOrder->query($sql);
 			
@@ -76,7 +76,7 @@ class SummaryOrdersController extends AppController {
 	public function admin_ajax_orders_list_validate($delivery_id) {
 
    		$debug = false;
-   		$orders = array();
+   		$orders = [];
    		
 	   	if(empty($this->delivery_id)) {
 	   		$this->Session->setFlash(__('msg_error_params'));
@@ -103,7 +103,7 @@ class SummaryOrdersController extends AppController {
 				$sql .= " AND `Order`.supplier_organization_id IN (".$this->user->get('ACLsuppliersIdsOrganization').") ";			
 			$sql .= " GROUP BY `Order`.id 
 					 ORDER BY `Order`.data_inizio ASC, `Order`.data_fine ASC";
-		 	if($debug) echo '<br />'.$sql;  	
+		 	self::d($sql, $debug); 	
 		try {
 			$results = $this->SummaryOrder->query($sql);
 			
@@ -156,16 +156,15 @@ class SummaryOrdersController extends AppController {
 		/*
 		 * dati Order
 		 */
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Order.id' => (int)$order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => (int)$this->user->organization['Organization']['id'], 'Order.id' => (int)$order_id];
 		$options['recursive'] = -1;
 		$orderResults = $Order->find('first', $options);
 
-		$summaryOrdersResults = array();
-		$summaryOrderTrasportResults = array();
-		$summaryOrderCostMoreResults = array();
-		$summaryOrderCostLessResults = array();
+		$summaryOrdersResults = [];
+		$summaryOrderTrasportResults = [];
+		$summaryOrderCostMoreResults = [];
+		$summaryOrderCostLessResults = [];
 		
 		if($orderResults['Order']['hasTrasport']=='Y') {
 			App::import('Model', 'SummaryOrderTrasport');
@@ -190,11 +189,9 @@ class SummaryOrdersController extends AppController {
 		$SummaryOrder = new SummaryOrder;
 
 		$summaryOrdersResults = $SummaryOrder->select_to_order($this->user, $order_id);
-		/*
-		echo "<pre>";
-		print_r($summaryOrdersResults);
-		echo "</pre>";
-		*/
+		
+		self::d($summaryOrdersResults,false);
+		
 		$this->set(compact('results', 'orderResults', 'summaryOrdersResults', 'summaryOrderTrasportResults', 'summaryOrderCostMoreResults', 'summaryOrderCostLessResults'));		
 	
 		$this->layout = 'ajax';	
@@ -203,6 +200,8 @@ class SummaryOrdersController extends AppController {
 	/*
 	 * $key = SummaryOrder_order_id-SummaryOrder_delivery_id-SummaryOrder_user_id
 	 * 	ricalcola i dati aggregati (SummaryOrder) di uno user per un dato ordine 
+	 *
+	 * voce di menu Referenti => Ordini => "Controllo dati aggregati sugli ordini" non + attiva
 	 */
 	public function admin_ajax_summary_orders_ricalcola($key) {
   		
@@ -217,12 +216,15 @@ class SummaryOrdersController extends AppController {
 
 		list($order_id, $delivery_id, $user_id) = explode('-', $key);
 		
+		/*
+		 * ricalcolo SummaryOrders se esiste, NON + utilizzato, function vuota
+		 */		 
 		$this->SummaryOrder->ricalcolaPerSingoloUtente($this->user, $order_id, $user_id, $debug);
 						
 		/*
 		 * rileggo il nuovo importo aggregato
 		 */
-		$optinos = array();
+		$optinos = [];
 		$options['conditions'] = array('SummaryOrder.organization_id' => $this->user->organization['Organization']['id'],
 										'SummaryOrder.order_id' => $order_id,
 										'SummaryOrder.delivery_id' => $delivery_id,
@@ -241,156 +243,5 @@ class SummaryOrdersController extends AppController {
 	    				
 		$this->layout = 'ajax';	
 		$this->render('/Layouts/ajax');			
-	}
-	
-	/*
-	 * da Referente Carts::managementCartsGroupByUsers  (1 solo ordine)
-	 * 		Gestisci gli acquisti dell'ordine aggregati per utente
-	 * da Tesoriere::ordersInProcessingSummaryOrders  (1 o + ordini)
-	 * 		Gestione degli ordini in elaborazione
-	*/
-	public function admin_delete($delivery_id, $order_ids, $id = null) {
-
-		if($id==null) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		
-		/*
-		 * delete
-		 */
-		$this->SummaryOrder->id = $id;
-		if (!$this->SummaryOrder->exists($this->user->organization['Organization']['id'])) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		if (!$this->SummaryOrder->delete())
-			$this->Session->setFlash(__('Summary order was not deleted'));
-		else
-			$this->Session->setFlash(__('Delete Summary order'));
- 
-		$this->__populate_to_view($this->delivery_id,$order_ids);
-		
-		$this->layout = 'ajax';
-		$this->render('/AjaxGasCodes/admin_box_summary_orders');
-	}
-
-	/*
-	 * da Referente Carts::managementCartsGroupByUsers  (1 solo ordine)
-	* 		Gestisci gli acquisti dell'ordine aggregati per utente
-	* da Tesoriere::ordersInProcessingSummaryOrders  (1 o + ordini)
-	* 		Gestione degli ordini in elaborazione
-	* 
-	*  $delivery_id, $order_ids per ripolorare la pagina con chiamata ajxa
-	*  $order_id_to_add, $user_id, $importo campi per il db.SummaryOrder
-	*/
-	public function admin_add($delivery_id, $order_ids, $order_id_to_add, $user_id, $importo) {
-	
-		if($order_id_to_add==null || $user_id==null || $importo==null) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		
-		/*
-		 * ctrl se non esiste gia' un occorrenza in SummaryOrder
-		 */
-		$conditions = array('SummaryOrder.organization_id' => (int)$this->user->organization['Organization']['id'],
-							'SummaryOrder.order_id' => $order_id_to_add,
-							'SummaryOrder.user_id'=> $user_id);
-		$ctrlResults = $this->SummaryOrder->find('first',array('conditions'=> $conditions,'recursive'=>0));
-		if(!empty($ctrlResults))
-			$this->Session->setFlash(__('The summary order just exist'));
-		else {
-			/*
-			 * add
-			*/
-			$results['SummaryOrder']['organization_id'] = $this->user->organization['Organization']['id'];
-			$results['SummaryOrder']['order_id'] = $order_id_to_add;
-			$results['SummaryOrder']['user_id'] = $user_id;
-			$results['SummaryOrder']['importo'] = $importo;
-			$results['SummaryOrder']['importo_pagato'] = '0.00';
-			$results['SummaryOrder']['modalita'] = 'DEFINED';
-			
-			$this->SummaryOrder->create();
-			if ($this->SummaryOrder->save($results)) {
-				$this->Session->setFlash(__('The summary order has been saved'));
-			} else {
-				$this->Session->setFlash(__('The summary order could not be saved. Please, try again.'));
-			}
-		}
-				
-		$this->__populate_to_view($this->delivery_id,$order_ids);
-		
-		// nascondo il div summary-orders-options perche' se no ho troppi box-message 
-		$this->set('hide_summary_orders_options',true);
-		
-		$this->layout = 'ajax';
-		$this->render('/AjaxGasCodes/admin_box_summary_orders');
-	}
-	
-	public function admin_setImporto($row_id, $id, $importo=0) {
-		if($row_id==null || $id==null) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-	
-		$esito = false;
-	
-		$this->SummaryOrder->id = $id;
-		if (!$this->SummaryOrder->exists($this->user->organization['Organization']['id'])) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-	
-		$data['SummaryOrder']['importo'] = $this->importoToDatabase($importo);
-		if ($this->SummaryOrder->save($data))
-			$esito = true;
-		else
-			$esito = false;
-	
-		if ($esito)
-			$content_for_layout = '<script type="text/javascript">managementCart(\''.$row_id.'\',\'OKIMPORTO\','.$id.',null);</script>';
-		else
-			$content_for_layout = '<script type="text/javascript">managementCart(\''.$row_id.'\',\'NO\','.$id.',null);</script>';
-			
-		$this->set('content_for_layout',$content_for_layout);
-	
-		$this->layout = 'ajax';
-		$this->render('/Layouts/ajax');
-	}
-	
-	/*
-	 *  stesso codice di Ajax::admin_box_summary_orders 
-	 */
-	private function __populate_to_view($delivery_id,$order_ids) {
-		/*
-		 * ricarico il div con l'elenco dei summaryOrders
-		*/
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
-	
-		$conditions = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
-												'Delivery.sys'=> 'N',
-												'Delivery.id' => (int)$this->delivery_id),
-							'Order' => array('Order.isVisibleBackOffice' => 'Y',
-											 'Order.id IN ('.$order_ids.')'),
-							'Cart' => array('Cart.deleteToReferent' => 'N'));
-	
-		$orderBy = array('User' => 'User.name');
-	
-		$options = array('orders' => false, 'storerooms' => false, 'summaryOrders' => true,
-				'articlesOrdersInOrder' => true,
-				'suppliers'=>true, 'referents'=>true);
-	
-		$results = $Delivery->getDataWithoutTabs($this->user, $conditions, $options, $orderBy);
-	
-		$this->set('results', $results);
-	
-		App::import('Model', 'User');
-		$User = new User;
-	
-		$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
-		$users = $User->getUsersList($this->user, $conditions);
-		$this->set('users',$users);
 	}
 }

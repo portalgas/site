@@ -155,7 +155,7 @@ class ProdDeliveriesArticlesController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => $this->user->organization['Organization']['id'],
 									   'ProdDelivery.id' => $prod_delivery_id);
 		$options['recursive'] = 0;
@@ -180,7 +180,7 @@ class ProdDeliveriesArticlesController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->ProdDeliveriesArticle->save($this->request->data)) {
 				$this->Session->setFlash(__('The prod deliveries article has been saved.'));
-				return $this->myRedirect(array('action' => 'index'));
+				return $this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The prod deliveries article could not be saved. Please, try again.'));
 			}
@@ -204,5 +204,5 @@ class ProdDeliveriesArticlesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The prod deliveries article could not be deleted. Please, try again.'));
 		}
-		return $this->myRedirect(array('action' => 'index'));
+		return $this->myRedirect(['action' => 'index']);
 	}}

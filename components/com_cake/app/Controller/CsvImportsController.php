@@ -1,9 +1,8 @@
 ﻿<?php
 class CsvImportsController extends AppController {
 
-	private $struttura_file = array();
-	private $array_um = array();
-	private $array_y_n = array('Y','N');
+	private $array_um = [];
+	private $array_y_n = ['Y','N'];
 	
 	private $esito_value = '';
 	private $esito_row = true;
@@ -13,10 +12,7 @@ class CsvImportsController extends AppController {
 	
 		$this->array_um = ClassRegistry::init('Article')->enumOptions('um');
 		$this->set('array_um', $this->array_um);
-		$this->set('array_y_n', $this->array_y_n);
-
-		$this->struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, false);
-		$this->set('struttura_file',$this->struttura_file);	}
+		$this->set('array_y_n', $this->array_y_n);	}
 
 	public function admin_users() {
 		
@@ -35,8 +31,10 @@ class CsvImportsController extends AppController {
 		else
 			$password_default = '';
 		
-		$this->set('deliminatore', $deliminatore);	
-		$this->set('password_default', $password_default);
+		$this->set(compact('deliminatore', 'password_default'));
+		
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, 'COMPLETE');
+		$this->set(compact('struttura_file'));
 	}
 	
 	public function admin_articles() {
@@ -53,11 +51,11 @@ class CsvImportsController extends AppController {
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										   'SuppliersOrganization.stato' => 'Y');
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										   'SuppliersOrganization.stato' => 'Y'];
 			$options['recursive'] = -1;
-			$options['order'] = array('SuppliersOrganization.name');
+			$options['order'] = ['SuppliersOrganization.name'];
 			$results = $SuppliersOrganization->find('list', $options);
 			$this->set('ACLsuppliersOrganization',$results);
 		}
@@ -71,7 +69,7 @@ class CsvImportsController extends AppController {
 			App::import('Model', 'Article');
 			$Article = new Article;
 			
-			$conditions = array('organization_id' => $this->user->organization['Organization']['id']);
+			$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
 			$categories = $Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
 			$this->set(compact('categories'));
 		}
@@ -94,25 +92,26 @@ class CsvImportsController extends AppController {
 		else
 			$deliminatore = Configure::read('CsvImportDelimiterDefault');
 		
-		$this->set('supplier_organization_id',$supplier_organization_id);
-		$this->set('category_article_id',$category_article_id);
-		$this->set('deliminatore',$deliminatore);
+		$versions = ['COMPLETE' => 'Completa', 'SIMPLE' => 'Semplificata'];
+		$version = 'SIMPLE';
+		$this->set(compact('versions', 'version'));
+		
+		$this->set(compact('supplier_organization_id', 'category_article_id', 'deliminatore'));
+		
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, 'COMPLETE');
+		$this->set(compact('struttura_file'));		
 	}
 	
 	public function admin_articles_prepare() {
 	
 		$debug = false;
 		$msg = "";
-		$results = array();
-
+		$results = [];
+		
 		if ($this->request->is('post') || $this->request->is('put')) {
-			
-			if($debug)  {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
-			
+
+			self::d($this->request->data, $debug);
+		
 			/*
 			 * campi filtro
 			*/
@@ -123,10 +122,9 @@ class CsvImportsController extends AppController {
 				$category_article_id = 0;
 			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
 			$file1 = $this->request->data['Document']['file1'];
+			$version = $this->request->data['CsvImport']['version'];
 			
-			$this->set('supplier_organization_id', $supplier_organization_id);
-			$this->set('category_article_id', $category_article_id);
-			$this->set('deliminatore', $deliminatore);
+			$this->set(compact('supplier_organization_id', 'category_article_id', 'deliminatore', 'version'));
 	
 			if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y') {
 				if(empty($supplier_organization_id) || empty($category_article_id) || empty($deliminatore) || $file1['size']==0) {
@@ -140,8 +138,11 @@ class CsvImportsController extends AppController {
 					$this->myRedirect(Configure::read('routes_msg_exclamation'));
 				}
 			}
-			
-			$result = $this->__readFileSend($file1, $deliminatore, false, $supplier_organization_id, $debug);
+	
+			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+			$this->set(compact('struttura_file'));
+		
+			$result = $this->_readFileSend($file1, $deliminatore, $version, false, $supplier_organization_id, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 
@@ -156,10 +157,9 @@ class CsvImportsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));			
 		}	
 
-
 		$this->set('totRows',$totRows);
 		if($totRows>Configure::read('CsvImportRowsMaxArticles')) 
-			$this->set('results',array());
+			$this->set('results',[]);
 		else
 			$this->set('results',$results);
 	}	
@@ -168,25 +168,21 @@ class CsvImportsController extends AppController {
 	
 		$debug = false;
 		$msg = "";
-		$results = array();
+		$results = [];
 	
 		if ($this->request->is('post') || $this->request->is('put')) {
 				
-			if($debug)  {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			self::d($this->request->data, $debug);
 				
 			/*
 			 * campi filtro
 			*/
 			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
 			$password_default = $this->request->data['CsvImport']['password_default'];	
-
-			$this->set('deliminatore', $deliminatore);
-			$this->set('password_default', $password_default);
+			$version = 'COMPLETE';
 			
+			$this->set(compact('deliminatore', 'password_default', 'version'));
+						
 			$file1 = $this->request->data['Document']['file1'];
 
 			if(empty($password_default) || empty($deliminatore) || $file1['size']==0) {
@@ -194,7 +190,10 @@ class CsvImportsController extends AppController {
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
 			
-			$result = $this->__readFileSend($file1, $deliminatore, false, 0, $debug);
+			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+			$this->set(compact('struttura_file'));
+					
+			$result = $this->_readFileSend($file1, $deliminatore, 'COMPLETE', false, 0, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 			
@@ -211,7 +210,7 @@ class CsvImportsController extends AppController {
 
 		$this->set('totRows',$totRows);
 		if($totRows>Configure::read('CsvImportRowsMaxUsers'))
-			$this->set('results',array());
+			$this->set('results',[]);
 		else
 			$this->set('results',$results);
 	}
@@ -223,12 +222,8 @@ class CsvImportsController extends AppController {
 	
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			/*if($debug)  {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}*/
-
+			self::d($this->request->data, $debug);
+			
 			/*
 			 * campi filtro
 			*/
@@ -263,12 +258,13 @@ class CsvImportsController extends AppController {
 			unset($this->request->data['CsvImport']['supplier_organization_id']);
 			unset($this->request->data['CsvImport']['category_article_id']);
 			unset($this->request->data['CsvImport']['deliminatore']);
+			unset($this->request->data['CsvImport']['version']);
 			
 			App::import('Model', 'Article');
 			
 			foreach ($this->request->data['CsvImport'] as $result) {
 				
-				$rows = array();
+				$rows = [];
 				
 				/*
 				 * escludo i campi hidden
@@ -292,22 +288,50 @@ class CsvImportsController extends AppController {
 					$rows['Article']['qta'] = $result['qta'];
 					$rows['Article']['um'] = $result['um'];
 					$rows['Article']['um_riferimento'] = $result['um_riferimento'];
-					$rows['Article']['pezzi_confezione'] = $result['pezzi_confezione'];
-					$rows['Article']['qta_minima'] = $result['qta_minima'];
-					$rows['Article']['qta_massima'] = $result['qta_massima'];
-					$rows['Article']['qta_minima_order'] = $result['qta_minima_order'];
-					$rows['Article']['qta_massima_order'] = $result['qta_massima_order'];
-					$rows['Article']['qta_multipli'] = $result['qta_multipli'];
+					/*
+					 * campi non presenti nella version SIMPLE
+					 */
+					if(!isset($result['pezzi_confezione']))
+						$rows['Article']['pezzi_confezione'] = 1;
+					else 
+						$rows['Article']['pezzi_confezione'] = $result['pezzi_confezione'];
+					
+					if(!isset($result['qta_minima']))
+						$rows['Article']['qta_minima'] = 1;
+					else 					
+						$rows['Article']['qta_minima'] = $result['qta_minima'];
+					
+					if(!isset($result['qta_massima']))
+						$rows['Article']['qta_massima'] = 0;
+					else 				
+						$rows['Article']['qta_massima'] = $result['qta_massima'];
+					
+					if(!isset($result['qta_minima_order']))
+						$rows['Article']['qta_minima_order'] = 0;
+					else 				
+						$rows['Article']['qta_minima_order'] = $result['qta_minima_order'];
+					
+					if(!isset($result['qta_massima_order']))
+						$rows['Article']['qta_massima_order'] = 0;
+					else 				
+						$rows['Article']['qta_massima_order'] = $result['qta_massima_order'];
+					
+					if(!isset($result['qta_multipli']))
+						$rows['Article']['qta_multipli'] = 1;
+					else 				
+						$rows['Article']['qta_multipli'] = $result['qta_multipli'];
+					
 					if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N') 
 						$rows['Article']['alert_to_qta'] = 0;
-					$rows['Article']['bio'] = $result['bio'];
-					$rows['Article']['stato'] = 'Y';
 					
-					if($debug)  {
-						echo "<pre>";
-						print_r($rows);
-						echo "</pre>";
-					}
+					if(!isset($result['bio']))
+						$rows['Article']['bio'] = 'N';
+					else
+						$rows['Article']['bio'] = $result['bio'];
+					$rows['Article']['stato'] = 'Y';
+			
+					self::d($rows, $debug);			
+					
 					/*
 					 * richiamo la validazione
 					*/
@@ -338,7 +362,7 @@ class CsvImportsController extends AppController {
 								$sql = "INSERT INTO ".Configure::read('DB.prefix')."articles_articles_types
 											(organization_id,article_id,article_type_id)
 											VALUES (".$this->user->organization['Organization']['id'].",".$article_id.",1)";  // BIO
-								if($debug)  echo '<br />'.$sql;
+								self::d($sql, $debug);
 								$executeInsert = $Article->query($sql);	
 							} // end if($rows['Article']['bio']=='Y') 		 			
 						} 
@@ -358,13 +382,10 @@ class CsvImportsController extends AppController {
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_index&FilterArticleSupplierId='.$supplier_organization_id.'&FilterArticleCategoryArticleId='.$category_article_id.'&FilterArticleStato=Y';
 			}
 			else 
-				$url = array('action' => 'articles');
+				$url = ['action' => 'articles'];
 
-			if($debug) {
-				echo $msg;
-				echo print_r($url);
-				exit;
-			}
+			self::d($msg, $debug);
+			self::d($url, $debug);
 			
 			$this->Session->setFlash($msg);
 			$this->myRedirect($url);
@@ -384,11 +405,7 @@ class CsvImportsController extends AppController {
 	
 		if ($this->request->is('post') || $this->request->is('put')) {
 	
-			if($debug)  {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			self::d($this->request->data, $debug);
 			
 			if(empty($this->request->data['CsvImport']['password_default'])) {
 				$this->Session->setFlash(__('msg_error_params'));
@@ -398,14 +415,14 @@ class CsvImportsController extends AppController {
 			/*
 			 * parameters
 			 */
-			$parameters = array();
+			$parameters = [];
 			$parameters += array('password_default' => $this->request->data['CsvImport']['password_default']);
 			if($this->user->organization['Organization']['hasArticlesOrder']=='Y')
 				$parameters += array('hasArticlesOrder' => 'Y');
 			else
 				$parameters += array('hasArticlesOrder' => 'N');
 			
-			$userTable = JTable::getInstance('User', 'JTable', $config = array());
+			$userTable = JTable::getInstance('User', 'JTable', $config = []);
 			$params = JComponentHelper::getParams('com_users');
 				
 			jimport('joomla.user.helper');
@@ -417,7 +434,7 @@ class CsvImportsController extends AppController {
 				 */
 				if(isset($result['name'])) {
 					$continue = false;
-					$data = array();
+					$data = [];
 					
 					if($debug) echo '<br />'.($numResult+1).'  utente '.$result['name'].' '.$result['username'].' '.$result['email'];
 					
@@ -447,12 +464,6 @@ class CsvImportsController extends AppController {
 						
 					$data['activation'] = null;
 					$data['block'] = 0;
-
-					/*
-					echo "<pre>";
-					print_r($data);
-					echo "</pre>";
-					*/
 					
 					// Inserting Data into Users Table
 					if (!$userTable->bind($data)) {
@@ -465,7 +476,7 @@ class CsvImportsController extends AppController {
 					// Check the data.
 					if ($continue) {
 						if(!$userTable->check()) {
-							//if(!$this->__check($db, $userTable, $user)) {
+							//if(!$this->_check($db, $userTable, $user)) {
 							if($debug) echo '<span style="color:yellow;background-color: #000000;">ALERT</span> userTable->check '.$data['name'].' (forse user gia\' esistente)';
 							$continue = false;
 						}
@@ -492,14 +503,14 @@ class CsvImportsController extends AppController {
 						/*
 						 * aggiungo gruppo joomla __user_usergroup_map GasPages[nome organizazione]
 						*/
-						$continue = $this->__user_set_j_group_registred($user, $user_id, $debug);
+						$continue = $this->_user_set_j_group_registred($user, $user_id, $debug);
 					}
 					
 					/*
 					 * user_profiles
 					*/
 					if($continue) 
-						$this->__user_set_profile($user, $user_id, $result, $parameters, $debug);
+						$this->_user_set_profile($user, $user_id, $result, $parameters, $debug);
 					
 				} // if(isset($result['name'])) 
 			} // end foreach ($this->request->data['CsvImport'] as $result) 
@@ -516,7 +527,7 @@ class CsvImportsController extends AppController {
 	/*
 	 * codice uguale in DatabaseDate::executeMigrationEg3Users()
 	*/
-	private function __user_set_j_group_registred($user, $user_id, $debug=false) {
+	private function _user_set_j_group_registred($user, $user_id, $debug=false) {
 	
 		$result = false;
 	
@@ -529,7 +540,7 @@ class CsvImportsController extends AppController {
 					".Configure::read('DB.prefix')."organizations Organization
 				WHERE 
 					id = ".(int)$this->user->organization['Organization']['id'];
-		//echo '<br />'.$sql;
+		self::d($sql, false);
 		$results = $User->query($sql);
 		if(!empty($results) && !empty($results[0]['Organization']['j_group_registred'])) {
 			$User->joomlaBatchUser($results[0]['Organization']['j_group_registred'], $user_id, 'add');
@@ -551,23 +562,23 @@ class CsvImportsController extends AppController {
 	* Codice preso da Eg3.descrizione (054 Rossi Mario)
 	* Dati anagrafici
 	*/
-	private function __user_set_profile($user, $user_id, $result, $parameters, $debug=false) {
+	private function _user_set_profile($user, $user_id, $result, $parameters, $debug=false) {
 		
 		$db = JFactory::getDbo();
 	
-		$data = array();
+		$data = [];
 		$data['id'] = $user_id;
-		$data['profile']['address'] = $this->__pulisciDaValueNull($result['address']);
-		$data['profile']['city'] =$this->__pulisciDaValueNull($result['city']);
-		$data['profile']['postal_code'] = $this->__pulisciDaValueNull($result['postal_code']);
-		$data['profile']['region'] = $this->__pulisciDaValueNull($result['region']);
+		$data['profile']['address'] = $this->_pulisciDaValueNull($result['address']);
+		$data['profile']['city'] =$this->_pulisciDaValueNull($result['city']);
+		$data['profile']['postal_code'] = $this->_pulisciDaValueNull($result['postal_code']);
+		$data['profile']['region'] = $this->_pulisciDaValueNull($result['region']);
 		if(!isset($result['country']) || empty($result['country']))
 			$this->dataProfile['country'] = 'Italia';
 		else		
-		$data['profile']['country'] = $this->__pulisciDaValueNull($result['country']);
-		$data['profile']['phone'] = $this->__pulisciDaValueNull($result['phone']);
-		$data['profile']['phone2'] = $this->__pulisciDaValueNull($result['phone2']);
-		$data['profile']['codice'] = $this->__pulisciDaValueNull($result['codice']);
+		$data['profile']['country'] = $this->_pulisciDaValueNull($result['country']);
+		$data['profile']['phone'] = $this->_pulisciDaValueNull($result['phone']);
+		$data['profile']['phone2'] = $this->_pulisciDaValueNull($result['phone2']);
+		$data['profile']['codice'] = $this->_pulisciDaValueNull($result['codice']);
 			
 		/*
 		 * Gestisci gli articoli associati all'ordine hasArticlesOrder: Y/N
@@ -578,7 +589,7 @@ class CsvImportsController extends AppController {
 				" AND profile_key LIKE 'profile.%'");
 		if (!$db->query())  echo 'error DELETE __user_profiles<br />';
 			
-		$tuples = array();
+		$tuples = [];
 		$order	= 1;
 		
 		foreach ($data['profile'] as $k => $v) 	{
@@ -599,7 +610,7 @@ class CsvImportsController extends AppController {
 	/*
 	 * ctrl l'estensione del file CSV uplodato
 	 */
-	private function __ctrl_file_exstension($file1, $debug=false) {
+	private function _ctrl_file_exstension($file1, $debug=false) {
 	
 		$esito = true;
 	
@@ -614,22 +625,20 @@ class CsvImportsController extends AppController {
 		$type = finfo_file ($finfo, $file1['tmp_name']);
 		finfo_close($finfo);
 	
+		self::d(["ext ".$ext, Configure::read('App.web.csv.upload.extension')], $debug);
+		self::d(["type ".$type, Configure::read('ContentType.csv')], $debug);
+
 		if(!in_array($ext, Configure::read('App.web.csv.upload.extension')) || !in_array($type, Configure::read('ContentType.csv'))) {
 			$esito = "Estensione .$ext non valida: si possono caricare file con l'estensione: ";
 			foreach ( Configure::read('App.web.csv.upload.extension') as $estensione)
 				$esito .= '.'.$estensione.'&nbsp;';
 		}
-	
-		if($debug) {
-			echo "<br />ext ".$ext;
-			echo "<br />type ".$type;
-		}
-	
+		
 		return $esito;
 	}
 	
 
-	private function __pulisciDaValueNull($value) {
+	private function _pulisciDaValueNull($value) {
 		
 		if(!isset($value) || $value==null) $value = "";
 		
@@ -639,7 +648,7 @@ class CsvImportsController extends AppController {
 	/*
 	 * preso da libraries/joomla/database/table/user.php
 	*/
-	private function __check($db, $userTable, $user)
+	private function _check($db, $userTable, $user)
 	{
 		// Validate user information
 		if (trim($userTable->name) == '')
@@ -749,19 +758,25 @@ class CsvImportsController extends AppController {
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										   'SuppliersOrganization.stato' => 'Y');
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										   'SuppliersOrganization.stato' => 'Y'];
 			$options['recursive'] = -1;
-			$options['order'] = array('SuppliersOrganization.name');
+			$options['order'] = ['SuppliersOrganization.name'];
 			$results = $SuppliersOrganization->find('list', $options);
 			$this->set('ACLsuppliersOrganization',$results);
 		}
 		else 
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
 		
-		$typeDocOptions = array('CSV' => 'Csv');
-		$this->set('typeDocOptions', $typeDocOptions);		
+		$typeDocOptions = ['CSV' => 'Csv'];
+		$this->set('typeDocOptions', $typeDocOptions);	
+
+		$version = 'COMPLETE';
+		$this->set(compact('version'));
+		
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+		$this->set(compact('struttura_file'));		
 	}
 	
 	public function admin_articles_export($supplier_organization_id, $doc_options='export_file_csv', $doc_formato = 'CSV') {
@@ -779,9 +794,8 @@ class CsvImportsController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
-        $options = array();
-        $options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
-                                        'Article.supplier_organization_id' => $supplier_organization_id);
+        $options = [];
+        $options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 'Article.supplier_organization_id' => $supplier_organization_id];
 
         /*
          * se lo user e' referente del produttore ho anche gli articoli a stato N
@@ -792,7 +806,7 @@ class CsvImportsController extends AppController {
             $Order = new Order;
 
             if (!$this->isSuperReferente() && !$Order->aclReferenteSupplierOrganization($this->user, $supplier_organization_id)) {
-                $options['conditions'] += array('Article.stato' => 'Y');
+                $options['conditions'] += ['Article.stato' => 'Y'];
                 $isReferenteSupplierOrganization = false;
             } else
                 $isReferenteSupplierOrganization = true;
@@ -801,18 +815,21 @@ class CsvImportsController extends AppController {
         $this->set('isReferenteSupplierOrganization', $isReferenteSupplierOrganization);
 
         $results = $Article->getArticlesDataAnagr($this->user, $options);
-		/*
-		echo "<pre>";
-		print_r($options);
-		print_r($results);
-		echo "<pre>";
-		*/
+		
+		self::d([$options, $results], false);
+		
         $this->set('results', $results);
 
-        $params = array('supplier_organization_id' => $supplier_organization_id);
+        $params = ['supplier_organization_id' => $supplier_organization_id];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'articles_supplier_organization', $params, null));
         $this->set('organization', $this->user->organization);
 
+		$version = 'COMPLETE';
+		$this->set(compact('version'));
+		
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+		$this->set(compact('struttura_file'));	
+		
         switch ($doc_formato) {
             case 'CSV':
                 $this->layout = 'csv';
@@ -835,16 +852,22 @@ class CsvImportsController extends AppController {
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										   'SuppliersOrganization.stato' => 'Y');
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										   'SuppliersOrganization.stato' => 'Y'];
 			$options['recursive'] = -1;
 			$options['order'] = array('SuppliersOrganization.name');
 			$results = $SuppliersOrganization->find('list', $options);
 			$this->set('ACLsuppliersOrganization',$results);
 		}
 		else 
-			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());		
+			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
+
+		$version = 'COMPLETE';
+		$this->set(compact('version'));
+			
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+		$this->set(compact('struttura_file'));		
 	}	
 	
 	public function admin_articles_prepare_import() {
@@ -859,6 +882,7 @@ class CsvImportsController extends AppController {
 		$supplier_organization_id = $this->request->data['CsvImport']['supplier_organization_id'];
 		$file1 = $this->request->data['Document']['file1'];
 		$deliminatore = ',';
+		$version = $this->request->data['CsvImport']['version'];
 		
 		if(empty($supplier_organization_id) || $file1['size']==0) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -867,7 +891,7 @@ class CsvImportsController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {	
 		
-			$result = $this->__readFileSend($file1, $deliminatore, true, $supplier_organization_id, $debug);
+			$result = $this->_readFileSend($file1, $deliminatore, $version, true, $supplier_organization_id, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 					
@@ -884,7 +908,7 @@ class CsvImportsController extends AppController {
 
 		$this->set('totRows',$totRows);
 		if($totRows>Configure::read('CsvImportRowsMaxArticles'))
-			$this->set('results',array());
+			$this->set('results',[]);
 		else
 			$this->set('results',$results);
 	}
@@ -896,11 +920,7 @@ class CsvImportsController extends AppController {
 	
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			/*if($debug)  {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}*/
+			self::d($this->request->data, $debug);
 
 			/*
 			 * campi filtro
@@ -925,7 +945,7 @@ class CsvImportsController extends AppController {
 			
 			foreach ($this->request->data['CsvImport'] as $result) {
 				
-				$rows = array();
+				$rows = [];
 				
 				/*
 				 * escludo i campi hidden
@@ -937,20 +957,13 @@ class CsvImportsController extends AppController {
 					/*
 					 * ricerco per evitare che modifiche article_id diversi
 					 */	
-					$options = array(); 
+					$options = []; 
 					$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
 												   'Article.id' => $result['id'],
 												   'Article.supplier_organization_id' => $supplier_organization_id);
 					$options['recursive'] = -1;
 					$articleResults = $Article->find('first', $options);
-					/*
-					if($debug)  {
-						echo "<pre>articleResults ";
-						print_r($options);
-						print_r($articleResults);
-						echo "</pre>";
-					}		
-					*/
+
 					if(empty($articleResults)) {
 						$msg .= "Articolo con id ".$result['id']." non trovato!<br />";
 					}
@@ -979,12 +992,9 @@ class CsvImportsController extends AppController {
 						$rows['Article']['qta_multipli'] = $result['qta_multipli'];
 						if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N') 
 							$rows['Article']['alert_to_qta'] = 0;
+
+						self::d($rows, $debug);
 						
-						if($debug)  {
-							echo "<pre>";
-							print_r($rows);
-							echo "</pre>";
-						}
 						/*
 						 * richiamo la validazione
 						*/
@@ -1024,13 +1034,10 @@ class CsvImportsController extends AppController {
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_index&FilterArticleSupplierId='.$supplier_organization_id;
 			}
 			else 
-				$url = array('action' => 'articles_import');
+				$url = ['action' => 'articles_import'];
 
-			if($debug) {
-				echo $msg;
-				echo print_r($url);
-				exit;
-			}
+			self::d($msg, $debug);
+			self::d($url, $debug);			
 			
 			$this->Session->setFlash($msg);
 			$this->myRedirect($url);
@@ -1054,23 +1061,28 @@ class CsvImportsController extends AppController {
 	* UPLOAD_ERR_NO_FILE (4): Nessun file e' stato inviato;
 	* UPLOAD_ERR_NO_TMP_DIR (6): Mancanza della cartella temporanea;
 	*/	
-	private function __readFileSend($file, $deliminatore, $first_row_header=false, $supplier_organization_id=0, $debug=false) {
-	
-		$results = array();
+	private function _readFileSend($file, $deliminatore, $version='COMPLETE', $first_row_header=false, $supplier_organization_id=0, $debug=false) {
+
+		setlocale(LC_ALL, 'it_IT.utf8');
+
+		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version, $debug);
+		self::d($struttura_file);
+		
+		$results = [];
 		if($file['error'] == UPLOAD_ERR_OK && is_uploaded_file($file['tmp_name'])) {
 
-			$esito = $this->__ctrl_file_exstension($file, $debug);
+			$esito = $this->_ctrl_file_exstension($file, $debug);
 				
 			if($esito===true) {
 				/*
 				 * leggo il file uplodato e creo obj
 				*/
-				$totRows = 0;
+				$totRows = 0;	
 				if (($handle = fopen($file['tmp_name'], "r")) !== false) {
 						
 					$i=0;
 					while (($data = fgetcsv($handle, 1000, $deliminatore)) !== false) {
-
+						
 						/*
 						 * ultima riga vuota
 						 */
@@ -1086,16 +1098,10 @@ class CsvImportsController extends AppController {
 						else {							
 							$num = count($data); // totale colonne del file csv
 						
-							if($num > (count($this->struttura_file)+1)){
-								$esito = "Il file csv contiene troppo colonne: sono ".$num." e devono essere ".count($this->struttura_file);
+							if($num > (count($struttura_file)+1)){
+								$esito = "Il file csv contiene troppo colonne alla riga ".($i+1).": sono ".$num." e devono essere ".count($struttura_file);
 								break;
 							}
-										
-							/*  riga del file
-							echo "<pre>\n";
-							print_r($data);
-							echo "</pre>";
-							*/
 							
 							/*
 							 * tutta la riga e' nella prima colonna => separatore errato
@@ -1108,12 +1114,12 @@ class CsvImportsController extends AppController {
 							$results[$totRows]['ESITO'] = 'OK';
 							for ($c=0; $c < $num; $c++) {	
 								
-								$value = $this->__ctrl_data_validation($c, $data[$c], $supplier_organization_id, $debug);
+								$value = $this->_ctrl_data_validation($c, $struttura_file, $data[$c], $version, $supplier_organization_id, $debug);
 																
-								$results[$totRows]['Row'][$c]['LABEL'] = $this->struttura_file[$c]['LABEL'];
-								$results[$totRows]['Row'][$c]['INPUT_NAME'] = $this->struttura_file[$c]['INPUT_NAME'];
-								$results[$totRows]['Row'][$c]['INPUT_TYPE'] = $this->struttura_file[$c]['INPUT_TYPE'];
-								$results[$totRows]['Row'][$c]['REQUEST'] = $this->struttura_file[$c]['REQUEST'];
+								$results[$totRows]['Row'][$c]['LABEL'] = $struttura_file[$c]['LABEL'];
+								$results[$totRows]['Row'][$c]['INPUT_NAME'] = $struttura_file[$c]['INPUT_NAME'];
+								$results[$totRows]['Row'][$c]['INPUT_TYPE'] = $struttura_file[$c]['INPUT_TYPE'];
+								$results[$totRows]['Row'][$c]['REQUEST'] = $struttura_file[$c]['REQUEST'];
 								$results[$totRows]['Row'][$c]['VALUE'] = $value;
 								$results[$totRows]['Row'][$c]['ESITO'] = $this->esito_value;
 								
@@ -1138,14 +1144,8 @@ class CsvImportsController extends AppController {
 		else
 			$esito = $file['error'];
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";
-			echo "<br />esito ".$esito;
-			exit;
-		}	
-
+		self::d($results, $debug);
+		
 		$result['esito'] = $esito;
 		$result['results'] = $results;
 		
@@ -1155,24 +1155,24 @@ class CsvImportsController extends AppController {
 	/*
 	 * verifica consisteneza dei dati
 	*/
-	private function __ctrl_data_validation($c, $value, $supplier_organization_id, $debug=false) {
+	private function _ctrl_data_validation($c, $struttura_file, $value, $version, $supplier_organization_id, $debug=false) {
 		
-		if($debug) echo '<br />CsvImportController::__ctrl_data_validation() '.$c.' - '.$this->struttura_file[$c]['INPUT_NAME'].': '.$value.' '.$this->struttura_file[$c]['INPUT_TYPE'];
+		self::d('CsvImportController::_ctrl_data_validation() '.$c.' - '.$struttura_file[$c]['INPUT_NAME'].': '.$value.' '.$struttura_file[$c]['INPUT_TYPE'], $debug);
 		
 		$value = trim($value);
 		
-		if($this->struttura_file[$c]['UPPERCASE']=='Y') $value = strtoupper($value);
+		if($struttura_file[$c]['UPPERCASE']=='Y') $value = strtoupper($value);
 
-		if($this->struttura_file[$c]['UCFIRST']=='Y') $value = ucfirst(strtolower($value));
+		if($struttura_file[$c]['UCWORDS']=='Y') $value = UCWORDS(strtolower($value));
 		
-		if($this->struttura_file[$c]['REQUEST']=='Y' && ($value=='' || !isset($value))) {
+		if($struttura_file[$c]['REQUEST']=='Y' && ($value=='' || !isset($value))) {
 			$this->esito_value = 'ERROR_EMPTY';
 			$this->esito_row = false;
 			
 			return $value;
 		}
 		
-		switch($this->struttura_file[$c]['INPUT_TYPE']) {
+		switch($struttura_file[$c]['INPUT_TYPE']) {
 			case "double":
 				/*
 				 * calcoli per verificare se e' float/double 1.00
@@ -1254,7 +1254,7 @@ class CsvImportsController extends AppController {
 				$value = intval($value);
 				$this->esito_row = true;
 				
-				if($this->struttura_file[$c]['INPUT_TYPE']=='int_max_zero') {
+				if($struttura_file[$c]['INPUT_TYPE']=='int_max_zero') {
 					if($value<=0) {
 						$this->esito_value = 'ERROR_NUM_MAX_ZERO';
 						$this->esito_row = false;					
@@ -1262,7 +1262,7 @@ class CsvImportsController extends AppController {
 				}
 
 				if($this->esito_row==true) {
-	 				if($this->struttura_file[$c]['INPUT_NAME']=='id') {			
+	 				if($struttura_file[$c]['INPUT_NAME']=='id') {			
 						/*
 						 * ctrl che l'articolo esiste per quel GAS e produttore
 						 * ricerco per evitare che modifiche article_id diversi
@@ -1271,7 +1271,7 @@ class CsvImportsController extends AppController {
 						App::import('Model', 'Article');
 						$Article = new Article;
 						
-						$options = array(); 
+						$options = []; 
 						$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
 													   'Article.id' => $value,
 													   'Article.supplier_organization_id' => $supplier_organization_id);
@@ -1300,7 +1300,7 @@ class CsvImportsController extends AppController {
 		if($this->esito_row)
 			$this->esito_value = 'OK';
 		
-		if($debug) echo ' => '.$value.' ESITO '.$this->esito_value;
+		self::d(' => '.$value.' ESITO '.$this->esito_value, $debug);
 		
 		return $value;
 	}	

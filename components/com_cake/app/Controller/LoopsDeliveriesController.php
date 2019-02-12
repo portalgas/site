@@ -7,7 +7,7 @@ class LoopsDeliveriesController extends AppController {
 		parent::beforeFilter();
 		
 		/* ctrl ACL */
-		if(!$this->isManagerDelivery()) {
+		if(!$this->isRoot() && !$this->isManagerDelivery()) {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
@@ -16,7 +16,7 @@ class LoopsDeliveriesController extends AppController {
 	
 	public function admin_index() {
 		
-		$options =  array();
+		$options =  [];
 		$options['conditions'] = array('LoopsDelivery.organization_id' => (int)$this->user->organization['Organization']['id']);
 		$options['order'] = array('LoopsDelivery.data_master ASC');
 		$options['recursive'] = 1;
@@ -31,6 +31,8 @@ class LoopsDeliveriesController extends AppController {
 		}
 		
 		$this->set('results', $results);
+		
+		$this->set('isRoot', $this->isRoot());
 	}
 		
 	public function admin_add() {
@@ -66,12 +68,8 @@ class LoopsDeliveriesController extends AppController {
 		
 		if ($this->request->is('post')) {
 			
-			if($debug) {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
-		
+			self::d($this->request->data,$debug);
+			
 			$data_copy = $this->LoopsDelivery->get_data_copy($data_master_db, $this->request->data, $debug);
 				
 			if(empty($data_copy)) {
@@ -125,7 +123,7 @@ class LoopsDeliveriesController extends AppController {
 	
 						$type = $this->request->data['LoopsDelivery']['type'];  /* WEEK MONTH */
 						 
-						$rules = array();
+						$rules = [];
 						$rules += array('type' => $type);
 						
 						switch ($type) {
@@ -155,7 +153,7 @@ class LoopsDeliveriesController extends AppController {
 							break;
 						}
 												
-						$data = array();
+						$data = [];
 						$data['LoopsDelivery']['organization_id'] = $this->user->organization['Organization']['id'];
 						$data['LoopsDelivery']['luogo'] = $this->request->data['LoopsDelivery']['luogo'];
 						$data['LoopsDelivery']['orario_da'] = $this->request->data['LoopsDelivery']['orario_da'];
@@ -170,16 +168,12 @@ class LoopsDeliveriesController extends AppController {
 						$data['LoopsDelivery']['type'] = $type;
 						$data['LoopsDelivery']['rules'] = json_encode($rules);
 						
-						if($debug) {
-							echo "<pre>";
-							print_r($data);
-							echo "</pre>";
-						}
+						self::d($data,$debug);
 						
 						$this->LoopsDelivery->create();
 						if ($this->LoopsDelivery->save($data)) {
 							$this->Session->setFlash(__('The loops delivery has been saved'));
-							$this->myRedirect(array('action' => 'index'));
+							$this->myRedirect(['action' => 'index']);
 						} else {
 							$this->Session->setFlash(__('The loops delivery could not be saved. Please, try again.'));
 						}	
@@ -213,6 +207,7 @@ class LoopsDeliveriesController extends AppController {
 	}
 
 	public function admin_edit($id = null) {
+	
 		$this->LoopsDelivery->id = $id;
 		if (!$this->LoopsDelivery->exists($this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -237,14 +232,14 @@ class LoopsDeliveriesController extends AppController {
 				
 			if ($this->LoopsDelivery->save($this->request->data)) {
 				$this->Session->setFlash(__('The loops delivery has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The loops delivery could not be saved. Please, try again.'));
 			}
 		} else {
-			$options = array();
-			$options['conditions'] = array('LoopsDelivery.organization_id' =>$this->user->organization['Organization']['id'],
-									        'LoopsDelivery.id' => $id);
+			$options = [];
+			$options['conditions'] = ['LoopsDelivery.organization_id' => $this->user->organization['Organization']['id'],
+									        'LoopsDelivery.id' => $id];
 			$this->request->data = $this->LoopsDelivery->find('first', $options);
 		}
 		
@@ -267,6 +262,29 @@ class LoopsDeliveriesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('LoopDelivery was not deleted'));
 		}
-		$this->myRedirect(array('action' => 'index'));
+		$this->myRedirect(['action' => 'index']);
+	}
+	
+	public function admin_testing($id = null) {
+	
+		$debug = true;	
+
+		if(!$this->isRoot()) {
+			$this->Session->setFlash(__('msg_not_permission'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
+	
+		$options = [];
+		$options['conditions'] = ['LoopsDelivery.organization_id' => $this->user->organization['Organization']['id'],
+						          'LoopsDelivery.id' => $id];
+		$loopsDeliveryResults = $this->LoopsDelivery->find('first', $options);
+		self::d($loopsDeliveryResults, $debug);
+		if (empty($loopsDeliveryResults)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$create = false; // in LoopsDeliveries::testing simulo
+		$this->LoopsDelivery->creating($this->user, $loopsDeliveryResults, $create, $debug);
 	}
 }

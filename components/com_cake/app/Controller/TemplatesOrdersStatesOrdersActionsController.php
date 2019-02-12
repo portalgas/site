@@ -12,7 +12,7 @@ class TemplatesOrdersStatesOrdersActionsController extends AppController {
 	
 	public function admin_index() {
 		
-		$conditions = array();
+		$conditions = [];
 		
 		/*
 		 * filtri
@@ -32,13 +32,12 @@ class TemplatesOrdersStatesOrdersActionsController extends AppController {
 		$this->set('FilterTemplateId', $FilterTemplateId);
 		$this->set('FilterGroupId', $FilterGroupId);
 		
-		$this->paginate += array('conditions' => $conditions);
+		$this->paginate += ['conditions' => $conditions,
+							'order' => ['TemplatesOrdersStatesOrdersAction.state_code', 'TemplatesOrdersStatesOrdersAction.sort']];
 		$this->Paginator->settings = $this->paginate;
 		
 		$this->TemplatesOrdersStatesOrdersAction->recursive = 0;
 		$this->set('results', $this->Paginator->paginate());
-		
-		$this->set('templates', Configure::read('templates'));
 		
 		/*
 		 * estraggo i gruppi associati al template
@@ -49,6 +48,12 @@ class TemplatesOrdersStatesOrdersActionsController extends AppController {
 	
 		$this->set('groups', $groups);
 		
-		
+		/*
+		 * template
+		 */ 
+		 $options = [];
+		 $options = ['order' => 'Template.name asc'];
+		 $templates = $this->TemplatesOrdersStatesOrdersAction->Template->find('list', $options);		
+         $this->set('templates', $templates);		
 	}
 }

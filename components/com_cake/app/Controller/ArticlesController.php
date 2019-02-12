@@ -24,7 +24,7 @@ class ArticlesController extends AppController {
 			$this->article_organization_id = $this->user->organization['Organization']['id'];
 		
 		/* ctrl ACL */
-		if (in_array($this->action, array('admin_edit', 'admin_delete'))) {
+		if (in_array($this->action, ['admin_edit', 'admin_delete'])) {
 
 			if($this->isSuperReferente()) {
 			
@@ -73,7 +73,7 @@ class ArticlesController extends AppController {
 				$supplier_organization_id = null;
 			break;
 			default:
-				self::x(__('msg_error_org_type'));
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 			break;
 		}
 
@@ -87,11 +87,11 @@ class ArticlesController extends AppController {
 
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
-			self::d($this->request->data, $false);
+			self::d($this->request->data, false);
 			
 			$articles_in_articlesorders = $this->request->data['Article']['articles_in_articlesorders'];
 			if(!empty($articles_in_articlesorders)) {
-				$arrs = split(",", $articles_in_articlesorders);				
+				$arrs = explode(",", $articles_in_articlesorders); 				
 				foreach($arrs as $arr) {
 					list($article_id, $flag_presente_articlesorders) = explode("-", $arr);
 					
@@ -227,10 +227,9 @@ class ArticlesController extends AppController {
 			case 'GAS':
 			break;
 			default:
-				self::x(__('msg_error_org_type'));
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 			break;
 		}		
-
 		
 		$results = [];		$FilterArticleName = null;		$SqlLimit = 1000;		
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -254,12 +253,31 @@ class ArticlesController extends AppController {
 					if (empty($articleResults)) 						$msg .= 'Errore articolo id '.$id.'<br />';
 					else {
 						
+						$article_organization_id = $articleResults['Article']['organization_id'];
+						$article_id = $articleResults['Article']['id'];
 						$name = $articleResults['Article']['name'];
-						
+						 
 						/*
-						  * ctrl gli eventuali acquisti gia' effettuati, se true non posso cancellarlo
+						 * ctrl gli eventuali acquisti gia' effettuati, se true non posso cancellarlo
 						 */
-						if($this->Article->isArticleInCart($this->user, $this->user->organization['Organization']['id'], $id)) 
+						switch($this->user->organization['Organization']['type']) {
+							case 'PROD':
+							break;
+							case 'PRODGAS':        
+								App::import('Model', 'ProdGasArticle');
+								$ProdGasArticle = new ProdGasArticle;
+							
+								$isArticleInCart = $ProdGasArticle->isArticleInCart($this->user, $article_organization_id, $article_id);
+							break;
+							case 'GAS':
+								$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $article_id);
+							break;
+							default:
+								self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
+							break;
+						}
+		
+						if($isArticleInCart) 
 							$msg .= 'Articolo "'.$name.'" non può essere cancellato perchè associato ad alcuni ordini.<br />';				
 						else {
 							if(!$this->Article->delete($this->user->organization['Organization']['id'], $id))
@@ -286,9 +304,9 @@ class ArticlesController extends AppController {
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
 			if(!empty($this->request->params['pass']['FilterArticleName'])) {				$FilterArticleName = $this->request->params['pass']['FilterArticleName'];				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];			}
 			
-			$this->Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));
-			$this->Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
-			$this->Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
+			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 			
 			self::d($conditions, $debug);
 						$this->paginate = ['conditions' => $conditions,
@@ -341,7 +359,7 @@ class ArticlesController extends AppController {
 			case 'GAS':
 			break;
 			default:
-				self::x(__('msg_error_org_type'));
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 			break;
 		}		
 	
@@ -396,9 +414,13 @@ class ArticlesController extends AppController {
 		$conditions = [];
 		$conditions[] = ['SuppliersOrganization.organization_id'=>(int)$this->user->organization['Organization']['id']];
 	
-		if(!$this->isSuperReferente())
-			$conditions[] = ['SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
-	
+		if(!$this->isSuperReferente()) {
+			if(strpos($this->user->get('ACLsuppliersIdsOrganization'), ",")===false)
+				$conditions[] = ['SuppliersOrganization.id' => $this->user->get('ACLsuppliersIdsOrganization')];
+			else
+				$conditions[] = ['SuppliersOrganization.id IN ' => explode(",", $this->user->get('ACLsuppliersIdsOrganization'))];
+		}
+		
 		if(!empty($FilterArticleSupplierId)) {
 	
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
@@ -407,9 +429,9 @@ class ArticlesController extends AppController {
 				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];
 			}
 				
-			$this->Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));
-			$this->Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));
-			$this->Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));
+			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 				
 			$this->paginate = ['conditions' => $conditions,
 								'order' => ['SuppliersOrganization.name' => 'asc', 'CategoriesArticle.name' => 'asc', 'Article.name' => 'asc'],
@@ -439,7 +461,7 @@ class ArticlesController extends AppController {
 		/*
 		 * get elenco categorie
 		*/
-		$conditionsCategoriesArticle = array('organization_id' => $this->user->organization['Organization']['id']);
+		$conditionsCategoriesArticle = ['organization_id' => $this->user->organization['Organization']['id']];
 		$categories = $this->Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
 		$this->set(compact('categories'));
 		
@@ -467,7 +489,7 @@ class ArticlesController extends AppController {
 				foreach ($this->request->data['Article']['prezzo'] as $key => $value) {
 					$article_id = $key;
 					
-					if($debug) echo '<br />tratto article '.$article_id.' con valore '.$value;
+					self::d('tratto article '.$article_id.' con valore '.$value, $debug);
 					
 					if($value != $this->request->data['Article']['prezzo_old'][$article_id]) {
 	
@@ -476,8 +498,7 @@ class ArticlesController extends AppController {
 						}
 						
 						$options = [];
-						$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
-													  'Article.id' => $article_id);
+						$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 'Article.id' => $article_id];
 						$options['recursive'] = -1;							  
 						$row = $this->Article->find('first', $options);
 						
@@ -543,25 +564,34 @@ class ArticlesController extends AppController {
 			$FilterArticleSupplierId = $this->request->data['Article']['FilterArticleSupplierId'];
 			
 		$conditions = [];
-		$conditions[] = array('SuppliersOrganization.organization_id'=>(int)$this->user->organization['Organization']['id']);
+		$conditions[] = ['SuppliersOrganization.organization_id' => (int)$this->user->organization['Organization']['id']];
 	
-		if($this->isSuperReferente()) {
-			$conditions[] = array('SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
+		if(!$this->isSuperReferente()) {
+			if(strpos($this->user->get('ACLsuppliersIdsOrganization'), ",")===false)
+				$conditions[] = ['SuppliersOrganization.id' => $this->user->get('ACLsuppliersIdsOrganization')];
+			else
+				$conditions[] = ['SuppliersOrganization.id IN ' => explode(",", $this->user->get('ACLsuppliersIdsOrganization'))];
 		}
-	
+			
 		/* recupero dati */
 		if (!empty($this->request->params['pass']['FilterArticleSupplierId'])) {
 			$FilterArticleSupplierId = $this->request->params['pass']['FilterArticleSupplierId'];
-			$conditions[] = array('Article.supplier_organization_id'=>$FilterArticleSupplierId);
+			// $conditions[] = ['Article.supplier_organization_id' => $FilterArticleSupplierId];
+			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
 		}
 					
 		/* filtro */
+		if(empty($FilterArticleSupplierId)) {
+			$ACLsuppliersIdsOrganization = $this->user->get('ACLsuppliersIdsOrganization');
+			if(count($ACLsuppliersOrganization)<1)
+				$FilterArticleSupplierId = $this->user->get('ACLsuppliersIdsOrganization');
+		}
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
 		
 		$results = [];
 		if (!empty($this->request->params['pass']['FilterArticleSupplierId'])) {
-			
-			$this->Article->unbindModel(array('hasOne' => array('ArticlesOrder', 'ArticlesArticlesType')));			$this->Article->unbindModel(array('hasMany' => array('ArticlesOrder', 'ArticlesArticlesType')));			$this->Article->unbindModel(array('hasAndBelongsToMany' => array('Order', 'ArticlesType')));							$this->paginate = ['conditions' => $conditions,								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],								'recursive' => 0,								'limit' => $SqlLimit];			$results = $this->paginate('Article');				
+									
+			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);							$this->paginate = ['conditions' => $conditions,								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],								'recursive' => 0,								'limit' => $SqlLimit];			$results = $this->paginate('Article');				
 		}
 		$this->set('results', $results);
 
@@ -600,7 +630,21 @@ class ArticlesController extends AppController {
 	 *  	se e' ordine DES no
 	 */ 
 	private function _admin_add($context, $supplier_organization_id=0) {
+
+		self::d($this->request->data);
 		
+		/*
+		 * iva
+		 */
+		if(isset($this->request->data['Article']['iva']) && !empty($this->request->data['Article']['iva'])) {
+			setcookie('iva', $this->request->data['Article']['iva'], time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
+			$this->Session->write('iva', $this->request->data['Article']['iva']);
+		}
+			
+		$iva = $this->Session->read('iva');	
+		if(empty($iva))
+			$iva = '22';
+
 		if ($this->request->is('post') || $this->request->is('put')) {	
 
 			$msg = "";	
@@ -701,6 +745,9 @@ class ArticlesController extends AppController {
 		}
 		else
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
+		
+		$this->set('ivas', Configure::read('ivas'));
+		$this->set('iva', $iva);
 	}
 
 	public function admin_context_order_edit($id=0) {
@@ -831,14 +878,14 @@ class ArticlesController extends AppController {
 		
 		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {
 			$conditions = [];
-			$conditions = array('organization_id' => $this->user->organization['Organization']['id']);			$categories = $this->Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
+			$conditions = ['organization_id' => $this->user->organization['Organization']['id']];			$categories = $this->Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
 			$this->set(compact('categories'));		}
 				
 		$um = ClassRegistry::init('Article')->enumOptions('um');
 		$this->set(compact('um'));
 		
 		if($isArticleInCart)	
-			$stato = array('Y' => 'Si');
+			$stato = ['Y' => 'Si'];
 		else
 			$stato = ClassRegistry::init('Article')->enumOptions('stato');
 		$this->set(compact('stato'));	
@@ -927,14 +974,14 @@ class ArticlesController extends AppController {
 		$this->_admin_copy('order', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
 		
 		$this->Session->setFlash(__('The delivery could not be copied. Please, try again.'));
-		$this->myRedirect(array('action' => 'context_order_index'));
+		$this->myRedirect(['action' => 'context_order_index']);
 	}
 	
 	public function admin_context_articles_copy($id) {
 		$this->_admin_copy('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
 		
 		$this->Session->setFlash(__(Configure::read('sys_function_not_implement')));
-		$this->myRedirect(array('action' => 'context_articles_index'));
+		$this->myRedirect(['action' => 'context_articles_index']);
 	}
 	
 	private function _admin_copy($context, $id=0, $article_organization_id=0) {
@@ -993,10 +1040,9 @@ class ArticlesController extends AppController {
 				
 		}
 
-		if($debug) {
-			echo '<br />url '.$url;
-			exit;
-		}
+		self::d('url '.$url, $debug);
+		if($debug) exit;
+
 		$this->myRedirect($url);
 	}
 	
@@ -1005,7 +1051,8 @@ class ArticlesController extends AppController {
 	
    /*
     * articles_Trigger
-	*	* $sort					 passati dalla ricerca da admin_index  sort:value	* $direction		     passati dalla ricerca da admin_index  direction:asc	* $page					 passati dalla ricerca da admin_index  page:2	*/	private function _admin_delete($context, $id, $article_organization_id) {	
+	*	* $sort					 passati dalla ricerca da admin_index  sort:value	* $direction		     passati dalla ricerca da admin_index  direction:asc	* $page					 passati dalla ricerca da admin_index  page:2	*/	private function _admin_delete($context, $id, $article_organization_id) {
+	
 		$debug = false;
 		
 		self::d([$id, $article_organization_id], $debug);
@@ -1031,7 +1078,7 @@ class ArticlesController extends AppController {
 				$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $id);
 			break;
 			default:
-				self::x(__('msg_error_org_type'));
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 			break;
 		}
 		$this->set('isArticleInCart', $isArticleInCart);
@@ -1050,10 +1097,13 @@ class ArticlesController extends AppController {
 				/*
 				 * Article prima del salvataggio
 				*/
+				$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+				$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+				$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+			
 				$options = [];
 				$options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $id];
-				$options['recursive'] = -1;
-				$options['fields'] = ['Article.img1'];
+				$options['recursive'] = 0;
 				$resultsOld = $this->Article->find('first', $options);
 
 				/*
@@ -1061,11 +1111,11 @@ class ArticlesController extends AppController {
 				 * prima di delete se no non ho + l'articolo
 				*/
 				App::import('Model', 'SiteLifeCyle');
-				$SiteLifeCyle = new SiteLifeCyle;				
-				
+				$SiteLifeCyle = new SiteLifeCyle;	
+ 
 				$options = [];
 				$options['isUserPermissionArticlesOrder'] = $this->isUserPermissionArticlesOrder($this->user);
-				$esito .= $SiteLifeCyle->changeArticle($this->user, $tresultsOld, 'DELETE', $options);
+				$esito .= $SiteLifeCyle->changeArticle($this->user, $resultsOld, 'DELETE', $options);
 				if(isset($esito['CODE']) && $esito['CODE']==200)
 					$msg .= $esito['MSG'];
 				
@@ -1114,7 +1164,7 @@ class ArticlesController extends AppController {
 			case 'PROD':
 			break;
 			case 'PRODGAS':        
-		        $orderResults = $ProdGasArticle->getGasOrganizationInCart($this->user, $article_organization_id, $id, $debug);
+		        $orderResults = $ProdGasArticle->getGasOrganizationInArticlesOrder($this->user, $article_organization_id, $id, $debug);
 			break;
 			case 'GAS':
 				$this->Article->ArticlesOrder->unbindModel(array('belongsTo' => array('Article', 'Cart')));
@@ -1139,7 +1189,7 @@ class ArticlesController extends AppController {
 
 			break;
 			default:
-				self::x(__('msg_error_org_type'));
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
 			break;
 		}		
 		self::d($orderResults); 
@@ -1203,7 +1253,7 @@ class ArticlesController extends AppController {
 																		  'Order.organization_id' => $organization_id,
 																		  'ArticlesOrder.order_id' => $FilterArticleOrderId];			}	
 			else {
-				$this->Article->unbindModel(array('hasOne' => array('ArticlesOrder')));				$this->Article->unbindModel(array('hasMany' => array('ArticlesOrder')));				$this->Article->unbindModel(array('hasAndBelongsToMany' => array('Order')));			
+				$this->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);				$this->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);				$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);			
 			}		}		else		if($context=='order') {
 			$this->Article->hasOne['ArticlesOrder']['conditions'] = 'ArticlesOrder.article_organization_id = Article.organization_id and Article.organization_id = '. $organization_id.' and ArticlesOrder.order_id ='.$this->order_id;
 			$this->Article->hasMany['ArticlesOrder']['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,
@@ -1246,40 +1296,38 @@ class ArticlesController extends AppController {
 			/*		 * get elenco ordini filtrati		*/		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$conditionsOrder = array('Order.organization_id' => (int)$this->user->organization['Organization']['id'],								 'Order.isVisibleBackOffice'=> 'Y');		if(!$this->isSuperReferente())			$conditionsOrder += array('Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');			$results = $Order->find('all',array('conditions' => $conditionsOrder,				'order' => 'Delivery.data ASC, Order.data_inizio ASC','recursive'=>1));		$orders = [];		if(!empty($results)) 			foreach ($results as $result) {
+		$conditionsOrder = ['Order.organization_id' => (int)$this->user->organization['Organization']['id'],								 'Order.isVisibleBackOffice'=> 'Y'];		if(!$this->isSuperReferente())			$conditionsOrder += ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];			$results = $Order->find('all', ['conditions' => $conditionsOrder,										'order' => ['Delivery.data' => 'asc', 'Order.data_inizio' => 'asc'], 'recursive' => 1]);		$orders = [];		if(!empty($results)) 			foreach ($results as $result) {
 				if($result['Delivery']['sys']=='N')
 					$label = $result['Delivery']['luogoData'];
 				else 
 					$label = $result['Delivery']['luogo'];
 				
-				if($result['Order']['data_fine_validation']!='0000-00-00')
+				if($result['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))
 					$data_fine = $result['Order']['data_fine_validation_'];
 				else
 					$data_fine = $result['Order']['data_fine_'];
 								$orders[$result['Order']['id']] = $result['Delivery']['luogo'].' '.$result['SuppliersOrganization']['name'].' - dal '.$result['Order']['data_inizio_'].' al '.$data_fine;
 			}			$this->set(compact('orders'));			/*		 * get elenco categorie		*/
-		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {			$conditionsCategoriesArticle = array('organization_id' => $this->user->organization['Organization']['id']);			$categories = $this->Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
+		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {			$conditionsCategoriesArticle = ['organization_id' => $this->user->organization['Organization']['id']];			$categories = $this->Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
 			$this->set(compact('categories'));		}
 			
 		$um = ClassRegistry::init('Article')->enumOptions('um');
-		$flag_presente_articlesorders = array('Y' => __('Y'), 'N' => __('No'), 'ALL' => __('ALL'));
+		$flag_presente_articlesorders = ['Y' => __('Y'), 'N' => __('No'), 'ALL' => __('ALL')];
 		$this->set(compact('um', 'flag_presente_articlesorders'));
 		
 		
 		/*
 		 * solo per il context=article
 		 * per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)
-		 */		$stato = array('Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL'));		$this->set(compact('stato'));	}
+		 */		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];		$this->set(compact('stato'));	}
 	
 	private function _delete_img($article_id, $article_organization_id, $img1, $debug=false) {
 
 		$img_path = Configure::read('App.root').Configure::read('App.img.upload.article').DS.$this->user->organization['Organization']['id'].DS;
 		
-		if($debug) {
-			echo "<br >img1 $img1";
-			echo "<br >img_path $img_path";
-		}
-		
+		self::d("img1 $img1", $debug);
+		self::d("img_path $img_path", $debug);
+	
 		$esito = true;
 		
 		$file1 = new File($img_path.$img1, false, 0777);

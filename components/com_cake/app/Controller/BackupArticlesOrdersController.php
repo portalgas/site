@@ -40,7 +40,7 @@ class BackupArticlesOrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 										'Order.id' => $this->order_id);
 		$options['recursive'] = 0;
@@ -56,7 +56,7 @@ class BackupArticlesOrdersController extends AppController {
 						 WHERE
 						 	BackupArticlesOrder.organization_id = ".(int)$this->user->organization['Organization']['id']." 
 						 	AND BackupArticlesOrder.order_id = ".$this->order_id." )";		 	
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$results = $this->BackupArticlesOrder->query($sql);
 			
 				$sql = "INSERT INTO ".Configure::read('DB.prefix')."carts
@@ -65,7 +65,7 @@ class BackupArticlesOrdersController extends AppController {
 						 WHERE
 						 	BackupCart.organization_id = ".(int)$this->user->organization['Organization']['id']." 
 						 	AND BackupCart.order_id = ".$this->order_id." )";		 	
-				if($debug) echo '<br />'.$sql;
+				self::d($sql, $debug);
 				$results = $this->BackupArticlesOrder->query($sql);
 			}
 			catch (Exception $e) {
@@ -92,8 +92,8 @@ class BackupArticlesOrdersController extends AppController {
 		/* 
 		 * articoli gia' associati all'ordine
 		 */
-		$this->BackupArticlesOrder->unbindModel(array('belongsTo' => array('Cart', 'Order')));
-		$options = array();
+		$this->BackupArticlesOrder->unbindModel(['belongsTo' => ['Cart', 'Order']]);
+		$options = [];
 		$options['conditions'] = array('BackupArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
 									   'BackupArticlesOrder.order_id' => $this->order_id,
 									   'Article.stato' => 'Y');
@@ -107,7 +107,7 @@ class BackupArticlesOrdersController extends AppController {
 		App::import('Model', 'BackupCart');
 		foreach ($results as $numResult => $result) {
 			$BackupCart = new BackupCart();
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('BackupCart.organization_id' => $this->user->organization['Organization']['id'],
 											'BackupCart.order_id' => $result['BackupArticlesOrder']['order_id'],
 											'BackupCart.article_organization_id' => $result['BackupArticlesOrder']['article_organization_id'],

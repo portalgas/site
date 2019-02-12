@@ -31,7 +31,7 @@ class PopUpController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;
 						
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Order.id' => (int)$order_id);
 		$options['fields'] = array('Order.mail_open_testo');
@@ -120,7 +120,7 @@ class PopUpController extends AppController {
 	 *  $state_code=='INCOMING-ORDER'
 	 */	
 	public function admin_order_importi_aggregati_aggiorna($order_id=0) {
-		$this-> __admin_order_importi_aggregati($order_id); 	
+		$this-> _admin_order_importi_aggregati($order_id); 	
 	}	 
 
 	/*
@@ -128,7 +128,7 @@ class PopUpController extends AppController {
 	 *  $state_code=='WAIT-PROCESSED-TESORIERE'
 	 */		
 	public function admin_order_importi_aggregati_return_tesoriere($order_id=0) {
-		$this-> __admin_order_importi_aggregati($order_id);	
+		$this-> _admin_order_importi_aggregati($order_id);	
 	}
 	 
 	/*
@@ -136,10 +136,10 @@ class PopUpController extends AppController {
 	 *  $state_code=='WAIT-PROCESSED-TESORIERE'
 	 */		
 	public function admin_order_importi_aggregati_return_cassiere($order_id=0) {
-		$this-> __admin_order_importi_aggregati($order_id);	
+		$this-> _admin_order_importi_aggregati($order_id);	
 	}
 	
-	private function __admin_order_importi_aggregati($order_id) {
+	private function _admin_order_importi_aggregati($order_id) {
 		if($order_id==0) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -148,7 +148,7 @@ class PopUpController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;
 						
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Order.id' => (int)$order_id);
 		$options['recursive'] = -1;

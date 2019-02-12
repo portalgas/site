@@ -17,7 +17,7 @@ class DesOrdersOrganizationsController extends AppController {
 		/* ctrl ACL */
 		   
 		if(empty($this->user->des_id)) {
-            $this->Session->setFlash(__('Devi scegliere il tuo DES'));
+            $this->Session->setFlash(__('msg_des_choice'));
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Des&action=index';
 			$this->myRedirect($url);
         }
@@ -30,6 +30,8 @@ class DesOrdersOrganizationsController extends AppController {
 
    public function admin_index($des_order_id) {
 
+		$debug = false;
+		
 		if (empty($des_order_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -71,7 +73,7 @@ class DesOrdersOrganizationsController extends AppController {
 	   /*
 		 * escludo il GAS dall'array di tutti i GAS del DES
 		 */		
-		$desOrganizationsResults = array();
+		$desOrganizationsResults = [];
 		$desOrganizationIds = '';
 		
 		if(!empty($results['DesOrdersOrganizations']))
@@ -85,7 +87,7 @@ class DesOrdersOrganizationsController extends AppController {
 		App::import('Model', 'DesOrganization');
 		$DesOrganization = new DesOrganization;
 		   
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id);
 		if(!empty($desOrganizationIds)) {
 			$desOrganizationIds = substr($desOrganizationIds, 0, strlen($desOrganizationIds)-1);
@@ -93,13 +95,7 @@ class DesOrdersOrganizationsController extends AppController {
 		}
 		$options['recursive'] = 1;
 		$desOrganizationsResults = $DesOrganization->find('all', $options);
-				
-		/*
-		echo "<pre>";
-		print_r($options);
-		print_r($desOrganizationsResults);
-		echo "</pre>";	
-		*/		
+					
 		$this->set('desOrganizationsResults', $desOrganizationsResults);
 		
 		/*
@@ -108,11 +104,15 @@ class DesOrdersOrganizationsController extends AppController {
 		App::import('Model', 'DesOrdersOrganization');
 		$DesOrdersOrganization = new DesOrdersOrganization();
 
-		$options = array();
-		$options['conditions'] = array('DesOrdersOrganization.des_id' => $this->user->des_id,
-										'DesOrdersOrganization.des_order_id' => $des_order_id);
-		$options['recursive'] = -1;
-		$totaliDesOrdersOrganization = $DesOrdersOrganization->find('count', $options);
+		$options = [];
+		$options['conditions'] = ['DesOrdersOrganization.des_id' => $this->user->des_id,
+								  'DesOrdersOrganization.des_order_id' => $des_order_id,
+								  'Order.state_code != ' => 'CREATE-INCOMPLETE'];
+		$options['recursive'] = 0;
+		$desOrdersOrganizationResults = $DesOrdersOrganization->find('all', $options);
+		$totaliDesOrdersOrganization = count($desOrdersOrganizationResults);
+		self::d($totaliDesOrdersOrganization, $debug);
+		
 		/*
 		 * non e' stato creato alcun ordine, solo il titolare puo'
 		 */
@@ -164,11 +164,6 @@ class DesOrdersOrganizationsController extends AppController {
 				
 			$this->request->data['DesOrdersOrganization']['data'] = $this->request->data['DesOrdersOrganization']['data_db'];
 			
-			/*
-			echo "<pre> ";
-            print_r($this->request->data);
-            echo "</pre>";
-			*/
             $this->DesOrdersOrganization->create();
             if ($this->DesOrdersOrganization->save($this->request->data)) {
                 $this->Session->setFlash(__('The DesOrdersOrganization has been saved'));
@@ -183,15 +178,10 @@ class DesOrdersOrganizationsController extends AppController {
          *  tutti i dati del DesOrder
          */
         $desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-        /*
-          echo "<pre>";
-          print_r($desOrdersResults);
-          echo "</pre>";
-         */
-        $this->set(compact('desOrdersResults'));
+    
+		$this->set(compact('desOrdersResults'));
 
-		
-		$options = array();
+		$options = [];
 		$options['recursive'] = 0;
  		$options['conditions'] = array('DesOrdersOrganization.des_id' => $this->user->des_id,
 										'DesOrdersOrganization.des_order_id' => $des_order_id,
@@ -202,14 +192,6 @@ class DesOrdersOrganizationsController extends AppController {
    		if(empty($this->request->data['DesOrdersOrganization']['orario'])) {
    		}   		
    	
-		
-   		/*
-   		echo "<pre>";
-   		print_r($options);
-   		print_r($this->request->data);
-   		echo "</pre>";
-   		*/ 	
-
    		$this->set('des_order_id', $des_order_id);		
    }
    
@@ -265,20 +247,20 @@ class DesOrdersOrganizationsController extends AppController {
 					".Configure::read('DB.prefix')."_des_orders_organizations 
 				WHERE
 					organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and des_order_id = ".(int)$$des_order_id."
+					and des_order_id = ".(int)$des_order_id."
 					and id = ".(int)$this->order_id;
-		if($debug) echo '<br />'.$sql;echo '<br />'.$sql; 
+		self::d($sql, $debug);
 		$resultUpdate = $this->DesOrdersOrganization->query($sql);
 
 			
-		$options = array();
+		$options = [];
 		$options['recursive'] = -1;
  		$options['conditions'] = array('DesOrdersOrganization.des_id' => $this->user->des_id,
 										'DesOrdersOrganization.des_order_id' => $des_order_id,
 										'DesOrdersOrganization.organization_id' => $organization_id);
    		$this->DesOrdersOrganization = $this->DesOrdersOrganization->find('first', $options);
 		$this->request->onlyAllow('get');
-		if ($$this->DesOrdersOrganization->delete()) {
+		if ($this->DesOrdersOrganization->delete()) {
 			$this->Session->setFlash(__('The DesOrdersOrganization has been deleted.'));
 		} else {
 			$this->Session->setFlash(__('The DesOrdersOrganization could not be deleted. Please, try again.'));

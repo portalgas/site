@@ -56,7 +56,7 @@ class ArticlesOrdersController extends AppController {
             $options['recursive'] = -1;
 			$supplierResults = $Supplier->find('first', $options);
             $results['Supplier'] = $supplierResults['Supplier'];
-             
+			
             $this->order = $results;
             $this->set('order', $this->order);
         } // if ($this->action != 'admin_order_choice') 
@@ -199,7 +199,7 @@ class ArticlesOrdersController extends AppController {
 	 */
     public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0) {
 
-        $debug = false;
+        $debug=false;
 
 		App::import('Model', 'Article');
 		$Article = new Article;
@@ -234,35 +234,36 @@ class ArticlesOrdersController extends AppController {
             $msg = "";
             /*
              * cancello eventuali doppioni
-             * */
+             */
             $this->ArticlesOrder->delete($this->user->organization['Organization']['id'], $this->order_id);
 
             $des_order_id = $this->request->data['ArticlesOrder']['des_order_id'];
             $action_post = $this->request->data['ArticlesOrder']['action_post'];
-            if ($action_post == 'action_articles_orders_previuos')
+		    if ($action_post == 'action_articles_orders_previuos')
                 $this->request->data = $this->_ridefinedDataToPreviousArticlesOrder($previousResults);
 
             $article_id_selected = $this->request->data['ArticlesOrder']['article_id_selected'];
             $arr_article_id_selected = explode(',', $article_id_selected);
-
+			
 			if(isset($this->request->data['Article']))
             foreach ($this->request->data['Article'] as $article_id => $article) {
 
                 if (isset($article_id) && in_array($article_id, $arr_article_id_selected)) {
                 
 					$data = [];
-					
+				
 					self::d('Tratto articolo ['.$article_id.']', $debug);
 					self::d($article, $debug);
-					
+
 					/*
                 	 * get Article.name
                 	 */
-					$opts = ['Article.id' => $article_id];
+					$opts = ['Article.organization_id' => $article['article_organization_id'], 
+					         'Article.id' => $article_id];
 					$articleResults = $Article->getBySupplierOrganization($this->user, $this->order['Order']['supplier_organization_id'], $opts, $debug);
-                    $data['ArticlesOrder']['name'] = $articleResults['Article']['name'];
-					self::d($articleResults, $debug);
-	                                              
+					$data['ArticlesOrder']['name'] = $articleResults['Article']['name'];
+					self::d($articleResults, $debug); 
+
                     $data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
 					$data['ArticlesOrder']['order_id'] = $this->order_id;
 				
@@ -276,6 +277,7 @@ class ArticlesOrdersController extends AppController {
 						$data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
 					else
 						$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo'];
+						
 					if(isset($article['ArticlesOrderPezziConfezione']))	
 						$data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
 					else
@@ -308,13 +310,13 @@ class ArticlesOrdersController extends AppController {
 						$data['ArticlesOrder']['alert_to_qta'] = $articleResults['Article']['alert_to_qta'];
 					
 					$data['ArticlesOrder']['send_mail'] = 'N';
-					$data['ArticlesOrder']['qta_cart'] = "0";
+					$data['ArticlesOrder']['qta_cart'] = '0';
 					$data['ArticlesOrder']['flag_bookmarks'] = 'N';
 					$data['ArticlesOrder']['stato'] = 'Y';
 
 					self::d('ArticlesOrder da salvare', $debug);
-					self::d($data, $debug);
-				
+					self::d($data, false);
+
                     /*
                      * richiamo la validazione
                      */
@@ -332,7 +334,6 @@ class ArticlesOrdersController extends AppController {
                         $msg .= "Articolo non inserito: dati non validi, $tmp<br />";
                         $this->Session->setFlash($msg);
                     } else {
-
                         $this->ArticlesOrder->create();
                         if (!$this->ArticlesOrder->save($data)) {
                             $msg .= "<br />Articolo ".$articleResults['Article']['name']." [".$article_id."] non salvato per errore di sistema!";
@@ -359,11 +360,13 @@ class ArticlesOrdersController extends AppController {
                 $Order->updateTypeDraw($this->user, $this->order_id);
 
                 if ($this->user->organization['Organization']['hasDes'] == 'Y' && !empty($des_order_id)) {
-
+					/*
+					 * non +, il GAS puo' scegliere quali articoli associare
                     App::import('Model', 'DesOrder');
                     $DesOrder = new DesOrder;
                     $DesOrder->insertOrUpdateArticlesOrderAllOrganizations($this->user, $des_order_id, $this->order_id, null, $isTitolareDesSupplier, $debug);
-
+					*/
+					
                     $this->Session->setFlash(__('The articles order has been saved'));
                     $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $this->order_id . '&des_order_id=' . $des_order_id;
                 } else {
@@ -410,16 +413,18 @@ class ArticlesOrdersController extends AppController {
 
     /*
      * Organization.type = PRODGAS elenco degli articoli associati all'ordine
-     */
+	 * 
+	 * per ora e' disabilitato da ProgGasOrder::index
+	 */
     public function admin_prodgas_index($organization_id, $order_id) {
-    
+		
     	$debug = false;
     
         if (empty($organization_id) || empty($order_id)) {
-            $this->Session->setFlash(__('msg_error_params'));
+            $this->Session->setFlash(__('msg_error_params'));exit;
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-
+        		
 		// ACL 
 		App::import('Model', 'ProdGasSuppliersImport');
 		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
@@ -442,8 +447,7 @@ class ArticlesOrdersController extends AppController {
 		$Order = new Order;
 		
         $options = [];
-        $options['conditions'] = ['Order.organization_id' => $organization_id,
-								  'Order.id' => $order_id];
+        $options['conditions'] = ['Order.organization_id' => $organization_id, 'Order.id' => $order_id];
         $options['recursive'] = 0;
         $results = $Order->find('first', $options);
 
@@ -454,7 +458,7 @@ class ArticlesOrdersController extends AppController {
 		$tmp_user->organization['Organization']['type'] = 'PRODGAS'; 
         $this->_index($tmp_user, $organization_id, $delivery_id, $order_id, $debug);	
         
-        $this->set(compact($organization_id));	
+        $this->set('organization_id', $organization_id);	
 	}
 
     /*
@@ -464,18 +468,27 @@ class ArticlesOrdersController extends AppController {
     
 	    $debug = false;
         
+		$this->set('organization_id', $this->user->organization['Organization']['id']);
+		
         $this->_index($this->user, $this->user->organization['Organization']['id'], $this->delivery_id, $this->order_id, $debug);
-        
-        $this->set(compact($organization_id));	        
 	}
 
     public function _index($user, $organization_id, $delivery_id, $order_id, $debug = false) {
 
-        if (empty($this->order_id)) {
+        if (empty($order_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        	
+        
+		App::import('Model', 'Order');
+		$Order = new Order;
+		
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $organization_id, 'Order.id' => $order_id];
+		$options['recursive'] = 0;
+		$orderResults = $Order->find('first', $options);
+		self::d($orderResults, $debug); 
+		
 		App::import('Model', 'Article');
 		$Article = new Article;
 		
@@ -505,7 +518,7 @@ class ArticlesOrdersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
 
 			self::d($this->request->data, $debug);
-	
+
             $msg = "";
 
             /*
@@ -529,12 +542,13 @@ class ArticlesOrdersController extends AppController {
 						/*
 						 * get Article, 
 						 */
-						$opts = ['Article.id' => $article_id];
-						$articleResults = $Article->getBySupplierOrganization($user, $this->order['Order']['supplier_organization_id'], $opts, $debug);
+						$opts = ['Article.organization_id' => $article['article_organization_id'], 
+						         'Article.id' => $article_id];
+						$articleResults = $Article->getBySupplierOrganization($user, $orderResults['Order']['supplier_organization_id'], $opts, $debug);
 						$data['ArticlesOrder']['name'] = $articleResults['Article']['name'];
-						self::d($articleResults, $debug);
+						self::d($articleResults, $debug); 
 										  
-						$data['ArticlesOrder']['organization_id'] = $user->organization['Organization']['id'];
+						$data['ArticlesOrder']['organization_id'] = $organization_id;
 						$data['ArticlesOrder']['order_id'] = $order_id;
 
 						/*
@@ -547,6 +561,7 @@ class ArticlesOrdersController extends AppController {
 							$data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
 						else
 							$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo'];
+							
                         if(isset($article['ArticlesOrderPezziConfezione']))	
 							$data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
 						else
@@ -645,7 +660,21 @@ class ArticlesOrdersController extends AppController {
              * 	da OPEN-NEXT o OPEN o CLOSE a eventualmente CREATE-INCOMPLETE
              * */
             $utilsCrons = new UtilsCrons(new View(null));
-            $utilsCrons->ordersStatoElaborazione($user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $order_id);
+            $utilsCrons->ordersStatoElaborazione($organization_id, (Configure::read('developer.mode')) ? true : false, $order_id);
+        
+        	/*
+        	 * se CREATE-INCOMPLETE vado in home
+        	 */
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $organization_id, 'Order.id' => $order_id];
+			$options['recursive'] = -1;
+			$orderCtrlResults = $Order->find('first', $options);
+			if($orderCtrlResults['Order']['state_code']=='CREATE-INCOMPLETE') {
+					$this->Session->setFlash(__('CREATE-INCOMPLETE-descri'));
+					$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$orderCtrlResults['Order']['delivery_id'].'&order_id='.$order_id;
+					$this->myRedirect($url);
+			 }
+			 
         } // end if ($this->request->is('post') || $this->request->is('put'))
 
 	         
@@ -695,10 +724,10 @@ class ArticlesOrdersController extends AppController {
 			$Article->unbindModel(['hasMany' => ['ArticlesArticlesType', 'ArticlesOrder']]);
 	
 	        $options = [];
-			$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-								  'SuppliersOrganization.id' => $this->order['SuppliersOrganization']['id'],
-								  'Article.stato' => 'Y',			
-								  'Article.flag_presente_articlesorders' => 'Y'];			
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $organization_id,
+									  'SuppliersOrganization.id' => $orderResults['SuppliersOrganization']['id'],
+								      'Article.stato' => 'Y',			
+								      'Article.flag_presente_articlesorders' => 'Y'];			
 
 	        $article_ids_da_escludere = [];
 	        foreach ($results as $result)
@@ -710,7 +739,7 @@ class ArticlesOrdersController extends AppController {
 	        $options['recursive'] = 0;
 	        $options['order'] = ['Article.name'];
 	        $articles = $Article->find('all', $options);
-	        self::d($options['conditions'], $debug);
+	        self::d($options, $debug);
 		}
 		        
         $this->set('articles', $articles);
@@ -760,18 +789,19 @@ class ArticlesOrdersController extends AppController {
 
 		$tmp_user->organization['Organization']['id'] = $organization_id; 
 		$tmp_user->organization['Organization']['type'] = 'PRODGAS'; 
-        $this->_edit($tmp_user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);
-
-        $this->set(compact($organization_id));	
+		
+		$this->set(compact('organization_id'));
+		
+        $this->_edit($tmp_user, $organization_id, $order_id, $article_organization_id, $article_id, $debug);	
 	}
 
     public function admin_edit($order_id = 0, $article_organization_id = 0, $article_id = 0) {
     
 	    $debug = false;
-        
-        $this->_edit($this->user, $this->user->organization['Organization']['id'], $order_id, $article_organization_id, $article_id, $debug);
-        
-        $this->set(compact($organization_id));	        
+                
+        $this->set('organization_id', $this->user->organization['Organization']['id']);	
+		
+        $this->_edit($this->user, $this->user->organization['Organization']['id'], $order_id, $article_organization_id, $article_id, $debug);        
 	}
 	
     /*
@@ -961,10 +991,9 @@ class ArticlesOrdersController extends AppController {
         else
             $this->order_id = 0;
 
-        if ($debug) {
-            echo '<br />delivery_id ' . $this->delivery_id;
-            echo '<br />order_id ' . $this->order_id;
-        }
+        self::d('delivery_id '.$this->delivery_id, $debug);
+        self::d('order_id '.$this->order_id, $debug);
+        
         $this->set('delivery_id', $this->delivery_id);
         $this->set('order_id', $this->order_id);
 
@@ -1005,7 +1034,7 @@ class ArticlesOrdersController extends AppController {
 
             if ($order_valido) {
                 unset($_REQUEST['_method']); // se no passava a index (_method, order_id)
-                $this->myRedirect(array('controller' => 'ArticlesOrders', 'action' => 'index', 'id' => $this->order_id));
+                $this->myRedirect(['controller' => 'ArticlesOrders', 'action' => 'index', 'id' => $this->order_id]);
             }
         } // end if(!empty($this->delivery_id) && !empty($this->order_id))
 
@@ -1014,7 +1043,7 @@ class ArticlesOrdersController extends AppController {
          */
         $order_id = 0;
         $delivery_id = 0;
-        $conditions = array('Article.id' => $article_id);
+        $conditions = ['Article.id' => $article_id];
         $resultsCtrl = $this->ArticlesOrder->getArticlesOrdersInOrder($this->user, $conditions);
         if (!empty($resultsCtrl)) {
             // prendo il primo order_id (potrei avere + ordini associati all'articolo)
@@ -1024,8 +1053,7 @@ class ArticlesOrdersController extends AppController {
             $Order = new Order;
 
             $options = [];
-            $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
-									  'Order.id' => $this->order_id];
+            $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
             $options['recursive'] = -1;
             $options['fields'] = ['Order.delivery_id'];
             $results = $Order->find('first', $options);
@@ -1038,21 +1066,32 @@ class ArticlesOrdersController extends AppController {
 
 		$options = [];
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-								'Delivery.isVisibleBackOffice' => 'Y',
-								'Delivery.sys' => 'N',
-								'Delivery.stato_elaborazione' => 'OPEN'];
+								  'Delivery.sys' => 'Y'];
+		$options['fields'] = ['Delivery.id', 'Delivery.luogo'];
+		$options['recursive'] = -1;		
+        $deliverySysY = $Delivery->find('list', $options);
+		
+		$options = [];
+        $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+								 'Delivery.isVisibleBackOffice' => 'Y',
+								 'Delivery.sys' => 'N', 
+								 'Delivery.stato_elaborazione' => 'OPEN'];
         if (!empty($delivery_id))
             $options['conditions']  += ['Delivery.id' => $this->delivery_id];
 		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data ASC'];
 		$options['recursive'] = -1;		
-        $deliveries = $Delivery->find('list', $options);
+        $deliverySysN = $Delivery->find('list', $options);
+
+		$deliveries = [];
+		$deliveries += $deliverySysY;
+		$deliveries += $deliverySysN;
+		self::d($deliveries);
         if (empty($deliveries)) {
             $this->Session->setFlash(__('NotFoundDeliveries'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
         $this->set(compact('deliveries'));
-
 
         $ACLsuppliersIdsOrganization = $this->user->get('ACLsuppliersIdsOrganization');
 
@@ -1074,7 +1113,7 @@ class ArticlesOrdersController extends AppController {
         if (!empty($results))
             foreach ($results as $result) {
 
-                if ($result['Order']['data_fine_validation'] != '0000-00-00')
+                if ($result['Order']['data_fine_validation'] != Configure::read('DB.field.date.empty'))
                     $data_fine = $result['Order']['data_fine_validation_'];
                 else
                     $data_fine = $result['Order']['data_fine_'];
@@ -1102,7 +1141,7 @@ class ArticlesOrdersController extends AppController {
 								'DATE(Delivery.data) < CURDATE()',
 								'Order.isVisibleBackOffice' => 'Y',
 								'Order.supplier_organization_id' => $order['supplier_organization_id']];
-        //$options['fields'] = array('Delivery.id', 'Delivery.luogoData');
+        //$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
         $options['order'] = ['Delivery.data DESC'];
         $results = $Order->find('first', $options);
 
@@ -1129,8 +1168,8 @@ class ArticlesOrdersController extends AppController {
     /*
      *  all'ordine associo gli articoli dell'ordine precedente
      *  ridefinisco $this->request->data in 
-     *  [ArticlesOrder] => Array ([article_id_selected] => id, id)
-     * 	[Article] => Array ([article_id] => Array(
+     *  [ArticlesOrder] => [[article_id_selected] => id, id)
+     * 	[Article] => [[article_id] => Array(
      *              [ArticlesOrderPrezzo] => 1,00
      *              [ArticlesOrderPezziConfezione] => 1
      *              [ArticlesOrderQtaMinima] => 1
@@ -1147,7 +1186,7 @@ class ArticlesOrdersController extends AppController {
 
             if ($previousResult['Article']['stato'] == 'Y') {
 
-                $data['Article'][$previousResult['Article']['id']] = array(
+                $data['Article'][$previousResult['Article']['id']] = [
                     'ArticlesOrderPrezzo' => $previousResult['ArticlesOrder']['prezzo'],
                     'ArticlesOrderPezziConfezione' => $previousResult['ArticlesOrder']['pezzi_confezione'],
                     'ArticlesOrderQtaMinima' => $previousResult['ArticlesOrder']['qta_minima'],
@@ -1155,7 +1194,8 @@ class ArticlesOrdersController extends AppController {
                     'ArticlesOrderQtaMultipli' => $previousResult['ArticlesOrder']['qta_multipli'],
                     'ArticlesOrderQtaMinimaOrder' => $previousResult['ArticlesOrder']['qta_minima_order'],
                     'ArticlesOrderQtaMassimaOrder' => $previousResult['ArticlesOrder']['qta_massima_order'],
-                );
+					'article_organization_id' => $previousResult['ArticlesOrder']['article_organization_id']
+                ];
 
                 $article_id_selected .= $previousResult['Article']['id'] . ',';
             }
@@ -1164,7 +1204,7 @@ class ArticlesOrdersController extends AppController {
         if (!empty($article_id_selected))
             $article_id_selected = substr($article_id_selected, 0, strlen($article_id_selected) - 1);
 
-        $data['ArticlesOrder'] = array('article_id_selected' => $article_id_selected);
+        $data['ArticlesOrder'] = ['article_id_selected' => $article_id_selected];
 
 		self::d($data, false);
 		

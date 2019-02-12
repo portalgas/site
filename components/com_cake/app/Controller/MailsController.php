@@ -121,12 +121,12 @@ class MailsController extends AppController {
 						$Email->replyTo(array($mittente => $mittente));
 						$Email->subject($subject_mail);
 					
-						$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 					
 						if(!empty($this->user->organization['Organization']['www']))
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 						else
-							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
 						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 						if(isset($mailResults['OK'])) {
@@ -167,12 +167,12 @@ class MailsController extends AppController {
 						$Email->from(array($mittente => $mittente));
 						$Email->subject($subject_mail);
 					
-						$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 					
 						if(!empty($this->user->organization['Organization']['www']))
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 						else
-							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
 						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 						if(isset($mailResults['OK'])) {
@@ -226,12 +226,12 @@ class MailsController extends AppController {
 							
 						$Email->from(array($mittente => $mittente));
 						$Email->subject($subject_mail);
-						$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 			
 						if(!empty($this->user->organization['Organization']['www']))
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 						else
-							$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
 						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 						if(isset($mailResults['OK'])) {
@@ -419,7 +419,7 @@ class MailsController extends AppController {
 				}
 				else {
 					if($this->request->data['Mail']['dest_options']=='USERS') {
-						$ids = $destinatari;
+						$destinatari = explode(',',  $destinatari);
 					}
 					else
 					if($this->request->data['Mail']['dest_options']=='USERGROUPS') {
@@ -456,14 +456,10 @@ class MailsController extends AppController {
 					$results = $User->query($sql);
 				}
 				else {
-					$conditions = ['User.organization_id' => (int)$this->user->organization['Organization']['id'],
-									'User.block' => 0, 
-									'User.id IN ('.$ids.')'];
-				
-					$results = $User->find('all', ['fields' => 'User.name, User.email',
-												  'conditions' => $conditions,
-												  'order' => 'id',
-												  'recursive' => -1]);
+					if($this->request->data['Mail']['dest_options_qta']=='ALL')
+						$results = $User->getUsersToMail($this->user, false);
+					else
+						$results = $User->getUsersToMailByIds($this->user, $destinatari, false);
 				}
 				
 				self::d($results, false);
@@ -491,7 +487,7 @@ class MailsController extends AppController {
 				if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))
 					$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
 				else
-					$Email->replyTo(array($this->user->email => $this->user->email));
+					$Email->replyTo([$this->user->email => $this->user->email]);
 	
 				$subject_mail = $this->request->data['Mail']['subject'];
 				$Email->subject($subject_mail);
@@ -553,20 +549,22 @@ class MailsController extends AppController {
 				foreach($results as $result) {
 					if(isset($result['User'])) {
 						$mail = $result['User']['email'];
+						$mail2 = $result['UserProfile']['email'];
 						$name = $result['User']['name'];
 					}
 					else  {	
 						$mail = $result['Supplier']['mail'];
+						$mail2 = '';
 						$name = $result['SuppliersOrganization']['name'];
 					}
 
-					$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+					$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 						
 					if(!empty($this->user->organization['Organization']['www'])) {
 						if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))
 							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->traslateWww($this->user->organization['Organization']['www']))));
 						else
-							$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+							$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 					}
 					else {
 						if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))
@@ -578,7 +576,7 @@ class MailsController extends AppController {
 					$body_mail = $body_header_mittente.'<br /><br />';
 					$body_mail .= $this->request->data['Mail']['body'];
 
-					$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
+					$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail, $debug);
 					if(isset($mailResults['OK'])) {
 						$tot_ok++;
 						$msg_ok .= $mailResults['OK'].'<br />';							
@@ -633,7 +631,7 @@ class MailsController extends AppController {
 				else 
 					$label = $result['Delivery']['luogo'];
 				
-				if($result['Order']['data_fine_validation']!='0000-00-00')
+				if($result['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))
 					$data_fine = $result['Order']['data_fine_validation_'];
 				else 
 					$data_fine = $result['Order']['data_fine_'];
@@ -769,7 +767,7 @@ class MailsController extends AppController {
 		
 		if(!$this->isRoot()) {
 				$this->Session->setFlash(__('msg_not_permission'));
-				$this->myRedirect(Configure::read('routes_msg_stop'));		
+				$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
 		
 		$conditions = array('Mail.organization_id' => 0);
@@ -792,7 +790,15 @@ class MailsController extends AppController {
 		$body_header_mittente = '';
 					
 		if ($this->request->is('post') || $this->request->is('put')) {
+				
+			self::d($this->request->data, $debug);
 			
+			App::import('Model', 'Organization');
+			$Organization = new Organization;
+			
+			App::import('Model', 'Supplier');
+			$Supplier = new Supplier;
+				
 			App::import('Model', 'Mail');
 			$Mail = new Mail;
 			
@@ -800,81 +806,81 @@ class MailsController extends AppController {
 		
 			self::d($this->request->data,$debug);
 			
-			if($this->request->data['Mail']['dest_options']=='SUPPLIERS') {
-
-				App::import('Model', 'Supplier');
-				$Supplier = new Supplier;
+			switch($this->request->data['Mail']['dest_options']) {
+				case 'SUPPLIERS':
 							
-				$sql = "SELECT
-							Supplier.id, Supplier.mail, Supplier.name
-						FROM
-							".Configure::read('DB.prefix')."suppliers AS Supplier
-						WHERE
-							(Supplier.mail is not null and Supplier.mail != '') 
-							AND (Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG') ";
-			
-				if($this->request->data['Mail']['dest_options_qta_supplier']=='SOME') {
-					$destinatari = $this->request->data['Mail']['suppliers'];
-					$ids = '';
-					foreach($destinatari as $key => $value)
-						$ids .= $value.',';
-					$ids = substr($ids , 0, strlen($ids)-1);
-								
-					$sql .= " AND Supplier.id IN (".$ids.")";
-				}
-				self::d($sql, $debug);
-				$results = $Supplier->query($sql);
-			}
-			else
-			if($this->request->data['Mail']['dest_options']=='ORGANIZATIONS') {
+					$sql = "SELECT
+								Supplier.id, Supplier.mail, Supplier.name
+							FROM
+								".Configure::read('DB.prefix')."suppliers AS Supplier
+							WHERE
+								(Supplier.mail is not null and Supplier.mail != '') 
+								AND (Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG') ";
 				
-				App::import('Model', 'Organization');
-				$Organization = new Organization;
-							
-				$sql = "SELECT
-							Organization.id, Organization.mail, Organization.name
-						FROM
-							".Configure::read('DB.prefix')."organizations AS Organization 
-						WHERE
-							1 = 1 ";
-				if($this->request->data['Mail']['dest_options_qta_gas']=='SOME' || 
-				   $this->request->data['Mail']['dest_options_qta_gas']=='SOME-MANAGER') {
-					$destinatari = $this->request->data['Mail']['organizations'];
-					$ids = '';
-					foreach($destinatari as $key => $value)
-						$ids .= $value.',';
-					$ids = substr($ids , 0, strlen($ids)-1);
-								
-					$sql .= " AND Organization.id IN (".$ids.")";
-				}
-				
-				self::d($sql, $debug);
-				$organizationResults = $Organization->query($sql);	
+					if($this->request->data['Mail']['dest_options_qta_supplier']=='SOME') {
+						$destinatari = $this->request->data['Mail']['suppliers'];
+						$ids = '';
+						foreach($destinatari as $key => $value)
+							$ids .= $value.',';
+						$ids = substr($ids , 0, strlen($ids)-1);
+									
+						$sql .= " AND Supplier.id IN (".$ids.")";
+					}
+					self::d($sql, $debug);
+					$results = $Supplier->query($sql);
+				break;
+				case 'GAS':
+				case 'PRODGAS':
 
-				/*
-				 * estraggo gli users dell'organization 
-				 */
-				App::import('Model', 'User');
-				
-				$results = [];
-				$i=0;
-				foreach($organizationResults as $numResult => $organizationResult) {
+					$sql = "SELECT
+								Organization.id, Organization.mail, Organization.name
+							FROM
+								".Configure::read('DB.prefix')."organizations AS Organization 
+							WHERE
+								Organization.type = '".$this->request->data['Mail']['dest_options']."'";
+								
+					if($this->request->data['Mail']['dest_options_qta_gas']=='SOME' || 
+					   $this->request->data['Mail']['dest_options_qta_gas']=='SOME-MANAGER') {
+						   
+						if($this->request->data['Mail']['dest_options']=='GAS')
+							$destinatari = $this->request->data['Mail']['gas'];
+						else
+							$destinatari = $this->request->data['Mail']['prodgas'];
+						$ids = '';
+						foreach($destinatari as $key => $value)
+							$ids .= $value.',';
+						$ids = substr($ids , 0, strlen($ids)-1);
+									
+						$sql .= " AND Organization.id IN (".$ids.")";
+					}
+					self::d($sql, $debug);
+					$organizationResults = $Organization->query($sql);	
+
+					/*
+					 * estraggo gli users dell'organization 
+					 */
+					App::import('Model', 'User');
 					
-					$User = new User;
-					$conditions = [];
-					if($this->request->data['Mail']['dest_options_qta_gas']=='SOME-MANAGER') 
-						$conditions += array('UserGroup.group_id' => Configure::read('group_id_manager'));
-					else 
-						$conditions += array('UserGroup.group_id' => Configure::read('group_id_user'));
-										
-					$tmp->user->organization['Organization']['id'] = $organizationResult['Organization']['id'];
-					$usersResults = $User->getUsersComplete($tmp->user, $conditions);
-							
-					foreach($usersResults as $usersResult) {
-						$results[$i]['User'] = $usersResult['User'];
-						$i++;
-					}							
-				}				 
+					$results = [];
+					$i=0;
+					foreach($organizationResults as $numResult => $organizationResult) {
+						
+						$User = new User;
+						$conditions = [];
+						if($this->request->data['Mail']['dest_options_qta_gas']=='SOME-MANAGER') 
+							$conditions += ['UserGroup.group_id' => Configure::read('group_id_manager')];
+						else 
+							$conditions += ['UserGroup.group_id' => Configure::read('group_id_user')];
+											
+						$tmp->user->organization['Organization']['id'] = $organizationResult['Organization']['id'];
+						$usersResults = $User->getUsersComplete($tmp->user, $conditions);
+								
+						foreach($usersResults as $usersResult) {
+							$results[$i]['User'] = $usersResult['User'];
+							$i++;
+						}
+					}	
+				break;
 			}			
 
 			/*
@@ -903,7 +909,7 @@ class MailsController extends AppController {
 			if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))
 				$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
 			else
-				$Email->replyTo(array($this->user->email => $this->user->email));
+				$Email->replyTo([$this->user->email => $this->user->email]);
 	
 			$subject_mail = $this->request->data['Mail']['subject'];
 			$Email->subject($subject_mail);
@@ -963,17 +969,19 @@ class MailsController extends AppController {
 			$tot_ok=0;
 			$tot_no=0;
 			foreach($results as $result) {
-				if($this->request->data['Mail']['dest_options']=='ORGANIZATIONS') {
-					$id = $result['User']['id'];
-					$mail = $result['User']['email'];
-					$name = $result['User']['name'];					
-				}
-				else
-				if($this->request->data['Mail']['dest_options']=='SUPPLIERS') {
-					$id = $result['Supplier']['id'];
-					$mail = $result['Supplier']['mail'];
-					$name = $result['Supplier']['name'];					
-				}
+				switch($this->request->data['Mail']['dest_options']) {
+					case 'SUPPLIERS':
+						$id = $result['Supplier']['id'];
+						$mail = $result['Supplier']['mail'];
+						$name = $result['Supplier']['name'];								
+					break;
+					case 'GAS':
+					case 'PRODGAS':
+						$id = $result['User']['id'];
+						$mail = $result['User']['email'];
+						$name = $result['User']['name'];					
+					break;
+				}				
 
 				if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))  
 					$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply_simple'), $this->traslateWww(Configure::read('SOC.site')))));
@@ -1008,16 +1016,17 @@ class MailsController extends AppController {
 		} // end if ($this->request->is('post') || $this->request->is('put'))
 		
 		
-		$dest_options = array('SUPPLIERS' => 'Produttori', 
-							  'ORGANIZATIONS' => 'G.A.S.');
+		$dest_options = ['SUPPLIERS' => 'Produttori', 
+						 'GAS' => 'Organization - G.A.S.', 
+						 'PRODGAS' => 'Organization - Produttori'];
 					
-		$dest_options_qta_supplier = array('ALL' => 'A tutti',
-								  'SOME' => 'Ad alcuni');
+		$dest_options_qta_supplier = ['ALL' => 'A tutti',
+								  'SOME' => 'Ad alcuni'];
 								  
 					
-		$dest_options_qta_gas = array('ALL' => 'A tutti',
+		$dest_options_qta_gas = ['ALL' => 'A tutti',
 								  'SOME' => 'Ad alcuni',
-								  'SOME-MANAGER' => 'Solo ai manager');
+								  'SOME-MANAGER' => 'Solo ai manager'];
 		
 		$this->set(compact('dest_options','dest_options_qta_supplier','dest_options_qta_gas'));
 
@@ -1031,25 +1040,44 @@ class MailsController extends AppController {
 			
 		$options = [];
 		$options['recursive'] = -1;
-        // $options['conditions'] = ['Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+        $options['conditions'] = ['Organization.type' => 'GAS'];
         $options['order'] = ['Organization.name'];
 		$organizationResults = $Organization->find('all', $options);
 		$newOrganizationResults = [];
 		foreach($organizationResults as $organizationResult) {
 			
 			$User = new User;
-			$options['conditions'] = ['User.organization_id' => $organizationResult['Organization']['id'],
-									   'User.block' => 0];
+			$options['conditions'] = ['User.organization_id' => $organizationResult['Organization']['id'], 'User.block' => 0];
 			$tot_users = $User->find('count', $options);
-			$newOrganizationResults[$organizationResult['Organization']['id']] = $organizationResult['Organization']['name'].' ('.$tot_users.')';			
+			$tmp = '';
+			if($organizationResult['Organization']['stato']=='N') 
+				$tmp = ' NON ATTIVO';
+			$newOrganizationResults[$organizationResult['Organization']['id']] = $organizationResult['Organization']['name'].' ('.$tot_users.')'.$tmp;			
 		}
 		$this->set('organizationResults', $newOrganizationResults);
 			
+		$options = [];
+		$options['recursive'] = -1;
+        $options['conditions'] = ['Organization.type' => 'PRODGAS'];
+        $options['order'] = ['Organization.name'];
+		$organizationProdGasResults = $Organization->find('all', $options);
+		$newOrganizationProdGasResults = [];
+		foreach($organizationProdGasResults as $organizationProdGasResult) {
+			
+			$User = new User;
+			$options['conditions'] = ['User.organization_id' => $organizationProdGasResult['Organization']['id'], 'User.block' => 0];
+			$tot_users = $User->find('count', $options);
+			if($organizationProdGasResult['Organization']['stato']=='N') 
+				$tmp = ' NON ATTIVO';			
+			$newOrganizationProdGasResults[$organizationProdGasResult['Organization']['id']] = $organizationProdGasResult['Organization']['name'].' ('.$tot_users.')'.$tmp;			
+		}
+		$this->set('organizationProdGasResults', $newOrganizationProdGasResults);
+		
 		/*
 		 * mittenti
 		 */
-		$mittenti = array($this->user->email => $this->user->email.' '.$this->user->name,
-						  Configure::read('Mail.no_reply_mail') => Configure::read('SOC.name').' '.Configure::read('Mail.no_reply_mail'));
+		$mittenti = [$this->user->email => $this->user->email.' '.$this->user->name,
+					  Configure::read('Mail.no_reply_mail') => Configure::read('SOC.name').' '.Configure::read('Mail.no_reply_mail')];
 		$this->set(compact('mittenti'));
 
 		App::import('Model', 'Supplier');
@@ -1062,9 +1090,9 @@ class MailsController extends AppController {
 		$options['conditions'] = ["(Supplier.mail is not null and Supplier.mail != '')",
 					"(Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG')"];
 			
-		$options['fields'] = array('Supplier.id', 'Supplier.name');
+		$options['fields'] = ['Supplier.id', 'Supplier.name'];
+		$options['order'] = ['Supplier.name'];
 		$options['recursive'] = -1;
-		$options['order'] = array('Supplier.name');
 		$results = $Supplier->find('list', $options);
 
 		$this->set('ACLsuppliersOrganization',$results);
@@ -1083,11 +1111,11 @@ class MailsController extends AppController {
 				
 		App::import('Model', 'DesSupplier');
 		
-		$conditions = array('Mail.organization_id' => $this->user->organization['Organization']['id'],
+		$conditions = ['Mail.organization_id' => $this->user->organization['Organization']['id'],
 							'Mail.user_id' => $this->user->id,
-							'Mail.dest_options' => 'DES');
+							'Mail.dest_options' => 'DES'];
 		
-		$this->paginate = array('conditions' => array($conditions), 'order' => 'Mail.created desc, User.name');
+		$this->paginate = ['conditions' => [$conditions], 'order' => 'Mail.created desc, User.name'];
 		$results = $this->paginate('Mail');
 		foreach($results as $numResult => $result) {
 			
@@ -1152,11 +1180,11 @@ class MailsController extends AppController {
 			$DesOrganization->unbindModel(array('belongsTo' => array('De')));
 	
 			$options = [];
-			$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id,
+			$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
 										   // escludo il proprio 'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']
-										   );
+										];
 			$options['recursive'] = 0;
-			$options['order_by'] = array('Organization.name');
+			$options['order_by'] = ['Organization.name'];
 			$desOrganizationsResults = $DesOrganization->find('all', $options);	
 				
 	
@@ -1191,7 +1219,7 @@ class MailsController extends AppController {
 			/*
 			 * mittenti
 			*/
-			$Email->replyTo(array($this->user->email => $this->user->email));
+			$Email->replyTo([$this->user->email => $this->user->email]);
 			$subject_mail = $this->request->data['Mail']['subject'];
 			$Email->subject($subject_mail);
 			
@@ -1317,9 +1345,9 @@ class MailsController extends AppController {
 			$DesOrder = new DesOrder();
 			
 			$options = [];
-			$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id,
-										   'DesOrder.id' => $des_order_id);
-			$options['fields'] = array('DesOrder.des_supplier_id'); 
+			$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,
+									  'DesOrder.id' => $des_order_id];
+			$options['fields'] = ['DesOrder.des_supplier_id']; 
 			$options['recursive'] = -1;
 			$desOrderResults = $DesOrder->find('first', $options);
 			$des_supplier_id = $desOrderResults['DesOrder']['des_supplier_id']; 
@@ -1331,16 +1359,16 @@ class MailsController extends AppController {
 		 */
 		$options = [];
 		$options['recursive'] = -1;
-		$options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id);
+		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id];
 		if(!empty($des_supplier_id)) 
-			$options['conditions'] += array('DesSupplier.id' => $des_supplier_id);
+			$options['conditions'] += ['DesSupplier.id' => $des_supplier_id];
 		else
 		if($this->isTitolareDesSupplier()) {
 			$ACLsuppliersIdsDes = $this->user->get('ACLsuppliersIdsDes');
 			if(empty($ACLsuppliersIdsDes)) 
-				$options['conditions'] += array('DesSupplier.id IN (0)');
+				$options['conditions'] += ['DesSupplier.id IN (0)'];
 			else
-				$options['conditions'] += array('DesSupplier.id IN ('.$this->user->get('ACLsuppliersIdsDes').')');
+				$options['conditions'] += ['DesSupplier.id IN ('.$this->user->get('ACLsuppliersIdsDes').')'];
 		}
 		$options['recursive'] = 1;
 		$results = $DesSupplier->find('all', $options);
@@ -1374,11 +1402,11 @@ class MailsController extends AppController {
 		$DesOrganization->unbindModel(array('belongsTo' => array('De')));
 
 		$options = [];
-		$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id,
-									   // escludo il proprio 'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']
-									   );
+		$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
+								  // escludo il proprio 'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']
+								 ];
 		$options['recursive'] = 0;
-		$options['order_by'] = array('Organization.name');
+		$options['order_by'] = ['Organization.name'];
 		$desOrganizationsResults = $DesOrganization->find('all', $options);	
 		
 		self::d([$options,$desOrganizationsResults],$debug);
@@ -1466,7 +1494,7 @@ class MailsController extends AppController {
 			$this->Session->setFlash(__('Delete Mail'));
 		else
 			$this->Session->setFlash(__('Mail was not deleted'));
-		$this->myRedirect(array('action' => 'index'));
+		$this->myRedirect(['action' => 'index']);
 	}
 	
 	/* 
@@ -1642,7 +1670,7 @@ class MailsController extends AppController {
 				if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))
 					$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
 				else
-					$Email->replyTo(array($this->user->email => $this->user->email));
+					$Email->replyTo([$this->user->email => $this->user->email]);
 		
 				$subject_mail = $this->request->data['Mail']['subject'];
 				$Email->subject($subject_mail);

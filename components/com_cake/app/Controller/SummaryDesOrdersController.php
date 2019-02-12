@@ -37,11 +37,9 @@ class SummaryDesOrdersController extends AppController {
 	    $DesOrder = new DesOrder;
 	
 		$desOrdersResults = $DesOrder->getDesOrder($this->user, $des_order_id);
-		/*
-		echo "<pre>";
-		print_r($desOrdersResults);
-		echo "</pre>";	
-		*/
+		
+		self::d($desOrdersResults,false);
+	
 		$this->set(compact('desOrdersResults'));		
 
 		$this->set(compact('des_order_id'));
@@ -58,7 +56,7 @@ class SummaryDesOrdersController extends AppController {
 		App::import('Model', 'DesOrder');
 		$DesOrder = new DesOrder();			 
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SummaryDesOrder.des_id' => $this->user->des_id,
 									   'SummaryDesOrder.id' => $id
 									);
@@ -101,7 +99,7 @@ class SummaryDesOrdersController extends AppController {
 			App::import('Model', 'DesOrder');
 			$DesOrder = new DesOrder();			 
 	
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('SummaryDesOrder.des_id' => $this->user->des_id,
 										   'SummaryDesOrder.id' => $id
 										);

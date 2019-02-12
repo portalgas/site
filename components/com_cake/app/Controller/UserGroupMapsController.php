@@ -26,33 +26,18 @@ class UserGroupMapsController extends AppController {
 
 	public function admin_intro() {
 		
+		$debug = false;
+		
+		App::import('Model', 'UserGroupMap');
+		$UserGroupMap = new UserGroupMap;
+		
 		$this->set('isManager',$this->isManager());
 	
 		/*
 		 * totale utenti associati ad un ruolo
 		*/
 		foreach ($this->userGroups as $group_id => $data) {
-			
-			$sql = "SELECT count(User.id) as tot_users
-					FROM
-						".Configure::read('DB.portalPrefix')."user_usergroup_map m,
-						".Configure::read('DB.portalPrefix')."usergroups g,
-						".Configure::read('DB.portalPrefix')."users User
-								WHERE
-								m.user_id = User.id
-								and m.group_id = g.id
-								and m.group_id = $group_id
-								and User.block = 0
-								and User.organization_id = ".(int)$this->user->organization['Organization']['id'];
-			// echo '<br />'.$sql;
-			try {
-				$results = current($this->UserGroupMap->query($sql));
-				$this->userGroups[$group_id]['tot_users'] = $results[0]['tot_users'];
-			}
-			catch (Exception $e) {
-				CakeLog::write('error',$sql);
-				CakeLog::write('error',$e);
-			}			
+			$this->userGroups[$group_id]['tot_users'] = $UserGroupMap->getTotUserByGroupId($this->user, $group_id, $debug);			
 		}
 			
 		$this->set('userGroups', $this->userGroups);	
@@ -77,7 +62,7 @@ class UserGroupMapsController extends AppController {
 		$this->set('results',$results);
 		$this->set('group_id',$group_id);
 		
-		$this->set('add_user', $this->__canAddUser($group_id, $results));
+		$this->set('add_user', $this->_canAddUser($group_id, $results));
 	}
 	
 	/*
@@ -177,7 +162,7 @@ class UserGroupMapsController extends AppController {
 	/*
 	 * se group_id = Configure::write('group_id_storeroom',9) posso solo avere 1 user
 	 */
-	private function __canAddUser($group_id, $results) {
+	private function _canAddUser($group_id, $results) {
 		$add_user = true;
 		if($group_id == Configure::read('group_id_storeroom')) {
 			if(empty($results))

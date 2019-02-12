@@ -16,7 +16,7 @@ class DesOrdersController extends AppController {
    		}
    		
 		if(empty($this->user->des_id)) {
-            $this->Session->setFlash(__('Devi scegliere il tuo DES'));
+            $this->Session->setFlash(__('msg_des_choice'));
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Des&action=index';
 			$this->myRedirect($url);
         }
@@ -69,16 +69,16 @@ class DesOrdersController extends AppController {
 		if(Configure::read('developer.mode')) echo "</pre>";		   			
 
 				
-		$options = array();
+		$options = [];
 		$options['recursive'] = -1;
- 		$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id, 
-									   'DATE(DesOrder.data_fine_max) >= CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY');
+ 		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id, 
+									   'DATE(DesOrder.data_fine_max) >= CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY'];
  		if(!$this->isSuperReferenteDes())
- 			$options['conditions'] = ('DesOrder.des_supplier_id IN ('.$ACLsuppliersIdsDes.')');
-		$options['order'] = array('DesOrder.data_fine_max desc', 'DesOrder.id');
+ 			$options['conditions'] += ['DesOrder.des_supplier_id IN ('.$ACLsuppliersIdsDes.')'];
+		$options['order'] = ['DesOrder.data_fine_max desc', 'DesOrder.id'];
 		$results = $this->DesOrder->find('all', $options);
-		
-		$newResults = array();
+	
+		$newResults = [];
 		foreach($results as $numResult => $result) {
 			$newResults[$numResult] = $this->DesOrder->getDesOrder($this->user, $result['DesOrder']['id']);
 			
@@ -89,11 +89,7 @@ class DesOrdersController extends AppController {
 			$newResults[$numResult]['DesOrder']['isTitolareDesSupplier'] = $isTitolareDesSupplier;
 		}
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($newResults);
-			echo "</pre>";			
-		}
+		self::d($newResults, $debug);
 		
 		$this->set('results', $newResults);
 		
@@ -114,16 +110,16 @@ class DesOrdersController extends AppController {
 		if(empty($ACLsuppliersIdsDes)) 
 			$ACLsuppliersIdsDes = 0;
 				
-		$options = array();
+		$options = [];
 		$options['recursive'] = -1;
- 		$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id, 
-									   'DATE(DesOrder.data_fine_max) < CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY');
+ 		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id, 
+								   'DATE(DesOrder.data_fine_max) < CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY'];
  		if(!$this->isSuperReferenteDes())
- 			$options['conditions'] = ('DesOrder.des_supplier_id IN ('.$ACLsuppliersIdsDes.')');
-		$options['order'] = array('DesOrder.data_fine_max desc', 'DesOrder.id');
+ 			$options['conditions'] += ['DesOrder.des_supplier_id IN ('.$ACLsuppliersIdsDes.')'];
+		$options['order'] = ['DesOrder.data_fine_max desc', 'DesOrder.id'];
 		$results = $this->DesOrder->find('all', $options);
 		
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResult => $result) {
 			$newResults[$numResult] = $this->DesOrder->getDesOrder($this->user, $result['DesOrder']['id']);
 			
@@ -133,12 +129,8 @@ class DesOrdersController extends AppController {
 			$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $result['DesOrder']['id']);		
 			$newResults[$numResult]['DesOrder']['isTitolareDesSupplier'] = $isTitolareDesSupplier;
 		}
-		
-		if($debug) {
-			echo "<pre>";
-			print_r($newResults);
-			echo "</pre>";			
-		}
+
+		self::d($newResults, $debug);		
 		
 		$this->set('results', $newResults);
 		
@@ -212,11 +204,7 @@ class DesOrdersController extends AppController {
 			$this->request->data['DesOrder']['state_code'] = 'OPEN';
 			$this->request->data['DesOrder']['data_fine_max'] = $this->request->data['DesOrder']['data_fine_max_db'];
 			
-			if($debug) {		
-				echo "<pre>DesOrder::admid_add() this->request->data \r ";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			self::d(["DesOrder::admid_add() this->request->data", $this->request->data], $debug);		
 				
 			$this->DesOrder->create();
 			if ($this->DesOrder->save($this->request->data)) {
@@ -238,9 +226,9 @@ class DesOrdersController extends AppController {
 								  Configure::read('group_id_des_supplier_all_gas')
 						];
 						*/
-						$arr_users_groups = split(',', $this->request->data['DesOrder']['sendMailTarget_hidden']);
+						$arr_users_groups = explode(',', $this->request->data['DesOrder']['sendMailTarget_hidden']); 
 						
-						$roles = array();
+						$roles = [];
 						foreach($arr_users_groups as $numResult => $arr_users_group)
 							$roles[$numResult] = $arr_users_group;						
 
@@ -251,15 +239,11 @@ class DesOrdersController extends AppController {
 						$DesSupplier = new DesSupplier;
 						$DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization')));
 						
-						$options = array();
+						$options = [];
 						$options['conditions'] = array('DesSupplier.id' => $this->request->data['DesOrder']['des_supplier_id']);
 						$options['recursive'] = 0;
 						$desSupplierResults = $DesSupplier->find('first', $options);			
-						if($debug) {		
-							echo "<pre>DesOrder::admid_add() - dati produttore \r ";
-							print_r($desSupplierResults);
-							echo "</pre>";
-						}
+						self::d(["DesOrder::admid_add() - dati produttore", $desSupplierResults], $debug);	
 					
 						App::import('Model', 'DesSuppliersReferent');
 
@@ -268,21 +252,16 @@ class DesOrdersController extends AppController {
 					
 						$DesOrganization->unbindModel(array('belongsTo' => array('De', 'Organization')));
 
-						$options = array();
-						$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id,
+						$options = [];
+						$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
 													   // escludo il proprio 'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']
-													   );
+												];
 						$options['recursive'] = 0;
 						$options['order_by'] = array('Organization.name');
 						$desOrganizationsResults = $DesOrganization->find('all', $options);	
-						if($debug) {
-							echo "<pre>DesController::admin_add: Elenco DesOrganizations \r ";
-							print_r($options);
-							print_r($desOrganizationsResults);
-							echo "</pre>";			
-						}			
+						self::d(["DesOrder::admid_add() - Elenco DesOrganizations", $options['conditions'], $desOrganizationsResults], $debug);		
 
-						$userMailResults = array();
+						$userMailResults = [];
 						/*
 						 * per ogni GAS estraggo gli utenti
 						 */			
@@ -293,11 +272,7 @@ class DesOrdersController extends AppController {
 							$userMailResults += $DesSuppliersReferent->getUsersRoles($this->user, $organization_id, $roles, $this->request->data['DesOrder']['des_supplier_id']);			
 						}
 						
-						if($debug) {
-							echo "<pre>DesController::admin_add \r ";
-							print_r($userMailResults);
-							echo "</pre>";			
-						}
+						self::d($userMailResults, $debug);	
 						
 						App::import('Model', 'Mail');
 						$Mail = new Mail;
@@ -315,7 +290,7 @@ class DesOrdersController extends AppController {
 							$body_mail .= "<b>Nota</b>: ".$this->request->data['DesOrder']['nota']."<br />";
 										
 						$Email->subject($subject_mail);
-						$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+						$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 							
 						$str_log = "";
 						foreach ($userMailResults as $userResult)  {
@@ -323,7 +298,7 @@ class DesOrdersController extends AppController {
 							$mail = $userResult['User']['email'];
 								
 							if(!empty($mail)) {
-								$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+								$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 								$Email->to($mail);
 								if(!Configure::read('mail.send')) $Email->transport('Debug');
 								
@@ -396,7 +371,7 @@ class DesOrdersController extends AppController {
 		$DesSuppliersReferent = new DesSuppliersReferent;
 
 		$ACLDesSuppliersResults = $DesSuppliersReferent->getDesSuppliersTitolare($this->user); 
-		$newResults = array();
+		$newResults = [];
 		if(!empty($ACLDesSuppliersResults)) {
 			foreach($ACLDesSuppliersResults as $ACLDesSuppliersResult) 
 				$newResults[$ACLDesSuppliersResult['DesSupplier']['id']] = $ACLDesSuppliersResult['Supplier']['name']; 
@@ -478,19 +453,14 @@ class DesOrdersController extends AppController {
 			$DesOrdersOrganization = new DesOrdersOrganization();
 			$DesOrdersOrganization->unbindModel(array('belongsTo' => array('De','DesOrder')));
 			
-			$options = array();
-			$options['conditions'] = array('DesOrdersOrganization.des_order_id' => $des_order_id,
-										   'DesOrdersOrganization.des_id' => $this->user->des_id);
+			$options = [];
+			$options['conditions'] = ['DesOrdersOrganization.des_order_id' => $des_order_id,
+									  'DesOrdersOrganization.des_id' => $this->user->des_id];
 			$options['recursive'] = 1;
 			$options['fields'] = array('Organization.id','Organization.name',
 										'Order.organization_id', 'Order.id', 'Order.data_inizio', 'Order.data_fine');
 			$desOrdersOrganizationsResults = $DesOrdersOrganization->find('all', $options);
-			if($debug) {
-				echo "<pre>DesOrders::edit ORDINI di tutti i GAS associati \r ";
-				print_r($options);
-				print_r($desOrdersOrganizationsResults);
-				echo "</pre>";
-			}
+			self::d(["DesOrders::edit ORDINI di tutti i GAS associati", $options['conditions'], $desOrdersOrganizationsResults], $debug);
 			
 			foreach($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
 				
@@ -516,7 +486,7 @@ class DesOrdersController extends AppController {
 					$sql .= " WHERE
 								organization_id = ".$organization_id."
 								AND id = ".$order_id;
-					if($debug) echo '<br/>'.$sql; 
+					self::d($sql, $debug);
 					try {
 						$this->DesOrder->query($sql);
 					}
@@ -548,7 +518,7 @@ class DesOrdersController extends AppController {
 		/*
 		 * dati DesOrder
 		 */		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesOrder.id' => $des_order_id,
 									   'DesOrder.des_id' => $this->user->des_id);
 		$options['recursive'] = 0;
@@ -561,17 +531,13 @@ class DesOrdersController extends AppController {
 		$DesSupplier = new DesSupplier;
 		$DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization')));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesSupplier.id' => $this->request->data['DesSupplier']['id']);
 		$options['recursive'] = 0;
 		$desSupplierResults = $DesSupplier->find('first', $options);			
 		
 		$this->request->data['Supplier'] = $desSupplierResults['Supplier'];
-		/*
-		echo "<pre>";
-		print_r($this->request->data);
-		echo "</pre>";
-		*/
+		
 		$nota_evidenza = ClassRegistry::init('DesOrder')->enumOptions('nota_evidenza');
 		unset($nota_evidenza['NO']);
 		$this->set(compact('nota_evidenza'));	
@@ -617,7 +583,7 @@ class DesOrdersController extends AppController {
 		/*
 		 * dati DesOrder
 		 */		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesOrder.id' => $des_order_id,
 									   'DesOrder.des_id' => $this->user->des_id);
 		$options['recursive'] = 0;
@@ -630,17 +596,12 @@ class DesOrdersController extends AppController {
 		$DesSupplier = new DesSupplier;
 		$DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization')));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesSupplier.id' => $this->request->data['DesSupplier']['id']);
 		$options['recursive'] = 0;
 		$desSupplierResults = $DesSupplier->find('first', $options);			
 		
 		$this->request->data['Supplier'] = $desSupplierResults['Supplier'];
-		/*
-		echo "<pre>";
-		print_r($this->request->data);
-		echo "</pre>";
-		*/
 		
 		$this->set(compact('des_order_id'));
    }
@@ -658,26 +619,19 @@ class DesOrdersController extends AppController {
 		$DesOrder = new DesOrder();
 		$DesOrder->unbindModel(array('belongsTo' => array('De', 'DesOrder')));
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id,
 									   'DesOrder.id' => $des_order_id);
 		$options['fields'] = array('DesSupplier.supplier_id');
 		$options['recursive'] = 1;
 		$results = $DesOrder->find('first', $options);
-		
-		/*
-		echo "<pre>";
-		print_r($options);
-		print_r($results);
-		echo "</pre>";		
-		*/
-		
+				
 		$supplier_id = $results['DesSupplier']['supplier_id'];
 		
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization();
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 									   'SuppliersOrganization.stato' => 'Y',
 									   'SuppliersOrganization.supplier_id' => $supplier_id);
@@ -706,27 +660,27 @@ class DesOrdersController extends AppController {
 	}
 	
 	public function admin_prepare_order_edit($des_order_id) {
-		$url = $this->__prepare_order($this->user, $des_order_id, $this->action);
+		$url = $this->_prepare_order($this->user, $des_order_id, $this->action);
 		$this->myRedirect($url);
 	}
 	
 	public function admin_prepare_order_home($des_order_id) {
-		$url = $this->__prepare_order($this->user, $des_order_id, $this->action);
+		$url = $this->_prepare_order($this->user, $des_order_id, $this->action);
 		$this->myRedirect($url);
 	}
 
 	public function admin_prepare_order_print($des_order_id) {	
-		$url = $this->__prepare_order($this->user, $des_order_id, $this->action);
+		$url = $this->_prepare_order($this->user, $des_order_id, $this->action);
 		$this->myRedirect($url);
 	}
 
 	public function admin_prepare_articles_orders_index($des_order_id) {
-		$url = $this->__prepare_order($this->user, $des_order_id, $this->action);
+		$url = $this->_prepare_order($this->user, $des_order_id, $this->action);
 		$this->myRedirect($url);
 	}
 
 	public function admin_prepare_articles_orders_index_only_read_des($des_order_id) {
-		$url = $this->__prepare_order($this->user, $des_order_id, $this->action);
+		$url = $this->_prepare_order($this->user, $des_order_id, $this->action);
 		$this->myRedirect($url);	
 	}
 	
@@ -742,7 +696,7 @@ class DesOrdersController extends AppController {
 		App::import('Model', 'DesOrdersOrganization');
 		$DesOrdersOrganization = new DesOrdersOrganization();
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('DesOrdersOrganization.des_id' => $this->user->des_id,
 									   'DesOrdersOrganization.des_order_id' => $des_order_id,
 									   'DesOrdersOrganization.organization_id' => $organization_id);
@@ -759,7 +713,7 @@ class DesOrdersController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order();
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Order.id' => $order_id,
 									   'Order.organization_id' => $organization_id);
 		$options['fields'] = array('Order.organization_id', 'Order.delivery_id'); 
@@ -777,7 +731,7 @@ class DesOrdersController extends AppController {
 		$this->myRedirect($url);
 	}
 
-	private function __prepare_order($user, $des_order_id, $action) {
+	private function _prepare_order($user, $des_order_id, $action) {
 		
 		$url = "";
 		
@@ -787,11 +741,11 @@ class DesOrdersController extends AppController {
 		App::import('Model', 'DesOrdersOrganization');
 		$DesOrdersOrganization = new DesOrdersOrganization();
 		
-		$options = array();
-		$options['conditions'] = array('DesOrdersOrganization.des_id' => $user->des_id,
-									   'DesOrdersOrganization.des_order_id' => $des_order_id,
-									   'DesOrdersOrganization.organization_id' => $user->organization['Organization']['id']);
-		$options['fields'] = array('DesOrdersOrganization.order_id'); 
+		$options = [];
+		$options['conditions'] = ['DesOrdersOrganization.des_id' => $user->des_id,
+								   'DesOrdersOrganization.des_order_id' => $des_order_id,
+								   'DesOrdersOrganization.organization_id' => $user->organization['Organization']['id']];
+		$options['fields'] = ['DesOrdersOrganization.order_id']; 
 		$options['recursive'] = -1;
 		$results = $DesOrdersOrganization->find('first', $options);
 		
@@ -808,9 +762,9 @@ class DesOrdersController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order();
 		
-		$options = array();
-		$options['conditions'] = array('Order.id' => $order_id,
-									   'Order.organization_id' => $user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.id' => $order_id,
+							      'Order.organization_id' => $user->organization['Organization']['id']];
 		$options['recursive'] = -1;
 		$orderResults = $Order->find('first', $options);
 		if(empty($orderResults)) {
@@ -864,7 +818,7 @@ class DesOrdersController extends AppController {
 			break;
 			case "admin_prepare_articles_orders_index_only_read_des":
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-				$url .= '&controller=ArticlesOrders&action=index_only_read_des';
+				$url .= '&controller=ArticlesOrders&action=index';
 				$url .= '&order_id='.$order_id;
 			break;
 			default:
@@ -885,19 +839,14 @@ class DesOrdersController extends AppController {
 
 		$this->ctrlHttpReferer();
 				
-		$options = array();
-		$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id,
-									   'DesOrder.id' => $des_order_id);
+		$options = [];
+		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,
+								  'DesOrder.id' => $des_order_id];
 		$options['recursive'] = 0;
 		$results = $this->DesOrder->find('first', $options);
 		
-		if($debug) {
-			echo "<pre>DesOrders::admin_sotto_menu \n ";
-			print_r($options);
-			print_r($results);
-			echo "</pre>";
-		}
-		
+		self::d([$options, $results], $debug);
+				
 		if (empty($results)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));

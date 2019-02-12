@@ -16,8 +16,8 @@ App::uses('AppController', 'Controller');
 
 class DeliveriesController extends AppController {
 
-    public $components = ['RequestHandler'];
-    public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm'];
+    public $components = ['RequestHandler', 'Users'];
+    public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm']; 
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -29,8 +29,31 @@ class DeliveriesController extends AppController {
                 $this->myRedirect(Configure::read('routes_msg_stop'));
             }
         }
+        
+		if($this->user->organization['Organization']['type']!='GAS') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}	        
         /* ctrl ACL */
 
+		if(!$this->Users->hasUserFlagPrivacy($this->user, $this->action)) {
+			$this->Session->setFlash(__('msg_user_flag_privacy'));
+			$this->myRedirect(Configure::read('routes_msg_user_flag_privacy'));			
+		}
+		
+		self::d("------- _COOKIE --------", $debug);
+		self::d($_COOKIE, $debug);
+		self::d("------- _COOKIE --------", $debug);
+		$this->set('hasUserRegistrationExpire', 'Y');
+		if(!$this->Users->hasUserRegistrationExpire($this->user, $this->action)) {
+			// $this->Session->setFlash(__('msg_user_registration_expire'));
+			// $this->myRedirect(Configure::read('routes_msg_user_registration_expire'));
+			
+			if(!isset($_COOKIE[Configure::read('Cookies.user.registration.expire')]) || empty($_COOKIE[Configure::read('Cookies.user.registration.expire')]))
+				$this->set('hasUserRegistrationExpire', 'N');
+		}
+		
+	
         /*
          * ctrl configurazione Organization
          */
@@ -529,7 +552,8 @@ class DeliveriesController extends AppController {
 				App::import('Model', 'ProdGasPromotion');
 				$ProdGasPromotion = new ProdGasPromotion;
 				 
-				$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $supplier_id, $prod_gas_promotion_id, $debug);
+				$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $debug);
+				self::d($promotionResults, $debug);
 				$this->set('promotionResults', $promotionResults);
 			}
 			
@@ -593,6 +617,7 @@ class DeliveriesController extends AppController {
 			 * type_draw SIMPLE / COMPLETE / PROMOTION
 			 * se non viene passato prendo quello dell'ordine Order.type_draw
 			 */
+			self::d($order['Order'], $debug); 
 			if (empty($type_draw))
 			 	$type_draw = $order['Order']['type_draw'];
 			$this->set('type_draw', $type_draw);
@@ -613,7 +638,10 @@ class DeliveriesController extends AppController {
 			if($prod_gas_promotion_id==0) 
 				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order_id, $article_organization_id, $options);
 			else
-				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $prod_gas_promotion_id, $options);
+				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order_id, $prod_gas_promotion_id, $options);
+				
+			self::d($results, $debug);
+			 	
         } // end if(!empty($order)) 	
         $this->set('results', $results);
 
@@ -1141,11 +1169,17 @@ class DeliveriesController extends AppController {
     }
 
     public function admin_index() {
-
+			
         /*
          * aggiorno lo stato delle consegne
-			* per le consegne chiuse, copio gli eventuali Acquisti dal Carrello con l'utente DISPENSA (Cart) alla DISPENSA (Storeroom)
+         * ctrl se quelle chiuse hanno tutti gli ordini CLOSE
+		 * per le consegne chiuse, copio gli eventuali Acquisti dal Carrello con l'utente DISPENSA (Cart) alla DISPENSA (Storeroom)
          * */
+		App::import('Model', 'DeliveryLifeCycle');
+		$DeliveryLifeCycle = new DeliveryLifeCycle;
+		
+		$DeliveryLifeCycle->deliveriesToOpen($this->user);	
+			
         $utilsCrons = new UtilsCrons(new View(null));
         if (Configure::read('developer.mode'))
             echo "<pre>";
@@ -1268,7 +1302,7 @@ class DeliveriesController extends AppController {
 				$this->Session->setFlash(__('The delivery could not be saved. Please, try again.').'<br />'.$msg_errors);
 			}
 			else {
-
+				self::d($this->request->data);
 	            $this->Delivery->create();
 	            if ($this->Delivery->save($this->request->data)) {
 	                $this->Session->setFlash(__('The delivery has been saved'));
@@ -1285,7 +1319,7 @@ class DeliveriesController extends AppController {
 	                        echo "</pre>";
 	                }
 	
-	                $this->delivery_id = $this->Delivery->getLastInsertId();
+	                $this->delivery_id = $this->Delivery->getLastInsertId();		
 	                $this->myRedirect(Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Deliveries&action=index&delivery_id=' . $this->delivery_id);
 	              }
 	              else
@@ -1371,7 +1405,7 @@ class DeliveriesController extends AppController {
 	                $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);
 	
 	                $this->Session->setFlash(__('The delivery has been saved'));
-	                $this->myRedirect(array('action' => 'index'));
+	                $this->myRedirect(['action' => 'index']);
 	            } else
 	                $this->Session->setFlash(__('The delivery could not be saved. Please, try again.'));
 	        }
@@ -1439,14 +1473,13 @@ class DeliveriesController extends AppController {
             setcookie('delivery_id', '', time() - 42000, Configure::read('App.server'));
             $this->Session->delete('delivery_id');
 
-            $this->myRedirect(array('action' => 'index'));
+            $this->myRedirect(['action' => 'index']);
         }
 
         $options = [];
-        $options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
-            'Delivery.id' => $this->delivery_id,
-            'Delivery.sys' => 'N'
-        );
+        $options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+									'Delivery.id' => $this->delivery_id,
+									'Delivery.sys' => 'N'];
         $options['recursive'] = 1;
         $results = $this->Delivery->find('first', $options);
         if (empty($results)) {
@@ -1460,11 +1493,13 @@ class DeliveriesController extends AppController {
         App::import('Model', 'Storeroom');
         $Storeroom = new Storeroom;
 
-		$conditions = [];
-        $conditions = array('Storeroom.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Storeroom.delivery_id' => (int) $this->delivery_id,
-            'Storeroom.stato' => 'Y');
-        $totStorerooms = $Storeroom->find('count', array('conditions' => $conditions));
+		$options = [];
+		$options['conditions'] = ['Storeroom.organization_id' => (int) $this->user->organization['Organization']['id'],
+									'Storeroom.delivery_id' => (int) $this->delivery_id,
+									'Storeroom.stato' => 'Y'];
+		$options['recursive'] = -1;
+		
+        $totStorerooms = $Storeroom->find('count', $options);
         $results['totStorerooms'] = $totStorerooms;
 
         $this->set(compact('results'));
@@ -1509,7 +1544,7 @@ class DeliveriesController extends AppController {
             $this->myRedirect(Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Deliveries&action=edit&delivery_id=' . $this->delivery_id);
         } else {
             $this->Session->setFlash(__('The delivery could not be copied. Please, try again.'));
-            $this->myRedirect(array('action' => 'index'));
+            $this->myRedirect(['action' => 'index']);
         }
     }
 

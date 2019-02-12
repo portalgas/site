@@ -23,7 +23,7 @@ class MonitoringSuppliersOrganizationsController extends AppController {
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('MonitoringSuppliersOrganization.organization_id' => $this->user->organization['Organization']['id']);
         $options['order'] = array('SuppliersOrganization.name');
         $options['recursive'] = 0;
@@ -42,7 +42,7 @@ class MonitoringSuppliersOrganizationsController extends AppController {
              * */
             $Supplier = new Supplier;
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
             $options['fields'] = array('Supplier.img1');
             $options['recursive'] = -1;
@@ -88,7 +88,7 @@ class MonitoringSuppliersOrganizationsController extends AppController {
             $mail_order_close = 'N';
             $mail_order_data_fine = $this->request->data['MonitoringSuppliersOrganization']['mail_order_data_fine'];
             
-            $options = array();
+            $options = [];
             $options['conditions'] = array('MonitoringSuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
                 'MonitoringSuppliersOrganization.supplier_organization_id' => $supplier_organization_id);
             $options['recursive'] = 0;
@@ -123,7 +123,7 @@ class MonitoringSuppliersOrganizationsController extends AppController {
             App::import('Model', 'SuppliersOrganization');
             $SuppliersOrganization = new SuppliersOrganization;
 
-            $options = array();
+            $options = [];
             $options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
                 'SuppliersOrganization.stato' => 'Y');
             $options['recursive'] = -1;
@@ -140,7 +140,7 @@ class MonitoringSuppliersOrganizationsController extends AppController {
 
     public function admin_suppliers_organizations_index($supplier_organization_id = 0) {
 
-        $options = array();
+        $options = [];
         $options['conditions'] = array('MonitoringSuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
             'MonitoringSuppliersOrganization.supplier_organization_id' => $supplier_organization_id);
         $options['recursive'] = -1;

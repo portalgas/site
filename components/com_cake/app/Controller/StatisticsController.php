@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 
 class StatisticsController extends AppController {
@@ -8,13 +7,42 @@ class StatisticsController extends AppController {
         parent::beforeFilter();
 
         /* ctrl ACL */
-        if (!$this->isManager()) {
+		$actionWithPermission = ['admin_add'];
+	   	if (in_array($this->action, $actionWithPermission) && !$this->isRoot()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+		else
+        if (!$this->isRoot() && !$this->isManager() && !$this->isTesoriere()) {
             $this->Session->setFlash(__('msg_not_permission'));
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
         /* ctrl ACL */
     }
 
+	/*
+	 * aggiunge una consegna e ordine in statistica
+	 * operazione manuale, solo root
+	 */
+    public function admin_add($delivery_id) {
+	
+		$debug=true;
+
+		App::import('Model', 'Delivery');
+		$Delivery = new Delivery;
+		
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+        $options['recursive'] = 0; 
+        $results = $Delivery->find('all', $options);
+		if(empty($results)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+		$this->Statistic->archiveForcedByDeliveryId($this->user, $delivery_id, $debug);		
+	}
+		 
     public function admin_index() {
 
         $stat_delivery_id = 0;
@@ -31,11 +59,11 @@ class StatisticsController extends AppController {
         App::import('Model', 'StatDelivery');
         $StatDelivery = new StatDelivery;
 
-        $options = array();
-        $options['conditions'] = array('StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-            $date_range);
-        $options['fields'] = array('id', 'luogoData');
-        $options['order'] = array('data ASC');
+        $options = [];
+        $options['conditions'] = ['StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+								  $date_range];
+        $options['fields'] = ['StatDelivery.id', 'StatDelivery.luogoData'];
+        $options['order'] = ['StatDelivery.data ASC'];
         $options['recursive'] = -1;
         $statDeliveries = $StatDelivery->find('list', $options);
         if (empty($statDeliveries)) {
@@ -49,11 +77,11 @@ class StatisticsController extends AppController {
 
             $date_range = 'DATE_FORMAT(StatDelivery.data, "%Y-%m") BETWEEN \'' . $anno_da . '-' . $mese_da . '\' AND \'' . $anno_a . '-' . $mese_a . '\'';
 
-            $options = array();
-            $options['conditions'] = array('StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-                $date_range);
-            $options['fields'] = array('id', 'luogoData');
-            $options['order'] = array('data ASC');
+            $options = [];
+            $options['conditions'] = ['StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+									  $date_range];
+            $options['fields'] = ['StatDelivery.id', 'StatDelivery.luogoData'];
+            $options['order'] = ['StatDelivery.data ASC'];
             $options['recursive'] = -1;
             $statDeliveries = $StatDelivery->find('list', $options);
         }
@@ -77,10 +105,10 @@ class StatisticsController extends AppController {
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
 
-        $options = array();
-        $options['conditions'] = array('SuppliersOrganization.organization_id = ' . (int) $this->user->organization['Organization']['id'],
-            'SuppliersOrganization.stato' => 'Y');
-        $options['order'] = array('SuppliersOrganization.name');
+        $options = [];
+        $options['conditions'] = ['SuppliersOrganization.organization_id = ' . (int) $this->user->organization['Organization']['id'],
+								   'SuppliersOrganization.stato' => 'Y'];
+        $options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = -1;
         $suppliersOrganization = $SuppliersOrganization->find('list', $options);
         $this->set(compact('suppliersOrganization'));
@@ -92,11 +120,11 @@ class StatisticsController extends AppController {
         $StatDelivery = new StatDelivery;
 
         $date_range = 'DATE_FORMAT(StatDelivery.data, "%Y-%m") BETWEEN \'' . $anno_da . '-' . $mese_da . '\' AND \'' . $anno_a . '-' . $mese_a . '\'';
-        $options = array();
-        $options['conditions'] = array('StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-            $date_range);
-        $options['fields'] = array('id', 'luogoData');
-        $options['order'] = array('data ASC');
+        $options = [];
+        $options['conditions'] = ['StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+								  $date_range];
+		$options['fields'] = ['StatDelivery.id', 'StatDelivery.luogoData'];
+		$options['order'] = ['StatDelivery.data' => 'asc'];
         $options['recursive'] = -1;
         $statDeliveries = $StatDelivery->find('list', $options);
         $this->set(compact('statDeliveries'));
@@ -113,20 +141,20 @@ class StatisticsController extends AppController {
         App::import('Model', 'StatOrder');
         $StatOrder = new StatOrder;
 
-        $options['conditions'] = array('StatOrder.organization_id' => (int) $this->user->organization['Organization']['id']);
+        $options['conditions'] = ['StatOrder.organization_id' => (int) $this->user->organization['Organization']['id']];
         if (!empty($stat_delivery_id))
-            $options['conditions'] += array('StatOrder.stat_delivery_id' => $stat_delivery_id);
+            $options['conditions'] += ['StatOrder.stat_delivery_id' => $stat_delivery_id];
         if (!empty($supplier_organization_id))
-            $options['conditions'] += array('StatOrder.supplier_organization_id' => $supplier_organization_id);
-        $options['order'] = 'data_inizio ASC';
+            $options['conditions'] += ['StatOrder.supplier_organization_id' => $supplier_organization_id];
+        $options['order'] = ['StatOrder.data_inizio' => 'asc'];
         $options['recursive'] = 1;
         $results = $StatOrder->find('all', $options);
-        $statOrders = array();
+        $statOrders = [];
         if (!empty($results)) {
             foreach ($results as $result)
-                $statOrders[$result['StatOrder']['id']] = $result['SuppliersOrganization']['name'] . ' - dal ' . $result['StatOrder']['data_inizio_'] . ' al ' . $result['StatOrder']['data_fine_'];
+                $statOrders[$result['StatOrder']['id']] = $result['StatOrder']['supplier_organization_name'] . ' - dal ' . $result['StatOrder']['data_inizio_'] . ' al ' . $result['StatOrder']['data_fine_'];
         }
-
+		self::d($statOrders, false);
         $this->set(compact('statOrders'));
 
         $this->set('stat_delivery_id', $stat_delivery_id);
@@ -166,7 +194,7 @@ class StatisticsController extends AppController {
         $sql .= " GROUP BY 
 						StatDelivery.data, StatDelivery.luogo   
 					ORDER BY tot_importo desc";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -186,7 +214,7 @@ class StatisticsController extends AppController {
 					SELECT 
 						StatDelivery.id, StatDelivery.luogo, StatDelivery.data, 
 						StatOrder.data_inizio, StatOrder.data_fine, StatOrder.importo, 
-						StatOrder.tesoriere_doc1, StatOrder.tesoriere_fattura_importo, StatOrder.tesoriere_importo_pay, StatOrder.tesoriere_data_pay, 
+						StatOrder.tesoriere_doc1, StatOrder.tesoriere_fattura_importo, StatOrder.tesoriere_importo_pay, StatOrder.tesoriere_data_pay, StatOrder.request_payment_num, 
 						StatOrder.supplier_organization_id, StatOrder.supplier_organization_name, StatOrder.supplier_img1 
 					FROM 
 						" . Configure::read('DB.prefix') . "stat_deliveries AS StatDelivery, 
@@ -205,7 +233,7 @@ class StatisticsController extends AppController {
         $sql .= " ORDER BY 
 						StatDelivery.id, StatOrder.supplier_organization_name, StatOrder.data_inizio, StatOrder.data_fine, StatOrder.importo				
 					";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -242,7 +270,7 @@ class StatisticsController extends AppController {
         $sql .= " GROUP BY 
 						StatOrder.supplier_organization_name
 					ORDER BY tot_importo desc";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -290,7 +318,7 @@ class StatisticsController extends AppController {
             $sql .= " AND StatOrder.id = " . $stat_order_id;
         $sql .= "  ORDER BY StatCart.importo desc, StatOrder.supplier_organization_name, StatOrder.data_inizio, StatOrder.data_fine
 					";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -337,7 +365,7 @@ class StatisticsController extends AppController {
         $sql .= " GROUP BY 
 						User.username, User.name, User.email 
 					ORDER BY tot_importo desc, tot_qta desc";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -383,7 +411,7 @@ class StatisticsController extends AppController {
         $sql .= " GROUP BY 
 						StatOrder.supplier_organization_name, StatArticlesOrder.name, StatArticlesOrder.um  
 					ORDER BY tot_importo desc, tot_qta desc";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
 
@@ -397,13 +425,13 @@ class StatisticsController extends AppController {
 
         $anno_da = date("Y");
 
-        $options = array();
-        $options['conditions'] = array('StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-                                        'DATE_FORMAT(StatDelivery.data, "%Y")' => $anno_da);
+        $options = [];
+        $options['conditions'] = ['StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                        'DATE_FORMAT(StatDelivery.data, "%Y")' => $anno_da];
 
             
-        $options['fields'] = array('id', 'luogoData');
-        $options['order'] = array('data ASC');
+        $options['fields'] = ['StatDelivery.id', 'StatDelivery.luogoData'];
+        $options['order'] = ['StatDelivery.data' => 'asc'];
         $options['recursive'] = -1;
         $statDeliveries = $StatDelivery->find('list', $options);
         if (empty($statDeliveries)) {
@@ -412,11 +440,11 @@ class StatisticsController extends AppController {
              */
             $anno_da--;
             
-            $options = array();
-            $options['conditions'] = array('StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-                                            'DATE_FORMAT(StatDelivery.data, "%Y")' => $anno_da);
-            $options['fields'] = array('id', 'luogoData');
-            $options['order'] = array('data ASC');
+            $options = [];
+            $options['conditions'] = ['StatDelivery.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                            'DATE_FORMAT(StatDelivery.data, "%Y")' => $anno_da];
+            $options['fields'] = ['StatDelivery.id', 'StatDelivery.luogoData'];
+            $options['order'] = ['StatDelivery.data' => 'asc'];
             $options['recursive'] = -1;
             $statDeliveries = $StatDelivery->find('list', $options);
         }
@@ -481,15 +509,12 @@ class StatisticsController extends AppController {
                     User.id,User.username,User.email,User.name,
                     StatArticlesOrder.name,
                     StatArticlesOrder.codice;";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-         */
-
+		
+        self::d($results,false);
+		
         $fileData['fileName'] = "statistiche_anno_" . $year;
         $fileData['fileTitle'] = "Statistiche anno " . $year;
         $this->set('fileData', $fileData);
@@ -541,14 +566,12 @@ class StatisticsController extends AppController {
                     StatOrder.data_inizio,
                     StatOrder.data_fine,
                     StatOrder.supplier_organization_name;";
-        // echo '<br />'.$sql;
+        self::d($sql, false);
         $results = $this->Statistic->query($sql);
         $this->set('results', $results);
-        /*
-          echo "<pre>";
-          print_r($results);
-          echo "</pre>";
-        */
+        
+		self::d($results,false);
+		
         $fileData['fileName'] = "statistiche_per_ordine_anno_" . $year;
         $fileData['fileTitle'] = "Statistiche per ordine anno " . $year;
         $this->set('fileData', $fileData);
@@ -561,5 +584,4 @@ class StatisticsController extends AppController {
                 break;
         }
     }
-
 }

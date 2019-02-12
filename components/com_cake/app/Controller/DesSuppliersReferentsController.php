@@ -14,7 +14,7 @@ class DesSuppliersReferentsController extends AppController {
 		/* ctrl ACL */
 		
 		if(empty($this->user->des_id)) {
-            $this->Session->setFlash(__('Devi scegliere il tuo DES'));
+            $this->Session->setFlash(__('msg_des_choice'));
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Des&action=index';
 			$this->myRedirect($url);
         }
@@ -61,11 +61,11 @@ class DesSuppliersReferentsController extends AppController {
 		$FilterDesSuppliersReferentOrganizationId = null;
 		
 		$resultsFound = '';
-		$results = array();
+		$results = [];
 		$SqlLimit = 20;
 		
-		$conditions = array('DesSuppliersReferent.des_id' => (int)$this->user->des_id,
-							'DesSuppliersReferent.group_id' => $group_id);
+		$conditions = ['DesSuppliersReferent.des_id' => (int)$this->user->des_id,
+					   'DesSuppliersReferent.group_id' => $group_id];
 		
 		/* recupero dati dalla Session gestita in appController::beforeFilter */ 
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Id')) 
@@ -74,7 +74,7 @@ class DesSuppliersReferentsController extends AppController {
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'OrganizationId')) {
 			$FilterDesSuppliersReferentOrganizationId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrganizationId');
 			if($FilterDesSuppliersReferentOrganizationId!='ALL')
-				$conditions += array('DesSuppliersReferent.organization_id' => (int)$this->user->organization['Organization']['id']); // estraggo SOLO i referenti del mio GAS
+				$conditions += ['DesSuppliersReferent.organization_id' => (int)$this->user->organization['Organization']['id']]; // estraggo SOLO i referenti del mio GAS
 			
 			$this->set('FilterDesSuppliersReferentOrganizationIdDefault', $FilterDesSuppliersReferentOrganizationId);
 		} 
@@ -108,7 +108,7 @@ class DesSuppliersReferentsController extends AppController {
 			$conditions += array('DesSuppliersReferent.des_supplier_id' => $FilterDesSuppliersReferentId);		}	
 
 		$this->DesSuppliersReferent->recursive = 1;
-		$this->paginate = array('conditions' => $conditions);
+		$this->paginate = ['conditions' => $conditions];
 		$results = $this->paginate('DesSuppliersReferent');
 
 		if(empty($results))
@@ -143,8 +143,8 @@ class DesSuppliersReferentsController extends AppController {
 				/*
 				 * Organization
 				 */
-				$options = array();
-				$options['conditions'] = array('Organization.id' => $result['User']['organization_id']);
+				$options = [];
+				$options['conditions'] = ['Organization.id' => $result['User']['organization_id']];
 				$options['recursive'] = -1;
 				$organizationResults = $Organization->find('first', $options);
 				
@@ -153,8 +153,8 @@ class DesSuppliersReferentsController extends AppController {
 				/*
 				 * Supplier
 				 */
-				$options = array();
-				$options['conditions'] = array('Supplier.id' => $result['DesSupplier']['supplier_id']);
+				$options = [];
+				$options['conditions'] = ['Supplier.id' => $result['DesSupplier']['supplier_id']];
 				$options['recursive'] = -1;
 				$supplierResults = $Supplier->find('first', $options);
 				$results[$numResult]['Supplier'] = $supplierResults['Supplier'];	
@@ -165,11 +165,9 @@ class DesSuppliersReferentsController extends AppController {
 				}			
 			}
 		}
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";	
-		*/
+		
+		self::d($results, false);
+		
 		$this->set('results', $results);
 		
 		/*
@@ -177,7 +175,7 @@ class DesSuppliersReferentsController extends AppController {
 		*		ReferenteDes
 		*		SuperReferenteDes
 		*/
-		$ACLSuppliersResults = array();
+		$ACLSuppliersResults = [];
 		if($this->isManagerDes() || $this->isSuperReferenteDes())
 			$ACLSuppliersResults = $DesSupplier->getListDesSuppliers($this->user);
 		else
@@ -190,7 +188,7 @@ class DesSuppliersReferentsController extends AppController {
 		App::import('Model', 'User');
 		$User = new User;
 		
-		$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
+		$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
 		$users = $User->getUsersList($this->user, $conditions);
 		$this->set('users',$users);
 		
@@ -211,21 +209,20 @@ class DesSuppliersReferentsController extends AppController {
 	public function admin_edit($des_supplier_id=0, $group_id=0) {
 		
 		$debug = false;
-		
+
+		App::import('Model', 'DesSupplier');
+		$DesSupplier = new DesSupplier();
+				
 		$msg = "";
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
-			if($debug) {
-				echo "<pre>";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			self::d($this->request->data, $debug);
 
 			$des_supplier_id = $this->request->data['DesSuppliersReferent']['des_supplier_id'];
 			$group_id = $this->request->data['DesSuppliersReferent']['group_id'];
 			
-			$data = array();
+			$data = [];
 			$data['DesSuppliersReferent']['des_supplier_id'] = $des_supplier_id;
 			$data['DesSuppliersReferent']['group_id'] = $group_id;
 			
@@ -249,7 +246,7 @@ class DesSuppliersReferentsController extends AppController {
 							AND des_supplier_id = $des_supplier_id
 							AND group_id = $group_id
 							AND user_id NOT IN (".$this->request->data['referent_user_ids'].")";
-							if($debug) echo '<br />'.$sql;
+							self::d($sql, $debug);
 							$result = $this->DesSuppliersReferent->query($sql);
 				}
 					catch (Exception $e) {
@@ -269,7 +266,7 @@ class DesSuppliersReferentsController extends AppController {
 								AND organization_id = ".(int)$this->user->organization['Organization']['id']."
 								AND des_supplier_id = $des_supplier_id
 								AND group_id = $group_id ";
-					if($debug) echo '<br />'.$sql;
+					self::d($sql, $debug);
 					$result = $this->DesSuppliersReferent->query($sql);
 				}
 				catch (Exception $e) {
@@ -282,11 +279,18 @@ class DesSuppliersReferentsController extends AppController {
 			 * se gestisco un ReferenteManagerDes, gestisco il GAS Manager own_organization_id
 			 */
 			if($group_id == Configure::read('group_id_titolare_des_supplier')) {
-   				App::import('Model', 'DesSupplier');
-   				$DesSupplier = new DesSupplier();
    				$DesSupplier->aggiornaOwnOrganizationId($this->user, $des_supplier_id, $debug);	
 			}
-							
+					
+			/*
+			 * setto SupplierOrganization.owner_articles = DES o REFERENT per il produttore 
+			 */		
+			$suppliersOrganizationResults = $DesSupplier->getSuppliersOrganization($this->user, $des_supplier_id, $debug);
+			if(!empty($suppliersOrganizationResults)) {
+				$supplier_id = $suppliersOrganizationResults['Supplier']['id'];
+				$DesSupplier->setSupplierOrganizationOwnerArticles($this->user, $supplier_id, $debug);			
+			}
+			
 			$this->Session->setFlash(__('The supplier organization referent has been saved'));
 		
 		} // if ($this->request->is('post') || $this->request->is('put'))
@@ -294,20 +298,14 @@ class DesSuppliersReferentsController extends AppController {
 		/*
 	 	 *  elenco Supplier profilati
 		 */
-		App::import('Model', 'DesSupplier');
-		$DesSupplier = new DesSupplier;
-	
-		$ACLSuppliersResults = array();
+		$ACLSuppliersResults = [];
 		if($this->isManagerDes() || $this->isSuperReferenteDes()) 
 			$ACLSuppliersResults = $DesSupplier->getListDesSuppliers($this->user);
 		else
 			$ACLSuppliersResults = $this->getACLsuppliersIdsDes();
 		$this->set('ACLdesSuppliers',$ACLSuppliersResults);
-		/*
-		echo "<pre>";
-		print_r($ACLSuppliersResults);
-		echo "</pre>";
-		*/
+		self::d($ACLSuppliersResults, $debug);
+		
 		$this->set('des_supplier_id', $des_supplier_id);
 		$this->set('group_id', $group_id);
 	}
@@ -321,18 +319,18 @@ class DesSuppliersReferentsController extends AppController {
 		
 		if($debug) echo '<br />DesSuppliersReferentsController->admin_ajax_box_users() - des_supplier_id '.$des_supplier_id;
 
-		$referents = array();
+		$referents = [];
 		$referenti_ids = '';
 		if(!empty($des_supplier_id)) {
 			/*
 			 * estraggo i referenti
 			*/
-			$conditions = array('User.block' => 0,
-								'User.organization_id' => $this->user->organization['Organization']['id'],
-								'DesSupplier.des_id' => $this->user->des_id,
-								'DesSupplier.id' => $des_supplier_id,
-								'DesSuppliersReferent.organization_id' => $this->user->organization['Organization']['id'],
-								'DesSuppliersReferent.group_id' => $group_id);
+			$conditions = ['User.block' => 0,
+							'User.organization_id' => $this->user->organization['Organization']['id'],
+							'DesSupplier.des_id' => $this->user->des_id,
+							'DesSupplier.id' => $des_supplier_id,
+							'DesSuppliersReferent.organization_id' => $this->user->organization['Organization']['id'],
+							'DesSuppliersReferent.group_id' => $group_id];
 			$DesSuppliersReferent = $this->DesSuppliersReferent->getReferentsDesCompact($conditions, null, $debug);
 			
 			if($debug) {
@@ -361,11 +359,11 @@ class DesSuppliersReferentsController extends AppController {
 		
 		if(!empty($referenti_ids)) {
 			$referenti_ids = substr($referenti_ids, 0, (strlen($referenti_ids)-1));
-			$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'),
-								'UserGroupMap.user_id NOT IN' => '('.$referenti_ids.')');
+			$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user'),
+						   'UserGroupMap.user_id NOT IN' => '('.$referenti_ids.')'];
 		}
 		else
-			$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
+			$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
 			
 		$users = $User->getUsersList($this->user, $conditions);
 		$this->set(compact('users'));	
@@ -380,10 +378,10 @@ class DesSuppliersReferentsController extends AppController {
 			App::import('Model', 'DesSupplier');
 			$DesSupplier = new DesSupplier;		
 			
-		    $options = array();
-			$options['conditions'] = array('DesSupplier.id' => $des_supplier_id,
-									   	   'DesSupplier.des_id' => $this->user->des_id,
-									   	   'DesSupplier.own_organization_id' => $this->user->organization['Organization']['id']);
+		    $options = [];
+			$options['conditions'] = ['DesSupplier.id' => $des_supplier_id,
+									   'DesSupplier.des_id' => $this->user->des_id,
+									   'DesSupplier.own_organization_id' => $this->user->organization['Organization']['id']];
 			$options['recursive'] = -1;
 			$totali = $DesSupplier->find('count', $options);
 			
@@ -417,10 +415,10 @@ class DesSuppliersReferentsController extends AppController {
 			 */
 			if(!$isOrganizationTitolare) {
 			
-			    $options = array();
-				$options['conditions'] = array('DesSupplier.id' => $des_supplier_id,
-										   	   'DesSupplier.des_id' => $this->user->des_id);
-				$options['fields'] = array('DesSupplier.own_organization_id');
+			    $options = [];
+				$options['conditions'] = ['DesSupplier.id' => $des_supplier_id,
+										  'DesSupplier.des_id' => $this->user->des_id];
+				$options['fields'] = ['DesSupplier.own_organization_id'];
 				$options['recursive'] = -1;
 				$desSupplierResults = $DesSupplier->find('first', $options);
 				if($debug) {
@@ -444,8 +442,8 @@ class DesSuppliersReferentsController extends AppController {
 					App::import('Model', 'Organization');
 					$Organization = new Organization;
 					
-					$options = array();
-					$options['conditions'] = array('Organization.id'=>(int)$own_organization_id);
+					$options = [];
+					$options['conditions'] = ['Organization.id'=>(int)$own_organization_id];
 					$options['recursive'] = -1;
 					$organizationTitolare = $Organization->find('first', $options);
 					if($debug) {
@@ -467,6 +465,8 @@ class DesSuppliersReferentsController extends AppController {
 	
 	/*	 * key = $_organization_id, $user_id, $des_supplier_id	*/
 	public function admin_delete($user_id=0, $des_supplier_id=0, $group_id=0) {
+		
+		$debug = false;
 		$msg = "";
 		
 		if(!$this->DesSuppliersReferent->exists($this->user->des_id, $this->user->organization['Organization']['id'], $user_id, $group_id, $des_supplier_id)) {
@@ -479,10 +479,10 @@ class DesSuppliersReferentsController extends AppController {
 		 *  ctrl se e' gia' referent,
 		*  se NO lo e' associo lo joomla.users al gruppo referenti in joomla.user_usergroup_map
 		*/
-		$options['conditions'] = array('DesSuppliersReferent.des_id' => $this->user->des_id,
-									   'DesSuppliersReferent.organization_id' => $this->user->organization['Organization']['id'],
-									   'DesSuppliersReferent.user_id' => $user_id,
-									   'DesSuppliersReferent.group_id' => $group_id);
+		$options['conditions'] = ['DesSuppliersReferent.des_id' => $this->user->des_id,
+							   'DesSuppliersReferent.organization_id' => $this->user->organization['Organization']['id'],
+							   'DesSuppliersReferent.user_id' => $user_id,
+							   'DesSuppliersReferent.group_id' => $group_id];
 		$totRows = $this->DesSuppliersReferent->find('count', $options);
 		if($totRows==1) {
 			App::import('Model', 'User');
@@ -507,7 +507,17 @@ class DesSuppliersReferentsController extends AppController {
 			App::import('Model', 'DesSupplier');
 			$DesSupplier = new DesSupplier;
 			$DesSupplier->aggiornaOwnOrganizationId($this->user, $des_supplier_id);
-						
+					
+			/*
+			 * setto SupplierOrganization.owner_articles = DES o REFERENT per il produttore 
+			 */		
+			 
+			$suppliersOrganizationResults = $DesSupplier->getSuppliersOrganization($this->user, $des_supplier_id, $debug);
+			if(!empty($suppliersOrganizationResults)) {
+				$supplier_id = $suppliersOrganizationResults['Supplier']['id'];
+				$DesSupplier->setSupplierOrganizationOwnerArticles($this->user, $supplier_id, $debug);			
+			}
+
 			// cancello eventuale sessione con il filtro per utente se no la ricerca e' sempre vuota
 			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'UserId')) {
 				$this->Session->delete(Configure::read('Filter.prefix').$this->modelClass.'UserId');

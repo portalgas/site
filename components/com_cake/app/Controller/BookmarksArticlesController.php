@@ -21,7 +21,7 @@ class BookmarksArticlesController extends AppController {
 	   	$FilterBookmarksArticleSupplierOrganizationId = null;
 	   	$FilterBookmarksArticleAllArticles = 'N';
 	   	
-	   	$options =  array();
+	   	$options =  [];
 	   	$options['conditions'] = array('BookmarksArticle.organization_id' => (int)$this->user->organization['Organization']['id']);
 	   	  	
 	   	/*
@@ -55,7 +55,7 @@ class BookmarksArticlesController extends AppController {
 	   	/*
 	   	 * se non ho filtrato per utente o produttore non effettuo la ricerca
 	   	 */
-	   	$results = array();
+	   	$results = [];
 	   	if(!empty($FilterBookmarksArticleUserId) || !empty($FilterBookmarksArticleSupplierOrganizationId)) {
 	   		
 	   		/*
@@ -81,19 +81,19 @@ class BookmarksArticlesController extends AppController {
 					
 					$Article->bindModel(array('belongsTo' => array('BookmarksArticle' => $belongsTo)));
 					
-					$Article->unbindModel(array('hasOne' => array('ArticlesOrder')));
-					$Article->unbindModel(array('hasMany' => array('ArticlesOrder')));
-					$Article->unbindModel(array('hasAndBelongsToMany' => array('Order')));
+					$Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
+					$Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
+					$Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);
 					
 					if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')
-						$Article->unbindModel(array('belongsTo' => array('CategoriesArticle')));
+						$Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
 					
 					$Article->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$this->user->organization['Organization']['id'];
 					$Article->hasMany['ArticlesArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 					$Article->hasAndBelongsToMany['ArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 					
 					
-					$options = array();
+					$options = [];
 					$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
 													'Article.stato' => 'Y',
 													'Article.supplier_organization_id' => $FilterBookmarksArticleSupplierOrganizationId);
@@ -107,7 +107,7 @@ class BookmarksArticlesController extends AppController {
 					/*
 					 * associo per ogni articolo lo User (e' sempre lo stesso perche' passato dal filtro)
 					 */
-					$options =  array();
+					$options =  [];
 					$options['conditions'] = array('User.organization_id'=>(int)$this->user->organization['Organization']['id'],
 												   'User.id'=> $FilterBookmarksArticleUserId);
 					$options['fields'] = array('id','name');
@@ -123,12 +123,7 @@ class BookmarksArticlesController extends AppController {
 	   		
 	   		$this->set('results', $results);
 	   		
-	   		/*
-		   	echo "<pre>";
-		   	print_r($options);
-		   	print_r($results);
-		   	echo "</pre>";
-		   	*/
+	   		self::d([$options, $results], false);			
 	   	}
 	   		   	
 	   	$this->set('results', $results);
@@ -138,7 +133,7 @@ class BookmarksArticlesController extends AppController {
 	   	$this->set('FilterBookmarksArticleAllArticles', $FilterBookmarksArticleAllArticles);
 	   	
 	   	/* filtro */
-		$options =  array();
+		$options =  [];
 	   	$options['conditions'] = array('User.organization_id'=>(int)$this->user->organization['Organization']['id'],
 										'User.block'=> 0);
 	   	$options['fields'] = array('id','name');
@@ -157,7 +152,7 @@ class BookmarksArticlesController extends AppController {
 		
 		App::import('Model', 'Supplier');
 	
-		$options =  array();
+		$options =  [];
 		$options['conditions'] = array('BookmarksArticle.organization_id' => (int)$this->user->organization['Organization']['id']);
 		$options['order'] = array('SuppliersOrganization.name ASC');
 		$options['recursive'] = 1;
@@ -170,7 +165,7 @@ class BookmarksArticlesController extends AppController {
 
 			$Supplier = new Supplier;
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
 			$options['fields'] = array('Supplier.img1');
 			$options['recursive'] = -1;
@@ -194,7 +189,7 @@ class BookmarksArticlesController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => (int)$this->user->organization['Organization']['id'],
 				'SuppliersOrganization.stato' => 'Y');
 		$options['order'] = array('SuppliersOrganization.name');
@@ -214,7 +209,7 @@ class BookmarksArticlesController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'SuppliersOrganization.stato' => 'Y');
 		$options['order'] = array('SuppliersOrganization.name');
@@ -247,19 +242,19 @@ class BookmarksArticlesController extends AppController {
 		
 		$Article->bindModel(array('belongsTo' => array('BookmarksArticle' => $belongsTo)));
 		
-		$Article->unbindModel(array('hasOne' => array('ArticlesOrder')));
-		$Article->unbindModel(array('hasMany' => array('ArticlesOrder')));
-		$Article->unbindModel(array('hasAndBelongsToMany' => array('Order')));
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);
 
 		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')
-			$Article->unbindModel(array('belongsTo' => array('CategoriesArticle')));
+			$Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
 		
 		$Article->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$this->user->organization['Organization']['id'];
 		$Article->hasMany['ArticlesArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 		$Article->hasAndBelongsToMany['ArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 		
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
 										'Article.stato' => 'Y',
 										'Article.supplier_organization_id' => $supplier_organization_id);
@@ -271,11 +266,9 @@ class BookmarksArticlesController extends AppController {
 		$results = $Article->find('all', $options);
 		
 		$this->set('results', $results);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results, false);
+
 		$this->layout = 'ajax';
 	}
 	
@@ -303,7 +296,7 @@ class BookmarksArticlesController extends AppController {
     	/*
 		 * ctrl se INSERT o UPDATE
 		 */
-		$options =  array();
+		$options =  [];
 		$options['conditions'] = array('BookmarksArticle.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'BookmarksArticle.user_id' => $user_id,
 										'BookmarksArticle.article_organization_id' => $article_organization_id,
@@ -362,19 +355,19 @@ class BookmarksArticlesController extends AppController {
 		
 		$Article->bindModel(array('belongsTo' => array('BookmarksArticle' => $belongsTo)));
 		
-		$Article->unbindModel(array('hasOne' => array('ArticlesOrder')));
-		$Article->unbindModel(array('hasMany' => array('ArticlesOrder')));
-		$Article->unbindModel(array('hasAndBelongsToMany' => array('Order')));
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);
 		
 		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')
-			$Article->unbindModel(array('belongsTo' => array('CategoriesArticle')));
+			$Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
 		
 		$Article->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$this->user->organization['Organization']['id'];
 		$Article->hasMany['ArticlesArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 		$Article->hasAndBelongsToMany['ArticlesType']['conditions'] = array('ArticlesArticlesType.organization_id' => $this->user->organization['Organization']['id']);
 		
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
 										'Article.id' => $article_id,
 										'Article.stato' => 'Y',

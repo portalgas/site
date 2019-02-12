@@ -49,7 +49,7 @@ class ProdExportDocsController extends AppController {
 		App::import('Model', 'ProdDelivery');
 		$ProdDelivery = new ProdDelivery;	
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdDelivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'ProdDelivery.id' => $prod_delivery_id);
 		$options['recursive'] = 0;
@@ -68,7 +68,7 @@ class ProdExportDocsController extends AppController {
 			App::import('Model', 'ProdUsersGroup');
 			$ProdUsersGroup = new ProdUsersGroup;
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('ProdUsersGroup.organization_id' => (int)$this->user->organization['Organization']['id'],
 										   'ProdUsersGroup.prod_group_id' => $prod_group_id,
 										   'User.block' => 0);
@@ -92,7 +92,7 @@ class ProdExportDocsController extends AppController {
 		App::import('Model', 'ProdCart');
 		$ProdCart = new ProdCart;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('ProdCart.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'ProdCart.isVisibleBackOffice' => 'Y',
 									   'ProdCart.prod_delivery_id' => $prod_delivery_id);
@@ -126,7 +126,7 @@ class ProdExportDocsController extends AppController {
 		 * dati profilo utenti
 		 */
 		jimport( 'joomla.user.helper' );
-		$newResults = array();
+		$newResults = [];
 		foreach ($results as $numResult => $result) {
 			$newResults[$numResult] = $result;
 			
@@ -138,11 +138,9 @@ class ProdExportDocsController extends AppController {
 		}
 		
 		$results = $this->ProdExportDoc->getCartComplite($this->prod_delivery_id, $newResults);
-		/*
-		echo "<pre>";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results,false);
+		
 		$this->set('results', $results);
 				
 		$params = array('prod_delivery_id' => $this->prod_delivery_id);

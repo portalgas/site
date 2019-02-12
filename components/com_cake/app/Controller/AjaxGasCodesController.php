@@ -80,7 +80,7 @@ class AjaxGasCodesController extends AppController {
                 if ($order_id == $result['Order']['id'])
                     $order_id_associato_delivery = true;
 
-                if ($result['Order']['data_fine_validation'] != '0000-00-00')
+                if ($result['Order']['data_fine_validation'] != Configure::read('DB.field.date.empty'))
                     $data_fine = $result['Order']['data_fine_validation_'];
                 else
                     $data_fine = $result['Order']['data_fine_'];
@@ -822,13 +822,13 @@ class AjaxGasCodesController extends AppController {
                 $CartsSplit->populate_to_order($this->user, $order_id);
         }
 
-        $CartsSplit->unbindModel(array('belongsTo' => array('Order')));
+        $CartsSplit->unbindModel(['belongsTo' => ['Order']]);
         $options = [];
         $options['conditions'] = ['CartsSplit.organization_id' => $this->user->organization['Organization']['id'], 'CartsSplit.order_id' => $order_id];
         $options['recursive'] = 1;
         $options['order'] = array(Configure::read('orderUser') . ',CartsSplit.user_id, CartsSplit.article_organization_id, CartsSplit.article_id, CartsSplit.num_split');
         $results = $CartsSplit->find('all', $options);
-		self::dd($results, $debug);
+		self::d($results, $debug);
 		
         $this->set('results', $results);
     }
@@ -1160,11 +1160,29 @@ class AjaxGasCodesController extends AppController {
         }
         
 		// ACL 
+		
+		/*
+		 * estraggo il filtersOwnerArticles SUPPLIER / REFERENT / DES
+		 */		
+		App::import('Model', 'Order');
+		$Order = new Order;
+
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $organization_id,
+								  'Order.delivery_id' => $delivery_id,
+								  'Order.id' => $order_id];
+		$options['fields'] = ['SuppliersOrganization.owner_articles'];
+		$options['recursive'] = 1;
+		$Order->unbindModel(['belongsTo' => ['Delivery']]);
+		$orderResults = $Order->find('first', $options);
+		$owner_articles = $orderResults['SuppliersOrganization']['owner_articles'];
+		self::d($orderResults, $debug);
+		
 		App::import('Model', 'ProdGasSuppliersImport');
 		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
 
 		// precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
-		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, ['SUPPLIER'], $debug);
+		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, [$owner_articles], $debug);
 		
 		$currentOrganization = $organizationResults['Supplier']['Organization'];
 		$currentOrganization = current($currentOrganization);
@@ -2136,4 +2154,61 @@ class AjaxGasCodesController extends AppController {
         $this->render('/Layouts/ajax');
     }
 
+    function admin_setNotaUser($organization_id, $user_id) {
+
+		$debug=false;
+	
+        if (empty($organization_id) || empty($user_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+		App::import('Model', 'UserProfile');
+        $UserProfile = new UserProfile;
+		
+        if(!$this->aclOrganizationIdinUso($organization_id)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+		
+        if ($this->request->is('post') || $this->request->is('put')) {
+			$notaUser = addslashes($this->request->data['notaUser']);
+
+			$UserProfile->setValue($this->user, $user_id, 'nota', $notaUser, $debug);
+        }
+
+        $content_for_layout = '';
+        $this->set('content_for_layout', $content_for_layout);
+
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');
+    }
+
+    function admin_getNotaUser($organization_id, $user_id) {
+
+		$debug=false;
+	
+        if (empty($organization_id) || empty($user_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+         //   $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+		
+		App::import('Model', 'UserProfile');
+        $UserProfile = new UserProfile;
+		
+        if(!$this->aclOrganizationIdinUso($organization_id)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
+		$nota = $UserProfile->getValue($this->user, $user_id, 'nota', '', $debug);
+		
+        if (!empty($nota))
+            $this->set('content_for_layout', $nota);
+        else
+            $this->set('content_for_layout', '');
+
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');
+    }	
 }

@@ -34,7 +34,7 @@ class CategoriesController extends AppController {
 			$this->Category->create();
 			if ($this->Category->save($this->request->data)) {
 				$this->Session->setFlash(__('The category has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
@@ -49,7 +49,7 @@ class CategoriesController extends AppController {
 			$this->Category->create();
 			if ($this->Category->save($this->request->data)) {
 				$this->Session->setFlash(__('The category has been saved'));
-				$this->myRedirect(array('action' => 'index'));
+				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
@@ -72,10 +72,10 @@ class CategoriesController extends AppController {
 				$this->Session->setFlash(__('Delete Category'));
 			else
 				$this->Session->setFlash(__('Category was not deleted'));
-			$this->myRedirect(array('action' => 'index'));
+			$this->myRedirect(['action' => 'index']);
 		}
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Category.id' => $id);		$options['recursive'] = 1;		$results = $this->Category->find('first', $options);		$this->set(compact('results'));
 	}		
 }

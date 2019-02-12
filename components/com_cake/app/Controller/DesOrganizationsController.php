@@ -28,7 +28,7 @@ class DesOrganizationsController extends AppController {
 				$this->myRedirect(array('controller' => 'DesOrders', 'action' => 'index', 'admin' => true));
 		}
 		else {
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('DesOrganization.organization_id' => $this->user->organization['Organization']['id']);
 			$options['order'] = array('De.name');
 			$results = $this->DesOrganization->find('all', $options);
@@ -40,7 +40,7 @@ class DesOrganizationsController extends AppController {
 			}
 			*/
 			
-			$newResults = array();
+			$newResults = [];
 			foreach ($results as $result) 
 				$newResults[$result['De']['id']] = $result['De']['name'];
 				

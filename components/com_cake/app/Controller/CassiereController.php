@@ -13,101 +13,21 @@ class CassiereController extends AppController {
 		}
 	}
 	
-	/*
-	 * le consegne stato_elaborazione => OPEN vecchio di Configure::read('GGDeliveryCassiereClose') giorni
-	 * 			   Order.tesoriere_stato_pay = Y 
-	 * 	vengono cmq chiuse dal cron deliveriesCassiereClose
-	 */
 	public function admin_home() {
 		
 		$debug = false;
-		if($this->user->organization['Organization']['payToDelivery']!='ON' && $this->user->organization['Organization']['payToDelivery']!='ON-POST') {			
+		if($this->user->organization['Template']['payToDelivery']!='ON' && $this->user->organization['Template']['payToDelivery']!='ON-POST') {			
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
-
-		/*
-		 * posso gestire la chiusura delle consegne
-		 */
-		if($this->isCassiere()) {
-			
-			/*
-			 * prende solo le consegne con ordini CLOSE
-			 */
-			$allOrdersCloseResults = $this->Cassiere->getDeliveriesToClose($this->user, false, $debug);
-			$delivery_ids = '';
-			if(!empty($allOrdersCloseResults)) {
-				foreach($allOrdersCloseResults as $allOrdersCloseResult)
-					$delivery_ids .= $allOrdersCloseResult['Delivery']['id'].',';
-				$delivery_ids = substr($delivery_ids, 0, strlen($delivery_ids)-1);
-			}
-			
-			/*
-			echo "<pre>";
-			print_r($allOrdersCloseResults);
-			echo "</pre>";
-			*/
-			$this->set(compact('allOrdersCloseResults'));	
-			
-			/*
-			 * ora quelli PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) li posso passare a CLOSE 
-			 * se non voglio gestire ogni singolo user in Cassiere => Esporta/Gestisci documenti della consegne
-			 */			
-			App::import('Model', 'Supplier');
-			
-			App::import('Model', 'Order');
-			$Order = new Order;
-			
-			$options = array();
-			$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										   'Order.organization_id'=>$this->user->organization['Organization']['id'],
-										   'Delivery.isVisibleBackOffice' => 'Y',
-										   'Delivery.stato_elaborazione' => 'OPEN',
-										   'Delivery.sys' => 'N',
-										   'DATE(Delivery.data) < CURDATE()');  // tutte le consenge scadute
-			/*
-             * escludo le consegne precedenti
-			 */			 
-			if(!empty($delivery_ids))
-				$options['conditions'] += array(1 => 'Delivery.id NOT IN ('.$delivery_ids.')');
-	
-			/*
-			li prendo tutti, il cassiere puo
-			if(!$this->isSuperReferente()) {
-				$conditions[] = array('Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
-			}
-			*/			
-			$options['order'] = array('Delivery.data ASC', 'Order.data_inizio');
-			$options['recursive'] = 01;
-			$results = $Order->find('all', $options);
-			foreach($results as $numResult => $result) {
-		
-				/*
-				 * Suppliers per l'immagine
-				 * */
-				$Supplier = new Supplier;
-				
-				$options = array();
-				$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
-				$options['fields'] = array('Supplier.img1');
-				$options['recursive'] = -1;
-				$SupplierResults = $Supplier->find('first', $options);
-				if(!empty($SupplierResults))
-					$results[$numResult]['Supplier']['img1'] = $SupplierResults['Supplier']['img1'];			
-			}	
-			$allOrdersNOTCloseResults = $results;
-			$this->set(compact('allOrdersNOTCloseResults'));
-			/*
-			echo "<pre>";
-			print_r($allOrdersNOTCloseResults);
-			echo "</pre>";
-			*/
-		}			
 		
 		$this->set('isCassiere', $this->isCassiere());
 		$this->set('isReferentCassiere', $this->isReferentCassiere()); 
 	}
 	
+	/*
+	 * chiude la consegna e tutti gli ordini associati
+	 */
 	public function admin_edit_stato_elaborazione($delivery_id=null) {
 	
 		if(empty($delivery_id)) {
@@ -126,57 +46,6 @@ class CassiereController extends AppController {
 			
 		$this->Cassiere->deliveryStatoClose($this->user, $delivery_id);
 			
-		$this->myRedirect(array('controller' => 'Cassiere', 'action' => 'home'));
-	}
-	
-	/*
-	 * il cassiere passa gli ordini da PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) a CLOSE 
-	 * se non vuole gestire ogni singolo user in Cassiere => Esporta/Gestisci documenti della consegne
-	 */
-	public function admin_edit_order_stato_elaborazione($order_id=null) {
-	
-		if(empty($order_id)) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		
-		App::import('Model', 'Order');
-		$Order = new Order;
-		
-		$Order->id = $order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		
-		/*
-		 * calcolo il totale degli importi degli acquisti dell'ordine
-		*/
-		$importo_totale = $Order->getTotImporto($this->user, $order_id);
-		/* 
-		 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-		 */
-		if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
-		
-		
-					
-		/*
-		 * cambio lo stato degli ORDERS
-		*/
-		$sql = "UPDATE
-					".Configure::read('DB.prefix')."orders
-				SET
-					state_code = 'CLOSE',
-					tot_importo = $importo_totale,
-					tesoriere_sorce = 'REFERENTE',
-					modified = '".date('Y-m-d H:i:s')."'
-				WHERE
-					organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and id = ".(int)$order_id."
-					and state_code = 'PROCESSED-ON-DELIVERY' ";
-		// echo '<br />'.$sql;
-		$Order->query($sql);	
-	
 		$this->myRedirect(array('controller' => 'Cassiere', 'action' => 'home'));
 	}
 	
@@ -213,14 +82,14 @@ class CassiereController extends AppController {
 				
 					try {
 						$sql = "UPDATE
-									`".Configure::read('DB.prefix')."orders`
+									".Configure::read('DB.prefix')."orders
 								SET
 									".$sqlTmp."
 									modified = '".date('Y-m-d H:i:s')."'
 								WHERE
 									organization_id = ".(int)$this->user->organization['Organization']['id']."
 									and id = ".(int)$order_id;
-						if($debug) echo '<br />'.$sql;
+						self::d($sql, $debug);
 						$resultUpdate = $this->Cassiere->query($sql);
 					}
 					catch (Exception $e) {
@@ -236,7 +105,7 @@ class CassiereController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Delivery.isVisibleBackOffice' => 'Y',
 									   'Delivery.sys'=> 'N',
@@ -268,7 +137,7 @@ class CassiereController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-		$newResults = array();
+		$newResults = [];
 		/*
 		 * metto in testa gli ordini con l'ordine tesoriere_stato_pay = N
 		*/
@@ -278,7 +147,7 @@ class CassiereController extends AppController {
 														  'Order.tesoriere_stato_pay' => 'N');
 		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
 									   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Delivery.sys'=> 'N',
@@ -300,7 +169,7 @@ class CassiereController extends AppController {
 			$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
 			$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
 			
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('SuppliersOrganization.id' => $order['supplier_organization_id']);
 			$options['recursive'] = 1;
 			$SuppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
@@ -322,7 +191,7 @@ class CassiereController extends AppController {
 														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
 														  'Order.tesoriere_stato_pay' => 'Y');
 		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
 										'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.sys'=> 'N',
@@ -372,7 +241,7 @@ class CassiereController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 				'Delivery.isVisibleBackOffice' => 'Y',
 				'Delivery.sys'=> 'N',
@@ -404,13 +273,13 @@ class CassiereController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-		$newResults = array();
+		$newResults = [];
 
 		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
 														'Order.isVisibleBackOffice != ' => 'N',
 														'Order.state_code != ' => 'CREATE-INCOMPLETE');
 		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
 				'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 				'Delivery.sys'=> 'N',
@@ -449,7 +318,7 @@ class CassiereController extends AppController {
 	*/
 	public function admin_orders_to_wait_processed_tesoriere() {
 		
-		if($this->user->organization['Organization']['payToDelivery']!='ON-POST' ||
+		if($this->user->organization['Template']['payToDelivery']!='ON-POST' ||
 		   $this->user->organization['Organization']['hasUserGroupsTesoriere']=='N' ||
 		   !$this->isCassiere()) {
 			$this->Session->setFlash(__('msg_not_permission'));
@@ -465,7 +334,7 @@ class CassiereController extends AppController {
 	*/
 	public function admin_ajax_orders_to_wait_processed_tesoriere($delivery_id=0) {
 		
-		if($this->user->organization['Organization']['payToDelivery']!='ON-POST' ||
+		if($this->user->organization['Template']['payToDelivery']!='ON-POST' ||
 		   $this->user->organization['Organization']['hasUserGroupsTesoriere']=='N' ||
 		   !$this->isCassiere()) {
 			$this->Session->setFlash(__('msg_not_permission'));
@@ -491,6 +360,9 @@ class CassiereController extends AppController {
 		
 		App::import('Model', 'Order');
 		$Order = new Order;
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle();
 		
 		$msg = '';
 		$Order->id = $this->order_id;
@@ -502,9 +374,9 @@ class CassiereController extends AppController {
 		/*
 		 * dati dell'ordine
 		*/
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-									   'Order.id' => $this->order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+								  'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $Order->find('first', $options);
 		$this->set(compact('results'));
@@ -512,11 +384,8 @@ class CassiereController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 		
 		    $this->request->data['Order']['id'] = $this->order_id;
-			if($debug) {
-				echo "<pre>this->request->data \n";
-				print_r($this->request->data['Order']);
-				echo "</pre>";
-			}
+			
+			self::d($this->request->data['Order'], $debug);			
 					
 			App::import('Model', 'Tesoriere');
 			$Tesoriere = new Tesoriere;
@@ -539,8 +408,7 @@ class CassiereController extends AppController {
 					$msg = $esito['msg'];
 					$continua=false;
 				}	
-				if($debug)
-					echo "<br  />msg UPLOAD ".$msg;
+				self::d("msg UPLOAD ".$msg, $debug);
 			}
 		
 			if($continua) {
@@ -556,27 +424,16 @@ class CassiereController extends AppController {
 				
 					$esito = $this->Documents->genericUpload($this->user, $results['Order']['tesoriere_doc1'], $path_upload, 'DELETE', '', '', '', '', $debug);
 					$msg = $esito['msg'];
-					if($debug)
-						echo "<br  />msg UPLOAD ".$msg;
+					self::d("msg UPLOAD ".$msg, $debug);
 				}
 
 				if($this->user->organization['Organization']['hasFieldFatturaRequired']=='Y' && $esito['msg']==4)
 					$msg = __('upload_file_required');
 				
 				/*
-				 * aggiorno stato ORDER
+				 * aggiorno stato ORDER => pulisco SummaryOrders
 				*/
-				$sql = "UPDATE
-							`".Configure::read('DB.prefix')."orders`
-						SET
-							state_code = 'WAIT-PROCESSED-TESORIERE',
-							modified = '".date('Y-m-d H:i:s')."'
-						WHERE
-							organization_id = ".(int)$this->user->organization['Organization']['id']."
-							and id = ".(int)$this->order_id;
-				// echo $sql;
-				$result = $Order->query($sql);
-				
+				$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'WAIT-PROCESSED-TESORIERE');			
 				if($debug) {
 					echo "<br />msg ".$msg;
 					exit;
@@ -594,9 +451,9 @@ class CassiereController extends AppController {
 			}
 		} // if ($this->request->is('post') || $this->request->is('put'))
 			
-		$options = array();
-		$options['conditions'] = array('Order.id' => $this->order_id,
-									   'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options = [];
+		$options['conditions'] = ['Order.id' => $this->order_id,
+								  'Order.organization_id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$this->request->data = $Order->find('first', $options);
 		if (empty($this->request->data)) {
@@ -608,10 +465,6 @@ class CassiereController extends AppController {
 		 * calcolo il totale degli importi degli acquisti dell'ordine
 		*/
 		$importo_totale = $Order->getTotImporto($this->user, $this->order_id, $debug);
-		/* 
-		 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-		 */
-		if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
 		$this->set('importo_totale', $importo_totale);
 		
 		/*
@@ -622,15 +475,14 @@ class CassiereController extends AppController {
 		
 			$file1 = new File(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$this->user->organization['Organization']['id'].DS.$this->request->data['Order']['tesoriere_doc1']);
 			$this->set('file1', $file1);
-		}
+		} 
 		
-		$msg = $Order->isOrderValidateToTrasmit($this->user, $this->order_id);
-		if(!empty($msg)) {
-			$this->set(compact('msg'));
+		$msg = $OrderLifeCycle->beforeRendering($this->user, $this->request->data, $this->request->params['controller'], $this->action);
+		if(!empty($msg['isOrderValidateToTrasmit'])) {
+			$this->set('msg', $msg['isOrderValidateToTrasmit']);
 			$this->render('/Cassiere/admin_no_trasmit');
 		}
 		else
 			$this->render('/Cassiere/admin_order_state_in_wait_processed_tesoriere');		
-	}
-	
+	}	
 }

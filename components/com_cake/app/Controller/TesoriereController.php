@@ -3,7 +3,7 @@ App::uses('AppController', 'Controller');
 
 class TesoriereController extends AppController {
 
-	private $isReferenteTesoriere = false;	public $helpers = array('Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm');
+	private $isReferenteTesoriere = false;	public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm'];
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -20,7 +20,7 @@ class TesoriereController extends AppController {
 		}
 				
 		/* ctrl ACL */
-		$actionWithPermission = array('admin_index', 'admin_edit', 'admin_delete');
+		$actionWithPermission = ['admin_index', 'admin_edit', 'admin_delete'];
 		if (in_array($this->action, $actionWithPermission)) {
 	
 			/*
@@ -48,14 +48,14 @@ class TesoriereController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.stato_elaborazione' => 'OPEN',
-									   'Delivery.sys'=> 'N',
-									   'DATE(Delivery.data) <= CURDATE()');
-		$options['fields'] = array('id', 'luogoData');
-		$options['order'] = 'data ASC';
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								   'Delivery.isVisibleBackOffice' => 'Y',
+								   'Delivery.stato_elaborazione' => 'OPEN',
+								   'Delivery.sys'=> 'N',
+								   'DATE(Delivery.data) <= CURDATE()'];
+		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
+		$options['order'] = ['Delivery.data' => 'asc'];
 		$options['recursive'] = -1;
 		$deliveries = $Delivery->find('list', $options);
 		$this->set(compact('deliveries'));
@@ -77,37 +77,23 @@ class TesoriereController extends AppController {
 			$order_id_selected = $this->request->data['Tesoriere']['order_id_selected'];				
 			if(!empty($order_id_selected)) {
 
-				App::import('Model', 'SummaryOrder');
-				$SummaryOrder = new SummaryOrder;
-
 				if(strpos($order_id_selected,',')===false)
-					$order_id_arr[] = $order_id_selected;
+					$order_ids[] = $order_id_selected;
 				else 
-					$order_id_arr = explode(',',$order_id_selected);
-				foreach ($order_id_arr as $order_id) {
-					$resultsSummaryOrder = $SummaryOrder->select_to_order($this->user, $order_id);
-					
+					$order_ids = explode(',',$order_id_selected);
+				
+				foreach ($order_ids as $order_id) {
+
 					/*
-					 * se summaryOrder non e' gia' stato popolato dal referente da Cart::admin_managementCartsGroupByUsers
+					 * riporto ordinie a 'PROCESSED-TESORIERE' (In carico al tesoriere) => popolo summary_orders
+					 * $SummaryPayment->delete_order() aggiorno il totale in SummaryPayment, se il gasista aveva solo quell'ordine SummaryPayment.stato = DAPAGARE
+					 * $SummaryOrderLifeCycle->changeRequestPayment($this->user, $order_id, $operation='DELETE', $opts); cancello i pagamenti gia' fatti del tesoriere SummaryOrder.saldato_a = TESORIERE
 					 */
-					if(empty($resultsSummaryOrder))
-						$this->__populate_summary_orders($order_id);
-					else {
-						/*
-						 * aggiorno stato ORDER
-						*/
-						$sql = "UPDATE
-								`".Configure::read('DB.prefix')."orders`
-								SET
-									state_code = 'PROCESSED-TESORIERE',
-									modified = '".date('Y-m-d H:i:s')."'
-								WHERE
-									organization_id = ".(int)$this->user->organization['Organization']['id']."
-									and id = ".(int)$order_id;
-						// echo '<br />'.$sql;
-						$result = $SummaryOrder->query($sql);						
-					}
-				} // end foreach ($order_id_arr as $order_id)  ciclo ordini
+					App::import('Model', 'OrderLifeCycle');
+					$OrderLifeCycle = new OrderLifeCycle();
+					
+					$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $order_id, 'PROCESSED-TESORIERE');					
+				} // end foreach ($order_ids as $order_id)  ciclo ordini
 
 				/*
 				 * invio mail a referenti
@@ -116,22 +102,21 @@ class TesoriereController extends AppController {
 				App::import('Model', 'SuppliersOrganizationsReferent');
 				App::import('Model', 'Mail');
 				
-				foreach ($order_id_arr as $order_id) {
+				foreach ($order_ids as $order_id) {
 				
 					/*
 					 * estraggo i referenti
 					*/
 					$Order = new Order;
 						
-					$options = array();
-					$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-												   'Order.id' => $order_id);
+					$options = [];
+					$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
 					$options['recursive'] = 0;
 					$results = $Order->find('first', $options);
 						
 					$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
-					$conditions = array('User.block' => 0,
-										'SuppliersOrganization.id' => $results['Order']['supplier_organization_id']);
+					$conditions = ['User.block' => 0,
+									'SuppliersOrganization.id' => $results['Order']['supplier_organization_id']];
 					$userResults = $SuppliersOrganizationsReferent->getReferentsCompact($this->user, $conditions);
 						
 					/*
@@ -146,44 +131,31 @@ class TesoriereController extends AppController {
 						
 					$Email->subject($subject_mail);
 							if(!empty($this->user->organization['Organization']['www']))
-								$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))));
+								$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 							else
-								$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+								$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 				
 					foreach ($userResults as $userResult)  {
 						$name = $userResult['User']['name'];
 						$mail = $userResult['User']['email'];
 							
 						if(!empty($mail)) {
-							$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+							$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 							$Email->to($mail);
 								
 							$Mail->send($Email, $mail, $body_mail, $debug);
 						} // end if(!empty($mail))
 					} // end foreach ($userResults as $userResult)
-				} // end foreach ($order_id_arr as $order_id)  ciclo ordini
+				} // end foreach ($order_ids as $order_id)  ciclo ordini
 				
 				$this->Session->setFlash(__('Orders State Processed Tesoriere'));
 				/*
-				 * non cambio + la pagina $this->myRedirect(array('action' => 'orders_get_PROCESSED_TESORIERE', null, 'delivery_id='.$this->delivery_id));
+				 * non cambio + la pagina $this->myRedirect(['action' => 'orders_get_PROCESSED_TESORIERE', null, 'delivery_id='.$this->delivery_id]);
 				 */
 			}
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 	
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
-		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.sys'=> 'N',
-									   'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('id', 'luogoData');
-		$options['order'] = 'data ASC';
-		$options['recursive'] = -1;
-		$deliveries = $Delivery->find('list', $options);
-		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
-		$this->set(compact('deliveries'));
+		$this->_getListDeliveries($this->user); 
 		
 		$this->set('order_state_code_checked','WAIT-PROCESSED-TESORIERE');
 		
@@ -198,17 +170,7 @@ class TesoriereController extends AppController {
 	}
 
 	/*
-	 * estrai ordini PROCESSED-TESORIERE
-	*  azione
-	*  1) elenco SummaryOrders
-	*  2) da PROCESSED-TESORIERE (tesoriere) in PROCESSED-REFERENTE (referente)
-	* 		  se Order.tesoriere_sorce = REFERENTE cancella i dati in summary_orders
-	* 		  se Order.tesoriere_sorce = CASSIERE  NON cancella i dati in summary_orders
-	*  3) da PROCESSED-TESORIERE (tesoriere) in TO-PAYMENT (tesoriere)
-	*
-	* se lo richiamo dal menu laterale delivery_id e' valorizzato
-	* 
-	* $order_id e' valorizzato se richiamato dal referente/tesoriere
+	 * PROCESSED-TESORIERE (In carico al tesoriere) e li porta a TO-REQUEST-PAYMENT (Possibilità di richiederne il pagamento)
 	*/	
 	public function admin_orders_get_PROCESSED_TESORIERE() {
 			
@@ -225,14 +187,14 @@ class TesoriereController extends AppController {
 				App::import('Model', 'Order');
 				$Order = new Order;
 				
-				$order_id_arr = explode(',',$order_id_selected);
+				$order_ids = explode(',',$order_id_selected);
 				
 				switch ($action_submit) {
 					/*
 					 * riporto l'ordine al referente
 					 */
 					case 'OrdersToPROCESSED_REFERENTE_POST_DELIVERY':			
-							foreach ($order_id_arr as $order_id) {
+							foreach ($order_ids as $order_id) {
 								
 								if($debug) echo '<br />order_id '.$order_id;
 								
@@ -243,16 +205,8 @@ class TesoriereController extends AppController {
 								}
 								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
 								
-								if($debug) {
-									echo "<pre>";
-									print_r($order);
-									echo "</pre>";
-								}
-								
-								/*
-								 * 	se Order.tesoriere_sorce = REFERENTE cancella i dati in summary_orders
-								 * 	se Order.tesoriere_sorce = CASSIERE non lo permetto
-								*/
+								self::d($order,$debug);
+							
 								if($order['Order']['state_code']=='PROCESSED-TESORIERE') {
 									
 									$state_code_next = '';
@@ -261,51 +215,44 @@ class TesoriereController extends AppController {
 									 * ulteriore ctrl
 									 * il Organization.payToDelivery puo' essere POST o ON-POST (mai ON)
 									 */
-									 if($this->user->organization['Organization']['payToDelivery']=='POST')
-									 	$state_code_next = 'PROCESSED-POST-DELIVERY';
-									 else
-									 if($this->user->organization['Organization']['payToDelivery']=='ON-POST') {
-											if($order['Order']['tesoriere_sorce']=='REFERENTE')
-												$state_code_next = 'INCOMING-ORDER';
+									switch($this->user->organization['Template']['payToDelivery']) {
+										case 'POST':
+											$state_code_next = 'PROCESSED-POST-DELIVERY';
+										break;
+										case 'ON-POST':
+											if($order['Order']['inviato_al_tesoriere_da']=='REFERENTE')
+												$state_code_next = 'INCOMING-ORDER';  // merce arrivata
 											else
-											if($order['Order']['tesoriere_sorce']=='CASSIERE')	
-												$state_code_next = 'PROCESSED-ON-DELIVERY';  // (in carico al cassiere durante la consegna)							 
-									 }
-									 	
-									/*
-									 * aggiorno stato ORDER
-									*/
+											if($order['Order']['inviato_al_tesoriere_da']=='CASSIERE')	
+												$state_code_next = 'PROCESSED-ON-DELIVERY';  // in carico al cassiere durante la consegna			
+										break;
+									}
+									
 									if(!empty($state_code_next)) {
-										$sql = "UPDATE
-											`".Configure::read('DB.prefix')."orders`
-										SET
-											state_code = '".$state_code_next."',
-											modified = '".date('Y-m-d H:i:s')."'
-										WHERE
-											organization_id = ".(int)$this->user->organization['Organization']['id']."
-											and id = ".(int)$order_id;
-										if($debug) echo '<br />sql '.$sql;
-										$result = $Order->query($sql);
 										
 										/*
-										 * se l'ordine e' AGGREGATE i dati in SummaryOrder sono stati caricati dal referente
-										 */
-										if($order['Order']['tesoriere_sorce']=='REFERENTE' && $order['Order']['typeGest']!='AGGREGATE')
-											$this->__delete_summary_orders($order_id, $debug);
+										 * aggiorno stato ORDER => pulisco / popolo SummaryOrderLifeCycle
+										*/
+										App::import('Model', 'OrderLifeCycle');
+										$OrderLifeCycle = new OrderLifeCycle();
 										
+										$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $order, $state_code_next);
 									}
-								}
-							}  // end foreach ($order_id_arr as $order_id)
+								} // end if($order['Order']['state_code']=='PROCESSED-TESORIERE')
+							}  // end foreach ($order_ids as $order_id)
 							$this->Session->setFlash(__('Orders State Processed Referente Post Delivery'));
 					break;
 					/*
 					 * passo allo stato per richiedere il pagamento dell'ordine
 					*/
-					case 'OrdersToTO_PAYMENT':
+					case 'OrdersToTO_REQUEST_PAYMENT': 
 						App::import('Model', 'Order');
 						$Order = new Order;
 						
-						foreach ($order_id_arr as $order_id) {
+						App::import('Model', 'OrderLifeCycle');
+						$OrderLifeCycle = new OrderLifeCycle;
+						
+						foreach ($order_ids as $order_id) {
 			
 								$Order->id = $order_id;
 								if (!$Order->exists($this->user->organization['Organization']['id'])) {
@@ -315,22 +262,13 @@ class TesoriereController extends AppController {
 								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
 								
 								if($order['Order']['state_code']=='PROCESSED-TESORIERE') {
-									/*
-									 * aggiorno stato ORDER
-									*/
-									$sql = "UPDATE
-										`".Configure::read('DB.prefix')."orders`
-									SET
-										state_code = 'TO-PAYMENT',
-										modified = '".date('Y-m-d H:i:s')."'
-									WHERE
-										organization_id = ".(int)$this->user->organization['Organization']['id']."
-										and id = ".(int)$order_id;
-									$result = $Order->query($sql);
+									
+									$OrderLifeCycle->stateCodeUpdate($this->user, $order_id, 'TO-REQUEST-PAYMENT');
 								}
-						} // end foreach ($order_id_arr as $order_id)
-						$this->Session->setFlash(__('Lo stato dell\'ordine è stato aggiornato: ora si potrà richiederne il pagamento.'));						/*
-						 * non cambio + la pagina $this->myRedirect(array('controller' => 'RequestPayments', 'action' => 'index', null, 'delivery_id='.$this->delivery_id));
+						} // end foreach ($order_ids as $order_id)
+						
+						$this->Session->setFlash(__('OrderStateCodeUpdateNowRequestPayment'));						/*
+						 * non cambio + la pagina $this->myRedirect(['controller' => 'RequestPayments', 'action' => 'index', null, 'delivery_id='.$this->delivery_id]);
 						 */ 
 					break;					
 				}
@@ -338,20 +276,7 @@ class TesoriereController extends AppController {
 
 		} // end if ($this->request->is('post') || $this->request->is('put'))
 		
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
-		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.sys'=> 'N',
-									   'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('id', 'luogoData');
-		$options['order'] = 'data ASC';
-		$options['recursive'] = -1;
-		$deliveries = $Delivery->find('list', $options);
-		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
-		$this->set(compact('deliveries'));
+		$this->_getListDeliveries($this->user); 
 		
 		$this->set('order_state_code_checked','PROCESSED-TESORIERE');
 		
@@ -363,6 +288,97 @@ class TesoriereController extends AppController {
 		$this->set('orderStatesToLegenda', $orderStatesToLegenda);
 
 		$this->render('admin_orders_get_processed_tesoriere');
+	}
+
+	/*
+	 * TO-REQUEST-PAYMENT (Possibilità di richiederne il pagamento) per riportarli al referente
+	*/	
+	public function admin_orders_get_TO_REQUEST_PAYMENT() {
+			
+		$debug = false;
+		
+		if ($this->request->is('post') || $this->request->is('put')) {
+			
+			$action_submit = $this->request->data['Tesoriere']['action_submit'];
+			
+			$order_id_selected = $this->request->data['Tesoriere']['order_id_selected'];
+			
+			if(!empty($order_id_selected)) {
+				
+				App::import('Model', 'Order');
+				$Order = new Order;
+				
+				$order_ids = explode(',',$order_id_selected);
+				
+				switch ($action_submit) {
+					/*
+					 * riporto l'ordine al referente
+					 */
+					case 'OrdersToPROCESSED_REFERENTE_POST_DELIVERY':			
+							foreach ($order_ids as $order_id) {
+								
+								self::d('order_id '.$order_id, $debug);
+								
+								$Order->id = $order_id;
+								if (!$Order->exists($this->user->organization['Organization']['id'])) {
+									$this->Session->setFlash(__('msg_error_params'));
+									$this->myRedirect(Configure::read('routes_msg_exclamation'));
+								}
+								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
+								
+								self::d($order,$debug);
+							
+								if($order['Order']['state_code']=='TO-REQUEST-PAYMENT') {
+									
+									$state_code_next = '';
+									
+									/*
+									 * ulteriore ctrl
+									 * il Organization.payToDelivery puo' essere POST o ON-POST (mai ON)
+									 */
+									switch($this->user->organization['Template']['payToDelivery']) {
+										case 'POST':
+											$state_code_next = 'PROCESSED-POST-DELIVERY';
+										break;
+										case 'ON-POST':
+											if($order['Order']['inviato_al_tesoriere_da']=='REFERENTE')
+												$state_code_next = 'INCOMING-ORDER';  // merce arrivata
+											else
+											if($order['Order']['inviato_al_tesoriere_da']=='CASSIERE')	
+												$state_code_next = 'PROCESSED-ON-DELIVERY';  // in carico al cassiere durante la consegna			
+										break;
+									}
+									
+									if(!empty($state_code_next)) {
+										
+										/*
+										 * aggiorno stato ORDER => pulisco / popolo SummaryOrderLifeCycle
+										*/
+										App::import('Model', 'OrderLifeCycle');
+										$OrderLifeCycle = new OrderLifeCycle();
+										
+										$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $order, $state_code_next);
+									}
+								} // end if($order['Order']['state_code']=='PROCESSED-TESORIERE')
+							}  // end foreach ($order_ids as $order_id)
+							$this->Session->setFlash(__('Orders State Processed Referente Post Delivery'));
+					break;				}
+			} // end if(!empty($order_id_selected))
+
+		} // end if ($this->request->is('post') || $this->request->is('put'))
+		
+		$this->_getListDeliveries($this->user); 
+		
+		$this->set('order_state_code_checked','TO-REQUEST-PAYMENT');
+		
+		/*
+		 * legenda profilata
+		 */
+		$group_id = $this->ActionsOrder->getGroupIdToTesoriere($this->user);
+		$orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->user, $group_id);
+		$this->set('orderStatesToLegenda', $orderStatesToLegenda);
+
+		$this->render('admin_orders_get_to_request_payment');
 	}
 	
 	/*
@@ -382,21 +398,21 @@ class TesoriereController extends AppController {
 		}
 	
 		
-		$newResults = array();
+		$newResults = [];
 		/*
 		 * metto in testa gli ordini con l'ordine filtrato $order_state_code_checked
 		*/
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-														  'Order.isVisibleBackOffice != ' => 'N',
-														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
-														  'Order.state_code' => $order_state_code_checked);
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
+		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+													  'Order.isVisibleBackOffice != ' => 'N',
+													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
+													  'Order.state_code' => $order_state_code_checked];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		
-		$options = array();
-		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
-									   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.sys'=> 'N',
-							           'Delivery.isVisibleBackOffice' => 'Y');
+		$options = [];
+		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
+								   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								   'Delivery.sys'=> 'N',
+								   'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		
@@ -409,12 +425,12 @@ class TesoriereController extends AppController {
 			 * Suppliers, se e' in stato N lo escludo
 			* */
 			$SuppliersOrganization = new SuppliersOrganization;
-			$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
-			$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
+			$SuppliersOrganization->unbindModel(['belongsTo' => ['Organization', 'CategoriesSupplier']]);
+			$SuppliersOrganization->unbindModel(['hasMany' => ['Article', 'Order', 'SuppliersOrganizationsReferent']]);
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										   'SuppliersOrganization.id' => $order['supplier_organization_id']);
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+									  'SuppliersOrganization.id' => $order['supplier_organization_id']];
 			$options['recursive'] = 1;
 			$SuppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 			if(!empty($SuppliersOrganizationResults)) {
@@ -430,8 +446,8 @@ class TesoriereController extends AppController {
 				App::import('Model', 'SuppliersOrganizationsReferent');
 				$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 							
-				$conditions = array('User.block' => 0,
-									'SuppliersOrganization.id' => $order['supplier_organization_id']);
+				$conditions = ['User.block' => 0,
+								'SuppliersOrganization.id' => $order['supplier_organization_id']];
 				$suppliersOrganizationsReferent = $SuppliersOrganizationsReferent->getReferentsCompact($this->user, $conditions);
 				
 				if(!empty($suppliersOrganizationsReferent))
@@ -445,16 +461,16 @@ class TesoriereController extends AppController {
 		/*
 		 * metto dopo gli ordini diversi dallo stato filtrato $order_state_code_checked
 		*/
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-													  	  'Order.isVisibleBackOffice != ' => 'N',
-														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
-														  'Order.state_code !=' => $order_state_code_checked);
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
-		$options = array();
-		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
-										'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.sys'=> 'N',
-										'Delivery.isVisibleBackOffice' => 'Y');
+		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+													  'Order.isVisibleBackOffice != ' => 'N',
+													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
+													  'Order.state_code !=' => $order_state_code_checked];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
+		$options = [];
+		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
+									'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'Delivery.sys'=> 'N',
+									'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		foreach ($results['Order'] as $numOrder => $order) {
@@ -482,8 +498,8 @@ class TesoriereController extends AppController {
 				App::import('Model', 'SuppliersOrganizationsReferent');
 				$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 							
-				$conditions = array('User.block' => 0,
-									'SuppliersOrganization.id' => $order['supplier_organization_id']);
+				$conditions = ['User.block' => 0,
+								'SuppliersOrganization.id' => $order['supplier_organization_id']];
 				$suppliersOrganizationsReferent = $SuppliersOrganizationsReferent->getReferentsCompact($this->user, $conditions);
 				
 				if(!empty($suppliersOrganizationsReferent))
@@ -501,14 +517,14 @@ class TesoriereController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;
 
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-														  'Order.isVisibleBackOffice != ' => 'N',
-														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
-														  'Order.delivery_id' => $this->delivery_id);
-		$options['order'] = array('Order.state_code');
-		$options['group'] = array('Order.state_code');
-		$options['fields'] = array('Order.state_code');
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+								  'Order.isVisibleBackOffice != ' => 'N',
+								  'Order.state_code != ' => 'CREATE-INCOMPLETE',
+								  'Order.delivery_id' => $this->delivery_id];
+		$options['order'] = ['Order.state_code'];
+		$options['group'] = ['Order.state_code'];
+		$options['fields'] = ['Order.state_code'];
 		$options['recursive'] = -1;
 		
 		$orderStateResults = $Order->find('all', $options);
@@ -527,69 +543,44 @@ class TesoriereController extends AppController {
 		
 		$debug = false;
 	
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+			
+		/* 
+		 * se arrivo da Order::index passo la consegna
+		 */
+		if(isset($this->request->params['pass']['delivery_id']))	
+			$delivery_id = $this->request->params['pass']['delivery_id'];
+		else
+		if(isset($this->request->data['Order']['delivery_id']))
+			$delivery_id = $this->request->data['Order']['delivery_id'];
+		else 
+			$delivery_id = 0;
+		$this->set(compact('delivery_id'));		
+		
 		if ($this->request->is('post') || $this->request->is('put')) {
 							
 			unset($this->request->data['Order']['delivery_id']);
 			
 			foreach($this->request->data['Order'] as $order_id => $data) {
 
+				$this->Tesoriere->updateFromModulo($this->user, $order_id, $data, $debug);
+		
 				/*
-				 *   ctrl che siano cambiati i dati
+				 * se Ordine saldato (Order.tesoriere_stato_pay = Y) passo a Order.state_code succssivo
 				 */
-				 $sqlTmp = "";
-				 if($this->importoToDatabase($data['tesoriere_importo_pay']) != $data['tesoriere_importo_pay_old'])
-				 	$sqlTmp .= " tesoriere_importo_pay = ".$this->importoToDatabase($data['tesoriere_importo_pay']).',';
-				 	
-				 if($data['tesoriere_data_pay_db'] != $data['tesoriere_data_pay_old'])
-				 	$sqlTmp .= " tesoriere_data_pay = '".$data['tesoriere_data_pay_db']."',";
+				if($OrderLifeCycle->isPaidSupplier($this->user, $order_id, $debug)) {
 				 
-				 if(empty($data['tesoriere_stato_pay']))
-				 	$data['tesoriere_stato_pay'] = 'N';
-				 	
-				 if($data['tesoriere_stato_pay'] != $data['tesoriere_stato_pay_old'])
-				 	$sqlTmp .= " tesoriere_stato_pay = '".$data['tesoriere_stato_pay']."',";
-				 	
-				if(!empty($sqlTmp)) {
-				
-					try {
-						$sql = "UPDATE
-									`".Configure::read('DB.prefix')."orders`
-								SET
-									".$sqlTmp."
-									modified = '".date('Y-m-d H:i:s')."'
-								WHERE
-									organization_id = ".(int)$this->user->organization['Organization']['id']."
-									and id = ".(int)$order_id;
-						if($debug) echo '<br />'.$sql;
-						$resultUpdate = $this->Tesoriere->query($sql);
-					}
-					catch (Exception $e) {
-						CakeLog::write('error',$sql);
-						CakeLog::write('error',$e);
-					}
-				} // if(!empty($sqlTmp))
+					$state_code_next = $OrderLifeCycle->stateCodeAfter($this->user, $order_id, 'SUPPLIER-PAID', $debug);
+			
+					$OrderLifeCycle->stateCodeUpdate($this->user, $order_id, $state_code_next);
+				}		
 			} // end foreach($this->request->data['Order'] as $order_id => $data)
 		
 			
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 	
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
-		
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.sys'=> 'N',
-									   'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('id', 'luogoData');
-		$options['order'] = 'data ASC';
-		$options['recursive'] = -1;
-		$deliveries = $Delivery->find('list', $options);
-		if(empty($deliveries)) {
-			$this->Session->setFlash(__('NotFoundDeliveries'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
-		$this->set(compact('deliveries'));	
+		$this->_getListDeliveries($this->user); 	
 	}
 
 	/*
@@ -608,21 +599,21 @@ class TesoriereController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-		$newResults = array();
+		$newResults = [];
 		/*
 		 * metto in testa gli ordini con l'ordine tesoriere_stato_pay = N
 		*/
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-														  'Order.isVisibleBackOffice != ' => 'N',
-														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
-														  'Order.tesoriere_stato_pay' => 'N');
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
+		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+													  'Order.isVisibleBackOffice != ' => 'N',
+													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
+													  'Order.tesoriere_stato_pay' => 'N'];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		
-		$options = array();
-		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
-									   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.sys'=> 'N',
-							           'Delivery.isVisibleBackOffice' => 'Y');
+		$options = [];
+		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
+								   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								   'Delivery.sys'=> 'N',
+								   'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		
@@ -637,11 +628,11 @@ class TesoriereController extends AppController {
 			 * Suppliers
 			* */
 			$SuppliersOrganization = new SuppliersOrganization;
-			$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
-			$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
+			$SuppliersOrganization->unbindModel(['belongsTo' => ['Organization', 'CategoriesSupplier']]);
+			$SuppliersOrganization->unbindModel(['hasMany' => ['Article', 'Order', 'SuppliersOrganizationsReferent']]);
 			
-			$options = array();
-			$options['conditions'] = array('SuppliersOrganization.id' => $order['supplier_organization_id']);
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.id' => $order['supplier_organization_id']];
 			$options['recursive'] = 1;
 			$SuppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 			if(!empty($SuppliersOrganizationResults)) {
@@ -657,16 +648,16 @@ class TesoriereController extends AppController {
 		/*
 		 * metto dopo gli ordini diversi dallo stato tesoriere_stato_pay = 'Y'
 		*/
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-													  	  'Order.isVisibleBackOffice != ' => 'N',
-														  'Order.state_code != ' => 'CREATE-INCOMPLETE',
-														  'Order.tesoriere_stato_pay' => 'Y');
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
-		$options = array();
-		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
-										'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.sys'=> 'N',
-										'Delivery.isVisibleBackOffice' => 'Y');
+		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+													  'Order.isVisibleBackOffice != ' => 'N',
+													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
+													  'Order.tesoriere_stato_pay' => 'Y'];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
+		$options = [];
+		$options['conditions'] =  ['Delivery.id' => $this->delivery_id,
+									'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'Delivery.sys'=> 'N',
+									'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		foreach ($results['Order'] as $numOrder => $order) {
@@ -696,7 +687,7 @@ class TesoriereController extends AppController {
 		/*
 		 *  elenco order.tesoriere_stato_pay presenti nella lista per legenda
 		 */
-		$orderTesoriereStatoPayResults = array('N' => "Ordini da saldare al produttore", 'Y' => "Ordini saldati al produttore");
+		$orderTesoriereStatoPayResults = ['N' => "Ordini da saldare al produttore", 'Y' => "Ordini saldati al produttore"];
 		
 		$this->set('orderTesoriereStatoPayResults', $orderTesoriereStatoPayResults);
 		
@@ -713,13 +704,13 @@ class TesoriereController extends AppController {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$options = array();
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'Delivery.sys'=> 'N',
-										'Delivery.stato_elaborazione' => 'CLOSE');
-		$options['fields'] = array('id', 'luogoData');
-		$options['order'] = 'data ASC';
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'Delivery.isVisibleBackOffice' => 'Y',
+									'Delivery.sys'=> 'N',
+									'Delivery.stato_elaborazione' => 'CLOSE'];
+		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
+		$options['order'] = ['Delivery.data' => 'asc'];
 		$options['recursive'] = -1;
 		$deliveries = $Delivery->find('list', $options);
 		if(empty($deliveries)) {
@@ -745,17 +736,17 @@ class TesoriereController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-		$newResults = array();
+		$newResults = [];
 		
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-														'Order.isVisibleBackOffice != ' => 'N',
-														'Order.state_code != ' => 'CREATE-INCOMPLETE');
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
-		$options = array();
-		$options['conditions'] = array('Delivery.id' => $this->delivery_id,
-				'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-				'Delivery.sys'=> 'N',
-				'Delivery.isVisibleBackOffice' => 'Y');
+		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+													'Order.isVisibleBackOffice != ' => 'N',
+													'Order.state_code != ' => 'CREATE-INCOMPLETE'];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
+		$options = [];
+		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
+								'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								'Delivery.sys'=> 'N',
+								'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		foreach ($results['Order'] as $numOrder => $order) {
@@ -791,15 +782,39 @@ class TesoriereController extends AppController {
 	public function admin_pay_suppliers_by_supplier() {
 		
 		$debug = false;
+		
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;		
 	
+		if ($this->request->is('post') || $this->request->is('put')) {
+										
+			foreach($this->request->data['Order'] as $order_id => $data) {
+			
+				$this->Tesoriere->updateFromModulo($this->user, $order_id, $data, $debug);
+				
+				/*
+				 * se Ordine saldato (Order.tesoriere_stato_pay = Y) passo a Order.state_code succssivo
+				 */
+				if($OrderLifeCycle->isPaidSupplier($this->user, $order_id, $debug)) {
+				 
+					$state_code_next = $OrderLifeCycle->stateCodeAfter($this->user, $order_id, 'SUPPLIER-PAID');
+					
+					$OrderLifeCycle->stateCodeUpdate($this->user, $order_id, $state_code_next);
+				}
+			} // end foreach($this->request->data['Order'] as $order_id => $data)
+		
+			
+		} // end if ($this->request->is('post') || $this->request->is('put')) 
+	
+		
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 			
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										'SuppliersOrganization.stato' => 'Y');
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								   'SuppliersOrganization.stato' => 'Y'];
 		$options['recursive'] = -1;
-		$options['order'] = array('SuppliersOrganization.name');
+		$options['order'] = ['SuppliersOrganization.name'];
 		$results = $SuppliersOrganization->find('list', $options);
 		$this->set('suppliersOrganizations',$results);
 	}
@@ -808,28 +823,34 @@ class TesoriereController extends AppController {
 	 *  ajax, elenco ordini di u produttore per visualizzare il pagamento
 	*/
 	public function admin_orders_to_pay_index_by_supplier($supplier_organization_id=0) {
-	
+	 
+	    $debug = false;
+	    
 		App::import('Model', 'Order');
 		$Order = new Order;
 	
-		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization'))); 
+		$Order->unbindModel(['belongsTo' => ['SuppliersOrganization']]); 
 		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.isVisibleBackOffice != ' => 'N',
-										'Order.state_code != ' => 'CREATE-INCOMPLETE',
-										'Order.supplier_organization_id' => $supplier_organization_id);
-		$options['order'] = array('Order.data_inizio', 'Order.data_fine');
+		$options = [];
+		$options['conditions'] =['Order.organization_id' => $this->user->organization['Organization']['id'],
+								'Order.isVisibleBackOffice != ' => 'N',
+								'Order.state_code != ' => 'CREATE-INCOMPLETE',
+								'Order.supplier_organization_id' => $supplier_organization_id];
+		$options['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);
-		/*
-		echo "<pre>";
-		print_r($options);
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d([$options,$results], $debug);
+		
 		$this->set('results', $results);
 	
+		/*
+		 *  elenco order.tesoriere_stato_pay presenti nella lista per legenda
+		 */
+		$orderTesoriereStatoPayResults = ['N' => "Ordini da saldare al produttore", 'Y' => "Ordini saldati al produttore"];
+		
+		$this->set('orderTesoriereStatoPayResults', $orderTesoriereStatoPayResults);
+			
 		$this->layout = 'ajax';
 	}
 	
@@ -837,7 +858,7 @@ class TesoriereController extends AppController {
 	
 		$this->ctrlHttpReferer();
 		
-		$results = array();
+		$results = [];
 		
 		if(!empty($delivery_id)) {
 			App::import('Model', 'Delivery');
@@ -887,13 +908,37 @@ class TesoriereController extends AppController {
 	
 		$this->layout = 'ajax';
 	}
-
-	public function admin_sotto_menu_tesoriere_request_payment($delivery_id, $request_payment_id, $position_img) {	
-	   /*
-		* $pageCurrent = array('controller' => '', 'action' => '');		* mi serve per non rendere cliccabile il link corrente nel menu laterale		*/		$pageCurrent = $this->getToUrlControllerAction($_SERVER['HTTP_REFERER']);		$this->set('pageCurrent',$pageCurrent);
-				$this->admin_sotto_menu_tesoriere($delivery_id, $position_img);
+	public function admin_sotto_menu_tesoriere_request_payment_bootstrap($request_payment_id) {
+		$this->_sotto_menu_tesoriere_request_payment($request_payment_id);
+	}
+	
+	public function admin_sotto_menu_tesoriere_request_payment($request_payment_id, $position_img) {
+		$this->_sotto_menu_tesoriere_request_payment($request_payment_id);
 		
-		App::import('Model', 'RequestPayment');		$RequestPayment = new RequestPayment;				$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}				$conditions = array('RequestPayment.organization_id' => $this->user->organization['Organization']['id'],				'RequestPayment.id' => $request_payment_id);		$requestPaymentResults = $RequestPayment->find('first', array('conditions' => $conditions, 'recursive' => -1));		$this->set('requestPaymentResults', $requestPaymentResults);	
+		$this->set('position_img', $position_img);
+	}
+	
+	private function _sotto_menu_tesoriere_request_payment($request_payment_id) { 
+
+	   /*
+		* $pageCurrent = ['controller' => '', 'action' => ''];
+		* mi serve per non rendere cliccabile il link corrente nel menu laterale
+		*/
+		$pageCurrent = $this->getToUrlControllerAction($_SERVER['HTTP_REFERER']);
+		$this->set('pageCurrent',$pageCurrent);
+				
+		App::import('Model', 'RequestPayment');
+		$RequestPayment = new RequestPayment;
+		
+		$RequestPayment->id = $request_payment_id;
+		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'], 'RequestPayment.id' => $request_payment_id];
+		$requestPaymentResults = $RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+		$this->set('requestPaymentResults', $requestPaymentResults);	
 
 		$tot_importo = $RequestPayment->getTotImporto($this->user, $request_payment_id);
 		$this->set('tot_importo',$tot_importo);
@@ -915,58 +960,51 @@ class TesoriereController extends AppController {
 		else 
 			$deliveriesValideToStoreroom = 'N';
 	
-		$this->set('deliveriesValideToStoreroom', $deliveriesValideToStoreroom);			}		public function admin_sotto_menu_referentetesoriere_request_payment($delivery_id, $request_payment_id, $position_img) {			$this->admin_sotto_menu_referentetesoriere($delivery_id, $position_img);
+		$this->set('deliveriesValideToStoreroom', $deliveriesValideToStoreroom);	
 		
+		$this->layout = 'ajax';	
+	}
+			public function admin_sotto_menu_referentetesoriere_request_payment($request_payment_id) {			
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
 		
 		$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
-		$conditions = array('RequestPayment.organization_id' => $this->user->organization['Organization']['id'],							'RequestPayment.id' => $request_payment_id);		$requestPaymentResults = $RequestPayment->find('first', array('conditions' => $conditions, 'recursive' => -1));		$this->set('requestPaymentResults',$requestPaymentResults);	}	
-	private function __populate_summary_orders($order_id) {
+		$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],						'RequestPayment.id' => $request_payment_id];		$requestPaymentResults = $RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);		$this->set('requestPaymentResults',$requestPaymentResults);	}	
 	
-		App::import('Model', 'Order');
-		$Order = new Order;
+	/*
+	 * devo cercare per all e creare la lista perche' dopo il submit il campo luogoData era vuoto!!
+	 */
+	private function _getListDeliveries($user, $debug=false) {
 		
-		$msg = '';
-		$Order->id = $order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
-			$this->Session->setFlash(__('msg_error_params'));
+		App::import('Model', 'Delivery');
+		$Delivery = new Delivery;
+		
+		$results = [];
+		$deliveries = [];
+		
+		$options = [];
+		$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+								   'Delivery.isVisibleBackOffice' => 'Y',
+								   'Delivery.sys'=> 'N',
+								   'Delivery.stato_elaborazione' => 'OPEN'];
+		// $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
+		$options['order'] = ['Delivery.data' => 'asc'];
+		$options['recursive'] = -1;
+		$results = $Delivery->find('all', $options);
+		self::d($results, $debug);
+		if(empty($results)) {
+			$this->Session->setFlash(__('NotFoundDeliveries'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
-		
-		App::import('Model', 'SummaryOrder');
-		$SummaryOrder = new SummaryOrder;
-		$SummaryOrder->populate_to_order($this->user, $order_id, 0);
-		
-		
-		/*
-		* aggiorno stato ORDER
-		*/
-		$sql = "UPDATE
-					`".Configure::read('DB.prefix')."orders`
-				SET
-					state_code = 'PROCESSED-TESORIERE',
-					modified = '".date('Y-m-d H:i:s')."'
-				WHERE
-					organization_id = ".(int)$this->user->organization['Organization']['id']."
-					and id = ".(int)$order_id;
-		// echo '<br />'.$sql;
-		$result = $Order->query($sql);
-	}
-	
-	private function __delete_summary_orders($order_id=0, $debug) {
-	
-		if(empty($order_id)) {
-			$this->Session->setFlash(__('msg_error_params'));
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));
-		}
+		else {
+			foreach($results as $result) {
+				if(isset($result['Delivery']['luogoData']))	
+					$deliveries[$result['Delivery']['id']] = $result['Delivery']['luogoData'];
+				else
+					$deliveries[$result['Delivery']['id']] = $result[0]['Delivery__luogoData'];
+			}
 			
-		/*
-		 * cancello eventuali occorrenze di SummaryOrder
-		 */
-		App::import('Model', 'SummaryOrder');
-		$SummaryOrder = new SummaryOrder;
-		$SummaryOrder->delete_to_order($this->user, $order_id, $debug);
-	}	
+		}
+		$this->set(compact('deliveries'));
+	}
 }
