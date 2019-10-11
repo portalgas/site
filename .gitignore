@@ -12,9 +12,9 @@ configuration.php
 /images/prod_gas_promotions/*
 /images/tesoriere/*
 /images/users/*
-/components/com_cake/app/Config/core.php
-/components/com_cake/app/Config/core.portalgas.it.php
-/components/com_cake/app/Config/core.www.portalgas.it.php
+#/components/com_cake/app/Config/core.php
+#/components/com_cake/app/Config/core.portalgas.it.php
+#/components/com_cake/app/Config/core.www.portalgas.it.php
 /components/com_cake/app/Config/core.test.portalgas.it.php
 /components/com_cake/app/Config/core.next.portalgas.it.php
 /components/com_cake/app/Config/core.new.portalgas.it.php
