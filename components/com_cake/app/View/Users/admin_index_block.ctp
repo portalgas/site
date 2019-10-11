@@ -3,62 +3,60 @@ if($isManager)
 	$colspan = '10';
 else
 	$colspan = '8';
-?>
-<div class="users">
 
-	<h2 class="ico-users">
-		<?php echo __('Users Block');?>
-	</h2>
-<?php
+echo '<div class="users">';
+echo '<h2 class="ico-users">';
+echo __('Users Block');
+echo '</h2>';
+
 if(!empty($results)) {
-?>
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th></th>
-			<th><?php echo __('N');?></th>
-			<th>Codice</th>
-			<th></th>
-			<th><?php echo $this->Paginator->sort('Nominativo');?></th>
-			<th><?php echo $this->Paginator->sort('Username');?></th>
-			<th><?php echo $this->Paginator->sort('Mail');?></th>
-			<th>Contatti</th>
-			<th><?php echo $this->Paginator->sort('Registrato il');?></th>
-			<th><?php echo $this->Paginator->sort('Ultima visita');?></th>
-			<?php
-			if($isManager) {
-				echo '<th>Config</th>';
-				echo '<th class="actions">'.__('Actions').'</th>';
-			}
+	echo '<div class="table-responsive"><table class="table table-hover">';
+	echo '<tr>';
+	echo '<th></th>';
+	echo '<th>'.__('N').'</th>';
+	echo '<th>Codice</th>';
+	echo '<th></th>';
+	echo '<th>'.$this->Paginator->sort('Nominativo').'</th>';
+	echo '<th>'.$this->Paginator->sort('Username').'</th>';
+	echo '<th>'.$this->Paginator->sort('Mail').'</th>';
+	echo '<th>Contatti</th>';
+	echo '<th>'.$this->Paginator->sort('Registrato il').'</th>';
+	echo '<th>'.$this->Paginator->sort('Ultima visita').'</th>';
+	if($isManager) {
+		echo '<th>Config</th>';
+		echo '<th class="actions">'.__('Actions').'</th>';
+	}
 	echo '</tr>';
 	
-	foreach ($results as $i => $result):
+	foreach ($results as $numResult => $result) {
 	
-		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1); 
+		$numRow = ((($this->Paginator->counter(['format'=>'{:page}'])-1) * $SqlLimit) + $numResult+1); 
 		
-		if(!empty($result['User']['lastvisitDate']) && $result['User']['lastvisitDate']!='0000-00-00 00:00:00') 
+		if(!empty($result['User']['lastvisitDate']) && $result['User']['lastvisitDate']!=Configure::read('DB.field.datetime.empty')) 
 			$lastvisitDate = $this->Time->i18nFormat($result['User']['lastvisitDate'],"%e %b %Y");
 		else 
 			$lastvisitDate = "";
-		?>
-	<tr class="view">
-		<td><a action="user_block-<?php echo $result['User']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo $numRow;?></td>
-		<td><?php echo $result['Profile']['codice']; ?></td>
-		<td><?php echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User']); ?></td>
-		<td><?php echo $result['User']['name']; ?></td>
-		<td><?php echo $result['User']['username']; ?></td>
-		<td><?php  	
-			if(!empty($result['User']['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a><br />';
+		
+		echo '<tr class="view">';
+		echo '<td><a action="user_block-'.$result['User']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+		echo '<td>'.$numRow.'</td>';
+		echo '<td>'.$result['Profile']['codice'].'</td>';
+		echo '<td>'.$this->App->drawUserAvatar($user, $result['User']['id'], $result['User']).'</td>';
+		echo '<td>'.$result['User']['name'].'</td>';
+		echo '<td>'.$result['User']['username'].'</td>';
+		echo '<td>'; 	
+		if(!empty($result['User']['email'])) 
+			echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a><br />';
 		echo '</td>';
-		echo '<td>';
+
+		echo '<td>';
 		if(!empty($result['Profile']['address'])) echo $result['Profile']['address'].'<br />';
 		if(!empty($result['Profile']['phone'])) echo $result['Profile']['phone'].'<br />';
 		if(!empty($result['Profile']['phone2'])) echo $result['Profile']['phone2'].'<br />';
 		echo '</td>';
-		?>
-		<td><?php echo $this->Time->i18nFormat($result['User']['registerDate'],"%e %b %Y");?></td>
-		<td><?php echo $lastvisitDate;?></td>
-		<?php
+		
+		echo '<td>'.$this->Time->i18nFormat($result['User']['registerDate'],"%e %b %Y").'</td>';
+		echo '<td>'.$lastvisitDate.'</td>';
 		if($isManager) {
 			echo '<td>';
 			echo '<span style="white-space:nowrap;" title="Gestisci gli articoli associati all\'ordine">Associaz. ';
@@ -70,50 +68,36 @@ if(!empty($results)) {
 						
 			echo '</td>';
 			echo '<td class="actions-table-img">';
-			echo $this->Html->link(null, Configure::read('App.server').'/administrator/index.php?option=com_users&task=user.edit&id='.$result['User']['id'],array('class' => 'action actionEdit','title' => __('Edit')));
+			echo $this->Html->link(null, Configure::read('App.server').'/administrator/index.php?option=com_users&task=user.edit&id='.$result['User']['id'],['class' => 'action actionEdit','title' => __('Edit')]);
 			echo '</td>';
-		}
-		?>		
-	</tr>
-	<tr class="trView" id="trViewId-<?php echo $result['User']['id'];?>">
-		<td colspan="2"></td>
-		<td colspan="<?php echo $colspan;?>" id="tdViewId-<?php echo $result['User']['id'];?>"></td>
-	</tr>
-<?php endforeach;
-echo '</table>';
+		}		
+		echo '</tr>';
+		echo '<tr class="trView" id="trViewId-'.$result['User']['id'].'">';
+		echo '<td colspan="2"></td>';
+		echo '<td colspan="'.$colspan.'" id="tdViewId-'.$result['User']['id'].'"></td>';
+		echo '</tr>';
+	}
+	echo '</table></div>';
 	}
 	else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',['class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')]);	
+
+	echo '<p>';
+	echo $this->Paginator->counter(['format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')]);
+	echo '</p>';
+
+	echo '<div class="paging">';
+	echo $this->Paginator->prev('< ' . __('previous'), [], null, ['class' => 'prev disabled']);
+	echo $this->Paginator->numbers(['separator' => '']);
+	echo $this->Paginator->next(__('next') . ' >', [], null, ['class' => 'next disabled']);
+	echo '</div>';
+echo '</div>';
 ?>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-</div>
-
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.reset').click(function() {
-		jQuery('#FilterUserUsername').val('');	
-		jQuery('#FilterUserName').val('');	
-	});
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
+$(document).ready(function() {
+	$('.reset').click(function() {
+		$('#FilterUserUsername').val('');	
+		$('#FilterUserName').val('');	
 	});
 });
 </script>

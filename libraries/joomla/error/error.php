@@ -63,7 +63,7 @@ abstract class JError
 	 * Method to determine if a value is an exception object.  This check supports
 	 * both JException and PHP5 Exception objects
 	 *
-	 * @param   mixed  &$object  Object to check
+	 * @param   mixed  $object  Object to check
 	 *
 	 * @return  boolean  True if argument is an exception, false otherwise.
 	 *
@@ -130,19 +130,19 @@ abstract class JError
 	/**
 	 * Method to add non-JError thrown JExceptions to the JError stack for debugging purposes
 	 *
-	 * @param   JException  &$e  Add an exception to the stack.
+	 * @param   JException  $e  Add an exception to the stack.
 	 *
 	 * @return  void
 	 *
 	 * @since       11.1
 	 * @deprecated  12.1
 	 */
-	public static function addToStack(JException &$e)
+	public static function addToStack(JException $e)
 	{
 		// Deprecation warning.
 		JLog::add('JError::addToStack() is deprecated.', JLog::WARNING, 'deprecated');
 
-		JError::$stack[] = &$e;
+		JError::$stack[] = $e;
 	}
 
 	/**
@@ -179,7 +179,7 @@ abstract class JError
 	/**
 	 * Throw an error
 	 *
-	 * @param   object  &$exception  An exception to throw.
+	 * @param   object  $exception  An exception to throw.
 	 *
 	 * @return  reference
 	 *
@@ -187,7 +187,7 @@ abstract class JError
 	 * @see     JException
 	 * @since   11.1
 	 */
-	public static function throwError(&$exception)
+	public static function throwError($exception)
 	{
 		// Deprecation warning.
 		JLog::add('JError::throwError() is deprecated.', JLog::WARNING, 'deprecated');
@@ -211,7 +211,7 @@ abstract class JError
 		$function = 'handle' . ucfirst($handler['mode']);
 		if (is_callable(array('JError', $function)))
 		{
-			$reference = call_user_func_array(array('JError', $function), array(&$exception, (isset($handler['options'])) ? $handler['options'] : array()));
+			$reference = call_user_func_array(array('JError', $function), array($exception, (isset($handler['options'])) ? $handler['options'] : array()));
 		}
 		else
 		{
@@ -504,7 +504,7 @@ abstract class JError
 	 * Ignore error handler
 	 * - Ignores the error
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object   The exception object
@@ -513,7 +513,7 @@ abstract class JError
 	 * @see     raise()
 	 * @since   11.1
 	 */
-	public static function handleIgnore(&$error, $options)
+	public static function handleIgnore($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleIgnore() is deprecated.', JLog::WARNING, 'deprecated');
@@ -525,7 +525,7 @@ abstract class JError
 	 * Echo error handler
 	 * - Echos the error message to output
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -534,7 +534,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleEcho(&$error, $options)
+	public static function handleEcho($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleEcho() is deprecated.', JLog::WARNING, 'deprecated');
@@ -599,7 +599,7 @@ abstract class JError
 	 * Verbose error handler
 	 * - Echos the error message to output as well as related info
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -608,7 +608,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleVerbose(&$error, $options)
+	public static function handleVerbose($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleVerbose() is deprecated.', JLog::WARNING, 'deprecated');
@@ -646,7 +646,7 @@ abstract class JError
 	 * Die error handler
 	 * - Echos the error message to output and then dies
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -655,7 +655,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleDie(&$error, $options)
+	public static function handleDie($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleDie() is deprecated.', JLog::WARNING, 'deprecated');
@@ -688,7 +688,7 @@ abstract class JError
 	 * Message error handler
 	 * Enqueues the error message into the system queue
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -697,7 +697,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleMessage(&$error, $options)
+	public static function handleMessage($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleMessage() is deprecated.', JLog::WARNING, 'deprecated');
@@ -713,7 +713,7 @@ abstract class JError
 	 * Log error handler
 	 * Logs the error message to a system log file
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -722,7 +722,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleLog(&$error, $options)
+	public static function handleLog($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleLog() is deprecated.', JLog::WARNING, 'deprecated');
@@ -748,7 +748,7 @@ abstract class JError
 	 * Callback error handler
 	 * - Send the error object to a callback method for error handling
 	 *
-	 * @param   object  &$error   Exception object to handle
+	 * @param   object  $error   Exception object to handle
 	 * @param   array   $options  Handler options
 	 *
 	 * @return  object  The exception object
@@ -757,7 +757,7 @@ abstract class JError
 	 * @see         raise()
 	 * @since       11.1
 	 */
-	public static function handleCallback(&$error, $options)
+	public static function handleCallback($error, $options)
 	{
 		// Deprecation warning.
 		JLog::add('JError::handleCallback() is deprecated.', JLog::WARNING, 'deprecated');
@@ -768,14 +768,14 @@ abstract class JError
 	/**
 	 * Display a custom error page and exit gracefully
 	 *
-	 * @param   object  &$error  Exception object
+	 * @param   object  $error  Exception object
 	 *
 	 * @return  void
 	 *
 	 * @deprecated  12.1
 	 * @since   11.1
 	 */
-	public static function customErrorPage(&$error)
+	public static function customErrorPage($error)
 	{
 		// Deprecation warning.
 		JLog::add('JError::customErrorPage() is deprecated.', JLog::WARNING, 'deprecated');

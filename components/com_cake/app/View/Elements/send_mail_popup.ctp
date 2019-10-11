@@ -13,12 +13,12 @@
 			echo '<legend style="display:none;">'.__('Send Mail').'</legend>';
 		
 			echo '<div class="form-group">';
-			echo '<label for="email">Mittente</label>';
+			echo '<label for="email">Mittente</label> ';
 			echo '<input type="email" class="form-control" id="email" value="'.$user->get('email').'" disabled/>';
 			echo '</div>';
             
 			echo '<div class="form-group">';
-			echo $this->Form->textarea('body', array('rows' => '10', 'cols' => '100%', 'id' => 'body_mail'));
+			echo $this->Form->textarea('body', array('rows' => '10', 'cols' => '100%', 'id' => 'body_mail', 'class' => 'form-control'));
 			echo '</div>';
 
 			echo $this->Form->hidden('pass_org_id', array('id' => 'pass_org_id'));
@@ -40,47 +40,47 @@
 	</div>		
 </div>	
 <script type="text/javascript"> 
-jQuery(document).ready(function() {
-	jQuery('.sendMail').click(function() {
-		
-		var pass_org_id = jQuery(this).attr('pass_org_id');
-		var pass_id = jQuery(this).attr('pass_id');
-		var pass_entity = jQuery(this).attr('pass_entity');
+$(document).ready(function() {
+	$('.sendMail').click(function() {
+		var pass_org_id = $(this).attr('pass_org_id');
+		var pass_id = $(this).attr('pass_id');
+		var pass_entity = $(this).attr('pass_entity');
 
 		/*
 		console.log("pass_org_id "+pass_org_id);
 		console.log("pass_id "+pass_id);
 		console.log("pass_entity "+pass_entity);
 		*/
-		jQuery('#pass_org_id').val(pass_org_id);
-		jQuery('#pass_id').val(pass_id);
-		jQuery('#pass_entity').val(pass_entity);
+
+		$('#pass_org_id').val(pass_org_id);
+		$('#pass_id').val(pass_id);
+		$('#pass_entity').val(pass_entity);
 		
-		jQuery("#dialog-send_mail").dialog("open");
+		$("#dialog-send_mail").modal("show");
 
 		return false;	
 	});
 
-	jQuery('#formGasMail').submit(function() {
+	$('#formGasMail').submit(function() {
 
-		var body_mail = jQuery('#body_mail').val();
+		var body_mail = $('#body_mail').val();
 		if(body_mail=="") {
 			alert("Devi indicare il testo della mail");
 			return false;
 		}
 		body_mail = encodeURIComponent(body_mail);
 		
-		var pass_org_id = jQuery('#pass_org_id').val();
-		var pass_id = jQuery('#pass_id').val();
-		var pass_entity = jQuery('#pass_entity').val();
+		var pass_org_id = $('#pass_org_id').val();
+		var pass_id = $('#pass_id').val();
+		var pass_entity = $('#pass_entity').val();
 
 		var data = 'pass_org_id='+pass_org_id+'&pass_id='+pass_id+'&pass_entity='+pass_entity+'&pass_entity='+pass_entity+'&body_mail='+body_mail;
-		/* console.log("data "+data); */ 
-		
+		/* console.log("data "+data); */
+				
 		var url = '';
 		url = '/administrator/index.php?option=com_cake&controller=Mails&action=popup_send&format=notmpl';
 
-		jQuery.ajax({
+		$.ajax({
 			type: "POST",
 			url: url,
 			data: data,
@@ -92,10 +92,9 @@ jQuery(document).ready(function() {
 			}
 		});
 
-		jQuery("#dialog-send_mail").dialog("close");
+		$("#dialog-send_mail").modal("hide");
 		
 		return false;
-	
 	});	
 });
 </script>

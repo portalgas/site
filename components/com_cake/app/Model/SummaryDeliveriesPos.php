@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class SummaryDeliveriesPos extends AppModel {
 	
 	/*
@@ -27,7 +28,7 @@ class SummaryDeliveriesPos extends AppModel {
 		else {
 			if($debug) echo "<br />SummaryDeliveriesPos::saveToDelivery() paymentPos NON salvato => salvo";
 
-			$row = array();
+			$row = [];
 			$row['SummaryDeliveriesPos']['organization_id'] = $user->organization['Organization']['id'];
 			$row['SummaryDeliveriesPos']['delivery_id'] = $delivery_id;
 			$row['SummaryDeliveriesPos']['user_id'] = $user_id;
@@ -53,12 +54,12 @@ class SummaryDeliveriesPos extends AppModel {
 	 */ 
 	public function findPaymentPos($user, $delivery_id, $user_id, $debug = false) {
 
-		$results = array();
+		$results = [];
 		
 		if($user->organization['Organization']['hasFieldPaymentPos']!='Y')
 			return $results; 
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SummaryDeliveriesPos.organization_id' => $user->organization['Organization']['id'],
 										'SummaryDeliveriesPos.user_id' => $user_id,
 										'SummaryDeliveriesPos.delivery_id' => $delivery_id);
@@ -76,17 +77,17 @@ class SummaryDeliveriesPos extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'delivery_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 	);

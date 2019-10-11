@@ -1,10 +1,7 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-if(empty($results))	
+$this->App->d($results);
+
+if(empty($results) && empty($ordersToValidateResults))	
 	echo $this->Tabs->messageNotOrders();
 else {
 
@@ -36,40 +33,54 @@ else {
 		
 		echo '</div>';	
 		echo '</div>';  // class="container"	
-	}
+	} // end if(!empty($ordersToValidateResults))
 	
-	echo '<div class="container" style="padding-left: 0px; margin-left: 0px; width: 100%; padding-bottom:5px;">';
-	echo '<div class="col-xs-12">';
-	
-	echo '<form role="select" class="select-orders navbar-form" accept-charset="utf-8" method="get">';
-	echo '<select id="all_orders" name="all_orders" size="1" data-live-search="true" class="orders_select selectpicker dropup" data-width="auto">';
-	echo '<option value="">Seleziona il produttore</option>';
-	foreach($results as $result) {
-	
-		echo "\n";
-		if($result['Order']['data_fine']!=Configure::read('DB.field.date.empty'))
-			$data_fine = $this->Time->i18nFormat($result['Order']['data_fine'],"%A %e %B %Y");
-		else
-			$data_fine = "";
-	
-		echo '<option value="'.$result['id'].'">'.$result['SuppliersOrganization']['name'];
-		echo ' - '.__('Delivery').' '.$result['Delivery']['name'];
-		echo ' - chiude il '.$data_fine.'</option>';
-	}
-	echo '</select>';
-	echo '</form>';
-	
-	echo '</div>';	
-	echo '</div>';	 // class="container"
-	
+	if(!empty($results)) {
+		echo '<div class="container" style="padding-left: 0px; margin-left: 0px; width: 100%; padding-bottom:5px;">';
+		echo '<div class="col-xs-12">';
+		
+		echo '<form role="select" class="select-orders navbar-form" accept-charset="utf-8" method="get">';
+		echo '<select id="all_orders" name="all_orders" size="1" data-live-search="true" class="orders_select selectpicker dropup" data-width="auto">';
+		echo '<option value="">Seleziona il produttore</option>';
+		foreach($results as $result) {
+		
+			echo "\n";
+			if($result['Order']['data_fine']!=Configure::read('DB.field.date.empty'))
+				$data_fine = $this->Time->i18nFormat($result['Order']['data_fine'],"%A %e %B %Y");
+			else
+				$data_fine = "";
+		
+			echo '<option value="'.$result['id'].'">';
+
+			if($result['Order']['type_draw']=='PROMOTION')
+				echo __('FEOptionProdGasPromotion');	
+			
+			echo $result['SuppliersOrganization']['name'];
+			echo ' - '.__('Delivery').' '.$result['Delivery']['name'];
+			echo ' - chiude il '.$data_fine.'</option>';
+		}
+		echo '</select>';
+		echo '</form>';
+		
+		echo '</div>';	
+		echo '</div>';	 // class="container"
+	} // if(!empty($results)
+		
 	echo '<div style="min-height: 50px;">';
 	$deliveries = [];
-	foreach($results as $result) { 
-		if(!in_array($result['Delivery']['id'], $deliveries)) {
-			array_push($deliveries, $result['Delivery']['id']);
-			echo '<div class="articlesOrderResult" id="articlesOrderResult_'.$result['Delivery']['id'].'"></div>';	
+	if(!empty($results))
+		foreach($results as $result) { 
+			if(!in_array($result['Delivery']['id'], $deliveries)) {
+				array_push($deliveries, $result['Delivery']['id']);
+				echo '<div class="articlesOrderResult" id="articlesOrderResult_'.$result['Delivery']['id'].'"></div>';	
+			}		
+		}
+		
+	if(!empty($ordersToValidateResults)) { // ordini da validare i colli (pezzi_confezione)
+		foreach($ordersToValidateResults as $ordersToValidateResult) {
+			echo '<div class="articlesOrderResult" id="articlesOrderResult_'.$ordersToValidateResult['Delivery']['id'].'"></div>';	
 		}		
-	}
+	}		
 	echo '</div>';
 	/*
 	echo "<pre>";

@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Prod Groups'), array('controller' => 'ProdGroups', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Prod Group'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));

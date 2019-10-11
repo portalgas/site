@@ -38,8 +38,8 @@ class AjaxGasCartsController extends AppController {
 		/*
 		 * concorrenza tra users, ctrl che non sia gia' completato il collo
 	 	 */
-		App::import('Model', 'ArticlesOrder');
-		$ArticlesOrder = new ArticlesOrder;
+		App::import('Model', 'Cart');
+		$Cart = new Cart;
 		
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
@@ -56,7 +56,7 @@ class AjaxGasCartsController extends AppController {
 									'Cart.article_id' => $article_id,
 									'Cart.user_id' => $user_id];
 		$options['recursive'] = 0;
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Order', 'Article')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Order', 'Article']]);
 		$results = $ArticlesOrder->find('first', $options);
 		
 		self::d($results, $debug);
@@ -70,7 +70,12 @@ class AjaxGasCartsController extends AppController {
 			 * solo se aggiungo in acquisto
 			 */
 			if($qta > $qta_prima_modifica) {
-				$qta_cart = $results['ArticlesOrder']['qta_cart'];
+				
+				// se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+				$qta_cart = $Cart->getOrderDesQtaCart($this->user, $order_id, $article_organization_id, $article_id);
+				if($qta_cart===false) 
+					$qta_cart = $results['ArticlesOrder']['qta_cart'];
+				
 				$pezzi_confezione = $results['ArticlesOrder']['pezzi_confezione'];
 
 				self::d(" qta_cart $qta_cart - pezzi_confezione $pezzi_confezione", $debug);
@@ -123,9 +128,6 @@ class AjaxGasCartsController extends AppController {
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 		
-		App::import('Model', 'ArticlesOrder');
-		$ArticlesOrder = new ArticlesOrder;
-
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
 								   'ArticlesOrder.order_id' => $order_id,
@@ -138,7 +140,7 @@ class AjaxGasCartsController extends AppController {
 									'Cart.article_id' => $article_id,
 									'Cart.user_id' => $user_id];
 		$options['recursive'] = 0;
-		$ArticlesOrder->unbindModel(array('belongsTo' => array('Order', 'Article')));
+		$ArticlesOrder->unbindModel(['belongsTo' => ['Order', 'Article']]);
 		$results = $ArticlesOrder->find('first', $options);
 		
 		self::d($results, $debug);
@@ -177,7 +179,8 @@ class AjaxGasCartsController extends AppController {
 							".Configure::read('DB.prefix')."prod_gas_articles_promotions as ProdGasArticlesPromotion,
 							".Configure::read('DB.prefix')."articles as Article 
 							WHERE ProdGasArticlesPromotion.prod_gas_promotion_id = ".$prod_gas_promotion_id." 
-							AND ProdGasArticlesPromotion.prod_gas_article_id = Article.prod_gas_article_id 
+							AND ProdGasArticlesPromotion.article_id = Article.id 
+							AND ProdGasArticlesPromotion.organization_id = Article.organization_id
 							AND Article.organization_id = ".$article_organization_id." 
 							AND Article.id = ".$article_id;
 					self::d($sql, $debug);
@@ -270,9 +273,9 @@ class AjaxGasCartsController extends AppController {
     		$options = [];
     		$options['conditions'] = ['Cart.user_id' => $user_id, 
 									'Article.id' => $article_id];
-    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order_id, $article_organization_id, $options));
+    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order, $options));
     	} // end if(!empty($order))
-    	$this->set('results',$results);
+    	$this->set(compact('results'));
 	
 	   self::l($options['conditions'], $debug);
 	   self::l($results, $debug);
@@ -312,9 +315,9 @@ class AjaxGasCartsController extends AppController {
 										'ArticlesOrder.order_id' => $order_id,
 										'Article.organization_id' => $article_organization_id,
 										'Article.id' => $article_id];
-    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order_id, $prod_gas_promotion_id, $options));
+    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order, $prod_gas_promotion_id, $options));
     	} // end if(!empty($order))
-    	$this->set('results',$results);
+    	$this->set(compact('results'));
     }
 	
     /*
@@ -323,13 +326,15 @@ class AjaxGasCartsController extends AppController {
     */
     private function _readRowValidation($rowId, $order_id, $article_organization_id, $article_id) {
     	 
+		$debug = false;
+		
     	$user_id = $this->user->get('id');
     	 
     	$results = [];
     
-    	/*
-    	 * dati dell'ordine
-    	*/
+    	App::import('Model', 'Cart');
+    	$Cart = new Cart;
+		
     	App::import('Model', 'Order');
     	$Order = new Order;
     
@@ -347,8 +352,15 @@ class AjaxGasCartsController extends AppController {
     
     		$options['conditions'] = ['Cart.user_id' => $user_id,
     								  'Article.id' => $article_id];
-    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order_id, $article_organization_id, $options));
-    		
+    		$results = current($ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order, $options));
+    		self::d($results, $debug);
+			// se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+			$qta_cart = $Cart->getOrderDesQtaCart($this->user, $order_id, $article_organization_id, $article_id);
+			if($qta_cart!==false) {
+				$results['ArticlesOrder']['qta_cart'] = $qta_cart;
+			}
+			self::d($qta_cart, $debug);			
+							
     		/*
     		 * differenza da ordinare 
     		 * da $Cart->getCartToValidateFrontEnd($this->user, $delivery_id, $order_id);
@@ -367,7 +379,7 @@ class AjaxGasCartsController extends AppController {
     			$results['ArticlesOrder']['differenza_importo'] = 0;    			
     		}
     	} // end if(!empty($order))
-    	$this->set('results',$results);
+    	$this->set(compact('results'));
     }
     
     /*

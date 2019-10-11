@@ -1,10 +1,10 @@
 <?php
 echo '<div class="old-menu" style="min-height:450px;">';
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if(!isset($supplier_organization_id)) $supplier_organization_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $supplier_organization_id));
-$this->Html->addCrumb(__('Pay Suppliers'));
+$this->Html->addCrumb(__('Pays Supplier'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
@@ -52,23 +52,21 @@ function caricaSupplierOrganizations() {
 }
 </script>
 
-<?php echo $this->Form->create('Tesoriere', array('id'=>'formGas'));?>
-	<fieldset>
-	<?php
-	$options = array('id' => 'supplier_organization_id', 'options' => $suppliersOrganizations, 'empty' => Configure::read('option.empty'), 'default'=> $supplier_organization_id, 'escape' => false);
-	if(count($suppliersOrganizations) > Configure::read('HtmlSelectWithSearchNum'))
-		$options += array('class'=> 'selectpicker', 'data-live-search' => true);
-	echo $this->Form->input('supplier_organization_id',$options);
-	?>	
-	
-	<div id="orders-result" style="display:block;min-height:50px;"></div>
-
-	<?php
-		echo $this->Form->end();
-	?>
-	</fieldset>
-</div>
-
 <?php 
+echo $this->Form->create('Tesoriere', array('id'=>'formGas'));
+echo '<fieldset>';
+
+$options = array('id' => 'supplier_organization_id', 'options' => $suppliersOrganizations, 'empty' => Configure::read('option.empty'), 'default'=> $supplier_organization_id, 'escape' => false);
+if(count($suppliersOrganizations) > Configure::read('HtmlSelectWithSearchNum'))
+	$options += array('class'=> 'selectpicker', 'data-live-search' => true);
+echo $this->Form->input('supplier_organization_id',$options);
+	
+echo '<div id="orders-result" style="display:block;min-height:50px;"></div>';
+
+echo $this->Form->end(__('Submit'));
+
+echo '</fieldset>';
+echo '</div>';
+
 echo $this->element('menuTesoriereLaterale');
 ?>

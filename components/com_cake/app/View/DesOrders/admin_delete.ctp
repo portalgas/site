@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List DesOrders'), array('controller' => 'DesOrders', 'action' => 'index'));
 if(isset($des_order_id) && !empty($des_order_id))
 	$this->Html->addCrumb(__('Order home DES'),array('controller'=>'DesOrdersOrganizations','action'=>'index', null, 'des_order_id='.$des_order_id));
@@ -14,12 +14,12 @@ echo '<legend>'.__('Title Delete DesOrder').'</legend>';
 	echo $this->Form->input('id');
 	
 	echo '<div class="input text">';
-	echo '<label for="DesSupplier">'.__('DesSupplier').'</label>';
+	echo '<label for="DesSupplier">'.__('DesSupplier').'</label> ';
 	echo $this->Form->value('Supplier.name');
 	echo '</div>';
 	
 	echo '<div class="input text">';
-	echo '<label for="DesDelivery">'.__('DesDelivery').'</label>';
+	echo '<label for="DesDelivery">'.__('DesDelivery').'</label> ';
 	echo $this->Form->value('DesOrder.luogo');
 	echo '</div>';
 		
@@ -37,9 +37,9 @@ echo '</div>';
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 		if(confirm("<?php echo __('jsAlertConfirmDelete');?>")) {
 			return true;
 		}	

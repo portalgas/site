@@ -1,9 +1,10 @@
 <?php 
 if($isRoot) 
-	$headers = array('csv' => array(
+	$headers = ['csv' => [
 			'N' => 'N',		
 			'code' => __('Code'),
-			'code' => __('Username'),
+			'username' => __('Username'),
+			'cf' => __('Cf'),
 			'name' => __('Name'),
 			'mail' => __('Mail'),
 			'telephone' => __('Telephone'),
@@ -11,6 +12,9 @@ if($isRoot)
 			'city' => __('City'),
 			'cap' => __('CAP'),
 			'provincia' => __('Provincia'),
+			'registerDate' => __('RegisterDate'),
+			'lastvisitDate' => __('LastvisitDate'),
+			'lastCartDate' => __('Ultimo acquisto'),		
 			'DataRichEnter' => __('dataRichEnter'),
 			'DataEnter' => __('dataEnter'),
 			'numDeliberaEnter' => __('numDeliberaEnter'),
@@ -18,16 +22,19 @@ if($isRoot)
 			'DataExit' => __('dataExit'),
 			'numDeliberaExit' => __('numDeliberaExit'),
 			'dataRestituzCassa' => __('dataRestituzCassa'), 
+			'notaRestituzCassa' => __('notaRestituzCassa'),
+			'nota' => __('Nota'),			
 			'groups' => __('Groups'),
 			'role' => __('Role'),
 			'suppliers_organizations_referent' => __('Suppliers Organizations Referents'),
-			)
-	); 
+			]
+	]; 
 else
-	$headers = array('csv' => array(
+	$headers = ['csv' => [
 			'N' => 'N',
 			'code' => __('Code'),
-			'name' => __('username'),
+			'username' => __('username'),
+			'cf' => __('Cf'),
 			'name' => __('Name'),
 			'mail' => __('Mail'),
 			'telephone' => __('Telephone'),
@@ -35,6 +42,9 @@ else
 			'city' => __('City'),
 			'cap' => __('CAP'),
 			'provincia' => __('Provincia'),
+			'registerDate' => __('RegisterDate'),
+			'lastvisitDate' => __('LastvisitDate'),
+			'lastCartDate' => __('Ultimo acquisto'),	
 			'DataRichEnter' => __('DataRichEnter'),
 			'DataEnter' => __('DataEnter'),
 			'numDeliberaEnter' => __('numDeliberaEnter'),
@@ -42,17 +52,41 @@ else
 			'DataExit' => __('DataExit'),
 			'numDeliberaExit' => __('numDeliberaExit'),
 			'dataRestituzCassa' => __('dataRestituzCassa'), 
+			'notaRestituzCassa' => __('notaRestituzCassa'),
+			'nota' => __('Nota'),			 
 			'groups' => __('Groups'),
 			'role' => __('Role'),
 			'suppliers_organizations_referent' => __('Suppliers Organizations Referents'),
-		)
-	);
+		]
+	];
 
-$data = array();
+$data = [];
 foreach($results as $numResult => $result) {
 
-	$dataTmp = array();
+	$dataTmp = [];
 
+	
+	if(!isset($result['Profile']['hasUserFlagPrivacy']))
+		$result['Profile']['hasUserFlagPrivacy'] = 'N';
+		
+	if(!isset($result['Profile']['hasUserRegistrationExpire']))
+		$result['Profile']['hasUserRegistrationExpire'] = 'N';
+			
+	if ($result['User']['block'] == 0)
+		$result['User']['block'] = 'Y';
+	else
+		$result['User']['block'] = 'N';	
+		
+	if(!empty($result['User']['lastvisitDate']) && $result['User']['lastvisitDate']!=Configure::read('DB.field.datetime.empty')) 
+		$lastvisitDate = $this->Time->i18nFormat($result['User']['lastvisitDate'],"%e %b %Y");
+	else 
+		$lastvisitDate = "";
+	
+	if(!empty($result['Cart']['date']) && $result['Cart']['date']!=Configure::read('DB.field.datetime.empty')) 
+		$lastCartDate = $this->Time->i18nFormat($result['Cart']['date'],"%e %b %Y");
+	else 
+		$lastCartDate = "";
+	
 	$telephone = "";
 	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';
 	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];
@@ -69,10 +103,11 @@ foreach($results as $numResult => $result) {
 	$postal_code = "";  // cap
 	if(!empty($result['Profile']['postal_code'])) $postal_code = $result['Profile']['postal_code'];
         
-	$dataTmp = array(
+	$dataTmp = [
 			'N' => ($numResult+1),
 			'code' => $result['Profile']['codice'],
 			'username' => $result['User']['username'],
+			'cf' => $result['Profile']['cf'],
 			'name' => $result['User']['name'],
 			'mail' => $result['User']['email'],
 			'telephone' => $telephone,
@@ -80,7 +115,11 @@ foreach($results as $numResult => $result) {
 			'city' => $city,
 			'postal_code' => $postal_code,
 			'region' => $region
-	);
+	];
+	
+	$dataTmp[] = $this->Time->i18nFormat($result['User']['registerDate'],"%e %b %Y");
+	$dataTmp[] = $lastvisitDate;
+	$dataTmp[] = $lastCartDate;
 	
 	/*
 	 * data Entrata/Uscita
@@ -92,6 +131,8 @@ foreach($results as $numResult => $result) {
 	$dataTmp['dataExit'] = $result['Profile']['dataExit'];
 	$dataTmp['numDeliberaExit'] = $result['Profile']['numDeliberaExit'];
 	$dataTmp['dataRestituzCassa'] = $result['Profile']['dataRestituzCassa'];
+	$dataTmp[] = $result['Profile']['notaRestituzCassa'];
+	$dataTmp[] = $result['Profile']['nota'];	
 	
 	if($isRoot) {
 		$groupsTmp = "";

@@ -26,7 +26,7 @@ if(!empty($results)) {
 		if($supplier_organization_id_old!=$result['StatOrder']['supplier_organization_id']) {
 			echo '<td width="50">';
 			if(!empty($result['StatOrder']['supplier_img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['StatOrder']['supplier_img1']))
-				echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';	
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';	
 			echo '</td>';		
 			echo '<td>'.$result['StatOrder']['supplier_organization_name'].'</td>';
 		}	
@@ -39,7 +39,7 @@ if(!empty($results)) {
 		echo '<td>'.$result['User']['name'].'</td>';
 		echo '<td>'.$result['User']['username'].'</td>';
 		echo '<td style="text-align:center;">'.$result['StatCart']['qta'].'</td>';
-		echo '<td style="text-align:center;">'.number_format($result['StatCart']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+		echo '<td style="text-align:center;">'.number_format($result['StatCart']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 		echo '</tr>';
 		
 		$supplier_organization_id_old=$result['StatOrder']['supplier_organization_id'];
@@ -55,11 +55,11 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td style="text-align:center;"><b>'.$totale_qta.'</b></td>';
-	echo '<td style="text-align:center;"><b>'.$totale.' &euro;</b></td>';
+	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
 	echo '</tr>';	
 	echo '</table>';	
 		
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>

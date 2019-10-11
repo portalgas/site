@@ -54,7 +54,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$bio = $order['Article'][$numArticlesOrder]['bio'];
 					if($bio=='Y') $bio = 'Bio';
 					
-					$rows = array();
+					$rows = [];
 					$rows[] = ($i+1);
 					$rows[] = $bio;
 					$rows[] = $name;
@@ -158,7 +158,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			 	
 			 	
 			if($bio=='Y') $bio = 'Bio'; 	
-			$rows = array();
+			$rows = [];
 			$rows[] = ($i+1);
 			$rows[] = $bio;
 			$rows[] = $name;
@@ -207,7 +207,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$importo_modificato = false;
 			}
 			
-			$rows = array();
+			$rows = [];
 			$rows[] = '';
 			$rows[] = '';
 			$rows[] = '';	

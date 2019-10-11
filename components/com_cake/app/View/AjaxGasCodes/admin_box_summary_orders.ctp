@@ -12,6 +12,7 @@ $tmp .= '<div class="clearfix"></div>';
 
 if($results['Delivery']['totOrders'] > 0) {
 	$i=0;
+	$tot_importo_originale=0;
 	$tot_importo=0;
 	foreach($results['Delivery'][0]['Order'] as $numOrder => $order) {	
 
@@ -24,12 +25,13 @@ if($results['Delivery']['totOrders'] > 0) {
 
 		if(isset($order['SummaryOrder'])) {
 					
-			$tmp .= '	<table class="selector">';
+			$tmp .= '<div class="table-responsive"><table class="table table-hover table-striped">';
 			$tmp .= '		<tr>';
 			$tmp .= '			<th>'.__('N').'</th>';
 			$tmp .= '			<th>'.__('User').'</th>';
-			$tmp .= '			<th>Importo originale</th>';
-			$tmp .= '			<th>Importo modificato</th>';
+			$tmp .= '			<th>'.__('importo_originale').'</th>';
+			$tmp .= '			<th>'.__('importo_previous').'</th>';
+			$tmp .= '			<th colspan="2">'.__('importo_change').'</th>';
 			$tmp .= '			<th class="actions">'.__('Actions').'</th>';
 			$tmp .= '	</tr>';		
 			
@@ -43,13 +45,14 @@ if($results['Delivery']['totOrders'] > 0) {
 			$tmp .= '	<td></td>';
 			$tmp .= '	<td>'.$this->Form->input('user_id',array('id' => 'adduser_id-'.$rowId, 'value' => $users, 'label' => false)).'</td>';
 			$tmp .= '	<td></td>';
-			$tmp .= '	<td>';
-			$tmp .= '	<input tabindex="'.$i.'" type="text" value="" name="importo-'.$rowId.'" id="addimporto-'.$rowId.'" size="5" class="importo importoAdd double" />&nbsp;<span>&euro;</span>';
-		
+			$tmp .= '	<td></td>';
+			$tmp .= '	<td style="white-space:nowrap;padding-right:25px;">';
+			$tmp .= '	<input tabindex="'.$i.'" type="text" value="" name="importo-'.$rowId.'" id="addimporto-'.$rowId.'" style="display:inline" class="importo importoAdd double form-control" />&nbsp;<span>&euro;</span>';
+			$tmp .= '	</td>';
 			/*
 			 * non serve ma allinea l'input text con gli altri
 			 */
-			$tmp .= "\n";
+			$tmp .= '<td>';
 			$tmp .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
 			$tmp .= "\n";
 			$tmp .= '<div id="msgEcomm-'.$rowId.'" class="msgEcomm"></div>';
@@ -76,10 +79,13 @@ if($results['Delivery']['totOrders'] > 0) {
 				if(!empty($summaryOrder['User']['Profile']['phone2'])) $tmp .= ' '.$summaryOrder['User']['Profile']['phone2'];
 				$tmp .= '	</td>';
 						
-				$tmp .= '<td>'.$summaryOrder['SummaryOrder']['importo_e'].'</td>';
+				$tmp .= '<td style="text-align:center;">'.$summaryOrder['User']['totImporto_e'].'</td>';
+				$tmp .= '<td style="text-align:center;">'.$summaryOrder['SummaryOrder']['importo_e'].'</td>';
 					
-				$tmp .= '<td>';	
-				$tmp .= '	<input tabindex="'.$i.'" type="text" value="'.$summaryOrder['SummaryOrder']['importo_'].'" name="importo-'.$rowId.'" id="importo-'.$rowId.'" size="5" class="double importoSubmit" />&nbsp;<span>&euro;</span>';
+				$tmp .= '<td style="white-space:nowrap;padding-right:25px;">';	
+				$tmp .= '	<input tabindex="'.$i.'" type="text" value="'.$summaryOrder['SummaryOrder']['importo_'].'" name="importo-'.$rowId.'" id="importo-'.$rowId.'" style="display:inline" class="double importoSubmit form-control" />&nbsp;<span>&euro;</span>';
+				$tmp .= '</td>';
+				$tmp .= '<td>';
 				$tmp .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
 				$tmp .= '<div id="msgEcomm-'.$rowId.'" class="msgEcomm"></div>';
 				$tmp .= '</td>';
@@ -91,24 +97,28 @@ if($results['Delivery']['totOrders'] > 0) {
 				$tmp .= '	</td>';
 				$tmp .= '</tr>';
 		
+				$tot_importo_originale += $summaryOrder['User']['totImporto'];
 				$tot_importo += $summaryOrder['SummaryOrder']['importo'];
 			}
 		
 			/*
 			 * totali, lo calcolo in modo dinamico
 			 */
-			$tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+			$tot_importo_originale_e = number_format($tot_importo_originale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+			$tot_importo_e = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				
 			$tmp .= "\r\n";
 			$tmp .= '<tr>';
 			$tmp .= '	<td></td>';
 			$tmp .= '	<td style="font-size: 16px;text-align:right;font-weight: bold;">Totale</td>';
-			$tmp .= '	<td>'.$tot_importo.'</td>';
+			$tmp .= '	<td>'.$tot_importo_originale_e.'</td>';
+			$tmp .= '	<td>'.$tot_importo_e.'</td>';
 			$tmp .= '	<td style="font-size: 16px;"><span id="tot_importo"></span>&nbsp;&euro;</td>';
+			$tmp .= '	<td></td>';
 			$tmp .= '	<td></td>';
 			$tmp .= '</tr>';
 					
-			$tmp .= '</table>';
+			$tmp .= '</table></div>';
 			
 
 			/*
@@ -126,45 +136,45 @@ if($results['Delivery']['totOrders'] > 0) {
 echo $tmp;
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	/*
 	 * importo
 	 */
-	jQuery('.importoSubmit').change(function() {
+	$('.importoSubmit').change(function() {
 
 		setNumberFormat(this);
 
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_orders_id = numRow;
 		
-		var importo = jQuery(this).val();
+		var importo = $(this).val();
 		if(importo=='' || importo==undefined) {
 			alert("Devi indicare l'importo");
-			jQuery(this).val("0,00");
-			jQuery(this).focus();
+			$(this).val("0,00");
+			$(this).focus();
 			return false;
 		}	
 		
 		if(importo=='0,00') {
 			alert("L'importo dev'essere indicato con un valore maggior di 0");
-			jQuery(this).focus();
+			$(this).focus();
 			return false;
 		}
 					
-		jQuery.ajax({
+		$.ajax({
 			type: "GET",
 			url: "/administrator/index.php?option=com_cake&controller=SummaryOrders&action=setImporto&row_id="+numRow+"&summary_order_id="+summary_orders_id+"&importo="+importo+"&format=notmpl",
 			data: "",
 			success: function(response){
-				 jQuery('#msgEcomm-'+numRow).html(response);
+				 $('#msgEcomm-'+numRow).html(response);
 				 
 				 setTotImporto();
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				 jQuery('#msgEcomm-'+numRow).html(textStatus);
-				 jQuery('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
+				 $('#msgEcomm-'+numRow).html(textStatus);
+				 $('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
 			}
 		});
 		return false;
@@ -173,24 +183,24 @@ jQuery(document).ready(function() {
 	/*
 	 * delete
 	 */
-	jQuery('.delete').click(function() {
+	$('.delete').click(function() {
 
 		if(!confirm("Sei sicuro di voler cancellare definitivamente il dettaglio dell'ordine?")) {
 			return false;
 		}
 		
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_orders_id = numRow;
 		
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 
 		/*
 		 * l'ordine e' solo 1 dal menu a tendina
 		 *		referente da Carts::managementCartsGroupByUsers 
 		 */
-		if(jQuery('#order_id').length>0) {
-			var order_id    = jQuery('#order_id').val(); 
+		if($('#order_id').length>0) {
+			var order_id    = $('#order_id').val(); 
 		}
 		else  {
 			/*
@@ -199,8 +209,8 @@ jQuery(document).ready(function() {
 			 */
 		
 			var order_id_selected = '';
-			for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-				order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+			for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+				order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 			}
 	
 			if(delivery_id=='') {
@@ -215,39 +225,39 @@ jQuery(document).ready(function() {
 			order_id = order_id_selected.substring(0,order_id_selected.length-1);
 		}		
 			
-		jQuery('#doc-preview').css('display', 'block');
-		jQuery('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#doc-preview').css('display', 'block');
+		$('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-		jQuery.ajax({
+		$.ajax({
 			type: "get", 
 			url : "/administrator/index.php?option=com_cake&controller=SummaryOrders&action=delete&delivery_id="+delivery_id+"&order_id="+order_id+"&id="+summary_orders_id+"&format=notmpl",
 			data: "",  
 			success: function(response) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery("#doc-preview").html(response);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$("#doc-preview").html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#doc-preview').html(textStatus);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$('#doc-preview').html(textStatus);
 			}
 		});
 		
 		return false;
 	});	
 
-	jQuery('.importoAdd').change(function() {
-		var idRow = jQuery(this).attr('id');  /* indica order_id */
+	$('.importoAdd').change(function() {
+		var idRow = $(this).attr('id');  /* indica order_id */
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var order_id = numRow;
 		
-		var importo = jQuery('#addimporto-'+numRow).val();
+		var importo = $('#addimporto-'+numRow).val();
 		
 		if(!validateNumberField('#addimporto-'+numRow,'Importo')) return false;
 		
 		importo = numberToJs(importo);   /* in 1000.50 */
 		importo = number_format(importo,2,',','.');  /* in 1.000,50 */
-		jQuery('#addimporto-'+numRow).val(importo);
-		importo = jQuery('#addimporto-'+numRow).val();
+		$('#addimporto-'+numRow).val(importo);
+		importo = $('#addimporto-'+numRow).val();
 
 		return false;
 	});	
@@ -255,22 +265,22 @@ jQuery(document).ready(function() {
 	/*
 	 * add
 	 */
-	jQuery('.add').click(function() {
+	$('.add').click(function() {
 		
-		var idRow = jQuery(this).attr('id');  /* indica order_id */
+		var idRow = $(this).attr('id');  /* indica order_id */
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var order_id_to_add = numRow;
 		
-		var user_id = jQuery('#adduser_id-'+numRow).val();
-		var importo = jQuery('#addimporto-'+numRow).val();
-		var delivery_id = jQuery('#delivery_id').val();
+		var user_id = $('#adduser_id-'+numRow).val();
+		var importo = $('#addimporto-'+numRow).val();
+		var delivery_id = $('#delivery_id').val();
 
 		/*
 		 * l'ordine e' solo 1 dal menu a tendina
 		 *		referente da Carts::managementCartsGroupByUsers 
 		 */
-		if(jQuery('#order_id').length>0) {
-			var order_id    = jQuery('#order_id').val(); 
+		if($('#order_id').length>0) {
+			var order_id    = $('#order_id').val(); 
 		}
 		else  {
 			/*
@@ -279,8 +289,8 @@ jQuery(document).ready(function() {
 			 */
 		
 			var order_id_selected = '';
-			for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-				order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+			for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+				order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 			}
 	
 			if(delivery_id=='') {
@@ -308,23 +318,23 @@ jQuery(document).ready(function() {
 		
 		importo = numberToJs(importo);   /* in 1000.50 */
 		importo = number_format(importo,2,',','.');  /* in 1.000,50 */
-		jQuery('#addimporto-'+numRow).val(importo);
-		importo = jQuery('#addimporto-'+numRow).val();
+		$('#addimporto-'+numRow).val(importo);
+		importo = $('#addimporto-'+numRow).val();
 
-		jQuery('#doc-preview').css('display', 'block');
-		jQuery('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#doc-preview').css('display', 'block');
+		$('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-		jQuery.ajax({
+		$.ajax({
 			type: "get", 
 			url : "/administrator/index.php?option=com_cake&controller=SummaryOrders&action=add&delivery_id="+delivery_id+"&order_id="+order_id+"&order_id_to_add="+order_id_to_add+"&user_id="+user_id+"&importo="+importo+"&format=notmpl",
 			data: "",  
 			success: function(response) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery("#doc-preview").html(response);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$("#doc-preview").html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#doc-preview').html(textStatus);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$('#doc-preview').html(textStatus);
 			}
 		});
 		
@@ -334,7 +344,7 @@ jQuery(document).ready(function() {
 	<?php 
 	if(isset($hide_summary_orders_options)) {
 	?>
-	jQuery('#summary-orders-options').hide();
+	$('#summary-orders-options').hide();
 	<?php 
 	}
 	?>	
@@ -345,8 +355,8 @@ jQuery(document).ready(function() {
 function setTotImporto() {
 
 	var tot_importo = 0;
-	jQuery(".importoSubmit").each(function () {
-		var importo = jQuery(this).val();
+	$(".importoSubmit").each(function () {
+		var importo = $(this).val();
 		
 		importo = numberToJs(importo);   /* in 1000.50 */
 			
@@ -355,6 +365,6 @@ function setTotImporto() {
 	
 	tot_importo = number_format(tot_importo,2,',','.');  /* in 1.000,50 */
 
-	jQuery('#tot_importo').html(tot_importo);		
+	$('#tot_importo').html(tot_importo);		
 }
 </script>

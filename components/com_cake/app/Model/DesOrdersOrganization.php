@@ -51,7 +51,7 @@ class DesOrdersOrganization extends AppModel {
 	public $validate = array(
 		'des_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -61,7 +61,7 @@ class DesOrdersOrganization extends AppModel {
 		),
 		'des_supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -71,7 +71,7 @@ class DesOrdersOrganization extends AppModel {
 		),
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -81,7 +81,7 @@ class DesOrdersOrganization extends AppModel {
 		),
 		'order_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

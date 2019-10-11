@@ -3,7 +3,7 @@ echo $this->Html->script('indexRows.min');
 
 if($order['Order']['order_state_id'] >= Configure::read('OPEN')) {	$label = __('Edit ArticlesOrder OPEN');}else {	$label = __('Edit ArticlesOrder OPEN-NEXT');}
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order['Order']['id']) && !empty($order['Order']['id']))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order['Order']['id']));
@@ -107,7 +107,7 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 					echo '</td>';
 					echo '<td>';
 					if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
+						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 					}
 					echo '</td>';
 					echo '<td nowrap>'.$result['ArticlesOrder']['prezzo_e'].'</td>';
@@ -203,19 +203,19 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 				echo '</td>';
 				echo '<td>';
 				if(!empty($article['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['Article']['organization_id'].DS.$article['Article']['img1'])) {
-					echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
+					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
 				}
 				echo '</td>';
-				echo '<td nowrap>'.$this->Form->input('prezzo',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['prezzo_'],'size'=>10,'tabindex'=>($ii+1),'after'=>'&nbsp;&euro;' ,'class'=>'double')).'</td>';
-				echo '<td>'.$this->Form->input('pezzi_confezione',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['pezzi_confezione'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-				echo '<td>'.$this->Form->input('qta_minima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_minima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-				echo '<td>'.$this->Form->input('qta_massima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_massima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-				echo '<td>'.$this->Form->input('qta_multipli',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_multipli'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-				echo '<td>'.$this->Form->input('qta_minima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_minima_order'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-				echo '<td>'.$this->Form->input('qta_massima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_massima_order'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
+				echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]','type' => 'text','value'=>$article['Article']['prezzo_'],'tabindex'=>($ii+1),'after'=>'&nbsp;&euro;','style' => 'display:inline','class'=>'double')).'</td>';
+				echo '<td>'.$this->Form->input('pezzi_confezione',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','type' => 'text','value'=>$article['Article']['pezzi_confezione'],'tabindex'=>($ii+1))).'</td>';
+				echo '<td>'.$this->Form->input('qta_minima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]','type' => 'text','value'=>$article['Article']['qta_minima'],'tabindex'=>($ii+1))).'</td>';
+				echo '<td>'.$this->Form->input('qta_massima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]','type' => 'text','value'=>$article['Article']['qta_massima'],'tabindex'=>($ii+1))).'</td>';
+				echo '<td>'.$this->Form->input('qta_multipli',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]','type' => 'text','value'=>$article['Article']['qta_multipli'],'tabindex'=>($ii+1))).'</td>';
+				echo '<td>'.$this->Form->input('qta_minima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]','type' => 'text','value'=>$article['Article']['qta_minima_order'],'tabindex'=>($ii+1))).'</td>';
+				echo '<td>'.$this->Form->input('qta_massima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]','type' => 'text','value'=>$article['Article']['qta_massima_order'],'tabindex'=>($ii+1))).'</td>';
 				
 				if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-					echo '<td>'.$this->Form->input('alert_to_qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value'=>$article['Article']['alert_to_qta'],'size'=>3,'tabindex'=>($ii+1))).'</td>'; 
+					echo '<td>'.$this->Form->input('alert_to_qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value'=>$article['Article']['alert_to_qta'],'tabindex'=>($ii+1))).'</td>'; 
 			
 			echo '</tr>';
 			endforeach;

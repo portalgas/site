@@ -30,7 +30,7 @@ foreach($results as $numResult => $result) {
 
 	$i++;
 
-	if($debug) $tmpDebug = 'User '.$result['ProdCartsSplit']['user_id'].' ('.$user_id_old.') Article '.$result['ProdCartsSplit']['article_organization_id'].'/'.$result['ProdCartsSplit']['article_id'].' ('.$article_organization_id_old.'/'.$article_id_old.') '.$result['Article']['name'].' '.$result['ArticlesOrder']['prezzo'].' &euro;';
+	if($debug) $tmpDebug = 'User '.$result['ProdCartsSplit']['user_id'].' ('.$user_id_old.') Article '.$result['ProdCartsSplit']['article_organization_id'].'/'.$result['ProdCartsSplit']['article_id'].' ('.$article_organization_id_old.'/'.$article_id_old.') '.$result['Article']['name'].' '.$result['ArticlesOrder']['prezzo'].'&nbsp;&euro;';
 
 
 	$rowId = $result['ProdCartsSplit']['prod_delivery_id'].'_'.$result['ProdCartsSplit']['user_id'].'_'.$result['ProdCartsSplit']['article_organization_id'].'_'.$result['ProdCartsSplit']['article_id'];
@@ -49,7 +49,7 @@ foreach($results as $numResult => $result) {
 		$tmp .= '	<td></td>';
 		$tmp .= '	<td></td>';
 		$tmp .= '	<td></td>';
-		$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</th>';
+		$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 		
 		$tmp .= '<th style="text-align:right;"><span id="importo-'.$rowId_old.'">'.number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</span>&nbsp;&euro;</th>';
 			
@@ -120,7 +120,7 @@ foreach($results as $numResult => $result) {
 	$tmp .= '	<td></td>';
 
 	$tmp .= '<td style="width: 100px;text-align:right;">';	
-	$tmp .= '	<input tabindex="'.$i.'" type="text" value="'.$result['ProdCartsSplit']['importo_forzato_'].'" name="importo-'.$rowId2.'" id="importo-'.$rowId2.'" size="5" class="double importoSubmit" />&nbsp;<span>&euro;</span>';
+	$tmp .= '	<input tabindex="'.$i.'" type="text" value="'.$result['ProdCartsSplit']['importo_forzato_'].'" name="importo-'.$rowId2.'" id="importo-'.$rowId2.'" class="double importoSubmit" />&nbsp;<span>&euro;</span>';
 	$tmp .= '</td>';
 
 	$tot_prezzo_user += $result['ArticlesOrder']['prezzo'];
@@ -151,7 +151,7 @@ $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
-$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</th>';
+$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 
 $tmp .= '<th style="text-align:right;"><span id="importo-'.$rowId_old.'">'.number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</span>&nbsp;&euro;</th>';
 	
@@ -172,7 +172,7 @@ $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td style="font-size: 16px;text-align:right;font-weight: bold;">Totale</td>';
-$tmp .= '	<td style="font-size: 16px;text-align:right;">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+$tmp .= '	<td style="font-size: 16px;text-align:right;">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 $tmp .= '	<td style="font-size: 16px;text-align:right;"><span id="tot_importo"></span>&nbsp;&euro;</td>';
 $tmp .= '	<td></td>';
 $tmp .= '</tr>';
@@ -197,44 +197,44 @@ echo $tmp;
 .cakeContainer .box-user {cursor:pointer;}
 </style>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.box-user').click(function() {
-		var idRow = jQuery(this).attr('id');
+	$('.box-user').click(function() {
+		var idRow = $(this).attr('id');
 		
-		if(jQuery('.box-user-content'+idRow).css('display')=='none')  {
-			jQuery(this).removeClass('close');
-			jQuery(this).addClass('open');
-			jQuery('.box-user-content'+idRow).show();
+		if($('.box-user-content'+idRow).css('display')=='none')  {
+			$(this).removeClass('close');
+			$(this).addClass('open');
+			$('.box-user-content'+idRow).show();
 		}	
 		else {
-			jQuery(this).removeClass('open');
-			jQuery(this).addClass('close');
-			jQuery('.box-user-content'+idRow).hide();
+			$(this).removeClass('open');
+			$(this).addClass('close');
+			$('.box-user-content'+idRow).hide();
 		}
 	});
 
-	jQuery('#prod_deliveries_article_key_selected_all').click(function () {
+	$('#prod_deliveries_article_key_selected_all').click(function () {
 		
 		if(checked=='ALL')
-			jQuery('input[name=prod_deliveries_article_key_selected]').prop('checked',true);
+			$('input[name=prod_deliveries_article_key_selected]').prop('checked',true);
 		else
-			jQuery('input[name=prod_deliveries_article_key_selected]').prop('checked',false);
+			$('input[name=prod_deliveries_article_key_selected]').prop('checked',false);
 	});
 
 
-	jQuery('#box-user-all').click(function() {
-		var checked = jQuery("input[name='box-user-all']:checked").val();
+	$('#box-user-all').click(function() {
+		var checked = $("input[name='box-user-all']:checked").val();
 		
 		if(checked=='ALL')  {
-			jQuery('.box-user').removeClass('close');
-			jQuery('.box-user').addClass('open');
-			jQuery('[class^="box-user-content"]').show();
+			$('.box-user').removeClass('close');
+			$('.box-user').addClass('open');
+			$('[class^="box-user-content"]').show();
 		}	
 		else {
-			jQuery('.box-user').removeClass('open');
-			jQuery('.box-user').addClass('close');
-			jQuery('[class^="box-user-content"]').hide();
+			$('.box-user').removeClass('open');
+			$('.box-user').addClass('close');
+			$('[class^="box-user-content"]').hide();
 		}
 	});
 		
@@ -242,39 +242,39 @@ jQuery(document).ready(function() {
 	 * importo
 	 * key prod_delivery_id-user_id-article_organization_id-article_id-num_split
 	 */
-	jQuery('.importoSubmit').change(function() {
+	$('.importoSubmit').change(function() {
 
 		setNumberFormat(this);
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var key = numRow;
 		
-		var importo = jQuery(this).val();
+		var importo = $(this).val();
 		if(importo=='' || importo==undefined) {
 			alert("Devi indicare l'importo");
-			jQuery(this).val("0,00");
-			jQuery(this).focus();
+			$(this).val("0,00");
+			$(this).focus();
 			return false;
 		}	
 		
 		if(importo=='0,00') {
 			alert("L'importo dev'essere indicato con un valore maggior di 0");
-			jQuery(this).focus();
+			$(this).focus();
 			return false;
 		}
 					
-		jQuery.ajax({
+		$.ajax({
 			type: "GET",
 			url: "/administrator/index.php?option=com_cake&controller=ProdCartsSplits&action=setImporto&row_id="+numRow+"&key="+key+"&importo="+importo+"&format=notmpl",
 			data: "",
 			success: function(response){
-				 jQuery('#msgEcomm-'+numRow).html(response);
+				 $('#msgEcomm-'+numRow).html(response);
 				 
 				 setTotImporto();
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				 jQuery('#msgEcomm-'+numRow).html(textStatus);
-				 jQuery('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
+				 $('#msgEcomm-'+numRow).html(textStatus);
+				 $('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
 			}
 		});
 		return false;
@@ -283,7 +283,7 @@ jQuery(document).ready(function() {
 	<?php 
 	if(isset($hide_carts_splits_options)) {
 	?>
-	jQuery('#carts-splits-options').hide();
+	$('#carts-splits-options').hide();
 	<?php 
 	}
 	?>	
@@ -314,7 +314,7 @@ foreach($results as $numResult => $result) {
 		echo "\r\n";
 		echo "tot_importo_article = number_format(tot_importo_article,2,',','.');  // in 1.000,50";
 		echo "\r\n";
-		echo "jQuery('#importo-".$rowId_old."').html(tot_importo_article);";
+		echo "$('#importo-".$rowId_old."').html(tot_importo_article);";
 		echo "\r\n";
 		echo "tot_importo_article = 0;";
 		echo "\r\n";
@@ -322,7 +322,7 @@ foreach($results as $numResult => $result) {
 	}
 	
 	echo "\r\n";
-	echo "var importo = jQuery('#importo-".$rowId2."').val();";
+	echo "var importo = $('#importo-".$rowId2."').val();";
 	echo "\r\n";
 	echo "importo = numberToJs(importo);   // in 1000.50";
 	echo "\r\n";
@@ -338,7 +338,7 @@ foreach($results as $numResult => $result) {
 echo "\r\n";
 echo "tot_importo = number_format(tot_importo,2,',','.');  // in 1.000,50";
 echo "\r\n";
-echo "jQuery('#tot_importo').html(tot_importo);";
+echo "$('#tot_importo').html(tot_importo);";
 echo "\r\n";
 echo "}";
 ?>

@@ -2,6 +2,13 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
+if(isset($desOrdersResults['Supplier'])) {
+	$rows = [];
+	$rows[] = '';
+	$rows[] = $desOrdersResults['Supplier']['name'];
+	$this->PhpExcel->addTableRow($rows);
+}
+
 // define table cells
 $table[] =	array('label' => __('N'), 'width' => 'auto');
 $table[] =	array('label' => __('Bio'), 'width' => 'auto', 'filter' => true);
@@ -26,9 +33,9 @@ $tot_importo = 0;
 if(isset($results))
 foreach($results as $numResult => $result) {
 
-    $name = $result['Article']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
+    $name = $result['ArticlesOrder']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
     
-    $rows = array();
+    $rows = [];
 
     $rows[] = ($i+1);
 
@@ -90,7 +97,7 @@ foreach($results as $numResult => $result) {
 /*
  * totali
  */
-$rows = array();
+$rows = [];
 $rows[] = '';
 $rows[] = '';
 if($showCodice=='Y') 

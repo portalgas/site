@@ -1,18 +1,18 @@
 <?php
 if(!empty($results)) {
 
-	echo '<table cellpadding="0" cellspacing="0">';
+	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
-	echo '	<th></th>';
-	echo '	<th>'.__('N').'</th>';
-	echo '	<th>'.__('Delivery').'</th>';
+	echo '	<th>order_id<br />delivery_id</th>';
 	echo '	<th>'.__('SuppliersOrganization').'</th>';
-	echo '  <th>'.__('stato_elaborazione').'</th>';
-	echo '  <th>Importo fattura</th>';
+	echo '  <th>'.__('StatoElaborazione').'</th>';
+	echo '  <th>'.__('totImportoUserAcquisti').'</th>';
+	echo '  <th>'.__('importo_fattura').'</th>';
 	echo '  <th>Totale importo dell\'ordine</th>';
 	echo '  <th>Totale importo dovuto<br />(somma degli importi degli utenti)</th>';
-	echo '  <th>Differenza</th>';
-	echo '	<th class="actions">'.__('Actions').'</th>';
+	echo '  <th>Delta</th>';
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') 
+		echo '  <th colspan="3">'.__('Request Payment').'</th>';
 	echo '</tr>';
 	
 	$tot_tesoriere_fattura_importo = 0;
@@ -21,21 +21,20 @@ if(!empty($results)) {
 	$tot_delta = 0;
 	foreach ($results as $numResult => $result) {
 	
-			$tesoriere_fattura_importo_e = number_format($result['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			$tot_importo_rimborsate_e = number_format($result['Order']['tot_importo_rimborsate'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			$delta_e =  number_format($result['Order']['delta'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			$tesoriere_fattura_importo_e = number_format($result['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			$tot_importo_rimborsate_e = number_format($result['Order']['tot_importo_rimborsate'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			$delta_e =  number_format($result['Order']['delta'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 	 
-			echo '<tr class="view">';
-			echo '	<td><a action="orders-'.$result['Order']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
-			echo '	<td>'.($numResult+1).'</td>';
-			
+			echo '<tr>';
+			echo '	<td>'.$result['Order']['id'].'<br />'.$result['Order']['delivery_id'].'</td>';
+			/*
 			echo '	<td>';
 			if($result['Delivery']['sys']=='N') 
 				echo __('Delivery').': '.$result['Delivery']['luogoData'];
 			else 
 				echo __('Delivery').': '.h($result['Delivery']['luogo']);
 			echo '	</td>';
-			
+			*/
 			echo '	<td>';
 			echo $result['SuppliersOrganization']['name'];
 			echo '	</td>';
@@ -46,7 +45,9 @@ if(!empty($results)) {
 			echo __($result['Order']['state_code'].'-label');
 			echo '</td>';			
 
-
+			echo '<td>';		 
+			echo $result['Cart']['totImporto_e'];
+			echo '</td>';
 
 			echo '<td>';		 
 			echo $tesoriere_fattura_importo_e;
@@ -68,30 +69,82 @@ if(!empty($results)) {
 			echo $delta_e;
 			echo '</td>';
 			
-			echo '<td class="actions-table-img-3">';
-
-			if($isManager) {
-				echo $this->Html->link(null, array('action' => 'home', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionWorkflow','title' => __('Order home')));
-
-				echo '<a id="actionMenu-'.$result['Order']['id'].'" class="action actionMenu" title="'.__('Expand menu').'"></a>';
-				echo '<div class="menuDetails" id="menuDetails-'.$result['Order']['id'].'" style="display:none;">';
-				echo '	<a class="menuDetailsClose" id="menuDetailsClose-'.$result['Order']['id'].'"></a>';
-				echo '<div id="order-sotto-menu-'.$result['Order']['id'].'"></div>';
-				echo '</div>';
+			if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+				
+				if(!empty($result['RequestPayment']))
+					$requestPayment = $result['RequestPayment'];
+				
+				echo '<td>';		 
+				if(!empty($requestPayment['RequestPayment']))
+					echo 'N. '.$requestPayment['RequestPayment']['num'];
+				echo '</td>';	
+				
+				if(!empty($requestPayment['RequestPayment'])) {
+					echo '<td title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPayment['RequestPayment']['stato_elaborazione']).'"></td>';					
+				}
+				else
+					echo '<td></td>';	
+				
+				echo '<td>';		 
+				if(!empty($requestPayment['RequestPayment']))
+					echo $this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['stato_elaborazione_date']);
+				echo '</td>';				
 			}
-			else 
-			if($isRoot) 
-				echo "Nessuna azione perchè root";
-		
+				
+		echo '</tr>';
+			
+		/*
+         * SummaryOrder
+		 */
+		if(!empty($result['SummaryOrder'])) {
+			echo '<tr>';
+			echo '	<td></td>';
+			echo '	<td></td>';
+			if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') 
+				echo '  <td colspan="10">';
+			else
+				echo '  <td colspan="7">';
+			
+			echo '<div class="table-responsive"><table class="table table-hover">';
+			echo '<tr>';
+			echo '	<th>'.__('Username').'</th>';
+			echo '  <th>'.__('Importo').'</th>';
+			echo '  <th>'.__('Tesoriere Importo Pay').'</th>';
+			echo '  <th>'.__('Payment').'</th>';
+			echo '  <th style="width:1px;"></th>';
+			echo '</tr>';	
+			
+
+			foreach($result['SummaryOrder'] as $summaryOrder) {
+				echo '<tr>';
+				echo '<td tilte="'.$summaryOrder['User']['id'].'">';		 
+				echo $summaryOrder['User']['username'];
+				echo '</td>';
+				echo '<td>';		 
+				echo $summaryOrder['SummaryOrder']['importo_e'];
+				echo '</td>';
+				echo '<td>';		 
+				echo $summaryOrder['SummaryOrder']['importo_pagato_e'];
+				echo '</td>';				
+				echo '<td>';		 
+				echo $this->App->traslateEnum($summaryOrder['SummaryOrder']['modalita']);
+				echo '</td>';			
+				
+				if($summaryOrder['SummaryOrder']['importo'] == $summaryOrder['SummaryOrder']['importo_pagato'])
+					$style = 'background-color:green;';
+				else
+					$style = 'background-color:red;';			
+				echo '<td style="color:#fff;'.$style.'"></td>';
+				echo '</tr>';	
+				
+			} // end loop 
+			echo '</table></div>';
+			
+			
 			echo '</td>';
-	
-		echo '</tr>';
-		
-		echo '<tr class="trView" id="trViewId-'.$result['Order']['id'].'">';
-		echo '	<td colspan="2"></td>'; 
-		echo '	<td colspan="9" id="tdViewId-'.$result['Order']['id'].'"></td>';
-		echo '</tr>';
-		
+			echo '</tr>';
+		}  // end if(!empty($result['SummaryOrder'])) 
+			
 		$tot_tesoriere_fattura_importo += $result['Order']['tesoriere_fattura_importo'];
 		$tot_importo += $result['Order']['tot_importo'];
 		$tot_importo_rimborsate += $result['Order']['tot_importo_rimborsate'];
@@ -104,48 +157,39 @@ if(!empty($results)) {
 	$tot_delta = number_format($tot_delta,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 	
 	echo '<tr>';
-	echo '	<td colspan="5" style="text-align:right;">Totali</td>'; 
-	echo '	<td>'.$tot_tesoriere_fattura_importo.' &euro;</td>';
-	echo '	<td>'.$tot_importo.' &euro;</td>';
-	echo '	<td>'.$tot_importo_rimborsate.' &euro;</td>';
-	echo '	<td>'.$tot_delta.' &euro;</td>';
-	echo '	<td></td>'; 
+	echo '	<th colspan="4" style="text-align:right;">Totali</th>'; 
+	echo '	<th>'.$tot_tesoriere_fattura_importo.'&nbsp;&euro;</th>';
+	echo '	<th>'.$tot_importo.'&nbsp;&euro;</th>';
+	echo '	<th>'.$tot_importo_rimborsate.'&nbsp;&euro;</th>';
+	echo '	<th>'.$tot_delta.'&nbsp;&euro;</th>';
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') 
+		echo '  <th colspan="3"></th>';	
 	echo '</tr>';
 		
-	echo '</table>';	
+	echo '</table></div>';	
+	
+	if($result['Delivery']['sys']=='N') 
+		$label = __('Statistics').': '.__('Delivery').': '.$result['Delivery']['luogoData'];
+	else 
+		$label = __('Statistics').': '.__('Delivery').': '.h($result['Delivery']['luogo']);
+
+	echo '<div class="statistic">';
+	echo '<h2 class="ico-statistic">';		
+	echo '<div class="actions-img">';			
+	echo '<ul>';
+	echo '<li>'.$this->Html->link($label, array('controller' => 'Statistics', 'action' => 'add', $result['Delivery']['id']),array('class' => 'action actionAdd','title' => __('Statistics'))).'</li>';
+	echo '</ul>';
+	echo '</div>';
+	echo '</div>';
+	echo '</h2>';
+
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora ordini registrati"));
+	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora ordini registrati"));
 
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
-
-			jQuery('.menuDetails').css('display','none');
-			
-			var idRow = jQuery(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
-
-			viewOrderSottoMenu(numRow,"bgLeft");
-
-			var offset = jQuery(this).offset();
-			var newTop = (offset.top - 100);
-			var newLeft = (offset.left - 350);
-
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
-		});
-	});	
-
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
-		});
-	});	
+$(document).ready(function() {
 });
 </script>

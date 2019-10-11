@@ -12,23 +12,21 @@ $this->PhpExcel->addTableRow($rowsExcel);
 // define table cells
 $table[] =	array('label' => __('N.'), 'width' => 'auto');
 $table[] =	array('label' => __('Supplier'), 'width' => 'auto');
-$table[] = array('label' => __('Importo Dovuto'), 'width' => 'auto', 'filter' => true);
-$table[] = array('label' => __('Importo Pagato'), 'width' => 'auto', 'filter' => true);
-$table[] =	array('label' => __('Differenza'), 'width' => 'auto', 'filter' => true);
+$table[] = array('label' => __('Importo_dovuto'), 'width' => 'auto', 'filter' => true);
+$table[] = array('label' => __('Importo_pagato'), 'width' => 'auto', 'filter' => true);
+$table[] =	array('label' => __('Delta'), 'width' => 'auto', 'filter' => true);
 $table[] =	array('label' => __('Utenti che devono pagare'), 'width' => 'auto', 'filter' => true);
 
 // heading
 $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+
+$this->App->d($results);
+
 if(!empty($results)) {
 
 	foreach ($results as $numResult => $result) {
 
-		$rowsExcel = array();
+		$rowsExcel = [];
 		$rowsExcel[] = ($numResult+1);
 		$rowsExcel[] = $result['SuppliersOrganization']['name'];
 		$rowsExcel[] = $result['Order']['tot_importo'];
@@ -46,7 +44,7 @@ if(!empty($results)) {
 	
 	if(!empty($deliveryResults)) {
 		
-		$rowsExcel = array();
+		$rowsExcel = [];
 		$rowsExcel[] = '';
 		$rowsExcel[] = '';
 		$rowsExcel[] = $deliveryResults['tot_importo_delivery'];

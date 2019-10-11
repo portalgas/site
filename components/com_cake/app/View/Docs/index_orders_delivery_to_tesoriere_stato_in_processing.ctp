@@ -35,13 +35,13 @@ $(document).ready(function() {
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th colspan="2"><?php echo __('N');?></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<th><?php echo __('Supplier');?></th>
 		<th>
-			<?php echo __('Data inizio');?><br />
-			<?php echo __('Data fine');?>
+			<?php echo __('DataInizio');?><br />
+			<?php echo __('DataFine');?>
 		</th>
-		<th><?php echo __('Aperto/Chiuso');?></th>
+		<th><?php echo __('OpenClose');?></th>
 		<th><?php echo __('isVisibleFrontEnd'); ?></th>
 		<th>Referenti</th>
 		<th><?php echo __('Modified'); ?></th>

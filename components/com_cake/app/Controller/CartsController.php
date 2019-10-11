@@ -10,12 +10,12 @@ class CartsController extends AppController {
  
    		$actionWithPermission = ['admin_managementCartsOne', 'admin_managementCartsGroupByUsers', 'admin_validationCarts', 'admin_trasport'];   		if (in_array($this->action, $actionWithPermission)) {
 	   		/*	   		 * ctrl che la consegna sia visibile in backoffice	   		*/	   		if(!empty($this->delivery_id)) {
-	   				   			App::import('Model', 'Delivery');	   			$Delivery = new Delivery;	   			$results = $Delivery->read($this->user->organization['Organization']['id'], null, $this->delivery_id);
+	   				   			App::import('Model', 'Delivery');	   			$Delivery = new Delivery;	   			$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
 	   			if($results['Delivery']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}  				   		}
 	
 	   		/*	   		 * ctrl che l'ordine sia visibile in backoffice	   		*/
 	   		if(!empty($this->order_id)) {
-	   				   			App::import('Model', 'Order');	   			$Order = new Order;	   			$results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);	   			if($results['Order']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}   			
+	   				   			App::import('Model', 'Order');	   			$Order = new Order;	   			$results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);	   			if($results['Order']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}   			
 	   		}
    		} // end if (in_array($this->action, $actionWithPermission)) 
    }
@@ -544,7 +544,7 @@ class CartsController extends AppController {
 	   		$this->Session->setFlash(__('msg_error_params'));
 	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
 	   	}
-	   	$this->set('cart', $this->Cart->read($this->user->organization['Organization']['id'], null, $id));
+	   	$this->set('cart', $this->Cart->read($id, $this->user->organization['Organization']['id']));
    }
    
 	/*
@@ -672,7 +672,7 @@ class CartsController extends AppController {
   	 			App::import('Model', 'SummaryOrderPlu');
   	 			$SummaryOrderPlu = new SummaryOrderPlu;
   	 			
-				$this->Session->setFlash($SummaryOrderPlu->save($this->user, 'SummaryOrderTrasport', $this->request, $debug));
+				$this->Session->setFlash($SummaryOrderPlu->mySave($this->user, 'SummaryOrderTrasport', $this->request, $debug));
 					   			
 	   		}  // end if(isset($this->request['data']['SummaryOrderTrasport']['actionSubmitImporto']) && ...	   
 	    } // if ($this->request->is('post') || $this->request->is('put')) 
@@ -746,7 +746,7 @@ class CartsController extends AppController {
 			App::import('Model', 'SummaryOrderPlu');
 			$SummaryOrderPlu = new SummaryOrderPlu;
 			
-			$this->Session->setFlash($SummaryOrderPlu->save($this->user, 'SummaryOrderCostMore', $this->request, $debug));
+			$this->Session->setFlash($SummaryOrderPlu->mySave($this->user, 'SummaryOrderCostMore', $this->request, $debug));
 				
    		}  // end if(isset($this->request['data']['SummaryOrderCostMore']['actionSubmitImporto']) && ...
    	} // if ($this->request->is('post') || $this->request->is('put'))
@@ -820,7 +820,7 @@ class CartsController extends AppController {
 			App::import('Model', 'SummaryOrderPlu');
 			$SummaryOrderPlu = new SummaryOrderPlu;
 			
-			$this->Session->setFlash($SummaryOrderPlu->save($this->user, 'SummaryOrderCostLess', $this->request, $debug));
+			$this->Session->setFlash($SummaryOrderPlu->mySave($this->user, 'SummaryOrderCostLess', $this->request, $debug));
 			
    	}  // end if(isset($this->request['data']['SummaryOrderCostLess']['actionSubmitImporto']) && ...
    } // if ($this->request->is('post') || $this->request->is('put'))

@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesUserGroupMaps'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));

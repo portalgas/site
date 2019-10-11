@@ -128,7 +128,7 @@ class JMenu extends JObject
 		$result = null;
 		if (isset($this->_items[$id]))
 		{
-			$result = &$this->_items[$id];
+			$result = $this->_items[$id];
 		}
 
 		return $result;
@@ -246,10 +246,10 @@ class JMenu extends JObject
 
 			$test = true;
 			for ($i = 0, $count = count($attributes); $i < $count; $i++)
-			{
+			{   
 				if (is_array($values[$i]))
 				{
-					if (!in_array($item->$attributes[$i], $values[$i]))
+					if (!in_array($item->{$attributes[$i]}, $values[$i]))
 					{
 						$test = false;
 						break;
@@ -257,7 +257,7 @@ class JMenu extends JObject
 				}
 				else
 				{
-					if ($item->$attributes[$i] != $values[$i])
+					if ($item->{$attributes[$i]} != $values[$i])
 					{
 						$test = false;
 						break;

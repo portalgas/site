@@ -1,16 +1,15 @@
-<div class="docs">
+<?php
+echo '<div class="docs">';	
+echo '<div class="table-responsive"><table class="table table-hover">';
+echo '<tr>';
+echo '<th colspan="2">Tipologia di documento</th>';
+echo '<th></th>';
+echo '<th>Formato pdf</th>';
+echo '<th>Formato csv</th>';
+echo '<th>Formato excel</th>';
+echo '</tr>';
 	
-	<table cellpadding = "0" cellspacing = "0">
-	<tr>
-		<th colspan="2">Tipologia di documento</th>
-		<th></th>
-		<th>Formato pdf</th>
-		<th>Formato csv</th>
-		<th>Formato excel</th>
-	</tr>	
+echo $this->element('reportUsers', ['type' => 'BO', 'isManager' => $isManager, 'organizationsResults' => $organizationsResults]);
 	
-	<?php
-	echo $this->element('reportUsers', array('type' => 'BO', 'isManager' => $isManager));
-	?>
-	</table>
-</div>
+echo '</table></div>';
+echo '</div>';

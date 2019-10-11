@@ -1,10 +1,7 @@
 <?php
 $debug = false;
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/            
+$this->App->d($results, $debug);
+           
 if($this->layout=='pdf') {
 	App::import('Vendor','xtcpdf');
 	
@@ -24,9 +21,10 @@ if($this->layout=='ajax') {
 }
 
 
-
-
 $html = '';
+if(isset($desOrdersResults['Supplier']))
+	$html = $this->ExportDocs->desSupplier($desOrdersResults['Supplier']);
+
 $html .= '<table cellpadding="0" cellspacing="0">';
 $html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '<tr>';
@@ -61,7 +59,7 @@ $tot_importo = 0;
 if(isset($results))
 foreach($results as $result) {
 
-        $name = $result['Article']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
+        $name = $result['ArticlesOrder']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
 
 		$html .= '<tr>';
 		
@@ -100,7 +98,7 @@ foreach($results as $result) {
             if($result['ArticlesOrder']['pezzi_confezione']>1) {
             	
                 if($differenza_da_ordinare != $result['ArticlesOrder']['pezzi_confezione'])  
-                    $html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
+                    $html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
                 else
                     $html .= '0 (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
             }
@@ -135,9 +133,9 @@ else
 	$colspan = '4';
 
 $html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 $html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
+$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
 
 $html .= '</tr>';
 
@@ -151,4 +149,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

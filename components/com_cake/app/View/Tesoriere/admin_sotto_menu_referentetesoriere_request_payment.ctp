@@ -1,6 +1,6 @@
 <h3>
 	<?php echo __('request_payment_num_short');?> <?php echo $requestPaymentResults['RequestPayment']['num'];
-	if(!empty($tot_importo)) echo ' di '.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';?>
+	if(!empty($tot_importo)) echo ' di '.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';?>
 </h3>
 <ul class="menuLateraleItems">
 	<li style="font-size:14px;padding:5px;"><?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?> <span style="padding-left: 20px;" title="<?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?>" class="stato_<?php echo strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']);?>"></span></li>

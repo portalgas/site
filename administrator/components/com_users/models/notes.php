@@ -131,7 +131,11 @@ class UsersModelNotes extends JModelList
 
 		// fractis
 		$user = JFactory::getUser();
-		$query->where('u.organization_id = ' . $user->organization['Organization']['id']);
+		if(isset($user->organization['Organization']['id']))
+			$organization_id = $user->organization['Organization']['id'];
+		else 
+			$organization_id = 0;
+		$query->where('u.organization_id = ' . $organization_id);
 		
 		// Filter by a single user.
 		$userId = (int) $this->getState('filter.user_id');

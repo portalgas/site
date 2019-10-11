@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
 $this->Html->addCrumb(__('View Order'));
@@ -13,6 +13,9 @@ echo '	<th>'.$this->App->drawOrdersStateDiv($this->request->data).'&nbsp;'.__($t
 echo '</tr>';
 echo '</table></div>';
 
+if(!empty($des_order_id))
+	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));
+
 echo $this->Form->create('Order',array('id' => 'formGas'));
 echo '<fieldset>';
 echo '<legend>'.__('View Order').'</legend>';
@@ -23,10 +26,10 @@ echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine')
 echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
 echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</a></li>';
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo l\'arrivo della merce').'</a></li>';
 else
-if($user->organization['Organization']['payToDelivery']=='POST')
+if($user->organization['Template']['payToDelivery']=='POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo la consegna').'</a></li>';
 echo '<li><a href="#tabs-5" data-toggle="tab">'.__('Suppliers Organizations Referents').'</a></li>';
 if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y')
@@ -54,11 +57,11 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		echo '</div>';
 		
 		echo '<div class="input text ">';
-		echo '<label>'.__('Data inizio').'</label> ';
+		echo '<label>'.__('DataInizio').'</label> ';
 		echo $this->Time->i18nFormat($this->Form->value('Order.data_inizio'),"%A, %e %B %Y");
 		echo '</div>';
 		
-		if($this->request->data['Order']['data_fine_validation']!='0000-00-00') {
+		if($this->request->data['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) {
 			echo '<div class="input text ">';
 			echo '<label>Riaperto l\'ordine fino a</label> ';
 			echo $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y");
@@ -66,14 +69,14 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		}
 		else {
 			echo '<div class="input text ">';
-			echo '<label>'.__('Data fine').'</label> ';
+			echo '<label>'.__('DataFine').'</label> ';
 			echo $this->Time->i18nFormat($this->Form->value('Order.data_fine'),"%A, %e %B %Y");
 			echo '</div>';
 		}
 
-		if($this->request->data['Order']['data_incoming_order']!='0000-00-00') {
+		if($this->request->data['Order']['data_incoming_order']!=Configure::read('DB.field.date.empty')) {
 			echo '<div class="input text ">';
-			echo '<label>'.__('Data Incoming Order').'</label> ';
+			echo '<label>'.__('DataIncomingOrder').'</label> ';
 			echo $this->Time->i18nFormat($this->Form->value('Order.data_incoming_order'),"%A, %e %B %Y");
 			echo '</div>';				
 		}
@@ -113,10 +116,10 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	 * legenda
 	*/
 	if(($this->Form->value('Order.state_code') == 'CREATE-INCOMPLETE' || $this->Form->value('Order.state_code') == 'OPEN-NEXT' || $this->Form->value('Order.state_code') == 'OPEN') 
-	    && $this->Form->value('Order.mail_open_data')=='0000-00-00 00:00:00' || $this->Form->value('Order.mail_open_data')=='')
+	    && $this->Form->value('Order.mail_open_data')==Configure::read('DB.field.datetime.empty') || $this->Form->value('Order.mail_open_data')=='')
 		echo $this->element('legendaOrdersSendMail', array('modalita' => 'EDIT'));
 	else
-	if($this->Form->value('Order.mail_open_data')!='0000-00-00 00:00:00' || $this->Form->value('Order.mail_close_data')!='0000-00-00 00:00:00')
+	if($this->Form->value('Order.mail_open_data')!=Configure::read('DB.field.datetime.empty') || $this->Form->value('Order.mail_close_data')!=Configure::read('DB.field.datetime.empty'))
 		echo $this->element('legendaOrdersJustSendMail',array('mail_open_data' => $this->Form->value('Order.mail_open_data'), 'mail_close_data' => $this->Form->value('Order.mail_close_data')));
 
 echo '</div>';
@@ -247,7 +250,7 @@ if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
 
 		echo '<div class="tab-pane fade" id="tabs-6">';
 	
-		if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 			echo '<div class="input text">';
 			echo '<label>'.__('Fattura').'</label> ';
 		
@@ -280,7 +283,7 @@ if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
 				$differenza = ($this->request->data['Order']['tot_importo'] - $this->request->data['Order']['tesoriere_fattura_importo']);
 				
 				echo '<div class="input text">';
-				echo '<label>'.__('Differenza').'</label> ';
+				echo '<label>'.__('Delta').'</label> ';
 				echo '<span style="padding:3px;';
 				if($differenza==0) 
 					echo 'background-color:#fff;color: #000;';
@@ -302,34 +305,35 @@ if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
 				echo $this->request->data['Order']['tesoriere_nota']; 
 				echo '</div>';			
 			}
-		} // end if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+		} // end if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
 				
 		/*
 		 * pagamento ai produttori
 		 */
-		if($this->request->data['Order']['tesoriere_stato_pay']=='Y') {
-			echo '<div class="input text">';
-			echo '<label>Stato del pagamento</label> ';
-			echo '<span style="padding:3px;color: #000;background-color:green;">';
-			echo "Effettuato il pagamento";
-			echo '</span>';
-			
-			if($this->request->data['Order']['tesoriere_data_pay']!='0000-00-00') 
-				echo ' il '.$this->Time->i18nFormat($this->Form->value('Order.tesoriere_data_pay'),"%A, %e %B %Y");
-			if($this->request->data['Order']['tesoriere_importo_pay']!='0.00')
-				echo ' dell\'importo '.number_format($this->request->data['Order']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';	
-			
-			echo '</div>';		
-		}
-		else {
-			echo '<div class="input text">';
-			echo '<label>Stato del pagamento</label> ';
-			echo '<span style="padding:3px;color: #000;background-color:red;">';
-			echo "Non ancora effettuato il pagamento";
-			echo '</span>';
-			echo '</div>';		
-		}
-		
+		if($user->organization['Template']['orderSupplierPaid']=='Y') { 
+			if($this->request->data['Order']['tesoriere_stato_pay']=='Y') {
+				echo '<div class="input text">';
+				echo '<label>Pagamento al produttore</label> ';
+				echo '<span style="padding:3px;color: #000;background-color:green;">';
+				echo "effettuato il pagamento";
+				echo '</span>';
+				
+				if($this->request->data['Order']['tesoriere_data_pay']!=Configure::read('DB.field.date.empty')) 
+					echo ' il '.$this->Time->i18nFormat($this->Form->value('Order.tesoriere_data_pay'),"%A, %e %B %Y");
+				if($this->request->data['Order']['tesoriere_importo_pay']!='0.00')
+					echo ' dell\'importo '.number_format($this->request->data['Order']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';	
+				
+				echo '</div>';		
+			}
+			else {
+				echo '<div class="input text">';
+				echo '<label>Pagamento al produttore</label> ';
+				echo '<span style="padding:3px;color: #000;background-color:red;">';
+				echo "non ancora effettuato il pagamento";
+				echo '</span>';
+				echo '</div>';		
+			}
+		} // end if($user->organization['Template']['orderSupplierPaid']=='Y') 
 	
 	echo '</div>';
 } // end if($user->organization['Organization']['hasTesoriere']=='Y')

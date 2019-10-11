@@ -18,7 +18,7 @@ abstract class modGasOrganizationChoiceHelper
 		
 		$sql = "SELECT 
 					Organization.id, Organization.name, Organization.j_seo, 
-					Organization.localita, Organization.provincia   				FROM					k_organizations Organization				WHERE					Organization.stato = 'Y'				ORDER BY Organization.name";		//echo '<br />'.$sql;		$db->setQuery($sql);		if ($db->query())			$rows = $db->loadObjectList();
+					Organization.localita, Organization.provincia   				FROM					k_organizations Organization				WHERE					Organization.stato = 'Y' and Organization.type = 'GAS' 				ORDER BY Organization.name";		//echo '<br />'.$sql;		$db->setQuery($sql);		if ($db->query())			$rows = $db->loadObjectList();
 		//$rows = $db->loadObjectList();		//$rows = $db->loadResult();		//$rows = $db->loadAssoc();		
 		return $rows;
 	}

@@ -1,209 +1,109 @@
 <?php
 /**
- * @package        Joomla.Site
- * @subpackage     Contact
- * @copyright      Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license        GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Administrator
+ * @subpackage  com_contact
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+// No direct access
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controllerform');
 
+/**
+ * @package     Joomla.Administrator
+ * @subpackage  com_contact
+ * @since       1.6
+ */
 class ContactControllerContact extends JControllerForm
 {
-	public function getModel($name = '', $prefix = '', $config = array('ignore_request' => true))
+	/**
+	 * Method override to check if you can add a new record.
+	 *
+	 * @param   array  $data  An array of input data.
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.6
+	 */
+	protected function allowAdd($data = array())
 	{
-		return parent::getModel($name, $prefix, array('ignore_request' => false));
+		// Initialise variables.
+		$user = JFactory::getUser();
+		$categoryId = JArrayHelper::getValue($data, 'catid', JRequest::getInt('filter_category_id'), 'int');
+		$allow = null;
+
+		if ($categoryId)
+		{
+			// If the category has been passed in the URL check it.
+			$allow = $user->authorise('core.create', $this->option . '.category.' . $categoryId);
+		}
+
+		if ($allow === null)
+		{
+			// In the absense of better information, revert to the component permissions.
+			return parent::allowAdd($data);
+		}
+		else
+		{
+			return $allow;
+		}
 	}
 
-	public function submit()
+	/**
+	 * Method override to check if you can edit an existing record.
+	 *
+	 * @param   array   $data  An array of input data.
+	 * @param   string  $key   The name of the key for the primary key.
+	 *
+	 * @return  boolean
+	 *
+	 * @since   1.6
+	 */
+	protected function allowEdit($data = array(), $key = 'id')
 	{
-		// Check for request forgeries.
+		// Initialise variables.
+		$recordId = (int) isset($data[$key]) ? $data[$key] : 0;
+		$categoryId = 0;
+
+		if ($recordId)
+		{
+			$categoryId = (int) $this->getModel()->getItem($recordId)->catid;
+		}
+
+		if ($categoryId)
+		{
+			// The category has been set. Check the category permissions.
+			return JFactory::getUser()->authorise('core.edit', $this->option . '.category.' . $categoryId);
+		}
+		else
+		{
+			// Since there is no asset tracking, revert to the component permissions.
+			return parent::allowEdit($data, $key);
+		}
+	}
+
+	/**
+	 * Method to run batch operations.
+	 *
+	 * @param   object  $model  The model.
+	 *
+	 * @return  boolean	 True if successful, false otherwise and internal error is set.
+	 *
+	 * @since   2.5
+	 */
+	public function batch($model = null)
+	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		// Initialise variables.
-		$app    = JFactory::getApplication();
-		$model  = $this->getModel('contact');
-		$params = JComponentHelper::getParams('com_contact');
-		$stub   = JRequest::getString('id');
-		$id     = (int) $stub;
+		// Set the model
+		$model = $this->getModel('Contact', '', array());
 
-		// Get the data from POST
-		$data = JRequest::getVar('jform', array(), 'post', 'array');
+		// Preset the redirect
+		$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contacts' . $this->getRedirectToListAppend(), false));
 
-		$contact = $model->getItem($id);
-
-		$params->merge($contact->params);
-
-		// Check for a valid session cookie
-		if ($params->get('validate_session', 0))
-		{
-			if (JFactory::getSession()->getState() != 'active')
-			{
-				JError::raiseWarning(403, JText::_('COM_CONTACT_SESSION_INVALID'));
-
-				// Save the data in the session.
-				$app->setUserState('com_contact.contact.data', $data);
-
-				// Redirect back to the contact form.
-				$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id=' . $stub, false));
-
-				return false;
-			}
-		}
-
-		// Contact plugins
-		JPluginHelper::importPlugin('contact');
-		$dispatcher = JDispatcher::getInstance();
-
-		// Validate the posted data.
-		$form = $model->getForm();
-
-		if (!$form)
-		{
-			JError::raiseError(500, $model->getError());
-
-			return false;
-		}
-
-		$validate = $model->validate($form, $data);
-
-		if ($validate === false)
-		{
-			// Get the validation messages.
-			$errors = $model->getErrors();
-
-			// Push up to three validation messages out to the user.
-			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
-			{
-				if ($errors[$i] instanceof Exception)
-				{
-					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-				}
-				else
-				{
-					$app->enqueueMessage($errors[$i], 'warning');
-				}
-			}
-
-			// Save the data in the session.
-			$app->setUserState('com_contact.contact.data', $data);
-
-			// Redirect back to the contact form.
-			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id=' . $stub, false));
-
-			return false;
-		}
-
-		// Validation succeeded, continue with custom handlers
-		$results = $dispatcher->trigger('onValidateContact', array(&$contact, &$data));
-
-		foreach ($results as $result)
-		{
-			if ($result instanceof Exception)
-			{
-				return false;
-			}
-		}
-
-		// Passed Validation: Process the contact plugins to integrate with other applications
-		$results = $dispatcher->trigger('onSubmitContact', array(&$contact, &$data));
-
-		// Send the email
-		$sent = false;
-
-		if (!$params->get('custom_reply'))
-		{
-			$sent = $this->_sendEmail($data, $contact, $params->get('show_email_copy'));
-		}
-
-		// Set the success message if it was a success
-		if (!($sent instanceof Exception))
-		{
-			$msg = JText::_('COM_CONTACT_EMAIL_THANKS');
-		}
-		else
-		{
-			$msg = '';
-		}
-
-		// Flush the data from the session
-		$app->setUserState('com_contact.contact.data', null);
-
-		// Redirect if it is set in the parameters, otherwise redirect back to where we came from
-		if ($contact->params->get('redirect'))
-		{
-			$this->setRedirect($contact->params->get('redirect'), $msg);
-		}
-		else
-		{
-			$this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id=' . $stub, false), $msg);
-		}
-
-		return true;
-	}
-
-	private function _sendEmail($data, $contact, $copy_email_activated)
-	{
-		$app    = JFactory::getApplication();
-		$params = JComponentHelper::getParams('com_contact');
-
-		if ($contact->email_to == '' && $contact->user_id != 0)
-		{
-			$contact_user      = JUser::getInstance($contact->user_id);
-			$contact->email_to = $contact_user->get('email');
-		}
-
-		$mailfrom = $app->getCfg('mailfrom');
-		$fromname = $app->getCfg('fromname');
-		$sitename = $app->getCfg('sitename');
-		$copytext = JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $sitename);
-
-		/*
-		 * fractis
-		 */
-		$organization    = $data['contact_organization_id']; 
-		$name    = $data['contact_name'];
-		$email   = $data['contact_email'];
-		$subject = $data['contact_subject'];
-		$body    = $organization."\n\n".$data['contact_message']; // fractis
-		
-		/*
-		echo "<pre>_sendEmail \n";
-		print_r($data);
-		echo "</pre>";
-		*/
-		
-		// Prepare email body
-		$prefix = JText::sprintf('COM_CONTACT_ENQUIRY_TEXT', JURI::base());
-		$body   = $prefix . "\n" . $name . ' <' . $email . '>' . "\r\n\r\n" . stripslashes($body);
-
-		$mail = JFactory::getMailer();
-		$mail->addRecipient($contact->email_to);
-		$mail->addReplyTo(array($email, $name));
-		$mail->setSender(array($mailfrom, $fromname));
-		$mail->setSubject($sitename.': '.$organization.' - '.$subject);  // fractis
-		$mail->setBody($body);
-		$sent = $mail->Send();
-
-		// If we are supposed to copy the sender, do so.
-		// Check whether email copy function activated
-		if ($copy_email_activated == true && isset($data['contact_email_copy']))
-		{
-			$copytext = JText::sprintf('COM_CONTACT_COPYTEXT_OF', $contact->name, $sitename);
-			$copytext .= "\r\n\r\n" . $body;
-			$copysubject = JText::sprintf('COM_CONTACT_COPYSUBJECT_OF', $subject);
-
-			$mail = JFactory::getMailer();
-			$mail->addRecipient($email);
-			$mail->addReplyTo(array($email, $name));
-			$mail->setSender(array($mailfrom, $fromname));
-			$mail->setSubject($copysubject);
-			$mail->setBody($copytext);
-			$sent = $mail->Send();
-		}
-
-		return $sent;
+		return parent::batch($model);
 	}
 }

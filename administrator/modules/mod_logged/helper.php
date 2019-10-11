@@ -31,7 +31,13 @@ abstract class modLoggedHelper
 		$query->select('s.time, s.client_id, u.id, u.name, u.username');
 		$query->from('#__session AS s');
 		$query->leftJoin('#__users AS u ON s.userid = u.id');
-		$query->where('s.guest = 0');
+		// fractis 
+		define('local_group_id_root', 8); // group_id_root gia definito in mod_menu/default.php ma quando non c'e' il menu di cakephp non e' settato
+		if(isset($user->organization['Organization']) && in_array(local_group_id_root,$user->getAuthorisedGroups())) 
+			$query->where('s.guest = 0 and u.organization_id = '.$user->organization['Organization']['id']);
+		else
+			$query->where('s.guest = 0');
+		
 		$db->setQuery($query, 0, $params->get('count', 5));
 		$results = $db->loadObjectList();
 

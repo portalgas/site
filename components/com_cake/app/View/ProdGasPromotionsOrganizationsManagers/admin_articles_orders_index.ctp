@@ -1,5 +1,7 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($results, $debug);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
 $this->Html->addCrumb(__('View ProdGasPromotion ArticlesOrder Short'));
@@ -22,12 +24,12 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 		echo '</p>';
 	}
 	
-	echo '<table cellpadding="0" cellspacing="0">';
+	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
 	echo '<th colspan="2">'.__('Supplier').'</th>';
 	echo '<th>'.__('Name').'</th>';
-	echo '<th>'.__('Data fine max').'</th>';
-	echo '<th>'.__('importo_scontato').'</th>';	
+	echo '<th>'.__('DataFineMax').'</th>';
+	echo '<th>'.__('Importo_scontato').'</th>';	
 	echo '<th>'.__('Trasport').'</th>';	
 	echo '<th>'.__('CostMore').'</th>';			
 	echo '</tr>';
@@ -36,7 +38,7 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 		
 	echo '<td>';
 	if(!empty($results['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$results['Supplier']['img1']))
-		echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$results['Supplier']['img1'].'" />';	
+		echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$results['Supplier']['img1'].'" />';	
 	echo '</td>';
 	echo '<td>';
 	echo $results['Supplier']['name'];
@@ -63,7 +65,7 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 		echo "Nessun costo agguntivo";
 	echo '</td>';	
 	echo '</tr>';
-	echo '</table>'; 
+	echo '</table></div>'; 
 	
 	/* 
 	 * articoli in promozione
@@ -71,41 +73,42 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 	 if(isset($results['ProdGasArticlesPromotion'])) {
 		 echo '<h2 style="cursor:pointer;" class="ico-orders" id="dati_articles_header">'.__('ProdGasArticlesPromotions').'</h2>';
 		 echo '<div id="dati_articles">';
-		 echo '<table cellpadding="0" cellspacing="0">';	
+		 echo '<div class="table-responsive"><table class="table table-hover">';	
 		 echo '<tr>';	
 		 echo '<th colspan="2">'.__('Name').'</th>';	
-		 echo '<th>'.__('confezione').'</th>';	
-		 echo '<th>'.__('PrezzoUnita').'</th>';		
+		 echo '<th>'.__('Package').'</th>';		
 		 echo '<th>'.__('qta_in_promozione').'</th>';	
 		 echo '<th>'.__('prezzo_unita_in_promozione').'</th>';
-		 echo '<th>'.__('importo_originale').'</th>';	
-		 echo '<th>'.__('importo_scontato').'</th>';	
+		 echo '<th>'.__('Importo_originale').'</th>';	
+		 echo '<th>'.__('Importo_scontato').'</th>';	
 		 echo '</tr>';
-		 foreach ($results['ProdGasArticlesPromotion'] as $numResult => $prodGasArticlesPromotion):
+		 foreach ($results['ProdGasArticlesPromotion'] as $numResult => $prodGasArticlesPromotion) {
 			
-			$importo_originale = ($prodGasArticlesPromotion['ProdGasArticlesPromotion']['qta'] * $prodGasArticlesPromotion['ProdGasArticle']['prezzo']);
+			$importo_originale = ($prodGasArticlesPromotion['ProdGasArticlesPromotion']['qta'] * $prodGasArticlesPromotion['Article']['prezzo']);
 			$importo_originale = number_format($importo_originale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
 			echo '<tr class="view">';
 			echo '<td>';
-			if(!empty($prodGasArticlesPromotion['ProdGasArticle']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$prodGasArticlesPromotion['ProdGasArticle']['supplier_id'].DS.$prodGasArticlesPromotion['ProdGasArticle']['img1'])) {
-				echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$prodGasArticlesPromotion['ProdGasArticle']['supplier_id'].'/'.$prodGasArticlesPromotion['ProdGasArticle']['img1'].'" />';
+			if(!empty($prodGasArticlesPromotion['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$prodGasArticlesPromotion['Article']['organization_id'].DS.$prodGasArticlesPromotion['Article']['img1'])) {
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$prodGasArticlesPromotion['Article']['organization_id'].'/'.$prodGasArticlesPromotion['Article']['img1'].'" />';
 			}		
 			echo '</td>';			
-			echo '<td>'.$prodGasArticlesPromotion['ProdGasArticle']['name'].'&nbsp;';
-			echo $this->App->drawArticleNota($i, strip_tags($prodGasArticlesPromotion['ProdGasArticle']['nota']));
+			echo '<td>'.$prodGasArticlesPromotion['Article']['name'].'&nbsp;';
+			echo $this->App->drawArticleNota($i, strip_tags($prodGasArticlesPromotion['Article']['nota']));
 			echo '</td>';
-			echo '<td>'.$this->App->getArticleConf($prodGasArticlesPromotion['ProdGasArticle']['qta'], $prodGasArticlesPromotion['ProdGasArticle']['um']).'</td>';
-			echo '<td>'.$prodGasArticlesPromotion['ProdGasArticle']['prezzo_e'].'</td>';
+			echo '<td>'.$this->App->getArticleConf($prodGasArticlesPromotion['Article']['qta'], $prodGasArticlesPromotion['Article']['um']).'</td>';
 			echo '<td style="text-align:center;">'.$prodGasArticlesPromotion['ProdGasArticlesPromotion']['qta'].'</td>';
-			echo '<td>'.$prodGasArticlesPromotion['ProdGasArticlesPromotion']['prezzo_unita_e'].'</td>';
-			echo '<td>'.$importo_originale.' &euro;</td>';
+			echo '<td>';
+			echo '<span style="text-decoration: line-through;">'.$prodGasArticlesPromotion['Article']['prezzo_e'].'</span><br />';
+			echo $prodGasArticlesPromotion['ProdGasArticlesPromotion']['prezzo_unita_e'];
+			echo '</td>';
+			echo '<td>'.$importo_originale.'&nbsp;&euro;</td>';
 			echo '<td>'.$prodGasArticlesPromotion['ProdGasArticlesPromotion']['importo_e'].'</td>';
 			echo '</tr>';
 						
-		endforeach;
+		} // loops 
 		
-		echo '</table>';
+		echo '</table></div>';
 		 
 		echo '</div>';	
 	} // end isset($results['ProdGasArticlesPromotion'])	
@@ -119,7 +122,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'),array('class'=>'action actionReload')).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotionsOrganizationsManagers', 'action' => 'index'),array('class'=>'action actionReload')).'</li>';
 echo '<li>'.$this->Html->link(__('Order home'), array('controller' => 'Orders', 'action' => 'home', $order_id),array('class'=>'action actionWorkflow')).'</li>';
 echo '</ul>';
 echo '</div>';

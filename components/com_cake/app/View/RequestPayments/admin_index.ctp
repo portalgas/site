@@ -1,5 +1,7 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+echo '<div class="old-menu">';
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if($isReferenteTesoriere)  {
 	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 	if(isset($order_id))
@@ -13,7 +15,6 @@ $this->Html->addCrumb(__('List Request Payments'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
-<div class="request_payment">
 	<h2 class="ico-pay">
 		<?php echo __('List Request Payments');?>
 		<div class="actions-img">
@@ -26,71 +27,75 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<?php
 	if(!empty($requestPayments)) {
 	?>
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th></th>
 			<th><?php echo $this->Paginator->sort('num', __('request_payment_num_short')); ?></th>
 			<th><?php echo $this->Paginator->sort('user_id','Creata da'); ?></th>
 			<th>Nota</th>
-			<th>Totale Importo</th>
-			<th>Totale utenti</th>
-			<th>Totale ordini</th>
+			<th style="text-align:center;"><?php echo __('Importo_totale');?></th>
+			<th style="text-align:center;"><?php echo __('TotaleUsers');?></th>
+			<th style="text-align:center;"><?php echo __('TotaleOrders');?></th>
 			<?php 
 			if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y')
-				echo '<th>Totale dispense</th>';
+				echo '<th style="text-align:center;">'.__('TotaleStorerooms').'</th>';
 			?>				
-			<th>Totale voci di spesa</th>
-			<th colspan="2"><?php echo $this->Paginator->sort('stato_elaborazione'); ?></th>
-			<th><?php echo $this->Paginator->sort('data_send'); ?></th>
+			<th style="text-align:center;"><?php echo __('TotaleRequestPaymentGenerics');?></th>
+			<th colspan="2"><?php echo $this->Paginator->sort('StatoElaborazione'); ?></th>
+			<th><?php echo $this->Paginator->sort('data_send', __('DataSend')); ?></th>
 			<th><?php echo $this->Paginator->sort('Created'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
-	<?php foreach ($requestPayments as $requestPayment): ?>
-	<tr class="view">
-		<td><a action="request_payment-<?php echo $requestPayment['RequestPayment']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>	
-		<td><?php echo $requestPayment['RequestPayment']['num']; ?>&nbsp;</td>
-		<td><?php echo $requestPayment['User']['username']; ?></td>
-		<?php
+	<?php 
+	foreach ($requestPayments as $requestPayment) { 
+		
+		echo '<tr class="view">';
+		echo '<td>';
+		echo '<a data-toggle="collapse" href="#ajax_details-'.$requestPayment['RequestPayment']['id'].'" title="'.__('Href_title_expand').'"><i class="fa fa-3x fa-search-plus" aria-hidden="true"></i></a>';
+	
+	//	<a action="request_payment-'.$requestPayment['RequestPayment']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>
+		echo '</td>';
+		echo '<td style="text-align:center;">'.$requestPayment['RequestPayment']['num'].'&nbsp;</td>';
+		echo '<td>'.$requestPayment['User']['username'].'</td>';
 			/*
 			 *  campo nota
 			 */
 			echo '<td>';
 				
 			if(!empty($requestPayment['RequestPayment']['nota'])) 
-				echo '<img style="cursor:pointer;" class="tesoriere_nota" id="'.$requestPayment['RequestPayment']['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi la nota del tesoriere" border="0" />';
+				echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#request_payment_nota_'.$requestPayment['RequestPayment']['id'].'" id="request_payment_btn_'.$requestPayment['RequestPayment']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true" title="Leggi la nota del tesoriere"></i></button>';
 			else
-				echo '<img style="cursor:pointer;opacity:0.5;" class="tesoriere_nota" id="'.$requestPayment['RequestPayment']['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Nessuna nota da parte del tesoriere" border="0" />';
-		
-			echo '<div id="dialog-nota-'.$requestPayment['RequestPayment']['id'].'" data-attr-id="'.$requestPayment['RequestPayment']['id'].'" title="Nota del tesoriere">';
-			echo '<p>';
-			echo '<div style="color:red;font-size:20px;" id="esito-'.$requestPayment['RequestPayment']['id'].'"></div>';
-			echo '<textarea class="noeditor" id="notaText-'.$requestPayment['RequestPayment']['id'].'" name="nota" style="width: 100%;" rows="20">'.$requestPayment['RequestPayment']['nota'].'</textarea>';
+				echo '<button style="opacity:0.5;" type="button" class="btn btn-info" data-toggle="modal" data-target="#request_payment_nota_'.$requestPayment['RequestPayment']['id'].'" id="request_payment_btn_'.$requestPayment['RequestPayment']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true" title="Nessuna nota da parte del tesoriere"></i></button>';
+						
+			echo '<div id="request_payment_nota_'.$requestPayment['RequestPayment']['id'].'" class="modal fade" role="dialog">';
+			echo '<div class="modal-dialog">';
+			echo '<div class="modal-content">';
+			echo '<div class="modal-header">';
+			echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+			echo '<h4 class="modal-title">Nota del tesoriere</h4>';
+			echo '</div>';
+			echo '<div class="modal-body clearfix">';
+			// echo '<div style="color:red;font-size:20px;" id="esito-'.$requestPayment['RequestPayment']['id'].'"></div>';
+			echo '<textarea class="form-control" id="notaText-'.$requestPayment['RequestPayment']['id'].'" name="nota" rows="20">'.$requestPayment['RequestPayment']['nota'].'</textarea>';
+			echo '</p>';			
 			echo '</p>';
 			echo '</div>';
-			
-			echo '<script type="text/javascript">';
-			echo 'jQuery("#dialog-nota-'.$requestPayment['RequestPayment']['id'].'" ).dialog({';
-			echo "\r\n";
-			echo '	autoOpen: false,';
-			echo "\r\n";
-			echo '	height: 550,';
-			echo "\r\n";
-			echo '	width: 800,';
-			echo "\r\n";
-			echo '	modal: true,';
-			echo "\r\n";
-			echo '	buttons: {';
-			echo "\r\n";
-			echo '		"Chiudi": function() {';
-			echo '			jQuery( this ).dialog( "close" );';
-			echo '		},';
+			echo '<div class="modal-footer">';
+			echo '<button type="button" class="btn btn-primary" data-dismiss="modal" data-attr-id="'.$requestPayment['RequestPayment']['id'].'" id="request_payment_submit_'.$requestPayment['RequestPayment']['id'].'">'.__('Submit').'</button>';
+			echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';	
 
-			echo '"'.__('Submit').'": function(event, ui) {';
-			echo '		var request_payment_id = jQuery(this).attr("data-attr-id");';
+			echo '<script type="text/javascript">';
+			echo "$('#request_payment_submit_".$requestPayment['RequestPayment']['id']."').click(function () {";
 			echo "\r\n";
-			echo '	var notaText = jQuery("#notaText-"+request_payment_id).val();';
+			echo '	var request_payment_id = $(this).attr("data-attr-id");';
 			echo "\r\n";
-			echo '	jQuery.ajax({';
+			echo '	var notaText = escape($("#notaText-"+request_payment_id).val());';
+			echo "\r\n";
+			echo '	$.ajax({';
 			echo '		type: "POST",';
 			echo '		url: "/administrator/index.php?option=com_cake&controller=RequestPayments&action=setNota&request_payment_id="+request_payment_id+"&format=notmpl",';
 			echo '		data: "notaText="+notaText,';
@@ -98,55 +103,64 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			echo '		success: function(response){';
 			echo "\r\n";
 			echo '			if(notaText=="") {';
-			echo '				jQuery("#"+request_payment_id).css("opacity","0.5");	';
-			echo '				jQuery("#esito-"+request_payment_id).html("'.__('The request payments note has been saved').'");';
+			echo '				$("#request_payment_btn_"+request_payment_id).css("opacity","0.5");	';
+			// echo '				$("#esito-"+request_payment_id).html("'.__('The request payments note has been saved').'");';
 			echo '			}';
 			echo "\r\n";
 			echo '			else {';
-			echo '				jQuery("#"+request_payment_id).css("opacity","1");';
-			echo '				jQuery("#esito-"+request_payment_id).html("'.__('The request payments note has been saved').'");';
+			echo '				$("#request_payment_btn_"+request_payment_id).css("opacity","1");';
+			// echo '				$("#esito-"+request_payment_id).html("'.__('The request payments note has been saved').'");';
 			echo '			}';
 			echo "\r\n";
 			echo '		},';
 			echo '		error:function (XMLHttpRequest, textStatus, errorThrown) {';
 			echo '		}';
 			echo '	});';
-			echo '	return false;';
-			echo "\r\n";
-			echo '	}';			
-			echo "\r\n";
-			echo '	},';
 			echo '});';
 			echo '</script>';
 	
-			echo '</td>';
-			?>
-		<td><?php echo number_format($requestPayment['RequestPayment']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;'; ?>&nbsp;</td>
-		<td style="text-align:center;"><?php echo count($requestPayment['SummaryPayment']); ?>&nbsp;</td>
-		<td style="text-align:center;"><?php echo count($requestPayment['RequestPaymentsOrder']); ?>&nbsp;</td>
-		<?php 
+		echo '</td>';
+		echo '<td style="text-align:center;">'.number_format($requestPayment['RequestPayment']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;&nbsp;</td>';
+		echo '<td style="text-align:center;">'.count($requestPayment['SummaryPayment']).'&nbsp;</td>';
+		echo '<td style="text-align:center;">'.count($requestPayment['RequestPaymentsOrder']).'&nbsp;</td>';
+		 
 		if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y')
 			echo '<td style="text-align:center;">'.$requestPayment['RequestPaymentsStoreroom']['totRequestPaymentsStoreroom'].'&nbsp;</td>';
-		?>	
-		<td style="text-align:center;"><?php echo $requestPayment['RequestPaymentsGeneric']['totRequestPaymentsGeneric']; ?>&nbsp;</td>
-		<td title="<?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']);?>" class="stato_<?php echo strtolower($requestPayment['RequestPayment']['stato_elaborazione']); ?>"></td>
-		<td><?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']);?></td>
-		<td><?php echo $this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['data_send']); ?>&nbsp;</td>
-		<td><?php echo $this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['created']); ?>&nbsp;</td>
-		<td class="actions-table-img-4">
-			<?php echo $this->Html->link(null, array('action' => 'edit_stato_elaborazione', $requestPayment['RequestPayment']['id']),array('class' => 'action actionOpen','title' => __('Edit Stato Elaborazione'))); ?>
-			<?php echo $this->Html->link(null, array('action' => 'edit', $requestPayment['RequestPayment']['id']),array('class' => 'action actionEdit','title' => __('Edit RequestPayment'))); ?>
-			<?php echo $this->Html->link(null, array('controller' => 'ExportDocs', 'action' => 'tesoriere_request_payment', $requestPayment['RequestPayment']['id'], 'doc_formato=EXCEL'),array('target' => '_blank', 'class' => 'action actionExcel','title' => __('Export RequestPayment'), 'alt' => __('Export RequestPayment'))); ?>
-			<?php echo $this->Html->link(null, array('action' => 'delete', $requestPayment['RequestPayment']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); ?>
-		</td>
-	</tr>
-	<tr class="trView" id="trViewId-<?php echo $requestPayment['RequestPayment']['id'];?>">
-		<td colspan="2"></td> 
-		<td colspan="<?php echo ($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') ? '12' :'11';?>" id="tdViewId-<?php echo $requestPayment['RequestPayment']['id'];?>"></td>
-	</tr>	
-	<?php endforeach; 
+		
+		echo '<td style="text-align:center;">'.$requestPayment['RequestPaymentsGeneric']['totRequestPaymentsGeneric'].'&nbsp;</td>';
+		echo '<td title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPayment['RequestPayment']['stato_elaborazione']).'"></td>';
+		echo '<td>'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'</td>';
+		echo '<td>'.$this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['data_send']).'&nbsp;</td>';
+		echo '<td>'.$this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['created']).'&nbsp;</td>';
+		echo '<td>';
+		
+		$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Tesoriere&action=sotto_menu_tesoriere_request_payment&request_payment_id='.$requestPayment['RequestPayment']['id'].'&position_img=bgLeft&format=notmpl'; 
+		$modal_size = 'md'; // sm md lg
+		$modal_header = __('request_payment_num_short').' '.$requestPayment['RequestPayment']['num'];
+		if(!empty($requestPayment['RequestPayment']['tot_importo'])) 
+			$modal_header .= ' di '.number_format($requestPayment['RequestPayment']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+		echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
+		
+		/*
+		 * precedente gestione menu
+		echo $this->Html->link(null, array('action' => 'edit_stato_elaborazione', $requestPayment['RequestPayment']['id']),array('class' => 'action actionOpen','title' => __('Edit Stato Elaborazione')));
+		echo $this->Html->link(null, array('action' => 'edit', $requestPayment['RequestPayment']['id']),array('class' => 'action actionEdit','title' => __('Edit RequestPayment')));
+		echo $this->Html->link(null, array('controller' => 'ExportDocs', 'action' => 'tesoriere_request_payment', $requestPayment['RequestPayment']['id'], 'doc_formato=EXCEL'),array('target' => '_blank', 'class' => 'action actionExcel','title' => __('Export RequestPayment'), 'alt' => __('Export RequestPayment'))); 
+		echo $this->Html->link(null, array('action' => 'delete', $requestPayment['RequestPayment']['id']),array('class' => 'action actionDelete','title' => __('Delete')));
+		*/
+		echo '</td>';
+		echo '</tr>';
+		
+		echo '<tr data-attr-action="request_payment-'.$requestPayment['RequestPayment']['id'].'" class="collapse ajax_details" id="ajax_details-'.$requestPayment['RequestPayment']['id'].'">';
+		echo '	<td colspan="2"></td>'; 
+		echo '	<td colspan="';
+		echo ($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') ? '13' :'12';
+		echo '" id="ajax_details_content-'.$requestPayment['RequestPayment']['id'].'"></td>';
+		echo '</tr>';		
+
+	} // end loop 
 	
-		echo '</table>';
+		echo '</table></div>';
 		echo '<p>';
 		
 		echo $this->Paginator->counter(array(
@@ -165,7 +179,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora richieste di pagamento registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora richieste di pagamento registrate"));
 
 echo '</div>';
 
@@ -174,39 +188,38 @@ echo $this->element('legendaRequestPaymentStato');
 echo $this->element('menuTesoriereLaterale');
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});	
 
-	jQuery('.tesoriere_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#esito-"+id).html("");
-		jQuery("#dialog-nota-"+id ).dialog("open");
+	$('.tesoriere_nota').click(function() {
+		var id = $(this).attr('id');
+		$("#esito-"+id).html("");
+		$("#dialog-nota-"+id ).modal();
 	});
-
 });
 </script>

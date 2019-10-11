@@ -8,6 +8,9 @@
 .cakeContainer ul, .cakeContainer li {
     margin: 5px 0 0;
 }
+.cakeContainer li, .cakeContainer ul {
+    margin: 0 12px !important;
+}
 .cakeContainer a {
     color: #003d4c;
     cursor: pointer;
@@ -182,7 +185,23 @@
 		<li><a target="_blank" href="http://manuali.portalgas.it/gestione_del_tesoriere.php#il-pagamento-dei-produttori">Il pagamento dei Produttori</a></li>
 	</ul>
 
-
+<h1>Dispensa</h1>
+	<ul class="nav">
+		<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#la-dispensa-di-portalgas">La dispensa di PortAlGas</a></li>
+		<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#la-dispensa-semplice">La dispensa semplice</a>
+			<ul class="nav">
+				<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#eliminare-articolo">Eliminare un articolo</a></li>
+			</ul>			
+		</li>
+		<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#la-dispensa-con-possibilita-di-acquisto">La dispensa con possibilità di acquisto</a>
+			<ul class="nav">
+				<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#configurazione-delle-consegne">Configurazione delle consegne</a></li>
+				<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#i-referenti">I referenti</a></li>				
+				<li><a target="_blank" href="http://manuali.portalgas.it/dispensa.php#i-gasisti">I gasisti</a></li>							
+			</ul>		
+		</li>
+	</ul>
+		
 <h1>Problemi</h1>
 	<ul class="nav">
 		<li><a target="_blank" href="http://manuali.portalgas.it/problemi.php#problemi-con-le-stampe-di-portalgas">Problemi con le stampe di PortAlGas</a>
@@ -296,7 +315,7 @@
 			</ul>
 		</li>
 		<li><a target="_blank" href="http://manuali.portalgas.it/faq.php#ordini">Ordini</a>
-			<ul> 
+			<ul class="nav"> 
 				<li><a target="_blank" href="http://manuali.portalgas.it/faq.php#aggiungere-un-messaggio-per-i-gasisti">Aggiungere un messaggio per i gasisti</a></li>
 				<li><a target="_blank" href="http://manuali.portalgas.it/faq.php#spese-di-trasporto-sconti-o-spese-generiche">Spese di trasporto, sconti o spese generiche</a></li>
 			</ul>
@@ -310,11 +329,11 @@
 echo '<div class="cpanel">';
 
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.facebook.com/pages/Portalgas/677581532361100"><img src="/administrator/templates/bluestork/images/header/cake/social-fb.png" alt=""><span>Facebook</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.facebook.com/pages/Portalgas/677581532361100"><img class="img-responsive-disabled" src="/administrator/templates/bluestork/images/header/cake/social-fb.png" alt=""><span>Facebook</span></a></div>';
 	echo '</div>';
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="/administrator/templates/bluestork/images/header/cake/social-youtube.png" alt=""><span>YouTube</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img class="img-responsive-disabled" src="/administrator/templates/bluestork/images/header/cake/social-youtube.png" alt=""><span>YouTube</span></a></div>';
 	echo '</div>';
 	
 	

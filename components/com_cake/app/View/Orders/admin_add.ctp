@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 if(empty($des_order_id))
 	$this->Html->addCrumb(__('Add Order'));
@@ -23,13 +23,13 @@ echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
 echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
-echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
+echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 if(empty($des_order_id))
 	echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</span></a></li>';
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo l\'arrivo della merce').'</a></li>';
 else
-if($user->organization['Organization']['payToDelivery']=='POST')
+if($user->organization['Template']['payToDelivery']=='POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo la consegna').'</a></li>';
 echo '</ul>';
 
@@ -39,15 +39,15 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	/*
 	 * Supplier
 	 */
-	$options = array('id' => 'supplier_organization_id', 
+	$options = ['id' => 'supplier_organization_id', 
 					 'data-placeholder' => 'Scegli un produttore',
 					 'options' => $ACLsuppliersOrganization, 
 					 'value' => $supplier_organization_id, 
-					 'required' => 'false');
+					 'required' => 'false'];
 	if(!$browsers['ie11'] && count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
-		$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
+		$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 
 	if(empty($supplier_organization_id))
-		$options += array('empty' => Configure::read('option.empty')); 
+		$options += ['empty' => Configure::read('option.empty')]; 
 		
 	echo '<div class="row">';
 	echo '<div class="col-md-10">';
@@ -63,22 +63,22 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	echo $this->element('boxOrdersDelivery', array('modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery));
 	echo $this->Html->div('clearfix','');
 	
-	echo $this->App->drawDate('Order', 'data_inizio', __('Data inizio'), $data_inizio_db);
+	echo $this->App->drawDate('Order', 'data_inizio', __('DataInizio'), $data_inizio_db);
 	
-	echo $this->App->drawDate('Order', 'data_fine', __('Data fine'), $data_fine_db);
+	echo $this->App->drawDate('Order', 'data_fine', __('DataFine'), $data_fine_db);
 
 	
 	/* 
 	 * DES, data chiusura ordine
 	 */
 	if(!empty($des_order_id)) {
-		echo '<div class="input text ">';
-		echo '<label>'.__('Data fine max').'</label> ';
+		echo '<div class="input text alert alert-warning">';
+		echo '<label>'.__('DataFineMax').'</label> ';
 		echo $this->Time->i18nFormat($desOrdersResults['DesOrder']['data_fine_max'],"%A, %e %B %Y");
 		echo '</div>';	
 	}
 	
-	echo $this->Form->input('nota', array('type' => 'text', 'after' => '<img width="150" class="print_screen" id="print_screen_order_nota" src="'.Configure::read('App.img.cake').'/print_screen_order_nota.jpg" title="" border="0" />'));
+	echo $this->Form->input('nota', ['type' => 'text', 'after' => '<img width="150" class="print_screen" id="print_screen_order_nota" src="'.Configure::read('App.img.cake').'/print_screen_order_nota.jpg" title="" border="0" />']);
 	
 	echo $this->Html->div('clearfix','');
 	
@@ -106,7 +106,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
     
 echo '</div>';
 
-echo '<div class="tab-pane fade" id="tabs-2">';
+echo '<div class="tab-pane fade hidden-xs hidden-sm" id="tabs-2">';
 echo $this->element('boxOrdersTypeDraw', array('modalita' => 'ADD'));
 echo $this->Html->div('clearfix','');
 echo '</div>';
@@ -134,7 +134,7 @@ if(empty($des_order_id))  {
 	echo __('order_importo_massimo');
 	echo '</td>';
 	echo '<td colspan="2"  style="white-space: nowrap;">';
-	echo $this->Form->input('importo_massimo', array('label' => false, 'value' => $importo_massimo, 'type' => 'text', 'id' => 'importo_massimo','class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;'));
+	echo $this->Form->input('importo_massimo', ['label' => false, 'value' => $importo_massimo, 'type' => 'text', 'id' => 'importo_massimo','class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;']);
 	echo '</td>';
 	echo '<td><div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div></td>';
 	echo '</tr>';
@@ -143,7 +143,7 @@ if(empty($des_order_id))  {
 	echo '</div>';
 }
 
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	echo '<div class="tab-pane fade" id="tabs-4">';
 	
 		echo $this->element('boxOrdersTypeGest', array('modalita' => 'EDIT', 'value'=>$this->Form->value('Order.typeGest')));
@@ -193,7 +193,7 @@ echo '<input type="hidden" name="data[Order][des_order_id]" value="'.$des_order_
 if(!empty($des_order_id)) {
 	echo '<input type="hidden" name="data[Order][qta_massima_um]" value="" />';
 	echo '<input type="hidden" name="data[Order][qta_massima]" value="0" />';
-	echo '<input type="hidden" name="data[Order][importo_massimo]" value="0" />';
+	echo '<input type="hidden" name="data[Order][importo_massimo]" value="0.00" />';
 	echo '<input type="hidden" name="data[Order][des_data_fine_max]" value="'.$desOrdersResults['DesOrder']['data_fine_max'].'" />';
 }
 else { 
@@ -239,7 +239,7 @@ var dialogueIsSubmitting = false;
             
 function suppliersOrganizationDetails(supplier_organization_id) {
 	if(supplier_organization_id!=undefined && supplier_organization_id!=0 && supplier_organization_id!='') {
-		var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationDetails&supplier_organization_id="+supplier_organization_id+"&des_order_id=<?php echo $des_order_id;?>&format=notmpl";
+		var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationWithMsgDetails&supplier_organization_id="+supplier_organization_id+"&des_order_id=<?php echo $des_order_id;?>&format=notmpl";
 		var idDivTarget = 'suppliers_organization_details';
 		ajaxCallBox(url, idDivTarget);		
 	}

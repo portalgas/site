@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Logs'), array('controller' => 'Logs', 'action' => 'index'));
 $this->Html->addCrumb(__('Read Log'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -19,9 +19,9 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->create('Cron');?>
 		<fieldset>
 		
-			<div class="input text"><label for="">Nome file</label><?php echo $file_info['filename'];?></div>
-			<div class="input text"><label for="">Grandezza file</label><?php echo $this->App->formatSizeUnits($file_info['filesize']);?></div>
-			<div class="input text"><label for="">Mime</label><?php echo $file_info['mime'];?></div>
+			<div class="input text"><label for="">Nome file</label> <?php echo $file_info['filename'];?></div>
+			<div class="input text"><label for="">Grandezza file</label> <?php echo $this->App->formatSizeUnits($file_info['filesize']);?></div>
+			<div class="input text"><label for="">Mime</label> <?php echo $file_info['mime'];?></div>
 		
 		</fieldset>
 		<?php echo $this->Form->end();?>

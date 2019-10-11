@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Suppliers Organization'), array('controller' => 'SuppliersOrganizations', 'action' => 'index'));
 $this->Html->addCrumb(__('List Suppliers Votes'), array('controller' => 'SuppliersVotes', 'action' => 'index'));
 $this->Html->addCrumb(__('Edit Suppliers Votes'));
@@ -35,14 +35,19 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			if(isset($results['SuppliersVote'])) 
 				$options += array('value' => $results['SuppliersVote']['nota']); 
 			echo $this->Form->input('nota', $options);
-
+			echo '<div class="clearfix"></div>';
+			
 			$options = array('options' => $votos);
 			if(isset($results['SuppliersVote'])) 
 				$options += array('value' => $results['SuppliersVote']['voto']);
 			else
 				$options += array('value' => 2);
-			echo $this->App->drawFormRadio('SuppliersVote', 'voto', $options);
 			
+			echo '<div class="row">';
+			echo '<div class="col-md-12">';
+			echo $this->App->drawFormRadio('SuppliersVote', 'voto', $options);
+			echo '</div>';
+			echo '</div>';
 			
 			/*
 			 * voto altri GAS 
@@ -58,7 +63,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				
 					echo '<tr>';
 					echo '<td style="width:75px">';
-					echo '<img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersVoteOrganization['Organization']['img1'].'" alt="'.$suppliersVoteOrganization['Organization']['name'].'" /> ';
+					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersVoteOrganization['Organization']['img1'].'" alt="'.$suppliersVoteOrganization['Organization']['name'].'" /> ';
 					echo '</td>';
 					echo '<td>';
 					echo $suppliersVoteOrganization['Organization']['name'];
@@ -87,18 +92,18 @@ echo $this->Form->end(__('Submit'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 	
 		<?php
 		if(!empty($ACLsuppliersOrganization)) {
 		?>
-		var supplier_organization_id = jQuery('#supplier_organization_id').val();
+		var supplier_organization_id = $('#supplier_organization_id').val();
 		if(supplier_organization_id=='' || supplier_organization_id==undefined) {
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
-			jQuery('.tabs').tabs('option', 'active',0);
-			jQuery('#supplier_organization_id').focus();
+			$('.tabs li:eq(0) a').tab('show');
+			$('#supplier_organization_id').focus();
 			return false;
 		}
 		<?php

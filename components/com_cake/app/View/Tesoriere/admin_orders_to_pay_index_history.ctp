@@ -1,5 +1,5 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 if (!empty($results['Order'])):
@@ -7,7 +7,7 @@ if (!empty($results['Order'])):
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<th colspan="2"><?php echo __('Supplier'); ?></th>
 		<th><?php echo __('Importo totale ordine'); ?></th>
 		<th><?php echo __('Tesoriere fattura importo'); ?></th>
@@ -29,14 +29,14 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			echo '<td>';
 			if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
 			echo '</td>';
 			echo '<td>'.$order['SuppliersOrganization']['name'].'</td>';
 			echo '<td>';
-			echo number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			echo number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 			echo '</td>';
 			echo '<td>';
-			echo number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			echo number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 			echo '</td>';
 
 			echo '<td>';
@@ -44,7 +44,7 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			
 			echo '<td>';
-			if($order['tesoriere_data_pay']=='000-00-00')
+			if($order['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
 				$tesoriere_data_pay = '';
 			else
 				$tesoriere_data_pay = $this->Time->i18nFormat($order['tesoriere_data_pay'],"%A, %e %B %Y");

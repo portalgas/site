@@ -2,6 +2,7 @@
 Configure::write('developer.mode', false); 
 Configure::write('debug', 0);
 Configure::write('mail.send', true);
+Configure::write('gcalendar.add', true); 
 
 Configure::write('App.root', '/var/www/portalgas');	
 

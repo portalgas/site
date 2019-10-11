@@ -8,7 +8,7 @@
 		</div>
 	</h2>
 	
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th rowspan="2"><?php echo __('Id');?></th>
 			<th rowspan="2" colspan="4"><?php echo __('Name');?></th>	
@@ -27,7 +27,9 @@
 			<th><?php echo __('Localit&agrave;');?></th>
 			<th><?php echo __('Coordinate');?></th>
 	</tr>
-	<?php	
+	<?php
+	$this->App->d($results);
+
 	$tot_users = 0;
 	$tot_suppliers_organizations = 0;
 	$tot_articles = 0;
@@ -85,7 +87,7 @@
 			echo '</td>';
 			
 			echo '<td>';
-			echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
 			echo '</td>';
 
 			echo '<td>';
@@ -160,14 +162,8 @@
 			 * calcolare 
 			 */
 			echo '<td>';
-			if($result['OrganizationsPay']['importo']==0 && $result['OrganizationsPay']['id']==0) 
-				$result['OrganizationsPay']['importo'] = (Configure::read('costToUser') * (float)$result['OrganizationsPay']['tot_users']);
-			
-			if($result['OrganizationsPay']['importo'] > Configure::read('OrganizationPayImportMax'))
-				$result['OrganizationsPay']['importo'] = Configure::read('OrganizationPayImportMax');
-				
-			echo number_format($result['OrganizationsPay']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
-			if($result['OrganizationsPay']['importo'] == Configure::read('OrganizationPayImportMax')) echo ' <span>(max)</span>';
+			echo $result['OrganizationsPay']['importo_e'];
+			echo $result['OrganizationsPay']['importo_nota'];
 			echo '</td>';
 
 			/*

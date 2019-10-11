@@ -487,7 +487,7 @@ class LoopsDelivery extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -497,7 +497,7 @@ class LoopsDelivery extends AppModel {
 		),
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -506,7 +506,7 @@ class LoopsDelivery extends AppModel {
 			),
 		),
 		'luogo' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => 'Indica il luogo della consegna',
 				'allowEmpty' => false
 		),

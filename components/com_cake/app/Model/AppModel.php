@@ -4,9 +4,10 @@ App::uses('UtilsCommons', 'Lib');
 App::uses('CakeEmail', 'Network/Email');
 
 class AppModel extends Model {
-    public $actsAs = ['Enumerable'];
+
+    public $actsAs = ['Enumerable', 'ServiceArticles'];
 	public $utilsCommons;
-	private $no_organization_id_tables = ['organizations', 'suppliers'];
+	private $no_organization_id_tables = ['organizations', 'suppliers', 'des', 'des_duppliers'];
 	
 	public function __construct() {
     	parent::__construct();
@@ -67,6 +68,24 @@ class AppModel extends Model {
 		return $orderResult;
 	}
 	
+	public function _getSuppliersOrganizationById($user, $supplier_organization_id, $debug) {
+	
+		/* 
+		 * importo un Model perche' se e' richiamato da un Model con public $useTable = false; error
+		 */
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+				
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => (int)$user->organization['Organization']['id'], 'SuppliersOrganization.id' => $supplier_organization_id];
+		$options['recursive'] = 0;	
+		$suppliersOrganizationResult = $SuppliersOrganization->find('first', $options);
+
+		self::d([$options, $suppliersOrganizationResult], false);
+		
+		return $suppliersOrganizationResult;	
+	}
+	
 	public function getMessageErrorsToValidate($model, $data) {
 
 		$msg = '';
@@ -107,21 +126,24 @@ class AppModel extends Model {
 
     /*
      * Organization, Supplier avranno $organization_id=0
+	 * passo id per compatibilita' con Model::exists($id)
      */
-    public function exists($organization_id=0) {
+    public function exists($id=0, $organization_id=0) {
     	$id = $this->getID();
     	if ($id === false) {
     		return false;
     	}
 		
     	if(empty($organization_id) || in_array($this->useTable, $this->no_organization_id_tables))
-	    	$conditions = array($this->alias . '.' . $this->primaryKey => $id);
+	    	$conditions = [$this->alias.'.'.$this->primaryKey => $id];
     	else 
     		$conditions = [
-    				$this->alias . '.' . $this->primaryKey => $id,
-    				$this->alias . '.organization_id' => $organization_id
+    				$this->alias.'.'.$this->primaryKey => $id,
+    				$this->alias.'.organization_id' => $organization_id
     		];
-	   
+			
+	    self::d($conditions); 
+		
     	return (bool)$this->find('count', [
     			'conditions' => $conditions,
     			'recursive' => -1,
@@ -132,7 +154,7 @@ class AppModel extends Model {
     /*
      * Organization, Supplier avranno $organization_id=0
     */
-    public function read($organization_id=0, $fields = null, $id = null) {
+    public function read($id=0, $organization_id=0, $fields = null) {
     	
     	$this->validationErrors = [];
     	
@@ -150,8 +172,8 @@ class AppModel extends Model {
     		$conditions = [$this->alias . '.' . $this->primaryKey => $id];
     	else
     		$conditions = [
-	    				$this->alias . '.' . $this->primaryKey => $id,
-	    				$this->alias . '.organization_id' => $organization_id
+	    				$this->alias.'.'.$this->primaryKey => $id,
+	    				$this->alias.'.organization_id' => $organization_id
 	    				];    	 
     	
     	if ($id !== null && $id !== false) {    		

@@ -21,7 +21,7 @@ $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => tru
 $tot_importo = 0;
 foreach($results as $numResult => $result) {
 
-	$rows = array();
+	$rows = [];
 	$rows[] = ($numResult+1);
 	$rows[] = $result['User']['name'];
 	$rows[] = number_format($result['SummaryOrder']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
@@ -31,7 +31,7 @@ foreach($results as $numResult => $result) {
 	$tot_importo = ($tot_importo + $result['SummaryOrder']['importo']);
 }
 
-$rows = array();
+$rows = [];
 $rows[] = '';
 $rows[] = '';
 $rows[] = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));

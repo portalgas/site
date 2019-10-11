@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 /*
  * override perche' $primaryKeyArray = array('organization_id', 'user_id', 'group_id', 'supplier_organization_id', 'type');
 */
@@ -42,7 +43,7 @@ class SuppliersOrganizationsReferentMultiKey extends AppModel {
 	 
 	public function read($organization_id=0, $user_id=0, $group_id=0, $supplier_organization_id=0, $type='', $fields = NULL, $id = NULL) {
 		 
-		$this->validationErrors = array();
+		$this->validationErrors = [];
 		 
 		$this->data = $this->find('first', array(
 				'conditions' => array($this->alias . '.organization_id' => $organization_id,
@@ -60,16 +61,16 @@ class SuppliersOrganizationsReferentMultiKey extends AppModel {
 	/*
 	 * override perche' $primaryKeyArray = array('organization_id', 'user_id', 'group_id', 'supplier_organization_id');
 	*/
-	public function save($data = null, $validate = true, $fieldList = array()) {
+	public function save($data = null, $validate = true, $fieldList = []) {
 		 
 		$success = false;
 		 
 		$defaults = array(
-				'validate' => true, 'fieldList' => array(),
+				'validate' => true, 'fieldList' => [],
 				'callbacks' => true, 'counterCache' => true
 		);
 		$_whitelist = $this->whitelist;
-		$fields = array();
+		$fields = [];
 		 
 		if (!is_array($validate)) {
 			$options = array_merge($defaults, compact('validate', 'fieldList'));
@@ -161,13 +162,13 @@ class SuppliersOrganizationsReferentMultiKey extends AppModel {
 			 
 			$this->data = false;
 			$this->_clearCache();
-			$this->validationErrors = array();
+			$this->validationErrors = [];
 		}
 		 
 		return $success;
 	}
 	
-	public function delete($organization_id=0, $user_id=0, $group_id=0, $supplier_organization_id=0, $type) {
+	public function myDelete($organization_id=0, $user_id=0, $group_id=0, $supplier_organization_id=0, $type) {
 		 
 		$sql = "DELETE
 					FROM
@@ -179,7 +180,7 @@ class SuppliersOrganizationsReferentMultiKey extends AppModel {
 	   					AND supplier_organization_id = ".(int)$supplier_organization_id."
 	   					AND type = '".$type."'
 	   					";
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
 			$success=true;

@@ -1,8 +1,9 @@
 <div class="legenda">
 
-<p>gasAlias: <input size="25" type="text" value="gastorino" id="gasAlias" /></p>
-<p>gasAliasSEO: <input size="25" type="text" value="gas-gastorino" id="gasAliaSEO" /></p>
-<p>organization_id <input size="3" type="text" value="" id="organizationId" /></p>
+<p>gasAlias: <input class="from-control" type="text" value="gastorino" id="gasAlias" /></p>
+<p>gasAliasSEO: <input class="from-control" type="text" value="gas-gastorino" id="gasAliaSEO" /></p>
+<p>gasUpperCase <input class="from-control" type="text" value="GasTorino" id="gasUpperCase" /></p>
+<p>organization_id <input class="from-control" type="text" value="<?php echo $max_id;?>" id="organizationId" /></p>
 <p><a href="#" id="custom">parametrizza</a></p>
 
 <!--  			server 			 -->
@@ -10,7 +11,7 @@
 <!--  			server			 -->
 <h1 class="header" id="header-server">Server (ssh)</h1>
 <div class="contenuto" id="contenuto-server" style="display:none;">
-<table cellpadding="0" cellspacing="0" >	
+<table class="table table-bordered table-hover">	
 	<tr>
 		<td width="25%">
 			<b>Sotto dominio</b><br /><span class="gasAlias"></span>.portalgas.it
@@ -50,7 +51,7 @@
 	cd /etc/apache2/sites-available
 	cp arcoiris.portalgas.it <span class="gasAlias"></span>.portalgas.it
 	vi <span class="gasAlias"></span>.portalgas.it
-	ESC : SHIFT  
+	ESC SHIFT :   
 	%s/arcoiris/<span class="gasAlias"></span>/g
 </pre>
 
@@ -81,107 +82,28 @@
 </div> 
 
 
-
-
-<!--  			codice 			 -->
-<!--  			codice 			 -->
-<!--  			codice 			 
-<h1 class="header" id="header-codice">Codice</h1>
-<div class="contenuto" id="contenuto-codice" style="display:none;">
-<table cellpadding="0" cellspacing="0" >	
-	<tr>
-		<td>
-			<b>Core</b>
-		</td>
-		<td>
-			in <?php echo Configure::read('App.root');?>/components/com_cake/app/core.php aggiungere
-			<pre class="shell">
-Configure::write('urlFrontEndToRewriteCakeRequest',array(
-       ...
-       ...
-		array('controller'=>'Deliveries','action'=>'tabsEcomm','admin'=>false,'SEO'=>'fai-la-spesa-<span class="gasAliasSEO"></span>'),
-		...
-			</pre>
-			
-<ul>
-	<li>fai-la-spesa-gas-...</li>
-	<li>carrello-gas-...</li>
-	<li>preview-carrello-gas-...</li>
-	<li>consegne-gas-...</li>
-	<li>dispensa-gas-...</li>
-	<li>stampe-gas-...</li>
-</ul>			
-		</td>
-	</tr>
-</table>
-</div>
--->
-
-<!--  			database 			 -->
-<!--  			database 			 -->
-<!--  			database 		
-<h1 class="header" id="header-database">Database</h1>
-<div class="contenuto" id="contenuto-database" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
-	<tr>
-		<td>
-			creare Delivery con 
-			<ul>
-				<li>sys = Y</li>
-				<li>luogo = Da definire</li>
-				<li>data = <?php echo Configure::read('DeliveryToDefinedDate');?></li>
-				<li>orario_da = 00:00:00</li>
-				<li>orario_a = 00:00:00</li>
-				<li>nota = La data e il luogo della consegna sono ancora da definire</li>
-				<li>nota_evidenza = ALERT</li>
-			</ul>
-<pre class="shell" rel="sql">			
-	INSERT INTO k_deliveries  
-	(`id`, `organization_id`, `luogo`, `data`, `orario_da`, `orario_a`, `nota`, `nota_evidenza`, 
-	`isToStoreroom`, `isToStoreroomPay`, `stato_elaborazione`, 
-	`isVisibleFrontEnd`, `isVisibleBackOffice`, `sys`, `created`, `modified`) 
-	VALUES 
-	(NULL, '<span class="organizationId"></span>', 'Da definire', '2025-01-01', '00:00:00', '00:00:00', 
-	'La data e il luogo della consegna sono ancora da definire', 'ALERT', 'N', 'N', 'OPEN', 
-	'Y', 'Y', 'Y', '2014-10-10 00:00:00', NULL);		
-			</pre>
-		</td>
-	</tr>
-	<tr>
-		<td>
-			creare Categorie di articoli 
-<pre class="shell" rel="sql">			
-	INSERT INTO 
-	k_categories_articles (organization_id, parent_id, lft, rght, name, description) 
-	(
-	 SELECT <span class="organizationId"></span> , parent_id, lft, rght, name, description 
-	 FROM k_categories_articles 
-	 WHERE organization_id = 1
-	)
-			</pre>			
-		</td>
-	</tr>		
-</table>
-</div>
--->
-
-
 <!--  			gruppi 			 -->
 <!--  			gruppi 			 -->
 <!--  			gruppi	 		 -->
 <h1 class="header" id="header-gruppi">Gruppi</h1>
 <div class="contenuto" id="contenuto-gruppi" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-hover">
 	<tr>
 		<td>
 			creare i <b>gruppi</b>
 			<ul>
-				<li>Sotto <b>Registred</b> => GasPages<span class="gasAlias"></span> => segnare <b>group_id</b></li>
+				<li>Sotto <b>Registred</b> => GasPages<span class="gasUpperCase"></span> => segnare <b>group_id</b></li>
 			</ul>			
 			creo gruppi => <b>livello d'accesso</b> da associare alla voce di menù per gestire la visibilità 
 			<ul>
-				<li>Registred<span class="gasAlias"></span> e associo il gruppo corrispondente</li>
+				<li>Registred<span class="gasUpperCase"></span> e associo il gruppo corrispondente</li>
 			</ul>			
+		</td>
+		<td>
+			<a href="#" id="j_group" class="action actionAdd" title="Crea Gruppo"></a>
+		</td>
+		<td>
+			<div id="j_group_esito"></div>
 		</td>
 	</tr>
 </table>
@@ -197,13 +119,13 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 <!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
-<h1 class="header" id="header-template_joomla">Joomla Template</h1>
+<h1 class="header" id="header-template_joomla">Joomla Template <a href="index.php?option=com_templates" target="_blank">gestisci template</a></h1>
 <div class="contenuto" id="contenuto-template_joomla" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-hover">
 	<tr>
 		<td>
 			<ul>
-				<li>/templates/v01/templateDetails.xml
+				<li><?php echo Configure::read('App.root');?>/templates/v01/templateDetails.xml
 <pre class="shell">					
 	&lt;field name="organizationId" type="list" default="0"
 		label="Organizzazione Associata"
@@ -229,60 +151,20 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 		&lt;/field&gt;
 </pre>							
 				</li>
+				<li>
+					&lt;option value="<span class=organizationId></span>"&gt;<span class="gasAlias"></span> (id <span class="organizationId"></span>)&lt;/option&gt;
+				</li>
+				<li>
+					&lt;option value="<span class=gasAlias></span>"&gt;<span class="gasAlias"></span>&lt;/option&gt;
+				</li>
 				<li><b>Duplicare</b> un template di joomla</li>				
-				<li>in Gestione template: Modifica stile
+				<li>in Gestione template
 					<ul>
+						<li>nome V01 <span class="gasUpperCase"></span></li>
 						<li>settare organizationId</li>
 						<li>settare organizationSEO</li>
 					</ul>
 				</li>
-
-
-
-
-<!--  			
-				<li>gestione colore custom: modificare /templates/v01/index.php e /templates/v01/css/default-min.css
-<pre class="shell">				
-	jQuery('h2').each(function() {
-		jQuery(this).addClass('h2-color');
-	});
-	jQuery('#header-menu').addClass('header-menu-color');
-	jQuery('a').each(function() {
-		jQuery(this).addClass('color');
-	});		
-</pre>	
-				
-				<table>
-					<tr>
-						<th>Class</th>
-						<th>Blu</th>
-						<th>Verde</th>
-						<th>Rosso</th>
-					</tr>
-					<tr>
-						<th>.header-menu-color</th>
-						<td><div style="background-color:#0A659E;width:100%;height:20px;color:#fff">#0A659E</div></td>
-						<td><div style="background-color:#4B6A38;width:100%;height:20px;color:#fff">#4B6A38</div></td>
-						<td><div style="background-color:#DE321B;width:100%;height:20px;color:#fff">#DE321B</div></td>
-					</tr>
-					<tr>
-						<th>a.color, a.color:link, a.color:visited</th>
-						<td><div style="background-color:#0060A6;width:100%;height:20px;color:#fff">#0060A6</div></td>
-						<td><div style="background-color:#3C851B;width:100%;height:20px;color:#fff">#3C851B</div></td>
-						<td><div style="background-color:#E5412A;width:100%;height:20px;color:#fff">#E5412A</div></td>
-					</tr>
-					<tr>
-						<th>.h2-color</th>
-						<td><div style="background-color:#1E83C2;width:100%;height:20px;color:#fff">#1E83C2</div></td>
-						<td><div style="background-color:#7BAA5F;width:100%;height:20px;color:#fff">#7BAA5F</div></td>
-						<td><div style="background-color:#F34F3E;width:100%;height:20px;color:#fff">#F34F3E</div></td>
-					</tr>
-				</table>
-				</li>
-			</ul>
--->
-
-						
 		</td>
 	</tr>
 </table>
@@ -294,26 +176,36 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 <!--  			config joomla 			 -->
 <!--  			config joomla 			 -->
 <!--  			config joomla 			 -->
-<h1 class="header" id="header-joomla_config">Joomla configuration</h1>
+<h1 class="header" id="header-joomla_config">Joomla configuration <a href="index.php?option=com_content&view=article&layout=edit" target="_blank">gestisci articolo</a></h1>
 <div class="contenuto" id="contenuto-joomla_config" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-hover">
 	<tr>
 		<th>Categoria</th>
-		<td class="border-bottom">creare categoria per pagine del Gas
+		<td>creare categoria per pagine del Gas
 			<ul>
-				<li>Title: Pages <span class="gasAlias"></span></li>
+				<li>Title: Pages <span class="gasUpperCase"></span></li>
 				<li>Alias: <span class="gasAliasSEO"></span></li>
 				<li>aggiornare database Organizations.j_page_category_id = category_id</li>
 			</ul>	
 		</td>
-	</tr>	
+		<td>
+			<a href="#" id="j_category" class="action actionAdd" title="Crea Categoria"></a>
+		</td>
+		<td>
+			<div id="j_category_esito"></div>
+		</td>
+	</tr>
+</table>
+
+
+<table class="table table-bordered table-hover">	
 	<tr>
 		<th>Articolo</th>
 		<td class="border-bottom">creare articolo per home
 			<ul>
-				<li>Title: Gas <span class="gasAlias"></span></li>
+				<li>Title: Gas <span class="gasUpperCase"></span></li>
 				<li>Alias: home-<span class="gasAliasSEO"></span></li>
-				<li>Categoria: Pages <span class="gasAlias"></span></li>
+				<li>Categoria: Pages <span class="gasUpperCase"></span></li>
 				<li>Accesso: public</li>
 			</ul>
 			
@@ -324,8 +216,6 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 <pre class="shell" rel="testo generico">
 	Appena nati entriamo subito nella community di PortAlGas per gestire i nostri ordini e le nostre consegne, si parte!
 </pre>	
-			
-			
 <pre class="shell" rel="footer per mail">
 	&lt;p class="emailbox"&gt;&lt;a href="/contattaci?contactOrganizationId=<span class="organizationId"></span>" title="scrivi una mail al G.A.S."&gt;Contattaci scrivendo una mail&lt;/a&gt;&lt;/p&gt;
 	&lt;p>{flike}&lt;/p&gt;
@@ -348,54 +238,57 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 			</ul>
 		</td>
 	</tr>	
+</table>
+</div>
+	
+	
+<!--        menu       -->
+<!--        menu       -->
+<!--        menu       -->	
+<h1 class="header" id="header-menu">Menù</h1>
+<div class="contenuto" id="contenuto-menu" style="display:none;">
+<table class="table table-bordered table-hover">	
 	<tr>
+		<th></th>
+		<td>
+			<a href="#" id="j_menu" class="action actionAdd" title="Crea Menu"></a>
+		</td>
+		<td>
+			<div id="j_menu_esito"></div>
+		</td>		
+	</tr>	
+	<tr>
+		<th></th>
+		<td>Per home del Gas associare il suo articolo</td>
+		<td></td>		
+	</tr>
+	<!-- tr>
 		<th>Menù Top</th>
-		<td class="border-bottom">
+		<td class="border-bottom" colspan="2">
 			<ul>
+				<!-- lo fa sql precedente
 				<li>Menu / Gestione menù => nuovo menù</li>
-				<li>"Titolo": Top menu Gas <span class="gasAliasSEO"></span></li>
+				<li>"Titolo": Top menu Gas <span class="gasUpperCase"></span></li>
 				<li>"Tipo menu": topmenu-<span class="gasAliasSEO"></span> - qui va inserito un nome che deve essere unico per ogni menu</li>
 				<li>Seleziono tutte le voce del menù <b>Top menu Gas GassePiossasco</b> e "Seleziona il menu per Spostare/Copiare" (<span style="color:red;">Nota</span>: non il menù Cavagnetta perchè ha più voci)</li>
 				<li>Per ogni voce di menù copiata cambiare
 					<ul>
-						<li>Alias (<span class="gasAliasSEO"></span>)</li>
+						<li>Alias (<span class="gasUpperCase"></span>)</li>
 						<li>Accesso: Registred...</li>
 						<li>Stile template</li>
 						<li>Opzioni visualizzazione pagina -> Titolo pagina Browser</li>
 					</ul>				
 				</li>
+				-->
 				<li>Per home del Gas associare il suo articolo</li>
 			</ul>
 		</td>
-	</tr>
-	<!-- tr>
-		<td colspan="2">
-			<img width="100%" src="<?php echo Configure::read('App.img.cake');?>/print_screen_joomla_menu.jpg" title="" border="0" />
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2">
-			<ul>
-				<li>home-...
-					<ul>
-						<li>consegne-gas-...</li>
-						<li>dispensa-gas-...</li>
-						<li>fai-la-spesa-gas-...</li>
-						<li>carrello-gas-...</li>
-						<li>preview-carrello-gas-...</li>
-						<li>stampe-gas-...</li>
-						<li>contattaci-gas-...</li>
-						<li>my-profilo</li>	
-					</ul>	
-				</li>
-			</ul>		
-		</td>
-	</tr  -->
+	</tr -->
 	<tr>
 		<th>Modulo: top menù</th>
-		<td class="border-bottom">Creare modulo Nuovo => menu
+		<td class="border-bottom" colspan="2">Creare modulo Nuovo => menu
 					<ul>
-						<li>Titolo: Top menu <span class="gasAlias"></span></li>
+						<li>Titolo: Top menu <span class="gasUpperCase"></span></li>
 						<li>Mostra titolo: Si</li>
 						<li>Position: position-menu-left</li>
 						<li>Livello iniziale: 2</li>	
@@ -407,6 +300,13 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 
 		</td>
 	</tr>
+</table>	
+	
+	
+	
+	
+	
+<table class="table table-bordered table-hover">		
 	<tr>
 		<th>Modulo: Gas - Contenuto immagine <i>position-cols-right</i></th>
 		<td class="border-bottom">Assegnarlo alla voce di menù della home	
@@ -431,9 +331,16 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 <!--  			utenti 			 -->
 <!--  			utenti 			 -->
 <!--  			utenti	 		 -->
-<h1 class="header" id="header-utenti">Utenti</h1>
+<h1 class="header" id="header-utenti">Utenti  
+<?php 
+if(isset($user->organization['Organization']['id']) && !empty($user->organization['Organization']['id']))
+	echo '<a href="index.php?option=com_users&view=user&layout=edit" target="_blank">gestisci user</a>';
+else
+	echo 'Scegli l\'organizzazione';
+?>
+</h1>
 <div class="contenuto" id="contenuto-utenti" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-hover">
 	<!-- tr>
 		<td colspan="2">
 			<img width="100%" src="<?php echo Configure::read('App.img.cake');?>/print_screen_import_user.jpg" title="" border="0" />
@@ -448,7 +355,7 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 				<li>Nome utente Login: info@<span class="gasAlias"></span>.portalgas.it</li>
 				<li>p0rtA1gax</li>
 				<li>Mail info@<span class="gasAlias"></span>.portalgas.it</li>
-				<li>Gruppo 	gasSystem / gasManager / gasCassiere / gasManagerConsegne / gasSuperReferente / gasTesoriere</li>
+				<li>Gruppo 	gasCassiere / gasManagerConsegne / gasSuperReferente / gasSystem / gasTesoriere / gasManager</li>
 			</ul>  			
 			<ul>
 				<li>Ricevi email di sistema = Si</li>
@@ -461,9 +368,10 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 			creo utente dispensa
 			<ul>
 				<li>Nome: Dispensa PortAlGas</li>
-				<li>Nome utente Login: dispensa@<span class="gasAlias"></span>portalgas.it</li>
+				<li>Nome utente Login: dispensa@<span class="gasAlias"></span>.portalgas.it</li>
 				<li>p0rtA1gax</li>
-				<li>Mail dispensa@<span class="gasAlias"></span>portalgas.it</li>
+				<li>Mail dispensa@<span class="gasAlias"></span>.portalgas.it</li>
+				<li>Gruppo 	gasDispensa</li>
 			</ul>  			
 			<ul>
 				<li>Ricevi email di sistema = No</li>
@@ -539,7 +447,7 @@ Configure::write('urlFrontEndToRewriteCakeRequest',array(
 <!--  			override joomla dinamic			 -->
 <h1 class="header" id="header-joomla_override_dinamic">Joomla override gestito dinamicamente</h1>
 <div class="contenuto" id="contenuto-joomla_override_dinamic" style="display:none;">
-<table cellpadding="0" cellspacing="0" >
+<table class="table table-bordered table-hover">
 	<tr>
 		<td>
 			<b>Mod_gas_organization_choice *</b>
@@ -617,24 +525,85 @@ h1.header {
 }
 </style>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".header").click(function() {	
-		dataElement = jQuery(this).attr('id');
+$(document).ready(function() {
+	$(".header").click(function() {	
+		dataElement = $(this).attr('id');
 		dataElementArray = dataElement.split('-');
 		var idElement = dataElementArray[1];
 
-		if(jQuery("#contenuto-"+idElement).css('display')=='none')
-			jQuery("#contenuto-"+idElement).show();
+		if($("#contenuto-"+idElement).css('display')=='none')
+			$("#contenuto-"+idElement).show();
 		else
-			jQuery("#contenuto-"+idElement).hide();
+			$("#contenuto-"+idElement).hide();
 	});	
 	
-	jQuery("#custom").click(function() {
-		jQuery(".gasAlias").html(jQuery("#gasAlias").val());
-		jQuery(".gasAliasSEO").html(jQuery("#gasAliaSEO").val());
-		jQuery(".organizationId").html(jQuery("#organizationId").val());
+	$("#custom").click(function() {
+		$(".gasAlias").html($("#gasAlias").val());
+		$(".gasAliasSEO").html($("#gasAliaSEO").val());
+		$(".gasUpperCase").html($("#gasUpperCase").val());
+		$(".organizationId").html($("#organizationId").val());
 		
 		return false;
+	});	
+	
+	$("#j_group").click(function(event) {
+		event.preventDefault();
+		
+		$('#j_group_esito').html("");
+		
+		var title = $("#gasUpperCase").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=Organizations&action=ajax_joomla_group&title="+title+"&format=notmpl",
+			success: function(response){
+				$('#j_group_esito').html(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#j_group_esito').html("error!");
+			}
+		});
+	});	
+	
+	$("#j_category").click(function(event) {
+		event.preventDefault();
+		
+		$('#j_category_esito').html("");
+		
+		var title = $("#gasUpperCase").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=Organizations&action=ajax_joomla_category&title="+title+"&format=notmpl",
+			success: function(response){
+				$('#j_category_esito').html(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#j_category_esito').html("error!");
+			}
+		});
+	});	
+	
+	$("#j_menu").click(function(event) {
+		event.preventDefault();
+		
+		$('#j_menu_esito').html("");
+		
+		var organizationId = $("#organizationId").val();
+		var gasAlias = $("#gasAlias").val();
+		var gasUpperCase = $("#gasUpperCase").val();
+		var gasAliaSEO = $("#gasAliaSEO").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=Organizations&action=ajax_joomla_menu&organizationId="+organizationId+"&gasAlias="+gasAlias+"&gasUpperCase="+gasUpperCase+"&gasAliaSEO="+gasAliaSEO+"&format=notmpl",
+			success: function(response){
+				$('#j_menu_esito').html(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#j_menu_esito').html("error!");
+			}
+		});
 	});	
 });
 </script>

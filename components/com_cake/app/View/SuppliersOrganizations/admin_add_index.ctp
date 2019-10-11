@@ -3,7 +3,7 @@
 echo $this->Html->script('datatables.min');
 echo $this->Html->css('datatables.min');
 */
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Suppliers'), array('controller' => 'SuppliersOrganizations', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Supplier Organization'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -33,129 +33,146 @@ if(!empty($results))
 /*
  * filtro di ricerca
  */
-echo $this->Form->create('FilterSupplier',array('id'=>'formGasFilter','type'=>'get'));?>
-	<fieldset class="filter" style="padding:5px;">
-		<legend><?php echo __('Filter Suppliers'); ?></legend>
-		<table>
-			<tr>
-				<?php 
+echo $this->Form->create('FilterSupplier', ['id' => 'formGasFilter', 'type' => 'get']);
+
+echo '<fieldset class="filter">';
+echo '<legend>'.__('Filter Suppliers').'</legend>';
+
+echo '<div class="row">';
+echo '<div class="col-md-4">';	
+echo $this->Form->input('category_supplier_id', ['label' => false, 'options' => $categories, 'empty' => __('FilterToCategories'), 'name' => 'FilterSuppliersOrganizationCategoryId', 'default' => $FilterSuppliersOrganizationCategoryId, 'escape' => false]); 
+echo '</div>';
+echo '<div class="col-md-4">';	
+$options = ['label' => false, 
+				'options' => $geoRegions,
+				'empty' => __('FilterToGeoRegions'),
+				'name' => 'FilterSuppliersOrganizationRegion',
+				'default' => $FilterSuppliersOrganizationRegion,
+				'escape' => false];					
+echo $this->Form->input('geo_region_id', $options); 
+echo '</div>';
+echo '<div class="col-md-4">';	
+$options = ['label' => false, 
+				'options' => $geoProvinces,
+				'empty' => __('FilterToGeoProvinces'),
+				'name' => 'FilterSuppliersOrganizationProvince',
+				'default' => $FilterSuppliersOrganizationProvince,
+				'escape' => false];
+if(count($geoProvinces) > Configure::read('HtmlSelectWithSearchNum')) 
+	$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 					
+echo $this->Form->input('geo_province_id', $options);
+echo '</div>';	
+echo '</div>';	// row
+
+echo '<div class="row">';
+echo '<div class="col-md-8">';
+echo $this->Form->input('FilterSuppliersOrganizationName', ['label' => 'Nome', 'name' => 'FilterSuppliersOrganizationName', 'value' => $FilterSuppliersOrganizationName ,'escape' => false, 'style' => 'width:100%']);
+echo '</div>';	
+echo '<div class="col-md-4">';	
+echo $this->Form->end(['label' => __('Filter'), 'class' => 'filter', 'div' => ['class' => 'submit filter', 'style' => 'display:none']]);
+echo '</div>';																
+echo '</div>';	// row
+
+
+if(!$search_execute) {
+	echo $this->element('boxMsg', ['msg' => __('msg_search_no_parameter')]);
+}
+else {
+
+	echo $this->Form->create('SuppliersOrganization', ['id' => 'formGas']);
+	echo '<fieldset>';
+	echo '<legend></legend>';
+		
+	if(!empty($results)) {
+	
+		echo '<div class="table-responsive"><table class="table table-hover">';
+		echo '<thead>';
+		echo '<tr>';
+		if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') echo '<th>'.__('Category').'</th>';
+		echo '<th></th>';
+		echo '<th>'.__('Business name').'</th>';
+		echo '<th>'.__('Description').'</th>';
+		echo '<th>'.__('Place').'</th>';
+		echo '<th>'.__('Contacts').'</th>';
+		echo '<th class="actions">'.__('Actions').'</th>';
+		echo '</tr>';
+		echo '</thead>';
+		
+		foreach ($results as $i => $result) {
+		
+			echo '<tbody';
+			echo '<tr class="view">';
+			
+			if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 				echo '<td>';
-				echo $this->Form->input('category_supplier_id',array('label' => false,'options' => $categories,'empty' => 'Filtra per categoria','name'=>'FilterSuppliersOrganizationCategoryId','default'=>$FilterSuppliersOrganizationCategoryId,'escape' => false)); 
+				if(isset($result['CategorySupplier']['name']))
+					echo $result['CategorySupplier']['name']; 
+				else
+					echo "-";
 				echo '</td>';
-				echo '<td>';
-				echo $this->Form->input('provincia',array('label' => false,'options' => $filterProvinciaResults,'empty' => 'Filtra per provincia','name'=>'FilterSuppliersOrganizationProvincia','default'=>$FilterSuppliersOrganizationProvincia,'escape' => false)); 
-				echo '</td>';
-				echo '<td>';
-				echo $this->Form->input('cap',array('label' => false,'options' => $filterCapResults,'empty' => 'Filtra per CAP','name'=>'FilterSuppliersOrganizationCap','default'=>$FilterSuppliersOrganizationCap,'escape' => false)); 
-				echo '</td>';
-				/*
-				echo $this->Ajax->autoComplete('FilterSuppliersOrganizationName', 
-														   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteSuppliers_name&format=notmpl',
-							   								array('label' => 'Nome','name'=>'FilterSuppliersOrganizationName','value'=>$FilterSuppliersOrganizationName,'size'=>'75','escape' => false));
-				*/
-				echo '<td>';
-				echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none')));
-				echo '</td>';
-			echo '</tr>';
-			echo '<tr>';
-			echo '<td colspan="4" style="text-align:center">';
-			echo '<input type="text" id="search" placeholder="Ricerca tra i dati sottostante" style="font-size:20px;padding: 2px 3px; width: 90%;">';
+			}
+			echo '<td>';
+			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';
 			echo '</td>';
+			echo '<td>'.$result['Supplier']['name'].'</td>';
+			echo '<td>'.$result['Supplier']['descrizione'].'</td>';
+			echo '<td>';
+			if(!empty($result['Supplier']['indirizzo'])) echo $result['Supplier']['indirizzo'].'&nbsp;<br />';
+			if(!empty($result['Supplier']['localita'])) echo $result['Supplier']['localita'].'&nbsp;';
+			if(!empty($result['Supplier']['cap'])) echo $result['Supplier']['cap'].'&nbsp;';
+			if(!empty($result['Supplier']['provincia'])) echo '('.$result['Supplier']['provincia'].')'; 
+			echo '</td>';			
+			echo '<td>';
+			echo $result['Supplier']['telefono'];
+			if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
+			if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
+			echo '</td>';
+			echo '<td>';
+			echo '<a action="suppliers-'.$result['Supplier']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+			echo '</td>';
+			echo '</tr>';		
+			
+			echo '<tr class="trView" id="trViewId-'.$result['Supplier']['id'].'" style="display:none;">';
+			echo '<td></td>';
+			echo '<td colspan="';
+			echo ($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') ? '6': '5';
+			echo '" id="tdViewId-'.$result['Supplier']['id'].'"></td>';
 			echo '</tr>';
+			echo '</tbody>';				
+		} // end foreach ($results as $i => $result)		
 		echo '</table>';
-	echo '</fieldset>';	
-echo $this->Form->create('SuppliersOrganization', array('id' => 'formGas'));?>
-	<fieldset>
-		<legend></legend>
 		
-			<?php
-			if(!empty($results)) {
-			?>
-			<table id="grid" class="display" cellspacing="0" width="100%">
-			<thead>
-				<tr>
-						<?php if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') echo '<th>Categoria</th>';?>
-						<th></th>
-						<th>Ragione sociale</th>
-						<th>Descrizione</th>
-						<th>Localit&agrave;</th>
-						<th>Contatti</th>
-						<th class="actions"><?php echo __('Actions');?></th>
-				</tr>
-			</thead>	
-				<?php
-				foreach ($results as $i => $result):
-				 ?>
-				<tbody>
-				<tr class="view">
-					<?php 
-					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
-						echo '<td>';
-						if(isset($result['CategorySupplier']['name']))
-							echo $result['CategorySupplier']['name']; 
-						else
-							echo "-";
-						echo '</td>';
-					}
-					echo '<td>';
-					if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';
-					echo '</td>';
-					?>
-					
-					<td><?php echo $result['Supplier']['name']; ?></td>
-					<td><?php echo $result['Supplier']['descrizione']; ?></td>
-					<td>
-						<?php 
-						   if(!empty($result['Supplier']['indirizzo'])) echo $result['Supplier']['indirizzo'].'&nbsp;<br />';
-						   if(!empty($result['Supplier']['localita'])) echo $result['Supplier']['localita'].'&nbsp;';
-							if(!empty($result['Supplier']['cap'])) echo $result['Supplier']['cap'].'&nbsp;';
-							if(!empty($result['Supplier']['provincia'])) echo '('.$result['Supplier']['provincia'].')'; 
-						?>
-					</td>
-					<td>
-						<?php echo $result['Supplier']['telefono'];
-							if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
-							if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="link_mailto"></a>';
-						?>
-					</td>
-					<td><a action="suppliers-<?php echo $result['Supplier']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-				</tr>
-				<tr class="trView" id="trViewId-<?php echo $result['Supplier']['id'];?>" style="display:none;">
-					<td></td>
-					<td colspan="<?php  echo ($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') ? '6': '5';?>" id="tdViewId-<?php echo $result['Supplier']['id'];?>"></td>
-				</tr>
-				</tbody>				
-			<?php endforeach; 		
-			echo '</table>';
-		
-		} // end if(!empty($results))
+	} // end if(!empty($results))
+	else
+		echo $this->element('boxMsg');
+	
+	/*
+	 * gestisce se importare Supplier o Supplier e Articles
+	 */
+	echo $this->Form->hidden('supplier_articles', ['id' => 'supplier_articles','value' => 'N']);
+				
+	echo $this->element('legendaSuppliersOrganizationsAdd', ['results' => $results, 'sort' => $sort,'direction' => $direction, 'page' => $page]);
 
-		/*
-		 * gestisce se importare Supplier o Supplier e Articles
-		 */
-		echo $this->Form->hidden('supplier_articles',array('id' => 'supplier_articles','value' => 'N'));
-					
-		echo $this->element('legendaSuppliersOrganizationsAdd', array('results' => $results, 'sort' => $sort,'direction' => $direction, 'page' => $page));			
-		?>
-		
-	</fieldset>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Suppliers Organization'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
-	</ul>
-</div>
+} // end if(!$search_execute)		
 
+echo '</fieldset>';
+echo '</div>';
+echo '<div class="actions">';
+echo '<h3>'.__('Actions').'</h3>';
+echo '<ul>';
+echo '<li>'.$this->Html->link(__('List Suppliers Organization'), ['action' => 'index'], ['class'=>'action actionReload']).'</li>';
+echo '</ul>';
+echo '</div>';
+?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	var $rows = jQuery('table#grid tbody tr');
-	jQuery('#search').keyup(function() {
-		var val = jQuery.trim(jQuery(this).val()).replace(/ +/g, ' ').toLowerCase();
+$(document).ready(function() {
+	var $rows = $('table#grid tbody tr');
+	$('#search-disabled').keyup(function() {
+		var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
 		
 		$rows.show().filter(function() {
-			var text = jQuery(this).text().replace(/\s+/g, ' ').toLowerCase();
+			var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
 			return !~text.indexOf(val);
 		}).hide();		
 	});

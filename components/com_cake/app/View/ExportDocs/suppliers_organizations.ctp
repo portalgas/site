@@ -52,7 +52,7 @@ if (!empty($results)) {
 				$html .= '			<td width="'.$output->getCELLWIDTH100().'">'.$result['CategoriesSupplier']['name'].'</td>';
 			$html .= '<td width="'.$output->getCELLWIDTH50().'">';
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			$html .= '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" /> ';	
+			$html .= '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" /> ';	
 			$html .= '</td>';
 			
 			if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')
@@ -142,4 +142,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

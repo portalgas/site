@@ -1,14 +1,10 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/					
+$this->App->d($results);				
 
-echo '<table cellpadding="0" cellspacing="0">';
+echo '<div class="table-responsive"><table class="table table-hover">';
 echo '<tr>';
 echo '<th colspan="3">'.__('Users').'</th>';
-echo '<th>Ruoli amibente D.E.S.</th>';
+echo '<th>Ruoli D.E.S.</th>';
 echo '<th>Ruoli sugli ordini</th>';
 echo '<th style="width:10px"></th>';
 echo '<th>Esito</th>';
@@ -31,8 +27,14 @@ if(!empty($results)) {
 			echo '</td>';
 			echo '<td>';
 			if(isset($result['User']['Group']))
-			foreach ($result['User']['Group'] as $key => $group_id) {	
+			foreach ($result['User']['Group'] as $key => $group_id) {
+				if($group_id==Configure::read('group_id_titolare_des_supplier')) 
+					echo '<b>';
+				
 				echo $userGroups[$group_id]['name'].'<br />';
+				
+				if($group_id==Configure::read('group_id_titolare_des_supplier')) 
+					echo '</b>';
 			}					
 			echo '</td>';
 			echo '<td>';
@@ -62,11 +64,10 @@ if(!empty($results)) {
 			}
 			
 			echo '</tr>';
-	} // loop Referenti	
-	echo '</table>';														
+	} // loop Referenti															
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono referenti associati!"));				
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono referenti associati!"));				
 				
-echo '</table>';
+echo '</table></div>';
 ?>

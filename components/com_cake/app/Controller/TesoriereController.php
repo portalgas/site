@@ -199,11 +199,11 @@ class TesoriereController extends AppController {
 								if($debug) echo '<br />order_id '.$order_id;
 								
 								$Order->id = $order_id;
-								if (!$Order->exists($this->user->organization['Organization']['id'])) {
+								if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 									$this->Session->setFlash(__('msg_error_params'));
 									$this->myRedirect(Configure::read('routes_msg_exclamation'));
 								}
-								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
+								$order = $Order->read($order_id, $this->user->organization['Organization']['id']);
 								
 								self::d($order,$debug);
 							
@@ -255,11 +255,11 @@ class TesoriereController extends AppController {
 						foreach ($order_ids as $order_id) {
 			
 								$Order->id = $order_id;
-								if (!$Order->exists($this->user->organization['Organization']['id'])) {
+								if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 									$this->Session->setFlash(__('msg_error_params'));
 									$this->myRedirect(Configure::read('routes_msg_exclamation'));
 								}
-								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
+								$order = $Order->read($order_id, $this->user->organization['Organization']['id']);
 								
 								if($order['Order']['state_code']=='PROCESSED-TESORIERE') {
 									
@@ -320,11 +320,11 @@ class TesoriereController extends AppController {
 								self::d('order_id '.$order_id, $debug);
 								
 								$Order->id = $order_id;
-								if (!$Order->exists($this->user->organization['Organization']['id'])) {
+								if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 									$this->Session->setFlash(__('msg_error_params'));
 									$this->myRedirect(Configure::read('routes_msg_exclamation'));
 								}
-								$order = $Order->read($this->user->organization['Organization']['id'], null, $order_id);
+								$order = $Order->read($order_id, $this->user->organization['Organization']['id']);
 								
 								self::d($order,$debug);
 							
@@ -392,7 +392,7 @@ class TesoriereController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 		
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -594,7 +594,7 @@ class TesoriereController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 			
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -665,18 +665,20 @@ class TesoriereController extends AppController {
 			$newResults['Order'][$numOrderNewResults] = $results['Order'][$numOrder];
 			
 			/*
-			 * Supplier
-			*/
-			$sql = "SELECT *
-					FROM
-						".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization
-					WHERE
-						 stato = 'Y'
-						 and organization_id = ".(int)$this->user->organization['Organization']['id']."
-						 and id = ".(int)$order['supplier_organization_id'];
-			$suppliersOrganization = current($Delivery->query($sql));
-			if(!empty($suppliersOrganization))
-				$newResults['Order'][$numOrderNewResults]['SuppliersOrganization'] = $suppliersOrganization['SuppliersOrganization'];
+			 * Suppliers
+			* */
+			$SuppliersOrganization = new SuppliersOrganization;
+			$SuppliersOrganization->unbindModel(['belongsTo' => ['Organization', 'CategoriesSupplier']]);
+			$SuppliersOrganization->unbindModel(['hasMany' => ['Article', 'Order', 'SuppliersOrganizationsReferent']]);
+			
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.id' => $order['supplier_organization_id']];
+			$options['recursive'] = 1;
+			$SuppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+			if(!empty($SuppliersOrganizationResults)) {
+				$newResults['Order'][$numOrderNewResults]['Supplier'] = $SuppliersOrganizationResults['Supplier'];
+				$newResults['Order'][$numOrderNewResults]['SuppliersOrganization'] = $SuppliersOrganizationResults['SuppliersOrganization'];
+			}
 		
 			$numOrderNewResults++;
 			
@@ -731,7 +733,7 @@ class TesoriereController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 			
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -865,12 +867,12 @@ class TesoriereController extends AppController {
 			$Delivery = new Delivery;
 		
 			$Delivery->id = $delivery_id;
-			if ($Delivery->exists($this->user->organization['Organization']['id'])) {
+			if ($Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 				/*
 				$this->Session->setFlash(__('msg_error_params'));
 			    $this->myRedirect(Configure::read('routes_msg_exclamation'));
 				*/
-				$results = $Delivery->read($this->user->organization['Organization']['id'], null, $delivery_id);
+				$results = $Delivery->read($delivery_id, $this->user->organization['Organization']['id']);
 			}
 			else
 				$results['Delivery']['id'] = 0;
@@ -893,12 +895,12 @@ class TesoriereController extends AppController {
 			$Delivery = new Delivery;
 		
 			$Delivery->id = $this->delivery_id;
-			if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+			if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 				$this->Session->setFlash(__('msg_error_params'));
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
 		
-			$results = $Delivery->read($this->user->organization['Organization']['id'], null, $this->delivery_id);
+			$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
 		}
 		else 
 			$results['Delivery']['id'] = 0;
@@ -931,7 +933,7 @@ class TesoriereController extends AppController {
 		$RequestPayment = new RequestPayment;
 		
 		$RequestPayment->id = $request_payment_id;
-		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {
+		if (!$RequestPayment->exists($RequestPayment->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -968,7 +970,7 @@ class TesoriereController extends AppController {
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
 		
-		$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
+		$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($RequestPayment->id, $this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
 		$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],						'RequestPayment.id' => $request_payment_id];		$requestPaymentResults = $RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);		$this->set('requestPaymentResults',$requestPaymentResults);	}	
 	
 	/*

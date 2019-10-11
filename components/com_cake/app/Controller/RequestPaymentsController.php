@@ -29,32 +29,47 @@ class RequestPaymentsController extends AppController {
 				
 		/*
 		 * ctrl referentTesoriere
-		*/		$this->set('isReferenteTesoriere', $this->isReferentTesoriere());		
-		/*		 * REQUEST_PAYMENT		*/
+		*/
+		$this->set('isReferenteTesoriere', $this->isReferentTesoriere());
+		
+		/*
+		 * REQUEST_PAYMENT
+		*/
 		if(isset($this->request->pass['id'])) {
 			$id = $this->request->pass['id'];
-			$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],							'RequestPayment.'.$this->RequestPayment->primaryKey => $id];			$results = $this->RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+			$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
+							'RequestPayment.'.$this->RequestPayment->primaryKey => $id];
+			$results = $this->RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);
 			
 			
-			$actionWithPermission = ['admin_add_generic', 'admin_add_orders', 'admin_add_storeroom'];			if (in_array($this->action, $actionWithPermission)) {				if($results['RequestPayment']['stato_elaborazione']!='WAIT') {
-					$this->Session->setFlash(__('msg_not_request_payment_state'));					$this->myRedirect(['action' => 'index']);					
+			$actionWithPermission = ['admin_add_generic', 'admin_add_orders', 'admin_add_storeroom'];
+			if (in_array($this->action, $actionWithPermission)) {
+				if($results['RequestPayment']['stato_elaborazione']!='WAIT') {
+					$this->Session->setFlash(__('msg_not_request_payment_state'));
+					$this->myRedirect(['action' => 'index']);					
 				}
 			}	
 			$this->requestPaymentResults = $results;
 			$this->set('requestPaymentResults', $this->requestPaymentResults);
 			
 			$tot_importo = $this->RequestPayment->getTotImporto($this->user, $id);
-			$this->set('tot_importo', $tot_importo);		}
+			$this->set('tot_importo', $tot_importo);
+		}
 		
 		
-		/*		 * ctrl configurazione Organization		*/		if($this->user->organization['Organization']['hasStoreroom']=='Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {			
+		/*
+		 * ctrl configurazione Organization
+		*/
+		if($this->user->organization['Organization']['hasStoreroom']=='Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+			
 			/*
 			 * se non ci sono consegne valide (quelle per la dispensa) non fa comparire la voce di menu "Aggiungi una richiesta pagamento di dispensa"
 			 */
 			App::import('Model', 'Storeroom');
 			$Storeroom = new Storeroom;
 		
-			$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);			if(empty($deliveries)) 
+			$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);
+			if(empty($deliveries)) 
 				$deliveriesValideToStoreroom = 'N';
 			else 	
 				$deliveriesValideToStoreroom = 'Y';
@@ -62,19 +77,33 @@ class RequestPaymentsController extends AppController {
 		else 
 			$deliveriesValideToStoreroom = 'N';
 	
-		$this->set('deliveriesValideToStoreroom', $deliveriesValideToStoreroom);		
-		/*		 * $pageCurrent = ['controller' => '', 'action' => ''];		* mi serve per non rendere cliccabile il link corrente nel menu laterale		*/		$pageCurrent = $this->getToUrlControllerAction($_SERVER['REQUEST_URI']);		$this->set('pageCurrent',$pageCurrent);	
+		$this->set('deliveriesValideToStoreroom', $deliveriesValideToStoreroom);
+		
+		/*
+		 * $pageCurrent = ['controller' => '', 'action' => ''];
+		* mi serve per non rendere cliccabile il link corrente nel menu laterale
+		*/
+		$pageCurrent = $this->getToUrlControllerAction($_SERVER['REQUEST_URI']);
+		$this->set('pageCurrent',$pageCurrent);	
 	}
 	
 	public function admin_index() {
 		
 		$debug = false;
 		
-		/*		 * aggiorno lo stato degli ordini		 */		$utilsCrons = new UtilsCrons(new View(null));
-		if(Configure::read('developer.mode')) echo "<pre>";		$utilsCrons->requestPaymentStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);		if(Configure::read('developer.mode')) echo "</pre>";
+		/*
+		 * aggiorno lo stato degli ordini
+		 */
+		$utilsCrons = new UtilsCrons(new View(null));
+		if(Configure::read('developer.mode')) echo "<pre>";
+		$utilsCrons->requestPaymentStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);
+		if(Configure::read('developer.mode')) echo "</pre>";
 		
-		/*		 * cancello le richieste di pagamento chiuse		 */		
-		// $utilsCrons->archiveStatistics($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);		
+		/*
+		 * cancello le richieste di pagamento chiuse
+		 */		
+		// $utilsCrons->archiveStatistics($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false);
+		
 		
 		$this->RequestPayment->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id']];
 		$this->RequestPayment->hasMany['SummaryPayment']['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id']];
@@ -138,8 +167,12 @@ class RequestPaymentsController extends AppController {
 			$data['RequestPayment']['organization_id'] = $this->user->organization['Organization']['id'];
 			$data['RequestPayment']['user_id'] = $this->user->get('id');
 			$data['RequestPayment']['stato_elaborazione'] = 'WAIT';
+			$data['RequestPayment']['stato_elaborazione_date'] = Configure::read('DB.field.date.empty');
+			$data['RequestPayment']['data_send'] = Configure::read('DB.field.date.empty');
 			$data['RequestPayment']['num'] = $this->_getNumMaxAndUpdate($this->user);	
-			$data['RequestPayment']['nota'] = $this->request->data['RequestPayment']['nota'];		
+			$data['RequestPayment']['nota'] = $this->request->data['RequestPayment']['nota'];
+			
+			self::d($data);
 			$this->RequestPayment->create();
 			if($this->RequestPayment->save($data)) {
 				$request_payment_id = $this->RequestPayment->getLastInsertId();
@@ -165,9 +198,12 @@ class RequestPaymentsController extends AppController {
 		if(isset($this->request->params['pass']['id']))
 			$id = $this->request->params['pass']['id'];
 	
-		$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
 			self::d($this->request, $debug);
-			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
 		$msg = "";
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -199,13 +235,34 @@ class RequestPaymentsController extends AppController {
 			
 			
 		} // end if ($this->request->is('post') || $this->request->is('put'))
-
-		/*		 * filtri		*/		$FilterRequestPaymentName = null;		$FilterSummaryPaymentStato = null;		$conditions = [];
-				if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {			$FilterRequestPaymentName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');			$conditions += ['User.name'=> $FilterRequestPaymentName];		}		if($this->Session->check(Configure::read('Filter.prefix').'SummaryPaymentStato')) {			$FilterSummaryPaymentStato = $this->Session->read(Configure::read('Filter.prefix').'SummaryPaymentStato');			$conditions += ['SummaryPayment.stato' => $FilterSummaryPaymentStato];		}
-				$this->set('FilterRequestPaymentName', $FilterRequestPaymentName);		$this->set('FilterSummaryPaymentStato', $FilterSummaryPaymentStato);				$summaryPaymentStato = ['DAPAGARE' => __('DAPAGARE'), 'SOLLECITO1' => __('SOLLECITO1'), 'SOLLECITO2' => __('SOLLECITO2'), 'SOSPESO' => __('SOSPESO'), 'PAGATO' => __('PAGATO')];  
+		/*
+		 * filtri
+		*/
+		$FilterRequestPaymentName = null;
+		$FilterSummaryPaymentStato = null;
+		$conditions = [];
+		
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {
+			$FilterRequestPaymentName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');
+			$conditions += ['User.name'=> $FilterRequestPaymentName];
+		}
+		if($this->Session->check(Configure::read('Filter.prefix').'SummaryPaymentStato')) {
+			$FilterSummaryPaymentStato = $this->Session->read(Configure::read('Filter.prefix').'SummaryPaymentStato');
+			$conditions += ['SummaryPayment.stato' => $FilterSummaryPaymentStato];
+		}
+		
+		$this->set('FilterRequestPaymentName', $FilterRequestPaymentName);
+		$this->set('FilterSummaryPaymentStato', $FilterSummaryPaymentStato);
+		
+		$summaryPaymentStato = ['DAPAGARE' => __('DAPAGARE'), 'SOLLECITO1' => __('SOLLECITO1'), 'SOLLECITO2' => __('SOLLECITO2'), 'SOSPESO' => __('SOSPESO'), 'PAGATO' => __('PAGATO')];  
 		$this->set(compact('summaryPaymentStato'));
 		
-		/*		 * estraggo i dettagli di una richiesta di pagamento		 * 	- ordini associati		 *  - voci di spesa generica		 *  - dispensa		 */
+		/*
+		 * estraggo i dettagli di una richiesta di pagamento
+		 * 	- ordini associati
+		 *  - voci di spesa generica
+		 *  - dispensa
+		 */
 		$results = $this->RequestPayment->getAllDetails($this->user, $id, $conditions, $debug);
 
 		/*
@@ -233,7 +290,8 @@ class RequestPaymentsController extends AppController {
 		
 		self::d($results, false);
 		
-		$this->set('results', $results);		$this->set('request_payment_empty', $this->_ctrl_request_payment_empty($this->user, $results));
+		$this->set(compact('results'));
+		$this->set('request_payment_empty', $this->_ctrl_request_payment_empty($this->user, $results));
 		
 		$modalita = ClassRegistry::init('SummaryPayment')->enumOptions('modalita');
 		if($this->user->organization['Organization']['hasFieldPaymentPos']=='N')
@@ -250,8 +308,8 @@ class RequestPaymentsController extends AppController {
 			$this->set('open_details', false);
 
 		if(
-		  (count($results['Order'])==0 && count($results['PaymentsGeneric'])==0 && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='N') || 
-		  (count($results['Order'])==0 && count($results['PaymentsGeneric'])==0 && count($results['Storeroom'])==0 && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y')
+		  (!empty($results['Order']) && count($results['Order'])==0 && !empty($results['PaymentsGeneric']) && count($results['PaymentsGeneric'])==0 && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='N') || 
+		  (!empty($results['Order']) && count($results['Order'])==0 && !empty($results['PaymentsGeneric']) && count($results['PaymentsGeneric'])==0 && !empty($results['Storeroom']) && count($results['Storeroom'])==0 && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y')
 		  )
 			$this->render('admin_edit_no');
 		else {	
@@ -285,7 +343,8 @@ class RequestPaymentsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$action_submit = $this->request->data['RequestPayment']['action_submit'];
 			
-			switch ($action_submit) {				case 'toWait':
+			switch ($action_submit) {
+				case 'toWait':
 					$stato_elaborazione = 'WAIT';
 				break;
 				case 'toClose':
@@ -297,15 +356,31 @@ class RequestPaymentsController extends AppController {
 			}
 
 			$id = $this->request->data['RequestPayment']['request_payment_id'];
-								$this->RequestPayment->id = $id;			if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {				$this->Session->setFlash(__('msg_error_params'));				$this->myRedirect(Configure::read('routes_msg_exclamation'));			}				
+					
+			$this->RequestPayment->id = $id;
+			if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+				$this->Session->setFlash(__('msg_error_params'));
+				$this->myRedirect(Configure::read('routes_msg_exclamation'));
+			}
+				
 			/*
 			 * le richieste 
 			 * - stato_elaborazione = CLOSE 
 			 * - stato_elaborazione_date <= Configure::read('GGArchiveStatics');
 			 * vengono richiamate dal Cron::archiveStatistics() 
-			 */			$sql = "UPDATE						".Configure::read('DB.prefix')."request_payments 					SET
+			 */
+			$sql = "UPDATE
+						".Configure::read('DB.prefix')."request_payments 
+					SET
 						stato_elaborazione = '".$stato_elaborazione."',
-						stato_elaborazione_date = '".date('Y-m-d')."',						modified = '".date('Y-m-d H:i:s')."'					WHERE						organization_id = ".(int)$this->user->organization['Organization']['id']."						and id = ".(int)$id;			self::d($sql, false);			$result = $this->RequestPayment->query($sql);			
+						stato_elaborazione_date = '".date('Y-m-d')."',
+						modified = '".date('Y-m-d H:i:s')."'
+					WHERE
+						organization_id = ".(int)$this->user->organization['Organization']['id']."
+						and id = ".(int)$id;
+			self::d($sql, false);
+			$result = $this->RequestPayment->query($sql);
+			
 			/*
 			 * estraggo gli eventuali Order e Order state_code da TO-PAYMENT a USER-PAID
 			 */	
@@ -324,37 +399,70 @@ class RequestPaymentsController extends AppController {
 					$RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId($this->user, $id, '', $debug); // calcolo Order.state_code_next 
 				break;
 			}		
-				 							$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);						} // end if ($this->request->is('post') || $this->request->is('put')) 
+				 				
+			$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
 				
-		$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}			
-		/*		 * estraggo i dettagli di una richiesta di pagamento		* 	- ordini associati		*  - voci di spesa generica		*  - dispensa		*/		$results = $this->RequestPayment->getAllDetails($this->user, $id, null);		// qui non serve $this->set('results', $results);		$this->set('request_payment_empty', $this->_ctrl_request_payment_empty($this->user, $results));
-				self::d($this->requestPaymentResults['RequestPayment']['stato_elaborazione'], $debug);
+		} // end if ($this->request->is('post') || $this->request->is('put')) 
+				
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+			
+		/*
+		 * estraggo i dettagli di una richiesta di pagamento
+		* 	- ordini associati
+		*  - voci di spesa generica
+		*  - dispensa
+		*/
+		$results = $this->RequestPayment->getAllDetails($this->user, $id, null);
+		// qui non serve $this->set(compact('results'));
+		$this->set('request_payment_empty', $this->_ctrl_request_payment_empty($this->user, $results));
 		
-		switch ($this->requestPaymentResults['RequestPayment']['stato_elaborazione']) {			case 'WAIT':				$invio_mail = ['Y' => 'Si', 'N' => 'No'];
+
+		self::d($this->requestPaymentResults['RequestPayment']['stato_elaborazione'], $debug);
+		
+		switch ($this->requestPaymentResults['RequestPayment']['stato_elaborazione']) {
+			case 'WAIT':
+				$invio_mail = ['Y' => 'Si', 'N' => 'No'];
 				$this->set(compact('invio_mail'));
 				
-				$this->render('admin_edit_stato_elaborazione_to_open_from_wait');				break;			case 'OPEN':											$this->render('admin_edit_stato_elaborazione_open');				break;			case 'CLOSE':				$this->render('admin_edit_stato_elaborazione_to_open_from_close');				break;		}	}
+				$this->render('admin_edit_stato_elaborazione_to_open_from_wait');
+				break;
+			case 'OPEN':							
+				$this->render('admin_edit_stato_elaborazione_open');
+				break;
+			case 'CLOSE':
+				$this->render('admin_edit_stato_elaborazione_to_open_from_close');
+				break;
+		}
+	}
 	
 	/*
 	 * confermo rich pagamento e invio mail
 	 * Order.state_code da TO-PAYMENT (Associato ad una richiesta di pagamento) => USER-PAID (Da saldare da parte dei gasisti)
 	 */
-	public function admin_edit_stato_elaborazione_to_open_from_wait() {		
+	public function admin_edit_stato_elaborazione_to_open_from_wait() {
+		
 		if ($this->request->is('post') || $this->request->is('put') ) {
 		
 			$id = $this->request->data['RequestPayment']['request_payment_id'];
 			
 			$this->RequestPayment->id = $id;
-			if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {
+			if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
 				$this->Session->setFlash(__('msg_error_params'));
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}		
 												
 			if($this->request->data['RequestPayment']['invio_mail']=='Y') {
 
-				App::import('Model', 'Mail');				$Mail = new Mail;				
+				App::import('Model', 'Mail');
+				$Mail = new Mail;
+				
 				$Email = $Mail->getMailSystem($this->user);
-								/*
+				
+				/*
 				 * estraggo gli utenti ai quali inviare la mail
 				 */
 				$sql = "SELECT
@@ -387,29 +495,39 @@ class RequestPaymentsController extends AppController {
 					
 					/*
 					 * prepare mail
-					 */					$subject_mail = 'Nuova richiesta di pagamento (numero '.$request_payment_num.')';					$Email->subject($subject_mail);
+					 */
+					$subject_mail = 'Nuova richiesta di pagamento (numero '.$request_payment_num.')';
+					$Email->subject($subject_mail);
 					if(!empty($this->user->organization['Organization']['www']))
 						$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
 					else
 						$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);					
-					$msg = '';					$msg .= 'Inviata la mail a<br />';
+					$msg = '';
+					$msg .= 'Inviata la mail a<br />';
 					foreach ($summaryPaymentResults as $summaryPaymentResult) {
 						
-							$mail = $summaryPaymentResult['User']['email'];							$name = $summaryPaymentResult['User']['name'];							$request_payment_id = $summaryPaymentResult['SummaryPayment']['request_payment_id'];
+							$mail = $summaryPaymentResult['User']['email'];
+							$name = $summaryPaymentResult['User']['name'];
+							$request_payment_id = $summaryPaymentResult['SummaryPayment']['request_payment_id'];
 							$importo_dovuto = $summaryPaymentResult['SummaryPayment']['importo_dovuto'];
 							$importo_dovuto = number_format($importo_dovuto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 							$importo_richiesto = $summaryPaymentResult['SummaryPayment']['importo_richiesto'];
 							$importo_richiesto = number_format($importo_richiesto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-														if(!empty($mail)) {																	$body_mail = "c'è una nuova <b>richiesta di pagamento</b> (la numero $request_payment_num) di ".$importo_richiesto.'&nbsp;&euro;.';
+							
+							if(!empty($mail)) {
+									
+								$body_mail = "c'è una nuova <b>richiesta di pagamento</b> (la numero $request_payment_num) di ".$importo_richiesto.'&nbsp;&euro;.';
 								
 								$body_mail .= "<br /><br />Collegati ";
-								$body_mail .= "al sito ".$this->traslateWww(Configure::read('SOC.site'));									
+								$body_mail .= "al sito ".$this->traslateWww(Configure::read('SOC.site'));
+									
 								$body_mail .= " e, dopo aver fatto la login, scarica il documento per effettuare il pagamento.";
 								
-								$body_mail .= '<br /><br />Se effettui il pagamento tramite bonifico indica come <b>causale</b>: '.$name.' richiesta num '.$request_payment_num;
+								$body_mail .= '<br /><br />Se effettui il pagamento tramite bonifico indica come <b>causale</b>: Richiesta num '.$request_payment_num.' di '.$name;
 										
 								if(!empty($numRequestPaymentResults['RequestPayment']['nota'])) 
-									$body_mail .= '<br /><br />'.$numRequestPaymentResults['RequestPayment']['nota'];																	//echo $body_mail; exit;
+									$body_mail .= '<br /><br />'.$numRequestPaymentResults['RequestPayment']['nota'];									
+								//echo $body_mail; exit;
 								
 								if(!Configure::read('mail.send'))  $Email->transport('Debug');
 								
@@ -420,40 +538,74 @@ class RequestPaymentsController extends AppController {
 									$Mail->send($Email, [$mail], $body_mail);
 								} catch (Exception $e) {
 									CakeLog::write("error", $e, ['mails']);
-								}																}							else								$msg .= $name.' senza indirizzo mail!<br />';
+								}									
+							}
+							else
+								$msg .= $name.' senza indirizzo mail!<br />';
 					}
 					
 					$this->Session->setFlash($msg);
 				} // end if(!empty($summaryPaymentResults))
 			} // if($this->request->data['RequestPayment']['invio_mail']=='Y') 
-										$sql = "UPDATE						`".Configure::read('DB.prefix')."request_payments`					SET						stato_elaborazione = 'OPEN',
+							
+			$sql = "UPDATE
+						`".Configure::read('DB.prefix')."request_payments`
+					SET
+						stato_elaborazione = 'OPEN',
 						stato_elaborazione_date = '".date('Y-m-d')."',
 						data_send = '".date('Y-m-d')."',
-						modified = '".date('Y-m-d H:i:s')."'					WHERE						organization_id = ".(int)$this->user->organization['Organization']['id']."						and id = ".(int)$id;			self::d($sql, false);			$result = $this->RequestPayment->query($sql);	
+						modified = '".date('Y-m-d H:i:s')."'
+					WHERE
+						organization_id = ".(int)$this->user->organization['Organization']['id']."
+						and id = ".(int)$id;
+			self::d($sql, false);
+			$result = $this->RequestPayment->query($sql);
+	
 			App::import('Model', 'RequestPaymentsOrder');
 			$RequestPaymentsOrder = new RequestPaymentsOrder;
 
 			$RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId($this->user, $id, '');
-				$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);		} // if ($this->request->is('post') || $this->request->is('put') )	}
+	
+			$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
+		} // if ($this->request->is('post') || $this->request->is('put') )
+	}
 	
 	/*
 	 * da richiesta CLOSE => OPEN 
 	 * Order.state_code da CLOSE => calcolo
 	 */	
-	public function admin_edit_stato_elaborazione_to_open_from_close() {	
+	public function admin_edit_stato_elaborazione_to_open_from_close() {
+	
 		if ($this->request->is('post') || $this->request->is('put') ) {
 		
 			$id = $this->request->data['RequestPayment']['request_payment_id'];
 			
-			$this->RequestPayment->id = $id;			if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {				$this->Session->setFlash(__('msg_error_params'));				$this->myRedirect(Configure::read('routes_msg_exclamation'));			}
-										$sql = "UPDATE						`".Configure::read('DB.prefix')."request_payments`					SET						stato_elaborazione = 'OPEN',
+			$this->RequestPayment->id = $id;
+			if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+				$this->Session->setFlash(__('msg_error_params'));
+				$this->myRedirect(Configure::read('routes_msg_exclamation'));
+			}
+							
+			$sql = "UPDATE
+						`".Configure::read('DB.prefix')."request_payments`
+					SET
+						stato_elaborazione = 'OPEN',
 						stato_elaborazione_date = '".date('Y-m-d')."',
-						modified = '".date('Y-m-d H:i:s')."'					WHERE						organization_id = ".(int)$this->user->organization['Organization']['id']."						and id = ".(int)$id;			self::d($sql, false);			$result = $this->RequestPayment->query($sql);	
+						modified = '".date('Y-m-d H:i:s')."'
+					WHERE
+						organization_id = ".(int)$this->user->organization['Organization']['id']."
+						and id = ".(int)$id;
+			self::d($sql, false);
+			$result = $this->RequestPayment->query($sql);
+	
 			App::import('Model', 'RequestPaymentsOrder');
 			$RequestPaymentsOrder = new RequestPaymentsOrder;
 			
 			$RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId($this->user, $id, '');
-				$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);		} // if ($this->request->is('post') || $this->request->is('put') )	}
+	
+			$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
+		} // if ($this->request->is('post') || $this->request->is('put') )
+	}
 		
 	/*
 	 * estrai ordini TO-REQUEST-PAYMENT per portarle a TO-PAYMENT
@@ -464,7 +616,11 @@ class RequestPaymentsController extends AppController {
 		
 		$debug = false;
 		
-		$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}	
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}	
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
 				
@@ -521,6 +677,8 @@ class RequestPaymentsController extends AppController {
 						$data['SummaryPayment']['importo_richiesto'] = $data['SummaryPayment']['importo_dovuto'];
 
 						self::l('INSERT importo totale in SummaryPayment - importo_dovuto '.$data['SummaryPayment']['importo_dovuto'].' - importo_richiesto '.$data['SummaryPayment']['importo_richiesto'].' per user_id '.$result['SummaryOrder']['user_id'], $debug);
+
+						$data['SummaryPayment']['importo_pagato'] = Configure::read('DB.field.double.empty');
 					}
 					$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
 					$data['SummaryPayment']['request_payment_id'] = $id;
@@ -553,7 +711,7 @@ class RequestPaymentsController extends AppController {
 					$Order = new Order;
 						
 					$Order->id = $order_id;
-					if (!$Order->exists($this->user->organization['Organization']['id'])) {
+					if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 						$msg .= "<br />ordine ".$order_id." non esiste!";
 					}
 					else {
@@ -589,7 +747,7 @@ class RequestPaymentsController extends AppController {
 						$state_code_next = 'TO-PAYMENT';						
 						$OrderLifeCycle->stateCodeUpdate($this->user, $order_id, $state_code_next, null, $debug);
 						
-					} // end if (!$Order->exists($this->user->organization['Organization']['id']))
+					} // end if (!$Order->exists($Order->id, $this->user->organization['Organization']['id']))
 				}
 			} // end foreach
 		
@@ -625,19 +783,27 @@ class RequestPaymentsController extends AppController {
 											 'Order.state_code' => 'TO-REQUEST-PAYMENT']];
 		
 		$results = $Delivery->getDataTabs($this->user,$conditions,$options);
-		$this->set('results',$results);
+		$this->set(compact('results'));
 	}
 	
 	public function admin_add_storeroom() {
 		
 		$id = $this->request->pass['id']; // lo ricavo cosi' perche' nella queryString ho FilterStoreroomDeliveryId
 		
-		$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}		
 		
 
-		/*		 * ctrl configurazione Organization		*/
+		/*
+		 * ctrl configurazione Organization
+		*/
 		if($this->user->organization['Organization']['hasStoreroom']=='N' || $this->user->organization['Organization']['hasStoreroomFrontEnd']=='N') {
-			$this->Session->setFlash(__('msg_not_organization_config'));			$this->myRedirect(Configure::read('routes_msg_stop'));		}
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
 		
 		/*
 		 * ctrl se esiste l'utente dispensa
@@ -744,13 +910,19 @@ class RequestPaymentsController extends AppController {
 		$FilterRequestPaymentDeliveryId = null;
 		
 		$deliveries = $Storeroom->deliveriesToRequestPayment($this->user);	
-		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
+		if(empty($deliveries)) {
+			$this->Session->setFlash(__('NotFoundDeliveries'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}		
 		$this->set(compact('deliveries'));
 		
 		$resultsFound = '';
 		$results = [];
 		
-		/* recupero dati dalla Session gestita in appController::beforeFilter */		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId')) {			$FilterRequestPaymentDeliveryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId');		
+		/* recupero dati dalla Session gestita in appController::beforeFilter */
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId')) {
+			$FilterRequestPaymentDeliveryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId');
+		
 			$conditions = ['Storeroom.organization_id' => (int)$this->user->organization['Organization']['id'],
 							'Storeroom.user_id != ' => $this->storeroomUser['User']['id'],
 							'Storeroom.delivery_id > ' => 0,
@@ -760,7 +932,10 @@ class RequestPaymentsController extends AppController {
 			$orderBy = ['Storeroom.delivery_id, '.Configure::read('orderUser').', Storeroom.name'];
 
 			$Storeroom->Delivery->unbindModel(['hasMany' => ['Order']]);			
-			$Storeroom->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);			$Storeroom->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);			$Storeroom->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);			$Storeroom->User->unbindModel(['hasMany' => ['Cart']]);
+			$Storeroom->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
+			$Storeroom->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
+			$Storeroom->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);
+			$Storeroom->User->unbindModel(['hasMany' => ['Cart']]);
 			$results = $Storeroom->find('all', ['conditions' => $conditions,'order' => $orderBy,'recursive' => 1]);
 			
 			/*
@@ -770,19 +945,20 @@ class RequestPaymentsController extends AppController {
 			$SuppliersOrganization = new SuppliersOrganization;
 			if(!empty($results)) {
 				foreach ($results as $i => $result) {
-				
 					$conditions = ['SuppliersOrganization.id' => $result['Article']['supplier_organization_id']];
-					$suppliersOrganization = $SuppliersOrganization->getSuppliersOrganization($this->user, $conditions);
+					$userTmp->organization['Organization']['id'] =  $result['Article']['organization_id'];
+					$suppliersOrganization = $SuppliersOrganization->getSuppliersOrganization($userTmp, $conditions);
 					$results[$i]['SuppliersOrganization'] = current($suppliersOrganization);
 				}
 			}
 			else 
-				$resultsFound = 'N';		}
+				$resultsFound = 'N';
+		}
 		
 		/* filtro */
 		$this->set('FilterRequestPaymentDeliveryId', $FilterRequestPaymentDeliveryId);
 		$this->set('resultsFound', $resultsFound);
-		$this->set('results',$results);
+		$this->set(compact('results'));
 	}	
 	
 	public function admin_delete_generic($id = null) {
@@ -793,7 +969,7 @@ class RequestPaymentsController extends AppController {
 		$RequestPaymentsGeneric = new RequestPaymentsGeneric;
 		
 		$RequestPaymentsGeneric->id = $id;
-		if (!$RequestPaymentsGeneric->exists()) {
+		if (!$RequestPaymentsGeneric->exists($RequestPaymentsGeneric->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -889,7 +1065,7 @@ class RequestPaymentsController extends AppController {
 		$RequestPaymentsOrder = new RequestPaymentsOrder;
 		
 		$RequestPaymentsOrder->id = $id;
-		if (!$RequestPaymentsOrder->exists()) {
+		if (!$RequestPaymentsOrder->exists($RequestPaymentsOrder->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}	
@@ -922,7 +1098,7 @@ class RequestPaymentsController extends AppController {
 		$RequestPaymentsOrder = new RequestPaymentsOrder;
 		
 		$RequestPaymentsOrder->id = $id;
-		if (!$RequestPaymentsOrder->exists()) {
+		if (!$RequestPaymentsOrder->exists($RequestPaymentsOrder->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -988,12 +1164,18 @@ class RequestPaymentsController extends AppController {
 		
 		$debug = false;
 		
-		$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
 		App::import('Model', 'RequestPaymentsGeneric');
 		$RequestPaymentsGeneric = new RequestPaymentsGeneric;
 				
 		if ($this->request->is('post') || $this->request->is('put')) {
 
+			$continua=true;
 			App::import('Model', 'RequestPaymentsGeneric');
 			$RequestPaymentsGeneric = new RequestPaymentsGeneric;
 				
@@ -1004,14 +1186,111 @@ class RequestPaymentsController extends AppController {
 				/*
 				 * per ogni user con importo valorizzato creo un occorrenza
 				 */
-				if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME_DIFF') {
-					
-					$users = $this->request->data['RequestPaymentsGeneric']['Importo'];
-					foreach ($users as $user_id => $importo) {
-						if($importo!='0,00') {
+				switch ($this->request->data['RequestPaymentsGeneric']['dest_options_qta']) {
+					case 'SOME_DIFF':
+						$users = $this->request->data['RequestPaymentsGeneric']['Importo'];
+						foreach ($users as $user_id => $importo) {
+							if($importo!='0,00') {
+								
+								$importo = $this->importoToDatabase($importo);
+								self::d("Tratto lo user ".$user_id." con importo ".$importo, $debug);
+									
+								/*
+								 * creo occorrenza in RequestPaymentsGeneric
+								*/
+								$data = null;
+								$data['RequestPaymentsGeneric']['organization_id'] = (int)$this->user->organization['Organization']['id'];
+								$data['RequestPaymentsGeneric']['request_payment_id'] = $id;
+								$data['RequestPaymentsGeneric']['user_id'] = $user_id;
+								$data['RequestPaymentsGeneric']['name'] = $this->request['data']['RequestPaymentsGeneric']['name'];
+								$data['RequestPaymentsGeneric']['importo'] = $importo;			
+								
+								self::d($data, $debug);
+								
+								$RequestPaymentsGeneric->create();
+								if($RequestPaymentsGeneric->save($data))
+									$continua=true;
+								else
+									$continua=false;
+								
+								/*
+								 * creo occorrenza in SummaryPayment
+								*/
+								
+								App::import('Model', 'SummaryPayment');
+								$SummaryPayment = new SummaryPayment;
+
+								$data = null;
+								/*
+								 * ctrl se esiste gia' un'occorrenza in SummaryPayment, se SI => update
+								* */
+								$options = [];
+								$options['conditions'] = ['SummaryPayment.organization_id' => (int)$this->user->organization['Organization']['id'],
+														  'SummaryPayment.user_id' => (int)$user_id,
+														  'SummaryPayment.request_payment_id' => (int)$id];
+								$options['fields'] = ['SummaryPayment.id','SummaryPayment.importo_dovuto','SummaryPayment.importo_richiesto','SummaryPayment.importo_pagato'];
+								$options['recursive'] = -1;
+								$resultCtrl = $SummaryPayment->find('first', $options);
+								if(!empty($resultCtrl)) {
+									
+									self::d('Trovata gia un occorrenza per lo user '.$user_id.' in SummaryPayment => UPDATE di importo '.$resultCtrl['SummaryPayment']['importo_dovuto'].' + '.$importo, $debug);
+									
+									// UPDATE
+									$data['SummaryPayment']['id'] = $resultCtrl['SummaryPayment']['id'];
+									$data['SummaryPayment']['importo_dovuto'] = ($resultCtrl['SummaryPayment']['importo_dovuto'] + $importo);
+									$data['SummaryPayment']['importo_richiesto'] = $data['SummaryPayment']['importo_dovuto'];	
+									$data['SummaryPayment']['importo_pagato'] = $resultCtrl['SummaryPayment']['importo_pagato'];				
+								}
+								else {
+									
+									self::d('NON Trovata un occorrenza per lo user '.$user_id.' in SummaryPayment => INSERT ', $debug);
+
+									// INSERT
+									$data['SummaryPayment']['importo_dovuto'] = $importo;  // $this->importoToDatabase($importo);
+									$data['SummaryPayment']['importo_richiesto'] = $importo;  // $this->importoToDatabase($importo);
+									$data['SummaryPayment']['importo_pagato'] = Configure::read('DB.field.double.empty');
+
+								}
+								$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
+								$data['SummaryPayment']['request_payment_id'] = $id;
+								$data['SummaryPayment']['user_id'] = $user_id;
 							
-							$importo = $this->importoToDatabase($importo);
-							self::d("Tratto lo user ".$user_id." con importo ".$importo, $debug);
+								self::d($data, $debug);
+								$SummaryPayment->create();
+								$SummaryPayment->save($data);
+																
+							} // end if($importo!='0,00') 
+						} // foreach ($users as $user_id => $importo) 
+					break;
+					// ALL / SOME
+					default:
+					
+						self::d($this->request->data['RequestPaymentsGeneric'], $debug);
+						
+						/*
+						 * creo occorrenza in SummaryPayment
+						*/
+						if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME')
+							$users = $this->request->data['RequestPaymentsGeneric']['users'];
+						else 
+						if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='ALL') {
+							App::import('Model', 'User');
+							$User = new User;
+							
+							$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
+							$users = $User->getUsersList($this->user, $conditions);
+						}
+
+						$importo = $this->importoToDatabase($this->request['data']['RequestPaymentsGeneric']['importo']);
+						
+						App::import('Model', 'SummaryPayment');
+						$SummaryPayment = new SummaryPayment;
+						foreach ($users as $key => $value) {
+							
+							if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME')
+								$user_id = $value;
+							else
+								$user_id = $key;
 								
 							/*
 							 * creo occorrenza in RequestPaymentsGeneric
@@ -1021,139 +1300,54 @@ class RequestPaymentsController extends AppController {
 							$data['RequestPaymentsGeneric']['request_payment_id'] = $id;
 							$data['RequestPaymentsGeneric']['user_id'] = $user_id;
 							$data['RequestPaymentsGeneric']['name'] = $this->request['data']['RequestPaymentsGeneric']['name'];
-							$data['RequestPaymentsGeneric']['importo'] = $importo;			
-
-							self::d($data, $debug);
+							$data['RequestPaymentsGeneric']['importo'] = $this->request['data']['RequestPaymentsGeneric']['importo'];
 							
 							$RequestPaymentsGeneric->create();
 							if($RequestPaymentsGeneric->save($data))
-								$this->Session->setFlash(__('The request payments generic has been saved'));
+								$continua=true;
 							else
-								$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+								$continua=false;
 							
-							/*
-							 * creo occorrenza in SummaryPayment
-							*/
-							
-							App::import('Model', 'SummaryPayment');
-							$SummaryPayment = new SummaryPayment;
-
 							$data = null;
 							/*
 							 * ctrl se esiste gia' un'occorrenza in SummaryPayment, se SI => update
 							* */
 							$options = [];
 							$options['conditions'] = ['SummaryPayment.organization_id' => (int)$this->user->organization['Organization']['id'],
-													  'SummaryPayment.user_id' => (int)$user_id,
-													  'SummaryPayment.request_payment_id' => (int)$id];
-							$options['fields'] = ['SummaryPayment.id','SummaryPayment.importo_dovuto','SummaryPayment.importo_richiesto'];
+														'SummaryPayment.user_id' => (int)$user_id,
+														'SummaryPayment.request_payment_id' => (int)$id];
+							$options['fields'] = ['SummaryPayment.id','SummaryPayment.importo_dovuto','SummaryPayment.importo_richiesto','SummaryPayment.importo_pagato'];
 							$options['recursive'] = -1;
 							$resultCtrl = $SummaryPayment->find('first', $options);
 							if(!empty($resultCtrl)) {
-								
-								self::d('Trovata gia un occorrenza per lo user '.$user_id.' in SummaryPayment => UPDATE di importo '.$resultCtrl['SummaryPayment']['importo_dovuto'].' + '.$importo, $debug);
-								
 								// UPDATE
 								$data['SummaryPayment']['id'] = $resultCtrl['SummaryPayment']['id'];
 								$data['SummaryPayment']['importo_dovuto'] = ($resultCtrl['SummaryPayment']['importo_dovuto'] + $importo);
 								$data['SummaryPayment']['importo_richiesto'] = $data['SummaryPayment']['importo_dovuto'];
+								$data['SummaryPayment']['importo_pagato'] = $resultCtrl['SummaryPayment']['importo_pagato'];
 							}
 							else {
-								
-								self::d('NON Trovata un occorrenza per lo user '.$user_id.' in SummaryPayment => INSERT ', $debug);
-
 								// INSERT
 								$data['SummaryPayment']['importo_dovuto'] = $importo;  // $this->importoToDatabase($importo);
 								$data['SummaryPayment']['importo_richiesto'] = $importo;  // $this->importoToDatabase($importo);
+								$data['SummaryPayment']['importo_pagato'] = Configure::read('DB.field.double.empty');
 							}
 							$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
 							$data['SummaryPayment']['request_payment_id'] = $id;
 							$data['SummaryPayment']['user_id'] = $user_id;
-						
+			
 							self::d($data, $debug);
 							$SummaryPayment->create();
 							$SummaryPayment->save($data);
-															
-						} // end if($importo!='0,00') 
-					} // foreach ($users as $user_id => $importo) 
-				}
-				else  {
-					
-					self::d($this->request->data['RequestPaymentsGeneric'], $debug);
-					
-					/*
-					 * creo occorrenza in SummaryPayment
-					*/
-					if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME')
-						$users = $this->request->data['RequestPaymentsGeneric']['users'];
-					else 
-					if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='ALL') {
-						App::import('Model', 'User');
-						$User = new User;
-						
-						$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
-						$users = $User->getUsersList($this->user, $conditions);
-					}
-					
-					$importo = $this->importoToDatabase($this->request['data']['RequestPaymentsGeneric']['importo']);
-					
-					App::import('Model', 'SummaryPayment');
-					$SummaryPayment = new SummaryPayment;
-					foreach ($users as $key => $value) {
-						
-						if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME')
-							$user_id = $value;
-						else
-							$user_id = $key;
-							
-						/*
-						 * creo occorrenza in RequestPaymentsGeneric
-						*/
-						$data = null;
-						$data['RequestPaymentsGeneric']['organization_id'] = (int)$this->user->organization['Organization']['id'];
-						$data['RequestPaymentsGeneric']['request_payment_id'] = $id;
-						$data['RequestPaymentsGeneric']['user_id'] = $user_id;
-						$data['RequestPaymentsGeneric']['name'] = $this->request['data']['RequestPaymentsGeneric']['name'];
-						$data['RequestPaymentsGeneric']['importo'] = $this->request['data']['RequestPaymentsGeneric']['importo'];
-							
-						$RequestPaymentsGeneric->create();
-						if($RequestPaymentsGeneric->save($data))
-							$this->Session->setFlash(__('The request payments generic has been saved'));
-						else
-							$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
-						
-						$data = null;
-						/*
-						 * ctrl se esiste gia' un'occorrenza in SummaryPayment, se SI => update
-						* */
-						$options = [];
-						$options['conditions'] = ['SummaryPayment.organization_id' => (int)$this->user->organization['Organization']['id'],
-													'SummaryPayment.user_id' => (int)$user_id,
-													'SummaryPayment.request_payment_id' => (int)$id];
-						$options['fields'] = ['SummaryPayment.id','SummaryPayment.importo_dovuto','SummaryPayment.importo_richiesto'];
-						$options['recursive'] = -1;
-						$resultCtrl = $SummaryPayment->find('first', $options);
-						if(!empty($resultCtrl)) {
-							// UPDATE
-							$data['SummaryPayment']['id'] = $resultCtrl['SummaryPayment']['id'];
-							$data['SummaryPayment']['importo_dovuto'] = ($resultCtrl['SummaryPayment']['importo_dovuto'] + $importo);
-							$data['SummaryPayment']['importo_richiesto'] = $data['SummaryPayment']['importo_dovuto'];
-						}
-						else {
-							// INSERT
-							$data['SummaryPayment']['importo_dovuto'] = $importo;  // $this->importoToDatabase($importo);
-							$data['SummaryPayment']['importo_richiesto'] = $importo;  // $this->importoToDatabase($importo);
-						}
-						$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
-						$data['SummaryPayment']['request_payment_id'] = $id;
-						$data['SummaryPayment']['user_id'] = $user_id;
-		
-						$SummaryPayment->create();
-						$SummaryPayment->save($data);
-						
-					} // end if($this->request->data['RequestPaymentsGeneric']['dest_options_qta']=='SOME_DIFF')
-				} // end foreach ($this->request->data['RequestPayment']['users'] as $user)
-			
+						} // end foreach ($users as $key => $value)
+					break;							
+				} // switch($this->request->data['RequestPaymentsGeneric']['dest_options_qta']
+
+				if($continua)
+					$this->Session->setFlash(__('The request payments generic has been saved'));
+				else
+					$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+
 				if(!$debug) $this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
 		} // if ($this->request->is('post') || $this->request->is('put'))
 		
@@ -1180,7 +1374,14 @@ class RequestPaymentsController extends AppController {
 	public function admin_delete($id = null) {
 		
 		$debug = false;
-				$this->RequestPayment->id = $id;		if (!$this->RequestPayment->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}				if ($this->request->is('post') || $this->request->is('put') ) {
+		
+		$this->RequestPayment->id = $id;
+		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		if ($this->request->is('post') || $this->request->is('put') ) {
 	
 			App::import('Model', 'RequestPaymentsOrder');
 			$RequestPaymentsOrder = new RequestPaymentsOrder;
@@ -1233,14 +1434,33 @@ class RequestPaymentsController extends AppController {
 									
 			if($this->RequestPayment->delete()) 
 				$this->Session->setFlash(__('Delete Request Payment'));
-			else				$this->Session->setFlash(__('Request payment was not deleted'));
-			if(!$debug) $this->myRedirect(['action' => 'index']);		} // end POST
+			else
+				$this->Session->setFlash(__('Request payment was not deleted'));
+			if(!$debug) $this->myRedirect(['action' => 'index']);
+		} // end POST
 		
-		/*		 * estraggo gli utenti che hanno gia' concluso il pagamento 
-		 * SummaryPayment.stato != 'DAPAGARE' cosi' prendo tutti i 'SOLLECITO1','SOLLECITO2','PAGATO','SOSPESO'		*/		$sql = "SELECT					User.id, User.name, User.username, User.email,				 	SummaryPayment.* 				FROM					".Configure::read('DB.portalPrefix')."users as User,					".Configure::read('DB.prefix')."summary_payments as SummaryPayment				WHERE					SummaryPayment.organization_id = ".(int)$this->user->organization['Organization']['id']."					and User.organization_id = ".(int)$this->user->organization['Organization']['id']."					and User.id = SummaryPayment.user_id
+		/*
+		 * estraggo gli utenti che hanno gia' concluso il pagamento 
+		 * SummaryPayment.stato != 'DAPAGARE' cosi' prendo tutti i 'SOLLECITO1','SOLLECITO2','PAGATO','SOSPESO'
+		*/
+		$sql = "SELECT
+					User.id, User.name, User.username, User.email,
+				 	SummaryPayment.* 
+				FROM
+					".Configure::read('DB.portalPrefix')."users as User,
+					".Configure::read('DB.prefix')."summary_payments as SummaryPayment
+				WHERE
+					SummaryPayment.organization_id = ".(int)$this->user->organization['Organization']['id']."
+					and User.organization_id = ".(int)$this->user->organization['Organization']['id']."
+					and User.id = SummaryPayment.user_id
 					and SummaryPayment.request_payment_id = $id
-					and SummaryPayment.stato != 'DAPAGARE'				ORDER BY ".Configure::read('orderUser');		self::d($sql, false);
-		try {			$summaryPaymentResults = $this->RequestPayment->query($sql);			$this->set('summaryPaymentResults',$summaryPaymentResults);		}
+					and SummaryPayment.stato != 'DAPAGARE'
+				ORDER BY ".Configure::read('orderUser');
+		self::d($sql, false);
+		try {
+			$summaryPaymentResults = $this->RequestPayment->query($sql);
+			$this->set('summaryPaymentResults',$summaryPaymentResults);
+		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
 			CakeLog::write('error',$e);
@@ -1253,7 +1473,7 @@ class RequestPaymentsController extends AppController {
 		*  - dispensa
 		*/
 		$results = $this->RequestPayment->getAllDetails($this->user, $id, null);
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		$this->set('request_payment_empty', $this->_ctrl_request_payment_empty($this->user, $results));
 		
 	}
@@ -1263,30 +1483,45 @@ class RequestPaymentsController extends AppController {
 		/*
 		 * permission
 		 */
-		App::import('Model', 'Order');		$Order = new Order;
+		App::import('Model', 'Order');
+		$Order = new Order;
 				
 		/*
 		 * dati ordine
 		 */		
-		$Order->id = $this->order_id;		if (!$Order->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
-		$options = ['conditions' => ['Order.' . $Order->primaryKey => $this->order_id]];		$resultsOrder = $Order->find('first', $options);		$this->set(compact('resultsOrder'));		
+		$Order->id = $this->order_id;
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		$options = ['conditions' => ['Order.' . $Order->primaryKey => $this->order_id]];
+		$resultsOrder = $Order->find('first', $options);
+		$this->set(compact('resultsOrder'));
+		
 		/*
 		 * dati richiesta di pagamento
 		 * ricavo il request_payment_id dall'order_id 
 		 */		
-		App::import('Model', 'RequestPaymentsOrder');		$RequestPaymentsOrder = new RequestPaymentsOrder;				$conditions = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
+		App::import('Model', 'RequestPaymentsOrder');
+		$RequestPaymentsOrder = new RequestPaymentsOrder;
+		
+		$conditions = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
 						'RequestPaymentsOrder.order_id' => $resultsOrder['Order']['id']];
 		$RequestPaymentsOrder->unbindModel(['belongsTo' => ['Order']]);
-		$requestPaymentResults = $RequestPaymentsOrder->find('first', ['conditions' => $conditions, 'recursive' => 2]);		$this->set('requestPaymentResults', $requestPaymentResults);
+		$requestPaymentResults = $RequestPaymentsOrder->find('first', ['conditions' => $conditions, 'recursive' => 2]);
+		$this->set('requestPaymentResults', $requestPaymentResults);
 		
 		$results = [];
 		if(!empty($requestPaymentResults)) {
-			$results = $this->RequestPayment->getAllDetails($this->user, $requestPaymentResults['RequestPaymentsOrder']['request_payment_id'], $conditions=[]);		}
+			$results = $this->RequestPayment->getAllDetails($this->user, $requestPaymentResults['RequestPaymentsOrder']['request_payment_id'], $conditions=[]);
+		}
 		$this->set(compact('results'));
 	}
 	
 	/*
-	 * gli passo il contenuto di getAllDetails() e	 * ctrl che sia stata associata almeno una richesta (orders, storeroom, genereric)	*/
+	 * gli passo il contenuto di getAllDetails() e
+	 * ctrl che sia stata associata almeno una richesta (orders, storeroom, genereric)
+	*/
 	private function _ctrl_request_payment_empty($user, $results) {
 		
 		$request_payment_empty = false;
@@ -1413,44 +1648,65 @@ class RequestPaymentsController extends AppController {
 	private function _edit_open_stato_PAGATO($summary_payment_id, $data, $debug) {
  
 		$msg = '';
-		
+
 		$user_id = $data['RequestPayment']['user_id'][$summary_payment_id];
 		$importo_dovuto = $data['RequestPayment']['importo_dovuto'][$summary_payment_id];
 		$importo_richiesto = $data['RequestPayment']['importo_richiesto'][$summary_payment_id];
 		$importo_pagato = $data['RequestPayment']['importo_pagato'][$summary_payment_id];
 		$stato = $data['RequestPayment']['stato'][$summary_payment_id];
 		
-		$row = [];
-		$row['SummaryPayment']['id'] = $summary_payment_id; 
-		$row['SummaryPayment']['request_payment_id'] = $data['RequestPayment']['request_payment_id'];
-		$row['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];		
-		$row['SummaryPayment']['user_id'] = $user_id;
-		$row['SummaryPayment']['importo_dovuto'] = $importo_dovuto;
-		$row['SummaryPayment']['importo_richiesto'] = $importo_richiesto;
-		$row['SummaryPayment']['importo_pagato'] = $importo_pagato;
-		$row['SummaryPayment']['stato'] = $stato;
-			
-		self::d("importo_dovuto ".$row['SummaryPayment']['importo_dovuto'], $debug);
-		self::d("importo_richiesto ".$row['SummaryPayment']['importo_richiesto'], $debug);
-		self::d("importo_pagato ".$row['SummaryPayment']['importo_pagato'], $debug);
-				
-		/*
-		 * modalita':  summary_payments 'DEFINED', 'CONTANTI', 'BANCOMAT', 'BONIFICO'
-		 */
-		if(isset($data['RequestPayment']['modalita'][$summary_payment_id]))
-			$row['SummaryPayment']['modalita'] = $data['RequestPayment']['modalita'][$summary_payment_id];
-		else
-			$row['SummaryPayment']['modalita'] = 'DEFINED';
-
 		App::import('Model', 'SummaryPayment');
-		$SummaryPayment = new SummaryPayment;	
+		$SummaryPayment = new SummaryPayment;
 		
+		$options = [];
+		$options['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+								  'SummaryPayment.id' => $summary_payment_id,
+								  'SummaryPayment.user_id' => $data['RequestPayment']['user_id'][$summary_payment_id],
+								  'SummaryPayment.request_payment_id' => $data['RequestPayment']['request_payment_id']];
+		$options['recursive'] = -1;
+		$summaryPaymentResults = $SummaryPayment->find('first', $options);
+		self::d($options, $debug);
+		self::d($summaryPaymentResults, $debug);
+		if(!empty($summaryPaymentResults)) {
+			$summaryPaymentResults['SummaryPayment']['importo_dovuto'] = $importo_dovuto;
+			$summaryPaymentResults['SummaryPayment']['importo_richiesto'] = $importo_richiesto;
+			$summaryPaymentResults['SummaryPayment']['importo_pagato'] = $importo_pagato;
+			$summaryPaymentResults['SummaryPayment']['stato'] = $stato;
+				
+			self::d("importo_dovuto ".$row['SummaryPayment']['importo_dovuto'], $debug);
+			self::d("importo_richiesto ".$row['SummaryPayment']['importo_richiesto'], $debug);
+			self::d("importo_pagato ".$row['SummaryPayment']['importo_pagato'], $debug);
+		
+			/*
+			 * modalita':  summary_payments 'DEFINED', 'CONTANTI', 'BANCOMAT', 'BONIFICO'
+			 */
+			if(isset($data['RequestPayment']['modalita'][$summary_payment_id]))
+				$summaryPaymentResults['SummaryPayment']['modalita'] = $data['RequestPayment']['modalita'][$summary_payment_id];
+			else
+				$summaryPaymentResults['SummaryPayment']['modalita'] = 'DEFINED';
+			
+			$SummaryPayment->create();
+			self::d($summaryPaymentResults, $debug);
+			if (!$SummaryPayment->save($summaryPaymentResults)) 
+				$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." in errore!";
+
+			/*
+			 * salvo SummaryPayment
+			 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
+			 */
+			if (!$SummaryPayment->paid($this->user, $summaryPaymentResults, $debug)) 
+				$msg .= "<br />SummaryPayment per lo user ".$summaryPaymentResults['SummaryPayment']['user_id']." in errore!";
+						
+		} // end if(!empty($summaryPaymentResults))
+		else
+			$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." non trovato!";
+
 		/*
 		 * salvo SummaryPayment
 		 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
 		 */
-		if (!$SummaryPayment->paid($this->user, $row, $debug)) 
-			$msg .= "<br />SummaryPayment per lo user ".$row['SummaryPayment']['user_id']." in errore!";
+		if (!$SummaryPayment->paid($this->user, $summaryPaymentResults, $debug)) 
+			$msg .= "<br />SummaryPayment per lo user ".$summaryPaymentResults['SummaryPayment']['user_id']." in errore!";
 					
 		/*
 		 * C A S H
@@ -1577,29 +1833,38 @@ class RequestPaymentsController extends AppController {
 
 		$msg = '';
 
-		$row = [];
-		$row['SummaryPayment']['id'] = $summary_payment_id;
-		$row['SummaryPayment']['user_id'] = $data['RequestPayment']['user_id'][$summary_payment_id];
-		$row['SummaryPayment']['request_payment_id'] = $data['RequestPayment']['request_payment_id'];
-		$row['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
-		$row['SummaryPayment']['importo_pagato'] = '0.00';
-		$row['SummaryPayment']['modalita'] = 'DEFINED';
-		$row['SummaryPayment']['stato'] = $data['RequestPayment']['stato'][$summary_payment_id];
-				
 		App::import('Model', 'SummaryPayment');
 		$SummaryPayment = new SummaryPayment;
-					
-		$SummaryPayment->create();
-		self::d($row, $debug);
-		if (!$SummaryPayment->save($row)) 
-			$msg .= "<br />SummaryPayment per lo user ".$summary_payment_id." in errore!";
+		
+		$options = [];
+		$options['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+								  'SummaryPayment.id' => $summary_payment_id,
+								  'SummaryPayment.user_id' => $data['RequestPayment']['user_id'][$summary_payment_id],
+								  'SummaryPayment.request_payment_id' => $data['RequestPayment']['request_payment_id']];
+		$options['recursive'] = -1;
+		$summaryPaymentResults = $SummaryPayment->find('first', $options);
+		self::d($options, $debug);
+		self::d($summaryPaymentResults, $debug);
+		if(!empty($summaryPaymentResults)) {
+			$summaryPaymentResults['SummaryPayment']['importo_pagato'] = '0.00';
+			$summaryPaymentResults['SummaryPayment']['modalita'] = 'DEFINED';
+			$summaryPaymentResults['SummaryPayment']['stato'] = $data['RequestPayment']['stato'][$summary_payment_id];
+						
+			$SummaryPayment->create();
+			self::d($summaryPaymentResults, $debug);
+			if (!$SummaryPayment->save($summaryPaymentResults)) 
+				$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." in errore!";
 
-		/*
-		 * salvo SummaryPayment
-		 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
-		 */
-		if (!$SummaryPayment->paid($this->user, $row, $debug)) 
-			$msg .= "<br />SummaryPayment per lo user ".$row['SummaryPayment']['user_id']." in errore!";
+			/*
+			 * salvo SummaryPayment
+			 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
+			 */
+			if (!$SummaryPayment->paid($this->user, $summaryPaymentResults, $debug)) 
+				$msg .= "<br />SummaryPayment per lo user ".$summaryPaymentResults['SummaryPayment']['user_id']." in errore!";
+										
+		} // end if(!empty($summaryPaymentResults))
+		else
+			$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." non trovato!";
 		
 		return $msg;
 	}
@@ -1612,22 +1877,38 @@ class RequestPaymentsController extends AppController {
 
 		$msg = '';
 
-		$row = [];
-		$row['SummaryPayment']['id'] = $summary_payment_id;
-		$row['SummaryPayment']['user_id'] = $data['RequestPayment']['user_id'][$summary_payment_id];
-		$row['SummaryPayment']['request_payment_id'] = $data['RequestPayment']['request_payment_id'];
-		$row['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
-		$row['SummaryPayment']['importo_pagato'] = '0.00';
-		$row['SummaryPayment']['modalita'] = 'DEFINED';
-		$row['SummaryPayment']['stato'] = $data['RequestPayment']['stato'][$summary_payment_id];
-				
 		App::import('Model', 'SummaryPayment');
 		$SummaryPayment = new SummaryPayment;
-					
-		$SummaryPayment->create();
-		self::d($row, $debug);
-		if (!$SummaryPayment->save($row)) 
-			$msg .= "<br />SummaryPayment per lo user ".$summary_payment_id." in errore!";
+		
+		$options = [];
+		$options['conditions'] = ['SummaryPayment.organization_id' => $this->user->organization['Organization']['id'],
+								  'SummaryPayment.id' => $summary_payment_id,
+								  'SummaryPayment.user_id' => $data['RequestPayment']['user_id'][$summary_payment_id],
+								  'SummaryPayment.request_payment_id' => $data['RequestPayment']['request_payment_id']];
+		$options['recursive'] = -1;
+		$summaryPaymentResults = $SummaryPayment->find('first', $options);
+		self::d($options, $debug);
+		self::d($summaryPaymentResults, $debug);
+		if(!empty($summaryPaymentResults)) {
+			$summaryPaymentResults['SummaryPayment']['importo_pagato'] = '0.00';
+			$summaryPaymentResults['SummaryPayment']['modalita'] = 'DEFINED';
+			$summaryPaymentResults['SummaryPayment']['stato'] = $data['RequestPayment']['stato'][$summary_payment_id];
+						
+			$SummaryPayment->create();
+			self::d($summaryPaymentResults, $debug);
+			if (!$SummaryPayment->save($summaryPaymentResults)) 
+				$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." in errore!";
+
+			/*
+			 * salvo SummaryPayment
+			 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
+			 */
+			if (!$SummaryPayment->paid($this->user, $summaryPaymentResults, $debug)) 
+				$msg .= "<br />SummaryPayment per lo user ".$summaryPaymentResults['SummaryPayment']['user_id']." in errore!";
+						
+		} // end if(!empty($summaryPaymentResults))
+		else
+			$msg .= "<br />SummaryPayment ".$summary_payment_id." per lo user ".$data['RequestPayment']['user_id'][$summary_payment_id]." non trovato!";
 
 		return $msg;
 	}					

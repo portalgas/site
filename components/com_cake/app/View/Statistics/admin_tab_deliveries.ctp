@@ -21,7 +21,7 @@ if(!empty($results)) {
 		echo '<td>'.($numRow+1).'</td>';
 		echo '<td>'.$result['StatDelivery']['luogo'].'</td>';
 		echo '<td>'.$delivery_data.'</td>';
-		echo '<td style="text-align:center;">'.$importo.' &euro;</td>';
+		echo '<td style="text-align:center;">'.$importo.'&nbsp;&euro;</td>';
 		echo '</tr>';		
 	}
 
@@ -30,7 +30,7 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td></td>';
-	echo '<td style="text-align:center;"><b>'.$totale.' &euro;</b></td>';
+	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
 	echo '</tr>';
 		
 	echo '</table>';
@@ -87,5 +87,5 @@ if(!empty($results)) {
 	echo '</script>';
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>

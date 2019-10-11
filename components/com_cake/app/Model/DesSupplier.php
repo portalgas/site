@@ -17,7 +17,7 @@ class DesSupplier extends AppModel {
 	 *
 	*/              
 	public function setSupplierOrganizationOwnerArticles($user, $supplier_id=0, $debug=false) {
-
+		
 		$debug_save = false;  // se false SAVE
 		
 		self::d("DesSupplier::setSuppliersOrganizationOwnerArticles()", $debug);
@@ -75,7 +75,7 @@ class DesSupplier extends AppModel {
 			$supplier_name = $DesSupplierResult['Supplier']['name'];
 			$own_organization_id = $DesSupplierResult['DesSupplier']['own_organization_id'];
 			$own_organization_name = $DesSupplierResult['OwnOrganization']['name'];
-			
+											  			
 			if(empty($own_organization_id)) {	
 				/*
 				 * il produttore non ha + un titolare => porto tutti i SuppliersOrganization.owner_articles == 'REFERENT'
@@ -93,35 +93,40 @@ class DesSupplier extends AppModel {
 					 */
 					$options = [];
 					$options['conditions'] = ['SuppliersOrganization.organization_id' => $organization_id,
-											  'SuppliersOrganization.supplier_id' => $supplier_id];	    								   	   
+											  'SuppliersOrganization.supplier_id' => $supplier_id];	   	   
 					$options['recursive'] = -1;
 					$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 					
 					if(!empty($suppliersOrganizationResults)) {
-						self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id EMPTY - UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] SuppliersOrganization.owner_articles = '$new_owner_articles'", $debug);
-								
-						$suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=$new_owner_articles;
-
-						$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['organization_id'];
-						$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
-								
-						$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationResults);
-						if(!empty($msg_errors)) {
-							self::d($msg_errors, $debug);	
-							return $msg_errors;
-						}
-						else {
-							if(!$debug_save) {
-								$SuppliersOrganization->create();
-								if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {
-									self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id EMPTY - ERROR UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles' !!!", $debug);
-									return false;
-								}
-								else {
-									self::d($suppliersOrganizationResults, $debug);
+					
+						if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP') { // REFERENT-TMP non + gestito
+					
+							self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id EMPTY - UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] SuppliersOrganization.owner_articles = '$new_owner_articles'", $debug);
+									
+							$suppliersOrganizationResults['SuppliersOrganization']['owner_articles'] = $new_owner_articles;
+	
+							$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['organization_id'];
+							$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
+							
+							$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationResults);
+							if(!empty($msg_errors)) {
+								self::d($msg_errors, $debug);	
+								return $msg_errors;
+							}
+							else {
+								if(!$debug_save) {
+									$SuppliersOrganization->create();
+									if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {
+										self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id EMPTY - ERROR UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles' !!!", $debug);
+										return false;
+									}
+									else {
+										self::d($suppliersOrganizationResults, $debug);
+									}
 								}
 							}
-						}
+						} // if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP') // REFERENT-TMP non + gestito
+						 
 					} // end if(!empty($suppliersOrganizationResults)) 
 					else {
 						self::d('Caso non previsto', $debug);
@@ -139,42 +144,46 @@ class DesSupplier extends AppModel {
 										  'SuppliersOrganization.supplier_id' => $supplier_id];	    								   	   
 				$options['recursive'] = -1;
 				$suppliersOrganizationTitolareResults = $SuppliersOrganization->find('first', $options);
-
+					
 				self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id NOT EMPTY - GAS [".$own_organization_id." - ".$own_organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] del TITOLARE", $debug);
 				
 				if(!empty($suppliersOrganizationTitolareResults)) {  // dati non coerenti
+						
+					if($suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP') { // REFERENT-TMP non + gestito
+						
+						/*
+						 * UPDATE dati produttore del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT'
+						 */			
+						if($suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']=='DES') {
+							
+							self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id NOT EMPTY - UPDATE GAS [".$own_organization_id." - ".$own_organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT'", $debug);
+							
+							$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']='REFERENT';
+							$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['organization_id'];
+							$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['id'];	
+						}
+						else
+						if($suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']=='REFERENT') {
+							$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['organization_id'];
+							$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['id'];					
+						}
+						
 					
-					/*
-					 * UPDATE dati produttore del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT'
-					 */			
-					if($suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']=='DES') {
-						
-						self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id NOT EMPTY - UPDATE GAS [".$own_organization_id." - ".$own_organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT'", $debug);
-						
-						$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']='REFERENT';
-						$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['organization_id'];
-						$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['id'];	
-					}
-					else
-					if($suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_articles']=='REFERENT') {
-						$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['organization_id'];
-						$suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['id'];					
-					}
-				
-					$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationTitolareResults);
-					if(!empty($msg_errors)) {
-						self::d($msg_errors, $debug);	
-						return $msg_errors;
-					}
-					else {
-						if(!$debug_save) {
-							$SuppliersOrganization->create();
-							if (!$SuppliersOrganization->save($suppliersOrganizationTitolareResults)) {
-								self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id NOT EMPTY - ERROR UPDATE GAS [".$own_organization_id." - ".$own_organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT' !!!", $debug);							
-								return false;
+						$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationTitolareResults);
+						if(!empty($msg_errors)) {
+							self::d($msg_errors, $debug);	
+							return $msg_errors;
+						}
+						else {
+							if(!$debug_save) {
+								$SuppliersOrganization->create();
+								if (!$SuppliersOrganization->save($suppliersOrganizationTitolareResults)) {
+									self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() - DesSupplier.own_organization_id NOT EMPTY - ERROR UPDATE GAS [".$own_organization_id." - ".$own_organization_name."] dati produttore [".$supplier_id." - ".$supplier_name."] del TITOLARE SuppliersOrganization.owner_articles = 'REFERENT' !!!", $debug);							
+									return false;
+								}
 							}
 						}
-					}
+					} // if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP') // REFERENT-TMP non + gestito
 					
 					/*
 					 * UPDATE dati produttore NON TITOLARE SuppliersOrganization.owner_articles = 'DES'
@@ -199,61 +208,66 @@ class DesSupplier extends AppModel {
 								self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() GAS [".$organization_id." - ".$organization_name."] NON HA dati produttore [".$supplier_id."] NON TITOLARE", $debug);
 							}
 							else {
-								self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE", $debug);
-								self::d($suppliersOrganizationResults, $debug);	
-	
-								/*
-								 * ctrl se il GAS ha un proprio listino articoli
-								 */
-								$options = [];
-								$options['conditions'] = ['Article.organization_id' => $organization_id,
-														  'Article.supplier_organization_id' => $organization_id,];	    								   	   
-								$options['recursive'] = -1;
-								$articleResults = $Article->find('count', $options);
-								self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() GAS [".$organization_id." - ".$organization_name."] totale articles ".$articleResults, $debug);
-								if($articleResults==0)
-									$new_owner_articles = 'DES';
-								else
-									$new_owner_articles = 'REFERENT';
+								if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP') { // REFERENT-TMP non + gestito
 							
-								/*
-								 * imposto sempre $new_owner_articles = 'DES';
-								 */
-								$new_owner_articles = 'DES';
+									self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE", $debug);
+									self::d($suppliersOrganizationResults, $debug);	
+		
+									/*
+									 * ctrl se il GAS ha un proprio listino articoli
+									 */
+									$options = [];
+									$options['conditions'] = ['Article.organization_id' => $organization_id,
+															  'Article.supplier_organization_id' => $organization_id,];	    								   	   
+									$options['recursive'] = -1;
+									$articleResults = $Article->find('count', $options);
+									self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() GAS [".$organization_id." - ".$organization_name."] totale articles ".$articleResults, $debug);
+									if($articleResults==0)
+										$new_owner_articles = 'DES';
+									else
+										$new_owner_articles = 'REFERENT';
 								
-								self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles'", $debug);
-								
-								$suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=$new_owner_articles;
-								/*
-								 * prendo i dati del GAS titolare
-								 */
-								if($new_owner_articles == 'DES') {
-									$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'];
-									$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'];
-								}
-								else
-								if($new_owner_articles == 'REFERENT') {
-									$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['organization_id'];								
-									$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
-								}
-								
-								$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationResults);
-								if(!empty($msg_errors)) {
-									self::d($msg_errors, $debug);	
-									return $msg_errors;
-								}
-								else {
-									if(!$debug_save) {
-										$SuppliersOrganization->create();
-										if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {
-											self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() ERROR UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles' !!!", $debug);
-											return false;
-										}
-										else {
-											self::d($suppliersOrganizationResults, $debug);
+									/*
+									 * imposto sempre $new_owner_articles = 'DES';
+									 */
+									$new_owner_articles = 'DES';
+									
+									self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles'", $debug);
+									
+									$suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=$new_owner_articles;
+									/*
+									 * prendo i dati del GAS titolare
+									 */
+									if($new_owner_articles == 'DES') {
+										$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_organization_id'];
+										$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationTitolareResults['SuppliersOrganization']['owner_supplier_organization_id'];
+									}
+									else
+									if($new_owner_articles == 'REFERENT') {
+										$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['organization_id'];								
+										$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
+									}
+									
+					
+									$msg_errors = $SuppliersOrganization->getMessageErrorsToValidate($SuppliersOrganization, $suppliersOrganizationResults);
+									if(!empty($msg_errors)) {
+										self::d($msg_errors, $debug);	
+										return $msg_errors;
+									}
+									else {
+										if(!$debug_save) {
+											$SuppliersOrganization->create();
+											if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {
+												self::d("DesSupplier::setSuppliersOrganizationOwnerArticles() ERROR UPDATE GAS [".$organization_id." - ".$organization_name."] dati produttore [".$supplier_id."] NON TITOLARE SuppliersOrganization.owner_articles = '$new_owner_articles' !!!", $debug);
+												return false;
+											}
+											else {
+												self::d($suppliersOrganizationResults, $debug);
+											}
 										}
 									}
-								}
+								} // if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']!='REFERENT-TMP')  // REFERENT-TMP non + gestito
+								
 							} // end if(!empty($suppliersOrganizationTitolareResults)) 
 						} // end if(empty($suppliersOrganizationResults))
 					} // end if($organization_id==$own_organization_id) 
@@ -591,7 +605,7 @@ class DesSupplier extends AppModel {
 	public $validate = array(
 		'des_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -601,7 +615,7 @@ class DesSupplier extends AppModel {
 		),
 		'supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -611,7 +625,7 @@ class DesSupplier extends AppModel {
 		),
 		'own_organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

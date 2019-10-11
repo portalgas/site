@@ -1,24 +1,64 @@
-<div class="container-fluid text-center">
-  <div class="row">
+<?php
+/*
+ * promozioni
+ */
+if(!empty($prodGasPromotionsOrganizationsresults) && ($isManager || $isSuperReferente || $isReferente)) {
+	echo $this->element('boxMsgProdGasPromotions');
+}
 
-	<?php 
-	if($isRoot || $isManager) {
-	?>
+echo '<div class="container-fluid text-center">';
+echo '  <div class="row">';
+
+if($isReferentGeneric) {
+?>
     <div class="col-xs-12 col-sm-4 col-md-3">
 	    <div class="box-container">
-    		<a href="/administrator/index.php?option=com_users">
+    		<a href="/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index">
 	    		<div class="box">
-    		  		<span class="fa fa-3x fa-users"></span>
-      				<h4>Utenti</h4>
-      				<p>Gestisci i gasisti, i ruoli</p>
+    		  		<span class="fa fa-3x fa-shopping-basket"></span>
+      				<h4>Ordini</h4>
+      				<p>Gestici tutto il ciclo di un ordine</p>
     			</div>	
     		</a>
     	</div>
     </div>
-	<?php 
+    <div class="col-xs-12 col-sm-4 col-md-3">
+	    <div class="box-container">
+    		<a href="/administrator/index.php?option=com_cake&amp;controller=Articles&amp;action=context_articles_index">
+	    		<div class="box">
+    		  		<span class="fa fa-3x fa-cubes"></span>
+      				<h4>Articoli</h4>
+      				<p>Gestisci l'anagrafica degli articoli</p>
+    			</div>	
+    		</a>
+    	</div>
+    </div>	
+    <div class="col-xs-12 col-sm-4 col-md-3">
+	    <div class="box-container">
+    		<a href="/administrator/index.php?option=com_cake&amp;controller=SuppliersOrganizations&amp;action=index">
+	    		<div class="box">
+    		  		<span class="fa fa-3x fa-share-alt"></span>
+      				<h4>Produttori</h4>
+      				<p>I produttori del proprio G.A.S.</p>
+    			</div>	
+    		</a>
+    	</div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-3">
+	    <div class="box-container">
+    		<a href="/administrator/index.php?option=com_cake&amp;controller=Suppliers&amp;action=index_relations">
+	    		<div class="box">
+    		  		<span class="fa fa-3x fa-search text-danger"></span>
+      				<h4>Rirerca nuovi produttori</h4>
+      				<p>Tutti i produttori di PortAlGas da poter ricercare e confrontare</p>
+    			</div>	
+    		</a>
+    	</div>
+    </div>
+	<?php
 	}
 	?>
-
+	
 	<?php
 	if($isManager || $isManagerDelivery) 
 		$url = "/administrator/index.php?option=com_cake&amp;controller=Deliveries&amp;action=index";
@@ -36,60 +76,26 @@
     		</a>
     	</div>
     </div>
-    	
-    <?php
-	if($isReferentGeneric) {
+	
+	<?php 
+	if($isRoot || $isManager) {
 	?>
     <div class="col-xs-12 col-sm-4 col-md-3">
 	    <div class="box-container">
-    		<a href="/administrator/index.php?option=com_cake&amp;controller=SuppliersOrganizations&amp;action=index">
-	    		<div class="box">
-    		  		<span class="fa fa-3x fa-share-alt"></span>
-      				<h4>Produttori</h4>
-      				<p>I produttori del GAS e di PortAlGas</p>
+	    	<!-- a href="/administrator/index.php?option=com_users" -->
+	    	<a href="/administrator/index.php?option=com_cake&amp;controller=Users&amp;action=index">
+    			<div class="box">
+    		  		<span class="fa fa-3x fa-users"></span>
+      				<h4>Utenti</h4>
+      				<p>Gestisci i gasisti e i ruoli</p>
     			</div>	
     		</a>
     	</div>
     </div>
-    <div class="col-xs-12 col-sm-4 col-md-3">
-	    <div class="box-container">
-    		<a href="/administrator/index.php?option=com_cake&amp;controller=Articles&amp;action=context_articles_index">
-	    		<div class="box">
-    		  		<span class="fa fa-3x fa-cubes"></span>
-      				<h4>Articoli</h4>
-      				<p>Gestisci l'anagrafica degli articoli</p>
-    			</div>	
-    		</a>
-    	</div>
-    </div>
-    <div class="col-xs-12 col-sm-4 col-md-3">
-	    <div class="box-container">
-    		<a href="/administrator/index.php?option=com_cake&amp;controller=Orders&amp;action=index">
-	    		<div class="box">
-    		  		<span class="fa fa-3x fa-shopping-basket"></span>
-      				<h4>Ordini</h4>
-      				<p>Gestici tutto il ciclo di un ordine</p>
-    			</div>	
-    		</a>
-    	</div>
-    </div>
-	<?php
+	<?php 
 	}
 	?>
-		
-	    	
-    <div class="col-xs-12 col-sm-4 col-md-3">
-	    <div class="box-container">
-    		<a href="/administrator/index.php?option=com_cake&amp;controller=Mails&amp;action=send">
-	    		<div class="box">
-    		  		<span class="fa fa-3x fa-send"></span>
-      				<h4>Mail</h4>
-      				<p>Invia le mail ai gasisti, ai referenti, etc</p>
-    			</div>	
-    		</a>
-    	</div>
-    </div>
-
+    
 	<?php
 	if($isSuperReferente) {
 	?>
@@ -118,7 +124,18 @@
 	<?php
 	}
 	?>
-		
+	
+    <div class="col-xs-12 col-sm-4 col-md-3">
+	    <div class="box-container">
+    		<a href="/administrator/index.php?option=com_cake&amp;controller=Mails&amp;action=send">
+	    		<div class="box">
+    		  		<span class="fa fa-3x fa-send"></span>
+      				<h4>Mail</h4>
+      				<p>Invia le mail ai gasisti, ai referenti, etc</p>
+    			</div>	
+    		</a>
+    	</div>
+    </div>
 	
     <div class="col-xs-12 col-sm-4 col-md-3">
 	    <div class="box-container">
@@ -126,7 +143,7 @@
 	    		<div class="box">
     		  		<span class="fa fa-3x fa-info-circle"></span>
       				<h4>Manuale</h4>
-      				<p>SE alcuni passaggi non vi sono chiari</p>
+      				<p>Se alcuni passaggi non vi sono chiari</p>
     			</div>	
     		</a>
     	</div>
@@ -153,13 +170,16 @@
     		</a>
     	</div>
     </div>
-</div>
+	
+</div>  <!-- container-fluid text-center -->
+</div>  <!-- row -->
 
 <?php
 /*
  *  elenco ruoli
  */
 if(Configure::read('developer.mode')) {
+	if(isset($user_userGroups))
 	foreach($user_userGroups as $user_userGroup) {
 		echo ' '.$user_userGroup.'<br />';
 	}	
@@ -169,17 +189,17 @@ if(Configure::read('developer.mode')) {
 /*
  *  elenco ordini
  */
-if($isReferentGeneric && !empty($results)) {
+if($isReferentGeneric && !empty($ordersResults)) {
 	
 	echo '<p style="clear: both;">';
 	
-	foreach ($results as $result) {
+	foreach ($ordersResults as $result) {
 
 		$id = $result['Order']['delivery_id'].'_'.$result['Order']['id'];
 		
 		echo '<div id="tabs-'.$id.'" style="margin-top:5px;">';
 		
-		echo '<table cellpadding = "0" cellspacing = "0">';
+		echo '<div class="table-responsive"><table class="table">';
 		echo '<tr style="border-radius:5px;">';
 
 		echo '	<th width="20%">'.$this->App->drawOrdersStateDiv($result).'&nbsp;'.__($result['Order']['state_code'].'-label').'</th>';
@@ -203,7 +223,7 @@ if($isReferentGeneric && !empty($results)) {
 		echo '</th>';
 		
 		echo '</tr>';
-		echo '</table>';
+		echo '</table></div>';
 		
 		
 
@@ -310,10 +330,14 @@ if($isReferentGeneric && !empty($results)) {
 <script type="text/javascript">
 $(document).ready(function() {
 
-	<?php if(!empty($alertDeliveriesToClose)) {
+	<?php 
+	/*
+	 * non +, nell'elenco ordine gestisco la chiusura
+	if(!empty($alertDeliveriesToClose)) {
 		if(!$popUpDisabled)
-			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=alert_cassiere_deliveries_to_close&format=notmpl')";
+			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=alert_cassiere_deliveries_to_close&format=notmpl', '')";
 	}
+	*/
 	?>
 
 	$(".actionMenu").each(function () {

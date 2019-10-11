@@ -679,7 +679,11 @@ legend { display: none;}
     position: absolute;
     top: -10px;
 }
-
+.orders_select{
+	border:3px solid #84a7db;
+	border-radius:8px;
+	padding: 5px 0;
+}
 /*
  * quanti km fa 
  */

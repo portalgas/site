@@ -183,7 +183,7 @@ class MailsSend extends AppModel {
 									if(!empty($result['SupplierOrganization']['frequenza'])) $body_mail .= " (frequenza ".$result['SupplierOrganization']['frequenza'].')';
 									$body_mail .= " fino a ".CakeTime::format($result['Order']['data_fine'], "%A %e %B %Y");
 
-									if(!empty($result['Supplier']['img1']) && file_exists($this->AppRoot.Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
+									if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 									else
 										$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';										
@@ -217,12 +217,7 @@ class MailsSend extends AppModel {
 								 * all'url per il CartPreview aggiungo lo username crittografato
 								 */
 								$body_mail_final = str_replace("{u}", urlencode($User->getUsernameCrypted($username)), $body_mail);
-								if($debug) {
-									echo $body_mail_final;
-									echo '<h1>'.$username.' '.urlencode($User->getUsernameCrypted($username)).'</h1>';
-									if($numResult==5) exit;
-								}
-
+								
 								if($debug && $numResult==1) echo $body_mail_final;
 
 								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
@@ -423,7 +418,7 @@ class MailsSend extends AppModel {
 										if(!empty($result['Supplier']['descrizione'])) $body_mail .= "/".$result['Supplier']['descrizione'];
 										if(!empty($result['SupplierOrganization']['frequenza'])) $body_mail .= " (frequenza ".$result['SupplierOrganization']['frequenza'].')';
 
-										if(!empty($result['Supplier']['img1']) && file_exists($this->AppRoot.Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
+										if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 												$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 										else
 											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';
@@ -448,11 +443,6 @@ class MailsSend extends AppModel {
 								 * all'url per il CartPreview aggiungo lo username crittografato
 								 */
 								$body_mail_final = str_replace("{u}", urlencode($User->getUsernameCrypted($username)), $body_mail);
-								if($debug) {
-									echo $body_mail_final;
-									echo '<br />'.$username.' '.urlencode($User->getUsernameCrypted($username));
-									if($numResult==5) exit;
-								}
 
 								if($debug && $numResult==1) echo $body_mail_final; 
 

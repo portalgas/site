@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesUserGroupMaps'),array('controller' => 'DesUserGroupMaps', 'action' => 'intro'));
 $this->Html->addCrumb(__('List').' '.$userGroups[$group_id]['name'], array('controller' => 'DesSuppliersReferents', 'action' => 'index', null, 'group_id='.$group_id));
@@ -43,14 +43,14 @@ echo $this->Form->end(__('Submit'));
 
 <script type="text/javascript">
 function choiceDesSupplier() {
-	var des_supplier_id = jQuery("#des_supplier_id").val();	
-	var group_id = jQuery("#group_id").val();	
+	var des_supplier_id = $("#des_supplier_id").val();	
+	var group_id = $("#group_id").val();	
 	
 	if(des_supplier_id=='') {
 		<?php
-			echo "jQuery('#users').hide();";
+			echo "$('#users').hide();";
 			echo "\r\n";
-			echo "jQuery('#users').html();";
+			echo "$('#users').html();";
 			echo "\r\n";
 		?>
 		return;
@@ -67,21 +67,21 @@ function AjaxCallToReferents(des_supplier_id, group_id) {
 	var url = "/administrator/index.php?option=com_cake&controller=DesSuppliersReferents&action=ajax_box_users&des_supplier_id="+des_supplier_id+"&group_id="+group_id+"&format=notmpl";
 	var urlAjax = 'url("'+app_img+'/ajax-loader.gif") no-repeat scroll center 0 transparent'; 
 	
-	jQuery('#users').show();
-	jQuery('#users').html('');
-	jQuery('#users').css('background', urlAjax);	
+	$('#users').show();
+	$('#users').html('');
+	$('#users').css('background', urlAjax);	
 	
-	jQuery.ajax({
+	$.ajax({
 		type: "get", 
 		url: url,
 		data: "", 
 		success: function(response) {
-			jQuery('#users').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#users').html(response);
+			$('#users').css('background', 'none repeat scroll 0 0 transparent');
+			$('#users').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#users').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#users').html(textStatus);
+			$('#users').css('background', 'none repeat scroll 0 0 transparent');
+			$('#users').html(textStatus);
 		}
 	});	
 }	
@@ -89,12 +89,12 @@ function AjaxCallToReferents(des_supplier_id, group_id) {
 if(!empty($des_supplier_id)) echo 'choiceDesSupplier();';
 ?>
 
-jQuery(document).ready(function() {
-	jQuery('#formGas').submit(function() {
+$(document).ready(function() {
+	$('#formGas').submit(function() {
 
 		var referent_user_ids = '';
-		jQuery("#referent_user_id option" ).each(function (){	
-			referent_user_ids +=  jQuery(this).val()+',';
+		$("#referent_user_id option" ).each(function (){	
+			referent_user_ids +=  $(this).val()+',';
 		});
 		referent_user_ids = referent_user_ids.substring(0,referent_user_ids.length-1);
 
@@ -114,9 +114,9 @@ jQuery(document).ready(function() {
 		}
 
 		<?php
-		echo "jQuery('#referent_user_ids').val();";
+		echo "$('#referent_user_ids').val();";
 			echo "\r\n";
-			echo "jQuery('#referent_user_ids').val(referent_user_ids);";
+			echo "$('#referent_user_ids').val(referent_user_ids);";
 			echo "\r\n";
 		?>
 

@@ -465,7 +465,7 @@ class OrganizationsController extends AppController {
 		$debug = false;
 
         $this->Organization->id = $id;
-        if (!$this->Organization->exists()) {
+        if (!$this->Organization->exists($this->Organization->id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -563,7 +563,7 @@ class OrganizationsController extends AppController {
                 $this->Session->setFlash(__('The organization could not be saved. Please, try again.'));
             }
         } else {
-            $this->request->data = $this->Organization->read(0, null, $id);
+            $this->request->data = $this->Organization->read($id, 0);
             if (empty($this->request->data)) {
                 $this->Session->setFlash(__('msg_error_params'));
                 $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -654,7 +654,7 @@ class OrganizationsController extends AppController {
     public function admin_delete($id = null) {
 
         $this->Organization->id = $id;
-        if (!$this->Organization->exists()) {
+        if (!$this->Organization->exists($this->Organization->id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -866,7 +866,7 @@ class OrganizationsController extends AppController {
 		
         App::import('Model', 'User');
         $User = new User;
-
+		 
 		$User->unbindModel(['hasMany' => ['Cart']]);
 		$User->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'organization_id']]]);
 
@@ -874,12 +874,20 @@ class OrganizationsController extends AppController {
 		$options['conditions'] = ['OR' => ['lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%',
 								           'lower(User.email) LIKE' => '%' . strtolower(addslashes($q)) . '%']];
 		$options['recursive'] = 1;
+		self::d($options, $debug);
         $results = $User->find('all', $options);
 
-		self::d($options, $debug);
+		if(!empty($results))
+		foreach($results as $numResult => $result) {
+			/*
+			 * maganer del GAS
+			 */
+			$tmp_user->organization['Organization'] = $result['Organization']; 
+			$conditions = ['UserGroup.id' => Configure::read('group_id_manager')];
+			$results[$numResult]['Organization']['Manager'] = $User->getUsers($tmp_user, $conditions);
+		}
 		self::d($results, $debug);
-		
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		
         $this->layout = 'ajax';
         $this->render('/Organizations/admin_ajax_user_details');		

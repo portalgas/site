@@ -4,8 +4,8 @@ App::uses('CakeEmail', 'Network/Email');
 
 class ProdGasPromotionsController extends AppController {
 
-   public $components = array('RequestHandler','ActionsProdGasPromotions','Documents');
-   public $helpers = array('Html', 'Javascript', 'Ajax');
+   public $components = ['RequestHandler','ActionsProdGasPromotions','Documents'];
+   public $helpers = ['Html', 'Javascript', 'Ajax'];
     
    public function beforeFilter() {
    		parent::beforeFilter();
@@ -117,18 +117,29 @@ class ProdGasPromotionsController extends AppController {
 			$hasTrasport = 'N';
 			$hasCostLess = 'N';
 		}
-		
+
 		$this->set('data_inizio', $data_inizio);
 		$this->set('data_inizio_db', $data_inizio_db);
 		$this->set('data_fine', $data_fine);
 		$this->set('data_fine_db', $data_fine_db);
 		$this->set('hasTrasportDefault', $hasTrasport);
 		$this->set('hasCostMoreDefault', $hasCostMore);
+		
+		/*
+		 * userprofile
+		*/
+		$userProfile = JUserHelper::getProfile($this->user->id);
+		self::d($userProfile);
+		
+		$contact_name = $this->user->name;
+		$contact_mail = $this->user->email;
+		$contact_phone = $userProfile->profile['phone'];
+		$this->set(compact('contact_name', 'contact_mail', 'contact_phone'));
 
 			
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			self::d($this->request->data, $debug);
+			self::d($this->request->data, $debug); 
 			
 			/*
 			 * dati promozione
@@ -142,6 +153,9 @@ class ProdGasPromotionsController extends AppController {
 			$this->request->data['ProdGasPromotion']['importo_originale'] = $this->request->data['ProdGasPromotion']['importo_originale_totale'];
 			$this->request->data['ProdGasPromotion']['importo_scontato'] = $this->request->data['ProdGasPromotion']['importo_scontato_totale'];
 			$this->request->data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
+			$this->request->data['ProdGasPromotion']['contact_name'] = $this->request->data['ProdGasPromotion']['contact_name'];
+			$this->request->data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
+			$this->request->data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];
 			$this->request->data['ProdGasPromotion']['state_code'] = 'WORKING';
 			$this->request->data['ProdGasPromotion']['stato'] = 'Y';
    
@@ -161,9 +175,18 @@ class ProdGasPromotionsController extends AppController {
 					$continue = false;
 			}
 
+			/*
+			 * UserProfile 
+			 */
+			if($continue) {
+				App::import('Model', 'UserProfile');
+				$UserProfile = new UserProfile;	
+				
+				$UserProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
+			}
 			
 			/*
-			 * immagine
+			 * immagine non + gestita
 			 */
 			if($continue) {
 				$arr_extensions = Configure::read('App.web.img.upload.extension');
@@ -263,7 +286,10 @@ class ProdGasPromotionsController extends AppController {
 							$this->request->data['ProdGasPromotionsOrganization']['hasCostMore'] = 'N';	
 							$this->request->data['ProdGasPromotionsOrganization']['cost_more'] = '0.00';
 						}
-						$this->request->data['ProdGasPromotionsOrganization']['nota'] = "";
+						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
+						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
+						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WAITING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -336,9 +362,14 @@ class ProdGasPromotionsController extends AppController {
 		App::import('Model', 'Article');
 		$Article = new Article;
 		
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+		
 		$options = [];
 		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id']];
+								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id'],
+								  'Article.img1 != ' => ''];
 		$options['order'] = ['Article.name' => 'asc']; 
 		$options['recursive'] = 0;					  		
 		$articleResults = $Article->find('all', $options);
@@ -395,6 +426,9 @@ class ProdGasPromotionsController extends AppController {
 			$this->request->data['ProdGasPromotion']['importo_originale'] = $this->request->data['ProdGasPromotion']['importo_originale_totale'];
 			$this->request->data['ProdGasPromotion']['importo_scontato'] = $this->request->data['ProdGasPromotion']['importo_scontato_totale'];
 			$this->request->data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
+			$this->request->data['ProdGasPromotion']['contact_name'] = $this->request->data['ProdGasPromotion']['contact_name'];
+			$this->request->data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
+			$this->request->data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];			
    
 			$this->ProdGasPromotion->set($this->request->data);
 			if(!$this->ProdGasPromotion->validates()) {
@@ -411,6 +445,15 @@ class ProdGasPromotionsController extends AppController {
 					$continue = false;
 			}
 
+			/*
+			 * UserProfile 
+			 */
+			if($continue) {
+				App::import('Model', 'UserProfile');
+				$UserProfile = new UserProfile;	
+				
+				$UserProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
+			}
 			
 			/*
 			 * immagine
@@ -546,11 +589,15 @@ class ProdGasPromotionsController extends AppController {
 						if(!empty($prodGasPromotionsOrganizationResults)) {
 							$data['ProdGasPromotionsOrganization']['id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['id'];
 							$data['ProdGasPromotionsOrganization']['order_id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['order_id'];
-							$data['ProdGasPromotionsOrganization']['nota'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['nota'];
+							$data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
+							$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+							$data['ProdGasPromotionsOrganization']['user_id'] = 0;
 						}	
 						else {
 							$data['ProdGasPromotionsOrganization']['order_id'] = 0;	
-							$data['ProdGasPromotionsOrganization']['nota'] = "";
+							$data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
+							$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+							$data['ProdGasPromotionsOrganization']['user_id'] = 0;
 						}							 				
 										
 						$data['ProdGasPromotionsOrganization']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
@@ -571,6 +618,7 @@ class ProdGasPromotionsController extends AppController {
 							$data['ProdGasPromotionsOrganization']['hasCostMore'] = 'N';	
 							$data['ProdGasPromotionsOrganization']['cost_more'] = '0.00';
 						}
+						
 						self::d($data, $debug);
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($data)) {
@@ -688,17 +736,25 @@ class ProdGasPromotionsController extends AppController {
 		/*
 		 * get elenco Article esludendo quelli gia' in promozione
 		 */	
+		/*
+		 * get elenco Article
+		 */	
 		App::import('Model', 'Article');
 		$Article = new Article;
-
+		
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+		
 		$options = [];
 		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id']];
 		$options['order'] = ['Article.name' => 'asc']; 
-		$options['recursive'] = 0;
+		$options['recursive'] = 0;					  		
 		$articleResults = $Article->find('all', $options);
 		self::d($options, $debug);
 		self::d($articleResults, $debug);
+
 		if(!empty($this->request->data['ProdGasArticlesPromotion'])) {
 			
 			$prodGasArticlesPromotion = $this->request->data['ProdGasArticlesPromotion'];  // copio perche' dopo faccio unset
@@ -716,13 +772,16 @@ class ProdGasPromotionsController extends AppController {
 		
 		$this->set(compact('articleResults'));	 
 
+		/*
+		 * non + gestito
 		if(!empty($this->request->data['ProdGasPromotion']['img1']) && 
 		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1'])) {
 			
 			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1']);
 			$this->set('file1', $file1);
 		}	
-
+		*/
+		
 		/*
 		 * get elenco Organizations
 		*/
@@ -771,6 +830,8 @@ class ProdGasPromotionsController extends AppController {
 	public function admin_trasmission_to_gas($prod_gas_promotion_id) {
 
 		$debug = false;
+		$continua=true;
+		
 		self::d($this->request->data, $debug);
 		
 		if (empty($prod_gas_promotion_id)) {
@@ -779,8 +840,7 @@ class ProdGasPromotionsController extends AppController {
 		}
 		 
 		$results = $this->ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id);
-		$this->set('results', $results);
-		$this->set('prod_gas_promotion_id', $prod_gas_promotion_id);
+		$this->set(compact('results', 'prod_gas_promotion_id'));
 		
 		/*
 		 * get elenco Organizations
@@ -790,9 +850,36 @@ class ProdGasPromotionsController extends AppController {
 		
 		$organizationResults = $ProdGasSupplier->getOrganizationsAssociate($this->user, $prod_gas_promotion_id, $debug);
 		
-		$this->set('organizationResults',$organizationResults);	
+		$this->set(compact('organizationResults'));	
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
+
+			App::import('Model', 'ProdGasPromotionsOrganization');
+			$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;			
+
+			if(isset($this->request->data['ProdGasPromotionsOrganization']['nota_supplier']))
+			foreach($this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] as $organization_id => $nota_supplier) {
+				
+				if(!empty($nota_supplier)) {
+					$options = [];
+					$options['conditions'] = ['ProdGasPromotionsOrganization.organization_id' => $organization_id,
+											   'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id];
+					$options['recursive'] = -1;
+					$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
+					
+					$prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['nota_supplier'] = $nota_supplier;
+
+					self::d($options, $debug);
+					self::d($prodGasPromotionsOrganizationResults, $debug);
+
+					$ProdGasPromotionsOrganization->create();
+					if(!$ProdGasPromotionsOrganization->save($prodGasPromotionsOrganizationResults)) {
+						$continua=false;
+					} 					
+				}
+
+			} // loops nota_supplier
+					
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'TRASMISSION-TO-GAS', $debug);
 			$this->Session->setFlash(__('ProdGasPromotion in TRASMISSION-TO-GAS'));
 			if(!$debug) $this->myRedirect(['action' => 'index']);
@@ -802,11 +889,8 @@ class ProdGasPromotionsController extends AppController {
 	public function admin_change_state_code($prod_gas_promotion_id, $next_code='') {
 
 		$debug = false;
-		if($debug) {
-			echo "<pre>";
-			print_r($this->request->data);
-			echo "</pre>";
-		}
+		
+		self::d($this->request->data, $debug);
 		
 		if(isset($this->request->data['ProdGasPromotion']['prod_gas_promotion_id']))
 			$prod_gas_promotion_id = $this->request->data['ProdGasPromotion']['prod_gas_promotion_id'];

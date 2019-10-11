@@ -1,3 +1,6 @@
+<?php
+$this->App->d($results);
+?>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleKey');?>&sensor=false&v=3.exp"></script>
 
 <script type="text/javascript">
@@ -5,7 +8,7 @@ var marker = new Array();
 var icon1 = '/images/cake/puntina.png';
 var icon2 = '/images/cake/puntina03.png';
 
-jQuery(document).ready(function () {
+$(document).ready(function () {
 
     var map;
     var myOptions = {
@@ -27,6 +30,22 @@ jQuery(document).ready(function () {
 	
 		$user_name = str_replace("'", "", $result['User']['name']);
 		$address = str_replace("'", "", $result['Profile']['address']);
+		$phone = str_replace("'", "", $result['Profile']['phone']);
+		$phone2 = str_replace("'", "", $result['Profile']['phone2']);
+		
+		/*
+		 * satispay
+		 */
+		$satispay = 'N'; 
+		$satispay_phone = '';
+		if(isset($result['Profile']['satispay'])) {
+			$satispay = $result['Profile']['satispay'];
+			if($satispay=='Y') {
+				$satispay_phone = str_replace("'", "", $result['Profile']['satispay_phone']);
+				if($satispay_phone==$phone)
+					$satispay_phone = '';
+			}
+		}
 		
 		$options['title'] = $user_name;
 		$options['alt'] = $user_name;
@@ -38,15 +57,31 @@ jQuery(document).ready(function () {
 		
 		var contentString<?php echo $result['User']['id'];?> = '<h3><?php echo $user_name;?></h3>' + 
 				'<p><?php echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User'], $options);?></p>' +
-				'<p><b>Indirizzo</b> <?php echo $address;?>' +      
-				'<p><b>Email</b> <?php if(!empty($result['User']['email'])) echo '<a href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';?>' + 
-				'<p><b>Telefono</b> <?php echo $result['Profile']['phone'];?>';
+				'<p><b>Indirizzo</b> <?php echo $address;?></p>' +      
+				'<p><b>Email</b> <?php if(!empty($result['User']['email'])) echo '<a href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';?></p>' + 
+				'<p><b>Telefono</b> <?php echo $result['Profile']['phone'];?></p>';
+
+				<?php
+				if($satispay=='Y') {
+				?>
+					contentString<?php echo $result['User']['id'];?> += '<p><img src="/images/satispay.png" style="width:50px;" /> Ha Satispay</p>';
+					
+					<?php
+					if(!empty($satispay_phone)) {
+					?>	
+						contentString<?php echo $result['User']['id'];?> += '<p><b>Telefono per Satispay</b> <?php echo $satispay_phone;?></p>';
+					<?php
+					} // end if
+					?>	
+				<?php
+				} // end if
+				?>	
 				
 				<?php
 				if(isset($result['SuppliersOrganization'])) {
 				?>
-					contentString<?php echo $result['User']['id'];?> += '<p><button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#referenti-<?php echo $result['User']['id'];?>" aria-expanded="false" aria-controls="referenti-<?php echo $result['User']['id'];?>">Referente dei produttori</button>' +
-																		'<p><div class="collapse" id="referenti-<?php echo $result['User']['id'];?>">';
+					contentString<?php echo $result['User']['id'];?> += '<p><button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#referenti-<?php echo $result['User']['id'];?>" aria-expanded="false" aria-controls="referenti-<?php echo $result['User']['id'];?>">Referente dei produttori</button></p>' +
+																		'<p><div class="collapse" id="referenti-<?php echo $result['User']['id'];?>"></p>';
 					<?php
 					foreach ($result['SuppliersOrganization'] as $numResult2 => $suppliersOrganization) {	
 						$name = str_replace("'"," ",$suppliersOrganization['SuppliersOrganization']['name']);
@@ -57,7 +92,7 @@ jQuery(document).ready(function () {
 						
 						$img = "";
 						if(!empty($suppliersOrganization['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$suppliersOrganization['Supplier']['img1']))
-							$img .= '<span><img width="35" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersOrganization['Supplier']['img1'].'" alt="'.$name.'" /></span> ';						
+							$img .= '<span><img width="35" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersOrganization['Supplier']['img1'].'" alt="'.$name.'" /></span> ';						
 					?>
 						contentString<?php echo $result['User']['id'];?> += '<p><?php echo $img.$name;?></p>';
 					<?php
@@ -102,20 +137,20 @@ jQuery(document).ready(function () {
 	}
 	?>	
 		
-	jQuery('.listsUser > li > a').mouseover(function () {
-		var user_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseover(function () {
+		var user_id = $(this).attr('data-attr-id');
 		marker[user_id].setIcon(icon2);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').mouseout(function () {
-		var user_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseout(function () {
+		var user_id = $(this).attr('data-attr-id');
 		marker[user_id].setIcon(icon1);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').click(function () {
-		var user_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').click(function () {
+		var user_id = $(this).attr('data-attr-id');
 		google.maps.event.trigger(marker[user_id], 'click');
 		return false;
 	});

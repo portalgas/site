@@ -1,0 +1,1 @@
+<h2>Sito -> Informazioni di sistema -> Impostazioni PHP</h2><table>	<tr>		<th>Chiave</th>		<th>Valore</th>		<th>Nota</th>	</tr>	<tr>		<td>Safe Mode</td>		<td>No</td>		<td>php.ini safe_mode off</td>	</tr>	<tr>		<td>Register Globals</td>		<td>No</td>		<td>php.ini register_globals off</td>	</tr></table>

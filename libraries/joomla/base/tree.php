@@ -48,7 +48,7 @@ class JTree extends JObject
 		JLog::add('JTree::__construct() is deprecated.', JLog::WARNING, 'deprecated');
 
 		$this->_root = new JNode('ROOT');
-		$this->_current = & $this->_root;
+		$this->_current = $this->_root;
 	}
 
 	/**
@@ -61,14 +61,14 @@ class JTree extends JObject
 	 *
 	 * @since   11.1
 	 */
-	public function addChild(&$node, $setCurrent = false)
+	public function addChild($node, $setCurrent = false)
 	{
 		JLog::add('JTree::addChild() is deprecated.', JLog::WARNING, 'deprecated');
 
 		$this->_current->addChild($node);
 		if ($setCurrent)
 		{
-			$this->_current = &$node;
+			$this->_current = $node;
 		}
 	}
 
@@ -83,7 +83,7 @@ class JTree extends JObject
 	{
 		JLog::add('JTree::getParent() is deprecated.', JLog::WARNING, 'deprecated');
 
-		$this->_current = &$this->_current->getParent();
+		$this->_current = $this->_current->getParent();
 	}
 
 	/**
@@ -97,6 +97,6 @@ class JTree extends JObject
 	{
 		JLog::add('JTree::reset() is deprecated.', JLog::WARNING, 'deprecated');
 
-		$this->_current = &$this->_root;
+		$this->_current = $this->_root;
 	}
 }

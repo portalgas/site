@@ -5,8 +5,8 @@
 	<input <?php if($report_options=='report-articles-details') echo 'checked=checked';?> type="radio" name="report-options" id="report-articles-details" value="report-articles-details"><label for="report-articles-details">Articoli aggregati con il dettaglio degli utenti</label>
 </div>	
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='report-options']").change(function() {
+$(document).ready(function() {
+	$("input[name='report-options']").change(function() {
 		choiceReportOptions();
 	});
 

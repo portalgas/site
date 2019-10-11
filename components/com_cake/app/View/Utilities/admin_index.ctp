@@ -7,5 +7,5 @@
 </div>
 
 <?php
-echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => Configure::read('sys_function_not_implement')));
+echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => Configure::read('sys_function_not_implement')));
 ?>

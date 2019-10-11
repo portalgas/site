@@ -30,7 +30,7 @@
 			echo '<td colspan="9" class="trGroup">'.__('Supplier').': '.$result['SuppliersOrganization']['name'].' ';
 
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';
 				
 			echo '</td>';
 			echo '</tr>';
@@ -47,7 +47,7 @@
 		
 		
 		echo '<td>';
-		echo '<a id="actionTrView-'.$rowId.'" action="articles-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+		echo '<a id="actionTrView-'.$rowId.'" action="articles-'.$result['Article']['organization_id'].'_'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 		
 		echo '<td>'.($numResult +1).'</td>';
 		echo "\n";
@@ -101,9 +101,9 @@
 		echo '</td>';
 		echo '</tr>';
 		
-		echo '<tr class="trView" id="trViewId-'.$rowId.'">';
+		echo '<tr class="trView" id="trViewId-'.$result['Article']['organization_id'].'_'.$rowId.'">';
 		echo '<td colspan="2"></td>';
-		echo '<td colspan="7" id="tdViewId-'.$rowId.'"></td>';
+		echo '<td colspan="7" id="tdViewId-'.$result['Article']['organization_id'].'_'.$rowId.'"></td>';
 		echo '</tr>';
 		
 		$supplier_organization_id_old=$result['SuppliersOrganization']['id'];
@@ -123,44 +123,34 @@
 
 <script type="text/javascript">
 function viewContentAjax() {
-	jQuery('#ajaxContent').html('');
-	jQuery('#ajaxContent').css('min-height', '50px');
-	jQuery('#ajaxContent').css('background', 'url("'+app_img+'/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#ajaxContent').html('');
+	$('#ajaxContent').css('min-height', '50px');
+	$('#ajaxContent').css('background', 'url("'+app_img+'/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
 	var url = "/?option=com_cake&controller=BookmarksArticles&action=add&format=notmpl";
-	jQuery.ajax({
+	$.ajax({
 		type: "get", 
 		url: url,
 		data: "",
 		success: function(response) {
-			jQuery('#ajaxContent').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#ajaxContent').html(response);
+			$('#ajaxContent').css('background', 'none repeat scroll 0 0 transparent');
+			$('#ajaxContent').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#ajaxContent').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#ajaxContent').html(textStatus);
+			$('#ajaxContent').css('background', 'none repeat scroll 0 0 transparent');
+			$('#ajaxContent').html(textStatus);
 		}
 	});
 	
 	return;	
 }
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
-	});
-	
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
+	});	
 });		
 </script>

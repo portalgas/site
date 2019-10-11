@@ -19,16 +19,16 @@ App::uses('UtilsCommons', 'Lib');
 class DataBehavior extends ModelBehavior {
 
 	var $debug = false;
-	var $result = array();
+	var $result = [];
 	private $utilsCommons;
 	
-	public function setup(Model $Model, $settings = array()) {
+	public function setup(Model $Model, $settings = []) {
 		if (!isset($this->settings[$Model->alias])) {
-			$this->settings[$Model->alias] = array(
+			$this->settings[$Model->alias] = [
 					'option1_key' => 'option1_default_value',
 					'option2_key' => 'option2_default_value',
 					'option3_key' => 'option3_default_value',
-			);
+			];
 		}
 		$this->settings[$Model->alias] = array_merge(
 				$this->settings[$Model->alias], (array)$settings);
@@ -44,7 +44,7 @@ class DataBehavior extends ModelBehavior {
     * ExportDocs::userCart('orders'=>true, 'storerooms' => false)
     * ExportDocs::userCart('orders'=>false, 'storerooms' => true) come dispensa
     */
-	public function getDataTabs(Model $Model, $user, $conditions, $options, $orderBy = array()) {
+	public function getDataTabs(Model $Model, $user, $conditions, $options, $orderBy = []) {
 				
 		$tabResults = $this->getTabsToDeliveriesData($Model, $user, $conditions['Delivery'], $orderBy);
 		
@@ -53,9 +53,9 @@ class DataBehavior extends ModelBehavior {
 			$this->result['Tab'][$numTab] = $tabResult['Delivery'];
 			
 			if(isset($conditions['Delivery']['Delivery.id'])) $conditions['Delivery'] = array('Delivery.id' => $conditions['Delivery']['Delivery.id']);
-			else $conditions['Delivery'] = array();
+			else $conditions['Delivery'] = [];
 			$conditions['Delivery'] += array('Delivery.data' => $tabResult['Delivery']['data']);
-			$deliveryResults = $this->__getDeliveries($Model, $user, $conditions, $orderBy);	
+			$deliveryResults = $this->_getDeliveries($Model, $user, $conditions, $orderBy);	
 			foreach($deliveryResults as $numDelivery => $deliveryResult) {
 				
 				$this->result['Tab'][$numTab]['Delivery'][$numDelivery] = $deliveryResult['Delivery'];
@@ -63,25 +63,28 @@ class DataBehavior extends ModelBehavior {
 				if($options['orders']) {
 					// estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
 					if(isset($options['articlesOrdersInOrderAndCartsAllUsers']) && $options['articlesOrdersInOrderAndCartsAllUsers'])
-						$this->__getOrdersAndArticlesOrdersAllUsers($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+						$this->_getOrdersAndArticlesOrdersAllUsers($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 					else
-						$this->__getOrdersAndArticlesOrdersByUserId($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+						$this->_getOrdersAndArticlesOrdersByUserId($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 				}
 				else
 				if($options['storerooms'])
-					$this->__getStorerooms($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+					$this->_getStorerooms($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 				else
-				if($options['summaryOrders'])   // per Tesoriere o referente in "Gestisci gli acquisti aggregati"  (Carts::managementCartsGroupByUsers)
-					$this->__getSummaryOrders($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
+				if($options['summaryOrderAggregates'])   // referente in "Gestisci gli acquisti aggregati"  (Carts::managementCartsGroupByUsers)
+					$this->_getSummaryOrderAggregates($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
+				else 
+				if($options['summaryOrders'])   // per Tesoriere
+					$this->_getSummaryOrders($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
 				else 
 				if($options['summaryOrderTrasports'])   // Ajax::admin_box_trasport()
-					$this->__getSummaryOrderTrasports($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
+					$this->_getSummaryOrderTrasports($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
 				else
 				if($options['summaryOrderCostMores'])   // Ajax::admin_box_cost_more()
-					$this->__getSummaryOrderCostMores($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);			
+					$this->_getSummaryOrderCostMores($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);			
 				else
 				if($options['summaryOrderCostLess'])   // Ajax::admin_box_cost_less()
-					$this->__getSummaryOrderCostLess($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+					$this->_getSummaryOrderCostLess($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 				
 			} // ciclo deliveries
 		} // ciclo tabs
@@ -93,44 +96,47 @@ class DataBehavior extends ModelBehavior {
 	 * estraggo tutti i dati senza Tabs
 	 * AjaxController::admin_management_cart() non ho i tabs
 	 */
-	public function getDataWithoutTabs(Model $Model, $user, $conditions, $options, $orderBy = array()) {
+	public function getDataWithoutTabs(Model $Model, $user, $conditions, $options, $orderBy = []) {
 	
 		$numTab=-1; // setto a -1 cosi' escludo Tabs
 		
-		$deliveryResults = $this->__getDeliveries($Model, $user, $conditions, $orderBy);		
+		$deliveryResults = $this->_getDeliveries($Model, $user, $conditions, $orderBy);		
 		foreach($deliveryResults as $numDelivery => $deliveryResult) {
 				
 			$this->result['Delivery'][$numDelivery] = $deliveryResult['Delivery'];
-			
+
 			if($options['orders']) {
 				// estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
 				if(isset($options['articlesOrdersInOrderAndCartsAllUsers']) && $options['articlesOrdersInOrderAndCartsAllUsers']) 
-					$this->__getOrdersAndArticlesOrdersAllUsers($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+					$this->_getOrdersAndArticlesOrdersAllUsers($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 				else 
-					$this->__getOrdersAndArticlesOrdersByUserId($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+					$this->_getOrdersAndArticlesOrdersByUserId($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			}
 			else
-			if($options['storerooms'])
-				$this->__getStorerooms($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+			if($options['storerooms']) 
+				$this->_getStorerooms($Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			else
-			if($options['summaryOrders'])  // per Tesoriere o referente in "Gestisci gli acquisti aggregati"  (Carts::managementCartsGroupByUsers)
-				$this->__getSummaryOrders($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+			if($options['summaryOrderAggregates'])   // referente in "Gestisci gli acquisti aggregati"  (Carts::managementCartsGroupByUsers)
+				$this->_getSummaryOrderAggregates($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);				
+			else
+			if($options['summaryOrders'])  // per Tesoriere 
+				$this->_getSummaryOrders($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			else
 			if($options['summaryOrderTrasports'])  // Ajax::admin_box_trasport()
-				$this->__getSummaryOrderTrasports($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+				$this->_getSummaryOrderTrasports($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			else
 			if($options['summaryOrderCostMores'])   // Ajax::admin_box_cost_more()
-				$this->__getSummaryOrderCostMores($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+				$this->_getSummaryOrderCostMores($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			else
 			if($options['summaryOrderCostLess'])   // Ajax::admin_box_cost_less()
-				$this->__getSummaryOrderCostLess($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
+				$this->_getSummaryOrderCostLess($Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy);
 			
 		} // ciclo deliveries
 	
 		return $this->result;
 	}
 			
-	private function __getOrdersAndArticlesOrdersByUserId(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getOrdersAndArticlesOrdersByUserId(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 				
 		$numOrder=-1;
 		$numArticlesOrder=-1;
@@ -141,25 +147,26 @@ class DataBehavior extends ModelBehavior {
 		if(isset($orderBy['Order'])) $orderLocal = $orderBy['Order'];
 		else $orderLocal = 'Order.data_inizio ASC';
 		
-		$conditionsLocal = array('Order.organization_id' => $user->organization['Organization']['id'],
-								 'Order.delivery_id' => $deliveryResult['Delivery']['id'],
-							     'Order.isVisibleBackOffice' => 'Y');
+		$conditionsLocal = ['Order.organization_id' => $user->organization['Organization']['id'],
+							 'Order.delivery_id' => $deliveryResult['Delivery']['id'],
+							 'Order.isVisibleBackOffice' => 'Y'];
 		if(isset($options['orders_attivi'])) // per tabsEcomm
 			$conditionsLocal += array('DATE(Order.data_fine) >= CURDATE()'); 
-		if(isset($conditions['Order'])) $conditionsLocal += $conditions['Order']; 		
+		if(isset($conditions['Order'])) $conditionsLocal += $conditions['Order'];
+		if(isset($conditions['SuppliersOrganization'])) $conditionsLocal += $conditions['SuppliersOrganization']; 		
 		
 		/*
 		 * prendo solo OrderState
 		 */
-		$Order->unbindModel(array('belongsTo' => array('Delivery','SuppliersOrganization')));
-		$orderResults = $Order->find('all',array('conditions' => $conditionsLocal,
+		$Order->unbindModel(array('belongsTo' => array('Delivery')));
+		$orderResults = $Order->find('all', ['conditions' => $conditionsLocal,
 												 'order' => $orderLocal,
-												 'recursive' => 0));
-		
+												 'recursive' => 0]);
+	
 		foreach ($orderResults as $numOrder => $order) {
 
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 				
 			// se Delivery::tabs() non loggato non mi servono gli articoli 
 			if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder']==false) { 
@@ -173,7 +180,7 @@ class DataBehavior extends ModelBehavior {
 				App::import('Model', 'ArticlesOrder');
 				$ArticlesOrder = new ArticlesOrder;
 				
-				$conditionsLocal = array('Order.id' => $order['Order']['id']);
+				$conditionsLocal = ['Order.id' => $order['Order']['id']];
 				if(isset($conditions['Cart']))          $conditionsLocal += $conditions['Cart'];
 				if(isset($conditions['ArticlesOrder'])) $conditionsLocal += $conditions['ArticlesOrder'];
 				if(isset($conditions['Article']))       $conditionsLocal += $conditions['Article'];
@@ -188,30 +195,51 @@ class DataBehavior extends ModelBehavior {
 				else
 				if(isset($options['articoliDellUtenteInOrdine']) && $options['articoliDellUtenteInOrdine'])  // Deliveries::tabsUserCart()
 					$articlesOrders = $ArticlesOrder->getArticoliDellUtenteInOrdine($user, $conditionsLocal, $orderBy);
-				foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
-					
-					if($numTab==-1) {
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
-						if(isset($articlesOrder['Cart'])) $this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
-						if(isset($articlesOrder['User'])) $this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
-					}
-					else {
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
-						if(isset($articlesOrder['Cart'])) $this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
-						if(isset($articlesOrder['User'])) $this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
-					}
-				}
+												
+				$user_ids = [];
+				if(!empty($articlesOrders)) {
+					/*
+					 * ottengo user_id che hanno gli acquisti gia' saldati SummaryOrder.saldato_a = CASSIERE / TESORIERE
+					 */
+					if($options['summaryOrders']) 
+						$user_ids = $this->_getUserIdsJustSaldato($user, $order['Order']['id'], $articlesOrders);
+
+					/*
+					 * qui tratto un solo user, se ha gia' saldato l'ordine non potra' fare nuovi acquisti
+					 */
+					if(!empty($user_ids))
+						$totSummaryOrderSaldato = 1;
+					else
+						$totSummaryOrderSaldato = 0;
+					 
+					foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
+								
+						if($numTab==-1) {
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
+							if(isset($articlesOrder['Cart'])) $this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
+							if(isset($articlesOrder['User'])) $this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;		
+						}
+						else {
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
+							if(isset($articlesOrder['Cart'])) $this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
+							if(isset($articlesOrder['User'])) $this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;
+						}
+						
+					} // loop foreach($articlesOrders as $numArticlesOrder => $articlesOrder)
+				} // end if(!empty($articlesOrders))
 			}  // end if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder']==false) 
-			
+						
 			// suppliersOrganization
 			if($options['suppliers']) 
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 		
 			// suppliersOrganizationsReferents 
 			 if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 
 		} // ciclo orders
 
@@ -225,7 +253,7 @@ class DataBehavior extends ModelBehavior {
 		}
 	}
 
-	private function __getOrdersAndArticlesOrdersAllUsers(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getOrdersAndArticlesOrdersAllUsers(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 	
 		$numOrder=-1;
 		$numArticlesOrder=-1;
@@ -236,26 +264,27 @@ class DataBehavior extends ModelBehavior {
 		if(isset($orderBy['Order'])) $orderLocal = $orderBy['Order'];
 		else $orderLocal = 'Order.data_inizio ASC';
 	
-		$conditionsLocal = array('Order.organization_id' => $user->organization['Organization']['id'],
-								'Order.delivery_id' => $deliveryResult['Delivery']['id'],
-								'Order.isVisibleBackOffice' => 'Y');
+		$conditionsLocal = ['Order.organization_id' => $user->organization['Organization']['id'],
+							'Order.delivery_id' => $deliveryResult['Delivery']['id'],
+							'Order.isVisibleBackOffice' => 'Y'];
 		if(isset($options['orders_attivi'])) // per tabsEcomm
-			$conditionsLocal += array('DATE(Order.data_fine) >= CURDATE()');
+			$conditionsLocal += ['DATE(Order.data_fine) >= CURDATE()'];
 		if(isset($conditions['Order'])) $conditionsLocal += $conditions['Order'];
+		if(isset($conditions['SuppliersOrganization'])) $conditionsLocal += $conditions['SuppliersOrganization'];
 
 		/*
 		 * prendo solo OrderState
 		*/
-		$Order->unbindModel(array('belongsTo' => array('Delivery','SuppliersOrganization')));
-		$orderResults = $Order->find('all',array('conditions' => $conditionsLocal,
-												'order' => $orderLocal,
-												'recursive' => 0));
+		$Order->unbindModel(array('belongsTo' => array('Delivery')));
+		$orderResults = $Order->find('all',['conditions' => $conditionsLocal,
+											'order' => $orderLocal,
+											'recursive' => 0]);
 
 		foreach ($orderResults as $numOrder => $order) {
 	
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
-	
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			
 			// se Delivery::tabs() non loggato non mi servono gli articoli
 			if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder']==false) {
 	
@@ -266,42 +295,59 @@ class DataBehavior extends ModelBehavior {
 				* */
 				App::import('Model', 'ArticlesOrder');
 				$ArticlesOrder = new ArticlesOrder;
-				$conditionsLocal = array('Order.id' => $order['Order']['id'],
-										'ArticlesOrder.order_id' => $order['Order']['id']);
+				
+				$conditionsLocal = ['Order.id' => $order['Order']['id'], 'ArticlesOrder.order_id' => $order['Order']['id']];
 				if(isset($conditions['Cart']))          $conditionsLocal += $conditions['Cart'];
 				if(isset($conditions['ArticlesOrder'])) $conditionsLocal += $conditions['ArticlesOrder'];
 				if(isset($conditions['Article']))       $conditionsLocal += $conditions['Article'];
-				if(isset($conditions['User']))       $conditionsLocal += $conditions['User'];
+				if(isset($conditions['User']))          $conditionsLocal += $conditions['User'];
 				
 				if(isset($options['articlesOrdersInOrderAndCartsAllUsers']) && $options['articlesOrdersInOrderAndCartsAllUsers'])
 					$articlesOrders = $ArticlesOrder->getArticoliAcquistatiDaUtenteInOrdine($user, $conditionsLocal, $orderBy);
-	
-				foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
-					if($numTab==-1) {
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
-						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
+		
+				$user_ids = [];
+				if(!empty($articlesOrders)) {
+					/*
+					 * ottengo user_id che hanno gli acquisti gia' saldati SummaryOrder.saldato_a = CASSIERE / TESORIERE
+					 */
+					if($options['summaryOrders']) 
+						$user_ids = $this->_getUserIdsJustSaldato($user, $order['Order']['id'], $articlesOrders);
+
+					foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
 						
-						/*						 * userprofile						*/						$userTmp = JFactory::getUser($articlesOrder['User']['id']);						$userProfile = JUserHelper::getProfile($userTmp->id);						$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;
-					}
-					else {
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
-						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
-																		/*						 * userprofile						*/						$userTmp = JFactory::getUser($articlesOrder['User']['id']);						$userProfile = JUserHelper::getProfile($userTmp->id);						$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;						
-					}
-				}
+						$totSummaryOrderSaldato = 0;
+						if(isset($articlesOrder['Cart']['user_id']))
+							if (array_key_exists($articlesOrder['Cart']['user_id'], $user_ids))
+								$totSummaryOrderSaldato = 1;
+					
+						if($numTab==-1) {
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;
+							
+							/*							 * userprofile							*/							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);							$userProfile = JUserHelper::getProfile($userTmp->id);							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;
+						}
+						else {
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;														/*							 * userprofile							*/							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);							$userProfile = JUserHelper::getProfile($userTmp->id);							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;						
+						}
+					
+					} // loop foreach($articlesOrders as $numArticlesOrder => $articlesOrder)
+				} // end if(!empty($articlesOrders)) 
 			}  // end if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder']==false)
-				
+
 			// suppliersOrganization
 			if($options['suppliers']) 
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 			
 			// suppliersOrganizationsReferents 
 			if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 			
 		} // ciclo orders
 	
@@ -315,12 +361,83 @@ class DataBehavior extends ModelBehavior {
 		}
 	}
 	
+	/* 
+	 * referente in "Gestisci gli acquisti aggregati"  (Carts::managementCartsGroupByUsers)
+	 */
+	private function _getSummaryOrderAggregates(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
+	
+		$numTab=-1;
+		$numOrder=-1;
+		$numSummaryOrder=-1;
+
+		App::import('Model', 'Order');
+		$Order = new Order;
+		
+		if(isset($orderBy['Order'])) $orderLocal = $orderBy['Order'];
+		else $orderLocal = 'Order.data_inizio ASC';
+
+		$conditionsLocal = ['Order.organization_id' => $user->organization['Organization']['id'],
+							 'Order.delivery_id' => $deliveryResult['Delivery']['id'],
+							 'Order.isVisibleBackOffice' => 'Y'];
+		if(isset($conditions['Order'])) $conditionsLocal += $conditions['Order'];
+
+		/*
+		 * prendo solo OrderState
+		*/
+		$Order->unbindModel(array('belongsTo' => array('Delivery','SuppliersOrganization')));
+		$orderResults = $Order->find('all', ['conditions' => $conditionsLocal,
+										'order' => $orderLocal,
+										'recursive' => 0]);
+		foreach ($orderResults as $numOrder => $order) {
+	
+			// order
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+
+			App::import('Model', 'SummaryOrderAggregate');
+			$SummaryOrderAggregate = new SummaryOrderAggregate;
+				
+			if(isset($orderBy['User'])) $orderLocal = $orderBy['User'];
+			else $orderLocal = 'User.name ASC';
+				
+			$SummaryOrderAggregate->unbindModel(array('belongsTo' => array('Delivery','Order')));
+			$conditionsLocal = array('SummaryOrderAggregate.organization_id' => $user->organization['Organization']['id'],
+								     'SummaryOrderAggregate.order_id' => $order['Order']['id']);
+			$results = $SummaryOrderAggregate->find('all',array('conditions' => $conditionsLocal,
+													   'order' => $orderLocal,
+													   'recursive' => 1));			
+			foreach ($results as $numResult => $result) {
+	
+				$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrderAggregate'][$numResult]['SummaryOrderAggregate'] = $result['SummaryOrderAggregate'];
+				$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrderAggregate'][$numResult]['User'] = $result['User'];
+				
+				/*
+				 * userprofile
+				*/
+				$userTmp = JFactory::getUser($result['User']['id']);
+				$userProfile = JUserHelper::getProfile($userTmp->id);
+				$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numResult]['User']['Profile'] = $userProfile->profile;
+				
+			}
+				
+			// suppliersOrganization
+			if($options['suppliers']) 
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+			
+			// suppliersOrganizationsReferents 
+			 if($options['referents'])
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				
+		} // ciclo orders
+	
+		$this->result['Delivery']['totOrders'] = $numOrder+1;
+		$this->result['Delivery']['totSummaryOrderAggregate'] = $numResult+1;
+	}	
 	
 	/* 
 	 * ExportDocs::admin_exportToTesoriere() 
 	 * SummaryOrders::admin_index_details() 
 	 */
-	private function __getSummaryOrders(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getSummaryOrders(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 	
 		$numTab=-1;
 		$numOrder=-1;
@@ -344,11 +461,10 @@ class DataBehavior extends ModelBehavior {
 		$orderResults = $Order->find('all',array('conditions' => $conditionsLocal,
 									'order' => $orderLocal,
 									'recursive' => 0));
-		
 		foreach ($orderResults as $numOrder => $order) {
 	
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 
 			App::import('Model', 'SummaryOrder');
 			$SummaryOrder = new SummaryOrder;
@@ -379,11 +495,11 @@ class DataBehavior extends ModelBehavior {
 				
 			// suppliersOrganization
 			if($options['suppliers']) 
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 			
 			// suppliersOrganizationsReferents 
 			 if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 				
 		} // ciclo orders
 	
@@ -394,7 +510,7 @@ class DataBehavior extends ModelBehavior {
 	/* 
 	 * Ajax::admin_box_trasport() 
 	 */
-	private function __getSummaryOrderTrasports(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getSummaryOrderTrasports(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 	
 		$numTab=-1;
 		$numOrder=-1;
@@ -422,7 +538,7 @@ class DataBehavior extends ModelBehavior {
 		foreach ($orderResults as $numOrder => $order) {
 	
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 
 			App::import('Model', 'SummaryOrderTrasport');
 			$SummaryOrderTrasport = new SummaryOrderTrasport;
@@ -453,11 +569,11 @@ class DataBehavior extends ModelBehavior {
 				
 			// suppliersOrganization
 			if($options['suppliers']) 
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 			
 			// suppliersOrganizationsReferents 
 			 if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 				
 		} // ciclo orders
 	
@@ -468,7 +584,7 @@ class DataBehavior extends ModelBehavior {
 	/*
 	 * Ajax::admin_box_cost_more()
 	*/
-	private function __getSummaryOrderCostMores(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getSummaryOrderCostMores(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 	
 		$numTab=-1;
 		$numOrder=-1;
@@ -496,7 +612,7 @@ class DataBehavior extends ModelBehavior {
 		foreach ($orderResults as $numOrder => $order) {
 	
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 	
 			App::import('Model', 'SummaryOrderCostMore');
 			$SummaryOrderCostMore = new SummaryOrderCostMore;
@@ -527,11 +643,11 @@ class DataBehavior extends ModelBehavior {
 	
 			// suppliersOrganization
 			if($options['suppliers'])
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 				
 			// suppliersOrganizationsReferents
 			if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 	
 		} // ciclo orders
 	
@@ -542,7 +658,7 @@ class DataBehavior extends ModelBehavior {
 	/*
 	 * Ajax::admin_box_cost_less()
 	*/
-	private function __getSummaryOrderCostLess(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getSummaryOrderCostLess(Model $Model, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 	
 		$numTab=-1;
 		$numOrder=-1;
@@ -570,7 +686,7 @@ class DataBehavior extends ModelBehavior {
 		foreach ($orderResults as $numOrder => $order) {
 	
 			// order
-			$this->__setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
+			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 	
 			App::import('Model', 'SummaryOrderCostLess');
 			$SummaryOrderCostLess = new SummaryOrderCostLess;
@@ -601,11 +717,11 @@ class DataBehavior extends ModelBehavior {
 	
 			// suppliersOrganization
 			if($options['suppliers'])
-				$this->__setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 	
 			// suppliersOrganizationsReferents
 			if($options['referents'])
-				$this->__setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
+				$this->_setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy);
 	
 		} // ciclo orders
 	
@@ -616,7 +732,7 @@ class DataBehavior extends ModelBehavior {
 	/* 
 	 * di un delivery, prendo tutti gli articoli in dispensa
 	 */
-	private function __getStorerooms(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = array()) {
+	private function _getStorerooms(Model $Model, $numTab, $numDelivery, $deliveryResult, $user, $conditions, $options, $orderBy = []) {
 		
 		$numStoreroom=-1; 
 		
@@ -650,7 +766,7 @@ class DataBehavior extends ModelBehavior {
 			// suppliersOrganization
 			if($options['suppliers']) {
 				$conditionsLocal = array('SuppliersOrganization.id' => $storeroom['Article']['supplier_organization_id']);
-				$suppliersOrganizationResults = $this->__getSuppliersOrganizations($user, $conditionsLocal, $orderBy);
+				$suppliersOrganizationResults = $this->_getSuppliersOrganizations($user, $conditionsLocal, $orderBy);
 				if($numTab==-1)
 					$this->result['Delivery'][$numDelivery]['Storeroom'][$numStoreroom]['SuppliersOrganization'] = $suppliersOrganizationResults; 
 				else 
@@ -660,7 +776,7 @@ class DataBehavior extends ModelBehavior {
 			// suppliersOrganizationsReferents
 			if($options['referents']) {
 				$conditionsLocal = array('SuppliersOrganization.id' => $storeroom['Article']['supplier_organization_id']);
-				$suppliersOrganizationsReferents = $this->__getSuppliersOrganizationsReferents($user, $conditionsLocal, $orderBy);
+				$suppliersOrganizationsReferents = $this->_getSuppliersOrganizationsReferents($user, $conditionsLocal, $orderBy);
 				foreach ($suppliersOrganizationsReferents as $numReferent => $suppliersOrganizationsReferent) {
 					if($numTab==-1)
 						$this->result['Delivery'][$numDelivery]['Storeroom'][$numStoreroom]['SuppliersOrganizationsReferent'][$numReferent] = $suppliersOrganizationsReferent;
@@ -677,22 +793,70 @@ class DataBehavior extends ModelBehavior {
 	}
 	
 	/*
-	 * estrae le date delle consegne per i Tabs
+	 * estrae le date delle consegne per i Tabs per le promozioni
 	 * */
-	public function getTabsToDeliveriesData(Model $Model, $user, $conditions=null, $orderBy = array()) {
+	public function getTabsToDeliveriesGasProdPromotionsData(Model $Model, $user, $conditions=null, $orderBy = []) {
 	
-		$conditions += array('Delivery.organization_id' => $user->organization['Organization']['id']);
+		$conditions += ['Delivery.organization_id' => $user->organization['Organization']['id']];
 		if(isset($orderBy['Delivery'])) $orderLocal = $orderBy['Delivery'];
 		else $orderLocal = 'data ASC';
-		$results = $Model->find('all',array('fields' => 'data',
-											'conditions' => $conditions,
-											'order' => $orderLocal,
-											'group' => 'data',
-											'recursive' => -1));
+		
+		//$conditions += [];
+		
+		$options = [];
+		$options['fields'] = ['Delivery.data'];
+		$options['conditions'] = $conditions;
+		$options['order'] = $orderLocal;
+		$options['group'] = ['Delivery.data'];
+		$options['recursive'] = -1;
+		
+		$results = $Model->find('all', $options);
+		
+		/*
+		 * estragggo solo le consegne con ordini in promozione
+		 */
+		if(!empty($results)) {
+
+			App::import('Model', 'Order');
+			$Order = new Order;
+					
+			foreach($results as $numResult => $result) {
+				$options = [];
+				$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+										  'Delivery.data' => $result['Delivery']['data'],
+										  'Order.prod_gas_promotion_id != ' => 0,
+										  'Order.organization_id' => $user->organization['Organization']['id']];
+				$options['recursive'] = 0;
+				$ordersResults = $Order->find('all', $options);
+				if(empty($ordersResults))	
+					unset($results[$numResult]);
+			}
+		}
+		
 		return $results;
 	}
+	
+		/*
+	 * estrae le date delle consegne per i Tabs
+	 * */
+	public function getTabsToDeliveriesData(Model $Model, $user, $conditions=null, $orderBy = []) {
+	
+		$conditions += ['Delivery.organization_id' => $user->organization['Organization']['id']];
+		if(isset($orderBy['Delivery'])) $orderLocal = $orderBy['Delivery'];
+		else $orderLocal = 'data ASC';
 		
-	private function __getDeliveries(Model $Model, $user, $conditions, $orderBy = array()) {
+		$options = [];
+		$options['fields'] = ['data'];
+		$options['conditions'] = $conditions;
+		$options['order'] = $orderLocal;
+		$options['group'] = ['data'];
+		$options['recursive'] = -1;
+		
+		$results = $Model->find('all', $options);
+		return $results;
+	}
+	
+	private function _getDeliveries(Model $Model, $user, $conditions, $orderBy = []) {
 
 		$conditions = $conditions['Delivery'];
 		$conditions += array('Delivery.organization_id' => $user->organization['Organization']['id']);		
@@ -704,14 +868,14 @@ class DataBehavior extends ModelBehavior {
 		return $results;
 	}	
 	
-	private function __getSuppliersOrganizations($user, $conditions, $orderBy = array()) {
+	private function _getSuppliersOrganizations($user, $conditions, $orderBy = []) {
 
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 
 		$results = $SuppliersOrganization->getSuppliersOrganization($user, $conditions, $orderBy);
 		if(count($results)==1) {
-			$newResults = array();
+			$newResults = [];
 			$results = current($results);
 			$newResults = $results['Supplier'];
 			$newResults['id'] = $results['SuppliersOrganization']['id'];
@@ -728,7 +892,7 @@ class DataBehavior extends ModelBehavior {
 		return $results;
 	}
 
-	private function __getSuppliersOrganizationsReferents($user, $conditions, $orderBy = array()) {
+	private function _getSuppliersOrganizationsReferents($user, $conditions, $orderBy = []) {
 		
 		if(isset($orderBy['SuppliersOrganizationsReferent'])) $orderLocal = $orderBy['SuppliersOrganizationsReferent'];
 		else $orderLocal = Configure::read('orderUser');
@@ -741,16 +905,18 @@ class DataBehavior extends ModelBehavior {
 		return $results;
 	}
 	
-	private function __setOrder(Model $Model, $numTab, $numDelivery, $numOrder, $order) {
+	private function _setOrder(Model $Model, $numTab, $numDelivery, $numOrder, $order) {
 		if($numTab==-1) 
 			$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['Order'] = $order['Order'];
 		else 
 			$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Order'] = $order['Order'];
 	}
 	
-	private function __setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy) {
+	private function _setSuppliersOrganizations($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy) {
 		$conditionsLocal = array('SuppliersOrganization.id' => $order['Order']['supplier_organization_id']);
-		$suppliersOrganizationResuls = $this->__getSuppliersOrganizations($user, $conditionsLocal, $orderBy);
+		if(isset($conditions['SuppliersOrganization']))
+			$conditionsLocal += $conditions['SuppliersOrganization'];
+		$suppliersOrganizationResuls = $this->_getSuppliersOrganizations($user, $conditionsLocal, $orderBy);
 	
 		if($numTab==-1)
 			$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SuppliersOrganization'] = $suppliersOrganizationResuls;
@@ -758,10 +924,10 @@ class DataBehavior extends ModelBehavior {
 			$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SuppliersOrganization'] = $suppliersOrganizationResuls;
 	}
 	
-	private function __setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy)	{
+	private function _setSuppliersOrganizationsReferent($numTab, $numDelivery, $numOrder, $order, $user, $conditions, $options, $orderBy)	{
 		$suppliersOrganizationsReferents = null;
 		$conditionsLocal = array('SuppliersOrganization.id' => $order['Order']['supplier_organization_id']);
-		$suppliersOrganizationsReferents = $this->__getSuppliersOrganizationsReferents($user, $conditionsLocal, $orderBy);
+		$suppliersOrganizationsReferents = $this->_getSuppliersOrganizationsReferents($user, $conditionsLocal, $orderBy);
 		if(!empty($suppliersOrganizationsReferents)) {
 			foreach ($suppliersOrganizationsReferents as $numReferent => $suppliersOrganizationsReferent) {
 				if($numTab==-1)
@@ -778,5 +944,51 @@ class DataBehavior extends ModelBehavior {
 				$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SuppliersOrganizationsReferent'] = null;
 		}
 	}
+	
+	/*
+	 * ottengo user_id che hanno gli acquisti gia' saldati SummaryOrder.saldato_a = CASSIERE / TESORIERE
+	 */
+	private function _getUserIdsJustSaldato($user, $order_id, $articlesOrders) {
+		
+		$user_ids = [];
+		
+		App::import('Model', 'SummaryOrder');
+		$SummaryOrder = new SummaryOrder;
+				
+		/*
+		 * estraggo gli user_id che hanno effettuato acquisti su almeno un articolo dell'ordine
+		 */
+		foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
+			if(isset($articlesOrder['Cart']['user_id'])) // se l'articolo e' stato acquistato
+				$user_ids[$articlesOrder['Cart']['user_id']] = $articlesOrder['Cart']['user_id'];
+		}	
+		/*
+		echo "<pre>_getUserIdsJustSaldato \n";
+		print_r($user_ids);
+		echo "</pre>";	
+		*/		
+		if(!empty($user_ids)) {
+			foreach($user_ids as $user_id) {
+				$ops = [];
+				$opts['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+										 'SummaryOrder.order_id' => $order_id,
+										 'SummaryOrder.user_id' => $user_id,
+										 'SummaryOrder.saldato_a !=' => null];
+				$totSummaryOrderSaldato = $SummaryOrder->find('count', $opts);
+				/*
+				echo "<pre>";
+				print_r($options);
+				print_r($totSummaryOrderSaldato);
+				echo "</pre>";
+				*/	
+	
+				if($totSummaryOrderSaldato==0)
+					unset($user_ids[$user_id]);
+			}
+			
+		}
+		
+		return $user_ids;
+	}	
 }	
 ?>

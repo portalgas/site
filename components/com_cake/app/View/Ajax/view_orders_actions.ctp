@@ -55,7 +55,7 @@
 		</td>		
 		<td><?php 
 			if(!empty($results['OrdersAction']['img']))
-				echo '<img width="100" class="userAvatar" src="'.Configure::read('App.img.cake').'/help-online/'.$results['OrdersAction']['img'].'" />';
+				echo '<img width="100" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.img.cake').'/help-online/'.$results['OrdersAction']['img'].'" />';
 			?>
 		</td>
 	</tr>

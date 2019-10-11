@@ -25,17 +25,17 @@ if (!empty($results)) {
 		$tot_importo=0;
 		foreach ($results as $numResult => $result) {
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			
 			$rowsExcel[] = ($numResult + 1);
 			$rowsExcel[] = $result['SuppliersOrganization']['name'];
 			$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['name']);
 			$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']));	
 			$rowsExcel[] = number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-			$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['qtaTot']);
+			$rowsExcel[] = $this->ExportDocs->prepareCsv($result['MyStoreroom']['qtaTot']);
 			if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
-				$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['qtaToBooked']);
-				$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['qtaJustBooked']);
+				$rowsExcel[] = $this->ExportDocs->prepareCsv($result['MyStoreroom']['qtaToBooked']);
+				$rowsExcel[] = $this->ExportDocs->prepareCsv($result['MyStoreroom']['qtaJustBooked']);
 			}
 			$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']));
 			//$rowsExcel[] = $this->App->formatDateCreatedModifier($result['Storeroom']['created']);
@@ -44,6 +44,31 @@ if (!empty($results)) {
 			
 			$tot_importo += $result['Cash']['importo'];
 			$i++;
+			
+			/*
+			 * dettaglio prenotazioni
+			 */
+			if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y' &&
+			   isset($result['MyStoreroom']['articlesJustBookeds']))
+				foreach($result['MyStoreroom']['articlesJustBookeds'] as $articlesJustBookeds) {
+					$User_name = $articlesJustBookeds['User']['name'];
+					$Storeroom_qta = $articlesJustBookeds['Storeroom']['qta'];
+					$Storeroom_prezzo = $articlesJustBookeds['Storeroom']['prezzo'];
+					$Storeroom_importo = $articlesJustBookeds['Storeroom']['importo'];
+
+					$rowsExcel = [];
+
+					$rowsExcel[] = '';
+					$rowsExcel[] = __('Delivery');
+					$rowsExcel[] = $articlesJustBookeds['Delivery']['luogo'];
+					$rowsExcel[] = $this->Time->i18nFormat($articlesJustBookeds['Delivery']['data'],"%A %e %B %Y");			
+					$rowsExcel[] = $User_name;
+					$rowsExcel[] = '';
+					$rowsExcel[] = '';
+					$rowsExcel[] = $Storeroom_qta;
+						
+					$this->PhpExcel->addTableRow($rowsExcel);
+				}				
 		}		
 				
 }	

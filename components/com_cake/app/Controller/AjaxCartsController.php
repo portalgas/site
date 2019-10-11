@@ -3,12 +3,12 @@ App::uses('AppController', 'Controller');
 
 class AjaxCartsController extends AppController {
 	
-	public $helpers = array('App',
+	public $helpers = ['App',
 							'Html',
 							'Form',
 							'Time',
 							'Ajax',
-							'Tabs');
+							'Tabs'];
 	
 	public function beforeFilter() {
     	$this->ctrlHttpReferer();
@@ -86,9 +86,9 @@ class AjaxCartsController extends AppController {
     	$Order = new Order;
     	
     	$options = [];
-    	$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
+    	$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
     			'Order.id' => $order_id,
-    			'Order.order_state_id' => Configure::read('OPEN'));
+    			'Order.order_state_id' => Configure::read('OPEN')];
     	$options['recursive'] = -1;
     	$order = $Order->find('first', $options);
     	$this->set('order', $order);
@@ -98,13 +98,13 @@ class AjaxCartsController extends AppController {
     		$ArticlesOrder = new ArticlesOrder;
     
     		$options = [];
-    		$options['conditions'] = array('Cart.user_id' => $user_id,
+    		$options['conditions'] = ['Cart.user_id' => $user_id,
     				'ArticlesOrder.order_id' => $order_id,
     				'Article.organization_id' => $article_organization_id,
-    				'Article.id' => $article_id);
+    				'Article.id' => $article_id];
     		$results = current($ArticlesOrder->getArticlesOrderAndCart($this->user, $options));
     	} // end if(!empty($order))
-    	$this->set('results',$results);
+    	$this->set(compact('results'));
     }
 
 
@@ -125,9 +125,9 @@ class AjaxCartsController extends AppController {
     	$Order = new Order;
     
     	$options = [];
-    	$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
+    	$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
     			'Order.id' => $order_id,
-    			'Order.order_state_id' => Configure::read('PROCESSED-REFERENTE-BEFORE-DELIVERY'));
+    			'Order.order_state_id' => Configure::read('PROCESSED-REFERENTE-BEFORE-DELIVERY')];
     	$options['recursive'] = -1;
     	$order = $Order->find('first', $options);
     	$this->set('order', $order);
@@ -136,10 +136,10 @@ class AjaxCartsController extends AppController {
     		App::import('Model', 'ArticlesOrder');
     		$ArticlesOrder = new ArticlesOrder;
     
-    		$options['conditions'] = array('Cart.user_id' => $user_id,
+    		$options['conditions'] = ['Cart.user_id' => $user_id,
     				'ArticlesOrder.order_id' => $order_id,
     				'Article.organization_id' => $article_organization_id,
-    				'Article.id' => $article_id);
+    				'Article.id' => $article_id];
     		$results = current($ArticlesOrder->getArticlesOrderAndCart($this->user, $options));
     		
     		/*
@@ -160,7 +160,7 @@ class AjaxCartsController extends AppController {
     			$results['ArticlesOrder']['differenza_importo'] = 0;    			
     		}
     	} // end if(!empty($order))
-    	$this->set('results',$results);
+    	$this->set(compact('results'));
     }
     
     /*
@@ -198,8 +198,8 @@ class AjaxCartsController extends AppController {
     	/*
     	 * permission per abilitazione modifica del carrello
     	 */
-		$permissions = array('isReferentGeneric' => $this->isReferentGeneric(),
-							 'isTesoriereGeneric' => $this->isTesoriereGeneric());
+		$permissions = ['isReferentGeneric' => $this->isReferentGeneric(),
+						 'isTesoriereGeneric' => $this->isTesoriereGeneric()];
 		$this->set('permissions',$permissions);		
 		
     	$this->layout = 'ajax';
@@ -225,21 +225,21 @@ class AjaxCartsController extends AppController {
 	   	 * rileggo la riga dal database aggiornata ([Order] [Article] [ArticlesOrder] [Cart] [User])
 	   	*/
     	App::import('Model', 'ArticlesOrder');    	$ArticlesOrder = new ArticlesOrder;    		
-	   	$conditions = array('Cart.user_id' => $user_id,
-	   						'Cart.order_id' => $order_id,
-    						'Cart.article_organization_id' => $article_organization_id,
-    						'Cart.article_id' => $article_id);
+	   	$conditions = ['Cart.user_id' => $user_id,
+						'Cart.order_id' => $order_id,
+						'Cart.article_organization_id' => $article_organization_id,
+						'Cart.article_id' => $article_id];
 	   	$results = $ArticlesOrder->getArticlesOrdersInOrderAndCartsByUserId($this->user ,$conditions);
 	   	$results = current($results);
 
 	   	/*
 	   	 * oggetto $order formattato per $this->RowEcomm->drawRowEcomm...
 	   	 * */
-	   	$order = array('Order' => $results['Order'],
-		    		   'ArticlesOrder' => $results['ArticlesOrder'],
-		    		   'Article' => $results['Article'],
-		    		   'Cart' => $results['Cart'],
-		    		   'User' => $results['User']);
+	   	$order = ['Order' => $results['Order'],
+				   'ArticlesOrder' => $results['ArticlesOrder'],
+				   'Article' => $results['Article'],
+				   'Cart' => $results['Cart'],
+				   'User' => $results['User']];
     	
     	self::d($order, false);
     	

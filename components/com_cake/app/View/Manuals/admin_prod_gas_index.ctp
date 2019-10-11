@@ -8,6 +8,9 @@
 .cakeContainer ul, .cakeContainer li {
     margin: 5px 0 0;
 }
+.cakeContainer li, .cakeContainer ul {
+    margin: 0 12px !important;
+}
 .cakeContainer a {
     color: #003d4c;
     cursor: pointer;

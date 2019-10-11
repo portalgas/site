@@ -117,7 +117,7 @@ class ProdUsersGroupsController extends AppController {
 
 	public function admin_delete($id = null) {
 		$this->ProdUsersGroup->id = $id;
-		if (!$this->ProdUsersGroup->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdUsersGroup->exists($this->ProdUsersGroup->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod users group'));
 		}
 		$this->request->onlyAllow('post', 'delete');

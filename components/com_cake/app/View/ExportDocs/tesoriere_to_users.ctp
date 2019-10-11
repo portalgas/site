@@ -61,4 +61,5 @@ if($this->layout=='pdf')
 	ob_end_clean();
 echo $output->Output($fileData.'.pdf', 'D');
 // echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

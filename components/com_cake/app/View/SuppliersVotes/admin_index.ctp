@@ -26,7 +26,7 @@ if($isSuperReferente) {
 					<?php 
 					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 						echo '<td>';
-						echo $this->Form->input('category_supplier_id',array('label' => false,'options' => $categories,'empty' => 'Filtra per categoria','name' => 'FilterSuppliersVoteCategoryId','default' => $FilterSuppliersVoteCategoryId,'escape' => false)); 
+						echo $this->Form->input('category_supplier_id',array('label' => '&nbsp;','options' => $categories,'empty' => 'Filtra per categoria','name' => 'FilterSuppliersVoteCategoryId','default' => $FilterSuppliersVoteCategoryId,'escape' => false)); 
 						echo '</td>';
 					}
 					?>
@@ -79,7 +79,7 @@ if(!empty($results)) {
 
 			echo '<td>';
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 			echo '</td>';
 			echo '<td>';
 			echo $result['Supplier']['name']; 
@@ -108,7 +108,7 @@ if(!empty($results)) {
 					 * escludo proprio GAS
 					 */
 					if($suppliersVoteOrganization['SuppliersVote']['organization_id']!=$user->organization['Organization']['id']) {
-						  echo '<img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersVoteOrganization['Organization']['img1'].'" alt="'.$suppliersVoteOrganization['Organization']['name'].'" /> ';
+						  echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersVoteOrganization['Organization']['img1'].'" alt="'.$suppliersVoteOrganization['Organization']['name'].'" /> ';
 						  echo $suppliersVoteOrganization['Organization']['name'].' '; 
 						  echo $this->App->drawVote($suppliersVoteOrganization['SuppliersVote']['voto'], $suppliersVoteOrganization['SuppliersVote']['nota']);
 					}
@@ -137,20 +137,7 @@ if(!empty($results)) {
 	 	echo '</div>';
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora produttori registrati"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora produttori registrati"));
 		
 echo '</div>';
 ?>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-});		
-</script>

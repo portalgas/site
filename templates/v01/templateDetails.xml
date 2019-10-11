@@ -58,10 +58,13 @@
 					filter="integer"
 				>
 					<option value="0">portale</option>
+					<option value="36">alvisegas (id 36)</option>
 					<option value="21">amicogas (id 21)</option>
 					<option value="32">anxagas (id 32)</option>
 					<option value="3">arcoiris (id 3)</option>
+					<option value="41">bioce (id 41)</option> 
 					<option value="30">borgobonta (id 30)</option>
+					<option value="39">bustovegas (id 39)</option>
 					<option value="6">castanoprimo (id 6)</option>
 					<option value="1">cavagnetta (id 1)</option>
 					<option value="10">colibri (id 10)</option>
@@ -78,6 +81,10 @@
 					<option value="8">gasbuttigliera (id 8)</option>
 					<option value="22">gasgarfagnana (id 22)</option>
 					<option value="15">gasivrea (id 15)</option>
+					<option value="40">gaslys (id 40)</option> 
+					<option value="38">gasoltremercatosalento (id 38)</option>
+					<option value="37">gassansalvario (id 37)</option>
+					<option value="65">gassassiena (id 65)</option>
 					<option value="17">gasmarti (id 17)</option>
 					<option value="5">gassepiossasco (id 5)</option>
 					<option value="12">gastaldi (id 12)</option>
@@ -85,10 +92,12 @@
 					<option value="20">gasvalchiusella (id 20)</option>
 					<option value="18">gasvaldellatorre (id 18)</option>
 					<option value="34">gasvercelli (id 34)</option>
+					<option value="35">lisoladiamantani (id 35)</option>
 					<option value="25">madrisiogas (id 25)</option>
 					<option value="2">oca sansalvario (id 2)</option>
 					<option value="33">pastamadristiromani (id 33)</option>
 					<option value="26">remolonsgas (id 26)</option>
+					<option value="42">verdessenza (id 42)</option>
 					<option value="28">villaltagas (id 28)</option>
 					<option value="29">villanovagas (id 29)</option>
 					<option value="4">villargas (id 4)</option>
@@ -102,11 +111,14 @@
 					filter="string"
 				>
 					<option value="portale">portale</option>
+					<option value="alvisegas">alvisegas</option>
 					<option value="amicogas">amicogas</option>
 					<option value="anxagas">anxagas</option>
 					<option value="arcoiris">arcoiris</option>
+					<option value="bioce">bioce</option> 
 					<option value="borgobonta">borgobonta</option>
 					<option value="barga">barga</option>
+					<option value="bustovegas">bustovegas</option>
 					<option value="cavagnetta">cavagnetta</option>
 					<option value="castano-primo">castanoprimo</option>
 					<option value="colibri">colibrì</option>
@@ -122,6 +134,10 @@
 					<option value="gasbuttigliera">gasbuttigliera</option>
 					<option value="gasgarfagnana">gasgarfagnana</option>
 					<option value="gasivrea">gasivrea</option>
+					<option value="gaslys">gaslys</option>
+					<option value="gasoltremercatosalento">gasoltremercatosalento</option>
+					<option value="gassansalvario">gassansalvario</option>
+					<option value="gassassiena">gassassiena</option> 
 					<option value="gasmarti">gasmarti</option>
 					<option value="gassepiossasco">gassepiossasco</option>
 					<option value="gastaldi">gastaldi</option>
@@ -131,8 +147,10 @@
 					<option value="gasvercelli">gasvercelli</option>
 					<option value="ocasansalvario">ocasansalvario</option>
 					<option value="pastamadristiromani">pastamadristiromani</option>
+					<option value="lisoladiamantani">lisoladiamantani</option>
 					<option value="madrisiogas">madrisiogas</option>
 					<option value="remolonsgas">remolonsgas</option>
+					<option value="verdessenza">verdessenza</option> 
 					<option value="villaltagas">villaltagas</option>
 					<option value="villanovagas">villanovagas</option>
 					<option value="villargas">villargas</option>

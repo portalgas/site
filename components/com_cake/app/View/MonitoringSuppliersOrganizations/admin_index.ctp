@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('List MonitoringSuppliersOrganizations'), array('controller' => 'MonitoringSuppliersOrganizations', 'action' => 'home'));
 $this->Html->addCrumb(__('Gest MonitoringSuppliersOrganizations'));
@@ -13,43 +13,43 @@ echo '<div class="monitoring-orders form">';
 </h2>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.submit').css('display','none');
+	$('.submit').css('display','none');
 		
-	jQuery('#supplier_organization_id').change(function() {
+	$('#supplier_organization_id').change(function() {
 		caricaSuppliersOrganizations();
 	});
 	
-	var supplier_organization_id = jQuery('#supplier_organization_id').val();
+	var supplier_organization_id = $('#supplier_organization_id').val();
 	if(supplier_organization_id!="" && supplier_organization_id!=undefined) caricaSuppliersOrganizations();
 });
 	
 function caricaSuppliersOrganizations() {
-	var supplier_organization_id = jQuery('#supplier_organization_id').val();
+	var supplier_organization_id = $('#supplier_organization_id').val();
 	if(supplier_organization_id=="" || supplier_organization_id==undefined) {
-		jQuery('#supplier-organizations-results').html('');
-		jQuery('#supplier-organizations-results').css('display', 'none');
+		$('#supplier-organizations-results').html('');
+		$('#supplier-organizations-results').css('display', 'none');
 		
-		jQuery('.submit').css('display','none');
+		$('.submit').css('display','none');
 		
 		return;
 	}
 
-	jQuery('#supplier-organizations-results').html('');
-	jQuery('#supplier-organizations-results').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
-	jQuery('#supplier-organizations-results').css('display', 'block');	
-	jQuery.ajax({
+	$('#supplier-organizations-results').html('');
+	$('#supplier-organizations-results').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#supplier-organizations-results').css('display', 'block');	
+	$.ajax({
 		type: "get",
 		url: "/administrator/index.php?option=com_cake&controller=MonitoringSuppliersOrganizations&action=suppliers_organizations_index&supplier_organization_id="+supplier_organization_id+"&format=notmpl",
 		data: "", 
 		success: function(response) {
-			jQuery('#supplier-organizations-results').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#supplier-organizations-results').html(response);
+			$('#supplier-organizations-results').css('background', 'none repeat scroll 0 0 transparent');
+			$('#supplier-organizations-results').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#supplier-organizations-results').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#supplier-organizations-results').html(textStatus);
+			$('#supplier-organizations-results').css('background', 'none repeat scroll 0 0 transparent');
+			$('#supplier-organizations-results').html(textStatus);
 		}
 	});	
 }
@@ -62,12 +62,14 @@ Scegli per quale produttori monitorare gli ordini
 <?php echo $this->Form->create('MonitoringSuppliersOrganization', array('id'=>'formGas'));?>
 	<fieldset style="min-height:300px;">
 	<?php
-	$options = array('label' => false, 'options' => $ACLsuppliersOrganization,
-							'empty' => 'Filtra per produttore',
-							'id' => 'supplier_organization_id',
-							'default'=>$FilterArticleSupplierId,'escape' => false);
+	$options = ['label' => false, 
+				'options' => $ACLsuppliersOrganization,
+				'id' => 'supplier_organization_id',
+				'default'=>$FilterArticleSupplierId,'escape' => false];
+	if(count($ACLsuppliersOrganization) > 1) 
+		$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];				
 	if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
-		$options += array('class'=> 'selectpicker', 'data-live-search' => true);
+		$options += ['class'=> 'selectpicker', 'data-live-search' => true];
 	echo $this->Form->input('supplier_organization_id',$options);						
 	?>	
 	

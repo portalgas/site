@@ -21,8 +21,8 @@ if($results['ProdDelivery']['prod_delivery_state_id']==Configure::read('PROCESSE
 		</div>	
 		
 		<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery("input[name='cart-splits-options']").change(function() {
+		$(document).ready(function() {
+			$("input[name='cart-splits-options']").change(function() {
 				choiceCartsSplitsOptions();
 			});
 		

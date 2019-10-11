@@ -1,35 +1,61 @@
-<div class="cpanel">
-	<div class="icon-wrapper">
-		<div class="icon"><a href="/administrator/index.php?option=com_admin&amp;task=profile.edit&amp;id=<?php echo $user->id;?>"><img alt="" src="/administrator/templates/bluestork/images/header/icon-48-user-profile.png"><span>Il mio profilo</span></a></div>
-	</div>
-	
-	<?php
-	/*
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=Manuals&amp;action=index"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Manuali</span></a></div>';
-	echo '</div>';
-	*/
-	
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.facebook.com/portalgas.it"><img src="/administrator/templates/bluestork/images/header/cake/social-fb.png" alt=""><span>Facebook</span></a></div>';
-	echo '</div>';
-	
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="/administrator/templates/bluestork/images/header/cake/social-youtube.png" alt=""><span>YouTube</span></a></div>';
-	echo '</div>';
-	
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasSuppliers&action=index"><img alt="" src="/administrator/templates/bluestork/images/header/cake/folder.png"><span>Elenco G.A.S.</span></a></div>';
-	echo '</div>';
+<div class="container-fluid text-center">
+  <div class="row">
 
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasArticles&amp;action=index"><img alt="" src="/administrator/templates/bluestork/images/header/cake/kcmdf.png"><span>Articoli</span></a></div>';
-	echo '</div>';	
-
-	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasPromotions&amp;action=index"><img alt="" src="/administrator/templates/bluestork/images/header/cake/office_folders.png"><span>Promozioni</span></a></div>';
-	echo '</div>';
-	
+  		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasSuppliers&action=index">
+					<div class="box">
+						<span class="fa fa-3x fa-users"></span>
+						<h4>Elenco G.A.S.</h4>
+						<p>Elenco dei G.A.S. associati al produttore</p>
+					</div>	
+				</a>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a href="/administrator/index.php?option=com_cake&amp;controller=Articles&amp;action=context_articles_index">
+					<div class="box">
+						<span class="fa fa-3x fa-cubes"></span>
+						<h4>Articoli</h4>
+						<p>Gestisci l'anagrafica degli articoli</p>
+					</div>	
+				</a>
+			</div>
+		</div>	
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasPromotions&amp;action=index">
+					<div class="box">
+						<span class="fa fa-3x fa-magic"></span>
+						<h4>Promozioni</h4>
+						<p>Gestisci le promozioni</p>
+					</div>	
+				</a>
+			</div>
+		</div>	
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a target="_blank" href="https://www.facebook.com/portalgas.it">
+					<div class="box">
+						<span class="fa fa-3x fa-facebook"></span>
+						<h4>Facebook</h4>
+						<p>Rimani aggiornato seguendoci su Facebook</p>
+					</div>	
+				</a>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">
+					<div class="box">
+						<span class="fa fa-3x fa-youtube"></span>
+						<h4>YouTube</h4>
+						<p>I video tutorial sul canale YouTube</p>
+					</div>	
+				</a>
+			</div>
+		</div>
 		
-echo '</div>';	
-?>
+	</div>
+</div>

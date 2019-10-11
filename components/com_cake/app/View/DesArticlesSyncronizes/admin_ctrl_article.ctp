@@ -9,8 +9,8 @@ echo '<th class="actions">'.__('Actions').'</th>';
 echo '</tr>';
 
 echo '<tr>';
-echo '<td>';
-echo $this->Html->link(null, array(), array('id' => 'diff-'.$id_articles_confronto ,'class' => 'action actionJContent ', 'title' => __('DesArticlesDiff')));
+echo '<td>';  
+echo $this->Html->tag('a', '', array('id' => 'diff-'.$id_articles_confronto , 'class' => 'action actionJContent ', 'title' => __('DesArticlesDiff'), 'data-toggle' => 'modal', 'data-target' => '#modal-diff-'.$id_articles_confronto));
 echo '</td>';
 if($results['Article']['ArticlesOrder'])
 	echo '<td class="stato_si" title="'.__('si').'" >';		
@@ -36,11 +36,19 @@ else {
 echo '</td>';
 echo '</tr>';
 echo '</table>';
-?>
 
-<div id="dialog" title="Confronto articoli" style="display:none;">
-  <p>
-  <div class="cakeContainer">
+/*
+ * dialog
+ */
+echo '<div id="modal-diff-'.$id_articles_confronto.'" class="modal fade" role="dialog">';
+echo '<div class="modal-dialog">';
+echo '<div class="modal-content">';
+echo '<div class="modal-header">';
+echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+echo '<h4 class="modal-title">Confronto articoli</h4>';
+echo '</div>';
+echo '<div class="modal-body">';
+?>
 		<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th></th>
@@ -53,14 +61,14 @@ echo '</table>';
 			<td>
 			<?php
 			if(!empty($masterResults['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$masterResults['Article']['organization_id'].DS.$masterResults['Article']['img1'])) {
-				echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$masterResults['Article']['organization_id'].'/'.$masterResults['Article']['img1'].'" />';
+				echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$masterResults['Article']['organization_id'].'/'.$masterResults['Article']['img1'].'" />';
 			}	
 			?>			
 			</td>
 			<td>
 			<?php
 			if(!empty($results['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$results['Article']['organization_id'].DS.$results['Article']['img1'])) {
-				echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';
+				echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';
 			}	
 			?>			
 			</td>
@@ -93,7 +101,7 @@ echo '</table>';
 		}
 		?>
 		<tr>
-			<td><?php echo __('Confezione');?></td>
+			<td><?php echo __('Package');?></td>
 			<td><?php echo $this->App->getArticleConf($masterResults['Article']['qta'], $masterResults['Article']['um']); ?></td>
 			<td><?php echo $this->App->getArticleConf($results['Article']['qta'], $results['Article']['um']); ?></td>	
 		</tr>
@@ -143,21 +151,12 @@ echo '</table>';
 			<td><?php echo $results['Article']['qta_minima'];?></td>	
 		</tr>
 	</table> 
-	</div>	
-  </p>
-</div>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-		
-	jQuery("#diff-<?php echo $id_articles_confronto;?>").click(function() {
-		
-		jQuery( "#dialog" ).dialog({
-			resizable: true,
-			width: 700
-		});
-		 
-		return false;
-	});	
-});
-</script>
+<?php
+echo '</div>';
+echo '<div class="modal-footer">';
+echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo '</div>';
+?>

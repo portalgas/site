@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
 
@@ -16,7 +16,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="orders form">';
 
-echo '<table cellpadding = "0" cellspacing = "0">';
+echo '<div class="table-responsive"><table class="table">';
 echo '<tr>';
 echo '<td>'.__('Supplier').' <b>'.$results['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>';
 if($results['Delivery']['sys']=='N')
@@ -28,7 +28,7 @@ echo '<br/>';
 echo '<br/>';
 echo $this->App->drawOrdersStateDiv($this->request->data).'&nbsp;'.__($this->request->data['Order']['state_code'].'-label').'</td>';
 echo '</tr>';
-echo '</table>';
+echo '</table></div>';
 
 echo $this->Form->create('Order',array('id' => 'formGas'));
 echo '<fieldset>';
@@ -40,7 +40,7 @@ if(isset($msg['actions'])) {
 
 	echo '<div class="legenda">';
 	echo '<h2>Cosa puoi fare:</h2>';
-	echo '<table cellpadding="0" cellspacing="0">';
+	echo '<div class="table-responsive"><table class="table table-hover table-striped">';
 	
 	foreach($msg['actions'] as $action){
 
@@ -49,7 +49,7 @@ if(isset($msg['actions'])) {
 		echo '<td><a href="'.$action['url'].'">'.$action['msg'].'</a></td>';
 		echo '</tr>';
 	}
-	echo '</table>';
+	echo '</table></div>';
 	
 	echo '<br/>';
 	echo '</div>';

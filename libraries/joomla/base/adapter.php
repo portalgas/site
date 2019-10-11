@@ -101,7 +101,7 @@ class JAdapter extends JObject
 	 *
 	 * @since   11.1
 	 */
-	public function setAdapter($name, &$adapter = null, $options = array())
+	public function setAdapter($name, $adapter = null, $options = array())
 	{
 		if (!is_object($adapter))
 		{
@@ -124,7 +124,7 @@ class JAdapter extends JObject
 			$adapter = new $class($this, $this->_db, $options);
 		}
 
-		$this->_adapters[$name] = &$adapter;
+		$this->_adapters[$name] = $adapter;
 
 		return true;
 	}

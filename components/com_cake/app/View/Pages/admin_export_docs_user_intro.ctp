@@ -1,7 +1,7 @@
 <?php
 echo '<div class="docs">';
 
-if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	echo '<div class="legenda">';
 	echo '<h1>Richieste di pagamento</h1>';
 
@@ -28,7 +28,9 @@ if($user->organization['Organization']['payToDelivery']=='POST' || $user->organi
 }
 ?>
 	
-<table cellpadding = "0" cellspacing = "0">
+<div class="table-responsive">
+<table class="table table-hover">
+<thead>
 <tr>
 	<th colspan="2">Tipologia di documento</th>
 	<th>Filtro</th>
@@ -36,7 +38,8 @@ if($user->organization['Organization']['payToDelivery']=='POST' || $user->organi
 	<th>Formato csv</th>
 	<th>Formato excel</th>
 </tr>	
-
+<thead>
+<tbody>
 <?php
 	echo $this->element('reportDeliveries', array('type' => 'BO', 'deliveries' => $deliveries));
     
@@ -69,36 +72,44 @@ if(!empty($orders)) {
 <tr class="trConfig" id="trConfigId-ArticlesOrders">
 	<td></td>
 	<td colspan="5" id="tdConfigId-ArticlesOrders">
-		
-		<div class="left label" style="width:125px !important;">Opzioni stampa</div>
-		<div class="left radio">
-			<p>
-				<label for="filterType">Visualizza le tipologie</label>
-				<input type="radio" id="filterTypeY2" name="filterType2" value="Y" checked /><label for="filterTypeY2W">Si</label>
-				<input type="radio" id="filterTypeN2" name="filterType2" value="N" /><label for="filterTypeN2">No</label>
-			</p>
-			<p>
-				<label for="filterCategory">Visualizza le categorie</label>
-				<input type="radio" id="filterCategoryY2" name="filterCategory2" value="Y" checked /><label for="filterCategoryY2">Si</label>
-				<input type="radio" id="filterCategoryN2" name="filterCategory2" value="N" /><label for="filterCategoryN2">No</label>
-			</p>	
-			<p>
-				<label for="filterNota">Visualizza le note</label>
-				<input type="radio" id="filterNotaY2" name="filterNota2" value="Y" checked /><label for="filterNota2">Si</label>
-				<input type="radio" id="filterNotaN2" name="filterNota2" value="N" /><label for="filterNotaN2">No</label>
-			</p>
-			<?php 
-			if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
-			?>
-			<p>
-				<label for="filterIngredientiY">Visualizza gli ingredienti</label>
-				<input type="radio" id="filterIngredientiY2" name="filterIngredienti2" value="Y" checked /><label for="filterIngredientiY2">Si</label>
-				<input type="radio" id="filterIngredientiN2" name="filterIngredienti2" value="N" /><label for="filterIngredientiN2">No</label>
-			</p>
-			<?php 
-			}
-			?>							
-		</div>	
+	
+		<p>Opzioni stampa</p>
+
+		<div class="input ">
+			<label class="control-label" for="filterType">Visualizza le tipologie </label>
+			<label class="radio-inline" for="filterTypeY2">
+				<input checked="checked" value="Y" id="filterTypeY2" name="filterType2" type="radio"> Si</label>
+			<label class="radio-inline" for="filterTypeN2">
+				<input value="N" id="filterTypeN2" name="filterType2" type="radio"> No</label>
+		</div>
+		<div class="input ">
+			<label class="control-label" for="filterType">Visualizza le categorie </label>
+			<label class="radio-inline" for="filterCategoryY2">
+				<input checked="checked" value="Y" id="filterCategoryY2" name="filterCategory2" type="radio"> Si</label>
+			<label class="radio-inline" for="filterCategoryN2">
+				<input value="N" id="filterCategoryN2" name="filterCategory2" type="radio"> No</label>
+		</div>
+		<div class="input ">
+			<label class="control-label" for="filterType">Visualizza le note </label>
+			<label class="radio-inline" for="filterNotaY2">
+				<input checked="checked" value="Y" id="filterNotaY2" name="filterNota2" type="radio"> Si</label>
+			<label class="radio-inline" for="filterNotaN2">
+				<input value="N" id="filterNotaN2" name="filterNota2" type="radio"> No</label>
+		</div>
+
+		<?php 
+		if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
+		?>
+		<div class="input ">
+			<label class="control-label" for="filterType">Visualizza gli ingredienti </label>
+			<label class="radio-inline" for="filterIngredientiY2">
+				<input checked="checked" value="Y" id="filterIngredientiY2" name="filterIngredienti2" type="radio"> Si</label>
+			<label class="radio-inline" for="filterIngredientiN2">
+				<input value="N" id="filterIngredientiN2" name="filterIngredienti2" type="radio"> No</label>
+		</div>
+		<?php 
+		}
+		?>
 					
 	</td>
 </tr>	
@@ -122,7 +133,7 @@ if(!empty($orders)) {
 </tr>	
 		
 <?php
-echo $this->element('reportUsers', array('type' => 'BO', 'isManager' => $isManager));
+echo $this->element('reportUsers', ['type' => 'BO', 'isManager' => $isManager, 'organizationsResults' => $organizationsResults]);
 
 if($isRoot || $isManager) {
 ?>
@@ -132,7 +143,7 @@ if($isRoot || $isManager) {
 		<td style="vertical-align: middle;">
 			<?php
 				echo $this->Form->input('user_id',array('label' => false, 'id' => 'other_user_id',
-															'class'=> 'selectpicker', 'data-live-search' => true',
+															'class'=> 'selectpicker', 'data-live-search' => true,
 															'empty' => 'Scegli l\'utente','escape' => false));
 
 				echo '<br />';
@@ -155,7 +166,7 @@ if($isRoot || $isManager || $isSuperReferente || $isCassiere) {
 	<tr>
 		<td></td>
 		<td>Tutti gli <b>ordini</b> della consegna</td>
-		<td style="vertical-align: middle;">
+		<td style="vertical-align: middle;" rowspan="2">
 			<?php
 				echo $this->Form->input('delivery_id',array('label' => false, 'id' => 'other_delivery_id2',
 															'empty' => 'Scegli la consegna','escape' => false));
@@ -172,12 +183,26 @@ if($isRoot || $isManager || $isSuperReferente || $isCassiere) {
 		?>		
 		</td>
 	</tr>
+	<tr>
+		<td></td>
+		<td>Tutti gli <b>acquisti per gasista</b> alla Consegna selezionata</td>
+		<td></td>
+		<td></td>
+		<td>
+		<?php
+		if(Configure::read('developer.mode'))
+			echo 'No in developer mode';
+		else
+			echo '<a class="users_delivery_sum_orders_excel" id="users_delivery_sum_orders_excel-EXCEL" style="cursor:pointer;" rel="nofollow" title="stampa dei referenti '.__('formatFileExcel').'"><img alt="EXCEL" src="'.Configure::read('App.img.cake').'/minetypes/32x32/vcalendar.png"></a>';
+		?>		
+		</td>
+	</tr>	
 <?php 
 }
 ?>
 
 <?php 
-if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	if($isRoot || $isManager || $isTesoriereGeneric) {
 ?>
 	<tr>
@@ -204,25 +229,27 @@ if($user->organization['Organization']['payToDelivery']=='POST' || $user->organi
 }
 
 if($user->organization['Organization']['hasStoreroom']=='Y') 
-	echo $this->element('reportStoreroom', array('type' => 'BO'));
+	echo $this->element('reportStoreroom', array('type' => 'BO', 'isUserCurrentStoreroom' => $isUserCurrentStoreroom, 'isManager' => $isManager, 'deliveries' => $deliveriesStorerooms));
 	
+echo '<tbody>';
 echo '</table>';
+echo '</div>';
 echo '</div>';
 ?>		
 	
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.exportArticlesOrders').click(function() {
-		var order_id = jQuery('#order_id').val();
+	$('.exportArticlesOrders').click(function() {
+		var order_id = $('#order_id').val();
 		if(order_id=="" || order_id==undefined) {
 			alert("Devi scegliere l'ordine");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
@@ -230,14 +257,14 @@ jQuery(document).ready(function() {
 		/*
 		 * filtri
 		 */
-		var filterType = jQuery("input[name='filterType2']:checked").val();
-		var filterCategory = jQuery("input[name='filterCategory2']:checked").val();
-		var filterNota = jQuery("input[name='filterNota2']:checked").val();
+		var filterType = $("input[name='filterType2']:checked").val();
+		var filterCategory = $("input[name='filterCategory2']:checked").val();
+		var filterNota = $("input[name='filterNota2']:checked").val();
 		var filterIngredienti = 'N';
 		<?php 
 		if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
 		?>
-		filterIngredienti = jQuery("input[name='filterIngredienti2']:checked").val();	
+		filterIngredienti = $("input[name='filterIngredienti2']:checked").val();	
 		<?php 
 		}
 		?>
@@ -245,8 +272,8 @@ jQuery(document).ready(function() {
 		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&order_id='+order_id+'&filterType='+filterType+'&filterCategory='+filterCategory+'&filterNota='+filterNota+'&filterIngredienti='+filterIngredienti+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');
 	});
 	
-	jQuery('.suppliersOrganizations').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.suppliersOrganizations').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
@@ -257,40 +284,56 @@ jQuery(document).ready(function() {
 	<?php 
 	if($isRoot || $isManager || $isSuperReferente || $isCassiere) {
 	?>
-		jQuery('.exportToCassiereAllDelivery').click(function() {
-			var delivery_id = jQuery('#other_delivery_id2').val();
+		$('.exportToCassiereAllDelivery').click(function() {
+			var delivery_id = $('#other_delivery_id2').val();
 			if(delivery_id=="") {
 				alert("<?php echo __('jsAlertDeliveryRequired');?>");
 				return false;
 			}
 			
-			var id =  jQuery(this).attr('id');
+			var id =  $(this).attr('id');
 			idArray = id.split('-');
 			var action          = idArray[0];
 			var doc_formato = idArray[1];
 	
 			window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-delivery-cassiere-users-compact-all&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');
 		});
+		
+		$('.users_delivery_sum_orders_excel').click(function() {
+			var delivery_id = $('#other_delivery_id2').val();
+			if(delivery_id=="") {
+				alert("<?php echo __('jsAlertDeliveryRequired');?>");
+				return false;
+			}
+			
+			var id =  $(this).attr('id');
+			idArray = id.split('-');
+			var action      = idArray[0];
+			var doc_formato = idArray[1];
+	
+			window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=users_data_delivery_sum_orders&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');
+		});		
+		
 	<?php 
 	}
 
 	
 	if($isRoot || $isManager) {
 	?>
-		jQuery('.exportOtherDelivery').click(function() {
-			var user_id = jQuery('#other_user_id').val();
+		$('.exportOtherDelivery').click(function() {
+			var user_id = $('#other_user_id').val();
 			if(user_id=="") {
 				alert("<?php echo __('jsAlertUserRequired');?>");
 				return false;
 			}
 			
-			var delivery_id = jQuery('#other_delivery_id').val();
+			var delivery_id = $('#other_delivery_id').val();
 			if(delivery_id=="") {
 				alert("<?php echo __('jsAlertDeliveryRequired');?>");
 				return false;
 			}
 			
-			var id =  jQuery(this).attr('id');
+			var id =  $(this).attr('id');
 			idArray = id.split('-');
 			var action          = idArray[0];
 			var doc_formato = idArray[1];
@@ -300,23 +343,23 @@ jQuery(document).ready(function() {
 	<?php 
 	}
 
-	if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 		if($isRoot || $isManager|| $isTesoriereGeneric) {
 	?>
-		jQuery('.exportRequestPayment').click(function() {
-			var user_id = jQuery('#request_payment_user_id').val();
+		$('.exportRequestPayment').click(function() {
+			var user_id = $('#request_payment_user_id').val();
 			if(user_id=="") {
 				alert("<?php echo __('jsAlertUserRequired');?>");
 				return false;
 			}
 			
-			var request_payment_id = jQuery('#request_payment_id').val();
+			var request_payment_id = $('#request_payment_id').val();
 			if(request_payment_id=="") {
 				alert("<?php echo __('jsAlertRequestPaymentRequired');?>");
 				return false;
 			}
 			
-			var id =  jQuery(this).attr('id');
+			var id =  $(this).attr('id');
 			idArray = id.split('-');
 			var action          = idArray[0];
 			var doc_formato = idArray[1];

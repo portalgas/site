@@ -101,6 +101,9 @@ class AjaxGasCode extends AppModel {
             case "options-users":
                 $importo_type_db = 'USERS';
                 break;
+			deafult:
+				self::x('AjaxGasCode valore importo_type_db ['.$importo_type_db.' inatteso!');
+			break;				
         }
 		
 		switch ($model) {
@@ -241,13 +244,7 @@ class AjaxGasCode extends AppModel {
                     /*
                      * dati gia' inseriti
                      */
-                    /*
-                    if ($importo_type == $importo_type_db) {
-                        $results['Delivery'][0]['Order'][$numOrder][$model][$numResult][$model][$prefix.'_percentuale'] = 0;
-                        $results['Delivery'][0]['Order'][$numOrder][$model][$numResult][$model][$prefix.'_importo'] = $summaryOrderPlu[$model]['importo_'.$prefix];
-                    } 
-                    else */
-                    if(!empty($summaryOrderResults) && $summaryOrderResults['SummaryOrder']['saldato_a']!=null) {
+                    if(($importo_type == $importo_type_db) || (!empty($summaryOrderResults) && $summaryOrderResults['SummaryOrder']['saldato_a']!=null)) {
 						$results['Delivery'][0]['Order'][$numOrder][$model][$numResult][$model][$prefix.'_percentuale'] = 0;
                         $results['Delivery'][0]['Order'][$numOrder][$model][$numResult][$model][$prefix.'_importo'] = $summaryOrderPlu[$model]['importo_'.$prefix];  
                         $results['Delivery'][0]['Order'][$numOrder][$model][$numResult][$model][$prefix.'_importo_'] = number_format($summaryOrderPlu[$model]['importo_'.$prefix],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));

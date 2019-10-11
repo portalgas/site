@@ -1,12 +1,11 @@
 <?php
+$debug=false;
+$this->App->d($results);
+
 echo $this->Html->script('genericBackOfficeGasDes.min');
 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesOrders'),array('controller' => 'DesOrders', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesOrdersOrganizations'));
@@ -28,15 +27,15 @@ echo '<div class="orders">';
 			echo '</p>';
 		}
 		
-		echo '<table cellpadding="0" cellspacing="0">';
+		echo '<div class="table-responsive"><table class="table">';
 		echo '<tr>';
 		echo '<th colspan="2">'.__('N').'</th>';
 		echo '<th colspan="2">'.__('Supplier').'</th>';
 		echo '<th colspan="2">'.__('OwnOrganization').'</th>';
 		echo '<th>'.__('DesDelivery').'</th>';
-		echo '<th>'.__('Data fine max').'</th>';	
+		echo '<th>'.__('DataFineMax').'</th>';	
 		echo '<th>'.__('Orders').'</th>';
-		echo '<th colspan="2">'.__('stato_elaborazione').'</th>';		
+		echo '<th colspan="2">'.__('StatoElaborazione').'</th>';		
 		echo '</tr>';
 
 
@@ -46,7 +45,7 @@ echo '<div class="orders">';
 		
 		echo '<td>';
 		if(!empty($results['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$results['Supplier']['img1']))
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$results['Supplier']['img1'].'" />';	
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$results['Supplier']['img1'].'" />';	
 		echo '</td>';			
 		echo '<td>'.$results['Supplier']['name'];
 		if(!empty($results['Supplier']['descrizione']))
@@ -97,28 +96,32 @@ echo '<div class="orders">';
 
 	if(!empty($results['DesOrdersOrganizations'])) {
 
-		echo '<tr>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td colspan="8">';
+		echo '<tr style="border:0px;">';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;" colspan="10"><h3 style="padding:5px;" class="p-3 mb-2 bg-info text-white">'.__('List DesOrders').'</h3></td>';
+		echo '</tr>';
+		
+		echo '<tr style="border:0px;">';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;" colspan="8">';
 
-		echo '<table cellpadding="0" cellspacing="0">';
+		echo '<div class="table-responsive"><table class="table table-hover">';
 		echo '<tr>';
 		echo '<th>'.__('N').'</th>';
-		echo '<th colspan="3">'.__('Organization').'</th>';
-		echo '<th>'.__('Data inizio').'</th>';
-		echo '<th>'.__('Data fine').'</th>';
-		echo '<th>'.__('Aperto/Chiuso').'</th>';
-		echo '<th>'.__('stato_elaborazione').'</th>';
+		echo '<th colspan="3">'.__('GasOrganization').'</th>';
+		echo '<th>'.__('DataInizio').'</th>';
+		echo '<th>'.__('DataFine').'</th>';
+		echo '<th>'.__('OpenClose').'</th>';
+		echo '<th>'.__('StatoElaborazione').'</th>';
 		echo '<th class="actions">'.__('Actions').'</th>';	
 		echo '</tr>';
 
 		foreach ($results['DesOrdersOrganizations'] as $numResult2 => $resultDesOrdersOrganization) {
-			/*
-			echo "<pre>";
-			print_r($resultDesOrdersOrganization);
-			echo "</pre>";
-			*/
+			
+			// $this->App->d($resultDesOrdersOrganization, $debug);
+			
 			echo '<tr class="view-2">';
 			echo '<td>'.($numResult2+1).'</td>';
 			
@@ -126,8 +129,7 @@ echo '<div class="orders">';
 			echo '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$resultDesOrdersOrganization['Organization']['img1'].'" alt="'.$resultDesOrdersOrganization['Organization']['name'].'" />';
 			echo '</td>';
 			echo '<td colspan="2">'.$resultDesOrdersOrganization['Organization']['name'].'</td>';
-			echo "<pre>";
-		
+			
 			if(!empty($resultDesOrdersOrganization['Order']['id'] )) {
 				echo '	<td style="white-space:nowrap;">';
 				echo $this->Time->i18nFormat($resultDesOrdersOrganization['Order']['data_inizio'],"%A %e %B %Y").'<br />';
@@ -176,7 +178,7 @@ echo '<div class="orders">';
 			echo '</tr>';
 			
 		} // loop DesOrdersOrganizations
-		echo '</table>';
+		echo '</table></div>';
 			
 		echo '</td>';
 		echo '</tr>';
@@ -188,15 +190,15 @@ echo '<div class="orders">';
 	 * desOrder da creare creati
 	 */
 	if(!empty($desOrganizationsResults)) {
-		echo '<tr>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td colspan="9">';
+		echo '<tr style="border:0px;">';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;"></td>';
+		echo '<td style="border:0px;" colspan="9">';
 				
-		echo '<table>';
+		echo '<div class="table-responsive"><table class="table table-hover">';
 		echo '<tr>';
 		echo '<th>'.__('N').'</th>';
-		echo '<th colspan="3">'.__('Organization').'</th>';
+		echo '<th colspan="2">'.__('GasOrganization').'</th>';
 		echo '<th>'.__('Actions').'</th>';	
 		echo '</tr>';		
 		foreach ($desOrganizationsResults as $numResult3 => $desOrganizationsResult) {
@@ -206,32 +208,67 @@ echo '<div class="orders">';
 			echo '<td style="width:50px;">';
 			echo '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$desOrganizationsResult['Organization']['img1'].'" alt="'.$desOrganizationsResult['Organization']['name'].'" />';
 			echo '</td>';
-			echo '<td style="width:200px;">'.$desOrganizationsResult['Organization']['name'].'</td>';
-			echo '<td></td>';
-			echo '<td style="width:75px;">';
+			echo '<td style="width:75%;">'.$desOrganizationsResult['Organization']['name'].'</td>';
+			echo '<td>';
+		
+			/*
+			 * actions
+			 */
 			
-			if($desOrganizationsResult['Organization']['id']==$user->organization['Organization']['id'] &&
-			  (($totaliDesOrdersOrganization==0 && $isTitolareDesSupplier) || ($totaliDesOrdersOrganization>0)) // se non sono stati creati ordini, il primo puo' farlo solo il titolare 
-			 ) 	
-				echo $this->Html->link(null, array('controller' => 'DesOrders', 'action' => 'prepare_order_add', $results['DesOrder']['id']), array('class' => 'action actionAdd','title' => __('Add DesOrder')));
-						
+			$this->App->d('totaliDesOrdersOrganization '.$totaliDesOrdersOrganization, $debug); 
+			$this->App->d('DesOrder.state_code '.$results['DesOrder']['state_code'], $debug); 
+			$this->App->d($acl_owner_articles, $debug);
+			if($isTitolareDesSupplier)
+				$this->App->d('isTitolareDesSupplier Y', $debug);
+			else
+				$this->App->d('isTitolareDesSupplier Y', $debug);
+			if($desOrganizationsResult['Organization']['id']==$user->organization['Organization']['id']) {
+				if($acl_owner_articles!==true) {
+					switch ($acl_owner_articles['owner_articles']) {
+						case 'REFERENT':
+						case 'SUPPLIER':
+							if($results['DesOrder']['state_code']=='OPEN') {
+								$label = __('DesOrderOrganizationSupplierOwnerArticlesError');
+								echo $this->Html->link('<span class="btn btn-danger">'.$label.'</span>', ['controller' => 'SuppliersOrganizations', 'action' => 'edit', $acl_owner_articles['supplier_organization_id']], ['escape' => false, 'title' => __($label)]);
+								echo $this->element('boxMsg', ['class_msg' => 'danger', 'msg' => __('DesOrderOrganizationSupplierOwnerArticlesMsg')]);
+							}
+						break;
+						case '':
+							echo '<span class="label label-info">'.__('DesOrderOrganizationNotSupplier').'</span>';
+						break;
+					}
+				}
+				else
+				if(($totaliDesOrdersOrganization==0 && $isTitolareDesSupplier) || ($totaliDesOrdersOrganization>0)) { // se non sono stati creati ordini, il primo puo' farlo solo il titolare 	
+					if($results['DesOrder']['state_code']=='OPEN')
+						echo $this->Html->link(null, ['controller' => 'DesOrders', 'action' => 'prepare_order_add', $results['DesOrder']['id']], ['class' => 'action actionAdd','title' => __('Add DesOrder')]);
+					else
+				 		echo '<span class="label label-warning">'.__('DesOrderOrganizationNotMyOrderCreateClose').'</span>';						
+				}
+			}
+			else {
+			    if($results['DesOrder']['state_code']=='OPEN')
+				 	echo '<span class="label label-warning">'.__('DesOrderOrganizationNotOrderCreate').'</span>';
+				else
+				 	echo '<span class="label label-warning">'.__('DesOrderOrganizationNotOrderCreateClose').'</span>';
+			} 				
 			echo '</td>';
 			echo '</tr>';
 		}
-		echo '</table>';
+		echo '</table></div>';
 			
 		echo '</td>';
 		echo '</tr>';
-	} // end esOrder da creare creati
+	} // end desOrder da creare creati
 
-	echo '</table>';
+	echo '</table></div>';
 
 
 	
 
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora ordini registrati"));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora ordini registrati"));
 	
 	
 /*
@@ -243,31 +280,31 @@ echo $this->App->drawLegenda($user, $desOrderStatesToLegenda);
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewDesOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});		
 });

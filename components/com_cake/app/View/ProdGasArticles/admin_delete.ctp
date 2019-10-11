@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'index'));
 $this->Html->addCrumb(__('Title Delete Article'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -9,12 +9,12 @@ echo $this->Form->create('ProdGasArticle', array('type' => 'post'));
 echo '<fieldset>';
 echo '<legend>'.__('Title Delete Article').'</legend>';
 
-echo '<div class="input text"><label for="">'.__('Article').'</label>'.$this->request->data['ProdGasArticle']['name'].'</div>';
+echo '<div class="input text"><label for="">'.__('Article').'</label> '.$this->request->data['ProdGasArticle']['name'].'</div>';
 
 		
 if(isset($file1)) {
 	echo '<div class="input">';
-	echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$this->request->data['ProdGasArticle']['supplier_id'].'/'.$file1->name.'" />';	
+	echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$this->request->data['ProdGasArticle']['organization_id'].'/'.$file1->name.'" />';	
 	echo '&nbsp;&nbsp;&nbsp;'.$this->App->formatBytes($file1->size());
 	echo '</div>';	
 }
@@ -28,10 +28,10 @@ else {
 		echo '<table cellpadding="0" cellspacing="0">';
 		echo '	<tr>';
 		echo '		<th>'.__('N').'</th>';
-		echo '		<th>'.__('Data inizio').'</th>';
-		echo '		<th>'.__('Data fine').'</th>';
-		echo '<th>'.__('Aperto/Chiuso').'</th>';
-		echo '<th>'.__('stato_elaborazione').'</th>';
+		echo '		<th>'.__('DataInizio').'</th>';
+		echo '		<th>'.__('DataFine').'</th>';
+		echo '<th>'.__('OpenClose').'</th>';
+		echo '<th>'.__('StatoElaborazione').'</th>';
 		echo '<th>'.__('Created').'</th>';
 		echo '</tr>';
 			

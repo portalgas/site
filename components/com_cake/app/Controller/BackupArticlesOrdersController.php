@@ -35,7 +35,7 @@ class BackupArticlesOrdersController extends AppController {
 		$Order = new Order;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}

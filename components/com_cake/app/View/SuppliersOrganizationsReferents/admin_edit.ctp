@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List').' '.$userGroups[$group_id]['name'], array('controller' => 'SuppliersOrganizationsReferents', 'action' => 'index', null, 'group_id='.$group_id));
 $this->Html->addCrumb(__('Gest').' '.$userGroups[$group_id]['name']);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -41,15 +41,15 @@ echo $this->Form->end(__('Submit'));
 
 <script type="text/javascript">
 function choiceSupplierOrganization() {
-	var supplier_organization_id = jQuery("#supplier_organization_id").val();	
-	var group_id = jQuery("#group_id").val();	
+	var supplier_organization_id = $("#supplier_organization_id").val();	
+	var group_id = $("#group_id").val();	
 	
 	if(supplier_organization_id=='') {
 		<?php
 		foreach ($types as $type => $value) {
-			echo "jQuery('#users-".$type."').hide();";
+			echo "$('#users-".$type."').hide();";
 			echo "\r\n";
-			echo "jQuery('#users-".$type."').html();";
+			echo "$('#users-".$type."').html();";
 			echo "\r\n";
 		}
 		?>
@@ -69,21 +69,21 @@ function AjaxCallToReferents(supplier_organization_id, group_id, type) {
 	var url = "/administrator/index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=ajax_box_users&supplier_organization_id="+supplier_organization_id+"&group_id="+group_id+"&type="+type+"&format=notmpl";
 	var urlAjax = 'url("'+app_img+'/ajax-loader.gif") no-repeat scroll center 0 transparent'; 
 	
-	jQuery('#users-'+type).show();
-	jQuery('#users-'+type).html('');
-	jQuery('#users-'+type).css('background', urlAjax);	
+	$('#users-'+type).show();
+	$('#users-'+type).html('');
+	$('#users-'+type).css('background', urlAjax);	
 	
-	jQuery.ajax({
+	$.ajax({
 		type: "get", 
 		url: url,
 		data: "", 
 		success: function(response) {
-			jQuery('#users-'+type).css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#users-'+type).html(response);
+			$('#users-'+type).css('background', 'none repeat scroll 0 0 transparent');
+			$('#users-'+type).html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#users-'+type).css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#users-'+type).html(textStatus);
+			$('#users-'+type).css('background', 'none repeat scroll 0 0 transparent');
+			$('#users-'+type).html(textStatus);
 		}
 	});	
 }	
@@ -91,15 +91,15 @@ function AjaxCallToReferents(supplier_organization_id, group_id, type) {
 if(!empty($supplier_organization_id)) echo 'choiceSupplierOrganization();';
 ?>
 
-jQuery(document).ready(function() {
-	jQuery('#formGas').submit(function() {
+$(document).ready(function() {
+	$('#formGas').submit(function() {
 
 		<?php
 		foreach ($types as $type => $value) {
 		?>
 			var referent_user_ids_<?php echo $type;?> = '';
-			jQuery("#referent_user_id-<?php echo $type;?> option" ).each(function (){	
-				referent_user_ids_<?php echo $type;?> +=  jQuery(this).val()+',';
+			$("#referent_user_id-<?php echo $type;?> option" ).each(function (){	
+				referent_user_ids_<?php echo $type;?> +=  $(this).val()+',';
 			});
 			referent_user_ids_<?php echo $type;?> = referent_user_ids_<?php echo $type;?>.substring(0,referent_user_ids_<?php echo $type;?>.length-1);
 		
@@ -124,9 +124,9 @@ jQuery(document).ready(function() {
 
 		<?php
 		foreach ($types as $type => $value) {
-			echo "jQuery('#referent_user_ids-".$type."').val();";
+			echo "$('#referent_user_ids-".$type."').val();";
 			echo "\r\n";
-			echo "jQuery('#referent_user_ids-".$type."').val(referent_user_ids_".$type.");";
+			echo "$('#referent_user_ids-".$type."').val(referent_user_ids_".$type.");";
 			echo "\r\n";
 		}
 		?>

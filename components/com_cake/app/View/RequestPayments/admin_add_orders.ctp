@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if($isReferenteTesoriere)  {
 	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 	if(isset($order_id))
@@ -12,14 +12,16 @@ else {
 $this->Html->addCrumb(__('List Request Payments'), array('controller' => 'RequestPayments', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Request Payments Orders'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-<div class="requestPayment form">
 
-	<h2 class="ico-pay">
-		<?php echo __('Add Request Payments Orders')." alla richiesta numero ".$requestPaymentResults['RequestPayment']['num'];?>
-	</h2>	
-		
-	<?php 
+echo '<div class="contentMenuLaterale">';
+
+	echo '<h2 class="ico-pay">';
+	echo __('Add Request Payments Orders')." alla ".__('request_payment_num').' '.$requestPaymentResults['RequestPayment']['num'].' di '.$tot_importo.' &euro; ('.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['created'],"%A %e %B %Y").')';
+	echo '<span style="float:right;">';
+	echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).' <span style="padding-left: 20px;" title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']).'"></span>';
+	echo '</span>';
+	echo '</h2>';
+			
 	/*
 	 * ctrl se c'e' almeno un acquisto
 	* */
@@ -36,7 +38,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 		echo $this->Form->create('RequestPayment',array('id' => 'formGas'));
 		
-		echo '<table>';
+		echo '<div class="table-responsive"><table class="table table-hover">';
 		echo '<tbody>';
 	
 		foreach($results['Tab'] as $numTabs => $tab) {
@@ -45,7 +47,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 				if($delivery['totOrders']>0) {
 		
-					echo '<tr><td colspan="7" class="trGroup">'.__('Delivery').': ';
+					echo '<tr><td colspan="8" class="trGroup">'.__('Delivery').': ';
 					if($delivery['sys']=='N')
 						echo $delivery['luogoData'];
 					else 
@@ -56,11 +58,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 					echo '<tr>';
 					echo '<th>'.__('N').'</th>';
 					echo '<th><input type="checkbox" checked id="order_id_selected_all'.$delivery['id'].'" name="order_id_selected_all'.$delivery['id'].'" value="ALL" /></th>';
-					echo '<th>'.__('Supplier').'</th>';
-					echo '<th>Data dell\'ordine</th>';
+					echo '<th colspan="2">'.__('Supplier').'</th>';
+					echo '<th>'.__('OrderDate').'</th>';
 					echo '<th>'.__('Stato').'</th>';
 					echo '<th>'.__('Importo totale ordine').'</th>';
-					echo '<th>Referenti</th>';
+					echo '<th>'.__('Suppliers Organizations Referents').'</th>';
 					echo '</tr>';
 					echo '</thead>';
 					
@@ -87,6 +89,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 						echo '<td><input type="checkbox" checked id="'.$order['Order']['id'].'[order_id_selected]" name="order_id_selected" class="order_id_selected'.$delivery['id'].'" value="'.$order['Order']['id'].'" />';
 						echo $this->Form->hidden('order_id',array('name'=>'data[RequestPayment]['.$order['Order']['id'].'][order_id]','value'=>$order['Order']['id']));
 						echo '</td>';
+						echo '	<td>';
+						if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
+							echo ' <img width="50" class="img-responsive-disabled" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
+						echo '	</td>';						
 						echo "\n";
 						echo '<td>';
 						echo $order['SuppliersOrganization']['name'];
@@ -99,6 +105,8 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 						
 						echo "\n";
 						echo '<td>';
+						echo $this->App->drawOrdersStateDiv($order);
+						echo '&nbsp;';					
 						echo __($order['Order']['state_code'].'-label');
 						echo '</td>';
 						
@@ -116,13 +124,13 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 				?>
 				<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('#order_id_selected_all<?php echo $delivery['id'];?>').click(function () {
-						var checked = jQuery("input[name='order_id_selected_all<?php echo $delivery['id'];?>']:checked").val();
+				$(document).ready(function() {
+					$('#order_id_selected_all<?php echo $delivery['id'];?>').click(function () {
+						var checked = $("input[name='order_id_selected_all<?php echo $delivery['id'];?>']:checked").val();
 						if(checked=='ALL')
-							jQuery('.order_id_selected<?php echo $delivery['id'];?>').prop('checked',true);
+							$('.order_id_selected<?php echo $delivery['id'];?>').prop('checked',true);
 						else
-							jQuery('.order_id_selected<?php echo $delivery['id'];?>').prop('checked',false);
+							$('.order_id_selected<?php echo $delivery['id'];?>').prop('checked',false);
 					});
 				});
 				</script>	
@@ -131,19 +139,19 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 		} // end ciclo Tabs
 		echo '</tbody>';
-		echo '</table>';
+		echo '</table></div>';
 		
 		echo $this->Form->hidden('order_id_selected',array('id' =>'order_id_selected', 'value'=>''));
 		echo $this->Form->end(__('Add Request Payments Orders')." alla richiesta numero ".$requestPaymentResults['RequestPayment']['num']);
 		
 				?>
 				<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('#formGas').submit(function() {
+				$(document).ready(function() {
+					$('#formGas').submit(function() {
 				
 						var order_id_selected = '';
-						for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-							order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+						for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+							order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 						}
 				
 						if(order_id_selected=='') {
@@ -152,8 +160,12 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 						}	    
 						order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
 						
-						jQuery('#order_id_selected').val(order_id_selected);
+						$('#order_id_selected').val(order_id_selected);
 				
+						$("input[type=submit]").attr('disabled', 'disabled');
+						$("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
+						$("input[type=submit]").css('box-shadow', 'none');
+		
 						return true;
 					});
 				});
@@ -161,30 +173,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				<?php 		
 	}
 	else
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non sono stati trovati ordini che possono richiedere il pagamento"));
-	?>
-</div>
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non sono stati trovati ordini che possono richiedere il pagamento"));
 
-<div class="actions">
-	<?php include(Configure::read('App.root').Configure::read('App.component.base').'/View/RequestPayments/admin_sotto_menu.ctp');?>		
-</div>
+echo '</div>'; // end contentMenuLaterale
 
-<script type="text/javascript">
-<?php
-if($isReferenteTesoriere) 
-	echo 'viewReferenteTesoriereSottoMenu("0", "bgLeft");';
-else
-	echo 'viewTesoriereSottoMenu("0", "bgLeft");';
+$options = [];
+echo $this->MenuRequestPayment->drawWrapper($requestPaymentResults['RequestPayment']['id'], $options);
 ?>
-</script>
-
-
-<style type="text/css">
-.cakeContainer div.form, .cakeContainer div.index, .cakeContainer div.view {
-	padding-left: 5px;
-    width: 74%;
-}
-.cakeContainer div.actions {
-    width: 25%;
-}
-</style>

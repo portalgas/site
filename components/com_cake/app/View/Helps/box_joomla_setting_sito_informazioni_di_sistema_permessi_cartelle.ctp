@@ -1,0 +1,1 @@
+<h2>Sito -> Informazioni di sistema -> Permessi cartelle</h2>	<table>	<tr>		<th>Elenco file</th>		<th>Valore</th>		<th>Nota</th>	</tr>	<tr>		<td>...</td>		<td><span style="color:green;">Scrivibili</span></td>		<td></td>	</tr></table>

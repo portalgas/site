@@ -7,7 +7,7 @@
  * 		admin_referentDocsExportHistory    se chiamato da controller=Docs&action=referentDocsExportHistory
  * 		admin_cassiere_docs_export         se chiamato da controller=Docs&action=cassiere_docs_export
  * 		admin_validationCarts              se chiamato da controller=Carts&action=validationCarts
- * 		admin_summary_orders              se chiamato da controller=Referente&action=summary_orders
+ * 		admin_summary_order_aggregates     se chiamato da controller=SummaryOrderAggregates&action=summary_order_aggregates
  * */
 
 // visualizzo il msg solo se non va bene
@@ -28,7 +28,7 @@ if($call_action=='admin_managementCartsOne' || $call_action=='admin_managementCa
 	}
 }
 else
-if($call_action=='admin_referentDocsExport' || $call_action=='admin_cassiere_docs_export' || $call_action=='admin_summary_orders') { 
+if($call_action=='admin_referentDocsExport' || $call_action=='admin_cassiere_docs_export' || $call_action=='admin_summary_order_aggragates') { 
 	$msgIni = "Esportazione dell'ordine";
 
 /* 	if(!$isReferentGeneric)
@@ -81,8 +81,8 @@ if($msg_visible)
 	echo $this->element('boxMsg',array('class_msg' => 'message nomargin','msg' => $msgFinale));
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	var order_id = jQuery("#order_id").val();
+$(document).ready(function() {
+	var order_id = $("#order_id").val();
 	if(order_id>0)	choiceOrderPermission();
 });
 </script>

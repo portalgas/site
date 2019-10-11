@@ -13,7 +13,7 @@
 	<table cellpadding = "0" cellspacing = "0">
 		<tr>
 			<th><?php echo __('StateDelivery');?></th>
-		  	<th><?php echo __('stato_elaborazione');?></th>
+		  	<th><?php echo __('StatoElaborazione');?></th>
 			<?php 
 			if($user->organization['Organization']['hasVisibility']=='Y')
 				echo '<th>'.__('isVisibleFrontEnd').'</th>';
@@ -97,8 +97,8 @@
 		echo $this->element('boxMsg',array('class_msg' => 'message nomargin','msg' => $msgFinale));
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		var prod_delivery_id = jQuery("#prod_delivery_id").val();
+	$(document).ready(function() {
+		var prod_delivery_id = $("#prod_delivery_id").val();
 		if(prod_delivery_id>0)	choiceProdDeliveryPermission();
 	});
 	</script>

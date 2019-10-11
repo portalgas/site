@@ -1,8 +1,8 @@
 <?php
 /**
  * @version		$Id: language.php 22714 joomla.it ì$
- * @copyright	Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @copyright	Copyright (C) Translation 2008- 2012 joomla.it
+ * @copyright	Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright	Copyright (C) Translation 2008 - 2014 joomla.it
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;

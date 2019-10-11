@@ -14,7 +14,18 @@
 				<option value="Y">Si</option>
 				<option value="N">No</option>
 			</field>
-										
+						
+			<field
+				name="cf"
+				type="text"
+				id="cf"
+				description="Codice Fiscale"
+				filter="string"
+				label="Codice fiscale"
+				message="Codice fiscale"
+				size="16"
+			/>	
+													
 			<field
 				name="codice"
 				type="text"
@@ -100,6 +111,27 @@
 				filter="string"
 				label="PLG_USER_PROFILE_FIELD_PHONE2_LABEL"
 				message="PLG_USER_PROFILE_FIELD_PHONE2_MESSAGE"
+				size="30"
+			/>
+
+			<field
+				name="satispay"
+				type="list"
+				description="Hai Satispay"
+				label="Hai Satispay"
+			>	
+				<option value="N">No</option>
+				<option value="Y">Si</option>
+			</field>
+			
+			<field
+				name="satispay_phone"
+				type="tel"
+				id="satispay_phone"
+				description="Indica se Sapispay è su un numero diverso dal tuo cellulare"
+				filter="string"
+				label="Cellulare per Satispay"
+				message="Indica se Sapispay è su un numero diverso dal tuo cellulare"
 				size="30"
 			/>
 
@@ -244,6 +276,38 @@
 				size="50"
 			/>
 			
+
+			<field
+				name="hasUserFlagPrivacy"
+				type="list"
+				description="Ha accettato il testo sulla privacy"
+				label="Ha accettato il testo sulla privacy"
+			>	
+				<option value="N">No</option>
+				<option value="Y">Si</option>
+			</field>
+			
+			<field
+				name="dataUserFlagPrivacy"
+				type="text"
+				id="dataUserFlagPrivacy"
+				description="Data accettazione trattamento privacy"
+				filter="string"
+				label="Data accettazione privacy"
+				message="Data accettazione privacy"
+				size="20"
+			/>			
+			
+			<field
+				name="hasUserRegistrationExpire"
+				type="list"
+				description="Ha rinnovato l'iscrizione"
+				label="Ha rinnovato l'iscrizione"
+			>	
+				<option value="N">No</option>
+				<option value="Y">Si</option>
+			</field>
+						
 			<field
 				name="nota"
 				type="textarea"
@@ -256,6 +320,29 @@
 				filter="safehtml"
 			/>
 			
+			<field
+				name="lat"
+				type="hidden"
+				id="lat"
+				description="lat"
+				filter="string"
+				label="lat"
+				message="lat"
+				size="30"
+			/>
+
+						
+			<field
+				name="lng"
+				type="hidden"
+				id="lng"
+				description="lng"
+				filter="string"
+				label="lng"
+				message="lng"
+				size="30"
+			/>
+						
 		</fieldset>
 	</fields>
 </form>

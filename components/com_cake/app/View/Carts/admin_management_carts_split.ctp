@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order_id) && !empty($order_id))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
@@ -15,8 +15,8 @@ function choiceOrderPermission() {
 	var div_contenitore = 'order-permission';
 	showHideBox(div_contenitore,call_child=true); 
 
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 	
 	AjaxCallToCartsSplitsOptions(delivery_id, order_id); 	/* chiamata Ajax opzioni cart split */
 }
@@ -24,13 +24,13 @@ function choiceCartsSplitsOptions() {
 
 	var div_contenitore = 'cart-splits-options';
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
-	var cartsSplitsOptions = jQuery("input[name='cart-splits-options']:checked").val(); 
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var cartsSplitsOptions = $("input[name='cart-splits-options']:checked").val(); 
 
 	if(cartsSplitsOptions=='options-delete-yes') {
 		if(!confirm("Sei sicuro di voler rigenerare i dati cancellando quelli sottostanti?")) {
-			jQuery("#options-carts_splits-delete-no").prop('checked',true);
+			$("#options-carts_splits-delete-no").prop('checked',true);
 			return;
 		}
 	}
@@ -48,8 +48,8 @@ function choiceCartsSplitsOptionsReadOnly() {
 
 	var div_contenitore = 'cart-splits-options';
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 
 	if(debugLocal) alert("choiceCartsSplitsOptions - div_contenitore "+div_contenitore);
 	if(delivery_id == '' || order_id=='') {
@@ -109,10 +109,10 @@ echo $this->element('boxDesOrder', array('results' => $desOrdersResults, 'summar
 	<?php 
 	echo $this->element('boxOrder',array('results' => $results));
 	?>	
-	
-	<div id="cart-splits-options" style="display:none;margin-top:5px;"></div>
 
-	<div id="doc-preview" style="display:none;"></div>
+	<div id="cart-splits-options" style="display:none;margin-top:5px;clear: both;"></div>
+
+	<div id="doc-preview" style="display:none;clear: both;"></div>
 	
 	</fieldset>
 </div>
@@ -126,8 +126,3 @@ echo $this->MenuOrders->drawWrapper($order_id, $options);
 */
 echo $this->App->drawLegenda($user, $orderStatesToLegenda);
 ?>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

@@ -1,12 +1,9 @@
 <?php
 echo $this->Html->script('genericBackOfficeGasDes.min');
 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($results);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesOrders history'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -31,9 +28,9 @@ if(!empty($results)) {
 	echo '<th colspan="2">'.__('Supplier').'</th>';
 	echo '<th colspan="2">'.__('OwnOrganization').'</th>';
 	echo '<th>'.__('DesDelivery').'</th>';
-	echo '<th>'.__('Data fine max').'</th>';
+	echo '<th>'.__('DataFineMax').'</th>';
 	echo '<th>'.__('Orders').'</th>';
-	echo '<th>'.__('stato_elaborazione').'</th>';			
+	echo '<th>'.__('StatoElaborazione').'</th>';			
 	echo '<th class="actions">'.__('Actions').'</th>';
 	echo '</tr>';
 
@@ -44,7 +41,7 @@ if(!empty($results)) {
 		
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 		echo '</td>';			
 		echo '<td>'.$result['Supplier']['name'];
 		if(!empty($result['Supplier']['descrizione']))
@@ -112,11 +109,11 @@ if(!empty($results)) {
 		echo '<table>';
 		echo '<tr>';
 		echo '<th>'.__('N').'</th>';
-		echo '<th colspan="3">'.__('Organization').'</th>';
-		echo '<th>'.__('Data inizio').'</th>';
-		echo '<th>'.__('Data fine').'</th>';
-		echo '<th>'.__('Aperto/Chiuso').'</th>';
-		echo '<th>'.__('stato_elaborazione').'</th>';	
+		echo '<th colspan="3">'.__('GasOrganizations').'</th>';
+		echo '<th>'.__('DataInizio').'</th>';
+		echo '<th>'.__('DataFine').'</th>';
+		echo '<th>'.__('OpenClose').'</th>';
+		echo '<th>'.__('StatoElaborazione').'</th>';	
 		echo '</tr>';
 	
 		foreach ($result['DesOrdersOrganizations'] as $numResult2 => $resultDesOrdersOrganization) {
@@ -178,7 +175,7 @@ endforeach;
 		
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora ordini registrati"));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora ordini registrati"));
 
 
 /*
@@ -190,35 +187,35 @@ echo $this->App->drawLegenda($user, $desOrderStatesToLegenda);
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewDesOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});	
 
-	jQuery('.actionDelete').click(function() {
+	$('.actionDelete').click(function() {
 
 		if(!confirm("Sei sicuro di voler eliminare definitivamente l'ordine condiviso?")) {
 			return false;

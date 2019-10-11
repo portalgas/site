@@ -23,7 +23,7 @@ if($user->organization['Organization']['hasVisibility']=='Y') {
 												   		    'after'=>$this->App->drawTooltip(null,__('toolTipIsVisibleBackOfficeProdDelivery'),$type='HELP')));
 }
 
-echo $this->Form->input('ricorrenza_num',  array('type' => 'text', 'size'=>'4', 'class' => 'noWidth', 'value' => $ricorrenza_num, 'required'=>'false'));
+echo $this->Form->input('ricorrenza_num',  array('type' => 'text', 'size'=>'4',  'value' => $ricorrenza_num, 'required'=>'false'));
 echo $this->Form->input('ricorrenza_type',array('options' => $ricorrenza_type,
 												'default' => '',
 												'required'=>'false'));

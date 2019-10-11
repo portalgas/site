@@ -1,41 +1,23 @@
 <?php
 App::uses('AuthComponent', 'Controller/Component');
-
-/*
- *  DROP TRIGGER IF EXISTS `j_users_Trigger`;
- *  DELIMITER |
- *  CREATE TRIGGER `j_users_Trigger` AFTER DELETE ON `j_users`
- *  FOR EACH ROW BEGIN
- *  delete from k_suppliers_organizations_referents where user_id = old.id and organization_id = old.organization_id;
- *  delete from k_summary_payments where user_id = old.id and organization_id = old.organization_id;
- *  delete from k_summary_orders where user_id = old.id and organization_id = old.organization_id;
- *  delete from k_storerooms where user_id = old.id and organization_id = old.organization_id;
- *  delete from k_request_payments where user_id = old.id and organization_id = old.organization_id;
- *  delete from k_carts where user_id = old.id and organization_id = old.organization_id;
- *  
- *  delete from j_user_notes where user_id = old.id;
- *  delete from j_user_profiles where user_id = old.id;
- *  delete from j_user_usergroup_map where user_id = old.id;
- *  END
- *  |
- *  DELIMITER ;
- */
  
 class User extends AppModel {
 
-	public $actsAs = array('Containable');
+	public $actsAs = ['Containable'];
     public $displayField = 'username';
 	public $tablePrefix = 'j_';
 
 	/*
 	 * ottieni gli Users e i Groups associati e Referenti
 	* */
-	public function getUsersComplete($user, $conditions, $orderBy=null, $debug=false) {
+	public function getUsersComplete($user, $conditions=[], $orderBy=null, $debug=false) {
+		
+		self::d($conditions); 
 		
 		if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 		
 		$sql = "SELECT 
-					User.id, User.name, User.username, User.email, User.block, 
+					User.organization_id, User.id, User.name, User.username, User.email, User.block, 
 					User.lastvisitDate, User.registerDate  
 				FROM 
 					".Configure::read('DB.portalPrefix')."users User,
@@ -52,12 +34,13 @@ class User extends AppModel {
 		else
 			$sql .= " AND User.block = 0 ";  // 0 attivo
 		
+		if(isset($conditions['User.id'])) $sql .= ' AND '.$conditions['User.id'];
 		if(isset($conditions['User.name'])) $sql .= ' AND '.$conditions['User.name'];
 		if(isset($conditions['User.username'])) $sql .= ' AND '.$conditions['User.username'];
 		if(isset($conditions['UserGroup.group_id'])) $sql .= " AND UserGroup.group_id IN (".$conditions['UserGroup.group_id'].")";  // filtro per gruppi
 		$sql .= " GROUP BY User.id, User.name, User.username, User.email   
 				  ORDER BY ".$orderBy;
-		if($debug) echo '<br />User::getUsersComplete() '.$sql;
+		self::d('User::getUsersComplete() '.$sql, $debug);
 		try {
 			$results = $this->query($sql);
 		}
@@ -84,7 +67,7 @@ class User extends AppModel {
 							AND User.id = ".$result['User']['id'];
 				if(isset($conditions['UserGroup.group_id'])) $sql .= " AND UserGroup.group_id IN (".$conditions['UserGroup.group_id'].")";  // filtro per gruppi
 				$sql .= " ORDER BY `Group`.title ";
-				if($debug) echo '<br />User::getUsersComplete() '.$sql;
+				self::d('User::getUsersComplete() '.$sql, $debug);
 				try {
 					$groupResults = $this->query($sql);
 				}
@@ -122,7 +105,7 @@ class User extends AppModel {
 							AND SuppliersOrganization.stato = 'Y' 
 							AND User.id = ".$result['User']['id']."
 						ORDER BY SuppliersOrganization.name ";
-					if($debug) echo '<br />User::getUsersComplete() '.$sql; 
+					self::d('User::getUsersComplete() '.$sql, $debug);
 					try {
 						$supplierResults = $this->query($sql);
 					}
@@ -141,27 +124,145 @@ class User extends AppModel {
 					*/
 					$userTmp = JFactory::getUser($result['User']['id']);
 					$userProfile = JUserHelper::getProfile($userTmp->id);
-						
+					self::d($userTmp);
+					self::d($userProfile->profile); 
+					
 					$results[$numResult]['Profile'] = $userProfile->profile;
+						
+					if(!isset($userProfile->profile['hasUserFlagPrivacy']))
+						$results[$numResult]['Profile']['UserFlagPrivacy'] = 'N';
+					if(!isset($userProfile->profile['hasUserRegistrationExpire']))
+						$results[$numResult]['Profile']['hasUserRegistrationExpire'] = 'N';
+					if(!isset($userProfile->profile['CF']))
+						$results[$numResult]['Profile']['CF'] = '';
+						
+																
+					if(isset($conditions['UserProfile.UserFlagPrivacy']) && $conditions['UserProfile.UserFlagPrivacy']!='ALL') {
+						if($userProfile->profile['hasUserFlagPrivacy']!=$conditions['UserProfile.UserFlagPrivacy']) {
+							self::d($userProfile->profile['hasUserFlagPrivacy'].' '.$conditions['UserProfile.UserFlagPrivacy']); 
+							unset($results[$numResult]);
+						}
+					}
+					if(isset($conditions['UserProfile.UserRegistrationExpire']) && $conditions['UserProfile.UserRegistrationExpire']!='ALL') {
+						if($userProfile->profile['hasUserRegistrationExpire']!=$conditions['UserProfile.UserRegistrationExpire'])
+							unset($results[$numResult]);						
+					}
+					if(isset($conditions['UserProfile.CF'])) {
+						if(strtoupper($userProfile->profile['cf']) != strtoupper($conditions['UserProfile.CF']))
+							unset($results[$numResult]);						
+					}
+					
+					self::d($results[$numResult]); 
+										
 			} // end foreach ($results as $numResult => $result)
-		/*
-		echo "<pre>User::getUsersComplete() \r";
-		print_r($results);
-		echo "</pre>";
-		*/
+		
+		self::d($results, $debug);
+		
 		return $results;					
 	}
 
+	public function getUsersToMailByIds($user, $user_ids=[], $debug=false) {
+                
+        $newUsersResults = [];
+        
+         self::d($user_ids, $debug);        
+         
+		if(is_object($user)) 
+			$organization_id = $user->organization['Organization']['id'];
+		else 
+			$organization_id = $user;
+		
+		$usersResults = $this->getUsersToMail($user, $debug);
+		
+		/*
+		 * escludo gli user_id che non fanno parte dell'array
+		 */
+		if(!empty($user_ids) && !empty($usersResults)) {
+			foreach($usersResults as $numResult => $usersResult) {
+				$found=false;
+				foreach($user_ids as $numResult2 => $user_id) {
+				
+					self::d($usersResult['User']['id'].' - '.$user_id, $debug);
+				
+					if($usersResult['User']['id']==$user_id) {
+						$found=true;
+						unset($user_ids[$numResult2]);
+						unset($usersResults[$numResult]);	
+						array_push($newUsersResults, $usersResult);
+						break;
+					}
+				} // loops user_ids
+	
+			} // loops Users
+		}
+		
+		self::d($newUsersResults, $debug);
+
+        return $newUsersResults;
+	}	
+
+	/*
+	 * block 0 / 1
+	 */
+	public function getAllUsers($user, $debug=false) {
+         
+		if(is_object($user)) 
+			$organization_id = $user->organization['Organization']['id'];
+		else 
+			$organization_id = $user;
+		
+		$options = [];
+		$options['conditions'] = ['User.organization_id' => $organization_id];
+		$options['order'] = Configure::read('orderUser');
+		$options['recursive'] = 0;
+
+		$usersResults = $this->find('all', $options);
+
+		self::d($options, $debug);
+		self::d($usersResults, $debug);
+
+        return $usersResults;
+	}
+		
+	public function getUsersToMail($user, $debug=false) {
+         
+		if(is_object($user)) 
+			$organization_id = $user->organization['Organization']['id'];
+		else 
+			$organization_id = $user;
+		
+		$this->bindModel(['belongsTo' => ['UserProfile' => ['className' => 'UserProfile',
+															'foreignKey' => '',
+															'conditions' => "UserProfile.user_id = User.id and UserProfile.profile_key = 'profile.email'",
+															'fields' => 'UserProfile.profile_value']]]);
+	
+		$options = [];
+		$options['conditions'] = ['User.organization_id' => $organization_id,
+								  'User.block'=> 0];
+		$options['fields'] = ['User.id','User.name','User.email','User.username', 'UserProfile.profile_value as email'];
+		$options['order'] = Configure::read('orderUser');
+		$options['recursive'] = 0;
+
+		$usersResults = $this->find('all', $options);
+
+		self::d($options, $debug);
+		self::d($usersResults, $debug);
+
+        return $usersResults;
+	}	
+	
 	/*
 	 * ottieni gli Users e i Groups associati
+	 *
+	 * se non filtro x group_id lo user e' ripetuto
 	* */
-	public function getUsers($user, $conditions, $orderBy=null) {
+	public function getUsers($user, $conditions=[], $orderBy=null, $debug=false) {
 
 		if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 		
 		/* *****************************************************************
 		 * precedente versione, UserGroupMap non filtrava per organization_id
-		 $results = array();
+		 $results = [];
 		    
 		    try {
 			$contain = array(
@@ -187,7 +288,7 @@ class User extends AppModel {
 			}
 		***************************************************************** */
 		
-		$results = array();
+		$results = [];
 		$sql = "SELECT 
 					User.organization_id, User.id, User.name, User.username, User.email, 
 					UserGroupMap.group_id, UserGroup.id, UserGroup.title 
@@ -201,17 +302,23 @@ class User extends AppModel {
 				and User.block = 0
 				and User.organization_id = ".(int)$user->organization['Organization']['id'];
 		
+		if(isset($conditions['User.id NOT IN']))
+			$sql .= " AND User.id NOT IN ".$conditions['User.id NOT IN'];
 		if(isset($conditions['UserGroupMap.group_id']))
 			$sql .= " AND UserGroup.id = ".$conditions['UserGroupMap.group_id'];
 		if(isset($conditions['UserGroup.id']))
 			$sql .= " AND UserGroup.id = ".$conditions['UserGroup.id'];
 		if(isset($conditions['UserGroupMap.group_id IN']))
-			$sql .= " AND UserGroup.id IN ".$conditions['UserGroupMap.group_id IN'];		
+			$sql .= " AND UserGroup.id IN ".$conditions['UserGroupMap.group_id IN'];	
+		if(isset($conditions['UserGroupMap.group_id NOT IN']))
+			$sql .= " AND UserGroup.id NOT IN ".$conditions['UserGroupMap.group_id NOT IN'];		
 		if(isset($conditions['UserGroupMap.user_id NOT IN']))
 			$sql .= " AND UserGroupMap.user_id NOT IN ".$conditions['UserGroupMap.user_id NOT IN'];		
-
+		if(isset($conditions['UserGroupMap.user_id IN']))
+			$sql .= " AND UserGroupMap.user_id IN ".$conditions['UserGroupMap.user_id IN'];	
+		
 		$sql .= ' ORDER BY '.$orderBy;
-		// echo '<br />'.$sql;
+		self::d($sql,$debug);
 		try {
 			$results = $this->query($sql);
 		}
@@ -232,7 +339,7 @@ class User extends AppModel {
 	 	if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 	 	/*
 	 	 * precedente versione, UserGroupMap non filtrava per organization_id
-	 	$results = array(); 
+	 	$results = []; 
 	 	try {
 		 	$contain = array(
 		 			'User' => array('fields' => 'User.name, User.email',
@@ -255,7 +362,7 @@ class User extends AppModel {
 		}	
 		*/
 	 	 	 
-		$results = array();
+		$results = [];
 		$sql = "SELECT
 					User.id, User.name, User.username, User.email,
 					UserGroupMap.group_id, UserGroup.id, UserGroup.title
@@ -278,7 +385,7 @@ class User extends AppModel {
 			$sql .= " AND UserGroup.id NOT IN ".$conditions['UserGroupMap.user_id NOT IN'];
 		
 		$sql .= ' ORDER BY '.$orderBy;
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
 		}
@@ -295,11 +402,11 @@ class User extends AppModel {
 	  * 
 	  * in Mail:index() $label_fields = array('name', 'email')
 	  * */
-	 public function getUsersList($user, $conditions, $orderBy=null, $label_fields = array('name')) {
+	 public function getUsersList($user, $conditions, $orderBy=null, $label_fields = ['name']) {
 	 
 	  	$results = $this->getUsers($user, $conditions, $orderBy);
 	 	
-	 	$resultsList = array();
+	 	$resultsList = [];
 	 	foreach($results as $user) {
 			$label = "";
 			foreach ($label_fields as $label_field)
@@ -322,12 +429,10 @@ class User extends AppModel {
 	  * Ajax::admin_box_users con $reportOptions=='report-users-cart'
 	  * 	estrae solo gli users che hanno effettuato acquisti in base all'ordine
 	  */
-	 public function getUserWithCartByOrder($user, $conditions, $orderBy=null) {
-	    /*
-	 	echo "<pre>getUserWithCartByOrder";
-	 	print_r($conditions);
-	 	echo "</pre>";
-	 	*/
+	 public function getUserWithCartByOrder($user, $conditions, $orderBy=null, $debug=false) {
+
+	 	self::d($conditions, $debug); 
+	 	
 	 	$orderBy = Configure::read('orderUser');
 	 	 
 	 	$sql = "SELECT
@@ -347,11 +452,12 @@ class User extends AppModel {
 				 	and User.block = 0";
 		if(isset($conditions['ArticlesOrder.order_id']))     $sql .= " and ArticlesOrder.order_id = ".$conditions['ArticlesOrder.order_id'];
 		if(isset($conditions['ArticlesOrder.article_id']))   $sql .= " and ArticlesOrder.article_id = ".$conditions['ArticlesOrder.article_id'];
+		if(isset($conditions['ArticlesOrder.article_ids']))   $sql .= " and ArticlesOrder.article_id IN (".$conditions['ArticlesOrder.article_ids'].")";
 		$sql .= " GROUP BY User.id, User.name, User.username, User.email ";
 		$sql .= " ORDER BY ".$orderBy;
-		// echo '<br />'.$sql; 
+		self::d($sql, $debug); 
 		$results = $this->query($sql);
-				
+		
 		return $results;
 	 }
 
@@ -385,7 +491,7 @@ class User extends AppModel {
 	 	if(isset($conditions['ProdDeliveriesArticle.article_id']))   $sql .= " and ProdDeliveriesArticle.article_id = ".$conditions['ProdDeliveriesArticle.article_id'];
 	 	$sql .= " GROUP BY User.id, User.name, User.username, User.email ";
 	 	$sql .= " ORDER BY ".$orderBy;
-	 	//echo '<br />'.$sql;
+	 	self::d($sql, false);
 	 	$results = $this->query($sql);
 	 
 	 	return $results;
@@ -398,12 +504,8 @@ class User extends AppModel {
 	  */
 	 public function getUserWithCartByDelivery($user, $conditions, $orderBy=null, $modalita='', $debug=false) {
 	 	
-	 	if($debug) {
-			echo '<h3>getUserWithCartByDelivery</h3>';
-			echo "<pre>";
-			print_r($conditions);
-			echo "</pre>";
-		}
+	 	self::d('getUserWithCartByDelivery', $debug);
+	 	self::d($conditions, $debug); 
 	 		 	 
 	 	$orderBy = Configure::read('orderUser');
 	 
@@ -430,7 +532,7 @@ class User extends AppModel {
  		if(isset($conditions['Delivery.id']))   $sql .= " and Delivery.id = ".$conditions['Delivery.id'];
  		$sql .= " GROUP BY User.id, User.name, User.username, User.email ";
  		$sql .= " ORDER BY ".$orderBy;
- 		if($debug) echo '<br />'.$sql;
+ 		self::d($sql, $debug);
  		$results = $this->query($sql);
 
 		//if($modalita != 'CRON') jimport( 'joomla.user.helper' );
@@ -458,7 +560,7 @@ class User extends AppModel {
  							AND SuppliersOrganizationsReferent.supplier_organization_id = SuppliersOrganization.id
  							AND User.id = ".$result['User']['id']."
 						ORDER BY SuppliersOrganization.name ";
-	 			if($debug) echo '<br />'.$sql;
+	 			self::d($sql, $debug);
 	 			$supplierResults = $this->query($sql);
 	 		
 	 			foreach ($supplierResults as $numSupplierResult => $supplierResult) {
@@ -479,11 +581,7 @@ class User extends AppModel {
 				
 			} // foreach ($results as $i => $result)
 
-	 	if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";
-		}
+	 	self::d($results, $debug);
 		
 		return $results;
 	 }
@@ -495,13 +593,9 @@ class User extends AppModel {
 	  */
 	 public function getUserWithCartByDeliveryACLReferent($user, $conditions, $orderBy=null,  $debug=false) {
 	 	
-	 	if($debug) {
-			echo '<h3>getUserWithCartByDeliveryACLReferent</h3>';
-			echo "<pre>";
-			print_r($conditions);
-			echo "</pre>";
-		}
-	 		 	 
+	 	self::d('getUserWithCartByDeliveryACLReferent', $debug);
+		self::d($conditions, $debug);
+			 		 	 
 	 	$orderBy = Configure::read('orderUser');
 	 
 	 	$sql = "SELECT
@@ -532,7 +626,7 @@ class User extends AppModel {
  		if(isset($conditions['Delivery.id']))   $sql .= " and Delivery.id = ".$conditions['Delivery.id'];
  		$sql .= " GROUP BY User.id, User.name, User.username, User.email ";
  		$sql .= " ORDER BY ".$orderBy;
- 		if($debug) echo '<br />'.$sql;
+ 		self::d($sql, $debug);
  		$results = $this->query($sql);
 	 
  		jimport( 'joomla.user.helper' );
@@ -558,7 +652,7 @@ class User extends AppModel {
  							AND SuppliersOrganizationsReferent.supplier_organization_id = SuppliersOrganization.id
  							AND User.id = ".$result['User']['id']."
 						ORDER BY SuppliersOrganization.name ";
-	 			if($debug) echo '<br />'.$sql;
+	 			self::d($sql, $debug);
 	 			$supplierResults = $this->query($sql);
 	 		
 	 			foreach ($supplierResults as $numSupplierResult => $supplierResult) {
@@ -577,11 +671,7 @@ class User extends AppModel {
 				
 			} // foreach ($results as $i => $result)
 
-	 	if($debug) {
-			echo "<pre>";
-			print_r($results);
-			echo "</pre>";
-		}
+	 	self::d($results, $debug);
 		
 		return $results;
 	 }
@@ -593,7 +683,7 @@ class User extends AppModel {
 	 * */
 	 public function joomlaBatchUser($group_id, $user_id, $action, $debug=false)
 	 {
-	 	if($debug) echo '<br />joomlaBatchUser action '.$action;
+	 	self::d('joomlaBatchUser action '.$action, $debug);
 	 	
 	 	// Get the DB object
 	 	$db = JFactory::getDbo();
@@ -681,7 +771,7 @@ class User extends AppModel {
 	 		}
 	 
 	 		$query->insert($db->quoteName('#__user_usergroup_map'));
-	 		$query->columns(array($db->quoteName('user_id'), $db->quoteName('group_id')));
+	 		$query->columns([$db->quoteName('user_id'), $db->quoteName('group_id')]);
 	 		if($debug) echo "\n".$query;
 	 		$db->setQuery($query);
 	 
@@ -783,8 +873,8 @@ class User extends AppModel {
 	 	return $tmp;
 	 }
 	 
-	 public $hasMany = array(
-		'Cart' => array(
+	 public $hasMany = [
+		'Cart' => [
 			'className' => 'Cart',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
@@ -796,8 +886,8 @@ class User extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
-		'SuppliersOrganizationsReferent' => array(
+		],
+		'SuppliersOrganizationsReferent' => [
 			'className' => 'SuppliersOrganizationsReferent',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
@@ -809,8 +899,8 @@ class User extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		),
-		'UserGroupMap' => array(
+		],
+		'UserGroupMap' => [
 			'className' => 'UserGroupMap',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
@@ -822,6 +912,6 @@ class User extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
-	);
+		]
+	];
 }

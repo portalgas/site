@@ -18,8 +18,10 @@ else {
 	echo $this->Form->input('user_id',$options);
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 		javascript:choiceUser(this);
+				
+		$("#user_id").selectpicker({}).selectpicker("render");		
 	});
 	</script>
 <?php

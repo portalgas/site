@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Mails'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
@@ -8,7 +8,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		<?php echo __('List Mails');?>
 	</h2>
   
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<?php
 			if($isRoot || $isManager)
@@ -68,7 +68,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	echo '</tr>';
 endforeach;
 
-echo '</table>';
+echo '</table></div>';
 echo '<p>';
 
 	echo $this->Paginator->counter(array(

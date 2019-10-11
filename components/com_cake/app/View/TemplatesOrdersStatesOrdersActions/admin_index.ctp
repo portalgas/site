@@ -48,14 +48,14 @@
 				echo '</tbody>';
 				echo '</table><br />';
 			}
-			echo '<h2 class="ico-organizations">Template '.$result['TemplatesOrdersStatesOrdersAction']['template_id'].'</h2>';
+			echo '<h2 class="ico-organizations">Template '.$result['Template']['id'].' '.$result['Template']['name'].'</h2>';
 			?>
 		
-				<table cellpadding="0" cellspacing="0">
+				<div class="table-responsive"><table class="table table-hover">
 				<thead>
 				<tr>
 						<th></th>
-						<th colspan="2"><?php echo $this->Paginator->sort('state_code'); ?></th>
+						<th colspan="3"><?php echo $this->Paginator->sort('state_code'); ?></th>
 						<th><?php echo $this->Paginator->sort('group_id'); ?></th>
 						<th colspan="3">Azione</th>
 						<th><?php echo $this->Paginator->sort('sort'); ?></th>
@@ -67,12 +67,13 @@
 		}
 		
 		if($user_group_id_old != $result['UserGroup']['id'])
-			echo '<tr><td colspan="8"><h2 class="ico-users">Gruppo '.$result['UserGroup']['title'].' ('.$result['UserGroup']['id'].')</h2></td></tr>';		
+			echo '<tr><td colspan="9"><h2 class="ico-users">Gruppo '.$result['UserGroup']['title'].' ('.$result['UserGroup']['id'].')</h2></td></tr>';		
 		?>
 	<tr class="view">
 		<td><a action="orders_actions-<?php echo $key;?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
 		<td><?php echo '<div class="action orderStato'.$result['TemplatesOrdersStatesOrdersAction']['state_code'].'" title="'.__($result['TemplatesOrdersStatesOrdersAction']['state_code'].'-intro').'"></div>'; ?></td>
 		<td><?php echo h($result['TemplatesOrdersStatesOrdersAction']['state_code']); ?>&nbsp;</td>
+		<td><?php echo __($result['TemplatesOrdersStatesOrdersAction']['state_code'].'-label'); ?>&nbsp;</td>
 		<td><?php echo $result['UserGroup']['title']; ?></td>		
 		<td><?php
 			if(!empty($result['OrdersAction']['css_class']))
@@ -86,7 +87,7 @@
 	
 	<tr class="trView" id="trViewId-<?php echo $key;?>">
 		<td></td>
-		<td colspan="7" id="tdViewId-<?php echo $key;?>"></td>
+		<td colspan="8" id="tdViewId-<?php echo $key;?>"></td>
 	</tr>
 <?php 
 	$user_group_id_old=$result['UserGroup']['id'];
@@ -94,7 +95,7 @@
 	
 	endforeach; ?>
 	</tbody>
-	</table>
+	</table></div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(

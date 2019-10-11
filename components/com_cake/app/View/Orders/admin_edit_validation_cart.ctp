@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
 $this->Html->addCrumb(__('ValidationCartRiOpen'));
@@ -33,12 +33,12 @@ echo '<legend>'.__('ValidationCartRiOpen').'</legend>';
 		echo '<input type="hidden" id="DeliveryDataDb" name="data[Delivery][data_db]" value="'.$this->Form->value('Delivery.data').'" />';
 		
 		echo '<div class="input text required">';
-		echo '<label for="OrderDataInizio">'.__('Data inizio').'</label> ';
+		echo '<label for="OrderDataInizio">'.__('DataInizio').'</label> ';
 		echo $this->Time->i18nFormat($this->Form->value('Order.data_inizio'),"%A, %e %B %Y");
 		echo '</div>';
 		
 		echo '<div class="input text required">';
-		echo '<label for="OrderDataFine">'.__('Data fine').'</label> ';
+		echo '<label for="OrderDataFine">'.__('DataFine').'</label> ';
 		echo $this->Time->i18nFormat($this->Form->value('Order.data_fine'),"%A, %e %B %Y");
 		echo '</div>';
 		echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
@@ -47,7 +47,7 @@ echo '<legend>'.__('ValidationCartRiOpen').'</legend>';
 			$value = '';
 		else
 			$value = $this->Time->i18nFormat($data_fine_validation,"%A, %e %B %Y");
-		echo $this->Form->input('data_fine_validation',array('type' => 'text','size'=>'30','label' => __('Data fine validation'), 'value' => $value));
+		echo $this->Form->input('data_fine_validation',array('type' => 'text','size'=>'30','label' => __('DataFineValidation'), 'value' => $value));
 		echo $this->Ajax->datepicker('OrderDataFineValidation',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineValidationDb', 'altFormat' => 'yy-mm-dd'));
 		echo '<input type="hidden" id="OrderDataFineValidationDb" name="data[Order][data_fine_validation_db]" value="'.$data_fine_validation_db.'" />';
 

@@ -90,7 +90,7 @@ class DeliveriesController extends AppController {
             $results[count($results)] = $tmpDeliveryData;
         }
 
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->layout = 'default_front_end';
     }
 
@@ -171,7 +171,7 @@ class DeliveriesController extends AppController {
 
 			} // end if($delivery_id>0)
 		}
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('delivery_id', $delivery_id);
         $this->set('storeroomResults', $storeroomResults);
 
@@ -264,7 +264,9 @@ class DeliveriesController extends AppController {
 
     public function tabsEcomm() {
 
-        /*
+		$debug = false;
+        
+		/*
          * in AppController setto $this->user
          * $this->user->organization_id                    = organization dell'utente (in table.User)
          * $this->user->organization['Organization']['id'] = organization che si sta navigando (dal templates ho il parametro organization_id e organizationSEO che metto in $user->set('org_id',$organization_id))
@@ -274,6 +276,12 @@ class DeliveriesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
 
+		App::import('Model', 'ProdGasPromotionsOrganizationsManager');
+		$ProdGasPromotionsOrganizationsManager = new ProdGasPromotionsOrganizationsManager;
+					
+		$prodGasPromotionsOrganizationsResults = $ProdGasPromotionsOrganizationsManager->getOpenPromotions($this->user, $debug);
+		$this->set(compact('prodGasPromotionsOrganizationsResults'));
+		
         $this->layout = 'default_front_end';
     }
 
@@ -311,11 +319,38 @@ class DeliveriesController extends AppController {
             $tmp['Delivery']['data'] = Configure::read('DeliveryToDefinedDate');
             $results[count($results)] = $tmp;
         }
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'default_front_end';
     }
 
+    /*
+     * visualizzo il tab  promozioni
+     */
+    public function tabsEcommTabProdGasPromotions($delivery_date = null) {
+
+        /*
+         * in AppController setto $this->user
+         * $this->user->organization_id                    = organization dell'utente (in table.User)
+         * $this->user->organization['Organization']['id'] = organization che si sta navigando (dal templates ho il parametro organization_id e organizationSEO che metto in $user->set('org_id',$organization_id))
+         */
+        if ($this->user->id == 0 || $this->user->organization_id != $this->user->organization['Organization']['id']) {
+            $this->Session->setFlash(__('msg_not_permission_guest'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+
+        $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
+									'Delivery.stato_elaborazione' => 'OPEN',
+									'Delivery.sys' => 'N',
+									'DATE(Delivery.data) >= CURDATE()']];
+
+        $results = $this->Delivery->getTabsToDeliveriesGasProdPromotionsData($this->user, $conditions['Delivery']);
+		self::d($results); 
+        $this->set(compact('results'));
+
+        $this->layout = 'default_front_end';
+    }	
+	
     /*
      * visualizzo il tab   ordini per produttore
      * elenco di tutti gli ordini aperti di un GAS per il tab "ordini per produttore" 
@@ -346,7 +381,7 @@ class DeliveriesController extends AppController {
 									'Order.state_code' => 'OPEN'];
         $options['order'] = ['SuppliersOrganization.name'];
         $allOrdersResults = $Order->find('all', $options);
-
+		
         $results = [];
         if (!empty($allOrdersResults))
             foreach ($allOrdersResults as $numResult => $allOrdersResult) {
@@ -360,11 +395,12 @@ class DeliveriesController extends AppController {
                 $results[$numResult]['Delivery']['id'] = $allOrdersResult['Delivery']['id'];
                 $results[$numResult]['Delivery']['name'] = $delivery;
                 $results[$numResult]['Order']['data_fine'] = $allOrdersResult['Order']['data_fine'];
+                $results[$numResult]['Order']['type_draw'] = $allOrdersResult['Order']['type_draw'];
             }
         
 		self::d($results, false);
 			
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         /*
          * ottengo l'elenco dei produttori con ordini da validare i colli (pezzi_confezione)
@@ -393,6 +429,7 @@ class DeliveriesController extends AppController {
                 $ordersToValidateResults[$numResult]['Delivery']['id'] = $allOrdersResult['Delivery']['id'];
                 $ordersToValidateResults[$numResult]['Delivery']['name'] = $delivery;
                 $ordersToValidateResults[$numResult]['Order']['data_fine_validation'] = $allOrdersResult['Order']['data_fine_validation'];
+                $ordersToValidateResults[$numResult]['Order']['type_draw'] = $allOrdersResult['Order']['type_draw'];
             }
 		}
 		$this->set('ordersToValidateResults', $ordersToValidateResults);
@@ -419,16 +456,16 @@ class DeliveriesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $conditions = array('Delivery.isVisibleFrontEnd' => 'Y',
-            'Delivery.stato_elaborazione' => 'OPEN',
-            'DATE(Delivery.data) >= CURDATE()',
-            'Delivery.organization_id' => $this->user->organization['Organization']['id'],
-            'Delivery.data' => $deliveryData);
+        $conditions = ['Delivery.isVisibleFrontEnd' => 'Y',
+						'Delivery.stato_elaborazione' => 'OPEN',
+						'DATE(Delivery.data) >= CURDATE()',
+						'Delivery.organization_id' => $this->user->organization['Organization']['id'],
+						'Delivery.data' => $deliveryData];
 
         $orderBy = 'data ASC';
-        $results = $this->Delivery->find('all', array('conditions' => $conditions,
-            'order' => $orderBy,
-            'recursive' => -1));
+        $results = $this->Delivery->find('all', ['conditions' => $conditions,
+												'order' => $orderBy,
+												'recursive' => -1]);
         /*
          * ottengo l'elenco dei produttori
          * */
@@ -436,7 +473,7 @@ class DeliveriesController extends AppController {
             $sql = "SELECT 
 						SuppliersOrganization.id, SuppliersOrganization.name, 
 						Supplier.descrizione,
-						`Order`.id, `Order`.data_inizio, `Order`.data_fine 
+						`Order`.id, `Order`.data_inizio, `Order`.data_fine, `Order`.type_draw 
 					FROM 
 						" . Configure::read('DB.prefix') . "deliveries Delivery,
 						" . Configure::read('DB.prefix') . "orders `Order`,
@@ -469,7 +506,7 @@ class DeliveriesController extends AppController {
             $sql = "SELECT
 						SuppliersOrganization.id, SuppliersOrganization.name,
 						Supplier.descrizione,
-						`Order`.id, `Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation
+						`Order`.id, `Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.type_draw 
 					FROM
 						" . Configure::read('DB.prefix') . "deliveries Delivery,
 						" . Configure::read('DB.prefix') . "orders `Order`,
@@ -495,11 +532,80 @@ class DeliveriesController extends AppController {
 
             $results[$numResult]['Delivery']['OrderToValidate'] = $suppliersOrganizationResults;
         }
-
-        $this->set('results', $results);
+		self::d($results);
+        $this->set(compact('results'));
         $this->layout = 'ajax';
     }
 
+	public function tabsAjaxEcommProdGasPromotionsDeliveries($deliveryData) {
+
+        $this->ctrlHttpReferer();
+
+        /*
+         * in AppController setto $this->user
+         * $this->user->organization_id                    = organization dell'utente (in table.User)
+         * $this->user->organization['Organization']['id'] = organization che si sta navigando (dal templates ho il parametro organization_id e organizationSEO che metto in $user->set('org_id',$organization_id))
+         */
+        if ($this->user->id == 0 || $this->user->organization_id != $this->user->organization['Organization']['id']) {
+            $this->Session->setFlash(__('msg_not_permission_guest'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+
+        if (empty($deliveryData)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        $conditions = ['Delivery.isVisibleFrontEnd' => 'Y',
+						'Delivery.stato_elaborazione' => 'OPEN',
+						'DATE(Delivery.data) >= CURDATE()',
+						'Delivery.organization_id' => $this->user->organization['Organization']['id'],
+						'Delivery.data' => $deliveryData];
+
+        $orderBy = 'data ASC';
+        $results = $this->Delivery->find('all', ['conditions' => $conditions,
+												'order' => $orderBy,
+												'recursive' => -1]);
+        /*
+         * ottengo l'elenco dei produttori
+         * */
+        foreach ($results as $numResult => $result) {
+            $sql = "SELECT 
+						SuppliersOrganization.id, SuppliersOrganization.name, 
+						Supplier.descrizione,
+						`Order`.id, `Order`.data_inizio, `Order`.data_fine, `Order`.type_draw 
+					FROM 
+						" . Configure::read('DB.prefix') . "deliveries Delivery,
+						" . Configure::read('DB.prefix') . "orders `Order`,
+						" . Configure::read('DB.prefix') . "suppliers_organizations SuppliersOrganization,
+						" . Configure::read('DB.prefix') . "suppliers Supplier
+					WHERE 
+						Delivery.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+						AND `Order`.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+						AND SuppliersOrganization.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+						AND Delivery.id = `Order`.delivery_id
+						AND Delivery.isVisibleFrontEnd = 'Y'
+						AND `Order`.isVisibleBackOffice = 'Y'
+						AND `Order`.state_code = 'OPEN' 
+
+						AND `Order`.prod_gas_promotion_id != 0 
+						
+						AND `Order`.supplier_organization_id = SuppliersOrganization.id
+						AND SuppliersOrganization.supplier_id = Supplier.id				 
+						AND SuppliersOrganization.stato = 'Y'
+						AND (Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')	
+						AND Delivery.id = " . $result['Delivery']['id'] . "  				
+					ORDER BY `Order`.data_fine";
+            self::d($sql, false);
+            $suppliersOrganizationResults = $this->Delivery->query($sql);
+
+            $results[$numResult]['Delivery']['Order'] = $suppliersOrganizationResults;
+        }
+		self::d($results);
+        $this->set(compact('results'));
+        $this->layout = 'ajax';	 
+	}
+	
     public function tabsAjaxEcommArticlesOrder($delivery_id, $order_id, $filterArticleName = null, $filterArticleArticleTypeIds = null, $type_draw = null) {
         $this->ctrlHttpReferer();
 
@@ -533,10 +639,10 @@ class DeliveriesController extends AppController {
         // $Order->unbindModel(array('belongsTo' => array('Delivery')));
         $order = $Order->find('first', $options);
         
-		$owner_articles = $order['SuppliersOrganization']['owner_articles'];
-		$owner_organization_id = $order['SuppliersOrganization']['owner_organization_id'];
-		$owner_supplier_organization_id = $order['SuppliersOrganization']['owner_supplier_organization_id'];
-        $article_organization_id = $order['SuppliersOrganization']['owner_organization_id'];
+		$owner_articles = $order['Order']['owner_articles'];
+		$owner_organization_id = $order['Order']['owner_organization_id'];
+		$owner_supplier_organization_id = $order['Order']['owner_supplier_organization_id'];
+        $article_organization_id = $order['Order']['owner_organization_id'];
         
         $this->set('order', $order);
 
@@ -552,9 +658,9 @@ class DeliveriesController extends AppController {
 				App::import('Model', 'ProdGasPromotion');
 				$ProdGasPromotion = new ProdGasPromotion;
 				 
-				$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $debug);
+				$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $this->user->organization['Organization']['id'], $debug);
 				self::d($promotionResults, $debug);
-				$this->set('promotionResults', $promotionResults);
+				$this->set(compact('promotionResults'));
 			}
 			
             /*
@@ -636,14 +742,14 @@ class DeliveriesController extends AppController {
 
             $options['order'] = 'Article.name';
 			if($prod_gas_promotion_id==0) 
-				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order_id, $article_organization_id, $options);
+				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($this->user, $order, $options);
 			else
-				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order_id, $prod_gas_promotion_id, $options);
+				$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdinePromotion($this->user, $order, $prod_gas_promotion_id, $options);
 				
 			self::d($results, $debug);
 			 	
         } // end if(!empty($order)) 	
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->set('FilterArticleName', $filterArticleName);
         $this->set('FilterArticleArticleTypeIds', $filterArticleArticleTypeIds);
@@ -696,10 +802,10 @@ class DeliveriesController extends AppController {
         $options['recursive'] = 0;
         $order = $Order->find('first', $options);
         
-		$owner_articles = $order['SuppliersOrganization']['owner_articles'];
-		$owner_organization_id = $order['SuppliersOrganization']['owner_organization_id'];
-		$owner_supplier_organization_id = $order['SuppliersOrganization']['owner_supplier_organization_id'];
-        $article_organization_id = $order['SuppliersOrganization']['owner_organization_id'];
+		$owner_articles = $order['Order']['owner_articles'];
+		$owner_organization_id = $order['Order']['owner_organization_id'];
+		$owner_supplier_organization_id = $order['Order']['owner_supplier_organization_id'];
+        $article_organization_id = $order['Order']['owner_organization_id'];
         
         $this->set('order', $order);
 
@@ -710,7 +816,7 @@ class DeliveriesController extends AppController {
             App::import('Model', 'Cart');
             $Cart = new Cart;
             $results = $Cart->getCartToValidateFrontEnd($this->user, $delivery_id, $order_id, $article_organization_id);
-            $this->set('results', $results);
+            $this->set(compact('results'));
         }
 
         $this->layout = 'ajax';
@@ -815,7 +921,7 @@ class DeliveriesController extends AppController {
 
 		self::d($results, false);
 		
-		$this->set('results', $results);
+		$this->set(compact('results'));
 
 		
         $this->layout = 'default_front_end';
@@ -895,7 +1001,7 @@ class DeliveriesController extends AppController {
             'suppliers' => true, 'referents' => false);
 
         $results = $this->Delivery->getDataTabs($userPreview, $conditions, $options);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         /*
          * loops Orders, if Order.state_code = PROCESSED-ON-DELIVERY (in carico al cassiere) / CLOSE  faccio vedere le modifiche
@@ -1015,7 +1121,7 @@ class DeliveriesController extends AppController {
             'suppliers' => true, 'referents' => false);
 
         $results = $this->Delivery->getDataTabs($this->user, $conditions, $options);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $resultsWithModifies = [];
         /*
@@ -1204,7 +1310,7 @@ class DeliveriesController extends AppController {
         $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
         
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('SqlLimit', $SqlLimit);
     }
 
@@ -1220,7 +1326,7 @@ class DeliveriesController extends AppController {
         $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
 
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('SqlLimit', $SqlLimit);
     }
 
@@ -1241,7 +1347,7 @@ class DeliveriesController extends AppController {
         $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
 
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('SqlLimit', $SqlLimit);
     }
 
@@ -1344,7 +1450,7 @@ class DeliveriesController extends AppController {
     public function admin_edit() {
 
         $this->Delivery->id = $this->delivery_id;
-        if (!$this->Delivery->exists($this->user->organization['Organization']['id'])) {
+        if (!$this->Delivery->exists($this->Delivery->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1448,7 +1554,7 @@ class DeliveriesController extends AppController {
     public function admin_delete() {
 
         $this->Delivery->id = $this->delivery_id;
-        if (!$this->Delivery->exists($this->user->organization['Organization']['id'])) {
+        if (!$this->Delivery->exists($this->Delivery->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1507,7 +1613,7 @@ class DeliveriesController extends AppController {
 
     public function admin_copy() {
         $this->Delivery->id = $this->delivery_id;
-        if (!$this->Delivery->exists($this->user->organization['Organization']['id'])) {
+        if (!$this->Delivery->exists($this->Delivery->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1551,7 +1657,7 @@ class DeliveriesController extends AppController {
     public function admin_calendar_view() {
 
         $this->Delivery->id = $this->delivery_id;
-        if (!$this->Delivery->exists($this->user->organization['Organization']['id'])) {
+        if (!$this->Delivery->exists($this->Delivery->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1641,7 +1747,7 @@ class DeliveriesController extends AppController {
                 $tmp .= "},";
             } // end foreach
 
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('jsCalendar', $tmp);
     }
 
@@ -1664,7 +1770,7 @@ class DeliveriesController extends AppController {
     public function calendar_view($delivery_id) {
 
         $this->Delivery->id = $delivery_id;
-        if (!$this->Delivery->exists($this->user->organization['Organization']['id'])) {
+        if (!$this->Delivery->exists($this->Delivery->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1747,7 +1853,7 @@ class DeliveriesController extends AppController {
                 $tmp .= "},";
             } // end foreach
 
-        $this->set('results', $results);
+        $this->set(compact('results'));
         $this->set('jsCalendar', $tmp);
 
         $this->layout = 'ajax';

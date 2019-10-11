@@ -4,7 +4,7 @@ echo $this->Form->input('user_id',array('empty' => Configure::read('option.empty
 										'onChange' => 'javascript:choiceUser(this);'));
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	javascript:choiceUser(this);
 });
 </script>

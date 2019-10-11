@@ -40,7 +40,10 @@
 			echo $this->App->drawFormRadio('Organization','hasUserGroupsCassiere',array('options' => $hasUserGroupsCassiere, 'value' => $this->request->data['Organization']['hasUserGroupsCassiere'], 'label' => false, 'required'=> false, 'label_style' => 'width:20px !important;margin-left:1px;'));
 			?>
 		</td>
-		<td>Cassiere</td>
+		<td>
+			<p>Cassiere</p>
+			<span class="label label-info" title="Definito dal template">Definito dal template</span>
+		</td>
 		<td><?php echo __('toolTipHasUserGroupsCassiere');?></td>
 		<td>Pagamento <b>alla</b> consegna</td>
 		<td>gasCassiere (<?php echo Configure::read('group_id_cassiere');?>)</td>
@@ -51,7 +54,10 @@
 			echo $this->App->drawFormRadio('Organization','hasUserGroupsReferentTesoriere',array('options' => $hasUserGroupsReferentTesoriere, 'value' => $this->request->data['Organization']['hasUserGroupsReferentTesoriere'], 'label' => false, 'required' => false, 'label_style' => 'width:20px !important;margin-left:1px;'));
 			?>
 		</td>
-		<td>Referente-Tesoriere</td>
+		<td>
+			<p>Referente-Tesoriere</p>
+			<span class="label label-info" title="Definito dal template">Definito dal template</span>
+		</td>
 		<td><?php echo __('toolTipHasUserGroupsReferentTesoriere');?></td>
 		<td>Pagamento con richiesta <b>dopo</b> la consegna</td>
 		<td>gasReferentTesoriere (<?php echo Configure::read('group_id_referent_tesoriere');?>)</td>
@@ -62,7 +68,10 @@
 			echo $this->App->drawFormRadio('Organization','hasUserGroupsTesoriere',array('options' => $hasUserGroupsTesoriere, 'value' => $this->request->data['Organization']['hasUserGroupsTesoriere'], 'label' => false, 'required' => false, 'label_style' => 'width:20px !important;margin-left:1px;'));
 			?>						
 		</td>
-		<td>Tesoriere</td>
+		<td>
+			<p>Tesoriere</p>
+			<span class="label label-info" title="Definito dal template">Definito dal template</span>
+		</td>
 		<td><?php echo __('toolTipHasUserGroupsTesoriere');?></td>
 		<td>Gestore dei pagamenti ai <b>fornitori</b></td>
 		<td>gasTesoriere (<?php echo Configure::read('group_id_tesoriere');?>)</td>

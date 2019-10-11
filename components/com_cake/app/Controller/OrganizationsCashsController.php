@@ -7,7 +7,7 @@ class OrganizationsCashsController extends AppController {
 		parent::beforeFilter();
 
 		/* ctrl ACL */
-	   	$actionWithPermission = array('admin_index');
+	   	$actionWithPermission = ['admin_index'];
 	   	if (in_array($this->action, $actionWithPermission)) {
 			if(!$this->isManager()) {
 				$this->Session->setFlash(__('msg_not_permission'));
@@ -15,7 +15,7 @@ class OrganizationsCashsController extends AppController {
 			}
 		}
 		
-		$actionWithPermission = array('admin_ctrl');
+		$actionWithPermission = ['admin_ctrl'];
 	   	if (in_array($this->action, $actionWithPermission)) {
 			if(!$this->isManager() && !$this->isCassiere()) {
 				$this->Session->setFlash(__('msg_not_permission'));
@@ -35,14 +35,11 @@ class OrganizationsCashsController extends AppController {
 		$esito = true;
 		if ($this->request->is('post') || $this->request->is('put')) {
 		
-			if($debug) {
-				echo "<pre>OrganizationsCashsController \n ";
-				print_r($this->request->data['OrganizationsCash']);
-				echo "</pre>";
-			}
+			self::d("OrganizationsCashsController", $debug);
+			self::d($this->request->data['OrganizationsCash'], $debug);
 
 			$options = [];
-			$options['conditions'] = array('OrganizationsCash.id' => $this->user->organization['Organization']['id']);
+			$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
 			$options['recursive'] = 1;
 			$results = $this->OrganizationsCash->find('first', $options);
 			$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig'], true);
@@ -60,8 +57,8 @@ class OrganizationsCashsController extends AppController {
 					$data = [];
 					
 					$options = [];
-					$options['conditions'] = array('CashesUser.organization_id' => $this->user->organization['Organization']['id'],
-												   'CashesUser.user_id' => $user_id);
+					$options['conditions'] = ['CashesUser.organization_id' => $this->user->organization['Organization']['id'],
+											'CashesUser.user_id' => $user_id];
 					$options['recursive'] = -1;
 					$cashesUserResults = $CashesUser->find('first', $options);
 					if(!empty($cashesUserResults))
@@ -72,15 +69,12 @@ class OrganizationsCashsController extends AppController {
 					$data['CashesUser']['limit_type'] = $limit_type;
 					$data['CashesUser']['limit_after'] = $this->request->data['OrganizationsCash']['limit_after'][$user_id];
 					
-					if($debug) {
-						echo "<pre>OrganizationsCashsController \n ";
-						print_r($data);
-						echo "</pre>";
-					}
+					self::d("OrganizationsCashsController", $debug);
+					self::d($data, $debug);
 					
 					$CashesUser->create();
 					if ($CashesUser->save($data)) {
-						$this->Session->setFlash(__('The organizationsCash has been saved'));
+						$esito = true;
 					}
 					else {
 						$esito = false;
@@ -95,11 +89,14 @@ class OrganizationsCashsController extends AppController {
 
 			if(!$esito)
 				$this->Session->setFlash(__('The organizationsCash could not be saved. Please, try again.'));
+			else
+				$this->Session->setFlash(__('The organizationsCash has been saved'));
+
 
 		} // POST
 
 		$options = [];
-		$options['conditions'] = array('OrganizationsCash.id' => $this->user->organization['Organization']['id']);
+		$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$results = $this->OrganizationsCash->find('first', $options);
 		$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig'], true);		
@@ -148,7 +145,7 @@ class OrganizationsCashsController extends AppController {
 		$Cash = new Cash;
 				
 		$options = [];
-		$options['conditions'] = array('OrganizationsCash.id' => $this->user->organization['Organization']['id']);
+		$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$results = $this->OrganizationsCash->find('first', $options);
 		$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig'], true);		

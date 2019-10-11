@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order_id) && !empty($order_id))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
@@ -19,8 +19,8 @@ function choiceOrderPermission() {
 }
 function choiceReportOptions() {	
 	var div_contenitore = 'report-options';
-	var order_id = jQuery("#order_id").val();	
-	var reportOptions = jQuery("input[name='report-options']:checked").val();
+	var order_id = $("#order_id").val();	
+	var reportOptions = $("input[name='report-options']:checked").val();
 	if(debugLocal) alert("choiceReportOptions - order_id "+order_id+", reportOptions "+reportOptions);
 
 	if(order_id=="" || reportOptions=="") {
@@ -35,15 +35,17 @@ function choiceReportOptions() {
 	}
 	else
 	if(reportOptions=='report-articles-details') {
-		jQuery('#users-result').css('display', 'none');  /* showHideBox non mi nasconde tutti perche' users-result e articles-options non li uso */
-		jQuery('#articles-result').css('display', 'block');
+		$('#users-result').css('display', 'none');  /* showHideBox non mi nasconde tutti perche' users-result e articles-options non li uso */
+		$('#articles-result').css('display', 'block');
 		
 		AjaxCallToArticlesDetailsResult(delivery_id, order_id, order_by = 'articles_asc'); /* chiamata Ajax l'elenco degli articoli aggregati con il dettaglio degli utenti */
 	}
 }
 function choiceUser() {
-	var div_contenitore = jQuery('#user_id').parent().parent().attr('id');  /* users-result */
-	var user_id = jQuery('#user_id').val();
+	var div_contenitore = $('#user_id').parent().parent().attr('id');  /* users-result */
+	if (div_contenitore === undefined) 
+		div_contenitore = 'users-result';
+	var user_id = $('#user_id').val();
 	if(debugLocal) alert("choiceUser - div_contenitore "+div_contenitore+", user_id "+user_id);
 	if(user_id=='') {
 		showHideBox(div_contenitore,call_child=false);
@@ -55,7 +57,7 @@ function choiceUser() {
 }	
 function choiceUserAnagrafica() {
 	var div_contenitore = 'user-anagrafica';
-	var user_id = jQuery('#user_id').val();
+	var user_id = $('#user_id').val();
 	if(debugLocal) alert("choiceUserAnagrafica - div_contenitore "+div_contenitore+", user_id "+user_id);
 	if(user_id=='') {
 		showHideBox(div_contenitore,call_child=false);
@@ -70,9 +72,12 @@ function choiceArticlesOptions() {
 
 	var div_contenitore = 'articles-options';
 
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
-	var user_id     = jQuery('#user_id').val();
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var user_id     = $('#user_id').val();
+
+	var articlesOptions = $("input[name='articles-options']:checked").val();
+	var articlesSort = $("input[name='articles-sort']:checked").val();
 	
 	if(debugLocal) alert("choiceArticlesOptions - div_contenitore "+div_contenitore+", articlesOptions "+articlesOptions);
 	if(delivery_id == '' || order_id=='' || user_id=='' || articlesOptions=='') {
@@ -81,9 +86,6 @@ function choiceArticlesOptions() {
 	}
 	showHideBox(div_contenitore,call_child=true);
 	
-	var articlesOptions = jQuery("input[name='articles-options']:checked").val();
-	var articlesSort = jQuery("input[name='articles-sort']:checked").val();
-
 	if(user_id=='ALL') // order_by = 'users_asc'
 		AjaxCallToArticlesDetailsResult(delivery_id, order_id, articlesSort);  /* chiamata Ajax per elenco articoli aggregati con il dettaglio degli utenti */
 	else // order_by = 'articles_asc'
@@ -165,25 +167,40 @@ echo $this->element('boxDesOrder', array('results' => $desOrdersResults, 'summar
 		echo $this->element('boxOrder',array('results' => $results));
 		?>		
 						
-		<div id="report-options" style="display:none;"></div>
+		<div id="report-options" style="display:none;clear: both;"></div>
 		
-		<div id="users-result" style="display:none;width:55%;float:left;"></div>
+		<div id="users-result" style="display:none;width:55%;float:left;clear: both;"></div>
 	
 		<div id="user-anagrafica"  style="display:none;clear:none;width:45%;float:left;"></div>
 		
-		<div id="articles-options" style="display:none;"></div>
+		<div id="articles-options" style="display:none;clear: both;"></div>
 	
-		<div id="articles-result" style="display:none;min-height:50px;"></div>
+		<div id="articles-result" style="display:none;min-height:50px;clear: both;"></div>
 		
 	</fieldset>
 </div>
 
+<div id="dialogmodal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Nota da associare all'articolo acquistato</h4>
+      </div>
+      <div class="modal-body">
+        <p><textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
+		<div class="clearfix"></div>
+		</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Close');?></button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Submit');?></button>
+      </div>
+    </div>
 
-<div id="dialogmodal" title="Nota da associare all'articolo acquistato">
-	<p>
-		<textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
-	</p>
+  </div>
 </div>
+
 
 <?php 
 $options = [];
@@ -195,79 +212,65 @@ echo $this->MenuOrders->drawWrapper($order_id, $options);
 echo $this->App->drawLegenda($user, $orderStatesToLegenda);
 ?>
 <script type="text/javascript">
-var dialogmodal =  jQuery('#dialogmodal').dialog({modal:true, height:300, width:600, autoOpen:false, buttons: {
-                "Cancel": function () { jQuery(this).dialog("close"); },
-                "Ok": function () { jQuery(this).dialog("close"); }
-            },
-            open: function (event, ui) {
-            
-	            var numRowData = jQuery("#dialogmodal");
-	            numRow = numRowData.data('numRow');
-                
-				jQuery('#notaTextEcomm').val("");
-						
-				var order_id = jQuery('#order_id-'+numRow).val();
-				var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-				var article_id = jQuery('#article_id-'+numRow).val();
-				var user_id = jQuery('#user_id-'+numRow).val();
-				var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
-						
-				jQuery.ajax({
-					type: "GET",
-					url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=getNotaForzato&key="+key+"&format=notmpl",
-					data: "",
-					success: function(response){
-						jQuery('#notaTextEcomm').val(response);
-					},
-					error:function (XMLHttpRequest, textStatus, errorThrown) {
-					}
-				});
-				return false;
-			}
-        });
-
-jQuery('#dialogmodal').dialog({
-   close: function(event, ui) {
+$(document).ready(function() {
 	
-		    var numRowData = jQuery("#dialogmodal");
-	        numRow = numRowData.data('numRow');
-	            
-			var notaTextEcomm = jQuery('#notaTextEcomm').val();
+    $('#dialogmodal').on('shown.bs.modal', function() {
+		var numRowData = $("#dialogmodal");
+		numRow = numRowData.data('numRow');
+		
+		$('#notaTextEcomm').val("");
+				
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id-'+numRow).val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+				
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=getNotaForzato&key="+key+"&format=notmpl",
+			data: "",
+			success: function(response){
+				$('#notaTextEcomm').val(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    })
+	.on('hidden.bs.modal', function() {
+
+		var numRowData = $("#dialogmodal");
+		numRow = numRowData.data('numRow');
 			
-			var order_id = jQuery('#order_id-'+numRow).val();
-			var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-			var article_id = jQuery('#article_id-'+numRow).val();
-			var user_id = jQuery('#user_id-'+numRow).val();
-			var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+		var notaTextEcomm = encodeURIComponent($('#notaTextEcomm').val());
+		
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id-'+numRow).val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
 
-			jQuery.ajax({
-				type: "POST",
-				url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=setNotaForzato&key="+key+"&format=notmpl",
-				data: "notaTextEcomm="+notaTextEcomm,
-				success: function(response){
-					if(notaTextEcomm=="")
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
-					else	
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
-				},
-				error:function (XMLHttpRequest, textStatus, errorThrown) {
-				}
-			});
-			return false;
-
-	}
-});
-
-jQuery(document).ready(function() {
+		$.ajax({
+			type: "POST",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=setNotaForzato&key="+key+"&format=notmpl",
+			data: "notaTextEcomm="+notaTextEcomm,
+			success: function(response){
+				if(notaTextEcomm=="")
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
+				else	
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    });
+	
 	<?php if(!empty($alertModuleConflicts)) {
 		if(!$popUpDisabled)
-			echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl')";
+			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl', '')";
 	}
 	?>
 });
 </script>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

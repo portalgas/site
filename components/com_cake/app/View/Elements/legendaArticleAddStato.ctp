@@ -8,15 +8,11 @@
 $msg = '<div class="legenda legenda-ico-info" style="float:none;">';
 if($context=='article') {
 	if($isUserPermissionArticlesOrder) {   // l'utente gestisce l'associazione degli articoli con l'ordine
-		$msg .= "Se si valorizza il campo Stato a <span style=\"color:green\">Si</span>, l'articolo potrà essere associato agli ordini.";
-		$msg .= "<br />";
-		$msg .= "Se si valorizza il campo Stato a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato ad alcun ordine.";
+		$msg .= "Valorizzando i campi<ul><li><b>".__('Stato')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile agli utenti</li><li><b>".__('FlagPresenteArticlesorders')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato agli ordini.";
 	}
 	else 
 	if(!$isUserPermissionArticlesOrder)  {  // l'utente non gestisce l'associazione degli articoli con l'ordine
-		$msg .= "Se si valorizza il campo Stato a <span style=\"color:green\">Si</span>, l'articolo sarà visibile dagli utenti e potrà essere acquistato.";
-		$msg .= "<br />";
-		$msg .= "Se si valorizza il campo Stato a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile dagli utenti e <b>non</b> potrà essere acquistato.";		
+		$msg .= "Valorizzando i campi<ul><li><b>".__('Stato')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile agli utenti</li><li><b>".__('FlagPresenteArticlesorders')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato agli ordini.";
 	}
 }
 else 

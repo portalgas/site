@@ -1,5 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
+
+
 /**
  * RequestPaymentsGeneric Model
  *
@@ -16,7 +18,7 @@ class RequestPaymentsGeneric extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -26,7 +28,7 @@ class RequestPaymentsGeneric extends AppModel {
 		),
 		'request_payment_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -36,7 +38,7 @@ class RequestPaymentsGeneric extends AppModel {
 		),
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -68,7 +70,7 @@ class RequestPaymentsGeneric extends AppModel {
 		return $results;
 	}
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if(!empty($this->data['RequestPaymentsGeneric']['importo'])) {
 			$this->data['RequestPaymentsGeneric']['importo'] =  $this->importoToDatabase($this->data['RequestPaymentsGeneric']['importo']);
 		}

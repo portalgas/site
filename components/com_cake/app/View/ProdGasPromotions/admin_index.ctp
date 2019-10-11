@@ -1,14 +1,5 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-
-if(Configure::read('App.root')!='/var/www/next.portalgas') {
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => Configure::read('sys_function_not_implement')));
-}
-else {
+$this->App->d($results);
 
 echo '<div class="orders">';
 echo '<h2 class="ico-bookmarkes-articles">';		
@@ -22,70 +13,53 @@ echo '</h2>';
 
 if(!empty($results)) {
 
-	echo '<table cellpadding="0" cellspacing="0">';
-	echo '<tr>';
-	echo '	<th>'.__('N').'</th>';
-	echo '	<th colspan="2">'.__('Name').'</th>';
-	echo '	<th>';
-	echo 		__('Data inizio');
-	echo '		<br />';
-	echo 		__('Data fine');
-	echo '	</th>';
-	echo '	<th>'.__('Aperto/Chiuso').'</th>';
-	echo '  <th>'.__('stato_elaborazione').'</th>';
-	echo '	<th>'.__('importo_scontato').'</th>';
-	
-	echo '	<th class="actions">'.__('Actions').'</th>';
-	
-	echo '	<th colspan="2">'.$this->Paginator->sort('organization_id').'</th>';
-	echo '	<th>'.__('Trasport').'</th>';
-	echo '	<th>'.__('CostMore').'</th>';
-	echo '	<th>'.__('Order').'</th>';
-	echo '  <th>'.__('stato_elaborazione').'</th>';
-	echo '	<th class="actions">'.__('Actions').'</th>';	
-	echo '</tr>';
+	foreach ($results as $i => $result) {
 
-	foreach ($results as $i => $result):
+		echo '<div class="table-responsive"><table class="table table">';
+		echo '<tr>';
+		echo '	<th>'.__('N').'</th>';
+		echo '	<th colspan="4">'.__('Name').'</th>';
+		echo '	<th>'.__('DataInizio').'</th>';
+		echo '	<th>'.__('DataFine').'</th>';
+		echo '	<th>'.__('OpenClose').'</th>';
+		echo '  <th>'.__('StatoElaborazione').'</th>';
+		echo '	<th>'.__('Importo_scontato').'</th>';
+		echo '	<th class="actions">'.__('Actions').'</th>';
+		echo '</tr>';
 
 		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1); 
 		
-		if(isset($result['ProdGasPromotionsOrganization']))
-			$rowspan = count($result['ProdGasPromotionsOrganization']);
-		else
-			$rowspan = 1;
-		
 		echo '<tr class="view">';
-		echo '	<td rowspan="'.$rowspan.'">'.$numRow.'</td>';
-		echo '	<td rowspan="'.$rowspan.'">';
+		echo '	<td>'.$numRow.'</td>';
+		echo '	<td>';
+		/*
 		if(!empty($result['ProdGasPromotion']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$result['ProdGasPromotion']['supplier_id'].DS.$result['ProdGasPromotion']['img1'])) {
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_promotions').'/'.$result['ProdGasPromotion']['supplier_id'].'/'.$result['ProdGasPromotion']['img1'].'" />';
-		}			
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_promotions').'/'.$result['ProdGasPromotion']['supplier_id'].'/'.$result['ProdGasPromotion']['img1'].'" />';
+		}
+		*/		
 		echo '</td>';
-		echo '	<td rowspan="'.$rowspan.'">';
+		echo '	<td colspan="3">';
 		echo $result['ProdGasPromotion']['name'];
 		echo '</td>';
 						
-		echo '	<td rowspan="'.$rowspan.'" style="white-space:nowrap;">';
-		echo $this->Time->i18nFormat($result['ProdGasPromotion']['data_inizio'],"%A %e %B %Y").'<br />';
-		echo $this->Time->i18nFormat($result['ProdGasPromotion']['data_fine'],"%A %e %B %Y");
-		echo '	</td>';
-		echo '	<td rowspan="'.$rowspan.'" style="white-space:nowrap;">';
+		echo '	<td style="white-space:nowrap;">'.$this->Time->i18nFormat($result['ProdGasPromotion']['data_inizio'],"%A %e %B %Y").'</td>';
+		echo '	<td style="white-space:nowrap;">'.$this->Time->i18nFormat($result['ProdGasPromotion']['data_fine'],"%A %e %B %Y").'</td>';
+		echo '	<td style="white-space:nowrap;">';
 		echo $this->App->utilsCommons->getOrderTime($result['ProdGasPromotion']);
 		echo '	</td>';
 		
-		echo '<td rowspan="'.$rowspan.'">';		 
+		echo '<td>';		 
 		echo $this->App->drawProdGasPromotionsStateDiv($result);
-
 		echo '&nbsp;';
 		echo __($result['ProdGasPromotion']['state_code'].'-label');
 		echo '</td>';
 		
-		echo '	<td rowspan="'.$rowspan.'"><span style="text-decoration: line-through;">'.$result['ProdGasPromotion']['importo_originale_e'].'</span><br />'.$result['ProdGasPromotion']['importo_scontato_e'].'</td>';
+		echo '	<td><span style="text-decoration: line-through;">'.$result['ProdGasPromotion']['importo_originale_e'].'</span><br />'.$result['ProdGasPromotion']['importo_scontato_e'].'</td>';
 		
 		/*
 		 * action su ProdGasPromotion
 		 */
-		echo '<td rowspan="'.$rowspan.'" class="actions-table-img-3">';
+		echo '<td class="actions-table-img-3">';
 		switch($result['ProdGasPromotion']['state_code']) {
 			case "WORKING":
 				echo $this->Html->link(null, array('controller' => 'ProdGasPromotions', 'action' => 'edit', $result['ProdGasPromotion']['id']), array('class' => 'action actionEdit','title' => __('Edit')));
@@ -104,19 +78,85 @@ if(!empty($results)) {
 		echo '</td>';
 
 		if(isset($result['ProdGasPromotionsOrganization'])) {
+		
+			echo '<tr>';
+			echo '	<th></th>';
+			echo '	<th></th>';
+			echo '	<th colspan="2">'.$this->Paginator->sort('organization_id').'</th>';
+			echo '	<th>'.__('Trasport').'</th>';
+			echo '	<th>'.__('CostMore').'</th>';
+			echo '	<th>'.__('ProdGasPromotionNotaSupplier').'</th>';
+			echo '	<th>'.__('ProdGasPromotionNotaUser').'</th>';
+			echo '	<th>'.__('Order').'</th>';
+			echo '  <th>'.__('StatoElaborazione').'</th>';
+			echo '	<th class="actions">'.__('Actions').'</th>';	
+			echo '</tr>';
+					
 			foreach($result['ProdGasPromotionsOrganization'] as $numResult2 => $prodGasPromotionsOrganization) {
 
-				if($numResult2>0)
-					echo '<tr>';
-				
+				echo '<tr>';
+				echo '	<td></td>';
+				echo '	<td></td>';
 				echo '	<td>';
 				if(!empty($prodGasPromotionsOrganization['Organization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$prodGasPromotionsOrganization['Organization']['img1']))
-					echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$prodGasPromotionsOrganization['Organization']['img1'].'" alt="'.$prodGasPromotionsOrganization['Organization']['name'].'" /> ';
+					echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$prodGasPromotionsOrganization['Organization']['img1'].'" alt="'.$prodGasPromotionsOrganization['Organization']['name'].'" /> ';
 				echo '	</td>';
 				echo '	<td>'.$prodGasPromotionsOrganization['Organization']['name'].'</td>';
 				echo '	<td>'.$prodGasPromotionsOrganization['trasport_e'].'</td>';
 				echo '	<td>'.$prodGasPromotionsOrganization['cost_more_e'].'</td>';
-				
+							
+				/*
+				 *  campo nota_supplier
+				 */
+				echo '<td class="hidden-xs">';
+				if(!empty($prodGasPromotionsOrganization['nota_supplier'])) {
+					
+					echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#nota_supplier'.$prodGasPromotionsOrganization['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+					echo '<div id="nota_supplier'.$prodGasPromotionsOrganization['id'].'" class="modal fade" role="dialog">';
+					echo '<div class="modal-dialog">';
+					echo '<div class="modal-content">';
+					echo '<div class="modal-header">';
+					echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+					echo '<h4 class="modal-title">'.__('ProdGasPromotionNotaFromSupplier').'</h4>';
+					echo '</div>';
+					echo '<div class="modal-body"><p>'.$prodGasPromotionsOrganization['nota_supplier'].'</p>';
+					echo '</div>';
+					echo '<div class="modal-footer">';
+					echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';			
+					
+				} // end if(!empty($prodGasPromotionsOrganization['nota_supplier']))	
+				echo '</td>';
+			
+				/*
+				 *  campo nota_user
+				 */
+				echo '<td class="hidden-xs">';
+				if(!empty($prodGasPromotionsOrganization['nota_user'])) {
+					
+					echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#nota_user'.$prodGasPromotionsOrganization['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+					echo '<div id="nota_user'.$prodGasPromotionsOrganization['id'].'" class="modal fade" role="dialog">';
+					echo '<div class="modal-dialog">';
+					echo '<div class="modal-content">';
+					echo '<div class="modal-header">';
+					echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+					echo '<h4 class="modal-title">'.__('ProdGasPromotionNotaUser').'</h4>';
+					echo '</div>';
+					echo '<div class="modal-body"><p>'.$prodGasPromotionsOrganization['nota_user'].'</p>';
+					echo '</div>';
+					echo '<div class="modal-footer">';
+					echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';			
+					
+				} // end if(!empty($prodGasPromotionsOrganization['nota_user']))	
+				echo '</td>'; 
+
 				if(isset($prodGasPromotionsOrganization['Order']) && !empty($prodGasPromotionsOrganization['Order'])) {	
 					echo '<td>';
 					echo $prodGasPromotionsOrganization['Order']['data_inizio_'].'<br />';
@@ -126,7 +166,7 @@ if(!empty($results)) {
 				}
 				else
 					echo '<td colspan="2">Non ancora creato</td>';
-			
+				
 				echo '<td class="actions-table-img">';
 				if(isset($prodGasPromotionsOrganization['Order']) && !empty($prodGasPromotionsOrganization['Order'])) {
 					switch($result['ProdGasPromotion']['state_code']) {
@@ -139,20 +179,14 @@ if(!empty($results)) {
 						break;
 					}
 				}
-				echo '</td>';
-		
-				if($numResult2>0)
-					echo '</tr>';				
+				echo '</td>';		
+				echo '</tr>';				
 			}					
 		}
-		else
-			echo '	<td colspan="5"></td>';
 		
 		echo '</tr>';
-
-endforeach; 
-
-echo '</table>';
+		echo '</table></div>';
+}
 
 echo '<p>';
 echo $this->Paginator->counter(array(
@@ -172,44 +206,42 @@ echo '</div>';
 echo $this->App->drawLegenda($user, $prodGasPromotionStates);
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora promozioni registrate"));
+	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora promozioni registrate"));
 
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});	
 
-	jQuery('.referente_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
+	$('.referente_nota').click(function() {
+		var id = $(this).attr('id');
+		$("#dialog-msg-"+id ).modal();
 	});
 });
 </script>
-<?php	
-}

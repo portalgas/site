@@ -55,7 +55,36 @@ class LoginController extends JControllerLegacy
 		$return = $model->getState('return');
 
 		$result = $app->login($credentials, array('action' => 'core.login.admin'));
-
+		
+		/*
+		 * fractis
+		 * se Organization.stato = N blocco l'accesso al backoffice
+		 */
+		$user	= JFactory::getUser(); 
+		if(!empty($user)) {
+			$sql = "SELECT
+					Organization.stato 
+				FROM 
+					k_organizations as Organization 
+				WHERE
+					Organization.id = ".$user->get('organization_id');
+			// echo '<br />'.$sql;
+			$db = JFactory::getDbo();
+			$db->setQuery($sql);
+			$results = $db->loadObject();
+			if(!empty($results)) {
+				$stato = $results->stato;			
+				if($stato=='N') {
+					$app = JFactory::getApplication(); 
+					$result = $app->logout($user->get('id'));
+					
+					jexit('<h1 style="text-align:center;margin-top:20%;">G.A.S. non autorizzato ad accedere al backoffice!</h1>');
+					
+					// $app->redirect('index.php', JText::_('Accesso negato'));
+				}
+			}
+		}
+		
 		if (!($result instanceof Exception)) {
 			$app->redirect($return);
 		}

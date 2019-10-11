@@ -43,7 +43,7 @@ require( JModuleHelper::getLayoutPath($module->module) );
 
 ?>
 <script type="text/javascript">
-
+/*
   var _lofmain =  $('lofass<?php echo $module->id; ?>'); 
    var object = new LofArticleSlideshow( _lofmain,
                   { 
@@ -65,6 +65,6 @@ require( JModuleHelper::getLayoutPath($module->module) );
     object.registerButtonsControl( 'click', {next:_lofmain.getElement('.lof-next'),
                          previous:_lofmain.getElement('.lof-previous')} );
   <?php endif; ?>
-
+*/
 </script>
 

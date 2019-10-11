@@ -133,7 +133,7 @@ foreach($results as $numArticle => $result) {
 
 	if($filterType=='Y') {
 		$html .= ' <td width="'.$output->getCELLWIDTH100().'">';
-		if(!empty($result['ArticlesType'])) {			foreach($result['ArticlesType'] as $articlesType)				$html .= $articlesType['descrizione'].'<br />';		}
+		if(!empty($result['ArticlesType'])) {			foreach($result['ArticlesType'] as $articlesType)				$html .= $articlesType['ArticlesType']['descrizione'].'<br />';		}
 		$html .= '</td>';	}
 		
 	if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y' && $filterCategory=='Y') {
@@ -245,4 +245,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

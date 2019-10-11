@@ -34,7 +34,7 @@ foreach($results as $numResult => $result) {
 	if($result['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))
 		$data_fine = $this->Time->i18nFormat($result['Order']['data_fine_validation'],"%A %e %B %Y");
 	
-	$rows = array();
+	$rows = [];
 	$rows[] = ($numResult+1);
 	$rows[] = $result['SupplierOrganization']['name'];
 	$rows[] = $data_inizio;
@@ -46,7 +46,7 @@ foreach($results as $numResult => $result) {
 	$totImporto = ($totImporto + $result[0]['totImporto']);
 }
 
-$rows = array();
+$rows = [];
 $rows[] = '';
 $rows[] = '';
 $rows[] = '';

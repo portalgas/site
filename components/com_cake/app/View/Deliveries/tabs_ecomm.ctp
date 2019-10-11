@@ -1,12 +1,14 @@
 <?php
 echo '<div id="tabsDelivery">';
-echo '<h2>Fai la tua spesa</h2>';
+echo '<h2>'.__('FEShop').'</h2>';
 
 echo '<div class="panel with-nav-tabs panel-default">';
 echo '   <div class="panel-heading" style="padding-bottom:0px;background-color: #d9edf7;border-bottom: medium none;">';
 echo '		<ul class="nav nav-tabs" role="tablist">';
-echo '		  <li role="presentation" class="active"><a data-toggle="tab" href="#tabType0content" onClick="javascript:drawTab(0)">Ordini per consegna</a></li>';
-echo '		  <li role="presentation"><a data-toggle="tab" href="#tabType1content" onClick="javascript:drawTab(1)">Ordini per produttore</a></li>';
+echo '		  <li role="presentation" class="active"><a data-toggle="tab" href="#tabType0content" onClick="javascript:drawTab(0)">'.__('OrdersToDelivery').'</a></li>';
+echo '		  <li role="presentation"><a data-toggle="tab" href="#tabType1content" onClick="javascript:drawTab(1)">'.__('OrdersToSupplier').'</a></li>';
+if(!empty($prodGasPromotionsOrganizationsResults))
+	echo '<li role="presentation"><a class="btn btn-primary" data-toggle="tab" href="#tabType2content" onClick="javascript:drawTab(2)">'.__('ProdGasPromotionNames').'</a></li>';
 // echo '		  <li role="presentation"><a href="/?option=com_cake&controller=Deliveries&action=tabsUserCart">Carrello</a></li>';
 echo '		</ul>';	
 echo '	</div>';
@@ -31,6 +33,11 @@ function drawTab(numTabs) {
 	if(numTabs==1) {
 		$('#tabType0content').html('');
 		url = "/?option=com_cake&controller=Deliveries&action=tabsEcommTabAllOrders&format=notmpl";		
+	}
+	else
+	if(numTabs==2) {
+		$('#tabType0content').html('');
+		url = "/?option=com_cake&controller=Deliveries&action=tabsEcommTabProdGasPromotions&format=notmpl";		
 	}
 	else
 		return;

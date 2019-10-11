@@ -1,37 +1,34 @@
-<h2 class="ico-export-docs">
-	<?php echo __('Print Doc');?>
-	<div class="actions-img">
-		<ul>
-			<li><?php echo $this->Form->input('typeDoc', array(
-						         'type' => 'radio',
-						         'name' => 'doc_formato',
-						         'fieldset' => false,
-						         'legend' => false,
-						         'div' => array('class' => ''),
-						         'options' => $options,
-						         'default' => 'PDF',
-						   ));
-				?>
-			</li>
-			<li><?php echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc'))); ?></li>
-		</ul>
-	</div>
-</h2>
+<?php
+echo '<h2 class="ico-export-docs">';
+echo __('Print Doc');
+echo '<div class="actions-img">';
+echo '<ul>';
+echo '<li>';
+echo $this->App->drawFormRadio('Doc','doc_formato',array('options' => $options, 
+										'value'=> 'PDF', 'label' => false, 'default' => 'PDF'));			
+echo '</li>';
+echo '<li style="padding-left:25px;">';
+echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc')));
+echo '</li>';
+echo '</ul>';
+echo '</div>';
+echo '</h2>';
+?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	choiceDocPrint();
 	
-	jQuery(function() {
-		jQuery(".blank").attr("target","_blank");
+	$(function() {
+		$(".blank").attr("target","_blank");
 	});
 	
-	jQuery('#actionExportDoc').click(function() {
-		var delivery_id = jQuery('#delivery_id').val();
-		var order_id = jQuery('#order_id').val();
+	$('#actionExportDoc').click(function() {
+		var delivery_id = $('#delivery_id').val();
+		var order_id = $('#order_id').val();
 		
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
-		var doc_formato = jQuery("input[name='doc_formato']:checked").val();
+		var doc_options = $("input[name='doc_options']:checked").val();
+		var doc_formato = $("input[name='data[Doc][doc_formato]']:checked").val();
 
 		if(doc_formato=='EXCEL' && doc_options=='to-users-all-modify') {
 			alert("<?php echo Configure::read('sys_report_not_implement');?>");
@@ -65,11 +62,11 @@ jQuery(document).ready(function() {
 		var parametersFilter = setExportDocsParameters(doc_options);
 		
 		if(doc_options=='to-articles-weight')
-			var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToArticlesWeight&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl';
+			var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToArticlesWeight&organization_id='+organization_id+'&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl';
 		else
-			var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&'+parametersFilter+'&format=notmpl';
-			
-		jQuery('#actionExportDoc').attr('href', url);
+			var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportProdGasSupplierToReferent&organization_id='+organization_id+'&delivery_id='+delivery_id+'&order_id='+order_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&'+parametersFilter+'&format=notmpl';
+		
+		$('#actionExportDoc').attr('href', url);
 		return true;
 	});	
 });

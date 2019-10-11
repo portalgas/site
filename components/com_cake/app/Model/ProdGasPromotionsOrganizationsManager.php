@@ -4,20 +4,206 @@ App::uses('AppModel', 'Model');
 class ProdGasPromotionsOrganizationsManager extends AppModel {
 
     public $useTable = 'prod_gas_promotions_organizations';
+ 
+	/*
+	 * promozioni da associare ad un ordine di GAS state_code = WAITING
+	 */
+    public function getWaitingPromotions($user, $rules=[], $debug=false) {
+    
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
+								   'ProdGasPromotionsOrganizationsManager.state_code' => 'WAITING',
+								   'ProdGasPromotion.state_code' => 'TRASMISSION-TO-GAS',
+								   'DATE(ProdGasPromotion.data_inizio) <= CURDATE() AND DATE(ProdGasPromotion.data_fine) >= CURDATE()'];
 
+		$this->unbindModel(['belongsTo' => ['Organization']]);
+		$options['recursive'] = 1;	
+		$results = $this->find('all', $options);
+		self::d([$options, $results], $debug);	
+
+			
+		App::import('Model', 'ProdGasArticlesPromotion');
+		$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
+		$ProdGasArticlesPromotion->unbindModel(['belongsTo' => ['ProdGasPromotion']]);
+
+		App::import('Model', 'Organization');
+		$Organization = new Organization;
+		
+		$Organization->unbindModel(['belongsTo' => ['Template']]);
+		
+		$belongsTo = [
+				'className' => 'Supplier',
+				'foreignKey' => '',
+				'conditions' => 'Supplier.owner_organization_id = Organization.id',
+				'fields' => '',
+				'order' => ''];
+		
+		$Organization->bindModel(['belongsTo' => ['Supplier' => $belongsTo]]);
+
+		/*
+		 * per ogni promozione estraggo Organization del produttore, ProdGasArticle
+ 		 */		
+		foreach($results as $numResult => $result) {
+			
+			$options = [];
+			$options['conditions'] = ['Organization.id' => $result['ProdGasPromotion']['organization_id']];
+			$options['recursive'] = 0;
+			$organizationResults = $Organization->find('first', $options);
+			self::d($organizationResults, $debug);	
+			$results[$numResult]['ProdGasSupplier'] = $organizationResults;
+			
+			$options = [];
+			$options['conditions'] = ['ProdGasArticlesPromotion.prod_gas_promotion_id' => $result['ProdGasPromotion']['id']];
+			$options['recursive'] = 1;
+			$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
+			if(!empty($prodGasArticlesPromotionResults)) {
+				$results[$numResult]['Article'] = $prodGasArticlesPromotionResults;
+			}
+			
+			/*
+			 * ctrl ACL
+			 */
+			$results[$numResult]['Acl'] = $this->isAclToManagement($user, $results[$numResult]['ProdGasSupplier']['Supplier']['id'], $rules, $debug);				
+		}
+		
+		self::d([$options, $results], $debug);
+		
+		return $results;	    
+    }
+    
+	/*
+	 * promozioni associate ad un ordine di GAS state_code = OPEN
+	 */
+    public function getOpenPromotions($user, $rules=[], $debug=false) {
+		
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
+								   'ProdGasPromotionsOrganizationsManager.state_code' => 'OPEN',
+								   'ProdGasPromotion.state_code != ' => 'WORKING'];
+
+		$this->unbindModel(['belongsTo' => ['Organization']]);
+		$options['recursive'] = 1;
+		$results = $this->find('all', $options);
+		
+		/*
+		 * per ogni ordine estraggo Delivery , SuppliersOrganization
+ 		 */
+		App::import('Model', 'Delivery');
+		App::import('Model', 'SuppliersOrganization'); 
+		foreach($results as $numResult => $result) {
+			if(isset($result['Order'])) {
+					
+				$order_id = $result['Order']['id'];
+				$delivery_id = $result['Order']['delivery_id'];
+				$supplier_organization_id = $result['Order']['supplier_organization_id'];
+				
+				$Delivery = new Delivery;
+				
+				$options = [];
+				$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+				$options['recursive'] = -1;
+				$deliveryResults = $Delivery->find('first', $options);
+				if(!empty($deliveryResults)) {
+					$results[$numResult]['Delivery'] = $deliveryResults['Delivery'];
+				}
+				
+				$SuppliersOrganization = new SuppliersOrganization;
+				
+				$options = [];
+				$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+											'SuppliersOrganization.id' => $supplier_organization_id];
+				$options['recursive'] = -1;
+				$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+				if(!empty($suppliersOrganizationResults)) {
+					$results[$numResult]['SuppliersOrganization'] = $suppliersOrganizationResults['SuppliersOrganization'];
+				}
+			}
+		} 
+		
+		self::d($results, $debug);
+
+		return $results;		
+	}
+	
+	public function isAclToManagement($user, $supplier_id, $rules=[], $debug=false) {
+
+		$acl = false;
+		$suppliersOrganizationsReferents = [];
+
+		self::d($rules, $debug);	
+
+		if(!isset($rules['isReferente']))
+			$isReferente = false;
+		else 
+			$isReferente = $rules['isReferente'];
+			
+		if(!isset($rules['isSuperReferente']))
+			$isSuperReferente = false;
+		else 
+			$isSuperReferente = $rules['isSuperReferente'];
+			
+		if(!isset($rules['isManager']))
+			$isManager = false;
+		else 
+			$isManager = $rules['isManager'];
+		
+		if (!$isSuperReferente || $isReferente) {
+			App::import('Model', 'SuppliersOrganizationsReferent');
+			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+			 
+			$suppliersOrganizationsReferents = $SuppliersOrganizationsReferent->getSuppliersOrganizationByReferent($user, $user->id);
+			self::d($suppliersOrganizationsReferents, $debug);	
+		}
+		
+		if($isSuperReferente)
+			$acl = true;
+		else 
+		if(!$isReferente) {
+			foreach ($suppliersOrganizationsReferents as $suppliersOrganizationsReferent) {
+				if($supplier_id==$suppliersOrganizationsReferent['Supplier']['id']) {	
+					$acl = true;
+					break;
+				}
+			}	
+		}
+		
+		return $acl;		
+	}
+	
 	/*
 	 * il managerGas accetta la promozione:
 	 * si importa il produttore (da Supplier a SuppliersOrganization)
 	 */
-	public function importProdGasSupplier($user, $supplier_id, $prod_gas_promotion_id, $debug=false) {
+	public function importProdGasSupplier($user, $prod_gas_promotion_id, $debug=false) {
 		
 		$continua = true;
 		$supplier_organization_id = 0;
 		
-		if(empty($supplier_id) || empty($prod_gas_promotion_id)) {
-			if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasSupplier() Passaggio parametri errato: supplier_id '.$supplier_id.' prod_gas_promotion_id '.$prod_gas_promotion_id;
+		if(empty($prod_gas_promotion_id)) {
+			self::d('ProdGasPromotionsOrganizationsManager::importProdGasSupplier() Passaggio parametri errato: '.$prod_gas_promotion_id, $debug);
 			return false;
 		}
+		
+		/*
+		 * dati promozione 
+		 */
+		App::import('Model', 'ProdGasPromotion');
+		$ProdGasPromotion = new ProdGasPromotion;
+		
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotion.id' => $prod_gas_promotion_id];
+		$options['recursive'] = -1;
+		$results = $ProdGasPromotion->find('first', $options);
+		self::d([$options,$results], $debug);
+		
+		/*
+		 * dati produttore 
+		 */
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;
+		
+		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id']);
+		self::d($supplierResults, $debug);
 		
 		/*
 		 * ctrl se il GAS ha il produttore associato
@@ -28,17 +214,16 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization','CategoriesSupplier')));
 		$SuppliersOrganization->unbindModel(array('hasMany' => array('Article','Order','SuppliersOrganizationsReferent')));
 
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   'Supplier.id' => $supplier_id,
-									   'Supplier.stato' => 'Y'); // non prendo Supplier.stato = 'T' or Supplier.stato = 'PG'
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								   'Supplier.id' => $supplierResults['SuppliersOrganization']['supplier_id'],
+								   'Supplier.stato' => 'Y']; // non prendo Supplier.stato = 'T' or Supplier.stato = 'PG'
 		$options['recursive'] = 1;
 		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-		if($debug) {
-			echo "<pre>ProdGasPromotionsOrganizationsManager::importProdGasSupplier() Dati produttore associato al GAS \n";
-			print_r($suppliersOrganizationResults);
-			echo "</pre>";
-		}		
+		self::d([$options,$supplierResults], $debug);
+		
+		self::d($suppliersOrganizationResults, $debug);
+
 		if(!empty($suppliersOrganizationResults)) {
 			/*
 			 * il produttore c'e' ma era disabilitato
@@ -67,8 +252,8 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 			App::import('Model', 'Supplier');
 			$Supplier = new Supplier;
 			
-			$options = array();
-			$options['conditions'] = array('Supplier.id' => $supplier_id);
+			$options = [];
+			$options['conditions'] = ['Supplier.id' => $supplier_id];
 			$options['recursive'] = -1;
 			$supplierResults = $Supplier->find('first', $options);
 			if(empty($supplierResults)) {
@@ -77,7 +262,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 			}	
 			
 			else {
-				$data=array();
+				$data=[];
 				$data['SuppliersOrganization']['organization_id'] = $user->organization['Organization']['id'];
 				$data['SuppliersOrganization']['supplier_id'] = $supplier_id;
 				$data['SuppliersOrganization']['name'] = $supplierResults['Supplier']['name'];
@@ -107,179 +292,37 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 
 	/*
 	 * il managerGas accetta la promozione:
-	 * si importa articoli in promozioni (da ProdGasArticlesPromotion->ProdGasArticles a Articles)
-	 */
-	public function importProdGasArticles($user, $supplier_id, $prod_gas_promotion_id, $debug=false) {
-		
-		$continua = true;
-		
-		if(empty($supplier_id) || empty($prod_gas_promotion_id)) {
-			if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasArticles() Passaggio parametri errato: supplier_id '.$supplier_id.' prod_gas_promotion_id '.$prod_gas_promotion_id;
-			return false;
-		}
-		
-		/*
-		 * estratto il supplier_organization_id
-		 */
-		App::import('Model', 'SuppliersOrganization');
-		$SuppliersOrganization = new SuppliersOrganization;
-		
-		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization','CategoriesSupplier')));
-		$SuppliersOrganization->unbindModel(array('hasMany' => array('Article','Order','SuppliersOrganizationsReferent')));
-
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   'Supplier.id' => $supplier_id,
-									   'Supplier.stato' => 'Y'); // non prendo Supplier.stato = 'T' or Supplier.stato = 'PG'
-		$options['recursive'] = 1;
-		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-		if($debug) {
-			echo "<pre>ProdGasPromotionsOrganizationsManager::importProdGasArticles() Dati produttore associato al GAS \n";
-			print_r($suppliersOrganizationResults);
-			echo "</pre>";
-		}		
-		
-		if(empty($suppliersOrganizationResults)) {
-			if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasArticles() Dati produttore associato al GAS NON trovato!';
-			return false;			
-		}	
-		
-		$supplier_organization_id = $suppliersOrganizationResults['SuppliersOrganization']['id'];
-		
-		/*
-		 * ProdGasArticlesPromotion, li importo per il GAS
-		 */
-		App::import('Model', 'Article');
-		
-		App::import('Model', 'ProdGasArticlesPromotion');
-		$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
-
-		$ProdGasArticlesPromotion->unbindModel(array('belongsTo' => array('ProdGasPromotion')));
-		
-		$options = array();
-		$options['conditions'] = array('ProdGasArticle.supplier_id' => $supplier_id,
-									   'ProdGasArticle.stato' => 'Y',
-									   'ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id);
-		$options['recursive'] = 1;
-		$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
-		if($debug) {
-			echo "<pre>ProdGasPromotionsOrganizationsManager::importProdGasArticles() Articoli in promozione \n";
-			print_r($prodGasArticlesPromotionResults);
-			echo "</pre>";
-		}
-		if(empty($prodGasArticlesPromotionResults)) {
-			if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasArticles() Articoli in promozione NON trovati!';
-			return false;			
-		}	
-
-		foreach($prodGasArticlesPromotionResults as $prodGasArticlesPromotionResult) {
-			/*
-			 * ctrl che l'prodGasArticle sia in Article del GAS
-			 */
-			$prod_gas_article_id = $prodGasArticlesPromotionResult['ProdGasArticle']['id'];
-			
-			$Article = new Article;
-			$options = array();
-			$options['conditions'] = array('Article.supplier_id' => $supplier_id,
-										   'Article.prod_gas_article_id' => $prod_gas_article_id,
-										   'Article.organization_id' => $user->organization['Organization']['id'],
-										   'Article.supplier_organization_id' => $supplier_organization_id);
-			$options['recursive'] = -1;
-			$articleResults = $Article->find('first', $options);
-			if($debug) {
-				echo "<pre>ProdGasPromotionsOrganizationsManager::importProdGasArticles() Ricerco ARTICLE se gia associato al GAS \n";
-				print_r($options['conditions']);
-				print_r($articleResults);
-				echo "</pre>";
-			}  			
-			if(empty($articleResults)) {
-				/*
-				 * articolo non presente, INSERT
-				 */
-				$data=array();
-				$data['Article']['id'] = $Article->getMaxIdOrganizationId($user->organization['Organization']['id']);
-				$data['Article']['organization_id'] = $user->organization['Organization']['id'];
-				$data['Article']['supplier_organization_id'] = $supplier_organization_id;
-				$data['Article']['supplier_id'] = $supplier_id;
-				$data['Article']['prod_gas_article_id'] = $prod_gas_article_id;
-				$data['Article']['name'] = $prodGasArticlesPromotionResult['ProdGasArticle']['name'];
-				$data['Article']['codice'] = $prodGasArticlesPromotionResult['ProdGasArticle']['codice'];
-				$data['Article']['nota'] = $prodGasArticlesPromotionResult['ProdGasArticle']['nota'];
-				$data['Article']['ingredienti'] = $prodGasArticlesPromotionResult['ProdGasArticle']['ingredienti'];
-				$data['Article']['prezzo'] = $prodGasArticlesPromotionResult['ProdGasArticle']['prezzo'];
-				$data['Article']['qta'] = $prodGasArticlesPromotionResult['ProdGasArticle']['qta'];
-				$data['Article']['um'] = $prodGasArticlesPromotionResult['ProdGasArticle']['um'];
-				$data['Article']['um_riferimento'] = $prodGasArticlesPromotionResult['ProdGasArticle']['um_riferimento'];
-				$data['Article']['pezzi_confezione'] = $prodGasArticlesPromotionResult['ProdGasArticle']['pezzi_confezione'];
-				$data['Article']['bio'] = $prodGasArticlesPromotionResult['ProdGasArticle']['bio'];
-				$data['Article']['img1'] = $prodGasArticlesPromotionResult['ProdGasArticle']['img1'];
-				$data['Article']['qta_minima'] = 1;
-				$data['Article']['qta_massima'] = 0;
-				$data['Article']['qta_minima_order'] = 0;
-				$data['Article']['qta_massima_order'] = 0;
-				$data['Article']['qta_multipli'] = 1;
-				$data['Article']['alert_to_qta'] = 0;
-				$data['Article']['flag_presente_articlesorders'] = 'Y';
-				$data['Article']['stato'] = 'Y';
-  
-				if($debug) {
-					echo "<pre>ProdGasPromotionsOrganizationsManager::importProdGasArticles() Articoli INSERT al GAS \n";
-					print_r($data);
-					echo "</pre>";
-				}  		
-				
-				/*
-				 * richiamo la validazione 
-				 */
-				$Article->set($data);				
-				if(!$Article->validates()) {
-			
-					$errors = $Article->validationErrors;
-					$tmp = '';
-					$flatErrors = Set::flatten($errors);
-					if(count($errors) > 0) { 
-						$tmp = '';
-						foreach($flatErrors as $key => $value) 
-							$tmp .= $value.' - ';
-					}
-					if($debug) echo "<br />Articolo non inserito: dati non validi, $tmp";
-					$continua = false;
-				}
-				else {				
-					$Article->create();
-					if(!$Article->save($data)) {
-						if($debug) echo "<br />Articolo non inserito: ".$prodGasArticlesPromotionResult['ProdGasArticle']['name'];
-						$continua = false;
-					}	
-				}
-			}
-			else {
-				if($debug) {
-					echo "<br />ProdGasPromotionsOrganizationsManager::importProdGasArticles() Articolo ".$prodGasArticlesPromotionResult['ProdGasArticle']['name']." GIA INSERT al GAS \n";
-				} 				
-			}
-			
-			$qta = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
-			$name = $prodGasArticlesPromotionResult['ProdGasArticle']['name'];
-			
-		} // loop prodGasArticlesPromotionResults
-		
-		return $continua;
-	}
-
-	/*
-	 * il managerGas accetta la promozione:
 	 * si importa articoli in promozioni in articoli in ordine (da ProdGasArticlesPromotion a ArticlesOrders)
 	 * la ProdGasArticlesPromotion.qta diventera' ArticlesOrder.qta_minima_order e ArticlesOrder.qta_massima_order
 	 */
-	public function importProdGasArticlesPromotions($user, $supplier_id, $prod_gas_promotion_id, $order_id, $debug=false) {
+	public function importProdGasArticlesPromotions($user, $prod_gas_promotion_id, $order_id, $debug=false) {
 		
 		$continua = true;
 		
-		if(empty($supplier_id) || empty($prod_gas_promotion_id) || empty($order_id)) {
-			if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasArticlesPromotions() Passaggio parametri errato: supplier_id '.$supplier_id.' prod_gas_promotion_id '.$prod_gas_promotion_id.' order_id '.$order_id;
+		if(empty($prod_gas_promotion_id) || empty($order_id)) {
+			self::d('ProdGasPromotionsOrganizationsManager::importProdGasArticlesPromotions() Passaggio parametri errato: supplier_id '.$supplier_id.' prod_gas_promotion_id '.$prod_gas_promotion_id.' order_id '.$order_id, $debug);
 			return false;
 		}
+		
+		/*
+		 * dati promozione 
+		 */
+		App::import('Model', 'ProdGasPromotion');
+		$ProdGasPromotion = new ProdGasPromotion;
+		
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotion.id' => $prod_gas_promotion_id];
+		$options['recursive'] = -1;
+		$results = $ProdGasPromotion->find('first', $options);
+		self::d($results, $debug);
+		
+		/*
+		 * dati produttore 
+		 */
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;
+		
+		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id']);
 		
 		App::import('Model', 'ArticlesOrder');
 		
@@ -287,79 +330,75 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		 * estratto gli articoli in promozione
 		 * ProdGasArticlesPromotion.qta => ArticlesOrder.qta_minima_order e ArticlesOrder.qta_massima_order
 		 */
-		try {
-			$sql = "SELECT Article.*, ProdGasArticlesPromotion.qta FROM 
-					k_prod_gas_articles_promotions AS ProdGasArticlesPromotion,
-					k_prod_gas_articles AS ProdGasArticle,
-					k_articles AS Article 
-				WHERE  
-					ProdGasArticlesPromotion.supplier_id = ".$supplier_id." 
-					and ProdGasArticlesPromotion.prod_gas_promotion_id = ".$prod_gas_promotion_id." 
-					and ProdGasArticlesPromotion.supplier_id = ProdGasArticle.supplier_id 
-					and ProdGasArticlesPromotion.prod_gas_article_id = ProdGasArticle.id
-					and ProdGasArticle.stato = 'Y'
-					and Article.organization_id = ".$user->organization['Organization']['id']." 
-					and Article.supplier_id = ProdGasArticle.supplier_id 
-					and Article.prod_gas_article_id = ProdGasArticle.id
-					ORDER BY Article.id;";
-				if($debug) echo '<br />ProdGasPromotionsOrganizationsManager '.$sql;
-				$results = $this->query($sql);
-				
-				if(empty($results)){
-					if($debug) echo '<br />ProdGasPromotionsOrganizationsManager::importProdGasArticlesPromotions() Articoli in promozione NON trovati!';
-					return false;			
-				}
+		App::import('Model', 'ProdGasArticlesPromotion');
+		$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
 		
-				foreach($results as $result) {
-					$data = array();
-					$data['ArticlesOrder']['organization_id'] = $user->organization['Organization']['id'];
-					$data['ArticlesOrder']['article_organization_id'] = $user->organization['Organization']['id'];
-					$data['ArticlesOrder']['article_id'] = $result['Article']['id'];
-					$data['ArticlesOrder']['order_id'] = $order_id;
-					$data['ArticlesOrder']['prezzo'] = $result['Article']['prezzo'];
-					$data['ArticlesOrder']['qta_cart'] = 0;
-					$data['ArticlesOrder']['pezzi_confezione'] = $result['Article']['pezzi_confezione'];
-					$data['ArticlesOrder']['qta_minima'] = $result['Article']['qta_minima'];
-					$data['ArticlesOrder']['qta_massima'] = $result['Article']['qta_massima'];
-					$data['ArticlesOrder']['qta_minima_order'] = $result['ProdGasArticlesPromotion']['qta'];
-					$data['ArticlesOrder']['qta_massima_order'] = $result['ProdGasArticlesPromotion']['qta'];
-					$data['ArticlesOrder']['qta_multipli'] = $result['Article']['qta_multipli'];
-					$data['ArticlesOrder']['flag_bookmarks'] = 'N';
-					$data['ArticlesOrder']['alert_to_qta'] = 0;
-					$data['ArticlesOrder']['stato'] = 'Y';
+		$ProdGasArticlesPromotion->unbindModel(['belongsTo' => ['ProdGasPromotion']]);
+	
+		$options = [];
+		$options['conditions'] = ['ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id];
+		$options['recursive'] = 0;
+		$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
+		self::d($options, $debug);
+		self::d($prodGasArticlesPromotionResults, $debug); 	
 
-					/*
-					 * richiamo la validazione
-					 */
-					$ArticlesOrder = new ArticlesOrder; 
-					$ArticlesOrder->set($data);
-					if (!$ArticlesOrder->validates()) {
-						$errors = $ArticlesOrder->validationErrors;
-						$tmp = '';
-						$flatErrors = Set::flatten($errors);
-						if (count($errors) > 0) {
-							$tmp = '';
-							foreach ($flatErrors as $key => $value)
-								$tmp .= $value . ' - ';
-						}
-						if($debug) echo "<br />Articolo non associato all'ordine: dati non validi, $tmp";
-						$continua = false;
-					} else {
-						$ArticlesOrder->create();
-						if (!$ArticlesOrder->save($data)) {
-							if($debug) echo "<br />articolo " . $result['Article']['id'] . " in errore!";
-							$continua = false;
-						}
-					}					
+		foreach($prodGasArticlesPromotionResults as $prodGasArticlesPromotionResult) {
+			$data = [];
+			$data['ArticlesOrder']['organization_id'] = $user->organization['Organization']['id'];
+			$data['ArticlesOrder']['article_organization_id'] = $prodGasArticlesPromotionResult['Article']['organization_id'];
+			$data['ArticlesOrder']['article_id'] = $prodGasArticlesPromotionResult['Article']['id'];
+			$data['ArticlesOrder']['name'] = $prodGasArticlesPromotionResult['Article']['name'];
+			$data['ArticlesOrder']['order_id'] = $order_id;
+			$data['ArticlesOrder']['prezzo'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['prezzo_unita']; // prezzo originalre Article.prezzo;
+			$data['ArticlesOrder']['qta_cart'] = 0;
+			$data['ArticlesOrder']['pezzi_confezione'] = $prodGasArticlesPromotionResult['Article']['pezzi_confezione'];
+			$data['ArticlesOrder']['qta_minima'] = $prodGasArticlesPromotionResult['Article']['qta_minima'];
+			$data['ArticlesOrder']['qta_massima'] = $prodGasArticlesPromotionResult['Article']['qta_massima'];
+			$data['ArticlesOrder']['qta_minima_order'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
+			$data['ArticlesOrder']['qta_massima_order'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
+			$data['ArticlesOrder']['qta_multipli'] = $prodGasArticlesPromotionResult['Article']['qta_multipli'];
+			$data['ArticlesOrder']['flag_bookmarks'] = 'N';
+			$data['ArticlesOrder']['alert_to_qta'] = 0;
+			$data['ArticlesOrder']['stato'] = 'Y';
+
+			/*
+			 * richiamo la validazione
+			 */
+			$ArticlesOrder = new ArticlesOrder; 
+			$ArticlesOrder->set($data);
+			if (!$ArticlesOrder->validates()) {
+				$errors = $ArticlesOrder->validationErrors;
+				$tmp = '';
+				$flatErrors = Set::flatten($errors);
+				if (count($errors) > 0) {
+					$tmp = '';
+					foreach ($flatErrors as $key => $value)
+						$tmp .= $value . ' - ';
 				}
+				self::d('Articolo non associato all\'ordine: dati non validi, '.$tmp, $debug);
+				$continua = false;
+			} else {
+				$ArticlesOrder->create();
+				if (!$ArticlesOrder->save($data)) {
+					self::d('articolo '. $result['Article']['id'].' in errore!', $debug);
+					$continua = false;
+				}
+			}					
 		}
-		catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
-			$continua = false;
-		}		
 		
 		return $continua;
+	}
+	
+	public function getRejectNotes($user) {
+		
+		$results = [];
+		
+		$results["Promozione poco conveniente"] = "Promozione poco conveniente";
+		$results["Articoli in promozione non interessanti"] = "Articoli in promozione non interessanti";
+		$results["Ordinato dal produttore da poco"] = "Ordinato dal produttore da poco";
+		$results["Altro..."] = "Altro...";
+		
+		return $results;
 	}
 	
 	public $validate = array(
@@ -403,7 +442,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		),
 	);
 
-	function date_comparison($field=array(), $operator, $field2) {
+	function date_comparison($field=[], $operator, $field2) {
 		foreach( $field as $key => $value1 ){
 			$value2 = $this->data[$this->alias][$field2];
 			
@@ -416,7 +455,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		return true;
 	}
 	
-	function date_comparison_to_delivery($field=array(), $operator) {
+	function date_comparison_to_delivery($field=[], $operator) {
 		foreach( $field as $key => $value ){
 			if(isset($this->data[$this->alias]['delivery_id'])) { // capita se l'elenco delle consegne è vuoto
 				$delivery_id = $this->data[$this->alias]['delivery_id'];
@@ -426,7 +465,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 				$Delivery = new Delivery;
 			
 				$Delivery->unbindModel(array('hasMany' => array('Order','Cart')));
-				$delivery = $Delivery->read($organization_id, 'data', $delivery_id);
+				$delivery = $Delivery->read($delivery_id, $organization_id, 'data');
 				$delivery_data = $delivery['Delivery']['data'];
 			
 				if (!Validation::comparison($delivery_data, $operator, $value))

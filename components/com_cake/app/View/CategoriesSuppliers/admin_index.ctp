@@ -49,7 +49,7 @@
 		echo '</table>';
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora categorie per i produttori registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora categorie per i produttori registrate"));
 		
 echo '</div>';
 ?>

@@ -26,7 +26,7 @@ else
 			<th><?php echo __('N');?></th>
 			<th><?php echo $this->Paginator->sort('luogo');?></th>
 			<th><?php echo $this->Paginator->sort('data');?></th>
-			<th><?php echo __('Aperto/Chiuso');?></th>
+			<th><?php echo __('OpenClose');?></th>
 			<th><?php echo $this->Paginator->sort('nota');?></th>
 			<th></th>
 			<?php 
@@ -112,7 +112,7 @@ else
 	 	echo '</div>';
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora consegne chiuse"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora consegne chiuse"));
 		
 echo '</div>';
 ?>

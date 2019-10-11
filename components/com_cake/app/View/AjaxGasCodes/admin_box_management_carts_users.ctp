@@ -19,24 +19,24 @@ else {
 }	
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery(".rowEcomm").each(function () {
+	$(".rowEcomm").each(function () {
 		activeEcommRows(this);    /* active + / - , mouseenter mouseleave */
 		activeSubmitEcomm(this);
 		activeImportoForzato(this);
 		activeNotaEcomm(this);		
 	});	
 	
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionNotaView').each(function () {
+	$('.actionNotaView').each(function () {
 		actionNotaView(this); 
 	});	
 });

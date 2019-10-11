@@ -101,11 +101,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 									foreach ($rows2 as $typeRow2 => $cols2)
 									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
 										$qta_totale_dell_utente = $cols2['QTA'];
-										$importo_totale_dell_utente = $cols2['IMPORTO'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
-										$importo_trasporto = $cols2['IMPORTO_TRASPORTO'];
-										$importo_cost_more = $cols2['IMPORTO_COST_MORE'];
-										$importo_cost_less = $cols2['IMPORTO_COST_LESS'];
-										$importo_completo = $cols2['IMPORTO_COMPLETO'];
+										$importo_totale_dell_utente = $cols2['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
+										$importo_trasporto = $cols2['IMPORTO_TRASPORTO_E'];
+										$importo_cost_more = $cols2['IMPORTO_COST_MORE_E'];
+										$importo_cost_less = $cols2['IMPORTO_COST_LESS_E'];
+										$importo_completo = $cols2['IMPORTO_COMPLETO_E'];
 									}
 								}
 								
@@ -146,16 +146,16 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								
 							$html .= '<td colspan="2" width="'.$width.'" style="text-align:right;">Totale&nbsp;&nbsp;</td>';
 							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$cols['QTA'].'</td>';
-							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							if($trasportAndCost=='Y') {
 								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">';
-								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('Trasport').' '.$cols['IMPORTO_TRASPORTO'].'<br />';
-								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE'].'<br />';
-								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLess').' '.$cols['IMPORTO_COST_LESS'];
+								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('Trasport').' '.$cols['IMPORTO_TRASPORTO_E'].'<br />';
+								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE_E'].'<br />';
+								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLess').' '.$cols['IMPORTO_COST_LESS_E'];
 								$html .= '</td>';
 									
 								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">';
-								$html .= $cols['IMPORTO_COMPLETO'];
+								$html .= $cols['IMPORTO_COMPLETO_E'];
 								$html .= '</td>';
 							}
 						break;								
@@ -204,4 +204,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

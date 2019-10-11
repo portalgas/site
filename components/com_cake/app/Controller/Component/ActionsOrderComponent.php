@@ -1,11 +1,19 @@
 <?php 
+App::uses('Component', 'Controller');
+
 class ActionsOrderComponent extends Component {
 
     public $components = array('ActionsDesOrder');
 
 	private $isToValidate = false;
 	private $isCartToStoreroom = false;
+    private $Controller = null;
 
+    public function initialize(Controller $controller) 
+    {
+		$this->Controller = $controller;
+    }
+	
 	/*
 	 * ctrl che si abbiamo i permessi per accedere all'url
 	 * 		Organization.template_id
@@ -16,6 +24,8 @@ class ActionsOrderComponent extends Component {
 	 */
 	public function isACL($user, $group_id, $order_id, $controller, $action, $debug=false) {
 
+		$controllerLog = $this->Controller;
+	
 		$controller = ucfirst(strtolower($controller));  
 		$action = strtolower($action);
 		$RoutingPrefixes = Configure::read('Routing.prefixes');
@@ -24,47 +34,39 @@ class ActionsOrderComponent extends Component {
 		if($this->__string_starts_with($action, $prefix))
 			$action = substr($action, strlen($prefix)+1, strlen($action));
 		
-		if($debug) {
-			echo '<h3>ActionsOrderComponent->isACL()</h3>';
-			echo '<br />group_id '.$group_id;
-			echo '<br />order_id '.$order_id;
-			echo '<br />controller '.$controller;
-			echo '<br />action '.$action;
-			echo '<h3>Ctrl se '.$controller.'::'.$action.' e\' tra gli url profilati (per template, group_id, order.state_code)</h3>';
-		}
-		
+		$controllerLog::l('ActionsOrderComponent->isACL', $debug);
+		$controllerLog::l('group_id '.$group_id, $debug);
+		$controllerLog::l('order_id '.$order_id, $debug);
+		$controllerLog::l('controller '.$controller, $debug);
+		$controllerLog::l("Ctrl se ".$controller."::".$action." e' tra gli url profilati (per template, group_id, order.state_code)", $debug);
+			
 		/*
 		 * ctrl che action chiamata sia tra quelle profilate
 		 */
 		App::import('Model', 'TemplatesOrdersStatesOrdersAction');
 		$TemplatesOrdersStatesOrdersAction = new TemplatesOrdersStatesOrdersAction;
 		
-		$TemplatesOrdersStatesOrdersAction->unbindModel(array('belongsTo' => array('UserGroup')));
+		$TemplatesOrdersStatesOrdersAction->unbindModel(['belongsTo' => ['UserGroup']]);
 		
-		$options = array();
-		$options['conditions'] = array('TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
-										'OrdersAction.controller' => $controller,
-										'OrdersAction.action' => $action
-		);
+		$options = [];
+		$options['conditions'] = ['TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
+									'OrdersAction.controller' => $controller,
+									'OrdersAction.action' => $action];
 		
 		$options['recursive'] = 0;
 		$results = $TemplatesOrdersStatesOrdersAction->find('count', $options);
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($options);
-			echo "</pre>";
-		}
+		$controllerLog::l($options, $debug);
 		
 		/*
 		 * l'action non e' tra quelle profilate
 		 */
 		if($results==0) {
-			if($debug) echo "<br />l'action non e' tra quelle profilate";
+			$controllerLog::l("l'action non e' tra quelle profilate", $debug);
 			return true;
 		}
 		else {
-			if($debug) echo "<br />l'action e' tra quelle profilate, compare $results volte, allora ctrl con Order.state_code e group_id";
+			$controllerLog::l("l'action e' tra quelle profilate, compare $results volte, allora ctrl con Order.state_code e group_id", $debug);
 		}
 		
 		
@@ -74,46 +76,36 @@ class ActionsOrderComponent extends Component {
 		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-										'Order.id' => $order_id);
-		$options['fields'] = array('organization_id', 'id', 'delivery_id', 'prod_gas_promotion_id', 'state_code', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'typeGest');
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
+		$options['fields'] = ['Order.organization_id', 'Order.id', 'Order.delivery_id', 'Order.supplier_organization_id', 'Order.prod_gas_promotion_id', 'Order.state_code', 
+							   'Order.hasTrasport', 'Order.hasCostMore', 'Order.hasCostLess', 'Order.typeGest'];
 		$options['recursive'] = -1;
 		$orderResults = $Order->find('first', $options);
-		
-		if($debug) {
-			echo "<pre>";
-			print_r($orderResults);
-			echo "</pre>";
-		}
+
+		$controllerLog::l($orderResults, $debug);
 		
 		if(empty($orderResults)) {
-			if($debug) echo "<br />Ordine non trovato";
+			$controllerLog::l("Ordine non trovato", $debug);
 			return false;
 		}
 		
-		$options = array();
-		$options['conditions'] = array('TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
-										'TemplatesOrdersStatesOrdersAction.state_code' => $orderResults['Order']['state_code'],
-										'TemplatesOrdersStatesOrdersAction.group_id' => $group_id,
-										'OrdersAction.controller' => $controller,
-										'OrdersAction.action' => $action
-		);
+		$options = [];
+		$options['conditions'] = ['TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
+									'TemplatesOrdersStatesOrdersAction.state_code' => $orderResults['Order']['state_code'],
+									'TemplatesOrdersStatesOrdersAction.group_id' => $group_id,
+									'OrdersAction.controller' => $controller,
+									'OrdersAction.action' => $action];
 		
 		$options['recursive'] = 0;
 		$results = $TemplatesOrdersStatesOrdersAction->find('all', $options);
 		
-		if($debug) {
-			echo "<pre>";
-			print_r($options);
-			print_r($results);
-			echo "</pre>";
-		}
+		$controllerLog::l([$options, $results], $debug);
 		
 		/*
 		 * ctrl per ogni action OrdersAction.permission e OrdersAction.permission_or
 		*/
-		$orderActions = $this->__ctrlACLOrdersAction($user, $orderResults, $results, $debug);
+		$orderActions = $this->_ctrlACLOrdersAction($user, $orderResults, $results, $debug);
 		
 		if(empty($orderActions))
 			return false;
@@ -171,12 +163,14 @@ class ActionsOrderComponent extends Component {
 	*/
 	public function getOrderStates($user, $group_id, $debug=false) {
 		
-		$orderState=array();
+		$controllerLog = $this->Controller;
+		
+		$orderState=[];
 		
 		App::import('Model', 'TemplatesOrdersState');
 		$TemplatesOrdersState = new TemplatesOrdersState;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('TemplatesOrdersState.template_id' => $user->organization['Organization']['template_id'],
 									   'TemplatesOrdersState.group_id' => $group_id);
 		
@@ -184,11 +178,7 @@ class ActionsOrderComponent extends Component {
 		$options['recursive'] = 0;
 		$results = $TemplatesOrdersState->find('all', $options);
 
-		if($debug) {
-			echo "<pre>ActionsOrderComponent->getOrderStates";
-			print_r($results);
-			echo "</pre>";
-		}
+		$controllerLog::l([$options, $results], $debug);
 		
 		return $results;
 	}
@@ -205,7 +195,10 @@ class ActionsOrderComponent extends Component {
 	*/	
 	public function getOrderActionsToMenu($user, $group_id, $order_id, $debug=false) {
 
-		$orderActions=array();
+		$controllerLog = $this->Controller;
+		$controllerLog::l('ActionsOrderComponent::getOrderActionsToMenu', $debug);
+	
+		$orderActions=[];
 
 		$urlBase = Configure::read('App.server').'/administrator/index.php?option=com_cake&';
 		$RoutingPrefixes = Configure::read('Routing.prefixes');
@@ -216,23 +209,30 @@ class ActionsOrderComponent extends Component {
 		App::import('Model', 'Order');
 		$Order = new Order;
 				
-		$options = array();
-		$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-									   'Order.id' => $order_id);
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
 		$options['recursive'] = -1;		
 		$orderResults = $Order->find('first', $options);
 
-		if($debug) {
-			echo "<pre>";
-			print_r($orderResults);
-			echo "</pre>";			
-		}
+		$controllerLog::l($orderResults, $debug);
 		
 		if(empty($orderResults)) {
-			if($debug) echo "<br />Ordine non trovato";
+			$controllerLog::l("Ordine non trovato", $debug);
 			return $orderActions;
 		}
 
+		/*
+		 * home order di default
+		 */
+	    $orderActions[0]['OrdersAction']['id'] = '0';
+	    $orderActions[0]['OrdersAction']['controller'] = 'Orders';
+	    $orderActions[0]['OrdersAction']['action'] = 'home';
+	    $orderActions[0]['OrdersAction']['label'] = 'Order home';
+	    $orderActions[0]['OrdersAction']['label_more'] = '';
+	    $orderActions[0]['OrdersAction']['css_class'] = 'actionWorkflow';
+	    $orderActions[0]['OrdersAction']['img'] = '';
+	    $orderActions[0]['OrdersAction']['url'] = 'controller=Orders&action=home&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$order_id;
+                		 
 		 /*
 		  * per i TEST
 		$orderResults['Order']['state_code'] = 'PROCESSED-TESORIERE';
@@ -248,46 +248,48 @@ class ActionsOrderComponent extends Component {
 		App::import('Model', 'TemplatesOrdersStatesOrdersAction');
 		$TemplatesOrdersStatesOrdersAction = new TemplatesOrdersStatesOrdersAction;
 		
-		$options = array();
-		$options['conditions'] = array('TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
-				                       'TemplatesOrdersStatesOrdersAction.state_code' => $orderResults['Order']['state_code'],
-									   'TemplatesOrdersStatesOrdersAction.group_id' => $group_id,
-									   'OrdersAction.flag_menu' => 'Y',
-		);
+		$options = [];
+		$options['conditions'] = ['TemplatesOrdersStatesOrdersAction.template_id' => $user->organization['Organization']['template_id'],
+								   'TemplatesOrdersStatesOrdersAction.state_code' => $orderResults['Order']['state_code'],
+								   'TemplatesOrdersStatesOrdersAction.group_id' => $group_id,
+								   'OrdersAction.flag_menu' => 'Y'];
 		
-		$options['order'] = array('TemplatesOrdersStatesOrdersAction.sort');
+		$options['order'] = ['TemplatesOrdersStatesOrdersAction.sort'];
 		$options['recursive'] = 0;
 		$results = $TemplatesOrdersStatesOrdersAction->find('all', $options);
-	
+		// $controllerLog::l($results, $debug);
+		
 		/*
 		 * ctrl per ogni action OrdersAction.permission e OrdersAction.permission_or
 		 */
-		$orderActions = $this->__ctrlACLOrdersAction($user, $orderResults, $results, $debug); 
-
+		$orderActions += $this->_ctrlACLOrdersAction($user, $orderResults, $results, $debug);
+		
 		return $orderActions;
 	}	
 
 	/*
 	 * ctrl per ogni action OrdersAction.permission e OrdersAction.permission_or
 	*/
-	private function __ctrlACLOrdersAction($user, $orderResults, $results, $debug) {
+	private function _ctrlACLOrdersAction($user, $orderResults, $results, $debug) {
+		
+		$controllerLog = $this->Controller;
 		
 		//$debug = true;
-		
+
 		/*
 		 * controlli Custom
 		*/
-		$this->isToValidate = $this->__orderToValidate($user, $orderResults);
+		$this->isToValidate = $this->_orderToValidate($user, $orderResults);
 		
-		$this->isCartToStoreroom = $this->__orderIsCartToStoreroom($user, $orderResults);
+		$this->isCartToStoreroom = $this->_orderIsCartToStoreroom($user, $orderResults);
 		
-		$orderActions = array();
-		$i=0;
+		$orderActions = [];
+		$i=1; // parto da 1 perche' orderActions[0] e' Home Order
 		foreach ($results as $numResult => $result) {
 				
 			$orderActionOk = true;
 			
-			if($debug) echo '<br />Controllo permission per '.$result['OrdersAction']['controller'].' '.$result['OrdersAction']['action'].' '.$result['OrdersAction']['query_string'];
+			$controllerLog::l('Controllo permission per '.$result['OrdersAction']['controller'].' '.$result['OrdersAction']['action'].' '.$result['OrdersAction']['query_string'], $debug);
 				
 			/*
 			 * PERMISSION
@@ -301,7 +303,7 @@ class ActionsOrderComponent extends Component {
 				foreach ($permission as $method_name => $value_da_verificare) {
 					if($orderActionOk) {
 						$esito = $this->{$method_name}($user, $orderResults, $value_da_verificare);
-						if($debug) echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;permission '.$method_name.'('.$value_da_verificare.') esito '.$esito;
+						$controllerLog::l('     permission '.$method_name.'('.$value_da_verificare.') esito '.$esito, $debug);
 						
 					}
 						
@@ -311,12 +313,10 @@ class ActionsOrderComponent extends Component {
 					}
 				}
 				
-				if($debug) {
-					if($orderActionOk)
-						echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action OK';
-					else
-						echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action NOT OK!';
-				}
+				if($orderActionOk)
+					$controllerLog::l('     Action OK', $debug);
+				else
+					$controllerLog::l('     Action NOT OK!', $debug);
 				
 			} // end if(!empty($result['OrdersAction']['permission']))
 				
@@ -331,7 +331,7 @@ class ActionsOrderComponent extends Component {
 				foreach ($permission_or as $method_name => $value_da_verificare) {
 					if($orderActionOR_Ok) {
 						$esito = $this->{$method_name}($user, $orderResults, $value_da_verificare);
-						if($debug) echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;permission_OR '.$method_name.'('.$value_da_verificare.') esito '.$esito;						
+						$controllerLog::l('     permission_OR '.$method_name.'('.$value_da_verificare.') esito '.$esito, $debug);						
 					}
 	
 					if(!$esito) {
@@ -340,12 +340,10 @@ class ActionsOrderComponent extends Component {
 					}
 				}
 	
-				if($debug) {
-					if($orderActionOR_Ok)
-						echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action OK';
-					else
-						echo '<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Action NOT OK!';
-				}	
+				if($orderActionOR_Ok)
+					$controllerLog::l('     Action OK', $debug);
+				else
+					$controllerLog::l('     Action NOT OK!', $debug);
 
 				/*
 				 * se nel controllo OrdersAction.permission era true, e' valido anche qui perche' sono in OR
@@ -372,17 +370,10 @@ class ActionsOrderComponent extends Component {
 				}
 				$i++;
 			}
-				
-	
 	
 		}
 	
-		if($debug) {
-			echo '<h3>Risultato delle Actions dell\'ordine</h3>';
-			echo "<pre> ";
-			print_r($orderActions);
-			echo "</pre>";
-		}
+		$controllerLog::l($orderActions, $debug);
 	
 		return $orderActions;
 	}
@@ -398,7 +389,7 @@ class ActionsOrderComponent extends Component {
 	private function orgHasPayToDelivery($user, $results, $value_da_verificare) {
 		$esito = false;
 	
-		if($user->organization['Organization']['payToDelivery']==$value_da_verificare)
+		if($user->organization['Template']['payToDelivery']==$value_da_verificare)
 			$esito = true;
 		else
 			$esito = false;
@@ -406,6 +397,17 @@ class ActionsOrderComponent extends Component {
 		return $esito;
 	}
 	
+	private function orgHasTemplateOrderForceClose($user, $results, $value_da_verificare) {
+		$esito = false;
+		
+		if($user->organization['Template']['orderForceClose']==$value_da_verificare)
+			$esito = true;
+		else
+			$esito = false;
+	
+		return $esito;
+	}
+		
 	private function orgHasArticlesOrder($user, $results, $value_da_verificare) {
 		$esito = false;
 		
@@ -505,17 +507,13 @@ class ActionsOrderComponent extends Component {
 		App::import('Model', 'DesOrdersOrganization');
 		$DesOrdersOrganization = new DesOrdersOrganization();
 	
-		$options = array();
+		$options = [];
 		$options['conditions'] = array(// 'DesOrdersOrganization.des_id' => $user->des_id,  potrebbe non averlo valorizzato
 										'DesOrdersOrganization.organization_id' => $results['Order']['organization_id'],
 										'DesOrdersOrganization.order_id' => $results['Order']['id']);
 		$options['recursive'] = -1;								
 		$desOrdersOrganizationResults = $DesOrdersOrganization->find('first', $options);
-		/*
-		echo "<pre>ActionsOrderComponent->orderHasDes() ";
-		print_r($desOrdersOrganizationResults);
-		echo "</pre>";
-		*/
+		
 		if(empty($desOrdersOrganizationResults)) {
 			if($value_da_verificare=='N')
 				$esito = true;
@@ -589,18 +587,13 @@ class ActionsOrderComponent extends Component {
 		$DesOrdersOrganization = new DesOrdersOrganization();
 		$DesOrdersOrganization->unbindModel(array('belongsTo' => array('Organization', 'De', 'Order')));
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array(// 'DesOrdersOrganization.des_id' => $user->des_id,  potrebbe non averlo valorizzato
 										'DesOrdersOrganization.organization_id' => $results['Order']['organization_id'],
 										'DesOrdersOrganization.order_id' => $results['Order']['id']);
 		$options['recursive'] = 1;								
 		$desOrdersOrganizationResults = $DesOrdersOrganization->find('first', $options);
-		/*
-		echo "<pre>";
-		print_r($options);
-		print_r($desOrdersOrganizationResults);
-		echo "</pre>";
-		*/
+		
 		if(!empty($desOrdersOrganizationResults)) {
 			$des_id = $desOrdersOrganizationResults['DesOrder']['des_id'];
 			$user->des_id = $des_id;
@@ -649,20 +642,50 @@ class ActionsOrderComponent extends Component {
 			
 		return $esito;
 	}
-	
+		
+	/*
+     * SUPPLIER / REFERENT / DES
+	 */	 
+	private function articlesOwner($user, $results, $value_da_verificare) {
+		$esito = false;
+		$articlesOwner = 'REFERENT';
+
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+				                   'SuppliersOrganization.id' => $results['Order']['supplier_organization_id']];
+		$options['field'] = ['SuppliersOrganization.owner_articles'];
+		$options['recursive'] = -1;
+		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+		if(!empty($suppliersOrganizationResults)) {
+			// REFERENT o REFERENT-TMP
+			$articlesOwner = $suppliersOrganizationResults['SuppliersOrganization']['owner_articles'];
+			if($articlesOwner=='REFERENT-TMP')
+				$articlesOwner = 'REFERENT';
+		}
+		
+		if($value_da_verificare==$articlesOwner)
+				$esito = true;
+			else
+				$esito = false;			
+			
+		return $esito;
+	}
 	
 	/*
 	 *  D.E.S.
 	 *  dal DesOrdersOrganization estraggo des_supplier_id
 	*/
-	private function __isTitolareDesSupplier($user, $results) {
+	private function _isTitolareDesSupplier($user, $results) {
 		
 		$isTitolareDesSupplier = false;
 		
 		App::import('Model', 'DesOrdersOrganization');
 		$DesOrdersOrganization = new DesOrdersOrganization();
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array(// 'DesOrdersOrganization.des_id' => $user->des_id,  potrebbe non averlo valorizzato
 										'DesOrdersOrganization.organization_id' => $results['Order']['organization_id'],
 										'DesOrdersOrganization.order_id' => $results['Order']['id']);
@@ -683,7 +706,7 @@ class ActionsOrderComponent extends Component {
 	/*
 	 * gestione dei colli (pezzi_confezione)
 	 */
-	private function __orderToValidate($user, $results) {
+	private function _orderToValidate($user, $results) {
 		App::import('Model', 'Order');
 		$Order = new Order;
 			
@@ -692,27 +715,35 @@ class ActionsOrderComponent extends Component {
 		else
 			$isToValidate = false;
 
-		
 		return $isToValidate;
 	}
 	
 	/*
 	 *  Storeroom, cerco eventuali articoli nel carrello dell'utente Dispensa,
 	*
-	*  se Order.state_code == PROCESSED-POST-DELIVERY
-	*  li copio dal carrello alla dispensa
+	*  se Order.state_code == PROCESSED-POST-DELIVERY / INCOMING-ORDER (merce arrivata) / PROCESSED-ON-DELIVERY 
+	*  li copio dal carrello alla dispensa con cron
 	*/
-	private function __orderIsCartToStoreroom($user, $results) {
+	private function _orderIsCartToStoreroom($user, $results, $debug=false) {
 
+		$controllerLog = $this->Controller;
+	
 		$isCartToStoreroom = false;
-		if($user->organization['Organization']['hasStoreroom']=='Y' && $results['Order']['state_code']=='PROCESSED-POST-DELIVERY') {
+		if($user->organization['Organization']['hasStoreroom']=='Y' && 
+			($results['Order']['state_code']=='PROCESSED-POST-DELIVERY' || 
+			$results['Order']['state_code']=='INCOMING-ORDER' || 
+			$results['Order']['state_code']=='PROCESSED-ON-DELIVERY')) {
+				
 			App::import('Model', 'Storeroom');
 			$Storeroom = new Storeroom;
 			
-			$storeroomResults = $Storeroom->getCartsToStoreroom($user, $results['Order']['id']);
+			$storeroomResults = $Storeroom->getCartsToStoreroom($user, $results['Order']['id'], $debug);
+			
+			$controllerLog::l($storeroomResults, $debug);
+		
 			if(count($storeroomResults)>0) $isCartToStoreroom = true;
 		}
-	
+
 		return $isCartToStoreroom;
 	}
 	
@@ -727,29 +758,25 @@ class ActionsOrderComponent extends Component {
 	 */
 	public function getOrderStatesToLegenda($user, $group_id, $debug=false) {
 		
-		$orderState=array();
-		$orderState2=array();
+		$controllerLog = $this->Controller;
+		
+		$orderState=[];
+		$orderState2=[];
 		
 		App::import('Model', 'TemplatesOrdersState');
 		$TemplatesOrdersState = new TemplatesOrdersState;
 		
-		$options = array();
-		$options['conditions'] = array('TemplatesOrdersState.template_id' => $user->organization['Organization']['template_id'],
-									   'TemplatesOrdersState.group_id' => $group_id,
-									   'TemplatesOrdersState.flag_menu' => 'Y'
-		);
+		$options = [];
+		$options['conditions'] = ['TemplatesOrdersState.template_id' => $user->organization['Organization']['template_id'],
+								   'TemplatesOrdersState.group_id' => $group_id,
+								   'TemplatesOrdersState.flag_menu' => 'Y'];
 		
 		$options['order'] = array('TemplatesOrdersState.sort');
 		$options['recursive'] = -1;
 		$orderStates = $TemplatesOrdersState->find('all', $options);
-				
-		if($debug) {
-			echo "<pre>";
-			print_r($options);
-			print_r($orderStates);
-			echo "</pre>";
-		}
-
+		
+		$controllerLog::l([$options, $orderStates], $debug);
+		
 		return $orderStates;
 	}
 	
@@ -759,6 +786,8 @@ class ActionsOrderComponent extends Component {
 	 * per Order::home e Order_home_simple
 	*/
 	public function getRaggruppamentoOrderActions($orderActions, $debug) {
+		
+		$controllerLog = $this->Controller;
 		
 		// $debug = true;
 		
@@ -773,7 +802,7 @@ class ActionsOrderComponent extends Component {
 		$raggruppamentoDefault['Referente']['label'] = 'Gestisci la merce';
 		$raggruppamentoDefault['Referente']['img'] = 'legno-frutta-cassetta.jpg';
 		
-		$raggruppamentoOrderActions = array();
+		$raggruppamentoOrderActions = [];
 
 		if(count($orderActions)==1)
 			return $raggruppamentoOrderActions;
@@ -822,12 +851,8 @@ class ActionsOrderComponent extends Component {
 			$raggruppamentoOrderActions[$i]['img'] = '';
 		}
 				
-		if($debug) {
-			echo "<pre>";
-			print_r($raggruppamentoOrderActions);
-			echo "</pre>";		
-		}
-	
+		$controllerLog::l($raggruppamentoOrderActions, $debug);
+			
 		return $raggruppamentoOrderActions;
 	}
 }

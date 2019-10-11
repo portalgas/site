@@ -219,7 +219,7 @@ class ProdDeliveriesController extends AppController {
 
 	public function admin_edit($id = null) {
 		$this->ProdDelivery->id = $id;
-		if (!$this->ProdDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdDelivery->exists($this->ProdDelivery->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod delivery'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
@@ -256,7 +256,7 @@ class ProdDeliveriesController extends AppController {
 
 	public function admin_delete($id = null) {
 		$this->ProdDelivery->id = $id;
-		if (!$this->ProdDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdDelivery->exists($this->ProdDelivery->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod delivery'));
 		}
 		$this->request->onlyAllow('post', 'delete');
@@ -278,12 +278,12 @@ class ProdDeliveriesController extends AppController {
 		$this->ctrlHttpReferer();
 	
 		$this->ProdDelivery->id = $prod_delivery_id;
-		if (!$this->ProdDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdDelivery->exists($this->ProdDelivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$results = $this->ProdDelivery->read($this->user->organization['Organization']['id'], null, $prod_delivery_id);
+		$results = $this->ProdDelivery->read($prod_delivery_id, $this->user->organization['Organization']['id']);
 		$this->set('results',$results);
 	
 		$this->set('position_img',$position_img);

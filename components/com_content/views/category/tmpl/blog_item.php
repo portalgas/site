@@ -29,7 +29,7 @@ JHtml::_('behavior.framework');
 			<?php echo $this->escape($this->item->title); ?></a>
 		<?php else : ?>
 			<?php echo $this->escape($this->item->title); ?>
-		<?php endif; ?>
+		<?php endif; ?> 
 	</h2>
 <?php endif; ?>
 

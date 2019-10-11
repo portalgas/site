@@ -1,6 +1,6 @@
 <?php
 if (!isset($channel)) {
-	$channel = array();
+	$channel = [];
 }
 if (!isset($channel['title'])) {
 	$channel['title'] = $title_for_layout;

@@ -1,4 +1,7 @@
 <?php
+$disabledOpts = [];
+if(!$canEdit) $disabledOpts = ['disabled' => 'disabled'];
+
 if(empty($des_order_id)) {
 	if($order['Order']['state_code'] == 'OPEN-NEXT') {
 		$label = __('Edit ArticlesOrder OPEN-NEXT');
@@ -20,7 +23,7 @@ else {
 	}
 }
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order['Order']['id']) && !empty($order['Order']['id'])) {
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order['Order']['id']));
@@ -39,57 +42,68 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 	echo '<fieldset>';
 	echo '<legend>'.$labelSingle.'</legend>';
 		
-	include('box_order_detail.ctp');
+	echo $this->element('boxOrder', ['results' => $order]);
 	
 	include('box_article_detail.ctp');
-	
-		$i=0;
-		echo $this->Form->input('prezzo',array('value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'size'=>10,'class' => 'noWidth', 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1),'class'=>'noWidth double', 'required'=>'required'));
-		
-		echo $this->Form->input('qta_minima',array('label' => __('qta_minima'),'type' => 'text','size' => 2,'class' => 'noWidth','tabindex'=>($i+1)));
-		echo $this->Form->input('qta_massima',array('label' => __('qta_massima'),'type' => 'text','size' => 2,'class' => 'noWidth','tabindex'=>($i+1)));
-		
-		echo $this->Form->input('qta_multipli',array('label' => __('qta_multipli'),'type' => 'text','size' => '2','class' => 'noWidth','tabindex'=>($i+1),'after'=>$this->App->drawTooltip(__('qta_multipli'),__('toolTipQtaMultipli'),$type='INFO')));
-		
-		echo $this->Form->input('pezzi_confezione',array('label' => __('pezzi_confezione'),'type' => 'text','size' => '2','class' => 'noWidth','tabindex'=>($i+1),'after'=>$this->App->drawTooltip(__('pezzi_confezione'),__('toolTipPezziConfezione'),$type='INFO')));
-		if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-			echo $this->Form->input('alert_to_qta',array('label' => __('alert_to_qta'),'type' => 'text','size' => '2','class' => 'noWidth','tabindex'=>($i+1),'after'=>$this->App->drawTooltip(__('alert_to_qta'),__('toolTipAlertToQta'),$type='INFO')));
 
-		echo $this->Form->input('qta_minima_order',array('label' => __('qta_minima_order'),'type' => 'text','size' => 5,'class' => 'noWidth','tabindex'=>($i+1),'required'=>'required','after'=>$this->App->drawTooltip(__('qta_minima_order'),__('toolTipQtaMinOrder'),$type='INFO')));
-		
-                if(!empty($des_order_id))
-                    $toolTip = __('toolTipQtaMaxOrderDes');
-                else    
-                    $toolTip = __('toolTipQtaMaxOrder');
-                
-                echo $this->Form->input('qta_massima_order',array('label' => __('qta_massima_order'),'type' => 'text','size' => 5,'class' => 'noWidth','tabindex'=>($i+1),'required'=>'required','after'=>$this->App->drawTooltip(__('qta_massima_order'),$toolTip,$type='INFO')));
-		
-		if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN')
-			echo $this->element('legendaArticlesOrderQtaMassima', array('results' => $this->request->data));
-		
-		
-		if($this->request->data['ArticlesOrder']['stato']=='QTAMAXORDER') {
-			echo '<div class="legenda legenda-ico-alert" style="float:none;">';
-			echo "L'articolo ha raggiunto la quantità massima che è stata impostata";
-			echo '</div>';
-		}
-		else {
-			echo $this->App->drawFormRadio('ArticlesOrder','stato',array('options' => $stato, 'value'=>$this->Form->value('ArticlesOrder.stato'), 'label'=>'Stato','tabindex'=>($i+1), 'required'=>'required',
-																						  'after'=>$this->App->drawTooltip(null,__('toolTipStatoArticlesOrder'),$type='HELP')));
-		}
+	/*
+	 * campi bloccati se non si e' proprietari dell'articolo
+	 */		
+	$i=0;
+	echo $this->Form->label(__('Prezzo'));
+	echo '<div style="white-space: nowrap;">';
+	echo $this->Form->input('prezzo', ['label' => false, 'value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1), 'class'=>'double', 'style' => 'display:inline', 'required'=>'required', $disabledOpts]);
+	echo '</div>';
+	echo $this->Form->input('pezzi_confezione', ['label' => __('pezzi_confezione'),'type' => 'text', 'tabindex'=>($i+1), 'after' => $this->App->drawTooltip(__('pezzi_confezione'),__('toolTipPezziConfezione'),$type='INFO'), $disabledOpts]);
+	
+	/*
+	 * campi gestiti anche da chi non e' proprietario dell'articolo
+	 */		
+	echo $this->Form->input('qta_minima', ['label' => __('qta_minima'), 'type' => 'text', 'tabindex'=>($i+1)]);
+	echo $this->Form->input('qta_massima', ['label' => __('qta_massima'), 'type' => 'text', 'tabindex'=>($i+1)]);
+	echo $this->Form->input('qta_multipli', ['label' => __('qta_multipli'), 'type' => 'text', 'tabindex'=>($i+1),'after'=>$this->App->drawTooltip(__('qta_multipli'),__('toolTipQtaMultipli'),$type='INFO')]);
+	
+	if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
+		echo $this->Form->input('alert_to_qta', ['label' => __('alert_to_qta'),'type' => 'text','tabindex'=>($i+1),'after'=>$this->App->drawTooltip(__('alert_to_qta'),__('toolTipAlertToQta'),$type='INFO')]);
+
+	echo $this->Form->input('qta_minima_order', ['label' => __('qta_minima_order'),'type' => 'text','tabindex'=>($i+1),'required'=>'required','after'=>$this->App->drawTooltip(__('qta_minima_order'),__('toolTipQtaMinOrder'),$type='INFO')]);
+	
+	if(!empty($des_order_id))
+		$toolTip = __('toolTipQtaMaxOrderDes');
+	else    
+		$toolTip = __('toolTipQtaMaxOrder');
+	
+	echo $this->Form->input('qta_massima_order', ['label' => __('qta_massima_order'),'type' => 'text', 'tabindex' => ($i+1), 'required' => 'required', 'after' => $this->App->drawTooltip(__('qta_massima_order'),$toolTip,$type='INFO')]);
+
+	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') {
+		echo '<div class="clearfix"></div>';
+		echo $this->element('legendaArticlesOrderQtaMassima',  ['results' => $this->request->data]);
+	}
+	
+	if($this->request->data['ArticlesOrder']['stato']=='QTAMAXORDER') {
+		echo '<div class="clearfix"></div>';
+		echo '<div class="legenda legenda-ico-alert" style="float:none;">';
+		echo "L'articolo ha raggiunto la quantità massima che è stata impostata";
+		echo '</div>';
+	}
+	else {
+		echo '<div class="clearfix"></div>';
+		echo $this->App->drawFormRadio('ArticlesOrder','stato', ['options' => $stato, 'value'=>$this->Form->value('ArticlesOrder.stato'), 'label'=>'Stato','tabindex'=>($i+1), 'required'=>'required',
+																 'after'=>$this->App->drawTooltip(null,__('toolTipStatoArticlesOrder'),$type='HELP')]);
+	}
 	
 	echo '</fieldset>';
 	 
-	echo $this->Form->hidden('order_id',array('id' =>'order_id', 'value'=> $this->request->data['ArticlesOrder']['order_id']));
-	echo $this->Form->hidden('article_organization_id',array('id' =>'article_organization_id', 'value'=> $this->request->data['ArticlesOrder']['article_organization_id']));
-	echo $this->Form->hidden('article_id',array('id' =>'article_id', 'value'=> $this->request->data['ArticlesOrder']['article_id']));
-	echo $this->Form->hidden('qta_cart',array('id' =>'qta_cart', 'value'=> $this->request->data['ArticlesOrder']['qta_cart']));
+	echo $this->Form->hidden('order_id', ['id' =>'order_id', 'value'=> $this->request->data['ArticlesOrder']['order_id']]);
+	echo $this->Form->hidden('article_organization_id', ['id' =>'article_organization_id', 'value'=> $this->request->data['ArticlesOrder']['article_organization_id']]);
+	echo $this->Form->hidden('article_id', ['id' =>'article_id', 'value'=> $this->request->data['ArticlesOrder']['article_id']]);
+	echo $this->Form->hidden('qta_cart', ['id' =>'qta_cart', 'value'=> $this->request->data['ArticlesOrder']['qta_cart']]);
 	echo $this->Form->end(__('Submit')); 
 
 	echo '</div>';
 
 $links = [];
-$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles Orders').' </span><span class="fa fa-reply"></span>', array('controller' => 'ArticlesOrders', 'action' => 'index', $order['Order']['id']), ['class' => 'animate', 'escape' => false]);
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles Orders').' </span><span class="fa fa-reply"></span>', ['controller' => 'ArticlesOrders', 'action' => 'index', $order['Order']['id']], ['class' => 'animate', 'escape' => false]);
 echo $this->Menu->draw($links);
 ?>
 <script type="text/javascript">

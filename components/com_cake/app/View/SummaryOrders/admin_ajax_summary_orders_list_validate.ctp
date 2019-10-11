@@ -63,7 +63,8 @@ function drawTotali($user_id, $qta_user_tot, $importo_user_tot, $summaryOrdersRe
 	else {
 		$html .= '<td id="color-'.$key.'" style="background-color:red;"></td>';
 		$html .= '<td style="text-align:right;">';
-		$html .= '<a href="#" class="ricalcola" id="'.$key.'">ricalcola importo aggregato</a>';
+//		$html .= '<a href="#" class="ricalcola" id="'.$key.'">ricalcola importo aggregato</a>';
+		$html .= '<a href="#" class="ricalcola-disabled" id="'.$key.'">ricalcola importo aggregato NON + attivo</a>';
 		$html .= '</td>';
 		
 		$GLOBALS['tot_importi_aggregati_diversi']++;
@@ -81,7 +82,7 @@ function drawTotali($user_id, $qta_user_tot, $importo_user_tot, $summaryOrdersRe
 if(!empty($results)) {
 			
 	$html = '';
-	$html .= '<table cellpadding="0" cellspacing="0">';
+	$html .= '<div class="table-responsive"><table class="table table-hover table-striped">';
 	$html .= '<thead>'; 
 	$html .= '	<tr>';	
 	$html .= '		<th colspan="2"></th>';
@@ -192,7 +193,7 @@ if(!empty($results)) {
 	 */
 	$html .= drawTotali($user_id_old, $qta_user_tot, $importo_user_tot, $summaryOrdersResults);
 	 			
-	$html .= '</tbody></table>';			
+	$html .= '</tbody></table></div>';			
 
 }  // end if(!empty($results))
 	
@@ -200,7 +201,7 @@ if(!empty($results)) {
 /*
  * inizio disegno HTML
  */
-echo '<table cellpadding = "0" cellspacing = "0">';
+echo '<div class="table-responsive"><table class="table table-hover table-striped">';
 echo '<tr>';
 echo '	<th style="border-radius:5px;" colspan="3">'.$this->App->drawOrdersStateDiv($orderResults).'&nbsp;'.__($orderResults['Order']['state_code'].'-label').'</th>';
 echo '</tr>';
@@ -239,7 +240,7 @@ if($typeGest=='AGGREGATE' || $hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostL
 		
 	echo '</tr>';	
 }
-echo '</table>';
+echo '</table></div>';
 
 echo $this->element('boxSummaryOrdersValidate',array('results' => $orderResults, 
 												     'tot_importi_aggregati_diversi' => $GLOBALS['tot_importi_aggregati_diversi']));
@@ -247,53 +248,53 @@ echo $html;
 
 
 echo '<script type="text/javascript">';
-echo 'jQuery(document).ready(function() {';
+echo '$(document).ready(function() {';
 ?>
-	jQuery(".actionMenu").click(function() {
+	$(".actionMenu").click(function() {
 
-		jQuery('.menuDetails').css('display','none');
+		$('.menuDetails').css('display','none');
 		
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-		jQuery('#menuDetails-'+numRow).show();
+		$('#menuDetails-'+numRow).show();
 
 		viewOrderSottoMenu(numRow,"bgLeft");
 
-		var offset = jQuery(this).offset();
+		var offset = $(this).offset();
 		var newTop = (offset.top - 100);
 		var newLeft = (offset.left - 350);
 
-		jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+		$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});		
 });
 <?php
-echo 'jQuery(".ricalcola").click(function() {';
+echo '$(".ricalcola").click(function() {';
 echo "\n";
 if(($hasTrasport=='N' && $hasCostMore=='N' && $hasCostLess=='N') || 
    ($orderResults['Order']['state_code']=='PROCESSED-ON-DELIVERY')) {
 ?>
-	var key = jQuery(this).attr('id');
+	var key = $(this).attr('id');
 	
-	jQuery(this).html("");
-	jQuery(this).append("<img src='"+ app_img + "/ajax-loader.gif' />");
+	$(this).html("");
+	$(this).append("<img src='"+ app_img + "/ajax-loader.gif' />");
 	var url = "/administrator/index.php?option=com_cake&controller=SummaryOrders&action=ajax_summary_orders_ricalcola&key="+key+"&format=notmpl";
-	jQuery.ajax({
+	$.ajax({
 		type: "GET",
 		url: url,
 		data: "",
 		success: function(response){
 			/* console.log("key "+key+" response "+response); */
-			jQuery('#summary-order-importo-'+key).html(response);
-			jQuery('#color-'+key).css('background-color','green');
-			jQuery('#'+key).html("");
+			$('#summary-order-importo-'+key).html(response);
+			$('#color-'+key).css('background-color','green');
+			$('#'+key).html("");
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
 		}
@@ -308,27 +309,27 @@ else {
 	if($orderResults['Order']['state_code']=='PROCESSED-BEFORE-DELIVERY' || 
 	   $orderResults['Order']['state_code']=='PROCESSED-POST-DELIVERY' || 
 	   $orderResults['Order']['state_code']=='INCOMING-ORDER') {
-			echo "\n".'jQuery("html, body").animate({scrollTop:0}, 500);'."\n";
-			echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_aggiorna&order_id=".$orderResults['Order']['id']."&format=notmpl');";    
+			echo "\n".'$("html, body").animate({scrollTop:0}, 500);'."\n";
+			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_aggiorna&order_id=".$orderResults['Order']['id']."&format=notmpl', '');";    
 	}
 	else
 	/*
 	 * ordine in mano al tesoriere con Trasporto, etc etc, => gestione tipica => riportare al referente
 	 */
 	if($orderResults['Order']['state_code']=='WAIT-PROCESSED-TESORIERE') {
-		echo "\n".'jQuery("html, body").animate({scrollTop:0}, 500);'."\n";
-		echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_return_tesoriere&order_id=".$orderResults['Order']['id']."&format=notmpl');";    
+		echo "\n".'$("html, body").animate({scrollTop:0}, 500);'."\n";
+		echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_return_tesoriere&order_id=".$orderResults['Order']['id']."&format=notmpl', '');";    
 	} 
 	else
 	if($orderResults['Order']['state_code']=='PROCESSED-TESORIERE') {
-		echo "\n".'jQuery("html, body").animate({scrollTop:jQuery("#intro").offset().top}, 500);'."\n";
+		echo "\n".'$("html, body").animate({scrollTop:$("#intro").offset().top}, 500);'."\n";
 	}
 	/*
 	 * ordine in mano al cassiere con Trasporto, etc etc, => gestione tipica => riportare al referente
 	else
 	if($orderResults['Order']['state_code']=='PROCESSED-ON-DELIVERY') {
-		echo "\n".'jQuery("html, body").animate({scrollTop:0}, 500);'."\n";
-		echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_return_cassiere&order_id=".$orderResults['Order']['id']."&format=notmpl');";      
+		echo "\n".'$("html, body").animate({scrollTop:0}, 500);'."\n";
+		echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=order_importi_aggregati_return_cassiere&order_id=".$orderResults['Order']['id']."&format=notmpl', '');";      
 	}
 	*/
 }

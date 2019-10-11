@@ -9,7 +9,7 @@ class Delivery extends AppModel {
 	
 	public $validate = array(
 		'luogo' => array(
-			'rule' => array('notempty'),
+			'rule' => ['notBlank'],
 			'message' => 'Indica il luogo della consegna',
 			'allowEmpty' => false
 		),
@@ -19,7 +19,10 @@ class Delivery extends AppModel {
 				'message' => 'Indica la data della consegna',
 				'allowEmpty' => false
 			),
-			 'dateCompareDataOggi' => array(					'rule' => array('date_compare_data_oggi'),					'message' => 'La data della consegna è antecedente rispetto alla data di odierna',			),
+			 'dateCompareDataOggi' => array(
+					'rule' => array('date_compare_data_oggi'),
+					'message' => 'La data della consegna è antecedente rispetto alla data di odierna',
+			),
 			'dateCompareOrdersData' => array(
 				'rule' => array('date_compare_orders_data'),
 				'message' => 'La data della consegna è antecedente rispetto alla data di chiusura di un ordine associato',
@@ -27,23 +30,49 @@ class Delivery extends AppModel {
 		),
 		'orario_da' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica a che ora ha inizio la consegna",
 			),
-			'orarioCtrl' => array(				'rule'       =>  array('orario_crtl', '>=', 'orario_a'),				'message'    => "L'orario DA non può essere posteriore o uguale dell'orario A",
+			'orarioCtrl' => array(
+				'rule'       =>  array('orario_crtl', '>=', 'orario_a'),
+				'message'    => "L'orario DA non può essere posteriore o uguale dell'orario A",
 			),				
 		),
 		'orario_a' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica a che ora si conclude la consegna",
 			),
-			'orarioCtrl' => array(				'rule'       =>  array('orario_crtl', '<=', 'orario_da'),				'message'    => "L'orario A non può essere precedente o uguale dell'orario DA",			),
+			'orarioCtrl' => array(
+				'rule'       =>  array('orario_crtl', '<=', 'orario_da'),
+				'message'    => "L'orario A non può essere precedente o uguale dell'orario DA",
+			),
 		),
 	);
-	/*	 * ctrl che la data della consegna sia maggiore della data di chiusura dei suoi ordini	* */	function date_compare_orders_data($field=[]) {			$continue = true;		$operator = '>';			$data_delivery = $field['data'];		$id = $this->data[$this->alias]['id'];		
+	/*
+	 * ctrl che la data della consegna sia maggiore della data di chiusura dei suoi ordini
+	* */
+	function date_compare_orders_data($field=[]) {
+	
+		$continue = true;
+		$operator = '>';
+	
+		$data_delivery = $field['data'];
+		$id = $this->data[$this->alias]['id'];
+		
 		$conditions = array('Delivery.id' => $id);
-		$results = $this->find('first',array('conditions'=>$conditions,'recursive'=>1));			if(isset($results['Order']) && !empty($results['Order']))			foreach ($results['Order'] as $order) {			$data_fine = $order['data_fine'];				if (!Validation::comparison($data_delivery, $operator, $data_fine))				$continue = false;		}			return $continue;	}
+		$results = $this->find('first',array('conditions'=>$conditions,'recursive'=>1));
+	
+		if(isset($results['Order']) && !empty($results['Order']))
+			foreach ($results['Order'] as $order) {
+			$data_fine = $order['data_fine'];
+	
+			if (!Validation::comparison($data_delivery, $operator, $data_fine))
+				$continue = false;
+		}
+	
+		return $continue;
+	}
 	
 	/*
 	 * ctrl che la data della consegna sia maggiore alla data odierna
@@ -67,14 +96,21 @@ class Delivery extends AppModel {
 		return $continue;
 	}
 	
-	function orario_crtl($field=[], $operator, $field2) {		foreach( $field as $key => $value1 ){			$value2 = $this->data[$this->alias][$field2];
+	function orario_crtl($field=[], $operator, $field2) {
+		foreach( $field as $key => $value1 ){
+			$value2 = $this->data[$this->alias][$field2];
 			
 			$value1 = str_replace(':','',$value1);
-			$value2 = str_replace(':','',$value2);			
+			$value2 = str_replace(':','',$value2);
+			
 			if (!Validation::comparison($value1, $operator, $value2))
 				return true;
 			else
-				return false;		}		return true;	}	
+				return false;
+		}
+		return true;
+	}
+	
 	public $hasMany = array(
 		'Order' => array(
 			'className' => 'Order',

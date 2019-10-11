@@ -1,7 +1,7 @@
 <?php
 class ExportDocsHelper extends AppHelper {
         
-	var $helpers = array('Html','Time');
+	var $helpers = ['Html','Time'];
 	
 	/*
 	 * D E L I V E R Y
@@ -54,15 +54,35 @@ class ExportDocsHelper extends AppHelper {
 		$tmp .= __('Supplier').' '.$suppliersOrganization['name'].', '.$suppliersOrganization['descrizione'];
 		$tmp .= '<br />';
 		$tmp .= '<span class="h4Pdf">';
-		$tmp .= 'Indirizzo '.$suppliersOrganization['indirizzo'].' '.$suppliersOrganization['localita'];
+		if(!empty($suppliersOrganization['indirizzo']) || !empty($suppliersOrganization['localita'])) 
+			$tmp .= __('Address').' '.$suppliersOrganization['indirizzo'].' '.$suppliersOrganization['localita'];
 		if(!empty($suppliersOrganization['provincia'])) $tmp .= ' ('.$suppliersOrganization['provincia'].') ';
-		$tmp .= 'Tel '.$suppliersOrganization['telefono'].' '.$suppliersOrganization['telefono2'];
+		if(!empty($suppliersOrganization['telefono']) || !empty($suppliersOrganization['telefono2']))
+			$tmp .= 'Tel '.$suppliersOrganization['telefono'].' '.$suppliersOrganization['telefono2'];
 		$tmp .= '</span>';
 		$tmp .= '</div>';
 	
 		return $tmp;
 	}
 	
+	public function desSupplier($supplier) {
+	
+		$tmp  = '';
+		$tmp .= '<div class="h2Pdf">';
+		$tmp .= __('Supplier').' '.$supplier['name'].', '.$supplier['descrizione'];
+		$tmp .= '<br />';
+		$tmp .= '<span class="h4Pdf">';
+		if(!empty($supplier['indirizzo']) || !empty($supplier['localita'])) 
+			$tmp .= __('Address').' '.$supplier['indirizzo'].' '.$supplier['localita'];
+		if(!empty($supplier['provincia'])) $tmp .= ' ('.$supplier['provincia'].') ';
+		if(!empty($supplier['telefono']) || !empty($supplier['telefono2'])) 
+			$tmp .= 'Tel '.$supplier['telefono'].' '.$supplier['telefono2'];
+		$tmp .= '</span>';
+		$tmp .= '</div>';
+	
+		return $tmp;
+	}
+
 	/*
 	 * per il report degli articoli assocati all'ordine
 	 */
@@ -73,7 +93,7 @@ class ExportDocsHelper extends AppHelper {
 		$tmp .= __('Supplier').' '.$suppliersOrganization['name'].', '.$suppliersOrganization['descrizione'];
 		$tmp .= '<br />';
 		$tmp .= '<span class="h4Pdf">';
-		$tmp .= 'Indirizzo '.$suppliersOrganization['indirizzo'].' '.$suppliersOrganization['localita'];
+		$tmp .= __('Address').' '.$suppliersOrganization['indirizzo'].' '.$suppliersOrganization['localita'];
 		if(!empty($suppliersOrganization['provincia'])) $tmp .= ' ('.$suppliersOrganization['provincia'].') ';
 		$tmp .= 'Tel '.$suppliersOrganization['telefono'].' '.$suppliersOrganization['telefono2'];
 		$tmp .= '<br />';
@@ -94,6 +114,10 @@ class ExportDocsHelper extends AppHelper {
 			$tmp .= '<div class="h4Pdf">'.__('Suppliers Organizations Referents').': ';
 			foreach ($suppliersOrganizationsReferents as $i => $suppliersOrganizationReferent) {
 				$tmp .= ' '.$suppliersOrganizationReferent['User']['name'].' '.$suppliersOrganizationReferent['User']['email'].' '.$suppliersOrganizationReferent['Profile']['phone'];
+
+			if(isset($suppliersOrganizationReferent['UserProfile2']['satispay']) && $suppliersOrganizationReferent['UserProfile2']['satispay']=='"Y"')	
+					$tmp .= ' <img src="/images/satispay-ico.png" title="Ha Satispay" style="margin-top:2px" />';
+
 				if(($i+1) < count($suppliersOrganizationsReferents)) $tmp .= ' - ';
 			}
 			$tmp .= '</div>';
@@ -109,7 +133,8 @@ class ExportDocsHelper extends AppHelper {
 		
 		$str = str_replace("&nbsp;", " ", $str);
 		$str = str_replace("&euro;", "", $str);
-				$str = str_replace("à", "a'", $str);
+		
+		$str = str_replace("à", "a'", $str);
 		
 		return $str;
 	}

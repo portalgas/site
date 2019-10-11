@@ -7,8 +7,8 @@ $this->PhpExcel->setDefaultFont('Calibri', 12);
 $table[] = array('label' => __('Delivery'), 'width' => 'auto');
 $table[] = array('label' => __('Delivery') . ' ' . __('Data'), 'width' => 'auto', 'filter' => true);
 $table[] = array('label' => __('Category'), 'width' => 'auto', 'filter' => true);
-$table[] = array('label' => __('Order') . ' ' . __('Data inizio'), 'width' => 'auto');
-$table[] = array('label' => __('Order') . ' ' . __('Data fine'), 'width' => 'auto');
+$table[] = array('label' => __('Order') . ' ' . __('DataInizio'), 'width' => 'auto');
+$table[] = array('label' => __('Order') . ' ' . __('DataFine'), 'width' => 'auto');
 $table[] = array('label' => __('SuppliersOrganization'), 'width' => 'auto', 'filter' => true);
 $table[] = array('label' => __('Importo totale ordine'), 'width' => 'auto', 'filter' => true);
 $table[] = array('label' => __('Tesoriere fattura importo'), 'width' => 'auto', 'filter' => true);
@@ -24,7 +24,7 @@ $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => tru
 if (isset($results) && !empty($results))
     foreach ($results as $result) {
 
-        $rows = array();
+        $rows = [];
 
         $rows[] = $result['StatDelivery']['luogo'];
         $rows[] = $result[0]['StatDelivery_data'];

@@ -42,24 +42,24 @@ echo $this->Form->end(__('Submit'));
 
 <script type="text/javascript">
 function settingTypePay() {
-	var type_pay = jQuery('input[name="data[OrganizationsPay][type_pay]"]:checked').val();
+	var type_pay = $('input[name="data[OrganizationsPay][type_pay]"]:checked').val();
 	console.log("type_pay "+type_pay);
 	if(type_pay!='') {
 		
 		if(type_pay=='RICEVUTA') {
-			jQuery('#title').val("<?php echo $title_RICEVUTA;?>");
-			jQuery('#text').val("<?php echo $text_RICEVUTA;?>");
+			$('#title').val("<?php echo $title_RICEVUTA;?>");
+			$('#text').val("<?php echo $text_RICEVUTA;?>");
 		}
 		else {
-			jQuery('#title').val("<?php echo $title_RITENUTA;?>");
-			jQuery('#text').val("<?php echo $text_RITENUTA;?>");
+			$('#title').val("<?php echo $title_RITENUTA;?>");
+			$('#text').val("<?php echo $text_RITENUTA;?>");
 		}
 	}
 }
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	settingTypePay();
 	
-	jQuery("input[name='data[OrganizationsPay][type_pay]']").change(function() {	
+	$("input[name='data[OrganizationsPay][type_pay]']").change(function() {	
 		settingTypePay();
 	});		
 });

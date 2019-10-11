@@ -289,7 +289,7 @@ abstract class modLofArticlesSlideShowHelper {
 	 * @return void.
 	 */
 	public static function loadMediaFiles( $params, $module ){
-		$document = &JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$document->addScript( JURI::root(true). '/modules/'.$module->module.'/assets/jscript.js' );	
 		$document->addStyleSheet( JURI::root(true). '/modules/'.$module->module.'/assets/jstyle.css' );	
 	}

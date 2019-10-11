@@ -70,6 +70,26 @@ class ProdGasSuppliersImportsController extends AppController {
 					 }	
 					 $results[$numResult]['Dir']['articles_path'] = $dir_images_path;
 					 $results[$numResult]['Dir']['articles'] = $dir_images;
+
+					 $dir_images_path = Configure::read('App.root').Configure::read('App.img.loghi').DS.$result['Organization']['id'];
+					 if(is_dir($dir_images_path))
+					 	$dir_images = true;
+					 else {
+					 	$dir_images = false;
+					 }	
+					 $results[$numResult]['Dir']['loghi_path'] = $dir_images_path;
+					 $results[$numResult]['Dir']['loghi'] = $dir_images;
+					 
+					 $logo = Configure::read('App.root').Configure::read('App.img.loghi').DS.$result['Organization']['id'].DS.Configure::read('doc_export_logo'); // 150h50.png
+					 if(file_exists($logo))
+					 	$logo_images = true;
+					 else {
+					 	$logo_images = false;
+					 }	
+					 $results[$numResult]['Dir']['logo_images_path'] = $logo;
+					 $results[$numResult]['Dir']['logo_images'] = $logo_images;
+						 
+					 
 					 
 					/* 
 					 * ctrl dati Supplier.owner_organization_id

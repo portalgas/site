@@ -64,7 +64,7 @@ class ValidateDatesController extends AppController {
 		$results = $Delivery->find('list', $options);
 		$this->set('deliveries', $results);
 		
-		$organizationPayToDelivery = $Organization->getPayToDelivery($this->user->organization['Template']['payToDelivery']);
+		$organizationPayToDelivery = $this->user->organization['Template']['payToDelivery'];
 		$this->set('organizationPayToDelivery', $organizationPayToDelivery);
 	}
 		

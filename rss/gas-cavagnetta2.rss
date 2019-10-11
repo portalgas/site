@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<atom:link href="http://www.portalgas.it/rss/gas-cavagnetta.rss" type="application/rss+xml" />
+<title>Ordini del G.A.S. La Cavagnetta</title>
+<link>http://www.portalgas.it</link>
+<description>Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale)</description>
+<pubDate>Fri, 11 Oct 19 12:30:03 +0000</pubDate>
+<lastBuildDate>Fri, 11 Oct 19 12:30:03 +0000</lastBuildDate>
+<copyright>Copyright 2012 - 2019 - portalgas.it</copyright>
+<image>
+<url>http://www.portalgas.it/images/organizations/contents/9.jpg</url>
+<link>http://www.portalgas.it</link>
+<title>Ordini del G.A.S. La Cavagnetta</title>
+</image>
+<item>
+<guid>http://www.portalgas.it/gas-cavagnetta-16836</guid>
+<category ><![CDATA[Sabato 26 ottobre]]></category >
+<title><![CDATA[Sabato 26 ottobre - Oryza srl, ordine aperto fino a domenica 29 settembre, Cartiera - Torino Via Fossano 8]]></title>
+<link>http://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</link>
+<pubDate>Fri, 25 Oct 19 23:00:00 +0000</pubDate>
+<description><![CDATA[Ordine Oryza per consegna 26 ottobre]]></description>
+</item>
+<item>
+<guid>http://www.portalgas.it/gas-cavagnetta-16863</guid>
+<category ><![CDATA[Sabato 26 ottobre]]></category >
+<title><![CDATA[Sabato 26 ottobre - Collina delle arance, ordine aperto fino a venerdì 18 ottobre, Cartiera - Torino Via Fossano 8]]></title>
+<link>http://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</link>
+<pubDate>Fri, 25 Oct 19 23:00:00 +0000</pubDate>
+</item>
+<item>
+<guid>http://www.portalgas.it/gas-cavagnetta-10234</guid>
+<category ><![CDATA[Consegna Da definire]]></category >
+<title><![CDATA[Consegna Da definire - Questionario sui criteri di scelta fornitori/prodotti, ordine aperto fino a giovedì 22 marzo]]></title>
+<link>http://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</link>
+<pubDate>Wed, 01 Jan 25 00:00:00 +0000</pubDate>
+</item>
+<item>
+<guid>http://www.portalgas.it/gas-cavagnetta-14444</guid>
+<category ><![CDATA[Consegna Da definire]]></category >
+<title><![CDATA[Consegna Da definire - votazione consiglio Direttivo 2019-2021, ordine aperto fino a giovedì 14 febbraio]]></title>
+<link>http://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</link>
+<pubDate>Wed, 01 Jan 25 00:00:00 +0000</pubDate>
+<description><![CDATA[puoi inserire fino a 7 preferenze]]></description>
+</item>
+</channel>
+</rss>

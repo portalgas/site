@@ -1,14 +1,23 @@
 <?php
-echo $this->Form->create('Order',array('id' => 'formGas', 'enctype' => 'multipart/form-data'));
-echo '<fieldset>';
-echo '<legend>'.$label.'</legend>';
+if(!isset($type)) // TESORIERE / CASSIERE
+	$type = 'TESORIERE';
 
+echo $this->Form->create('Order', ['id' => 'formGas', 'enctype' => 'multipart/form-data']);
+echo '<fieldset>';
+
+if(isset($msg) && !empty($msg))
+	echo $this->element('boxMsg', array('msg' => $msg));
 
 $i=0;
 echo "\r\n";
-echo '<table>';
+echo '<div class="table-responsive"><table class="table">';
 echo '<tr>';
-echo '<td>'.__('Tesoriere Doc1').'</td>';
+echo '<td>';
+if($type=='TESORIERE')
+	echo __('Tesoriere Doc1');
+else
+	echo __('Cassiere Doc1');	
+echo '</td>';
 echo '<td>';
 echo $this->Form->input('Order.tesoriere_doc1', array(
 		'between' => '<br />',
@@ -43,8 +52,8 @@ echo '</tr>';
 
 echo '<tr>';
 echo '<td>'.__('Tesoriere fattura importo').'</td>';
-echo '<td>';
-echo $this->Form->input('tesoriere_fattura_importo',array('type' => 'text','label' => false, 'id' => 'tesoriere_fattura_importo', 'size'=>10,'tabindex'=>($i+1), 'after'=>'&euro;','class'=>'double noWidth', 'value' => number_format($this->Form->value('Order.tesoriere_fattura_importo'),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))));
+echo '<td style="white-space: nowrap;padding-right: 25px;">';
+echo $this->Form->input('tesoriere_fattura_importo',array('type' => 'text','label' => false, 'id' => 'tesoriere_fattura_importo', 'tabindex'=>($i+1), 'after'=>'&nbsp;&euro;','class'=>'double', 'style'=>'display:inline', 'value' => number_format($this->Form->value('Order.tesoriere_fattura_importo'),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))));
 echo '</td>';
 echo '</tr>';
 echo '<tr>';
@@ -54,15 +63,21 @@ echo number_format($importo_totale,2,Configure::read('separatoreDecimali'),Confi
 echo $this->Form->input('importo_totale',array('type' => 'hidden', 'id' => 'importo_totale', 'value'=> $importo_totale));
 echo '</td>';
 echo '</tr>';
-echo '<td>'.__('Differenza').'</td>';
-echo '<td class="differenza_result"><span id="differenza">0,00</span>&nbsp;&euro;</td>';
+echo '<td>'.__('Delta').'</td>';
+echo '<td style="white-space: nowrap;" class="differenza_result"><span id="differenza" style="display:inline">0,00</span>&nbsp;&euro;</td>';
 echo '</tr>';
-echo '</table>';
+echo '</table></div>';
 
-echo $this->Form->input('tesoriere_nota',array('tabindex'=>($i+1), 'required' => 'false'));
+if($type=='TESORIERE')
+	$label = __('Tesoriere Nota');
+else
+	$label = __('Cassiere Nota');
+
+echo $this->Form->input('tesoriere_nota',array('tabindex'=>($i+1), 'required' => 'false', 'label' => $label));
 
 echo '</fieldset>';
 
+echo $this->Form->hidden('order_id', ['value' => $order_id]);
 echo $this->Form->submit(__('Submit'), array('type' => 'submit', 'class' => 'afterDisabled'));
 
 echo $this->Form->end();
@@ -73,8 +88,8 @@ var debug = false;
 
 function setta_differenza() {
 
-	var tesoriere_fattura_importo = jQuery('#tesoriere_fattura_importo').val();
-	var importo_totale = jQuery('#importo_totale').val();
+	var tesoriere_fattura_importo = $('#tesoriere_fattura_importo').val();
+	var importo_totale = $('#importo_totale').val();
 
 	if(debug) {
 		console.log('tesoriere_fattura_importo '+tesoriere_fattura_importo);
@@ -98,29 +113,29 @@ function setta_differenza() {
 		console.log('differenza '+differenza);
 	}	
 	if(differenza >= 0 && differenza!=importo_totale) {
-		jQuery('.differenza_result').css('background-color','green');
-		jQuery('.differenza_result').css('color','#fff');
+		$('.differenza_result').css('background-color','green');
+		$('.differenza_result').css('color','#fff');
 	}
 	else {
-		jQuery('.differenza_result').css('background-color','red');
-		jQuery('.differenza_result').css('color','#000');
+		$('.differenza_result').css('background-color','red');
+		$('.differenza_result').css('color','#000');
 	}	
 
 	differenza = number_format(differenza,2,',','.');  /* in 1.000,50 */
-	jQuery('#differenza').html(differenza);
+	$('#differenza').html(differenza);
 }
 
 var sumbitJustSend = false;
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	setta_differenza();
 	
-	jQuery('#tesoriere_fattura_importo').change(function() {
+	$('#tesoriere_fattura_importo').change(function() {
 		setta_differenza();
 	});	
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
 		if(sumbitJustSend) 
 			return false;
@@ -128,24 +143,24 @@ jQuery(document).ready(function() {
 		<?php
 		if($user->organization['Organization']['hasFieldFatturaRequired']=='Y' && !isset($file1)) {
 		?>
-			var doc1 = jQuery('#OrderTesoriereDoc1').val();
+			var doc1 = $('#OrderTesoriereDoc1').val();
 			if(doc1=='' || doc1==undefined) {
-				alert("Devi uplodare la fattura per il tesoriere");
-				jQuery(this).focus();
+				alert("Devi uplodare la fattura per il cassiere/tesoriere");
+				$(this).focus();
 				return false;
 			}	
 			
-			var tesoriere_fattura_importo = jQuery('#tesoriere_fattura_importo').val();
+			var tesoriere_fattura_importo = $('#tesoriere_fattura_importo').val();
 			if(tesoriere_fattura_importo=='' || tesoriere_fattura_importo==undefined) {
 				alert("Devi indicare l'importo della fattura");
-				jQuery(this).val("0,00");
-				jQuery(this).focus();
+				$(this).val("0,00");
+				$(this).focus();
 				return false;
 			}	
 			
 			if(tesoriere_fattura_importo=='0,00') {
 				alert("L'importo della fattura dev'essere indicato con un valore maggior di 0");
-				jQuery(this).focus();
+				$(this).focus();
 				return false;
 			}
 		<?php		
@@ -162,8 +177,8 @@ jQuery(document).ready(function() {
 		}
 				
 		var differenza_alert = 50;
-		var tesoriere_fattura_importo = jQuery('#tesoriere_fattura_importo').val();
-		var importo_totale = jQuery('#importo_totale').val();
+		var tesoriere_fattura_importo = $('#tesoriere_fattura_importo').val();
+		var importo_totale = $('#importo_totale').val();
 		tesoriere_fattura_importo = numberToJs(tesoriere_fattura_importo);
 		
 		var differenza = (parseFloat(importo_totale) - parseFloat(tesoriere_fattura_importo));
@@ -179,7 +194,7 @@ jQuery(document).ready(function() {
 				return false;
 		}	
 		
-		jQuery('input[type="submit"].afterDisabled').val("Elaborazione in corso.. attendere...").unbind().css('cursor','default');
+		$('input[type="submit"].afterDisabled').val("Elaborazione in corso.. attendere...").unbind().css('cursor','default');
 		sumbitJustSend = true;
 	
 		return true;

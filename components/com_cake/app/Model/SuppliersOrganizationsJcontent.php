@@ -1,5 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
+
+
 /**
  * SuppliersOrganizationsJcontent Model
  *
@@ -16,7 +18,7 @@ class SuppliersOrganizationsJcontent extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -26,7 +28,7 @@ class SuppliersOrganizationsJcontent extends AppModel {
 		),
 		'supplier_organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

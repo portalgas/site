@@ -4,18 +4,30 @@ App::uses('AppModel', 'Model');
 
 class ArticlesArticlesType extends AppModel {
 
-	/*	 * estraggo gli ArticlesType di un aticolo	*/	public function getArticlesArticlesTypes($user, $article_id) {	
+	/*
+	 * estraggo gli ArticlesType di un aticolo
+	*/
+	public function getArticlesArticlesTypes($user, $organization_id, $article_id, $debug=false) {
 		$results = [];
-		try {			$conditions = array('ArticlesArticlesType.organization_id' => $user->organization['Organization']['id'],								'ArticlesArticlesType.article_id' => $article_id);
-			$this->unbindModel(array('belongsTo' => array('Article')));
-			$results = $this->find('all', array('conditions' => $conditions,															'order_by' => 'ArticlesType.sort',															'recursive' => 0));
-		}		catch (Exception $e) {			CakeLog::write('error',$sql);			CakeLog::write('error',$e);  		}						
-		return $results;	}
+  			  
+		$this->unbindModel(['belongsTo' => ['Article']]);
+		
+		$options = []; 
+		$options['conditions'] = ['ArticlesArticlesType.organization_id' => $organization_id,
+					  			  'ArticlesArticlesType.article_id' => $article_id];
+		$options['order'] = ['ArticlesType.sort'];
+		$options['recursive'] = 0; 
+		$results = $this->find('all', $options);
+		self::d($options, $debug);
+		self::d($results, $debug);	
+
+		return $results;
+	}
 	
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -25,7 +37,7 @@ class ArticlesArticlesType extends AppModel {
 		),
 		'article_type_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -35,7 +47,7 @@ class ArticlesArticlesType extends AppModel {
 		),
 		'article_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

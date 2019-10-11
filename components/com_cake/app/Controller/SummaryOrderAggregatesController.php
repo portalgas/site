@@ -10,12 +10,12 @@ class SummaryOrderAggregatesController extends AppController {
  
    		$actionWithPermission = array('admin_managementCartsGroupByUsers');   		if (in_array($this->action, $actionWithPermission)) {
 	   		/*	   		 * ctrl che la consegna sia visibile in backoffice	   		*/	   		if(!empty($this->delivery_id)) {
-	   				   			App::import('Model', 'Delivery');	   			$Delivery = new Delivery;	   			$results = $Delivery->read($this->user->organization['Organization']['id'], null, $this->delivery_id);
+	   				   			App::import('Model', 'Delivery');	   			$Delivery = new Delivery;	   			$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
 	   			if($results['Delivery']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}  				   		}
 	
 	   		/*	   		 * ctrl che l'ordine sia visibile in backoffice	   		*/
 	   		if(!empty($this->order_id)) {
-	   				   			App::import('Model', 'Order');	   			$Order = new Order;	   			$results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);	   			if($results['Order']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}   			
+	   				   			App::import('Model', 'Order');	   			$Order = new Order;	   			$results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);	   			if($results['Order']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}   			
 	   		}
    		} // end if (in_array($this->action, $actionWithPermission)) 
    }
@@ -85,7 +85,7 @@ class SummaryOrderAggregatesController extends AppController {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if ($Order->getOrderPermissionToEditReferente($results['Order'])) {
             /*
              * ctrl eventuali occorrenze di SummaryOrderAggregate

@@ -262,9 +262,9 @@ else {
 			*/
 			$tot_importo = ($tot_importo + $tot_importo_trasport + ($tot_importo_cost_less) + $tot_importo_cost_more);	
 			
-			if($user->organization['Organization']['payToDelivery']=='POST')
+			if($user->organization['Template']['payToDelivery']=='POST')
 				$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-			if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+			if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 				$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
 		
 			echo '<tr>';
@@ -307,7 +307,7 @@ else {
 							echo "\r\n";
 							echo '<tr>';
 							echo '<td>';
-							echo '<a action="articles-'.$storeroom['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+							echo '<a action="articles-'.$storeroom['Article']['organization_id'].'_'.$storeroom['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 							echo '</td>';
 					
 							echo '<td>'.($i+1).'</td>';
@@ -333,9 +333,9 @@ else {
 							echo '</td>';
 							echo '</tr>';
 								
-							echo '<tr class="trView" id="trViewId-'.$storeroom['Article']['id'].'">';
+							echo '<tr class="trView" id="trViewId-'.$storeroom['Article']['organization_id'].'_'.$storeroom['Article']['id'].'">';
 							echo '<td colspan="2"></td>';
-							echo '<td colspan="7" id="tdViewId-'.$storeroom['Article']['id'].'"></td>';
+							echo '<td colspan="7" id="tdViewId-'.$storeroom['Article']['organization_id'].'_'.$storeroom['Article']['id'].'"></td>';
 							echo '</tr>';
 								
 							$supplier_organization_id_old=$storeroom['SuppliersOrganization']['id'];

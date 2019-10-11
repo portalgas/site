@@ -39,7 +39,7 @@ class CassiereController extends AppController {
 		$Delivery = new Delivery;
 		
 		$Delivery->id = $delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -132,7 +132,7 @@ class CassiereController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 			
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -268,7 +268,7 @@ class CassiereController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 			
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -366,7 +366,7 @@ class CassiereController extends AppController {
 		
 		$msg = '';
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}

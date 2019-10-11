@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Events'), array('controller' => 'Events', 'action' => 'index'));
 $this->Html->addCrumb(__('List Event Types'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -18,7 +18,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<?php
 	if(!empty($results)) {
 	?>
-		<table cellpadding="0" cellspacing="0">
+		<div class="table-responsive"><table class="table table-hover table-striped">
 		<tr>
 				<th><?php echo $this->Paginator->sort('name');?></th>
 				<th><?php echo $this->Paginator->sort('color');?></th>
@@ -45,7 +45,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<?php 
 		endforeach; 
 		
-		echo '</table>';
+		echo '</table></div>';
 	
 		echo '<p>';
 		echo $this->Paginator->counter(array(
@@ -61,7 +61,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora tipologie di attività registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora tipologie di attività registrate"));
 	?>
 </div>
 <div class="actions">

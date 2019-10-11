@@ -1,7 +1,7 @@
 <?php
 if(!empty($results)) {
 ?>		
-<table cellpadding="0" cellspacing="0">
+<div class="table-responsive"><table class="table table-hover">
 <tr>
 		<th><?php echo __('N');?></th>
 		<th colspan="2"><?php echo __('CashSaldo');?></th>
@@ -46,8 +46,8 @@ foreach ($results as $numResult => $result):
 		$tot_importo += $result['CashesHistory']['importo'];
 endforeach; 
 
-echo '</table>';
+echo '</table></div>';
 }
 else 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono voci in cassa precedenti"));		
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono voci in cassa precedenti"));		
 ?>

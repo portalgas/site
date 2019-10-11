@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesSuppliers'),array('controller' => 'DesSuppliers', 'action' => 'index'));
 $this->Html->addCrumb(__('Add DesSupplier'));
@@ -19,7 +19,7 @@ echo '</h2>';
 		<legend><?php echo __('Scegli Produttore'); ?></legend>
 	<?php
 		$options =  array('id' => 'supplier_id',
-						  'empty' => "Scegli il produttore",
+						  'empty' => __('FilterToSuppliers'),
 						  'options' => $desOrganizations);
 		$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
 						  

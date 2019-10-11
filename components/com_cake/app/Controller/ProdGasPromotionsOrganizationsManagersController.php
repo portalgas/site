@@ -3,14 +3,14 @@ App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 
 /*
- * moduli utilizzati dai Manager dei GAS per gestire le promozioni a loro offerte
+ * moduli utilizzati dai Manager / Referenti / SuperReferenti dei GAS per gestire le promozioni a loro offerte
  */
 class ProdGasPromotionsOrganizationsManagersController extends AppController {
     
    public function beforeFilter() {
    		parent::beforeFilter();
    		
-		if (!$this->isManager()) {
+		if (!$this->isManager() && !$this->isReferente() && !$this->isSuperReferente()) {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}		
@@ -20,43 +20,14 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
     * elenco promozioni nuove (da associate ad un ordine del GAS)
 	*/
    public function admin_index_new() {
-	
-		/*
-		 * promozioni da associare ad un ordine di GAS
-		 */
-		$options = [];
-		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $this->user->organization['Organization']['id'],
-								   'ProdGasPromotionsOrganizationsManager.order_id' => 0,
-								   'ProdGasPromotion.state_code' => 'TRASMISSION-TO-GAS',
-								   'DATE(ProdGasPromotion.data_inizio) <= CURDATE() AND DATE(ProdGasPromotion.data_fine) >= CURDATE()'];
 
-		$this->ProdGasPromotionsOrganizationsManager->unbindModel(['belongsTo' => ['Organization']]);
-		$options['recursive'] = 1;	
-		$results = $this->ProdGasPromotionsOrganizationsManager->find('all', $options);
-		self::d([$options, $results], $debug);	
-		
-		/*
-		 * per ogni promozione estraggo ProdGasArticle
- 		 */
-		App::import('Model', 'ProdGasArticlesPromotion');
-		foreach($results as $numResult => $result) {
-				
-					$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
-					
-					$ProdGasArticlesPromotion->unbindModel(['belongsTo' => ['ProdGasPromotion']]);
-					
-					$options = [];
-					$options['conditions'] = ['ProdGasArticlesPromotion.prod_gas_promotion_id' => $result['ProdGasPromotion']['id']];
-					$options['recursive'] = 1;
-					$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
-					if(!empty($prodGasArticlesPromotionResults)) {
-						$results[$numResult]['Article'] = $prodGasArticlesPromotionResults;
-					}			
-		}
-		
-		self::d([$options, $results], $debug);	
+		$rules = [];
+		$rules['isSuperReferente'] = $this->isSuperReferente();
+		$rules['isReferente'] = $this->isReferente();
+		$rules['isManager'] = $this->isManager();
 
-		$this->set('results', $results);
+		$results = $this->ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
+		$this->set(compact('results'));
 	}
 	
    /*
@@ -64,58 +35,8 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 	*/
    public function admin_index() {
 		
-		/*
-		 * promozioni gia' associate ad un ordine di GAS
-		 */
-		$options = [];
-		$options['conditions'] = array('ProdGasPromotionsOrganizationsManager.organization_id' => $this->user->organization['Organization']['id'],
-									   'ProdGasPromotionsOrganizationsManager.order_id !=' => 0,
-									   'ProdGasPromotion.state_code != ' => 'WORKING');
-
-		$this->ProdGasPromotionsOrganizationsManager->unbindModel(array('belongsTo' => array('Organization')));
-		$options['recursive'] = 1;
-		$results = $this->ProdGasPromotionsOrganizationsManager->find('all', $options);
-		
-		/*
-		 * per ogni ordine estraggo Delivery , SuppliersOrganization
- 		 */
-		App::import('Model', 'Delivery');
-		App::import('Model', 'SuppliersOrganization'); 
-		foreach($results as $numResult => $result) {
-			if(isset($result['Order'])) {
-					
-				$order_id = $result['Order']['id'];
-				$delivery_id = $result['Order']['delivery_id'];
-				$supplier_organization_id = $result['Order']['supplier_organization_id'];
-				
-				$Delivery = new Delivery;
-				
-				$options = [];
-				$options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
-											   'Delivery.id' => $delivery_id);
-				$options['recursive'] = -1;
-				$deliveryResults = $Delivery->find('first', $options);
-				if(!empty($deliveryResults)) {
-					$results[$numResult]['Delivery'] = $deliveryResults['Delivery'];
-				}
-				
-				
-				$SuppliersOrganization = new SuppliersOrganization;
-				
-				$options = [];
-				$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-											   'SuppliersOrganization.id' => $supplier_organization_id);
-				$options['recursive'] = -1;
-				$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-				if(!empty($suppliersOrganizationResults)) {
-					$results[$numResult]['SuppliersOrganization'] = $suppliersOrganizationResults['SuppliersOrganization'];
-				}
-			}
-		} 
-		
-		self::d($results, $debug);		
-
-		$this->set('results', $results);
+		$results = $this->ProdGasPromotionsOrganizationsManager->getOpenPromotions($this->user, $debug);
+		$this->set(compact('results'));
 	}
 	
 	public function admin_add($prod_gas_promotion_id=0) { 
@@ -200,7 +121,12 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 				$data = [];
 				$data = $ProdGasPromotionsOrganization->find('first', $options);
 				$data['ProdGasPromotionsOrganization']['order_id'] = $order_id;
-				$data['ProdGasPromotionsOrganization']['nota'] = $nota;
+				$data['ProdGasPromotionsOrganization']['state_code'] = 'OPEN';
+				$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+				if(!empty($data['ProdGasPromotionsOrganization']['nota_user']))
+					$data['ProdGasPromotionsOrganization']['user_id'] = $this->user->get('id');
+				else
+					$data['ProdGasPromotionsOrganization']['user_id'] = 0;
 				$ProdGasPromotionsOrganization->create();
 				if(!$ProdGasPromotionsOrganization->save($data)) {
 					$msg_errors .= "Error ProdGasPromotionsOrganization SAVE";
@@ -249,20 +175,12 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set('promotionResults', $promotionResults);
 		
 		/*
-		 * prendo solo le consegne aperte
+		 * prendo solo le consegne sclete dal produttore
 		 */
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
+		App::import('Model', 'ProdGasPromotionsOrganizationsDelivery');
+		$ProdGasPromotionsOrganizationsDelivery = new ProdGasPromotionsOrganizationsDelivery;
 		
-		$options =  [];
-		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									'Delivery.isVisibleBackOffice' => 'Y',
-									'Delivery.stato_elaborazione' => 'OPEN',
-									'Delivery.sys'=>'N',
-									'DATE(Delivery.data) >= CURDATE()'];
-		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
-		$options['order'] = ['Delivery.data' => 'asc'];
-		$deliveries = $Delivery->find('list', $options); 
+		$deliveries = $ProdGasPromotionsOrganizationsDelivery->getOrganizationsDeliveryList($this->user, $prod_gas_promotion_id, $debug);
 		$this->set(compact('deliveries'));
 
 		$isVisibleFrontEnd = ClassRegistry::init('Order')->enumOptions('isVisibleFrontEnd');
@@ -275,22 +193,24 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set('isManagerDelivery', $this->isManagerDelivery());
 	}
 
-	public function admin_edit($delivery_id, $order_id) {
+	public function admin_edit($delivery_id=0, $order_id=0) {
 
 		$debug = false;
 		$continua=true;
 		$msg_errors = "";
+
+		if (empty($delivery_id))	
+			$delivery_id = $this->request->data['ProdGasPromotionsOrganizationsManager']['delivery_id'];
+			
+		if (empty($order_id))	
+			$order_id = $this->request->data['ProdGasPromotionsOrganizationsManager']['order_id'];
 
 		if (empty($delivery_id) || empty($order_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		if($debug) {
-			echo "<pre>request->data \n";
-			print_r($this->request->data);
-			echo "</pre>";			
-		}
+		self::d($this->request->data, $debug);
 		
 		/*
 		 * da order_id recupero dati promozione
@@ -299,9 +219,9 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$Order = new Order;
 
 		$options =  [];
-		$options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-										'Order.delivery_id' => $delivery_id,
-									    'Order.id' => $order_id);
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+									'Order.delivery_id' => $delivery_id,
+									'Order.id' => $order_id];
 		$options['recursive'] = 0;
 		$this->request->data = $Order->find('first', $options);
 		
@@ -322,20 +242,12 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set(compact('promotionResults'));
 		
 		/*
-		 * prendo solo le consegne aperte
+		 * prendo solo le consegne sclete dal produttore
 		 */
-		App::import('Model', 'Delivery');
-		$Delivery = new Delivery;
+		App::import('Model', 'ProdGasPromotionsOrganizationsDelivery');
+		$ProdGasPromotionsOrganizationsDelivery = new ProdGasPromotionsOrganizationsDelivery;
 		
-		$options =  [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'Delivery.stato_elaborazione' => 'OPEN',
-									    'Delivery.sys'=>'N',
-										'DATE(Delivery.data) >= CURDATE()');
-		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
-		$options['order'] = ['Delivery.data' => 'asc'];
-		$deliveries = $Delivery->find('list', $options); 
+		$deliveries = $ProdGasPromotionsOrganizationsDelivery->getOrganizationsDeliveryList($this->user, $prod_gas_promotion_id, $debug);
 		$this->set(compact('deliveries'));
 
 		$isVisibleFrontEnd = ClassRegistry::init('Order')->enumOptions('isVisibleFrontEnd');
@@ -486,4 +398,82 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		
 		return $msg_errors;
 	}
+	
+	public function admin_reject($prod_gas_promotion_id=0) { 
+
+		$debug = false;
+		
+		self::dd($this->request->data, $debug);		
+		if(isset($this->request->data['ProdGasPromotionsOrganizationsManager']['prod_gas_promotion_id']))
+			$prod_gas_promotion_id = $this->request->data['ProdGasPromotionsOrganizationsManager']['prod_gas_promotion_id'];
+			
+		if (empty($prod_gas_promotion_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+			
+		if ($this->request->is('post') || $this->request->is('put')) {
+
+			App::import('Model', 'ProdGasPromotionsOrganization');
+			$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
+			
+			if(isset($this->request->data['ProdGasPromotionsOrganizationsManager']['nota_user'])) {
+				
+				$nota_user = $this->request->data['ProdGasPromotionsOrganizationsManager']['nota_user'];
+				
+				$options = [];
+				$options['conditions'] = ['ProdGasPromotionsOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										   'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id];
+				$options['recursive'] = -1;
+				$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
+					
+				$prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['state_code'] = 'REJECT';
+				$prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['nota_user'] = $nota_user;
+
+				self::d($options, $debug);
+				self::d($prodGasPromotionsOrganizationResults, $debug);
+
+				$ProdGasPromotionsOrganization->create();
+				if(!$ProdGasPromotionsOrganization->save($prodGasPromotionsOrganizationResults)) {
+					$this->Session->setFlash(__('The prodGasPromotionsOrganizations could not be saved. Please, try again.'));
+				}
+				else
+					$this->Session->setFlash(__('ProdGasPromotionsOrganization REJECT'));
+			}
+
+			if(!$debug) $this->myRedirect(['action' => 'index_new']);
+			
+		} // end post
+
+		/*
+		 * dati promozione del GAS (gli passo $this->user->organization['Organization']['id'])
+		 */	
+		App::import('Model', 'ProdGasPromotion');
+		$ProdGasPromotion = new ProdGasPromotion;
+				 	 
+		$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $this->user->organization['Organization']['id'], $debug);
+		$this->set(compact('promotionResults'));	
+		
+		$rejectsNotes = $this->ProdGasPromotionsOrganizationsManager->getRejectNotes($this->user);
+		$this->set(compact('rejectsNotes', 'prod_gas_promotion_id'));	
+	}
+	
+	public function admin_contact($prod_gas_promotion_id=0) { 
+
+		$debug = false;
+							
+		if (empty($prod_gas_promotion_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+
+		/*
+		 * dati promozione del GAS (gli passo $this->user->organization['Organization']['id'])
+		 */
+		App::import('Model', 'ProdGasPromotion');
+		$ProdGasPromotion = new ProdGasPromotion;
+
+		$promotionResults = $ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id, $this->user->organization['Organization']['id'], $debug);
+		$this->set(compact('promotionResults'));		
+	}	
 }

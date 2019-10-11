@@ -31,7 +31,7 @@
 			foreach($results['Organization'] as $organization) {
 				echo '<li>';
 				echo '<a href="'.$this->App->traslateWww($organization['www']).'">';
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organization['img1'].'" alt="'.$organization['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organization['img1'].'" alt="'.$organization['name'].'" /> ';
 				echo $organization['name'].'&nbsp;('.$organization['provincia'].')';
 				echo '</a>';
 				echo '</li>';			

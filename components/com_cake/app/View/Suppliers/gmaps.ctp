@@ -1,9 +1,5 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 
 /*
  * per linkare all'articolo di joomla
@@ -12,14 +8,14 @@ $com_path = JPATH_SITE.'/components/com_content/';
 require_once $com_path.'router.php';
 require_once $com_path.'helpers/route.php';
 ?>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleKey');?>&sensor=false&v=3.exp"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleApiKey');?>&v=3.exp"></script>
 
 <script type="text/javascript">
 var marker = new Array();
 var icon1 = '/images/cake/puntina.png';
 var icon2 = '/images/cake/puntina03.png';
 
-jQuery(document).ready(function () {
+$(document).ready(function () {
 
     var map;
     var myOptions = {
@@ -57,12 +53,46 @@ jQuery(document).ready(function () {
 					
 			$url = JRoute::_(ContentHelperRoute::getArticleRoute($result['Supplier']['j_content_id'], $result['CategoriesSupplier']['j_category_id'])).'?tmpl=popup';					
 			
-			echo "contentString".$result['Supplier']['id']." += '<p><a rel=\"nofollow\" data-toggle=\"modal\" data-target=\"#myModalScheda\" url=\"".$url."\" href=\"#\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>'";
+			echo "contentString".$result['Supplier']['id']." += '<p><a rel=\"nofollow\" data-toggle=\"modal\" data-target=\"#myModalScheda\" url=\"".$url."\" href=\"#\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>';";
+		}
+		
+		if(isset($result['SuppliersOrganizationsReferent']) && !empty($result['SuppliersOrganizationsReferent'])) {
+
+			echo "\ncontentString".$result['Supplier']['id']." += '<p><b>".__('Suppliers Organizations Referents')."</b></p>';";
+				
+			foreach($result['SuppliersOrganizationsReferent'] as $suppliersOrganizationsReferent) {
+				
+				$suppliersOrganizationsReferentName = str_replace("'", " ", $suppliersOrganizationsReferent['User']['name']);
+				
+				$tmp = '';
+				$tmp .= '<div>';
+				$tmp .= $suppliersOrganizationsReferentName;
+				if(!empty($suppliersOrganizationsReferent['User']['email'])) {
+					$suppliersOrganizationsReferentEmail = str_replace("'", "", $suppliersOrganizationsReferent['User']['email']);
+					$tmp .= ' <a href="mailto:'.$email.'">'.$suppliersOrganizationsReferentEmail.'</a>';
+				}
+				$tmp .= '</div>';
+				
+				if(!empty($suppliersOrganizationsReferent['Profile']['address']) && !empty($suppliersOrganizationsReferent['Profile']['phone'])) 
+					$tmp .= '<div>';
+				
+				if(!empty($suppliersOrganizationsReferent['Profile']['address'])) {
+					$suppliersOrganizationsReferentAddress = str_replace("'", "", $suppliersOrganizationsReferent['Profile']['address']);
+					$tmp .= $suppliersOrganizationsReferentAddress.' ';
+				}
+				if(!empty($suppliersOrganizationsReferent['Profile']['phone'])) {
+					$suppliersOrganizationsReferentPhone = str_replace("'", "", $suppliersOrganizationsReferent['Profile']['address']);
+					$tmp .= $suppliersOrganizationsReferentPhone.' ';
+				}
+
+				if(!empty($suppliersOrganizationsReferent['Profile']['address']) && !empty($suppliersOrganizationsReferent['Profile']['phone'])) 
+					$tmp .= '</div>';
+				
+				echo "\ncontentString".$result['Supplier']['id']." += '<p>".$tmp."</p>';";
+			}
 		}
 		?>
-				
-
-		
+			
 		
 		var infowindow<?php echo $result['Supplier']['id'];?> = new google.maps.InfoWindow({
 				content: contentString<?php echo $result['Supplier']['id'];?>
@@ -94,20 +124,20 @@ jQuery(document).ready(function () {
 	}
 	?>	
 		
-	jQuery('.listsUser > li > a').mouseover(function () {
-		var supplier_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseover(function () {
+		var supplier_id = $(this).attr('data-attr-id');
 		marker[supplier_id].setIcon(icon2);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').mouseout(function () {
-		var supplier_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseout(function () {
+		var supplier_id = $(this).attr('data-attr-id');
 		marker[supplier_id].setIcon(icon1);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').click(function () {
-		var supplier_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').click(function () {
+		var supplier_id = $(this).attr('data-attr-id');
 		google.maps.event.trigger(marker[supplier_id], 'click');
 		return false;
 	});
@@ -164,12 +194,12 @@ echo '</ul>';
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 		
-	jQuery('#myModalScheda').on('show.bs.modal', function (e) {
-		var invoker = jQuery(e.relatedTarget);
+	$('#myModalScheda').on('show.bs.modal', function (e) {
+		var invoker = $(e.relatedTarget);
 		var url = invoker.attr('url');
-		jQuery(".modal-body").load(url).animate({ opacity: 1}, 750);
+		$(".modal-body").load(url).animate({ opacity: 1}, 750);
 	});	
 });
 </script>

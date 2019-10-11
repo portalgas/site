@@ -16,15 +16,13 @@ if($results['Order']['state_code']=='PROCESSED-POST-DELIVERY' ||
 						<em>Informazione per aiutarti</em>
 						<?php echo __('toolTipSummaryOrdersOptions');?></span></a>
 			</span>
-			<input type="radio" checked="checked" name="summary_orders-options" id="options-summary_orders-delete-no" value="options-delete-no">
-				<label for="options-summary_orders-delete-no">Mantengo i dati sottostanti</label>
-			<input type="radio" name="summary_orders-options" id="options-summary_orders-delete-yes" value="options-delete-yes">
-				<label for="options-summary_orders-delete-yes">Rigenero i dati sottostanti perch&egrave; ho modificato gli acquisti degli utenti</label>
+			<label class="radio-inline"><input type="radio" checked="checked" name="summary_orders-options" id="options-summary_orders-delete-no" value="options-delete-no">Mantengo i dati sottostanti</label>
+			<label class="radio-inline"><input type="radio" name="summary_orders-options" id="options-summary_orders-delete-yes" value="options-delete-yes">Rigenero i dati sottostanti perch&egrave; ho modificato gli acquisti degli utenti</label>
 		</div>	
 		
 		<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery("input[name='summary_orders-options']").change(function() {
+		$(document).ready(function() {
+			$("input[name='summary_orders-options']").change(function() {
 				choiceSummaryOrdersOptions();
 			});
 		

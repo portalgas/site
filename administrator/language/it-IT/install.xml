@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <install version="2.5" client="administrator" type="language" method="upgrade">
-    <name>Italian (Italy)</name>
+    <name>Italian (IT)</name>
     <tag>it-IT</tag>
-    <version>2.5.6.2</version>
-    <creationDate>2012-06-20</creationDate>
+    <version>2.5.20.1</version>
+    <creationDate>2014-04-30</creationDate>
     <author>Italian Translation Team</author>
 	<authoremail>info@joomla.it</authoremail>
 	<authorurl>http://www.joomla.it</authorurl>
-    <copyright>Copyright (C) 2005 - 2012 Open Source Matters and Joomla.it. All rights reserved</copyright>
+    <copyright>Copyright (C) 2005 - 2014 Open Source Matters and Joomla.it. All rights reserved</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<description>Italian administration language pack for Joomla! 2.5</description>
 	<files>

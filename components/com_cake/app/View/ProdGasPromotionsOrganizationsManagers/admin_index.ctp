@@ -1,11 +1,8 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
-$this->Html->addCrumb(__('List ProdGasPromotions New'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
+$this->App->d($results);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+$this->Html->addCrumb(__('List ProdGasPromotions New'), array('controller' => 'ProdGasPromotionsOrganizationsManagers', 'action' => 'index_new'));
 $this->Html->addCrumb(__('List ProdGasPromotionsOrders'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -24,13 +21,13 @@ if(!empty($results)) {
 	echo '	<th></th>';
 	echo '	<th colspan="2">'.__('Supplier').'</th>';
 	echo '	<th>';
-	echo 		__('Data inizio');
+	echo 		__('DataInizio');
 	echo '		<br />';
-	echo 		__('Data fine');
+	echo 		__('DataFine');
 	echo '	</th>';
-	echo '	<th>'.__('Aperto/Chiuso').'</th>';
-	echo '	<th>'.__('nota').'</th>';
-	echo '<th>'.__('stato_elaborazione').'</th>';
+	echo '	<th>'.__('OpenClose').'</th>';
+	echo '	<th>'.__('Nota').'</th>';
+	echo '<th>'.__('StatoElaborazione').'</th>';
 		
 	echo '	<th>'.__('Created').'</th>';
 	echo '	<th class="actions">'.__('Actions').'</th>';
@@ -75,7 +72,7 @@ if(!empty($results)) {
 	echo '	<td><a action="orders-'.$result['Order']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 	echo '	<td>';
 	if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-		echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 	echo '	</td>';
 	echo '	<td>';
 	
@@ -111,37 +108,23 @@ if(!empty($results)) {
 	echo '<td>';
 	if(!empty($result['Order']['nota'])) {
 		
-		echo '<img style="cursor:pointer;" class="referente_nota" id="'.$result['Order']['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi la nota del referente" border="0" />';
-		
-		echo '<div id="dialog-msg-'.$result['Order']['id'].'" title="Nota del referente">';
-		echo '<p>';
-		echo $result['Order']['nota'];
-		echo '</p>';
+		echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$result['Order']['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+		echo '<div id="order_nota_'.$result['Order']['id'].'" class="modal fade" role="dialog">';
+		echo '<div class="modal-dialog">';
+		echo '<div class="modal-content">';
+		echo '<div class="modal-header">';
+		echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+		echo '<h4 class="modal-title">Nota del referente</h4>';
 		echo '</div>';
+		echo '<div class="modal-body"><p>'.$result['Order']['nota'].'</p>';
+		echo '</div>';
+		echo '<div class="modal-footer">';
+		echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';	
 		
-		echo '<script type="text/javascript">';
-		echo 'jQuery("#dialog-msg-'.$result['Order']['id'].'" ).dialog({';
-		echo "\r\n";
-		echo '	autoOpen: false,';
-		echo "\r\n";
-		echo '	height: 450,';
-		echo "\r\n";
-		echo '	width: 600,';
-		echo "\r\n";
-		echo '	modal: true,';
-		echo "\r\n";
-		echo '	buttons: {';
-		echo "\r\n";
-		echo '		"Chiudi": function() {';
-		echo "\r\n";
-		echo '			jQuery( this ).dialog( "close" );';
-		echo "\r\n";
-		echo '		},';
-		echo "\r\n";
-		echo '	}';
-		echo '});';
-		echo '</script>';
-			
 	} // end if(!empty($result['Order']['nota']))	
 	echo '</td>'; 
 		
@@ -171,8 +154,9 @@ if(!empty($results)) {
 	echo '<td class="actions-table-img-3">';
 	
 		//if($result['Order']['permissionToEditReferente']) {
+		echo $this->Html->link(null, ['action' => 'contact', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionPhone','title' => __('Contact PromotionOrganizationManager')]);
 		echo $this->Html->link(null, array('controller' => 'Orders', 'action' => 'home', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionWorkflow','title' => __('Order home')));
-
+			
 		echo '<a id="actionMenu-'.$result['Order']['id'].'" class="action actionMenu" title="'.__('Expand menu').'"></a>';
 		echo '<div class="menuDetails" id="menuDetails-'.$result['Order']['id'].'" style="display:none;">';
 		echo '	<a class="menuDetailsClose" id="menuDetailsClose-'.$result['Order']['id'].'"></a>';
@@ -195,42 +179,42 @@ echo '</table>';
 
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora promozioni associate ad un ordine"));
+	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora promozioni associate ad un ordine"));
 
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});	
 
-	jQuery('.referente_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
+	$('.referente_nota').click(function() {
+		var id = $(this).attr('id');
+		$("#dialog-msg-"+id ).modal("open");
 	});
 });
 </script>

@@ -26,7 +26,7 @@
     	$table[] = array('label' => __('ingredienti'), 'width' => 50, 'wrap' => true, 'filter' => false);
     	
     if($filterNota=='Y')
-    	$table[] =	array('label' => __('nota'), 'width' => 50, 'wrap' => true);
+    	$table[] =	array('label' => __('Nota'), 'width' => 50, 'wrap' => true);
     
     $table[] =	array('label' => __('pezzi_confezione'), 'width' => 'auto', 'filter' => true);
     $table[] =	array('label' => __('qta_minima'), 'width' => 'auto', 'filter' => true);
@@ -53,13 +53,13 @@
     	if($result['Article']['bio']=='Y')
     		$bio = 'Si';    	else    		$bio = 'No';
     	
-    	$rows = array();
+    	$rows = [];
     	
     	$rows[] = ($numArticle+1);
     	$rows[] = $bio;
     	
     	if($filterType=='Y') {
-	    	$tmp = "";	    	if(!empty($result['ArticlesType'])) {	    		foreach($result['ArticlesType'] as $articlesType)	    			$tmp .= $articlesType['descrizione']." ";	    	}	    	$rows[] = $tmp;
+	    	$tmp = "";	    	if(!empty($result['ArticlesType'])) {	    		foreach($result['ArticlesType'] as $articlesType)	    			$tmp .= $articlesType['ArticlesType']['descrizione']." ";	    	}	    	$rows[] = $tmp;
     	}
     	    	
     	if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y' && $filterCategory=='Y')

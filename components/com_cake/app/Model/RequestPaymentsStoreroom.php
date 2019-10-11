@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class RequestPaymentsStoreroom extends AppModel {
 
 /**
@@ -11,7 +12,7 @@ class RequestPaymentsStoreroom extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -21,7 +22,7 @@ class RequestPaymentsStoreroom extends AppModel {
 		),
 		'delivery_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -31,7 +32,7 @@ class RequestPaymentsStoreroom extends AppModel {
 		),
 		'request_payment_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

@@ -9,12 +9,8 @@ else {
 	$debugJs = 'false';
 }
 
-/*
-echo "<pre>";
-print_r($results);
-print_r($storeroomResults);
-echo "</pre>";
-*/
+$this->App->d([$results, $storeroomResults], $debug);
+
 if(!empty($results) || !empty($storeroomResults)) {
 	
 	echo $this->element('boxCashUserTotaleImporto', array('cashResults' => $cashResults));
@@ -24,8 +20,8 @@ if(!empty($results) || !empty($storeroomResults)) {
 	echo '		<th>'.__('N').'</th>';
 	echo '		<th style="width:20%">'.__('Stato').'</th>';
 	echo '		<th style="width:20%">'.__('Supplier').'</th>';
-	echo '		<th>Importo dovuto</th>';
-	echo '		<th>Modalit&agrave;&nbsp;';
+	echo '		<th>'.__('Importo_dovuto').'</th>';
+	echo '		<th>'.__('Modality').'&nbsp;';
 	echo '<select name="modalita_all" size="1" class="form-control">';
 	echo '<option value="" selected>Applica la modalit&agrave; a tutti</option>';
 	foreach($modalita as $key => $value)
@@ -112,7 +108,8 @@ if(!empty($results) || !empty($storeroomResults)) {
 					
 		echo '</tr>';	
 
-		$tot_importo_dovuto += $result['SummaryOrder']['importo'];
+		if($result['SummaryOrder']['importo']!=$result['SummaryOrder']['importo_pagato']) // sommo solo se non pagato
+			$tot_importo_dovuto += $result['SummaryOrder']['importo'];
 
 	} // end foreach($results as $numResult => $result)
 
@@ -553,12 +550,23 @@ function setDifferenzaCassa() {
 	}	 
 	else
 	if(differenza<0) {
-		/*
-		 * pago + => CREDITO
-		 */
-		if(debug) console.log('setDifferenzaCassa() - pago + => CREDITO di cassa, in cassa '+tot_importo_cassa);
 		
-		tot_importo_cassa_nuovo = (parseFloat(tot_importo_cassa) + (parseFloat(tot_importo_da_pagare) - parseFloat(tot_importo_dovuto))).toFixed(2);
+		if(tot_importo_cassa<0) {
+			/*
+			 * ho cassa negativa => DEBITO
+			 */
+			tot_importo_cassa = (-1 * tot_importo_da_pagare); 
+			tot_importo_cassa_nuovo = (-1 * tot_importo_da_pagare); 
+			if(debug) console.log('setDifferenzaCassa() ho cassa negativa => DEBITO in cassa '+tot_importo_cassa);	
+		}
+		else {
+			/*
+			 * pago + => CREDITO
+			 */
+			if(debug) console.log('setDifferenzaCassa() - pago + => CREDITO di cassa, in cassa '+tot_importo_cassa);
+			
+			tot_importo_cassa_nuovo = (parseFloat(tot_importo_cassa) + (parseFloat(tot_importo_da_pagare) - parseFloat(tot_importo_dovuto))).toFixed(2);
+		}
 	}	
 	
 	if(debug) console.log('setDifferenzaCassa() - tot_importo_cassa_nuovo (differenza) '+tot_importo_cassa_nuovo);

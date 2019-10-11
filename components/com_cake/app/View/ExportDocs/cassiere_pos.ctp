@@ -58,7 +58,7 @@ if (!empty($results)) {
 		$html .= '			<th width="'.$output->getCELLWIDTH30().'"></th>';
 		$html .= '			<th width="'.$output->getCELLWIDTH200().'"></th>';
 		$html .= '			<th width="'.$output->getCELLWIDTH300().'"></th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.$tot_importo_pos.' &euro;</th>';		
+		$html .= '			<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.$tot_importo_pos.'&nbsp;&euro;</th>';		
 		$html .= '		</tr>';				
 		$html .= '</tbody></table>';
 				
@@ -73,4 +73,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

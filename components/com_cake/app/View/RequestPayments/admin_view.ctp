@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$resultsOrder['Order']['id']));
 $this->Html->addCrumb(__('Request Payment').': '.__('Supplier').' <b>'.$resultsOrder['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>'.$resultsOrder['Delivery']['luogo'].'</b>');
@@ -14,6 +14,7 @@ echo '	<th style="border-radius:5px;">'.$this->App->drawOrdersStateDiv($resultsO
 echo '</tr>';
 echo '</table>';
 */
+if(!empty($results)) {
 ?>
 	<h2 class="ico-pay">
 		<?php 
@@ -53,7 +54,7 @@ echo '</table>';
 					foreach ($requestPaymentsOrder['Referenti'] as $ref) {
 						$referente = $ref['User'];
 						echo $referente['name'];
-						if(!empty($referente['email']))	echo ' <a class="link_mailto" title="'.__('Email send').'" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$referente['email']).'"></a>';
+						if(!empty($referente['email']))	echo ' <a class="fa fa-envelope-o fa-lg" title="'.__('Email send').'" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$referente['email']).'"></a>';
 						echo '<br />';
 					}
 				}
@@ -120,6 +121,9 @@ echo '</table>';
 	<?php
 	 } // end if(!empty($results['PaymentsGeneric'])) 		
 	*/
+}
+else
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non è stata trovata la richiesta di pagamento associata!"));
 	?>
 </div>
 

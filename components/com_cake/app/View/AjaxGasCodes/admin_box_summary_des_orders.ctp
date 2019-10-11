@@ -12,11 +12,11 @@ $tot_importo=0;
 $tmp .= '	<table class="selector">';
 $tmp .= '		<tr>';
 $tmp .= '			<th>'.__('N').'</th>';
-$tmp .= '			<th colspan="2">'.__('Organization').'</th>';
-$tmp .= '			<th>Importo originale</th>';
+$tmp .= '			<th colspan="2">'.__('GasOrganizations').'</th>';
+$tmp .= '			<th>'.__('importo_originale').'</th>';
 $tmp .= '			<th>% rispetto al totale</th>';
-$tmp .= '			<th>Importo modificato</th>';
-$tmp .= '			<th>Differenza</th>';
+$tmp .= '			<th>'.__('importo_change').'</th>';
+$tmp .= '			<th>'.__('Delta').'</th>';
 $tmp .= '			<th>Nota</th>';
 $tmp .= '	</tr>';		
 						
@@ -42,8 +42,8 @@ foreach($results as $numResult => $result) {
 	
         $tmp .= '<td>'.$result['SummaryDesOrder']['percentuale'].' %</td>';
         
-	$tmp .= '<td>';	
-	$tmp .= '<input tabindex="'.$i.'" type="text" value="'.$result['SummaryDesOrder']['importo_'].'" name="importo-'.$rowId.'" id="importo-'.$rowId.'" size="8" class="double noWidth importoSubmit" />&nbsp;<span>&euro;</span>';
+	$tmp .= '<td style="white-space: nowrap;">';	
+	$tmp .= '<input tabindex="'.$i.'" type="text" value="'.$result['SummaryDesOrder']['importo_'].'" name="importo-'.$rowId.'" id="importo-'.$rowId.'" style="display:inline" class="double importoSubmit" />&nbsp;<span>&euro;</span>';
 	$tmp .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
 	$tmp .= '<div id="msgEcomm-'.$rowId.'" class="msgEcomm"></div>';
 	$tmp .= '</td>';
@@ -81,45 +81,45 @@ $tmp .= '</table>';
 echo $tmp;
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	/*
 	 * importo
 	 */
-	jQuery('.importoSubmit').change(function() {
+	$('.importoSubmit').change(function() {
 
 		setNumberFormat(this);
 
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_des_orders_id = numRow;
 		
-		var importo = jQuery(this).val();
+		var importo = $(this).val();
 		if(importo=='' || importo==undefined) {
 			alert("Devi indicare l'importo");
-			jQuery(this).val("0,00");
-			jQuery(this).focus();
+			$(this).val("0,00");
+			$(this).focus();
 			return false;
 		}	
 		
 		if(importo=='0,00') {
 			alert("L'importo dev'essere indicato con un valore maggior di 0");
-			jQuery(this).focus();
+			$(this).focus();
 			return false;
 		}
 					
-		jQuery.ajax({
+		$.ajax({
 			type: "GET",
 			url: "/administrator/index.php?option=com_cake&controller=SummaryDesOrders&action=setImporto&row_id="+numRow+"&summary_des_order_id="+summary_des_orders_id+"&importo="+importo+"&format=notmpl",
 			data: "",
 			success: function(response){
-				 jQuery('#msgEcomm-'+numRow).html(response);
+				 $('#msgEcomm-'+numRow).html(response);
 				 
 				 setTotImporto();
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				 jQuery('#msgEcomm-'+numRow).html(textStatus);
-				 jQuery('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
+				 $('#msgEcomm-'+numRow).html(textStatus);
+				 $('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
 			}
 		});
 		return false;
@@ -128,24 +128,24 @@ jQuery(document).ready(function() {
 	/*
 	 * nota
 	 */
-	jQuery('.nota').change(function() {
+	$('.nota').change(function() {
 
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_des_orders_id = numRow;
 		
-		var nota = jQuery(this).val();
+		var nota = $(this).val();
 		
-		jQuery.ajax({
+		$.ajax({
 			type: "POST",
 			url: "/administrator/index.php?option=com_cake&controller=SummaryDesOrders&action=setNota&row_id="+numRow+"&summary_des_order_id="+summary_des_orders_id+"&format=notmpl",
 			data: "nota="+nota,
 			success: function(response){
-				jQuery('#msgEcomm-'+numRow).html(response);
+				$('#msgEcomm-'+numRow).html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				 jQuery('#msgEcomm-'+numRow).html(textStatus);
-				 jQuery('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');			
+				 $('#msgEcomm-'+numRow).html(textStatus);
+				 $('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');			
 			}
 		});
 		return false;
@@ -154,7 +154,7 @@ jQuery(document).ready(function() {
 	<?php 
 	if(isset($hide_summary_des_orders_options)) {
 	?>
-	jQuery('#summary-des_orders-options').hide();
+	$('#summary-des_orders-options').hide();
 	<?php 
 	}
 	?>	
@@ -165,12 +165,12 @@ jQuery(document).ready(function() {
 function setTotImporto() {
 
 	var tot_importo = 0;
-	jQuery(".importoSubmit").each(function () {
+	$(".importoSubmit").each(function () {
 
 		/*
 		 * importo totale
 		 */
-		var importo = jQuery(this).val();
+		var importo = $(this).val();
 		importo = numberToJs(importo);   /* in 1000.50 */
 			
 		tot_importo = (parseFloat(tot_importo) + parseFloat(importo));
@@ -178,19 +178,19 @@ function setTotImporto() {
 		/*
 		 * differenza
 		 */
-		var idRow = jQuery(this).attr('id');  
+		var idRow = $(this).attr('id');  
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-		var importo_orig = jQuery('#importo_orig-'+numRow).val();
+		var importo_orig = $('#importo_orig-'+numRow).val();
 
 		var differenza = (importo_orig - importo);
 		differenza = (-1 * differenza);
 		console.log("differenza "+differenza+" = ("+importo_orig+" - "+importo+")");
 		differenza = number_format(differenza,2,',','.');  /* in 1.000,50 */
-		jQuery('#differenza-'+numRow).html(differenza);				
+		$('#differenza-'+numRow).html(differenza);				
 	});
 	
 	tot_importo = number_format(tot_importo,2,',','.');  /* in 1.000,50 */
 
-	jQuery('#tot_importo').html(tot_importo);		
+	$('#tot_importo').html(tot_importo);		
 }
 </script>

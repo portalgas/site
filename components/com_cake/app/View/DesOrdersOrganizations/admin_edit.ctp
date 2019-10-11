@@ -4,7 +4,7 @@ echo "<pre>";
 print_r($this->request['data']);
 echo "</pre>";
 */
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesOrders'),array('controller' => 'DesOrders', 'action' => 'index'));
 if(isset($des_order_id) && !empty($des_order_id))
@@ -24,11 +24,17 @@ echo $this->Form->create('DesOrdersOrganization',array('id' => 'formGas'));?>
 
 		echo $this->Form->input('luogo',array('required'=>'required'));
 
-		echo $this->Form->input('data',array('type' => 'text','size'=>'30','value' => $this->Time->i18nFormat($this->Form->value('DesOrdersOrganization.data'),"%A, %e %B %Y")));
-		echo $this->Ajax->datepicker('DesOrdersOrganizationData',array('dateFormat' => 'DD, d MM yy','altField' => '#DesOrdersOrganizationDataDb', 'altFormat' => 'yy-mm-dd'));
-		echo '<input type="hidden" id="DesOrdersOrganizationDataDb" name="data[DesOrdersOrganization][data_db]" value="'.$this->Form->value('DesOrdersOrganization.data').'" />';
+		echo $this->App->drawDate('DesOrdersOrganization','data', __('Data'),$this->Form->value('DesOrdersOrganization.data'));
 		
-		echo $this->Form->input('orario', array('type' => 'time','selected' => $this->Form->value('DesOrdersOrganization.orario'),'timeFormat'=>'24','interval' => 15));
+		echo $this->Html->div('clearfix','');
+		
+		echo '<div class="row">';
+		// $options['required'] = 'required';
+		echo $this->App->drawHour('DesOrdersOrganization', 'orario', __('orario'), $this->Form->value('DesOrdersOrganization.orario'), $options);		
+		echo '</div>';		
+		
+		echo $this->Html->div('clearfix','');
+		echo '<br />';
 		
 		echo $this->Form->input('contatto_nominativo',array('type' => 'text', 'value' => $this->Form->value('DesOrdersOrganization.contatto_nominativo')));
 		
@@ -55,22 +61,22 @@ echo $this->Form->end(__('Submit'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {		
+	$('#formGas').submit(function() {		
 
-		var luogo = jQuery('#DesOrdersOrganizationLuogo').val();
+		var luogo = $('#DesOrdersOrganizationLuogo').val();
 		if(luogo=='' || luogo==undefined) {
 			alert("<?php echo __('jsAlertDeliveryToSupplierRequired');?>");
-			jQuery('#DesOrdersOrganizationLuogo').focus();
+			$('#DesOrdersOrganizationLuogo').focus();
 			return false;
 		}	    
 
-		var contattoMail = jQuery('#DesOrdersOrganizationContattoMail').val();
+		var contattoMail = $('#DesOrdersOrganizationContattoMail').val();
 		if(contattoMail!='') {
 			if(!validateEmail(contattoMail)) {
 				alert("<?php echo __('jsAlertMailInvalid');?>");
-				jQuery('#DesOrdersOrganizationContattoMail').focus();
+				$('#DesOrdersOrganizationContattoMail').focus();
 				return false;
 			}	
 		}

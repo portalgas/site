@@ -66,7 +66,7 @@ class ContentModelCategory extends JModelList
 	 * @since	1.6
 	 */
 	public function __construct($config = array())
-	{ 
+	{
 		if (empty($config['filter_fields'])) {
 			$config['filter_fields'] = array(
 				'id', 'a.id',
@@ -106,7 +106,7 @@ class ContentModelCategory extends JModelList
 		// Initiliase variables.
 		$app	= JFactory::getApplication('site');
 		$pk		= JRequest::getInt('id');
-	
+
 		$this->setState('category.id', $pk);
 
 		// Load the parameters. Merge Global and Menu Item params into new object
@@ -187,6 +187,8 @@ class ContentModelCategory extends JModelList
 			$this->setState('filter.max_category_levels', $params->get('show_subcategory_content', '1'));
 			$this->setState('filter.subcategories', true);
 		}
+
+
 
 		$this->setState('filter.language', $app->getLanguageFilter());
 

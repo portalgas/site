@@ -42,7 +42,7 @@ class ReferenteController extends AppController {
 		
 		$msg = '';
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -190,11 +190,11 @@ class ReferenteController extends AppController {
 		$Order = new Order;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
 	
 	
 		/*
@@ -233,11 +233,11 @@ class ReferenteController extends AppController {
 		$Order = new Order;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
 	
 		/*
 		 * aggiorno stato ORDER =>  pulisco SummaryOrders
@@ -276,11 +276,11 @@ class ReferenteController extends AppController {
 		$Order = new Order;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
 	
 		/*
 		 * aggiorno stato ORDER
@@ -318,7 +318,7 @@ class ReferenteController extends AppController {
 		$OrderLifeCycle = new OrderLifeCycle;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -454,11 +454,11 @@ class ReferenteController extends AppController {
 		$Order = new Order;
 		
 		$Order->id = $this->order_id;
-		if (!$Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
 						App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',
 							'Delivery.sys' => 'N',							'Delivery.stato_elaborazione' => 'OPEN');					$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),'conditions'=>$conditions,'order'=>'data ASC','recursive'=>-1));		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
 		

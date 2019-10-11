@@ -36,11 +36,11 @@ class CategoriesArticlesController extends AppController {
 
 	public function admin_view($id = null) {
 		$this->CategoriesArticle->id = $id;
-		if (!$this->CategoriesArticle->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$this->set('category', $this->CategoriesArticle->read($this->user->organization['Organization']['id'], null, $id));
+		$this->set('category', $this->CategoriesArticle->read($id, $this->user->organization['Organization']['id']));
 	}
 
 	public function admin_add() {
@@ -64,7 +64,7 @@ class CategoriesArticlesController extends AppController {
 
 	public function admin_edit($id = null) {
 		$this->CategoriesArticle->id = $id;
-		if (!$this->CategoriesArticle->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -79,7 +79,7 @@ class CategoriesArticlesController extends AppController {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
 		} else {
-			$this->request->data = $this->CategoriesArticle->read($this->user->organization['Organization']['id'], null, $id);
+			$this->request->data = $this->CategoriesArticle->read($id, $this->user->organization['Organization']['id']);
 		}
 		$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
 		$parents = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
@@ -93,11 +93,11 @@ class CategoriesArticlesController extends AppController {
 	public function admin_delete($id=0) {
 	
 		if ($this->request->is('post') || $this->request->is('put'))			$id = $this->request->data['CategoryArticle']['id'];				$this->CategoriesArticle->id = $id;
-		if (!$this->CategoriesArticle->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-	
+
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->CategoriesArticle->delete())
 				$this->Session->setFlash(__('Delete Category'));
@@ -106,7 +106,7 @@ class CategoriesArticlesController extends AppController {
 			$this->myRedirect(['action' => 'index']);
 		}
 	
-		$options['conditions'] = array('Categories.organization_id' => $this->user->organization['Organization']['id'],
-									   'CategoriesArticle.id' => $id);		$options['recursive'] = 1;		$results = $this->CategoriesArticle->find('first', $options);		$this->set(compact('results'));
+		$options['conditions'] = ['CategoriesArticle.organization_id' => $this->user->organization['Organization']['id'],
+								  'CategoriesArticle.id' => $id];		$options['recursive'] = 1;		$results = $this->CategoriesArticle->find('first', $options);		$this->set(compact('results'));
 	}		
 }

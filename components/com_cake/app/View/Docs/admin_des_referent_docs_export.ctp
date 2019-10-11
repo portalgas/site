@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'De', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesOrders'),array('controller' => 'DesOrders', 'action' => 'index'));
 if(isset($des_order_id) && !empty($des_order_id))
@@ -28,7 +28,7 @@ $(document).ready(function() {
 	$('#actionExportDoc').click(function() {
 		var des_order_id = $('#des_order_id').val();
 		var doc_options = $("input[name='doc_options']:checked").val();
-		var doc_formato = $("input[name='doc_formato']:checked").val();
+		var doc_formato = $("input[name='data[typeDoc][doc_formato]']:checked").val();
 
 		if(doc_options==null) {
 			alert("<?php echo __('jsAlertPrintFormatRequired');?>");
@@ -56,7 +56,7 @@ $(document).ready(function() {
 function AjaxCallToDocPreview() {
 	var des_order_id = $('#des_order_id').val();
 	var doc_options = $("input[name='doc_options']:checked").val();
-	var doc_formato = $("input[name='doc_formato']:checked").val();
+	var doc_formato = $("input[name='data[typeDoc][doc_formato]']:checked").val();
 	
 	if(des_order_id =='' || doc_options=='') return;
 	
@@ -81,121 +81,113 @@ echo $this->Form->create();
 ?>
 	<fieldset>
 	
-	<div id="doc-options">
-		<div class="left label">Opzioni formato</div>
-		<div class="left radio">
-			<p>
-				<input type="radio" name="doc_options" id="des-referent-to-supplier" value="des-referent-to-supplier" /><label for="des-referent-to-supplier"><?php echo __('des_referent_to_supplier');?></label>
-			</p>
-			<?php
-			if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) { 
-				echo '<p>';
-				echo' <input type="radio" name="doc_options" id="des-referent-to-supplier-monitoring" value="des-referent-to-supplier-monitoring" /><label for="des-referent-to-supplier-monitoring">'.__('des_referent_to_supplier_monitoring').'</label>';
-				echo '</p>';
-			}
-			?>					
-			<p>
-				<input type="radio" name="doc_options" id="des-referent-to-supplier-details" value="des-referent-to-supplier-details" /><label for="des-referent-to-supplier-details"><?php echo __('des_referent_to_supplier_details');?></label>
-			</p>		
-			<p>
-				<input type="radio" name="doc_options" id="des-referent-to-supplier-split-org" value="des-referent-to-supplier-split-org" /><label for="des-referent-to-supplier-split-org"><?php echo __('des_referent_to_supplier_split_org');?></label>
-			</p>
-			<?php
-			if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) { 
-				echo '<p>';
-				echo' <input type="radio" name="doc_options" id="des-referent-to-supplier-split-org-monitoring" value="des-referent-to-supplier-split-org-monitoring" /><label for="des-referent-to-supplier-split-org-monitoring">'.__('des_referent_to_supplier_split_org_monitoring').'</label>';
-				echo '</p>';
-			}
-			?>			
-		</div>
+	<div class="row">
+	<div class="col-md-1"></div>	
+	<div class="col-md-6">
+	
+		<label class="control-label">Opzioni</label>
 
-                <style type="text/css">
-                .box-options {
-                        border:1px solid #DEDEDE;
-                        border-radius:8px;
-                        margin:10px;
-                        padding:8px; 
-                        display:none;
-                }
-                </style>
-                <div class="left setting" style="width:35%;">
+		<div class="radio">
+			<label><input type="radio" name="doc_options" id="des-referent-to-supplier" value="des-referent-to-supplier" /><?php echo __('des_referent_to_supplier');?></label>
+		</div>
+		<?php
+		if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) { 
+		?>		
+		<div class="radio">
+			<label><input type="radio" name="doc_options" id="des-referent-to-supplier-monitoring" value="des-referent-to-supplier-monitoring" /><?php echo __('des_referent_to_supplier_monitoring');?></label>
+		</div>
+		<?php
+		}
+		?>		
+		<div class="radio">
+			<label><input type="radio" name="doc_options" id="des-referent-to-supplier-details" value="des-referent-to-supplier-details" /><?php echo __('des_referent_to_supplier_details');?></label>
+		</div>
+		<div class="radio">
+			<label><input type="radio" name="doc_options" id="des-referent-to-supplier-split-org" value="des-referent-to-supplier-split-org" /><?php echo __('des_referent_to_supplier_split_org');?></label>
+		</div>
+		<?php
+		if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) {
+		?>		
+		<div class="radio">
+			<label><input type="radio" name="doc_options" id="des-referent-to-supplier-split-org-monitoring" value="des-referent-to-supplier-split-org-monitoring" /><?php echo __('des_referent_to_supplier_split_org_monitoring');?></label>
+		</div>
+		<?php
+		}
+		?>		
+	</div>
+	<div class="col-md-5">
+
 
             <div id="setting-des-referent-to-supplier" class="box-options">
-			<p>
-				<label for="codice1" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
-				<input type="radio" name="codice1" id="codice1_N" value="N" /> No
-				<input type="radio" name="codice1" id="codice1_Y" value="Y" checked /> Si
-			</p>                        
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+				<label class="radio-inline"><input type="radio" name="codice1" id="codice1_N" value="N" /> No</label>
+				<label class="radio-inline"><input type="radio" name="codice1" id="codice1_Y" value="Y" checked /> Si</label>
+			</div>                       
             </div>
             
             <div id="setting-des-referent-to-supplier-monitoring" class="box-options">
-			<p>
-				<label for="codice5" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
-				<input type="radio" name="codice5" id="codice5_N" value="N" /> No
-				<input type="radio" name="codice5" id="codice5_Y" value="Y" checked /> Si
-			</p>                        
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+				<label class="radio-inline"><input type="radio" name="codice5" id="codice5_N" value="N" /> No</label>
+				<label class="radio-inline"><input type="radio" name="codice5" id="codice5_Y" value="Y" checked /> Si</label>
+			</div>                        
             </div>
 	
             <div id="setting-des-referent-to-supplier-details" class="box-options">
-			<p>
-				<label for="codice2" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
-				<input type="radio" name="codice2" id="codice2_N" value="N" /> No
-				<input type="radio" name="codice2" id="codice2_Y" value="Y" checked /> Si
-			</p>
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+				<label class="radio-inline"><input type="radio" name="codice2" id="codice2_N" value="N" /> No</label>
+				<label class="radio-inline"><input type="radio" name="codice2" id="codice2_Y" value="Y" checked /> Si</label>
+			</div>
 		
-                        <!-- p>
+                        <!-- <div class="doc-options">
                                 <label for="pezzi_confezione" style="width:auto !important;">Visualizzo i <b>colli</b> degli articoli</label>&nbsp;&nbsp;
-                                <input type="radio" name="pezzi_confezione" id="pezzi_confezione_N" value="N" checked /> No
-                                <input type="radio" name="pezzi_confezione" id="pezzi_confezione_Y" value="Y" /> Si
-                        </p -->
+                                <label class="radio-inline"><input type="radio" name="pezzi_confezione" id="pezzi_confezione_N" value="N" checked /> No</label>
+                                <label class="radio-inline"><input type="radio" name="pezzi_confezione" id="pezzi_confezione_Y" value="Y" /> Si</label>
+                        </div -->
                     </div>
                     
 
             <div id="setting-des-referent-to-supplier-split-org" class="box-options">
-			<p>
-				<label for="codice3" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
-				<input type="radio" name="codice3" id="codice3_N" value="N" /> No
-				<input type="radio" name="codice3" id="codice3_Y" value="Y" checked /> Si
-			</p>                        
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_N" value="N" /> No</label>
+				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_Y" value="Y" checked /> Si</label>
+			</div>                        
             </div>
             
             <div id="setting-des-referent-to-supplier-split-org-monitoring" class="box-options">
-			<p>
-				<label for="codice4" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
-				<input type="radio" name="codice4" id="codice4_N" value="N" /> No
-				<input type="radio" name="codice4" id="codice4_Y" value="Y" checked /> Si
-			</p>                        
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+				<label class="radio-inline"><input type="radio" name="codice4" id="codice4_N" value="N" /> No</label>
+				<label class="radio-inline"><input type="radio" name="codice4" id="codice4_Y" value="Y" checked /> Si</label>
+			</div>                        
             </div>
             
                                 
-	       </div>
-        </div>
-
-
-	<div id="doc-print">
+	</div>
+    </div> <!-- row -->
 	
-		<h2 class="ico-export-docs">
-			<?php echo __('Print Doc');?>
-			<div class="actions-img">
-				<ul>
-					<li><?php echo $this->Form->input('typeDoc', array(
-										 'id' => 'typeDoc',
-								         'type' => 'radio',
-								         'name' => 'doc_formato',
-								         'fieldset' => false,
-								         'legend' => false,
-								         'div' => array('class' => ''),
-								         'options' => array('PDF'=>'Pdf','CSV'=>'Csv','EXCEL'=>'Excel'),
-								         'default' => 'PDF',
-								   ));
-						?>
-					</li>
-					<li><?php echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc'))); ?></li>
-				</ul>
-			</div>
-		</h2>	
-	<div/>
-
+	<?php
+	echo '<div class="row">';
+	echo '<h2 class="ico-export-docs">';
+	echo __('Print Doc');
+	echo '<div class="actions-img">';
+	echo '<ul>';
+	echo '<li>';
+	echo $this->App->drawFormRadio('typeDoc','doc_formato',array('options' => array('PDF'=>'Pdf','CSV'=>'Csv','EXCEL'=>'Excel'), 
+										'value'=> 'PDF', 'label' => false, 'default' => 'PDF'));		
+	echo '</li>';
+	echo '<li style="padding-left:25px;">';
+	echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc')));
+	echo '</li>';
+	echo '</ul>';
+	echo '</div>';
+	echo '</h2>';
+	echo '</div> <!-- row -->';	 
+	?>
+	
 	<div id="doc-preview" style="min-height:50px;background: rgba(0, 0, 0, 0) none repeat scroll 0 0;"></div>
 	
 	<?php
@@ -208,7 +200,15 @@ echo $this->Form->create();
 <?php
 echo $this->element('menuDesOrderLaterale');
 ?>
-
+<style type="text/css">
+.box-options {
+	border:1px solid #DEDEDE;
+	border-radius:8px;
+	margin:10px;
+	padding:8px; 
+	display:none;
+}
+</style>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("input[name='codice1']").change(function() {			

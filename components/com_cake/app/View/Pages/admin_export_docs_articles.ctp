@@ -10,10 +10,10 @@
 		<th>Formato excel</th>
 	</tr>
         <?php
-            echo $this->element('reportArticles', array('suppliersOrganization' => $suppliersOrganization, 'type' => 'BO'));
+            echo $this->element('reportArticles', ['suppliersOrganization' => $suppliersOrganization, 'type' => 'BO']);
 
             if($user->organization['Organization']['hasDes']=='Y') 
-                echo $this->element('reportArticlesDes', array('desOrganizationResults' => $desOrganizationResults, 'type' => 'BO'));
+                echo $this->element('reportArticlesDes', ['desOrganizationResults' => $desOrganizationResults, 'type' => 'BO']);
         ?>
 	</table>
 	</fieldset>

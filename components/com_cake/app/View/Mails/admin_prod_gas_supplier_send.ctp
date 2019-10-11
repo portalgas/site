@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Mails'),array('controller'=>'Mails','action'=>'root_index'));
 $this->Html->addCrumb(__('Send Mail'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));

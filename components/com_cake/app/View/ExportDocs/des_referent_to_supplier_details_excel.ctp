@@ -2,6 +2,13 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
+if(isset($desOrdersResults['Supplier'])) {
+	$rows = [];
+	$rows[] = '';
+	$rows[] = $desOrdersResults['Supplier']['name'];
+	$this->PhpExcel->addTableRow($rows);
+}
+
 // define table cells
 $table[] =	array('label' => __('N'), 'width' => 'auto');
 $table[] =	array('label' => __('Bio'), 'width' => 'auto', 'filter' => true);
@@ -24,20 +31,20 @@ foreach($results as $numResult => $result) {
 		/*
 		 *  ARTICOLO
 		 */
-                $rows = array();
-                $rows[] = ($numArticle+1);
-                if($result['Article']['bio']=='Y')
-                    $rows[] = 'Bio';
-                else
-                    $rows[] = '';
+		$rows = [];
+		$rows[] = ($numArticle+1);
+		if($result['Article']['bio']=='Y')
+			$rows[] = 'Bio';
+		else
+			$rows[] = '';
 
 		if($showCodice=='Y') 
-                    $rows[] = $result['Article']['codice'];
+            $rows[] = $result['Article']['codice'];
                         
-                $rows[] = $this->ExportDocs->prepareCsv($result['Article']['name']);
+		$rows[] = $this->ExportDocs->prepareCsv($result['Article']['name']);
 
-                $this->PhpExcel->addTableRow($rows);
-                
+		$this->PhpExcel->addTableRow($rows);
+		
 		/*
 		 *  GAS 
 		 */		
@@ -45,12 +52,12 @@ foreach($results as $numResult => $result) {
 		 $tot_importo_article = 0;
 		foreach($result['Article']['Organization'] as $numResult2 => $organizationResult) {
 		
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				if($showCodice=='Y')
-                                    $rows[] = '';
+                    $rows[] = '';
 
-                                $rows[] = '';
+                $rows[] = '';
 				$rows[] = '';
 				$rows[] = $organizationResult['Organization']['name'];				
 					
@@ -62,25 +69,25 @@ foreach($results as $numResult => $result) {
 				$tot_qta_article += $organizationResult['tot_qta'];
 				$tot_importo_article += $organizationResult['tot_importo'];
                                 
-                                $this->PhpExcel->addTableRow($rows);
+                $this->PhpExcel->addTableRow($rows);
 		}
 		           
 		/*
 		 * sub totale
 		 */
-		$rows = array();
-                $rows[] = '';
+		$rows = [];
+        $rows[] = '';
 		if($showCodice=='Y') 
-                    $rows[] = '';
-		
-                $rows[] = '';
-                $rows[] = '';
-                $rows[] = '';
+			$rows[] = '';
+
+		$rows[] = '';
+		$rows[] = '';
+		$rows[] = '';
 		$rows[] = $tot_qta_article;
 		$rows[] = '';
 		$rows[] = number_format($tot_importo_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 		
-                $this->PhpExcel->addTableRow($rows);
+        $this->PhpExcel->addTableRow($rows);
 		
 		$tot_qta += $tot_qta_article;
 		$tot_importo += $tot_importo_article;
@@ -89,7 +96,7 @@ foreach($results as $numResult => $result) {
 } // loop Articles
  
 // totale
-$rows = array();
+$rows = [];
 $rows[] = '';
 if($showCodice=='Y') 
     $rows[] = '';

@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order_id) && !empty($order_id))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
@@ -16,8 +16,8 @@ function choiceOrderPermission() {
 	var div_contenitore = 'order-permission';
 	showHideBox(div_contenitore,call_child=true); 
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 
 	AjaxCallToArticlesResult(delivery_id, order_id); /* chiamata Ajax l'elenco carts non validi */ 	
 }
@@ -70,8 +70,3 @@ echo $this->MenuOrders->drawWrapper($order_id, $options);
 */
 echo $this->App->drawLegenda($user, $orderStatesToLegenda);
 ?>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

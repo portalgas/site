@@ -1,5 +1,5 @@
 <?php 
-$csv = array();
+$csv = [];
 
 if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 	$csv += array('codice' => __('Codice'));
@@ -69,22 +69,22 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($res
 								$data[$totRows]['csv'] = array(
 										'name' => $this->ExportDocs->prepareCsv($label),
 										'qta' => $qta_totale_dell_utente,
-										'importo' => $this->ExportDocs->prepareCsv($importo_totale_dell_utente), // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+										'importo' => $importo_totale_dell_utente, // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
 								);
 								
 								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
-									$data[$totRows]['csv'] = array('trasporto' => $this->ExportDocs->prepareCsv($importo_trasporto));
+									$data[$totRows]['csv'] = array('trasporto' => $importo_trasporto);
 								
 								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00' && $trasportAndCost=='Y')
-									$data[$totRows]['csv'] = array('cost_more' => $this->ExportDocs->prepareCsv($importo_cost_more));
+									$data[$totRows]['csv'] = array('cost_more' => $importo_cost_more);
 								
 								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00' && $trasportAndCost=='Y')
-									$data[$totRows]['csv'] = array('cost_less' => $this->ExportDocs->prepareCsv($importo_cost_less));
+									$data[$totRows]['csv'] = array('cost_less' => $importo_cost_less);
 								
 								if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
 									($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 									($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y')
-									$data[$totRows]['csv'] = array('importo_completo' => $this->ExportDocs->prepareCsv($importo_completo));
+									$data[$totRows]['csv'] = array('importo_completo' => $importo_completo);
 							}
 							else 
 								$data[$totRows]['csv'] = array('name' => $this->ExportDocs->prepareCsv($label));
@@ -92,21 +92,21 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($res
 							$totRows++;						break;						case 'TRSUBTOT':
 							$totRows++;
 						break;						case 'TRTOT':
-							$data[$totRows]['csv'] = array(									'name' => '',									'qta' => $cols['QTA'],									'importo' => $this->ExportDocs->prepareCsv($cols['IMPORTO']), // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])							);
+							$data[$totRows]['csv'] = array(									'name' => '',									'qta' => $cols['QTA'],									'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])							);
 							
 							if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
-								$data[$totRows]['csv'] = array('trasporto' => $this->ExportDocs->prepareCsv($cols['IMPORTO_TRASPORTO']));
+								$data[$totRows]['csv'] = array('trasporto' => $cols['IMPORTO_TRASPORTO']);
 							
 							if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00' && $trasportAndCost=='Y')
-								$data[$totRows]['csv'] = array('cost_more' => $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_MORE']));
+								$data[$totRows]['csv'] = array('cost_more' => $cols['IMPORTO_COST_MORE']);
 							
 							if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00' && $trasportAndCost=='Y')
-								$data[$totRows]['csv'] = array('cost_less' => $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_LESS']));
+								$data[$totRows]['csv'] = array('cost_less' => $cols['IMPORTO_COST_LESS']);
 							
 							if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
 								($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 								($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y')
-								$data[$totRows]['csv'] = array('importo_completo' => $this->ExportDocs->prepareCsv($cols['IMPORTO_COMPLETO']));
+								$data[$totRows]['csv'] = array('importo_completo' => $cols['IMPORTO_COMPLETO']);
 							
 							$totRows++;						break;						case 'TRDATA':
 							$totRows++;						break;						case 'TRDATABIS':

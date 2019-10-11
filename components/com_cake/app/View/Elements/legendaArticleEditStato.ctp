@@ -6,14 +6,14 @@
  * context article/order
  * 
  * se da stato.Y a stato.N 
- * 		- cancello l'associazione con gli ordini
- * 		- cancello gli acquisti effettuati
+ * 		cancello l'associazione con gli ordini
+ * 		cancello gli acquisti effettuati
  * 
  * se da stato.N a stato.Y 
  * 		se isUserPermissionArticlesOrder
- * 			- creo associazione con gli ordine
+ * 			creo associazione con gli ordine
  * 		se !isUserPermissionArticlesOrder
- * 			- lo potrò associare
+ * 			lo potrò associare
  */
 
 /*
@@ -27,9 +27,9 @@ if($results['Article']['stato']=='Y') {
 	if($context=='article') {
 		if(empty($resultsAssociateArticlesOrder))  { // non esiste associazione con 1 o + ordini
 			if($isUserPermissionArticlesOrder)       // l'utente gestisce l'associazione degli articoli con l'ordine
-				$msg .= "Valorizzando i campi <ul><li>- ".__('Stato')."</li><li>- ".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato agli ordini.";
+				$msg .= "Valorizzando i campi<ul><li><b>".__('Stato')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile agli utenti</li><li><b>".__('FlagPresenteArticlesorders')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato agli ordini.";
 			else 
-			if(!$isUserPermissionArticlesOrder)     // l'utente non gestisce l'associazione degli articoli con l'ordine				$msg .= "Valorizzando i campi <ul><li>- ".__('Stato')."</li><li>- ".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile dagli utenti e <b>non</b> potrà essere acquistato.";		
+			if(!$isUserPermissionArticlesOrder)     // l'utente non gestisce l'associazione degli articoli con l'ordine				$msg .= "Valorizzando i campi<ul><li><b>".__('Stato')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> sarà visibile agli utenti</li><li><b>".__('FlagPresenteArticlesorders')."</b> a <span style=\"color:red\">No</span>, l'articolo <b>non</b> potrà essere associato agli ordini.";
 		}
 		else
 		if(!empty($resultsAssociateArticlesOrder))  { // esiste associazione con 1 o + ordini
@@ -40,7 +40,7 @@ if($results['Article']['stato']=='Y') {
 			}
 			else {
 				$msg .= $msgAssociato;
-				$msg .= "<br />Valorizzando i campi <ul><li>- ".__('Stato')."</li><li>- ".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, ";
+				$msg .= "<br />Valorizzando i campi <ul><li>".__('Stato')."</li><li>".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, ";
 				if($isUserPermissionArticlesOrder)  {    // l'utente gestisce l'associazione degli articoli con l'ordine
 					$msg .= "l'articolo <b>non</b> sarà più acquistabile";
 					if($isArticleInCart) $msg .= ' ma <b>non</b> saranno <b>cancellelati</b> gli acquisti degli utenti';
@@ -65,7 +65,7 @@ if($results['Article']['stato']=='Y') {
 				$msg .= "<br />Al momento non è possibile settare lo stato a <span style=\"color:red\">No</span>";
 			}
 			else {		
-				$msg .= $msgAssociato;				$msg .= "<br />Valorizzando i campi <ul><li>- ".__('Stato')."</li><li>- ".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, ";				if($isUserPermissionArticlesOrder)  {    // l'utente gestisce l'associazione degli articoli con l'ordine					$msg .= "l'articolo <b>non</b> sarà più acquistabile";					if($isArticleInCart) $msg .= ' ma <b>non</b> saranno <b>cancellelati</b> gli acquisti degli utenti';								}				else					if(!$isUserPermissionArticlesOrder) {  // l'utente non gestisce l'associazione degli articoli con l'ordine					$msg .= "l'articolo <b>non</b> sarà più acquistabile";					if($isArticleInCart) $msg .= ' ma <b>non</b> saranno <b>cancellelati</b> gli acquisti degli utenti';				}	
+				$msg .= $msgAssociato;				$msg .= "<br />Valorizzando i campi <ul><li>".__('Stato')."</li><li>".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:red\">No</span>, ";				if($isUserPermissionArticlesOrder)  {    // l'utente gestisce l'associazione degli articoli con l'ordine					$msg .= "l'articolo <b>non</b> sarà più acquistabile";					if($isArticleInCart) $msg .= ' ma <b>non</b> saranno <b>cancellelati</b> gli acquisti degli utenti';								}				else					if(!$isUserPermissionArticlesOrder) {  // l'utente non gestisce l'associazione degli articoli con l'ordine					$msg .= "l'articolo <b>non</b> sarà più acquistabile";					if($isArticleInCart) $msg .= ' ma <b>non</b> saranno <b>cancellelati</b> gli acquisti degli utenti';				}	
 			}
 		}
 	}			
@@ -73,7 +73,7 @@ if($results['Article']['stato']=='Y') {
 else 
 if($results['Article']['stato']=='N') {	if($context=='article') {
 		
-		$msg .= "Valorizzando i campi <ul><li>- ".__('Stato')."</li><li>- ".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:green\">Si</span>, ";
+		$msg .= "Valorizzando i campi <ul><li>".__('Stato')."</li><li>".__('FlagPresenteArticlesorders')."</li></ul> a <span style=\"color:green\">Si</span>, ";
 				if($isUserPermissionArticlesOrder)       // l'utente gestisce l'associazione degli articoli con l'ordine			$msg .= "l'articolo potrà essere associato agli ordini.";		else		if(!$isUserPermissionArticlesOrder)     // l'utente non gestisce l'associazione degli articoli con l'ordine			$msg .= "l'articolo sarà visibile dagli utenti e potrà essere acquistato.";	}	else	if($context=='order') {
 		// mai!!	}}
 $msg .= '</div>';

@@ -6,7 +6,7 @@
 		echo "\n\r";
 		echo '<tr>';
 		echo '<td colspan="4">';
-		echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';	
+		echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';	
 		echo '</td>';
 		echo '</tr>';		
 	}
@@ -144,12 +144,12 @@
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	if(!empty($evidenzia)) 
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
 	else	
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
 	?>	
 });
 </script>

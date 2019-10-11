@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 /**
  * DROP TRIGGER IF EXISTS `k_suppliers_Trigger`;
  * DELIMITER |
@@ -18,9 +19,13 @@ class Supplier extends AppModel {
 		
 		$msg = '';
 		
-		$options['conditions'] = array('Supplier.'.$field.' LIKE ' => '%'.$value.'%',
-									   'Supplier.stato' => 'Y');
-		$options['order'] = array('Supplier.name');
+		$options = [];
+
+		$options['conditions'] = ['Supplier.'.$field.' LIKE ' => '%'.$value.'%',
+								 'OR' => [
+								 		['Supplier.stato' => 'Y'],
+										['Supplier.stato' => 'T']
+									]];
 		$options['recursive'] = 1;
 		
 		$results = $this->find('all', $options);
@@ -29,7 +34,8 @@ class Supplier extends AppModel {
 		print_r($results);
 		echo "</pre>";
 		*/
-		if(count($results) < 5) {
+		
+		if(count($results) <= 5) {
 			foreach($results as $result) {
 				
 				$msg .= "Esiste già un produttore denominato <b>".$result['Supplier']['name']."</b> con il campo <b>";
@@ -91,20 +97,16 @@ class Supplier extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   'SuppliersOrganization.stato' => 'Y',
-									   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								   'SuppliersOrganization.stato' => 'Y',
+								   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')"];
 		$options['recursive'] = 1;
-		$options['order'] = array('SuppliersOrganization.name');
+		$options['order'] = ['SuppliersOrganization.name'];
 		$results = $SuppliersOrganization->find('list', $options);
 
-		if($debug) {
-			echo "<pre>Supplier::getListSuppliers() ";
-			print_r($options);
-			print_r($results);
-			echo "</pre>";
-		}
+		self::d($options, $debug);
+		self::d($results, $debug);
 		
 		return $results;
 	}
@@ -115,7 +117,7 @@ class Supplier extends AppModel {
 	public function getListProvincia($user, $debug=false) {
 	
 		/*
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Supplier.stato' => 'Y', 'Supplier.provincia !=' => '');
 		$options['recursive'] = -1;
 		$options['fields'] = array('DISTINCT (Supplier.provincia) AS provincia ');
@@ -128,7 +130,7 @@ class Supplier extends AppModel {
 				FROM 
 					".Configure::read('DB.prefix')."suppliers as Supplier
 				WHERE 
-					(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')
+					(Supplier.stato = 'Y' or Supplier.stato = 'T')
 					and Supplier.id NOT IN (
 						select 
 							s.id 
@@ -138,18 +140,16 @@ class Supplier extends AppModel {
 						WHERE s.id = o.supplier_id
 						and o.organization_id = ".(int)$user->organization['Organization']['id'].") 
 				ORDER BY Supplier.provincia";
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		$results = $this->query($sql);				
 
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResuls => $result) {
 			$newResults[$result['Supplier']['provincia']] = $result['Supplier']['provincia'];
 		}
-		/*
-		echo "<pre>";
-		print_r($newResults);
-		echo "</pre>";
-		*/
+		
+		self::d($newResults, $debug);
+		
 		return $newResults;	
 	}
 	
@@ -159,7 +159,7 @@ class Supplier extends AppModel {
 	public function getListCap($user, $debug=false) {
 		
 		/*
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('Supplier.stato' => 'Y', 'Supplier.provincia !=' => '');
 		$options['recursive'] = -1;
 		$options['fields'] = array('DISTINCT (Supplier.cap) AS cap ');
@@ -172,7 +172,7 @@ class Supplier extends AppModel {
 				FROM 
 					".Configure::read('DB.prefix')."suppliers as Supplier
 				WHERE 
-					(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')
+					(Supplier.stato = 'Y' or Supplier.stato = 'T')
 					and Supplier.id NOT IN (
 						select 
 							s.id 
@@ -182,40 +182,27 @@ class Supplier extends AppModel {
 						WHERE s.id = o.supplier_id
 						and o.organization_id = ".(int)$user->organization['Organization']['id'].") 
 				ORDER BY Supplier.cap";
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		$results = $this->query($sql);	
 		
-		$newResults = array();
+		$newResults = [];
 		foreach($results as $numResuls => $result) {
 			$newResults[$result['Supplier']['cap']] = $result['Supplier']['cap'];
 		}
-		/*
-		echo "<pre>";
-		print_r($newResults);
-		echo "</pre>";
-		*/
+		self::d($newResults, $debug);
+		
 		return $newResults;		
 	}
 	
 	public $validate = array(
 		'name' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'category_supplier_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
-						//'message' => 'Your custom message here',
-						//'allowEmpty' => false,
-						//'required' => false,
-						//'last' => false, // Stop validation after this rule
-						//'on' => 'create', // Limit validation to 'create' or 'update' operations
+						'rule' => ['numeric']
 				),
 		),
 	);
@@ -224,6 +211,13 @@ class Supplier extends AppModel {
 		'CategoriesSupplier' => array(
 			'className' => 'CategoriesSupplier',
 			'foreignKey' => 'category_supplier_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'SuppliersDeliveriesType' => array(
+			'className' => 'SuppliersDeliveriesType',
+			'foreignKey' => 'delivery_type_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

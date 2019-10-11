@@ -37,13 +37,13 @@
 				echo '</tbody>';
 				echo '</table><br />';
 			}
-			echo '<h2 class="ico-organizations">Template '.$result['TemplatesOrdersState']['template_id'].'</h2>';
+			echo '<h2 class="ico-organizations">Template '.$result['Template']['id'].' '.$result['Template']['name'].'</h2>';
 			?>
 
-				<table cellpadding="0" cellspacing="0">
+				<div class="table-responsive"><table class="table table-hover">
 				<thead>
 				<tr>			
-						<th colspan="2"><?php echo $this->Paginator->sort('state_code'); ?></th>
+						<th colspan="3"><?php echo $this->Paginator->sort('state_code'); ?></th>
 						<th><?php echo $this->Paginator->sort('group_id'); ?></th>
 						<th>Possibile azione</th>
 						<th><?php echo __('Flag_menu'); ?></th>
@@ -55,11 +55,12 @@
 			<?php 
 		}
 		if($user_group_id_old != $result['UserGroup']['id'])
-			echo '<tr><td colspan="6"><h2 class="ico-users">Gruppo '.$result['UserGroup']['title'].' ('.$result['UserGroup']['id'].')</h2></td></tr>';		
+			echo '<tr><td colspan="8"><h2 class="ico-users">Gruppo '.$result['UserGroup']['title'].' ('.$result['UserGroup']['id'].')</h2></td></tr>';		
 	?>
 	<tr>
 		<td><?php echo '<div class="action orderStato'.$result['TemplatesOrdersState']['state_code'].'" title="'.__($result['TemplatesOrdersState']['state_code'].'-intro').'"></div>'; ?></td>
 		<td><?php echo h($result['TemplatesOrdersState']['state_code']); ?>&nbsp;</td>
+		<td><?php echo __($result['TemplatesOrdersState']['state_code'].'-label'); ?>&nbsp;</td>
 		<td><?php echo $result['UserGroup']['title']; ?></td>
 		<td><?php 
 			if(!empty($result['TemplatesOrdersState']['action_controller']) && !empty($result['TemplatesOrdersState']['action_action'])) {
@@ -75,21 +76,23 @@
 	$user_group_id_old=$result['UserGroup']['id'];
 	$templates_id_old=$result['TemplatesOrdersState']['template_id'];
 	
-	endforeach; ?>
-	</tbody>
-	</table>
-	<p>
-	<?php
+	endforeach; 
+	
+	echo '</tbody>';
+	echo '</table></div>';
+	
+	echo '<p>';
+	
 	echo $this->Paginator->counter(array(
 	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
 	));
-	?>	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
+	echo '</p>';
+	echo '<div class="paging">';
+	
+	echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
+	echo $this->Paginator->numbers(array('separator' => ''));
+	echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+?>
 	</div>
 </div>
 <div class="actions">

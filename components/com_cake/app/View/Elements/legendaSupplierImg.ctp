@@ -13,7 +13,7 @@ Utilizzata in:
 <ul>
 	<li>1) invio mail per apertura/chiusura ordini</li>
 	<li>2) front-end, colonna di destra a fianco dell'articolo</li>
-	<li>3) front-end, colonna di destra a fianco dell'articolo aperto dal <b>popup</b> della pagina delle consegne <img src="/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore" /></li>
+	<li>3) front-end, colonna di destra a fianco dell'articolo aperto dal <b>popup</b> della pagina delle consegne <img class="img-responsive-disabled" src="/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore" /></li>
 </ul>
 <br />
 <br />

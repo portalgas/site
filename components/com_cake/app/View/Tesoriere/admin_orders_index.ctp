@@ -1,5 +1,5 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 $tot_order_checked=0;
@@ -9,18 +9,18 @@ if (!empty($results['Order'])):
 	 * legenda con gli Order.state_code
 	 */
 	echo '<div style="float:right;">';
-	echo '	<a id="legendaOrderState" href="#" title="'.__('Href_title_expand').'"><img src="/images/cake/actions/32x32/viewmag+.png" /> Visualizza/Nascondi gli ordini</a>';
+	echo '	<a id="legendaOrderState" href="#" title="'.__('Href_title_expand').'"><img class="img-responsive-disabled" src="/images/cake/actions/32x32/viewmag+.png" /> Visualizza/Nascondi gli ordini</a>';
 	echo '<div id="legendaOrderStateContent" class="legenda">';
 	echo '<div id="box-account-close"></div>';
 	foreach ($orderStateResults as $orderStateResult) {
 	
-		echo '<div>';
-		echo '<span class="action orderStato'.$orderStateResult['Order']['state_code'].'" title="'.__($orderStateResult['Order']['state_code'].'-intro').'"></span>';
+		echo '<div class="checkbox"><label>';
+		echo '<span style="float:right;" class="action orderStato'.$orderStateResult['Order']['state_code'].'" title="'.__($orderStateResult['Order']['state_code'].'-intro').'"></span>';
 		echo '&nbsp;';
-		echo '<input style="clear: none;float: none;" type="checkbox" name="order_state_selected" value="'.$orderStateResult['Order']['state_code'].'" checked="checked" />';
+		echo '<input type="checkbox" name="order_state_selected" value="'.$orderStateResult['Order']['state_code'].'" checked="checked" />';
 		echo '&nbsp;';		
 		echo __($orderStateResult['Order']['state_code'].'-label');
-		echo '</div>';
+		echo '</label></div>';
 	}
 	echo '</div>';
 	echo '</div>';
@@ -51,11 +51,11 @@ if (!empty($results['Order'])):
 		<th>
 			<input type="checkbox" id="order_id_selected_all" name="order_id_selected_all" value="ALL" />
 		</th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<th colspan="2"><?php echo __('Supplier'); ?></th>
 		<th>
-			<?php echo __('Data inizio');?><br />
-			<?php echo __('Data fine');?>
+			<?php echo __('DataInizio');?><br />
+			<?php echo __('DataFine');?>
 		</th>
 		<th>Aperto<br />Chiuso</th>
 		<?php 
@@ -95,7 +95,7 @@ if (!empty($results['Order'])):
 			<td rowspan="2">
 			<?php 
 			if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';	
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';	
 			?></td>
 			<td rowspan="2"><?php echo $order['SuppliersOrganization']['name']; ?></td>
 			<td rowspan="2" style="white-space:nowrap;">
@@ -198,7 +198,7 @@ $(document).ready(function() {
 
 	$('.tesoriere_nota').click(function() {
 		var id = $(this).attr('id');
-		$("#dialog-msg-"+id ).dialog("open");
+		$("#dialog-msg-"+id ).modal("open");
 	});
 	
 	<?php if($tot_order_checked>0) { ?>

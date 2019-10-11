@@ -65,7 +65,7 @@ class CategoriesSuppliersController extends AppController {
     }
 
 	public function admin_view($id = null) {		
-		$results = $this->CategoriesSupplier->read(0, null, $id);
+		$results = $this->CategoriesSupplier->read($id, 0);
 		if (empty($results)) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
 		$this->set('category', $results);
 	}
@@ -89,7 +89,7 @@ class CategoriesSuppliersController extends AppController {
 
 	public function admin_edit($id = null) {
 		
-		$this->CategoriesSupplier->id = $id;		if (!$this->CategoriesSupplier->exists()) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
+		$this->CategoriesSupplier->id = $id;		if (!$this->CategoriesSupplier->exists($this->CategoriesSupplier->id)) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
 				
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
@@ -101,7 +101,7 @@ class CategoriesSuppliersController extends AppController {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
 		} else {
-			$this->request->data = $this->CategoriesSupplier->read(0, null, $id);
+			$this->request->data = $this->CategoriesSupplier->read($id, 0);
 			if (empty($this->request->data)) {				$this->Session->setFlash(__('msg_error_params'));				$this->myRedirect(Configure::read('routes_msg_exclamation'));			}
 		}	
 		$parents = $this->CategoriesSupplier->generateTreeList(null, null, null, '&nbsp;&nbsp;&nbsp;');
@@ -116,7 +116,7 @@ class CategoriesSuppliersController extends AppController {
 	 * */
 	public function admin_delete($id=0) {
 	
-		$this->CategoriesSupplier->id = $id;		if (!$this->CategoriesSupplier->exists()) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}				if ($this->request->is('post') || $this->request->is('put')) {
+		$this->CategoriesSupplier->id = $id;		if (!$this->CategoriesSupplier->exists($this->CategoriesSupplier->id)) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}				if ($this->request->is('post') || $this->request->is('put')) {
 			$id = $this->request->data['CategorySupplier']['id'];
 			
 			if ($this->CategoriesSupplier->delete())

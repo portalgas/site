@@ -65,14 +65,14 @@ class ArticlesOrderLifeCycle extends AppModel {
 					$results = false;
 			break;
 			case 'GAS':
-				if($isTitolareDesSupplier || $owner_articles=='REFERENT')
+				if($isTitolareDesSupplier || $owner_articles=='REFERENT' || $owner_articles=='REFERENT-TMP')
 					$results = true;
 				else
 				if(!$isTitolareDesSupplier || $owner_articles=='SUPPLIER' || $owner_articles=='DES')
 					$results = false;
 				else
-					self::x("ArticlesOrderLifeCycle::canEdit order_id (".$orderResult['Order']['id'].") => Caso non previsto!");
-		
+					self::x("ArticlesOrderLifeCycle::canEdit order_id (".$orderResult['Order']['id'].") => ".__('msg_error_supplier_organization_owner_articles'));
+					
 				self::d("ArticlesOrderLifeCycle::canEdit order_id (".$orderResult['Order']['id'].") owner_articles ".$owner_articles);
 				self::d("ArticlesOrderLifeCycle::canEdit order_id (".$orderResult['Order']['id'].") isTitolareDesSupplier ".$isTitolareDesSupplier);
 				self::d("ArticlesOrderLifeCycle::canEdit order_id (".$orderResult['Order']['id'].") ".$results);

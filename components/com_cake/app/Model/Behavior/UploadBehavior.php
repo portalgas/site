@@ -36,7 +36,7 @@ class UploadBehavior extends ModelBehavior
      * @return void
      * @access public
      */
-    public function setup(Model $model, $config = array())
+    public function setup(Model $model, $config = [])
     {
         $this->config[$model->alias] = $config;
         $this->types[$model->alias]  = array_keys($this->config[$model->alias]);

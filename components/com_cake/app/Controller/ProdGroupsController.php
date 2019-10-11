@@ -39,7 +39,7 @@ class ProdGroupsController extends AppController {
 	public function admin_edit($id = null) {
 		
 		$this->ProdGroup->id = $id;
-		if (!$this->ProdGroup->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdGroup->exists($this->ProdGroup->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod group'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
@@ -62,7 +62,7 @@ class ProdGroupsController extends AppController {
 
 	public function admin_delete($id = null) {
 		$this->ProdGroup->id = $id;
-		if (!$this->ProdGroup->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->ProdGroup->exists($this->ProdGroup->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod group'));
 		}
 		$this->request->onlyAllow('post', 'delete');

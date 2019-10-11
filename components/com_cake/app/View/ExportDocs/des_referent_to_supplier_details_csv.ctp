@@ -14,30 +14,29 @@ $csv += array('importo' => __('Importo'));
 
 $headers = array('csv' => $csv);
 
-
-
 $tot_qta = 0;
 $tot_importo = 0;
 $i=0;
-$data = array();
+$data = [];
 $row_csv = 0;
+
 foreach($results as $numResult => $result) {
 
 		/*
 		 *  ARTICOLO
 		 */
-                $data[$row_csv]['csv'] = array('N' => $numArticle+1);
-                if($result['Article']['bio']=='Y')
-                    $data[$row_csv]['csv'] += array('bio' => 'Bio');
-                else
-                    $data[$row_csv]['csv'] += array('bio' => '');
+        $data[$row_csv]['csv'] = array('N' => $numArticle+1);
+        if($result['Article']['bio']=='Y')
+            $data[$row_csv]['csv'] += array('bio' => 'Bio');
+        else
+            $data[$row_csv]['csv'] += array('bio' => '');
 
 		if($showCodice=='Y') 
-                    $data[$row_csv]['csv'] += array('codice' => $result['Article']['codice']);
-                        
-                $data[$row_csv]['csv'] += array('name' => $this->ExportDocs->prepareCsv($result['Article']['name']));
+            $data[$row_csv]['csv'] += array('codice' => $result['Article']['codice']);
+                
+        $data[$row_csv]['csv'] += array('name' => $this->ExportDocs->prepareCsv($result['Article']['name']));
 
-                $row_csv++;
+        $row_csv++;
                 
 		/*
 		 *  GAS 

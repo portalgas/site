@@ -1,0 +1,91 @@
+<ion-view view-title="Ordini {{organization_label}}" cache-view="false"> 
+<ion-nav-buttons side="right">
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content class="padding">
+  
+  	<div ng-switch on="organization_id">
+		<div ng-switch-when="0">
+			<ng-include src="'templates/organizations-choice.html'"></ng-include>
+		</div>
+		<div ng-switch-default>
+		
+			<div class="card" ng-show="rowsFound==0">
+			  <div class="item item-text-wrap">
+				Non ci sono produttori associati
+			  </div>
+			</div>	
+
+			
+			<ion-list> 
+
+				<div class="bar bar-header item-input-inset">
+					<label class="item-input-wrapper">
+						<i class="icon ion-ios-search placeholder-icon"></i>
+						<input ng-model="search.Supplier.name" type="text" placeholder="Ricerca produttore" />
+					</label>
+				</div>	
+
+				
+			   <ion-item class="" ng-repeat="order in delivery| filter:search:strict" type="item-text-wrap" href="#/app/articles-orders/{{order.id}}">
+				   
+					<div class="item-thumbnail-left" ng-if="order.Supplier.img1 != ''">
+						<img class="" ng-src="http://www.portalgas.it/images/organizations/contents/{{order.Supplier.img1}}" />
+					</div>
+					<div class="title">{{order.Supplier.name}}</div> 
+
+
+					
+					<div ng-switch on="order.state_code">
+						<div ng-switch-when="OPEN">
+							<span class="badge badge-positive">Aperto</span>
+						</div>
+						<div ng-switch-when="RI-OPEN-VALIDATE">
+							<span class="badge badge-positive">Riaperto</span>
+						</div>
+						<div ng-switch-default>	
+							<span class="badge badge-assertive">Chiuso</span>
+						</div>
+					</div>
+
+								
+					
+					<div class="">
+						<span ng-show="order.state_code=='OPEN'">
+							<span ng-show="order.dayDiffToDateFine >= (-3)" style="background-color:#999999;color:yellow;">
+								Si sta chiudendo! 
+									<span ng-show="order.dayDiffToDateFine == 0">oggi</span>
+									<span ng-show="order.dayDiffToDateFine != 0">Tra {{ -1 * order.dayDiffToDateFine}} gg</span>
+							</span>
+							<span ng-show="order.dayDiffToDateFine < (-3)" style="color:green;">
+								Aperto fino a<br /><span ng-bind="order.data_fine | date:'EEEE d MMMM yyyy'"></span>
+							</span>
+						</span>	
+						<span ng-show="order.state_code=='OPEN-NEXT'" style="color:#000000;">
+							Aprira&grave;<br /><span ng-bind="order.data_inizio | date:'EEEE d MMMM yyyy'"></span>
+						</span>	
+						<span ng-show="order.state_code!='OPEN' && order.state_code!='OPEN-NEXT'" style="color:red;">
+							Chiuso <span ng-bind="order.data_fine | date:'EEEE d MMMM yyyy'"></span>
+						</span>
+						
+					</div>	
+
+					<a class="item-text-wrap" ng-if="order.nota != null && order.nota != '' && order.nota != '<br />' && order.nota != '<br/>' && order.nota != '<br>'">
+						<i class="icon ion-android-chat"></i> {{order.nota| htmlToPlaintext }}
+					</a>
+						
+					<div ng-show="{{order.Cart.totale==1}}" style="background-color: #387ef5;color: #fff;" class="line-msg">
+						Già acquistato un articolo
+					</div>
+					<div ng-show="{{order.Cart.totale>1}}" style="background-color: #387ef5;color: #fff;" class="line-msg">
+						Già acquistato {{order.Cart.totale}} articoli
+					</div>
+					
+				</ion-item>	
+			</ion-list>
+		
+		</div>
+		
+  </ion-content>
+</ion-view>

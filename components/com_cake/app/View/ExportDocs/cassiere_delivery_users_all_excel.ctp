@@ -3,6 +3,7 @@
  * C A S S I E R E - T O - U S E R S 
  *   Documento della consegna completa diviso per utente (per pagamento dell'utente) 
  */
+$this->App->d($results);
 
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);	
@@ -29,7 +30,7 @@ foreach($results as $deliveryResults) {
 
 	foreach($deliveries as $numDelivery => $delivery) {
 
-		$rowsExcel = array();
+		$rowsExcel = [];
 	
 		if(!$print_delivery) {
 		
@@ -47,7 +48,7 @@ foreach($results as $deliveryResults) {
 			foreach($delivery['Order'] as $numOrder => $order) {
 
 				if(!empty($order['ExportRows'])) { // lo user non ha effettuato acquisti sull'ordine legato alla consegna
-					$rowsExcel = array();
+					$rowsExcel = [];
 					$rowsExcel[] = __('Supplier').' '.$order['SuppliersOrganization']['name'].', '.$order['SuppliersOrganization']['descrizione'];
 					$this->PhpExcel->addTableRow($rowsExcel);
 				}
@@ -60,7 +61,7 @@ foreach($results as $deliveryResults) {
 					$rows = current(array_values($rows));
 					foreach ($rows as $typeRow => $cols) {
 
-						$rowsExcel = array();
+						$rowsExcel = [];
 					
 						switch ($typeRow) {
 							case 'TRGROUP':
@@ -85,9 +86,9 @@ foreach($results as $deliveryResults) {
 									foreach ($rows2 as $typeRow2 => $cols2) 
 										if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id_local) 
 											if($trasportAndCost=='Y')  
-												$rowsExcel[] = $this->ExportDocs->prepareCsv($cols2['IMPORTO_COMPLETO']);
+												$rowsExcel[] = $cols2['IMPORTO_COMPLETO'];
 											else
-												$rowsExcel[] = $this->ExportDocs->prepareCsv($cols2['IMPORTO']);
+												$rowsExcel[] = $cols2['IMPORTO'];
 								}
 								$this->PhpExcel->addTableRow($rowsExcel);							
 								
@@ -99,25 +100,25 @@ foreach($results as $deliveryResults) {
 								$rowsExcel[] = $cols['QTA'];
 								$rowsExcel[] = 'Totale dell\'utente';
 								$rowsExcel[] = '';
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);
+								$rowsExcel[] = $cols['IMPORTO'];
 								if($trasportAndCost=='Y') {
 									if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00')  
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_TRASPORTO']);
+										$rowsExcel[] = $cols['IMPORTO_TRASPORTO'];
 									else 
 										$rowsExcel[] = '';
 									if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') 
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_MORE']);
+										$rowsExcel[] = $cols['IMPORTO_COST_MORE'];
 									else 
 										$rowsExcel[] = '';
 									if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') 
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_LESS']);
+										$rowsExcel[] = $cols['IMPORTO_COST_LESS'];
 									else 
 										$rowsExcel[] = '';
 
-									$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COMPLETO']);
+									$rowsExcel[] = $cols['IMPORTO_COMPLETO'];
 								}
 
-								$importo_completo_all_orders += $this->ExportDocs->prepareCsv($cols['IMPORTO_COMPLETO_DOUBLE']);
+								$importo_completo_all_orders += $cols['IMPORTO_COMPLETO'];
 								
 								$importo_pos = 0;
 								if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
@@ -135,8 +136,8 @@ foreach($results as $deliveryResults) {
 								
 								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['QTA']);
 								$rowsExcel[] = $name;
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['PREZZO']);
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);
+								$rowsExcel[] = $cols['PREZZO'];
+								$rowsExcel[] = $cols['IMPORTO'];
 								
 								$this->PhpExcel->addTableRow($rowsExcel);
 							break;
@@ -157,13 +158,97 @@ foreach($results as $deliveryResults) {
 				
 		}
 		else {
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] = __('Supplier').' '.$order['SuppliersOrganization']['name'].', '.$order['SuppliersOrganization']['descrizione'];
 			$this->PhpExcel->addTableRow($rowsExcel);
 			
 			$rowsExcel[] = __('export_docs_not_found');
 			$this->PhpExcel->addTableRow($rowsExcel);
 		}	
+		
+		
+        /*
+         * D I S P E N S A
+         */
+        $i = 0;
+        if (isset($storeroomResults['Delivery'][$numDelivery])) {
+
+            $delivery = $storeroomResults['Delivery'][$numDelivery];
+
+            if ($delivery['totStorerooms']) {
+
+				$rowsExcel = [];
+				$rowsExcel[] = '';
+				$this->PhpExcel->addTableRow($rowsExcel);
+				
+				$rowsExcel = [];
+				$rowsExcel[] = __('Storeroom');
+				$this->PhpExcel->addTableRow($rowsExcel);
+
+
+				$rowsExcel = [];
+				$rowsExcel[] = __('Bio');
+				$rowsExcel[] = __('Name');
+				$rowsExcel[] = __('Conf');
+				$rowsExcel[] = __('PrezzoUnita');
+				$rowsExcel[] = __('PrezzoUM');
+				$rowsExcel[] = __('Acquistato');
+				$rowsExcel[] = __('Importo');
+				$this->PhpExcel->addTableRow($rowsExcel);
+
+
+				$tot_qta = 0;
+				$tot_importo = 0;
+                $supplier_organization_id_old = 0;
+                foreach ($delivery['Storeroom'] as $numStoreroom => $storeroom) {
+
+                    if ($storeroom['SuppliersOrganization']['id'] != $supplier_organization_id_old) {
+
+						$rowsExcel = [];
+						$rowsExcel[] = __('Supplier') . ': ' . $storeroom['SuppliersOrganization']['name'];
+						$this->PhpExcel->addTableRow($rowsExcel);						
+                    }
+
+                    if ($storeroom['Article']['bio'] == 'Y')
+                        $bio = 'Bio';
+					else
+						$bio = '';
+					
+					$rowsExcel = [];
+					$rowsExcel[] = $bio;
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($storeroom['name']);
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleConf($storeroom['Article']['qta'], $storeroom['Article']['um']));
+					$rowsExcel[] = $storeroom['prezzo'];
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticlePrezzoUM($storeroom['prezzo'], $storeroom['Article']['qta'], $storeroom['Article']['um'], $storeroom['Article']['um_riferimento']));
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($storeroom['qta']);
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleImporto($storeroom['prezzo'], $storeroom['qta']));
+					$this->PhpExcel->addTableRow($rowsExcel);
+					
+					$tot_qta = ($tot_qta + $storeroom['qta']);
+					$tot_importo = ($tot_importo + ($storeroom['prezzo'] * $storeroom['qta']));
+					$importo_completo_all_orders += $tot_importo;
+					
+                    $supplier_organization_id_old = $storeroom['SuppliersOrganization']['id'];
+                }
+                $html .= '</tbody>';
+                
+                $tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                
+                
+				$rowsExcel = [];
+				$rowsExcel[] = '';
+				$rowsExcel[] = '';
+				$rowsExcel[] = '';
+				$rowsExcel[] = '';
+				$rowsExcel[] = '';
+				$rowsExcel[] = $tot_qta;
+				$rowsExcel[] = $tot_importo;
+				$this->PhpExcel->addTableRow($rowsExcel);
+				
+            } // end if($delivery['totStorerooms'])			
+        } // end if(isset($storeroomResults['Delivery'][$numDelivery])) 
+		
+		
 	}  // loop($results['Delivery'] as $numDelivery => $delivery) 
 	
 	/*
@@ -171,18 +256,16 @@ foreach($results as $deliveryResults) {
 	*/
 	if($importo_completo_all_orders>0) {
 
-		$importo_completo_all_orders = number_format($importo_completo_all_orders,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-
-		$rowsExcel = array();
+		$rowsExcel = [];
 		$rowsExcel[] =  __('Importo').' per l\'utente '.$user_label.':';
-		$rowsExcel[] = ' '.$importo_completo_all_orders;
+		$rowsExcel[] = $importo_completo_all_orders;
 		
 		/*
 		 *  eventuale importo POS
 		 */
 		if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
 			if($importo_pos>0) {
-				$rowsExcel[] = ' '.$importo_pos;
+				$rowsExcel[] = $importo_pos;
 				$rowsExcel[] = 'Importo POS';
 			}
 		}

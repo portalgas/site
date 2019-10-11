@@ -9,6 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+require_once(__DIR__.'/../myController.php');
+
 /**
  * Joomla! Cache view type object
  *
@@ -16,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Cache
  * @since       11.1
  */
-class JCacheControllerView extends JCacheController
+class JCacheControllerView extends MyJCacheController /* JCacheController */
 {
 	/**
 	 * Get the cached view data
@@ -130,7 +132,7 @@ class JCacheControllerView extends JCacheController
 	 *
 	 * @since   11.1
 	 */
-	protected function _makeId(&$view, $method)
+	protected function _makeId($view, $method)
 	{
 		return md5(serialize(array(JCache::makeId(), get_class($view), $method)));
 	}

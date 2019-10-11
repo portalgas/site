@@ -95,20 +95,6 @@ class Cart extends CartMultiKey {
 		
 		App::import('Model', 'Article');
 		$Article = new Article;
-		
-		/* 
-		 * ctrl se l'ordine e' DES
-		 */
-		 $des_order_id = 0;
-		 if($user->organization['Organization']['hasDes']=='Y') {
-	        App::import('Model', 'DesOrdersOrganization');
-	        $DesOrdersOrganization = new DesOrdersOrganization();
-	
-	        $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
-	        if (!empty($desOrdersOrganizationResults)) {
-	        	$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-	        }
-		} // end if($user->organization['Organization']['hasDes']=='Y') 
 		            		 
 		$conditions = ['Order.id' => $order_id,
 						'ArticlesOrder.pezzi_confezione' => '1'];
@@ -128,37 +114,13 @@ class Cart extends CartMultiKey {
 			
 			if($isArticleInCart) {
 			    
-			    if(!empty($des_order_id)) {
-			    	/*
-			    	 * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
-			    	 */
-			        $options = [];
-			        $options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
-		        								'Cart.order_id' => $order_id,
-		                                        'Cart.article_organization_id' => $result['ArticlesOrder']['article_organization_id'],
-		                                        'Cart.article_id' => $result['ArticlesOrder']['article_id'],
-			                                    'Cart.deleteToReferent' => 'N'];
-			        $options['recursive'] = -1;
-			        $options['fields'] = ['Cart.qta','Cart.qta_forzato'];
-			        $cartResults = $this->find('all', $options);
-			        $qta_cart = 0;	
-			        if(!empty($cartResults)) {
-			        	foreach($cartResults as $cartResult) {
-			        		if(!empty($cartResult['Cart']['qta_forzato']))
-			        			$qta_cart += $cartResult['Cart']['qta_forzato'];
-			        		else
-			        			$qta_cart += $cartResult['Cart']['qta'];
-			        	}
-			        	
-			        	$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
-			        	$result['ArticlesOrder']['qta_cart'] = $qta_cart;
-			        }
-					else {
-			        	$results[$numResults]['ArticlesOrder']['qta_cart'] = 0;
-			        	$result['ArticlesOrder']['qta_cart'] = 0;
-					}
-			    } // end if(!empty($des_order_id))
-				    
+				// se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+				$qta_cart = $this->getOrderDesQtaCart($user, $order_id, $result['ArticlesOrder']['article_organization_id'], $result['ArticlesOrder']['article_id']);
+				if($qta_cart!==false) {
+					$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
+					$result['ArticlesOrder']['qta_cart'] = $qta_cart;
+				}
+							    
 				$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
 					
 				self::d('pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'], $debug);
@@ -196,20 +158,6 @@ class Cart extends CartMultiKey {
 		
 		$debug = false;
 		
-		/* 
-		 * ctrl se l'ordine e' DES
-		 */
-		$des_order_id = 0;
-		if($user->organization['Organization']['hasDes']=='Y') {
-	        App::import('Model', 'DesOrdersOrganization');
-	        $DesOrdersOrganization = new DesOrdersOrganization();
-	
-	        $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
-	        if (!empty($desOrdersOrganizationResults)) {
-	        	$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-	        }
-		} // end if($user->organization['Organization']['hasDes']=='Y') 
-			
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;
 		
@@ -218,40 +166,16 @@ class Cart extends CartMultiKey {
 		if(!empty($article_id)) 
 			$options['conditions'] += ['Article.id' => $article_id];
 		
-		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $order_id, $article_organization_id, $options);
+		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $order_id, $options);
 		foreach($results as $numResults => $result) {
 
-			if(!empty($des_order_id)) {
-				/*
-				 * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
-				 */
-				$options = [];
-				$options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
-										'Cart.order_id' => $order_id,
-										'Cart.article_organization_id' => $result['ArticlesOrder']['article_organization_id'],
-										'Cart.article_id' => $result['ArticlesOrder']['article_id'],
-										'Cart.deleteToReferent' => 'N'];
-				$options['recursive'] = -1;
-				$options['fields'] = ['Cart.qta','Cart.qta_forzato'];
-				$cartResults = $this->find('all', $options);
-				$qta_cart = 0;	
-				if(!empty($cartResults)) {
-					foreach($cartResults as $cartResult) {
-						if(!empty($cartResult['Cart']['qta_forzato']))
-							$qta_cart += $cartResult['Cart']['qta_forzato'];
-						else
-							$qta_cart += $cartResult['Cart']['qta'];
-					}
-					
-					$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
-					$result['ArticlesOrder']['qta_cart'] = $qta_cart;
-				}
-				else {
-					$results[$numResults]['ArticlesOrder']['qta_cart'] = 0;
-					$result['ArticlesOrder']['qta_cart'] = 0;
-				}
-			} // end if(!empty($des_order_id))
-
+			// se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+			$qta_cart = $this->getOrderDesQtaCart($user, $order_id, $result['ArticlesOrder']['article_organization_id'], $result['ArticlesOrder']['article_id']);
+			if($qta_cart!==false) {
+				$results[$numResults]['ArticlesOrder']['qta_cart'] = $qta_cart;
+				$result['ArticlesOrder']['qta_cart'] = $qta_cart;
+			}
+			
 			$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
 			
 			self::d('Article '.$result['Article']['id'].' - code '.$result['Article']['codice'], $debug);
@@ -369,7 +293,61 @@ class Cart extends CartMultiKey {
 		
 		return $results; 
 	}
-    
+
+	public function getOrderDesQtaCart($user, $order_id, $article_organization_id, $article_id, $debug=false) {
+			
+		$results = false;
+		
+		/* 
+		 * ctrl se l'ordine e' DES
+		 */
+		$des_order_id = 0;
+		if($user->organization['Organization']['hasDes']=='Y') {
+			App::import('Model', 'DesOrdersOrganization');
+			$DesOrdersOrganization = new DesOrdersOrganization();
+	
+			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
+			if (!empty($desOrdersOrganizationResults)) {
+				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
+			}
+			
+			self::d('Order '.$order_id.' DES '.$des_order_id, $debug);
+			
+		} // end if($user->organization['Organization']['hasDes']=='Y') 
+		self::d('Order '.$order_id.' NON DES ', $debug);	
+	
+		if(!empty($des_order_id)) {
+			$options = [];
+			$options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
+									'Cart.order_id' => $order_id,
+									'Cart.article_organization_id' => $article_organization_id,
+									'Cart.article_id' => $article_id,
+									'Cart.deleteToReferent' => 'N'];
+			$options['recursive'] = -1;
+			$options['fields'] = ['Cart.qta','Cart.qta_forzato'];
+			self::d($options, $debug);
+			$cartResults = $this->find('all', $options);
+			$qta_cart = 0;	
+			if(!empty($cartResults)) {
+				foreach($cartResults as $cartResult) {
+					
+					self::d('Cart.qta '.$cartResult['Cart']['qta'].' Cart.qta_forzato'.$cartResult['Cart']['qta_forzato'], $debug);
+					
+					if(!empty($cartResult['Cart']['qta_forzato']))
+						$qta_cart += $cartResult['Cart']['qta_forzato'];
+					else
+						$qta_cart += $cartResult['Cart']['qta'];
+				}
+			}
+			
+			$results = $qta_cart;
+		}
+		
+		self::d('result '.$results, $debug);
+		
+		return $results;
+	}
+				
 	public $validate = [
 		'organization_id' => [
 				'numeric' => [

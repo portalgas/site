@@ -27,9 +27,9 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 	
 		/*
 		 * estraggo 
-		 * 	SuppliersOrganization.owner_articles
-		 * 	SuppliersOrganization.owner_organization_id 
-		 *	SuppliersOrganization.owner_supplier_organization_id 
+		 * 	Order.owner_articles
+		 * 	Order.owner_organization_id 
+		 *	Order.owner_supplier_organization_id 
 		 * per filtrare gli articoli (REFERENT / SUPPLIER / DES)
 		 */
 		$owner_articles = 'REFERENT';
@@ -37,20 +37,12 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 		$owner_supplier_organization_id = 0;		 
 		if (array_key_exists('Order.id', $conditions)) {
 
-			App::import('Model', 'Order');
-			$Order = new Order;
-			$Order->unbindModel(['belongsTo' => ['Delivery']]);
-
-			$options = [];
-			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $conditions['Order.id']];
-			$options['fields'] = ['SuppliersOrganization.owner_articles', 'SuppliersOrganization.owner_organization_id', 'SuppliersOrganization.owner_supplier_organization_id'];
-			$options['recursive'] = 0;
-			$orderResults = $Order->find('first', $options);		
-			self::d($orderResults, $debug);
-
-			$owner_articles = $orderResults['SuppliersOrganization']['owner_articles'];
-			$owner_organization_id = $orderResults['SuppliersOrganization']['owner_organization_id'];
-			$owner_supplier_organization_id = $orderResults['SuppliersOrganization']['owner_supplier_organization_id'];
+			if(!is_array($orderResult))
+				$orderResult = $this->_getOrderById($user, $conditions['Order.id'], $debug);
+		
+			$owner_articles = $orderResult['Order']['owner_articles'];
+			$owner_organization_id = $orderResult['Order']['owner_organization_id'];
+			$owner_supplier_organization_id = $orderResult['Order']['owner_supplier_organization_id'];
 		}
 			
         if (isset($orderBy['ArticlesOrder']))
@@ -75,7 +67,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 								  'Article.stato' => 'Y'];
 		if(!empty($owner_organization_id) && !empty($owner_supplier_organization_id))
         	$options['conditions'] += ['Article.organization_id' => $owner_organization_id,
-								  'Article.supplier_organization_id' => $owner_supplier_organization_id];
+								       'Article.supplier_organization_id' => $owner_supplier_organization_id];
 								  
         if (isset($conditions['ArticlesOrder.pezzi_confezione']))
             $options['conditions'] += ['ArticlesOrder.pezzi_confezione > ' => $conditions['ArticlesOrder.pezzi_confezione']];
@@ -222,23 +214,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 			
 		return $results;
 	}
-	
-	/*
-	 * estraggo SOLO articoli acquisti associati ad un ordine
-	 * Mails::admin_send()  
-	 */
-	public function getArticlesOrdersInOrderOnlyCart($user, $order_id, $option=[], $debug = false) {
-
-		$results = $this->getArticlesOrdersInOrderAndCart($user, $order_id, $option, $debug);
 		
-		foreach($results as $numResult => $result) {
-			if(!isset($result['Cart']) || empty($result['Cart']))
-				unset($results[$numResult]);
-		}
-			
-		return $results;
-	}
-	
     /*
      * estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI acquisti (Cart) di un utente
      *      $conditions['Cart.user_id'] e $conditions['User.id'] necessario!
@@ -325,8 +301,11 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
      * 
      * Delivery::tabs_ajax_ecomm_carts_validation() estraggo tutti ArticlesOrder con pezzi_confezione > 1 
      */
-    public function getArticoliEventualiAcquistiInOrdine($user, $order_id, $article_organization_id, $options=[], $debug = false) {
+    public function getArticoliEventualiAcquistiInOrdine($user, $orderResult, $options=[], $debug = false) {
 
+		if(!is_array($orderResult))
+			$orderResult = $this->_getOrderById($user, $orderResult, $debug);
+		
         $results = [];
 
         try {
@@ -352,18 +331,20 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
             }
             $sql .= "WHERE 
                         ArticlesOrder.organization_id = ".$user->organization['Organization']['id']." 
-                        AND Article.organization_id = $article_organization_id    
                         AND ArticlesOrder.article_organization_id = Article.organization_id
-                        AND ArticlesOrder.article_id = Article.id   
-                        AND ArticlesOrder.order_id = $order_id 
+                        AND ArticlesOrder.article_id = Article.id 						
+                        AND ArticlesOrder.order_id = ".$orderResult['Order']['id']." 
                         AND ArticlesOrder.stato != 'N' 
-                        AND Article.stato = 'Y' ";
+                        AND Article.stato = 'Y' 
+						AND Article.organization_id = ".$orderResult['Order']['owner_organization_id']." 
+						AND Article.supplier_organization_id = ".$orderResult['Order']['owner_supplier_organization_id']."";
 
             if (isset($conditions['ArticlesOrder.pezzi_confezione']))
-                $options['conditions'] += array('ArticlesOrder.pezzi_confezione > ' => $conditions['ArticlesOrder.pezzi_confezione']);
+                $options['conditions'] += ['ArticlesOrder.pezzi_confezione > ' => $conditions['ArticlesOrder.pezzi_confezione']];
 
             if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
-                $sql .= " AND ArticlesArticlesType.organization_id = $article_organization_id                        AND ArticlesArticlesType.article_type_id IN (" . $options['conditions']['ArticleArticleTypeId.article_type_id'] . ")
+                $sql .= " AND ArticlesArticlesType.organization_id = ".$orderResult['Order']['owner_organization_id']." 
+						  AND ArticlesArticlesType.article_type_id IN (" . $options['conditions']['ArticleArticleTypeId.article_type_id'] . ")
                           AND Article.id = ArticlesArticlesType.article_id ";
 
             if (isset($options['conditions']['Article.name']))
@@ -430,8 +411,11 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
      * stesso risultato di getArticoliEventualiAcquistiNoFilterInOrdine ma gestisco i filtri (non gestivo ArticleType) 
      */
 
-    public function getArticoliEventualiAcquistiInOrdinePromotion($user, $order_id, $prod_gas_promotion_id, $options, $debug = false) {
+    public function getArticoliEventualiAcquistiInOrdinePromotion($user, $orderResult, $prod_gas_promotion_id, $options, $debug = false) {
 
+		if(!is_array($orderResult))
+			$orderResult = $this->_getOrderById($user, $orderResult, $debug);
+		
         $results = [];
 
         try {
@@ -462,14 +446,16 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                         AND ProdGasArticlesPromotion.article_id = Article.id                        
                         AND Article.organization_id = ArticlesOrder.article_organization_id 
                         AND ArticlesOrder.article_id = Article.id 
+						AND Article.organization_id = ".$orderResult['Order']['owner_organization_id']." 
+						AND Article.supplier_organization_id = ".$orderResult['Order']['owner_supplier_organization_id']."						
                         AND ArticlesOrder.stato != 'N' 
                         AND Article.stato = 'Y' 
-                        AND ArticlesOrder.order_id = ".$order_id." 
+                        AND ArticlesOrder.order_id = ".$orderResult['Order']['id']." 
                         AND ProdGasArticlesPromotion.prod_gas_promotion_id = ".$prod_gas_promotion_id;
-
+						
             if (isset($options['conditions']['ArticleArticleTypeId.article_type_id']))
-                $sql .= " AND ArticlesArticlesType.organization_id = " . $user->organization['Organization']['id'] . "
-                        AND ArticlesArticlesType.article_type_id IN (" . $options['conditions']['ArticleArticleTypeId.article_type_id'] . ")
+                $sql .= " AND ArticlesArticlesType.organization_id = ".$orderResult['Order']['owner_organization_id']."
+                        AND ArticlesArticlesType.article_type_id IN (".$options['conditions']['ArticleArticleTypeId.article_type_id'].")
                         AND Article.id = ArticlesArticlesType.article_id ";
 
             if (isset($options['conditions']['Article.name']))
@@ -531,11 +517,8 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                 $results[$numResult]['ProdGasArticlesPromotion']['differenza_da_ordinare'] = $differenza_da_ordinare;
             } // foreach ($results as $numResult => $result) 
 
-            /*
-              echo "<pre>";
-              print_r($results);
-              echo "</pre>";
-             */
+            self::d($results, $debug);
+			
         } catch (Exception $e) {
             CakeLog::write('error', $sql);
             CakeLog::write('error', $e);
@@ -555,9 +538,8 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 
         if ((!isset($conditions['Cart.user_id']) || empty($conditions['Cart.user_id'])) &&
                 (!isset($conditions['User.id']) || empty($conditions['User.id']))) {
-			echo "<pre>";
-            print_r($conditions);
-            echo "</pre>";                
+
+            self::d($conditions, $debug);			
             self::x("Errore ArticleOrder::getArticoliDellUtenteInOrdine conditions['Cart.user_id'] o conditions['User.id'] obbligatori");
 		}
          
@@ -575,31 +557,30 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         App::import('Model', 'Cart');
         $Cart = new Cart();
 
-        $options['conditions'] = array('Cart.organization_id' => $user->organization['Organization']['id'],
-            'ArticlesOrder.stato != ' => 'N',
-            'Article.stato' => 'Y',
-        );
+        $options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
+					'ArticlesOrder.stato != ' => 'N',
+					'Article.stato' => 'Y'];
         /*
          * solo per il CartPreview (box in front-end che compare dopo un acquisto)
          * 		filtro per lo stato dell'ordine
          * per il Carrello mi filtra il Tab della Consegna 
          */
         if (isset($orderBy['CartPreview'])) {
-            $options['conditions'] += array('(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')');
+            $options['conditions'] += ['(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')'];
         }
 
         if (isset($conditions['Order.id']))
-            $options['conditions'] += array('Cart.order_id' => $conditions['Order.id']);
+            $options['conditions'] += ['Cart.order_id' => $conditions['Order.id']];
         if (isset($conditions['Cart.order_id']))
-            $options['conditions'] += array('Cart.order_id' => $conditions['Cart.order_id']);
+            $options['conditions'] += ['Cart.order_id' => $conditions['Cart.order_id']];
         if (isset($conditions['Cart.article_id']))
-            $options['conditions'] += array('Cart.article_id' => $conditions['Cart.article_id']);
+            $options['conditions'] += ['Cart.article_id' => $conditions['Cart.article_id']];
         if (isset($conditions['Cart.user_id']))
-            $options['conditions'] += array('Cart.user_id' => $conditions['Cart.user_id']);
+            $options['conditions'] += ['Cart.user_id' => $conditions['Cart.user_id']];
         if (isset($conditions['Cart.deleteToReferent']))
-            $options['conditions'] += array('Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']);
+            $options['conditions'] += ['Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']];
         if (isset($conditions['Cart.inStoreroom']))
-            $options['conditions'] += array('Cart.inStoreroom' => $conditions['Cart.inStoreroom']);
+            $options['conditions'] += ['Cart.inStoreroom' => $conditions['Cart.inStoreroom']];
 
         $options['recursive'] = 0;
         $options['order'] = $order;
@@ -608,12 +589,8 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
 
         $results = $Cart->find('all', $options);
         
-		if($debug) {
-          echo "<pre>";
-          print_r($options);
-          print_r($results);
-          echo "</pre>";
-        }
+		self::d($options, $debug);
+		self::d($results, $debug);
 		
         return $results;
     }
@@ -655,29 +632,32 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         $Cart = new Cart();
 
         $Cart->unbindModel(['belongsTo' => ['Order']]);
-        $options['conditions'] = array('Cart.organization_id' => $user->organization['Organization']['id'],
-            'ArticlesOrder.stato != ' => 'N',
-            'Article.stato' => 'Y'
-        );
+        $options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
+									'ArticlesOrder.stato != ' => 'N',
+									'Article.stato' => 'Y'];
+			
         if (isset($conditions['ArticlesOrder.order_id']))
-            $options['conditions'] += array('Cart.order_id' => $conditions['ArticlesOrder.order_id']);
+            $options['conditions'] += ['Cart.order_id' => $conditions['ArticlesOrder.order_id']];
         if (isset($conditions['Order.id']))
-            $options['conditions'] += array('Cart.order_id' => $conditions['Order.id']);
+            $options['conditions'] += ['Cart.order_id' => $conditions['Order.id']];
         if (isset($conditions['ArticlesOrder.article_id']))
-            $options['conditions'] += array('Cart.article_id' => $conditions['ArticlesOrder.article_id']);
+            $options['conditions'] += ['Cart.article_id' => $conditions['ArticlesOrder.article_id']];
         if (isset($conditions['Article.id']))
-            $options['conditions'] += array('Cart.article_id' => $conditions['Article.id']);
+            $options['conditions'] += ['Cart.article_id' => $conditions['Article.id']];
         if (isset($conditions['Cart.user_id']))
-            $options['conditions'] += array('Cart.user_id' => $conditions['Cart.user_id']);
+            $options['conditions'] += ['Cart.user_id' => $conditions['Cart.user_id']];
         if (isset($conditions['Cart.deleteToReferent']))
-            $options['conditions'] += array('Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']);
+            $options['conditions'] += ['Cart.deleteToReferent' => $conditions['Cart.deleteToReferent']];
         if (isset($conditions['User.id']))
-            $options['conditions'] += array('Cart.user_id' => $conditions['User.id']);
+            $options['conditions'] += ['Cart.user_id' => $conditions['User.id']];
 
         $options['recursive'] = 0;
         $options['order'] = $order;
 
         $results = $Cart->find('all', $options);
+		self::d($options);
+		self::d($results);
+		
         return $results;
     }
 
@@ -692,41 +672,35 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
     public function aggiornaQtaCart_StatoQtaMax($organization_id, $order_id, $article_organization_id, $article_id, $debug = false) {
 
         try {
-            if ($debug)
-                echo "Estraggo i totali sum(cart.qta) acquisti dall'UTENTE per ogni articolo associato ad un ordine <br />\n";
+            self::d("Estraggo i totali sum(cart.qta) acquisti dall'UTENTE per ogni articolo associato ad un ordine", $debug);
 
             $options = [];
-            $options['conditions'] = array('ArticlesOrder.organization_id' => $organization_id,
-                                            'ArticlesOrder.order_id' => $order_id,
-                                            'ArticlesOrder.article_organization_id' => $article_organization_id,
-                                            'ArticlesOrder.article_id' => $article_id);
+            $options['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,
+										'ArticlesOrder.order_id' => $order_id,
+										'ArticlesOrder.article_organization_id' => $article_organization_id,
+										'ArticlesOrder.article_id' => $article_id];
             $options['recursive'] = 1;
-            $this->unbindModel(array('belongsTo' => array('Article', 'Cart')));
+            $this->unbindModel(['belongsTo' => ['Article', 'Cart']]);
             $results = $this->find('first', $options);
           
             if($results['Order']['des_order_id']>0) {
                 
-                if ($debug)
-                    echo "E' un ordine DES <br />\n";
+                self::d("E' un ordine DES", $debug);
                 
                 App::import('Model', 'DesOrdersOrganization');
                 $DesOrdersOrganization = new DesOrdersOrganization();
 
-                $DesOrdersOrganization->unbindModel(array('belongsTo' => array('Order', 'Organization', 'De')));
+                $DesOrdersOrganization->unbindModel(['belongsTo' => ['Order', 'Organization', 'De']]);
                 
                 $options = [];
-                $options['conditions'] = array('DesOrdersOrganization.des_order_id' => $results['Order']['des_order_id']);
-                $options['fields'] = array('DesOrder.des_id','DesOrder.des_supplier_id','DesOrdersOrganization.organization_id','DesOrdersOrganization.order_id');
+                $options['conditions'] = ['DesOrdersOrganization.des_order_id' => $results['Order']['des_order_id']];
+                $options['fields'] = ['DesOrder.des_id','DesOrder.des_supplier_id','DesOrdersOrganization.organization_id','DesOrdersOrganization.order_id'];
                 $options['recursive'] = 1;
                 $desOrdersOrganizationsResults = $DesOrdersOrganization->find('all', $options);
 
-                if ($debug)
-                    echo "Trovati ".count($desOrdersOrganizationsResults)." ordini associati all'ordine DES <br />\n";                
-                /*
-                echo "<pre>";
-                print_r($desOrdersOrganizationsResults);
-                echo "</pre>";                
-                 */
+                self::d("Trovati ".count($desOrdersOrganizationsResults)." ordini associati all'ordine DES", $debug);
+                self::d($desOrdersOrganizationsResults, $debug);
+				
                 if(!empty($desOrdersOrganizationsResults)) {
                     
                     /*
@@ -740,8 +714,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                         $qta_cart_new += $this->_getSumCartQta($organization_id, $order_id, $article_organization_id, $article_id, $debug);
                     }
 
-                    if ($debug)
-                        echo "Per tutti i GAS dell'ordine DES aggiornero' ArticlesOrder.qta_cart con la somma di tutti gli acquisti dei GAS ".$qta_cart_new."<br />\n"; 
+                    self::d("Per tutti i GAS dell'ordine DES aggiornero' ArticlesOrder.qta_cart con la somma di tutti gli acquisti dei GAS ".$qta_cart_new, $debug);
                                     
                     /* 
                      * aggiorno tutti gli ordini del DES
@@ -754,17 +727,13 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                         $results['ArticlesOrder']['qta_cart'] = $qta_cart_new;
                         $this->_updateArticlesOrderQtaCart_StatoQtaMax($results, $debug);
                     }
-                    /*
-                    echo "<pre>";
-                    print_r($desSupplierResults);
-                    echo "</pre>";                    
-                     */
+                    self::d($desSupplierResults, $debug);
+                  
                 } // end if(!empty($desOrdersOrganizationsResults))
 
             }
             else {                
-                if ($debug)
-                    echo "NON e' un ordine DES <br />\n";
+                self::d("NON e' un ordine DES", $debug);
                 
                 $qta_cart_new = $this->_getSumCartQta($organization_id, $order_id, $article_organization_id, $article_id, $debug);
                 $results['ArticlesOrder']['qta_cart'] = $qta_cart_new;
@@ -773,8 +742,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
            } // non e' ordine DES
             
         } catch (Exception $e) {
-            if ($debug)
-                echo '<br />UtilsCrons::articlesOrdersQtaCart()<br />' . $e;
+            self::d('UtilsCrons::articlesOrdersQtaCart()'.$e, $debug);
             CakeLog::write('error', $sql);
             CakeLog::write('error', $e);
         }
@@ -782,7 +750,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         //if($debug) exit;
     }
 
-    private function _updateArticlesOrderQtaCart_StatoQtaMax($results, $debug) {            
+    private function _updateArticlesOrderQtaCart_StatoQtaMax($results, $debug=false) {            
         /*
          * ctrl se ArticlesOrder.qta_massima_order > 0, se SI controllo lo ArticlesOrder.stato
          */
@@ -804,13 +772,8 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         }
 
         unset($results['Order']);
-        /*
-        if($debug) {
-            echo "<pre>ArticleOrder::aggiornaQtaCart_StatoQtaMax() <br />\n";
-            print_r($results);
-            echo "</pre>";
-        } 
-        */
+        self::d($results, $debug);
+		
         if ($this->save($results)) 
             if ($debug)
                 echo "ArticleOrder::aggiornaQtaCart_StatoQtaMax() -	OK aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $results['ArticlesOrder']['qta_cart'] . " stato " . $results['ArticlesOrder']['stato'] . "  \n";
@@ -929,27 +892,27 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
     public $validate = array(
         'organization_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => ['numeric'],
             ),
         ),
         'article_organization_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => ['numeric'],
             ),
         ),
         'article_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => ['numeric'],
             ),
         ),
         'order_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => ['numeric'],
             ),
         ),
         'prezzo' => array(
             'rule' => array('decimal', 2),
-            'message' => "Indica il prezzo dell'articolo con un valore numerico",
+            'message' => "Indica il prezzo dell'articolo con un valore numerico con 2 decimali (1,00)",
         ),
         'pezzi_confezione' => array(
             'notempty' => array(
@@ -958,7 +921,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         ),
         'qta_minima' => array(
             'notempty' => array(
-                'rule' => array('notempty', false),
+                'rule' => array('notBlank', false),
                 'message' => 'Indica la quantità minima che un gasista può acquistare',
             ),
             'numeric' => array(
@@ -969,7 +932,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         ),
         'qta_massima' => array(
             'notempty' => array(
-                'rule' => array('notempty', false),
+                'rule' => array('notBlank', false),
                 'message' => 'Indica la quantità massima che un gasista può acquistare',
             ),
             'numeric' => array(
@@ -980,7 +943,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         ),
         'qta_minima_order' => array(
             'notempty' => array(
-                'rule' => array('notempty', false),
+                'rule' => array('notBlank', false),
                 'message' => "Indica la quantità minima rispetto a tutti gli acquisti dell'ordine",
             ),
             'numeric' => array(
@@ -991,7 +954,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         ),
         'qta_massima_order' => array(
             'notempty' => array(
-                'rule' => array('notempty', false),
+                'rule' => array('notBlank', false),
                 'message' => "Indica la quantità massima rispetto a tutti gli acquisti dell'ordine",
             ),
             'numeric' => array(

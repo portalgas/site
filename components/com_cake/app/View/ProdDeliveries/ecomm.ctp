@@ -23,7 +23,7 @@ if(empty($FilterArticleName)) {
 else 
 	$FilterArticleNameEmpty = false;
 
-$options = array();
+$options = [];
 $options = array('label' => false, 'value' => $FilterArticleName, 'size' => '50px', 'name' => 'FilterArticleName');
 if($FilterArticleNameEmpty) {
 	$options += array('onFocus' => 'javascript:startFilterArticleName();');
@@ -31,12 +31,12 @@ if($FilterArticleNameEmpty) {
 	echo '<script type="text/javascript">';
 	echo 'function startFilterArticleName() {';
 	echo "\n";
-	echo '	jQuery("input[name=FilterArticleName]").val("").css("color","#000");';
+	echo '	$("input[name=FilterArticleName]").val("").css("color","#000");';
 	echo "\n";
 	echo '}';
 	echo "\n";
-	echo 'jQuery(document).ready(function() {';
-	echo '	jQuery("input[name=FilterArticleName]").css("color","#dedede");';
+	echo '$(document).ready(function() {';
+	echo '	$("input[name=FilterArticleName]").css("color","#dedede");';
 	echo '});';
 	echo '</script>';
 }	
@@ -46,11 +46,11 @@ echo '	</div>';
 /*
  * tipologie articoli
  */
- $array_selecteds = split(',',$FilterArticleArticleTypeIds); 
+ $array_selecteds = explode(',', $FilterArticleArticleTypeIds); 
 echo '	<div class="ecomm-filter-content-left" style="float:left;padding:10px 0 0 10px;">';
 foreach($ArticlesTypeResults as $key => $value) {
 
-	echo '<label for="ArticleFilterArticleArticleTypeIds'.$key.'" style="margin:0 3px 0 10px;">'.$value.'</label>';
+	echo '<label for="ArticleFilterArticleArticleTypeIds'.$key.'" style="margin:0 3px 0 10px;">'.$value.'</label> ';
 	echo '<input type="checkbox" name="FilterArticleArticleTypeIds" id="ArticleFilterArticleArticleTypeIds'.$key.'" value="'.$key.'" ';
 	
 	foreach($array_selecteds as $array_selected) {
@@ -102,39 +102,39 @@ else {
 
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery(".rowEcomm").each(function () {
+	$(".rowEcomm").each(function () {
 		activeEcommRows(this);    /* active + / - , mouseenter mouseleave */
 		activeSubmitEcomm(this);	
 	});	
 	
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionNotaView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionNotaView').each(function () {
+	$('.actionNotaView').each(function () {
 		actionNotaView(this); 
 	});
 
 
 
 
-	jQuery('#ecomm-filter-label').submit(function ctrlSubmit() {});
+	$('#ecomm-filter-label').submit(function ctrlSubmit() {});
 });	
 
 function ctrlSubmit() {     	
- 	 var filterArticleName = jQuery('input[name=FilterArticleName]').val();
+ 	 var filterArticleName = $('input[name=FilterArticleName]').val();
  	
  	 if(filterArticleName=="<?php echo $FilterArticleNameIntro;?>") filterArticleName = ''; 
  	
  	 var filterArticleArticleTypeIds = "";
-	 jQuery("input[name=FilterArticleArticleTypeIds]:checked").each( function () {
-		filterArticleArticleTypeIds += jQuery(this).val()+',';
+	 $("input[name=FilterArticleArticleTypeIds]:checked").each( function () {
+		filterArticleArticleTypeIds += $(this).val()+',';
 	 });
 	 filterArticleArticleTypeIds = filterArticleArticleTypeIds.substring(0, (filterArticleArticleTypeIds.length-1));
 	 
@@ -153,27 +153,27 @@ function ctrlSubmit() {
 	 }
 	 ?>
 	 
-	 jQuery('#introHelp_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('display', 'none');
-	 jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('display', 'block');
-	 jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html('');
-	 jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	 $('#introHelp_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('display', 'none');
+	 $('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('display', 'block');
+	 $('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html('');
+	 $('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'url("/images/cake/ajax-loader.gif") no-repeat scroll center 0 transparent');
 	 
 	 var url = "/?option=com_cake&controller=ProdDeliveries&action=ecomm&prod_delivery_id=<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>";
 	 url += "&a="+encodeURIComponent(filterArticleName);
 	 url += "&b="+filterArticleArticleTypeIds;
 	 url += "&format=notmpl";
 	 
-	 jQuery.ajax({
+	 $.ajax({
 		type: "GET",
 		url: url,
 		data: "",
 		success: function(response){
-			jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html(response);
+			$('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'none repeat scroll 0 0 transparent');
+			$('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html(textStatus);
+			$('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').css('background', 'none repeat scroll 0 0 transparent');
+			$('#articlesOrderResult_<?php echo $prodDelivery['ProdDelivery']['prod_delivery_id'];?>').html(textStatus);
 		}
  	 });
 	 	 

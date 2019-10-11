@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Events'), array('controller' => 'Events', 'action' => 'index'));
 $this->Html->addCrumb(__('Edit Event'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -51,7 +51,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	 * utenti ancora da associare
 	 */
 	echo '<div class="row"><div class="col-md-12">';
-	echo '<label for="User">'.__('Users').'</label>';
+	echo '<label for="User">'.__('Users').'</label> ';
 
 	echo $this->Form->select('master_user_id', $usersResults, array('label' => __('Users'), 'id' => 'master_user_id', 'multiple' => true, 'size' =>10));
 	echo $this->Form->select('event_user_id', $eventUsersResults, array('id' => 'event_user_id', 'multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));
@@ -108,7 +108,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('List Events'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
-		<li><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', null, 'id='.$this->Form->value('id')),array('class' => 'action actionDelete','title' => __('Delete'))); ?></li>
+		<li><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Event.id')),array('class' => 'action actionDelete','title' => __('Delete'))); ?></li>
 		<?php /* echo '<li>'.$this->Html->link(__('View Calendar'), array('controller' => 'FullCalendar', 'action' => 'index'),array('class'=>'action actionDeliveryCalendar')).'</li>'; */ ?>
 	</ul>
 </div>

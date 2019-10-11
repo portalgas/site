@@ -18,6 +18,7 @@ $organizationSEO    = $templateparams->get('organizationSEO');
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<script src="<?php echo $this->baseurl ?>/templates/v01/javascript/jquery-1.11.2.min.js"></script>
+	<script src="<?php echo $this->baseurl ?>/templates/v01/javascript/mustache.min.js"></script>
 	<script src="<?php echo $this->baseurl ?>/templates/v01/javascript/bootstrap.min.js"></script>
 	<script src="<?php echo $this->baseurl ?>/templates/v01/javascript/bootstrap-select.min.js"></script>
     <script src="<?php echo $this->baseurl ?>/templates/v01/javascript/bootstrap-tooltip.js" type="text/javascript"></script>
@@ -32,7 +33,7 @@ $organizationSEO    = $templateparams->get('organizationSEO');
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/ui-themes/smoothness/jquery-ui-1.10.3.custom.min.css">
 
-	<script type="text/javascript" src="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/js/my-modal-v01.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/js/my-modal-v02.js"></script>
 	
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,10 +41,6 @@ $organizationSEO    = $templateparams->get('organizationSEO');
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-<script type="text/javascript">
-	$.noConflict();
-</script>
 
 <style type="text/css">
 .lof-ass .lof-css3, .lof-ass .lof-css3 .preload {
@@ -209,6 +206,9 @@ else {
 						</li>						
 						<li>
 							<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a>
+						</li>					
+						<li>
+							<a target="_blank" href="https://github.com/portalgas/site"><img border="0" src="/images/cake/ico-github.png" alt="il codice di PortAlGas disponibile per chi desidera partecipare" title="il codice di PortAlGas disponibile per chi desidera partecipare"> GitHub</a>
 						</li>
 					</ul>			
 				

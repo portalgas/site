@@ -8,17 +8,17 @@ class ProdGasArticlesOrder extends Model {
 	public $validate = array(
 		'supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'article_organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'article_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'prezzo' => array(
@@ -26,13 +26,13 @@ class ProdGasArticlesOrder extends Model {
 			'message' => "Indica il prezzo dell'articolo con un valore numerico con 2 decimali (1,00)",
 		),		
 		'pezzi_confezione' => array(
-			'notempty' => array(
+			'naturalNumber' => array(
 				'rule' => array('naturalNumber', false),
 			),
 		),
 		'qta_minima' => array(
 			'notempty' => array(
-				'rule' => array('notempty', false),
+				'rule' => array('notBlank', false),
 				'message' => 'Indica la quantità minima che un gasista può acquistare',
 			),
 			'numeric' => array(
@@ -43,7 +43,7 @@ class ProdGasArticlesOrder extends Model {
 		),
 		'qta_massima' => array(
 			'notempty' => array(
-				'rule' => array('notempty', false),
+				'rule' => array('notBlank', false),
 				'message' => 'Indica la quantità massima che un gasista può acquistare',
 			),
 			'numeric' => array(
@@ -54,7 +54,7 @@ class ProdGasArticlesOrder extends Model {
 		),
 		'qta_minima_order' => array(
 			'notempty' => array(
-					'rule' => array('notempty', false),
+					'rule' => array('notBlank', false),
 					'message' => "Indica la quantità minima rispetto a tutti gli acquisti dell'ordine",
 			),		
 			'numeric' => array(
@@ -65,7 +65,7 @@ class ProdGasArticlesOrder extends Model {
 		),
 		'qta_massima_order' => array(
 			'notempty' => array(
-					'rule' => array('notempty', false),
+					'rule' => array('notBlank', false),
 					'message' => "Indica la quantità massima rispetto a tutti gli acquisti dell'ordine",
 			),		
 			'numeric' => array(
@@ -75,7 +75,7 @@ class ProdGasArticlesOrder extends Model {
 			),
 		),
 		'qta_multipli' => array(
-			'notempty' => array(
+			'naturalNumber' => array(
 				'rule' => array('naturalNumber', false),
 			),
 		),
@@ -96,10 +96,17 @@ class ProdGasArticlesOrder extends Model {
 			'fields' => '',
 			'order' => ''
 		),
-		'Organization' => array(			'className' => 'Organization',			'foreignKey' => '',			'conditions' => 'Organization.id = ProdGasArticlesOrder.article_organization_id',			'fields' => '',			'order' => '',		),			
+		'Organization' => array(
+			'className' => 'Organization',
+			'foreignKey' => '',
+			'conditions' => 'Organization.id = ProdGasArticlesOrder.article_organization_id',
+			'fields' => '',
+			'order' => '',
+		),			
 	);
 
-	public function afterFind($results, $primary = true) {		
+	public function afterFind($results, $primary = true) {
+		
 		foreach ($results as $key => $val) {
 			if(!empty($val)) {				
 				if (isset($val['ProdGasArticlesOrder']['prezzo'])) {
@@ -107,7 +114,13 @@ class ProdGasArticlesOrder extends Model {
 					$results[$key]['ProdGasArticlesOrder']['prezzo_e'] = $results[$key]['ProdGasArticlesOrder']['prezzo_'].' &euro;';
 				}
 				else
-				/*				 * se il find() arriva da $hasAndBelongsToMany				*/				if(isset($val['prezzo'])) {					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';				}					
+				/*
+				 * se il find() arriva da $hasAndBelongsToMany
+				*/
+				if(isset($val['prezzo'])) {
+					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';
+				}					
 			}
 		}
 		return $results;

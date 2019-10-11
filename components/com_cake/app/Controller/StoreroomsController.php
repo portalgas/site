@@ -28,11 +28,7 @@ class StoreroomsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}	
 		
-		/*
-		echo "<pre>";
-		print_r($this->storeroomUser);
-		echo "</pre>";
-		*/
+		self::d($this->storeroomUser);
 		
 		/*
 		 *  ctrl se lo user corrente e' la dispensa
@@ -71,7 +67,7 @@ class StoreroomsController extends AppController {
 				}
 			}
 		}
-		/* ctrl ACL */		
+		/* ctrl ACL */
 	}
 
 	/* 
@@ -87,7 +83,7 @@ class StoreroomsController extends AppController {
 			 * Dati articolo in Storeroom
 			 */
 			$this->Storeroom->id = $this->request->params['pass']['id'];
-			if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+			if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 				$this->Session->setFlash(__('msg_error_params'));
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
@@ -95,7 +91,7 @@ class StoreroomsController extends AppController {
 			$options = [];
 			$options['conditions'] = ['Storeroom.organization_id' => $this->user->organization['Organization']['id'],
 									  'Storeroom.id' => $id];
-			$options['order'] = ['Storeroom.data ASC'];
+			$options['order'] = ['Delivery.data ASC'];
 			$options['recursive'] = 1;
 	
 			$this->Storeroom->unbindModel(['belongsTo' => ['Article', 'SuppliersOrganization', 'User']]);
@@ -210,7 +206,8 @@ class StoreroomsController extends AppController {
 				$ii++;
 			}
 		}
-	
+		
+		self::d($resultsNew, $debug);
 		$this->set('results',$resultsNew);	
 	}
 	/*
@@ -391,14 +388,14 @@ class StoreroomsController extends AppController {
 	 * per DEBUG, in Storerooms::storeroom_to_user.ctp commentare jQuery('#ajaxContent').load(url);
 	 */
 	public function storeroomToUser($id) {
-		            
+		           
 		if($this->user->get('id')==0) {
 			$this->Session->setFlash(__('msg_not_permission_guest'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
 		
 		$this->Storeroom->id = $id;
-		if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -443,7 +440,7 @@ class StoreroomsController extends AppController {
 		$debug = false;
 		
 		$this->Storeroom->id = $id;
-		if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -506,7 +503,7 @@ class StoreroomsController extends AppController {
 		}
 		
 		$this->Storeroom->id = $id;
-		if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}	
@@ -518,7 +515,7 @@ class StoreroomsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {			
 
 			$this->Storeroom->unbindModel(['belongsTo' => ['Article','Delivery','User']]);
-			$storeroomOld = $this->Storeroom->read($this->user->organization['Organization']['id'], null, $id);
+			$storeroomOld = $this->Storeroom->read($id, $this->user->organization['Organization']['id']);
 				
 			$storeroomOrigine['Storeroom'] = $storeroomOld['Storeroom'];
 			$storeroomOrigine['Storeroom']['user_id'] = $this->user->get('id'); // sessione
@@ -599,21 +596,20 @@ class StoreroomsController extends AppController {
 	 * 		user TO storeroom -> $user_id  $storeroomUser
 	 * */
 	private function _storeroom_management($id, $storeroomOrigine, $storeroomDestinazione, $debug = false) {
-	
-		if($debug) {
-			echo "<pre>storeroomOriginale ";
-			print_r($storeroomOrigine);
-			echo "</pre>";
-			echo "<pre>storeroomDestinazione ";
-			print_r($storeroomDestinazione);
-			echo "</pre>";
-		}
 
+		// $debug = true;	
+		
+		if(isset($storeroomDestinazione['Storeroom']['id']) && $storeroomDestinazione['Storeroom']['id']==0)
+			unset($storeroomDestinazione['Storeroom']['id']);
+		
+		self::d("storeroomOriginale", $debug);
+		self::d($storeroomOrigine, $debug);
+			
 		/* 
 		 * UPDATE/DELETE storeroomOriginale (qta / delivery_id /user_id (o session o select))
 		 */
 		if($storeroomOrigine['Storeroom']['qta']>0) {
-			if($debug) echo "<br />UPDATE/INSERT storeroomOriginale ";
+			self::d("UPDATE/INSERT storeroomOriginale", $debug);
 			if(!$debug) {
 				$this->Storeroom->create();
 				if (!$this->Storeroom->save($storeroomOrigine))
@@ -622,53 +618,52 @@ class StoreroomsController extends AppController {
 		}
 		else {
 			$this->Storeroom->id = $id;
-			if($debug) echo "<br />DELETE storeroomOld prima ctrl exists()";
-			if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+			self::d("DELETE storeroomOld prima ctrl exists()", $debug);
+			if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 				$this->Session->setFlash(__('msg_error_params'));
 				if(!$debug) $this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
-			if($debug) echo "<br />DELETE storeroomOld ";
+			self::d("DELETE storeroomOld", $debug);
 			if(!$debug) {
 				if (!$this->Storeroom->delete())
 				$this->Session->setFlash(__('The Storeroom not deleted'));
 			}
 		}
 
-		if($debug) echo '<h2>------------------------------------------</h2>';
+		self::d('<h2>------------------------------------------</h2>', $debug);
+		self::d("storeroomDestinazione", $debug);
+		self::d($storeroomDestinazione, $debug);
+		
 		/* 
 		 * UPDATE/INSERT/DELETE storeroomDestinazione (qta / delivery_id)
 		 */
 		if($storeroomDestinazione!=null) {  // se arrivo da admin_edit $storeroomDestinazione=null
-			$conditions = ['Storeroom.organization_id'=>$storeroomDestinazione['Storeroom']['organization_id'],
-							'Storeroom.user_id'=>$storeroomDestinazione['Storeroom']['user_id'],
-							'Storeroom.delivery_id'=>$storeroomDestinazione['Storeroom']['delivery_id'],
-							'Storeroom.article_id'=>$storeroomDestinazione['Storeroom']['article_id'],
-							'Storeroom.stato'=>'Y'];
+			$options = [];
+			$options['conditions'] = ['Storeroom.organization_id'=>$storeroomDestinazione['Storeroom']['organization_id'],
+										'Storeroom.user_id'=>$storeroomDestinazione['Storeroom']['user_id'],
+										'Storeroom.delivery_id'=>$storeroomDestinazione['Storeroom']['delivery_id'],
+										'Storeroom.article_id'=>$storeroomDestinazione['Storeroom']['article_id'],
+										'Storeroom.stato'=>'Y'];
 			$this->Storeroom->unbindModel(['belongsTo' => ['Article','Delivery','User']]);
-			$storeroomDestinazioneCtrl = $this->Storeroom->find('first', ['conditions' => $conditions]);
-			if($debug) {
-				echo "<br />cerco se esiste gia' storeroomDestinazione con conditions ";
-				echo "<pre>";
-				print_r($conditions);
-				echo "</pre>";
-			}
+			$storeroomDestinazioneCtrl = $this->Storeroom->find('first', $options);
+			self::d("cerco se esiste gia' storeroomDestinazione con conditions", $debug);
+			self::d($conditions, $debug);
+			
 			// esiste => update
 			if(!empty($storeroomDestinazioneCtrl)) {
 				$storeroomDestinazione['Storeroom']['id'] = $storeroomDestinazioneCtrl['Storeroom']['id'];
 				$storeroomDestinazione['Storeroom']['qta'] = ($storeroomDestinazione['Storeroom']['qta'] + $storeroomDestinazioneCtrl['Storeroom']['qta']);
-				if($debug) echo "<br />storeroomDestinazioneCtrl esiste => UPDATE con nuova QTA ".$storeroomDestinazione['Storeroom']['qta'];
+				self::d("storeroomDestinazioneCtrl esiste => UPDATE con nuova QTA ".$storeroomDestinazione['Storeroom']['qta'], $debug);
 			}
 			else {
-				if($debug) echo "<br />storeroomDestinazioneCtrl NON esiste => INSERT ";
+				self::d("storeroomDestinazioneCtrl NON esiste => INSERT", $debug);
 			}
 			
-			if($debug) {
-				echo "<pre>storeroomDestinazione B ";
-				print_r($storeroomDestinazione);
-				echo "</pre>";
-			}
+			self::d("storeroomDestinazione B", $debug);
+			self::d($storeroomDestinazione, $debug);
+
 			if($storeroomDestinazione['Storeroom']['qta']>0) {
-				if($debug) echo "<br />UPDATE o INSERT storeroomDestinazione ";
+				self::d("UPDATE o INSERT storeroomDestinazione", $debug);
 				if(!$debug) {
 					$this->Storeroom->create();
 					if (!$this->Storeroom->save($storeroomDestinazione))				
@@ -677,10 +672,10 @@ class StoreroomsController extends AppController {
 			}
 			else {
 				$this->Storeroom->id = $storeroomDestinazione['Storeroom']['id'];
-				if($debug) echo "<br />DELETE storeroomDestinazione prima ctrl exists()";
-				if ($this->Storeroom->exists($this->user->organization['Organization']['id'])) {
-					if($debug) echo "<br />DELETE storeroomDestinazione ";
-					else {
+				self::d("DELETE storeroomDestinazione prima ctrl exists()", $debug);
+				if ($this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
+					self::d("DELETE storeroomDestinazione", $debug);
+					if(!$debug) {
 						if(!$this->Storeroom->delete())
 						$this->Session->setFlash(__('The Storeroom not deleted'));
 					}
@@ -706,7 +701,7 @@ class StoreroomsController extends AppController {
 		 * Dati articolo in Storeroom
 		 */
 		$this->Storeroom->id = $id;
-		if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -714,10 +709,11 @@ class StoreroomsController extends AppController {
 		$options = [];
 		$options['conditions'] = ['Storeroom.organization_id' => $this->user->organization['Organization']['id'],
 								   'Storeroom.id' => $id];
-		$options['order'] = ['Storeroom.data ASC'];
+		$options['order'] = ['Delivery.data ASC'];
 		$options['recursive'] = 1;
 
 		$results = $this->Storeroom->find('first', $options);
+		self::d($results, $debug);
 		if($results['Delivery']['isToStoreroomPay']=='Y') {
 			$this->Session->setFlash(__('StoreroomArticleInRequestPayment'));
 			$this->myRedirect(['action' => 'index_to_users']);
@@ -732,7 +728,7 @@ class StoreroomsController extends AppController {
 			}
 			
 			$this->Storeroom->unbindModel(['belongsTo' => ['Article','Delivery','User']]);
-			$storeroomOld = $this->Storeroom->read($this->user->organization['Organization']['id'], null, $id);
+			$storeroomOld = $this->Storeroom->read($id, $this->user->organization['Organization']['id']);
 			unset($storeroomOld['User']);
 			unset($storeroomOld['SuppliersOrganization']);
 			
@@ -768,6 +764,8 @@ class StoreroomsController extends AppController {
 		
 		if ($this->request->is('post')) {
 
+			self::d($this->request->data, $debug);
+		
 			$msg = "";
 			/*
 			 * tratto gli articoli da inserire
@@ -778,14 +776,14 @@ class StoreroomsController extends AppController {
 				self::d($this->request->data, $debug);
 				$supplier_organization_id = $this->request->data['supplier_organization_id'];
 				$storeroom_id = $this->request->data['storeroom_id'];
-				 
+					 
 				foreach($this->request->data['Article'] as $key => $data) {
 					
-					if(!empty($data['Qta']) && is_numeric($data['Qta'])) {
+					if(!empty($data['qta']) && is_numeric($data['qta'])) {
 						
-						self::d('Tratto article_id '.$key.' del supplier_organization_id '.$supplier_organization_id.' con quantita '.$data['Qta'], $debug);
+						self::d('Tratto organization_id-article_id '.$key.' del supplier_organization_id '.$supplier_organization_id.' con quantita '.$data['qta'], $debug);
 						
-						$article_id = $key;
+						list($organization_id, $article_id) = explode('-', $key);
 						
 						/*
 						 * ctrl se l'articolo associato all'utente non esiste gia' in dispensa
@@ -794,8 +792,11 @@ class StoreroomsController extends AppController {
 						$conditions = ['User.id' => $this->storeroomUser['User']['id'],
 										'Storeroom.delivery_id' => 0,
 										'SuppliersOrganization.id' => $supplier_organization_id,
+										'Article.organization_id' => $organization_id,
 										'Article.id' => $article_id]; 
 						$results = $this->Storeroom->getArticlesToStoreroom($this->user, $conditions, null, $debug);
+						self::d($options, $debug);
+						self::d($results, $debug);
 						
 						/*
 						 * lo inserisco in dispensa se non estiste gia'
@@ -808,25 +809,26 @@ class StoreroomsController extends AppController {
 							$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
 							$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesArticlesType']]);			
 							
-							if (!$Article->exists($this->user->organization['Organization']['id'], $article_id)) {
+							if (!$Article->exists($organization_id, $article_id)) {
 								$this->Session->setFlash(__('msg_error_params'));
 								$this->myRedirect(Configure::read('routes_msg_exclamation'));
 							}
 							$options = [];
 							$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
 													  'SuppliersOrganization.id' => $supplier_organization_id,
+													  'Article.organization_id' => $organization_id,
 													  'Article.id' => $article_id];
 							$options['recursive'] = 0;
 							$article = $Article->find('first', $options);
 							self::d($options, $debug);
 							self::d($article, $debug);
-							
+						
 							$storeroom['Storeroom']['user_id'] = $this->storeroomUser['User']['id'];
 							$storeroom['Storeroom']['delivery_id'] = 0;
 							$storeroom['Storeroom']['article_id'] = $article_id;
 							$storeroom['Storeroom']['article_organization_id'] = $article['Article']['organization_id'];
 							$storeroom['Storeroom']['name'] = $article['Article']['name'];
-							$storeroom['Storeroom']['qta'] = $data['Qta'];
+							$storeroom['Storeroom']['qta'] = $data['qta'];
 							$storeroom['Storeroom']['prezzo'] = $article['Article']['prezzo'];
 							$storeroom['Storeroom']['organization_id'] = (int)$this->user->organization['Organization']['id'];
 							$storeroom['Storeroom']['stato'] = 'Y';
@@ -838,9 +840,9 @@ class StoreroomsController extends AppController {
 								$msg .= "<br />Articolo ".$article['Article']['name']." ($article_id) non inserito in dispensa!";
 							}
 						} // if(empty($results))  	
-					} // enf if(!empty($data['Qta']))
+					} // enf if(!empty($data['qta']))
 					else
-						self::d('Non tratto article_id '.$key.' del supplier_organization_id '.$supplier_organization_id.' perche quantita '.$data['Qta'], $debug);
+						self::d('Non tratto article_id '.$key.' del supplier_organization_id '.$supplier_organization_id.' perche quantita '.$data['qta'], $debug);
 				} // end foreach
 			} // end if(isset($this->request->data['Article'])) 
 		
@@ -854,9 +856,9 @@ class StoreroomsController extends AppController {
 					$storeroom_id = $key;
 
 					// DELETE da dispensa
-					if($data['Qta']=='0' && is_numeric($data['Qta'])) {
+					if($data['qta']=='0' && is_numeric($data['qta'])) {
 						$this->Storeroom->id = $storeroom_id;
-						if (!$this->Storeroom->exists($this->user->organization['Organization']['id'])) {
+						if (!$this->Storeroom->exists($this->Storeroom->id, $this->user->organization['Organization']['id'])) {
 							$this->Session->setFlash(__('msg_error_params'));
 							$this->myRedirect(Configure::read('routes_msg_exclamation'));
 						}
@@ -864,9 +866,9 @@ class StoreroomsController extends AppController {
 							$msg .= "<br />Articolo in dispensa ($storeroom_id) non cancellato!";
 					}
 					else // UDPATE (solo se modificato)
-					if(!empty($data['Qta']) && is_numeric($data['Qta'])) { 
+					if(!empty($data['qta']) && is_numeric($data['qta'])) { 
 						$storeroom['Storeroom']['id'] = $storeroom_id;
-						$storeroom['Storeroom']['qta'] = $data['Qta'];
+						$storeroom['Storeroom']['qta'] = $data['qta'];
 						$this->Storeroom->create();
 						if (!$this->Storeroom->save($storeroom)) 
 							$msg .= "<br />Articolo ".$storeroom['Storeroom']['name']." in dispensa ($storeroom_id) non salvato!";

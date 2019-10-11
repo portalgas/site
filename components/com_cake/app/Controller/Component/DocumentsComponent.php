@@ -1,13 +1,16 @@
 <?php 
-App::import('Vendor', 'ImageTool', array('file' => 'ImageTool.php'));
+App::uses('Component', 'Controller');
+App::uses('UtilsCommons', 'Lib');
+App::import('Vendor', 'ImageTool', ['file' => 'ImageTool.php']);
+
 /*
- * 	$file = array(
+ * 	$file = [
  * 		'name' => 'immagine.jpg',
  * 		'type' => 'image/jpeg',
  * 		'tmp_name' => /tmp/phpsNYCIB',
  * 		'error' => 0,
  *		'size' => 41737,
- * 	);
+ * 	];
  *
  * UPLOAD_ERR_OK (0): Non vi sono errori, l'upload e' stato eseguito con successo;
  * UPLOAD_ERR_INI_SIZE (1): Il file inviato eccede le dimensioni specificate nel parametro upload_max_filesize di php.ini;
@@ -17,6 +20,16 @@ App::import('Vendor', 'ImageTool', array('file' => 'ImageTool.php'));
  * UPLOAD_ERR_NO_TMP_DIR (6): Mancanza della cartella temporanea;
 */	
 class DocumentsComponent extends Component {
+	
+    private $Controller = null;
+	public $utilsCommons;
+
+    public function initialize(Controller $controller) 
+    {
+		$this->Controller = $controller;
+		$this->utilsCommons = new UtilsCommons($this->Time);
+		
+    }
 	
 	/*
 	 * $action= UPLOAD / DELETE
@@ -28,20 +41,21 @@ class DocumentsComponent extends Component {
 	 * chmod 755 directory
 	 * chmod 644 files
 	*/	 
-	public function genericUpload($user, $file, $path, $action='UPLOAD', $new_name='', $arr_extensions=array(), $arr_contentTypes=array(), $resizeWidth="", $debug = false) {
+	public function genericUpload($user, $file, $path, $action='UPLOAD', $new_name='', $arr_extensions=[], $arr_contentTypes=[], $resizeWidth="", $debug = false) {
 	
-		$esito = array();  // fileNewName, msg
+		$controllerLog = $this->Controller;
+	
+		$esito = [];  // fileNewName, msg
 		
-		if($debug) echo "<br />DocumentsComponent::genericUpload() - action ".$action;
-			
+		$controllerLog::d("DocumentsComponent::genericUpload() - action ".$action,$debug);
+		
 		switch ($action) {
 			case "DELETE":
 				$file_to_delete = $path.$file;
 				$file1 = new File($file_to_delete, false, 0777);
 				
-				if($debug) 
-					echo "<br />File da cancellare $file_to_delete";
-
+				$controllerLog::d("File da cancellare $file_to_delete",$debug);
+					
 				if(!$file1->delete())
 					$esito['msg'] = "<br />File $file non eliminato";
 				else
@@ -50,8 +64,12 @@ class DocumentsComponent extends Component {
 			case "UPLOAD":
 				if($file['error'] == UPLOAD_ERR_OK && is_uploaded_file($file['tmp_name'])) {
 
-					$esito['msg'] = $this->__ctrl_exstension($file, $arr_extensions, $arr_contentTypes, $debug);
-				
+					$esito['msg'] = $this->_ctrl_size($file, $debug);
+						
+					if(empty($esito['msg'])) {
+						$esito['msg'] = $this->_ctrl_exstension($file, $arr_extensions, $arr_contentTypes, $debug);
+					}
+					
 					if(empty($esito['msg'])) {
 					
 						if(!empty($new_name)) {
@@ -69,9 +87,8 @@ class DocumentsComponent extends Component {
 						}
 						else
 							$esito['fileNewName'] = $file['name'];
-						if($debug) {
-							echo "<br />file temporaneo ".$file['tmp_name']." => move to ".$path.$esito['fileNewName'];
-						}
+						
+						$controllerLog::d("file temporaneo ".$file['tmp_name']." => move to ".$path.$esito['fileNewName'],$debug);
 					
 						if(!move_uploaded_file($file['tmp_name'], $path.$esito['fileNewName'])) 
 							$esito['msg'] = $file1['error'];
@@ -80,7 +97,7 @@ class DocumentsComponent extends Component {
 							 * resizeWidth
 							 */
 							if(!empty($resizeWidth)) {
-								$this->__resize($path.$esito['fileNewName'], $resizeWidth, $debug);
+								$this->_resize($path.$esito['fileNewName'], $resizeWidth, $debug);
 							}							
 						}
 					}
@@ -93,20 +110,38 @@ class DocumentsComponent extends Component {
 			break;
 		}
 
-		if($debug) {
-			echo "<pre>DocumentsComponent::genericUpload() - esito \n ";
-			print_r($esito);
-			echo "</pre>";
-		}
+		$controllerLog::d($esito,$debug);
 			
 		return $esito;
 	}
+	
+	/*
+	 * ctrl size
+	*/	
+	private function _ctrl_size($file, $debug=false) {
 		
+		$controllerLog = $this->Controller;
+		
+		$esito = '';
+
+		if($file['size'] > Configure::read('App.web.upload.max.size')) {
+			
+			$fileSizeLabel = $this->utilsCommons->formatSizeUnits($file['size']);
+			$uploadMaxSizeLabel = $this->utilsCommons->formatSizeUnits(Configure::read('App.web.upload.max.size'));
+			
+			$esito .= "File di dimensioni troppo grandi (".$fileSizeLabel.")!\nPuoi uploadare file al massimo di ".$uploadMaxSizeLabel;
+		}
+					
+		return $esito;
+	}
+	
 	/*
 	 * ctrl exstension / content type
 	*/	
-	private function __ctrl_exstension($file, $arr_extensions=array(), $arr_contentTypes=array(), $debug=false) {
+	private function _ctrl_exstension($file, $arr_extensions=[], $arr_contentTypes=[], $debug=false) {
 		
+		$controllerLog = $this->Controller;
+	
 		$esito = '';
 
 		if(!empty($arr_extensions) || !empty($arr_contentTypes)) {
@@ -116,11 +151,8 @@ class DocumentsComponent extends Component {
 			$type = finfo_file ($finfo, $file['tmp_name']);
 			finfo_close($finfo);
 
-			
-			if($debug) {
-				echo "<br />DocumentsComponent::__ctrl_exstension ext ".$ext;
-				echo "<br />DocumentsComponent::__ctrl_exstension type ".$type;
-			}
+			$controllerLog::d("DocumentsComponent::_ctrl_exstension ext ".$ext,$debug);
+			$controllerLog::d("DocumentsComponent::_ctrl_exstension type ".$type,$debug);
 				
 			if(!in_array($ext, $arr_extensions) || !in_array($type, $arr_contentTypes)) {
 				$esito = "Estensione .$ext non valida: si possono caricare file con la seguente estensione ";
@@ -132,28 +164,24 @@ class DocumentsComponent extends Component {
 		return $esito;
 	}
 
-	private function __resize($img, $resizeWidth, $debug) {
+	private function _resize($img, $resizeWidth, $debug) {
+		
+		$controllerLog = $this->Controller;
 		
 		$info = getimagesize($img);
 		$width = $info[0];
 		$height = $info[1];
-		if($debug) {
-			echo "Resize a width $resizeWidth <br />";
-			echo "<pre>Dimensioni img $img \n ";
-			print_r($info);
-			echo "</pre>";
-		}
-				
+		
+		$controllerLog::d([$resizeWidth, $img, $info],$debug);
+						
 		if($width > $resizeWidth) {
 			$imageTool = new ImageTool(); 
-			$status = $imageTool::resize(array(
-											'input' => $img,
-											'output' => $img,
-											'width' => $resizeWidth,
-											'height' => ''
-									));
+			$status = $imageTool::resize(['input' => $img,
+										'output' => $img,
+										'width' => $resizeWidth,
+										'height' => '']);
 	
-			if($debug) echo "<br />Image resize ".$status;
+			$controllerLog::d("Image resize ".$status,$debug);
 		}	
 
 		return $status;

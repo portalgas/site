@@ -1,7 +1,7 @@
 <?php
 echo '<div class="old-menu">';
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $delivery_id));
 $this->Html->addCrumb(__('Pay Suppliers'));
@@ -52,26 +52,24 @@ function caricaOrdini() {
 }
 </script>
 
-<?php echo $this->Form->create('Order', array('id'=>'formGas'));?>
-	<fieldset>
-	<?php
-	$options = array('id'=>'delivery_id');
-	if(!empty($delivery_id) && $delivery_id>0)
-		$options += array('default' => $delivery_id);
-	else
-		$options += array('empty' => Configure::read('option.empty'));
-	 
-	echo $this->Form->input('delivery_id',$options);	
-	?>	
-	
-	<div id="orders-result" style="display:block;min-height:50px;"></div>
-
-	<?php
-		echo $this->Form->end(__('Submit'));
-	?>
-	</fieldset>
-</div>
-
 <?php 
+echo $this->Form->create('Order', ['id'=>'formGas']);
+echo '<fieldset>';
+
+$options = ['id'=>'delivery_id'];
+if(!empty($delivery_id) && $delivery_id>0)
+	$options += ['default' => $delivery_id];
+else
+	$options += ['empty' => Configure::read('option.empty')];
+ 
+echo $this->Form->input('delivery_id',$options);	
+
+echo '<div id="orders-result" style="display:block;min-height:50px;"></div>';
+
+echo $this->Form->end(__('Submit'));
+
+echo '</fieldset>';
+echo '</div>';
+
 echo $this->element('menuTesoriereLaterale');
 ?>

@@ -270,7 +270,7 @@ if (isset($this->error)) :
                         <div class="form-group col-xs-12 floating-label-form-group controls">                    
 							<!-- https://www.google.com/recaptcha/admin -->
 							<script src='https://www.google.com/recaptcha/api.js'></script>
-							<div class="g-recaptcha" data-sitekey="6LfGvQsUAAAAAJLXgcGb8MUueMTlXz6FtxkACxIx"></div>
+							<div class="g-recaptcha" data-sitekey="6Lf1LSQUAAAAAI5ovUxolIdrzOitL8HzCHg4Y_3K"></div>
 						</div>
                     </div>
                     

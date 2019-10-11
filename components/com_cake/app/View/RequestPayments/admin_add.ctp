@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if($isReferenteTesoriere)  {
 	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 	if(isset($order_id))

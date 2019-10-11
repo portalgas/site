@@ -1,0 +1,129 @@
+.ion-input-select--large,
+.ion-input-select,
+select {
+  -webkit-appearance:none;
+  background-repeat: no-repeat;
+  background-color: #ffffff;  
+  border:thin solid #dddddd;
+  font-weight:300;
+  display:inline;
+  vertical-align:middle;
+  color:#333;
+  padding: auto 0;
+  overflow:hidden;
+  box-sizing:border-box;
+  font-size: 16px;
+}    	
+.ion-input-select--large {
+  width:100%;
+  font-size:1.6rem;
+  background-image: url(/img/7rGM4IX.png);
+  text-indent:40px;
+  padding:1.2rem 0;
+  height: 55px;
+}
+
+.ion-input-select {
+  width:200px;
+  font-size:1rem;
+  background-image: url(/img/nA9xx1X.png);
+  text-indent:20px;
+  padding:.5rem 0;
+}
+
+option {
+  background:#ffffff;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+:focus {
+  outline:none;
+}
+.cartQta {
+	font-weight:bold;
+}
+.bio {
+    background: transparent url("http://www.portalgas.it/images/cake/bio.gif") no-repeat scroll center center;
+    height: 20px;
+    padding-left: 30px;
+}
+
+.active .modal-backdrop-bg {
+    opacity: 0; /* 0.5; */
+}
+.modalOrganization {
+	height: 100%;
+}
+.modalLogin {
+	min-height: 300px;
+}
+.modalLogin input {
+	font-size:20px;
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+.cart-select {
+	opacity: 0.5;
+	background-color: #FFE5CC;
+}	
+
+/*
+ *  maps
+ */
+.scroll, 
+.angular-google-map,
+.angular-google-map-container { 
+  height: 100%;
+}
+
+.marker-labels {
+  width: 160px;
+  padding: 10px;  
+  background: #fff;
+  border-radius: 5px;
+}
+
+.list .item.item-accordion {
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+.list .item.item-accordion.ng-hide {
+  line-height: 0px;
+}
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+  display: block !important;
+}
+.icon.block{
+	cursor:pointer;
+}
+.animate-show {
+  opacity: 1;
+}
+
+.animate-show.ng-hide-add, .animate-show.ng-hide-remove {
+  transition: all linear 0.3s;
+}
+
+.animate-show.ng-hide {
+  opacity: 0;
+}
+.close-order {
+	font-size: 20px;
+}
+
+.animate-show {
+  opacity: 1;
+}
+.animate-show.ng-hide-add, .animate-show.ng-hide-remove {
+  transition: all linear 0.5s;
+}
+
+.animate-show.ng-hide {
+  opacity: 0;
+}

@@ -575,8 +575,14 @@ $arrayServices[$i]['text'] = "Un manuale approfondito e sempre in aggiornamento 
 							<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img border="0" src="/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube"> YouTube</a>
 						</li>
 						<li>
+							<a href="http://manuali.portalgas.it" target="_blank"><img border="0" title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="/images/cake/ico-manual.png"> Manuali</a>
+						</li>							
+						<li>
 							<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a>
 						</li>
+						<li>
+							<a target="_blank" href="https://github.com/portalgas/site"><img border="0" src="/images/cake/ico-github.png" alt="il codice di PortAlGas disponibile per chi desidera partecipare" title="il codice di PortAlGas disponibile per chi desidera partecipare"> GitHub</a>
+						</li>						
 					</ul>			
 				
 				</div>

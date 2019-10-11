@@ -8,7 +8,7 @@ class EventType extends AppModel {
 	var $validate = array(
 		'name' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 			),
 		),
 	);

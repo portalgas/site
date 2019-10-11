@@ -1,11 +1,12 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class SuppliersVote extends AppModel {
 
 	public function getVotoOptions() {
 	
-		$results = array();
+		$results = [];
 		$results[0] = __('vote_0');
 		$results[1] = __('vote_1');
 		$results[2] = __('vote_2');
@@ -17,9 +18,9 @@ class SuppliersVote extends AppModel {
 	
 	public function getOrganizationsVoto($supplier_id, $debug=false) {
 	
-		$results = array();
+		$results = [];
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersVote.supplier_id' => $supplier_id);
         $options['recursive'] = 1;
 		
@@ -39,27 +40,27 @@ class SuppliersVote extends AppModel {
 	public $validate = array(
 		'nota' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 			),
 		),
 		'supplier_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'user_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'voto' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 	);

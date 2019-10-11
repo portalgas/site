@@ -95,7 +95,7 @@ class ContentModelArticles extends JModelList
 		$this->setState('filter.language', $language);
 
 		// List state information.
-		parent::populateState('a.title', 'asc');
+		parent::populateState('a.id', 'desc');
 	}
 
 	/**

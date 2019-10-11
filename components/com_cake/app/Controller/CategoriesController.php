@@ -23,7 +23,7 @@ class CategoriesController extends AppController {
     }
 
 	public function admin_view($id = null) {
-		$results = $this->Category->read(0, null, $id);
+		$results = $this->Category->read($id, 0);
 		if (empty($results)) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
 		$this->set('category', $results);
 	}
@@ -54,7 +54,7 @@ class CategoriesController extends AppController {
 				$this->Session->setFlash(__('The category could not be saved. Please, try again.'));
 			}
 		} else {
-			$this->request->data = $this->Category->read(0, null, $id);
+			$this->request->data = $this->Category->read($id, 0);
 			if (empty($this->request->data)) {				$this->Session->setFlash(__('msg_error_params'));				$this->myRedirect(Configure::read('routes_msg_exclamation'));			}			
 		}
 		$parents = $this->Category->generateTreeList(null, null, null, '&nbsp;&nbsp;&nbsp;');

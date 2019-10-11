@@ -4,7 +4,7 @@ echo '<h3 class="title_details">'.__('Related Article Carts').'</h3>';
 	
 if(!empty($results)) {	
 ?>
-	<table cellpadding = "0" cellspacing = "0">
+	<div class="table-responsive"><table class="table table-hover">
 		<tr>
 			<th style="height:10px;width:30px;" rowspan="2"><?php echo __('N');?></th>
 			<th style="height:10px;" rowspan="2"><?php echo __('User');?></th>
@@ -21,26 +21,23 @@ if(!empty($results)) {
 		</tr>
 
 	<?php 
-                $tot_qta = 0;
-                $tot_importo = 0;
-                $tot_qta_modify = 0;
-                $tot_importo_modify = 0;
-                $tot_importo_new = 0;        
+		$tot_qta = 0;
+		$tot_importo = 0;
+		$tot_qta_modify = 0;
+		$tot_importo_modify = 0;
+		$tot_importo_new = 0;        
 		foreach($results as $numArticlesOrder => $result) {
 			
-			/*
-			echo "<pre>";
-			print_r($result);
-			echo "</pre>";
-			*/
-                        if($result['Cart']['qta']) {
-                                $tot_qta += $result['Cart']['qta'];
-                                $tot_importo += ($result['ArticlesOrder']['prezzo']* $result['Cart']['qta']);
-                        }
-                        if($result['Cart']['qta_forzato']>0)
-                            $tot_qta_modify += $result['Cart']['qta_forzato'];
-                        if($result['Cart']['importo_forzato']>0)
-                            $tot_importo_modify += $result['Cart']['importo_forzato'];
+			$this->App->d($result, $debug);
+
+			if($result['Cart']['qta']) {
+				$tot_qta += $result['Cart']['qta'];
+				$tot_importo += ($result['ArticlesOrder']['prezzo']* $result['Cart']['qta']);
+			}
+			if($result['Cart']['qta_forzato']>0)
+				$tot_qta_modify += $result['Cart']['qta_forzato'];
+			if($result['Cart']['importo_forzato']>0)
+				$tot_importo_modify += $result['Cart']['importo_forzato'];
                        
 			echo "\r\n";
 			echo '<tr>';
@@ -75,14 +72,14 @@ if(!empty($results)) {
 			
 			if($result['Cart']['importo_forzato']==0) {
 				if($result['Cart']['qta_forzato']>0)
-                                    $importo = ($result['Cart']['qta_forzato'] * $result['ArticlesOrder']['prezzo']);
+                    $importo = ($result['Cart']['qta_forzato'] * $result['ArticlesOrder']['prezzo']);
 				else 
-                                    $importo = ($result['Cart']['qta'] * $result['ArticlesOrder']['prezzo']);
+                    $importo = ($result['Cart']['qta'] * $result['ArticlesOrder']['prezzo']);
 			}
 			else 
-                            $importo = $result['Cart']['importo_forzato'];
+                $importo = $result['Cart']['importo_forzato'];
 			
-                        $tot_importo_new += $importo; 
+            $tot_importo_new += $importo; 
                          
 			echo '<td>'.number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 			
@@ -117,9 +114,14 @@ if(!empty($results)) {
 		echo '<th></th>';
 		echo '<th></th>';
 		echo '</tr>';                
-	echo '</table>';
+	echo '</table></div>';
 }
-else 
-	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "L'articolo non &egrave; stato ancora acquistato"));
+else {
+	if($totAcquistiAltriGas==0)
+		echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "L'articolo non &egrave; stato ancora acquistato"));
+	else
+		echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "L'articolo non &egrave; stato ancora acquistato dai gasisti del tuo G.A.S.<br />ma &egrave; stato ancora acquistato dai gasisti del ordine D.E.S."));
+}
+
+echo '</div>';
 ?>
-</div>

@@ -23,7 +23,7 @@ if($this->layout=='ajax') {
 	$css = $output->getCss();
 }
 
-
+if(isset($results['Delivery']) && !empty($results['Delivery']))
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	$html = $this->ExportDocs->delivery($result['Delivery']);
@@ -52,9 +52,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else 
 					$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
 				
+				$html .= '			<th width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.__('pezzi_confezione_short').'</th>';				
 				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.__('qta').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.__('PrezzoUnita').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.__('Importo').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.__('PrezzoUnita').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.__('Importo').'</th>';
 
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
@@ -70,9 +71,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else
 					$html .= '			<th width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH70()).'">'.__('Name').'</th>';
 				
+				$html .= '			<th width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.__('pezzi_confezione_short').'</th>';				
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.__('PrezzoUnita').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.__('Importo').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.__('PrezzoUnita').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.__('Importo').'</th>';
 			}
 			$html .= '	</tr>';
 			$html .= '	</thead><tbody>';
@@ -107,31 +109,22 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						else
 							$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$name.'</td>';
 							
+						$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$pezzi_confezione.'</td>';
 						$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$tot_qta_single_article;
 						
 						if($pezzi_confezione1=='Y') {
 							/*
-							 * colli_completi 
+							 * colli_completi  	
 							*/
-							if($pezzi_confezione>1) {
-								
-								$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-								if($colli_completi>0) {
-									$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-									$html .= ' ('.$colli_completi.' colli da '.$pezzi_confezione;
-									if($differenza_da_ordinare != $pezzi_confezione)
-										$html .= ' e '.$differenza_da_ordinare;
-									$html .= ')';
-								}
-							}
+							$html .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 						}
 						$html .= '</td>';
 						
-						$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
-						$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
+						$html .= '<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
+						$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 	
-						$html .= '			<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
-						$html .= '			<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
+						$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
+						$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
 					}
 					else {
 						
@@ -142,28 +135,20 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						else
 							$html .= '			<td width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH70()).'">'.$name.'</td>';
 						
+						$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$pezzi_confezione.'</td>';
 						$html .= '			<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$tot_qta_single_article;
 						
 						if($pezzi_confezione1=='Y') {
 							/*
 							 * colli_completi 
 							*/
-							if($pezzi_confezione>1) {
-								
-								$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-								if($colli_completi>0) {
-									$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-									$html .= ' ('.$colli_completi.' colli da '.$pezzi_confezione;
-									if($differenza_da_ordinare != $pezzi_confezione)
-										$html .= ' e '.$differenza_da_ordinare;
-									$html .= ')';
-								}
-							}
+							$html .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
+							
 						}
 						$html .= '</td>';
 						
-						$html .= '			<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
-						$html .= '			<td width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
+						$html .= '<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
+						$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 					}
 					$html .= '</tr>';	
 					
@@ -245,27 +230,19 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else
 					$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$name.'</td>';
 				
+				$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$pezzi_confezione.'</td>';
 				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$tot_qta_single_article;
 				
 				if($pezzi_confezione1=='Y') {
 					/*
 					 * colli_completi 
 					*/
-					if($pezzi_confezione>1) {
-						
-						$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-						if($colli_completi>0) {
-							$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-							$html .= ' ('.$colli_completi.' colli da '.$pezzi_confezione;
-							if($differenza_da_ordinare != $pezzi_confezione)
-								$html .= ' e '.$differenza_da_ordinare;
-							$html .= ')';
-						}
-					}
+					$html .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
+												
 				}
 				$html .= '</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 			
 				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
 				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;"></td>';
@@ -279,27 +256,18 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else
 					$html .= '			<td width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH70()).'">'.$name.'</td>';
 				
+				$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$pezzi_confezione.'</td>';
 				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$tot_qta_single_article;
 
 				if($pezzi_confezione1=='Y') {
 					/*
-					 * colli_completi 
+					 * colli_completi  	
 					*/
-					if($pezzi_confezione>1) {
-						
-						$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-						if($colli_completi>0) {
-							$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-							$html .= ' ('.$colli_completi.' colli da '.$pezzi_confezione;
-							if($differenza_da_ordinare != $pezzi_confezione)
-								$html .= ' e '.$differenza_da_ordinare;
-							$html .= ')';
-						}
-					}
+					$html .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 				}
 				$html .= '</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';			
+				$html .= '<td width="'.$output->getCELLWIDTH60().'" style="text-align:center;">'.$this->App->getArticlePrezzo($prezzo).'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:right;">'.number_format($tot_importo_single_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';			
 			}
 			
 					
@@ -348,16 +316,16 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$html .= '<tr>';
 
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y') 
-				$colspan = '3';
+				$colspan = '4';
 			else
-				$colspan = '2';
+				$colspan = '3';
 			
 			
 			if(($order['Order']['hasTrasport']=='Y' || $order['Order']['hasCostMore']=='Y' || $order['Order']['hasCostLess']=='Y') && $trasportAndCost=='Y') {
 				$html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-				$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 				$html .= '	<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
+				$html .= '	<th width="'.($output->getCELLWIDTH60()+$output->getCELLWIDTH50()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
 			
 				$html .= '<th style="text-align:right;">';
 				if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('TrasportShort').' '.$order['Order']['trasport_e'].'<br />';
@@ -369,9 +337,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			}
 			else {
 				$html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-				$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 				$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
+				$html .= '	<th width="'.($output->getCELLWIDTH60()+$output->getCELLWIDTH50()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
 			}
 			$html .= '</tr>';
 	
@@ -405,4 +373,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

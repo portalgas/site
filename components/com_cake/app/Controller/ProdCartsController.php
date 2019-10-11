@@ -32,7 +32,7 @@ class ProdCartsController extends AppController {
 	}
 
 	public function edit($id = null) {
-		if (!$this->ProdCart->exists($id)) {
+		if (!$this->ProdCart->exists($id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod cart'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
@@ -55,7 +55,7 @@ class ProdCartsController extends AppController {
 
 	public function delete($id = null) {
 		$this->ProdCart->id = $id;
-		if (!$this->ProdCart->exists()) {
+		if (!$this->ProdCart->exists($this->ProdCart->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod cart'));
 		}
 		$this->request->onlyAllow('post', 'delete');

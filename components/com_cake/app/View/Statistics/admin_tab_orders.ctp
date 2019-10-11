@@ -3,7 +3,7 @@ if(!empty($results)) {
 	
 	echo '<h2 class="ico-statistic">Importi totale per ordine<a name="produttori_totale_importo"></a></h2>';
 	
-	echo '<table cellpadding="0" cellspacing="0">';
+	echo '<div class="table"><table class="table table-hover">';
 	echo '<tr>';
 	echo '<th>'.__('N').'</th>';
 	echo '<th>'.__('Delivery').'</th>';
@@ -12,8 +12,10 @@ if(!empty($results)) {
 	echo '<th>Inizio ordine</th>';
 	echo '<th>Fine ordine</th>';
 	echo '<th style="text-align:center;">Importo totale</th>';
-	if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') 
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 		echo '<th style="text-align:center;">Pagamento</th>';
+		echo '<th style="text-align:center;">'.__('request_payment_num_short').'</th>';
+	}
 	
 	$totale = 0;
 	$delivery_id_old = 0;
@@ -37,14 +39,14 @@ if(!empty($results)) {
 		}
 		echo '<td>';
 		if(!empty($result['StatOrder']['supplier_img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['StatOrder']['supplier_img1']))
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';		
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';		
 		echo '</td>';		
 		echo '<td>'.$result['StatOrder']['supplier_organization_name'].'</td>';
 		echo '<td>'.$order_data_inizio.'</td>';
 		echo '<td>'.$order_data_fine.'</td>';
-		echo '<td style="text-align:center;">'.$importo.' &euro;</td>';
+		echo '<td style="text-align:center;">'.$importo.'&nbsp;&euro;</td>';
 		
-		if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') { 
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') { 
 			echo '<td>';
 			if(!empty($result['StatOrder']['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$result['StatOrder']['tesoriere_doc1'])) {
 				$ico = $this->App->drawDocumentIco($result['StatOrder']['tesoriere_doc1']);
@@ -53,27 +55,28 @@ if(!empty($results)) {
 			
 			if(!empty($result['StatOrder']['tesoriere_fattura_importo'])) {
 				echo '<p>'.__('Tesoriere fattura importo').' ';
-				echo number_format($result['StatOrder']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+				echo number_format($result['StatOrder']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				echo '</p>';	
 			}
 
 			if(!empty($result['StatOrder']['tesoriere_importo_pay'])) {
 				echo '<p>'.__('Tesoriere Importo Pay').' ';
-				echo number_format($result['StatOrder']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+				echo number_format($result['StatOrder']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				echo '</p>';
 			}
 			
 			if(!empty($result['StatOrder']['tesoriere_data_pay'])) {
 				echo '<p>'.__('Tesoriere Data Pay').' ';
-				if($result['StatOrder']['tesoriere_data_pay']=='000-00-00')
+				if($result['StatOrder']['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
 					$tesoriere_data_pay = '';
 				else
-					$tesoriere_data_pay = $this->Time->i18nFormat($result['StatOrder']['tesoriere_data_pay'],"%A, %e %B %Y");
+					$tesoriere_data_pay = $this->Time->i18nFormat($result['StatOrder']['tesoriere_data_pay'],"%e %B %Y");
 								
 				echo $tesoriere_data_pay;
 				echo '</p>';
 			}
 			echo '</td>';
+			echo '<td style="text-align:center;">'.$result['StatOrder']['request_payment_num'].'</td>';
 		}
 		
 		
@@ -91,12 +94,12 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td></td>';
-	echo '<td style="text-align:center;"><b>'.$totale.' &euro;</b></td>';
-	if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') 
-		echo '<td></td>';
+	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') 
+		echo '<td></td><td></td>';
 	echo '</tr>';
 		
-	echo '</table>';
+	echo '</table></div>';
 	
 	
 	/*
@@ -148,5 +151,5 @@ if(!empty($results)) {
 	echo '</script>';	
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>

@@ -18,7 +18,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 				<tr>
 					<?php 
 					echo '<td>';
-					$options = array('label' => false, 
+					$options = array('label' => '&nbsp;', 
 									'options' => $organizations,
 									'empty' => __('FilterToOrganizations'),
 									'name' => 'FilterSupplierOrganizationId',
@@ -32,7 +32,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 					
 					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 						echo '<td>';
-						echo $this->Form->input('category_supplier_id',array('label' => false,'options' => $categories,'empty' => 'Filtra per categoria','name'=>'FilterSupplierCategoryId','default'=>$FilterSupplierCategoryId,'escape' => false)); 
+						echo $this->Form->input('category_supplier_id',array('label' => '&nbsp;','options' => $categories, 'empty' => 'Filtra per categoria','name'=>'FilterSupplierCategoryId','default'=>$FilterSupplierCategoryId,'escape' => false)); 
 						echo '</td>';
 					}
 					?>
@@ -43,7 +43,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 						?>
 					</td>
 					<td>
-						<?php echo $this->Form->input('stato',array('label' => false,'options' => $stato,'name'=>'FilterSupplierStato','default'=>$FilterSupplierStato,'escape' => false)); ?>
+						<?php echo $this->Form->input('stato',array('label' => '&nbsp;','options' => $stato,'name'=>'FilterSupplierStato','default'=>$FilterSupplierStato,'escape' => false)); ?>
 					</td>							
 					<td>
 						<?php echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); ?>
@@ -54,14 +54,13 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 				</tr>	
 			</table>
 		</fieldset>					
+	<?php					
+			echo '<div class="table-responsive"><table class="table table-hover">';
+			echo '<tr>';
+			echo '<th>'.__('N').'</th>';
 					
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th><?php echo __('N');?></th>
-			
-			<?php 
 			if(empty($FilterSupplierOrganizationId))
-				echo '<th colspan="3">'.__('Organization').'</th>';
+				echo '<th colspan="3">'.__('GasOrganizations').'</th>';
 			else
 				echo '<th>'.__('Vote').'</th>';
 			
@@ -70,20 +69,25 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 				echo $this->Paginator->sort('category_supplier_id'); 	
 				echo '</th>';
 			}
-			?>
-			<th></th>
-			<th><?php echo $this->Paginator->sort('name',__('Business name'));?></th>
-			<th><?php echo $this->Paginator->sort('descrizione',__('Description'));?></th>
-			<th><?php echo __('Place');?></th>
-			<th><?php echo __('Contacts');?></th>
-			<th>Joomla Contenuto</th>
-			<th><?php echo $this->Paginator->sort('stato',__('Stato'));?></th>
-			<th><?php echo $this->Paginator->sort('created');?></th>
-		    <th class="actions"><?php echo __('Actions');?></th>
-	</tr>
-	<?php
+			
+			echo '<th>'.$this->Paginator->sort('suppliers_deliveries_types',__('SuppliersDeliveriesTypes')).'</th>';
+			echo '<th></th>';
+			echo '<th>'.$this->Paginator->sort('name',__('Business name')).'</th>';
+			echo '<th>'.$this->Paginator->sort('descrizione',__('Description')).'</th>';
+			echo '<th>'.__('Place').'</th>';
+			echo '<th>'.__('Contacts').'</th>';
+			echo '<th>Joomla Contenuto</th>';
+			echo '<th>'.$this->Paginator->sort('stato',__('Stato')).'</th>';
+			echo '<th>'.$this->Paginator->sort('created').'</th>';
+		    echo '<th class="actions">'.__('Actions').'</th>';
+	echo '</tr>';
+	
 	foreach ($results as $i => $result):
-
+		/*
+		echo "<pre>";
+		print_r($result);
+		echo "</pre>";
+		*/
 		if(!empty($FilterSupplierOrganizationId)) 	
 			$rowspan = 1;	
 		else
@@ -145,9 +149,11 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 			echo '</td>';
 		}
 
+		echo '<td rowspan="'.$rowspan.'">'.$result['SuppliersDeliveriesType']['name'].'</td>';
+
 		echo '<td rowspan="'.$rowspan.'">';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 		echo '</td>';
 		
 		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['name'].'</td>';
@@ -161,8 +167,8 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 		echo '<td rowspan="'.$rowspan.'">';
 		echo $result['Supplier']['telefono'];
 		if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
-		if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="link_mailto"></a>';
-		if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank link_www"></a>';
+		if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
+		if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
 		echo '<td rowspan="'.$rowspan.'" title="'.__('toolJoomlaContent').' - vale '.$result['Supplier']['j_content_id'].'" class="'.$class_j_content_id.'"></td>';
 		echo '<td rowspan="'.$rowspan.'" title="'.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';
@@ -190,7 +196,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 	
 endforeach;
 
-	echo '</table>';
+	echo '</table></div>';
 
 	echo $this->element('legendaSupplier');
 	
@@ -207,16 +213,3 @@ endforeach;
 	?>
 	</div>
 </div>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-});		
-</script>

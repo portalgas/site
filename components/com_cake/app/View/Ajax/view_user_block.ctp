@@ -1,7 +1,7 @@
 ﻿<div class="related">
 
 <?php
-if($user->organization['Organization']['payToDelivery']=='POST') {
+if($user->organization['Template']['payToDelivery']=='POST') {
 
 	echo '<h3 class="title_details">'.__('Related Requests Payments').'</h3>';
 
@@ -10,8 +10,8 @@ if($user->organization['Organization']['payToDelivery']=='POST') {
 	<table cellpadding="0" cellspacing="0">
 		<tr>
 			<th><?php echo __('Request Payment');?></th>
-			<th>Importo richiesto</th>
-			<th>Importo pagato</th>
+			<th><?php echo __('importo_required');?></th>
+			<th><?php echo __('Importo_pagato');?></th>
 			<th>Stato</th>
 			<th>Pagamento</th>
 	</tr>			
@@ -62,7 +62,7 @@ else:
 	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "L'utente non ha richieste di pagamento associate"));
 endif; 
 
-} // end if($user->organization['Organization']['payToDelivery']=='POST') 
+} // end if($user->organization['Template']['payToDelivery']=='POST') 
 
 
 

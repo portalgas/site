@@ -23,8 +23,8 @@ else
 		echo '	<th></th>';
 		echo '	<th>'.__('N').'</th>';
 		echo '	<th>'.$this->Paginator->sort('name').'</th>';
-		echo '	<th>'.$this->Paginator->sort(__('Data inizio'), 'data_inizio').'</th>';
-		echo '	<th>'.$this->Paginator->sort(__('Data fine'), 'data_fine').'</th>';
+		echo '	<th>'.$this->Paginator->sort(__('DataInizio'), 'data_inizio').'</th>';
+		echo '	<th>'.$this->Paginator->sort(__('DataFine'), 'data_fine').'</th>';
 		echo '	<th>'. __('Prod Groups').'</th>';
 		echo '	<th>'. __('Ricorrenza').'</th>';
 		echo '	<th></th>';
@@ -111,36 +111,36 @@ else
 		echo $this->element('legendaProdDeliveriesState',array('htmlLegenda' => $htmlLegenda));
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora consegne registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora consegne registrate"));
 	
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewProdDeliverySottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});		
 });

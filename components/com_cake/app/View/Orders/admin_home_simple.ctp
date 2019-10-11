@@ -8,7 +8,7 @@ if($popup=='N') {
 	else
 		$label_crumb = __('Order home').': '.__('Supplier').' <b>'.$results['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>'.$results['Delivery']['luogo'].'</b>';
 	
-	$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 	$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 	$this->Html->addCrumb($label_crumb);
 	echo $this->Html->getCrumbList(array('class'=>'crumbs'));

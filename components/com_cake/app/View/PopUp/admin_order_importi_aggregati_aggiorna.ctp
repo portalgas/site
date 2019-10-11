@@ -1,3 +1,6 @@
+<?php
+echo $this->Html->css('popupSlider-min');
+?>
 <h3>Aggiorna gli importi aggregati</h3>
 			
 		<div class="sp-slideshow">

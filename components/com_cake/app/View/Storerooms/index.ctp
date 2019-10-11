@@ -12,12 +12,13 @@ echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'
 			<tr>
 				<td>
 					<?php 
-					$options = array('label' => false, 'options' => $suppliersOrganizations,
-									 'empty' => 'Filtra per produttore','name'=>'FilterStoreroomSupplierId',
-									 'default'=>$FilterStoreroomSupplierId,'escape' => false);
-					
+					$options = ['label' => false, 'options' => $suppliersOrganizations,
+								'name'=>'FilterStoreroomSupplierId',
+							    'default'=>$FilterStoreroomSupplierId,'escape' => false];
+					if(count($suppliersOrganizations) > 1) 
+						$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];
 					if(count($suppliersOrganizations) > Configure::read('HtmlSelectWithSearchNum')) 
-						$options += array('class'=> 'selectpicker', 'data-live-search' => true); 						
+						$options += ['class'=> 'selectpicker', 'data-live-search' => true];
 					echo $this->Form->input('supplier_organization_id', $options); ?>
 				</td>
 				<td>
@@ -121,17 +122,4 @@ if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 <?php
 }
 ?>
-
-
-$(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	$('.filter').click(function() {
-		$("input[name^='page']").val('');
-	});
-	
-});		
 </script>

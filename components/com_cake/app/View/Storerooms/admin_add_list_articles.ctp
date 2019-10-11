@@ -1,8 +1,18 @@
 <?php
+echo '<div class="panel-group">';
+
+if(empty($results) && empty($articles)) {
+	if($isSupplierOrganizationDesTitolare)
+		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Per il produttore scelto non ci sono articoli!"));
+	else {
+		$msg = "Gli articoli del produttore scelto appartengono a \"".$ownOrganizationResults['OwnOrganization']['name']."\" che fa parte del DES \"".$ownOrganizationResults['De']['name']."\"";
+		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => $msg));
+	}	
+}	
+else {
 $i = 0;
 if(!empty($results)) {
 ?>
-	<div class="panel-group">
 	  <div class="panel panel-primary">
 		<div class="panel-heading">
 		  <h4 class="panel-title">
@@ -29,17 +39,17 @@ if(!empty($results)) {
 					<th><?php echo __('Modifica<br />quantità<br />in dispensa');?></th>			
 			</tr>
 			<?php
-			foreach ($results as $i => $result):
+			foreach ($results as $i => $result) {
 			
 				if($storeroom_id==$result['Storeroom']['id'])
 					echo '<tr class="view" style="background-color:yellow;">';
 				else	
 					echo '<tr class="view">';
-			?>
 			
-				<td><a action="articles-<?php echo $result['Article']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-				<td><?php echo ($i+1);?></td>
-				<?php
+			
+				echo '<td><a action="articles-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+				echo '<td>'.($i+1).'</td>';
+				
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 					echo '<td>'.$result['Article']['codice'].'</td>';
 				
@@ -48,42 +58,45 @@ if(!empty($results)) {
 					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 				}		
 				echo '</td>';				
-				?>
-				<td><?php echo $result['Article']['name']; ?>&nbsp;
-					 <?php if(!empty($result['Article']['nota'])) echo '<div class="small">'.strip_tags($result['Article']['nota']).'</div>'; ?>
-				</td>
-				<td><?php // Conf
-					if($result['Article']['qta']>0)
-						echo $this->App->getArticleConf($result['Article']['qta'], $this->App->traslateEnum($result['Article']['um']));?>
-				</td>
-				<td style="white-space: nowrap;"><?php echo $result['Storeroom']['prezzo'].'&nbsp;&euro;'; // Prezzo unità del prezzo in dispensa ?>
-				</td>
-				<td style="text-align:center;"><?php echo $result['Storeroom']['qta'];?></td>
-				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Storeroom]['.$result['Storeroom']['id'].'][Qta]','value' => '', 'class' => 'qta_storeroom', 'tabindex'=>($i+1)));?></td>
-			</tr>
-			<tr class="trView" id="trViewId-<?php echo $result['Article']['id'];?>">
-				<td colspan="2"></td>
-				<td colspan="<?php echo ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '7' :'6';?>" id="tdViewId-<?php echo $result['Article']['id'];?>"></td>
-			</tr>
-		<?php 
-		endforeach; 
+				echo '<td>'.$result['Article']['name'].'&nbsp;';
+				if(!empty($result['Article']['nota'])) echo '<div class="small">'.strip_tags($result['Article']['nota']).'</div>';
+				echo '</td>';
+				echo '<td>'; // Conf
+				if($result['Article']['qta']>0)
+					echo $this->App->getArticleConf($result['Article']['qta'], $this->App->traslateEnum($result['Article']['um']));
+				echo '</td>';
+				echo '<td style="white-space: nowrap;">'.$result['Storeroom']['prezzo'].'&nbsp;&euro;'; // Prezzo unità del prezzo in dispensa 
+				echo '</td>';
+				echo '<td style="text-align:center;">'.$result['Storeroom']['qta'].'</td>';
+				echo '<td>'.$this->Form->input('qta', ['label' => false, 'name' => 'data[Storeroom]['.$result['Storeroom']['id'].'][qta]', 'value' => '', 'class' => 'qta_storeroom', 'tabindex'=>($i+1)]).'</td>';
+			echo '</tr>';
+			echo '<tr class="trView" id="trViewId-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
+			echo '<td colspan="2"></td>';
+			$colspan = ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '7' :'6';
+			echo '<td colspan="'.$colspan.'" id="tdViewId-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></td>';
+			echo '</tr>';
+		}
 			
 		echo '</table></div>';
+	?>
+	
+		  </div> <!-- panel-body -->
+		</div> <!-- collapse1 -->
+	  </div> <!-- panel panel-primary -->
+<?php 
 	}
 	else   // 	if(!empty($results)
 		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Per il produttore scelto non ci sono articoli nella dispensa"));
-	?>
-	
-		  </div>
-		</div>
-	  </div>
+
+	if(!empty($articles)) {
+?>	  
 	  <div class="panel panel-primary">
 		<div class="panel-heading">
 		  <h4 class="panel-title">
 			<a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><i class="fa fa-lg fa-plus" aria-hidden="true"></i> Elenco degli articoli attivi ancora da associare alla dispensa</a>
 		  </h4>
 		</div>
-		<div id="collapse2" class="panel-collapse collapse">
+		<div id="collapse2" class="panel-collapse collapse <?php echo (!empty($results)?'': 'in');?>">
 		  <div class="panel-body">
 
 		
@@ -101,11 +114,11 @@ if(!empty($results)) {
 				<th><?php echo __('Quantità<br />da inserire<br />in dispensa');?></th>			
 			</tr>
 			<?php
-			foreach ($articles as $ii => $article):
-			?>
-			<tr class="view">
-				<td><?php echo ($ii+1);?></td>
-				<?php
+			foreach ($articles as $ii => $article) {
+			
+				echo '<tr class="view">';
+				echo '<td>'.($ii+1).'</td>';
+				
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 					echo '<td>'.$article['Article']['codice'].'</td>';
 				
@@ -115,23 +128,29 @@ if(!empty($results)) {
 					echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';
 				}		
 				echo '</td>';				
-				?>				
-				<td><?php echo $article['Article']['name']; ?>&nbsp;
-					 <?php if(!empty($article['Article']['nota'])) echo '<div class="small">'.strip_tags($article['Article']['nota']).'</div>'; ?>
-				</td>
-				<td><?php echo $this->App->getArticleConf($article['Article']['qta'], $this->App->traslateEnum($article['Article']['um']));?>
-				</td>
-				<td style="white-space: nowrap;"><?php echo $article['Article']['prezzo_e']; // Prezzo unità ?>
-				</td>
-				<td style="white-space: nowrap;"><?php // Prezzo/UM
-					echo $this->App->getArticlePrezzoUM($article['Article']['prezzo'], $article['Article']['qta'], $article['Article']['um'], $article['Article']['um_riferimento']);?>
-				</td>						
-				<td><?php echo $this->Form->input('qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][Qta]','value' => 0, 'class' => 'qta_article', 'tabindex'=>($i+1)));?></td>
-			</tr>
-		<?php endforeach; ?>
+				echo '<td>'.$article['Article']['name'].'&nbsp;';
+				if(!empty($article['Article']['nota'])) echo '<div class="small">'.strip_tags($article['Article']['nota']).'</div>';
+				echo '</td>';
+				echo '<td>'.$this->App->getArticleConf($article['Article']['qta'], $this->App->traslateEnum($article['Article']['um']));
+				echo '</td>';
+				echo '<td style="white-space: nowrap;">'.$article['Article']['prezzo_e']; // Prezzo unità 
+				echo '</td>';
+				echo '<td style="white-space: nowrap;">'; // Prezzo/UM
+				echo $this->App->getArticlePrezzoUM($article['Article']['prezzo'], $article['Article']['qta'], $article['Article']['um'], $article['Article']['um_riferimento']);
+				echo '</td>';
+				echo '<td>'.$this->Form->input('qta', ['label' => false, 'name' => 'data[Article]['.$article['Article']['organization_id'].'-'.$article['Article']['id'].'][qta]', 'value' => 0, 'class' => 'qta_article', 'tabindex'=>($i+1)]).'</td>';
+				echo '</tr>';
+			} 
+			?>
 			</table></div>
 		
 		  </div>
 		</div>
-	  </div>
-	</div> <!-- panel-group -->
+	  </div> <!-- panel panel-primary -->
+	  <?php
+		}
+		else   // 	if(!empty($articles)
+			echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Per il produttore scelto non ci sono articoli da inserire in dispensa"));
+
+	echo '</div> <!-- panel-group -->';
+}

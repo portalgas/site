@@ -59,7 +59,7 @@ class JNode extends JObject
 	 *
 	 * @since   11.1
 	 */
-	public function addChild(&$child)
+	public function addChild($child)
 	{
 		JLog::add('JNode::addChild() is deprecated.', JLog::WARNING, 'deprecated');
 
@@ -80,7 +80,7 @@ class JNode extends JObject
 	 *
 	 * @since    11.1
 	 */
-	public function setParent(&$parent)
+	public function setParent($parent)
 	{
 		JLog::add('JNode::setParent() is deprecated.', JLog::WARNING, 'deprecated');
 
@@ -93,9 +93,9 @@ class JNode extends JObject
 			}
 			if (!is_null($parent))
 			{
-				$parent->_children[$hash] = & $this;
+				$parent->_children[$hash] = $this;
 			}
-			$this->_parent = & $parent;
+			$this->_parent = $parent;
 		}
 	}
 
@@ -106,7 +106,7 @@ class JNode extends JObject
 	 *
 	 * @since   11.1
 	 */
-	public function &getChildren()
+	public function getChildren()
 	{
 		JLog::add('JNode::getChildren() is deprecated.', JLog::WARNING, 'deprecated');
 
@@ -120,7 +120,7 @@ class JNode extends JObject
 	 *
 	 * @since   11.1
 	 */
-	public function &getParent()
+	public function getParent()
 	{
 		JLog::add('JNode::getParent() is deprecated.', JLog::WARNING, 'deprecated');
 

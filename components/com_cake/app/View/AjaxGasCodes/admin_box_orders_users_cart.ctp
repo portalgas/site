@@ -1,9 +1,5 @@
 <?php 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 
 if(!empty($results)) {
 		
@@ -32,7 +28,7 @@ if(!empty($results)) {
 				
 				echo '<th>';	
 		
-				if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+				if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 					echo '<ul>';
 					echo '<li style="float: left;">';
 					echo '<a style="height: 32px;padding-left: 35px;" class="box-cart actionEdit" action="readCartsUsers">';
@@ -191,16 +187,16 @@ if(!empty($results)) {
 		if($drawListAllOrders=='Y') {	
 			?>
 				<script type="text/javascript">
-				jQuery(document).ready(function() {
+				$(document).ready(function() {
 				
-					jQuery('.box-cart').click(function() {
+					$('.box-cart').click(function() {
 		
 						/* id = order.id_user.id */
-						var idRow = jQuery(this).closest('tr').attr('id');
+						var idRow = $(this).closest('tr').attr('id');
 		
 						/* console.log('idRow '+idRow); */ 
 		
-						var delivery_id = jQuery('#delivery_id').val();
+						var delivery_id = $('#delivery_id').val();
 		
 						dataElementArray = idRow.split('_');
 						var order_id = dataElementArray[0];
@@ -211,10 +207,10 @@ if(!empty($results)) {
 						var articlesOptions = 'options-users-cart';
 						var order_by = "";
 						
-						var action = jQuery(this).attr('action');
+						var action = $(this).attr('action');
 						if(action=='readCartsUsers') {
 							AjaxCallToReadCartsUsers(delivery_id, user_id, order_id, idDivTarget);
-							jQuery('#'+idDivOptionsTarget).hide();
+							$('#'+idDivOptionsTarget).hide();
 						}
 						if(action=='managementCartsUsers') 
 							AjaxCallToOptions(delivery_id, order_id, user_id, idDivOptionsTarget);

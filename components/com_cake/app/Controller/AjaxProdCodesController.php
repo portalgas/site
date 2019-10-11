@@ -99,11 +99,11 @@ class AjaxProdCodesController extends AppController {
 		$ProdDelivery = new ProdDelivery;
 	
 		$ProdDelivery->id = $this->prod_delivery_id;
-		if (!$ProdDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$ProdDelivery->exists($ProdDelivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$results = $ProdDelivery->read($this->user->organization['Organization']['id'], null, $this->prod_delivery_id);
+		$results = $ProdDelivery->read($this->prod_delivery_id, $this->user->organization['Organization']['id']);
 		if($results['ProdDelivery']['prod_delivery_state_id']==Configure::read('PROCESSED-POST-DELIVERY')) {
 			/*
 			 * ctrl eventuali occorrenze di ProdCartsSplit

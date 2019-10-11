@@ -7,6 +7,8 @@ echo "</pre>";
 
 
 if(!empty($desOrdersResults)) {
+	echo '<div class="row">';
+	echo '<div class="col-md-12">';	
 	echo '<div class="legenda legenda-ico-info">';
 	echo '<h2 class="ico-orders">D.E.S. ordine condiviso</h2>';
 	
@@ -14,17 +16,21 @@ if(!empty($desOrdersResults)) {
 		echo '<p style="padding-left: 45px;background-color:#fff;" ';
 		echo 'class="nota_evidenza_'.strtolower($desOrdersResults['DesOrder']['nota_evidenza']).'"';
 		echo '>';
+
+		echo '<div style="overflow-y:auto;max-height:150px">';
 		echo $desOrdersResults['DesOrder']['nota'];
+		echo '</div>';
+
 		echo '</p>';
 	}
 	
-	echo '<table cellpadding="0" cellspacing="0">';
+	echo '<div class="table-responsive"><table class="table">';
 	echo '<tr>';
 	echo '<th colspan="2">'.__('OwnOrganization').'</th>';
 	echo '<th>'.__('DesDelivery').'</th>';
-	echo '<th>'.__('Data fine max').'</th>';
+	echo '<th>'.__('DataFineMax').'</th>';
 	echo '<th>'.__('Orders').'</th>';
-	echo '<th>'.__('stato_elaborazione').'</th>';			
+	echo '<th>'.__('StatoElaborazione').'</th>';			
 	echo '</tr>';
 	
 	echo '<tr class="view-2">';
@@ -76,18 +82,18 @@ if(!empty($desOrdersResults)) {
 			echo '<td></td>';
 		echo '</tr>';
 	}
-	echo '</table>';
+	echo '</table></div>';
 	 
 	/*
 	 * summaryDesOrder
 	 */
 	 if(!empty($summaryDesOrderResults)) {
 
-		echo '<table cellpadding="0" cellspacing="0">';
+		echo '<div class="table-responsive"><table class="table">';
 		echo '<tr>';
 		echo '<th style="width:20%">Importo dell\'ordine</th>';
 		echo '<th style="width:20%">Importo dovuto al D.E.S.</th>';
-		echo '<th colspan="2">Differenza</th>';
+		echo '<th colspan="2">'.__('Delta').'</th>';
 		echo '<th style="width:55%">Nota del titolare</th>';
 		echo '</tr>';
 		
@@ -112,16 +118,16 @@ if(!empty($desOrdersResults)) {
 				
 				$differenza = (-1 * $differenza);
 				$differenza = number_format($differenza, 2 , Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-				echo '<td>'.$differenza.' &euro;</td>';
+				echo '<td>'.$differenza.'&nbsp;&euro;</td>';
 			}
 			else {	
 				echo '<td style="width:10px;background-color:green;"></td>';
-				echo '<td>0 &euro;</td>';
+				echo '<td>0&nbsp;&euro;</td>';
 			}
 			echo '<td>'.$summaryDesOrderResult['SummaryDesOrder']['nota'].'</td>';
 			echo '</tr>';
 		}
-		echo '</table>';
+		echo '</table></div>';
 	}
 	
 	/* 
@@ -137,7 +143,7 @@ if(!empty($desOrdersResults)) {
 					echo '<h2 style="cursor:pointer;" class="ico-mails" id="dati_produttore_header">Dati da trasmettere al produttore</h2>';
 					
 					echo '<div id="dati_produttore" style="display:none;">';
-					echo '<table cellpadding="0" cellspacing="0">';
+					echo '<div class="table-responsive"><table class="table">';
 					echo '<tr>';
 					echo '<th colspan="2">'.__('G.A.S.').'</th>';
 					echo '<th>'.__('DesDelivery').'</th>';
@@ -157,9 +163,9 @@ if(!empty($desOrdersResults)) {
 				echo '<td>'.$desOrdersOrganization['Organization']['name'].'</td>';
 				echo '<td>';
 				echo $desOrdersOrganization['DesOrdersOrganization']['luogo'];
-				if($desOrdersOrganization['DesOrdersOrganization']['data']!='0000-00-00')
+				if($desOrdersOrganization['DesOrdersOrganization']['data']!=Configure::read('DB.field.date.empty'))
 					echo '<br />'.$this->Time->i18nFormat($desOrdersOrganization['DesOrdersOrganization']['data'],"%A, %e %B %Y");
-				if($desOrdersOrganization['DesOrdersOrganization']['orario']!='00:00:00')
+				if($desOrdersOrganization['DesOrdersOrganization']['orario']!=Configure::read('DB.field.date.empty'))
 					echo '<br />'.$this->App->formatOrario($desOrdersOrganization['DesOrdersOrganization']['orario']);
 				echo '</td>';
 					
@@ -177,20 +183,17 @@ if(!empty($desOrdersResults)) {
 	 }
 	 
 	 if($draw_header_table)
-	 	echo '</table></div>';	
-	 	 
-	 	 
-	 	 
-	 	 
-	 	 
-	 	 
+	 	echo '</table></div></div>';	
+
 	echo '</div>';
+	echo '</div>'; // col-md-12
+	echo '</div>'; // row
 }
 ?>
 <script>
-jQuery(document).ready(function() {
-	jQuery('#dati_produttore_header').click(function() {
-		jQuery("#dati_produttore").toggle('slow');
+$(document).ready(function() {
+	$('#dati_produttore_header').click(function() {
+		$("#dati_produttore").toggle('slow');
 	});
 });
 </script>

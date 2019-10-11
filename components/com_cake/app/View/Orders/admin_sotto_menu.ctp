@@ -8,13 +8,13 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_ca
 
 if(!empty($des_order_id)) {
 	echo '<h2>';
-	if($desOrder['des_id']==$user->des_id) 
+	if($desOrdersResults['DesOrder']['des_id']==$user->des_id) 
 		echo $this->Html->link(__('DesOrder'), array('controller' => 'DesOrdersOrganizations', 'action' => 'index', null, 'des_order_id='.$des_order_id), array('title' => ""));
 	else
 	echo __('DesOrder');
-	echo $this->App->drawDesOrdersStateDiv($desOrder);
+	echo $this->App->drawDesOrdersStateDiv($desOrdersResults['DesOrder']);
 	echo '<br />'; 
-	echo '<small style="color:#000;">'.__($desOrder['state_code'].'-label').'</small>';		
+	echo '<small style="color:#000;">'.__($desOrdersResults['DesOrder']['state_code'].'-label').'</small>';		
 	echo '</h2>';
 }
 

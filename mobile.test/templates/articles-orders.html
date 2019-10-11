@@ -1,0 +1,51 @@
+<ion-view view-title="Articoli {{organization_label}}" cache-view="false"> 
+<ion-nav-buttons side="right">
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+    <ion-content class="padding">
+
+        <div ng-switch on="organization_id" style="margin-bottom:150px;">
+            <div ng-switch-when="0">
+                <ng-include src="'templates/organizations-choice.html'"></ng-include>
+            </div>
+            <div ng-switch-default>
+
+                <div class="card" ng-show="rowsFound == 0">
+                    <div class="item item-text-wrap">
+                        Non ci sono articoli associati
+                    </div>
+                </div>	
+                <div ng-show="articlesOrders.length">
+
+                    <div class="bar bar-header item-input-inset">
+                        <label class="item-input-wrapper">
+                            <i class="icon ion-ios-search placeholder-icon"></i>
+                            <input ng-model="search.ArticlesOrder_name" type="text" placeholder="Ricerca articolo" />
+                        </label>
+                    </div>					
+
+                    <div ng-repeat="result in articlesOrders| filter:search:strict">
+
+						<div ng-show="device=='IOS'" ng-include="'templates/sub_cart_open_ios.html'"></div>
+						<div ng-show="device!='IOS'" ng-include="'templates/sub_cart_open.html'"></div>
+						
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>	
+
+		<p>&nbsp;</p>
+
+    </ion-content>
+
+</ion-view>
+
+
+<div class="bar bar-positive bar-footer" ng-show="isLogged && cart_import_total">
+    <div class="title">Carrello per il produttore: {{total() + " &euro;"}}</div>
+</div>			
+

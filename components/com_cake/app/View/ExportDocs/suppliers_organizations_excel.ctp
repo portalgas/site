@@ -34,7 +34,7 @@ if (!empty($results)) {
 		$tot_totArticles=0;
 		foreach ($results as $numResult => $result) {
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			
 			$rowsExcel[] = ($numResult + 1);
 			if($result['Supplier']['stato']=='N' || $result['SuppliersOrganization']['stato']=='N')
@@ -72,7 +72,7 @@ if (!empty($results)) {
 			$tot_totArticles += $result['Articles']['totArticles'];
 		}		
 	
-		$rowsExcel = array();
+		$rowsExcel = [];
 		
 		$rowsExcel[] = '';
 		if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y')

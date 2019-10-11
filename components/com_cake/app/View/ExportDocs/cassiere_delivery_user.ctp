@@ -91,9 +91,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								foreach ($rows2 as $typeRow2 => $cols2) 
 									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id_local) 
 										if($trasportAndCost=='Y')  
-											$html .= ' - Totale: '.$cols2['IMPORTO_COMPLETO'];
+											$html .= ' - Totale: '.$cols2['IMPORTO_COMPLETO_E'];
 										else
-											$html .= ' - Totale: '.$cols2['IMPORTO'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
+											$html .= ' - Totale: '.$cols2['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
 							}
 							$html .= '</h3></td>';
 							$html .= '</tr>';
@@ -121,23 +121,23 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							$html .= '<tr>';
 							$html .= '<td style="text-align:center;">'.$cols['QTA'].'</td>';
 							$html .= '<td colspan="2" style="text-align:right;">Totale&nbsp;dell\'utente&nbsp;</td>';
-							$html .= '<td style="text-align:right;">'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							if($trasportAndCost=='Y') {
 								$html .= '<td style="text-align:right;">';
-								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('TrasportShort').' '.$cols['IMPORTO_TRASPORTO'].'<br />';
-								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE'].'<br />';
-								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLessShort').' '.$cols['IMPORTO_COST_LESS'];
+								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('TrasportShort').' '.$cols['IMPORTO_TRASPORTO_E'].'<br />';
+								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE_E'].'<br />';
+								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLessShort').' '.$cols['IMPORTO_COST_LESS_E'];
 								$html .= '</td>';
 
 								$html .= '<td style="text-align:right;">';
-								$html .= $cols['IMPORTO_COMPLETO'];
+								$html .= $cols['IMPORTO_COMPLETO_E'];
 								$html .= '</td>';
 							}
 							$html .= '</tr>';
 							
 							$html .= '</tbody></table>';
 							
-							$importo_completo_all_orders += $cols['IMPORTO_COMPLETO_DOUBLE'];
+							$importo_completo_all_orders += $cols['IMPORTO_COMPLETO'];
 						break;
 						case 'TRTOT':
 						break;								
@@ -150,14 +150,14 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
 								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'">'.$name.'</td>';
 								$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_E'].'</td>';
-								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';
 							}
 							else {								
 								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
 								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'">'.$name.'</td>';
 								$html .= '<td width="'.$output->getCELLWIDTH90().'">'.$cols['PREZZO_E'].'</td>';
-								$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							} // end if($trasportAndCost=='Y')
 							$html .= '</tr>';
 						break;
@@ -193,6 +193,98 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		$html = '<div class="h4PdfNotFound">'.__('export_docs_not_found').'</div>';
 		$output->writeHTMLCell(0,0,15,40, $css.$html, $border=0, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	}	
+	
+	
+	
+        /*
+         * D I S P E N S A
+         */
+        $i = 0;
+        if (isset($storeroomResults['Delivery'][$numDelivery])) {
+
+            $delivery = $storeroomResults['Delivery'][$numDelivery];
+
+            if ($delivery['totStorerooms']) {
+
+                $html = '';
+                $html .= '<br /><div class="h1Pdf">'.__('Storeroom').'</div>';
+                $output->writeHTML($css . $html, $ln = true, $fill = false, $reseth = true, $cell = true, $align = '');
+
+
+
+                $html = '';
+                $html .= '	<table cellpadding="0" cellspacing="0">';
+                $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+                $html .= '		<tr>';
+               // $html .= '			<th width="' . $output->getCELLWIDTH20() . '">' . __('N') . '</th>';
+                $html .= '			<th width="' . $output->getCELLWIDTH30() . '">' . __('Bio') . '</th>';
+                $html .= '			<th width="' . ($output->getCELLWIDTH200() + $output->getCELLWIDTH30()) . '">' . __('Name') . '</th>';
+                $html .= '			<th width="' . $output->getCELLWIDTH70() . '">' . __('Conf') . '</th>';
+                $html .= '			<th width="' . $output->getCELLWIDTH70() . '">' . __('PrezzoUnita') . '</th>';
+                $html .= '			<th width="' . ($output->getCELLWIDTH70()+$output->getCELLWIDTH20()) . '">' . __('PrezzoUM') . '</th>';
+                $html .= '			<th width="' . $output->getCELLWIDTH70() . '">' . __('Acquistato') . '</th>';
+                $html .= '			<th width="' . $output->getCELLWIDTH70() . '" style="text-align:right;">' . __('Importo') . '</th>';
+                $html .= '	</tr>';
+                $html .= '	</thead><tbody>';
+
+				$tot_qta = 0;
+				$tot_importo = 0;
+                $supplier_organization_id_old = 0;
+                foreach ($delivery['Storeroom'] as $numStoreroom => $storeroom) {
+
+                    if ($storeroom['SuppliersOrganization']['id'] != $supplier_organization_id_old) {
+                        $html .= '<tr style="height:30px;">';
+                        $html .= '<td colspan="7" class="trGroup">' . __('Supplier') . ': ' . $storeroom['SuppliersOrganization']['name'];
+                        if (!empty($storeroom['SuppliersOrganization']['descrizione']))
+                            $html .= '/' . $storeroom['SuppliersOrganization']['descrizione'];
+                        $html .= '</td>';
+                        $html .= '</tr>';
+                    }
+
+
+                    $html .= '<tr>';
+                   // $html .= '	<td width="' . $output->getCELLWIDTH20() . '">' . ($i + 1) . '</td>';
+                    $html .= '	<td width="' . $output->getCELLWIDTH30() . '">';
+                    if ($storeroom['Article']['bio'] == 'Y')
+                        $html .= 'Bio';
+                    $html .= '</td>';
+                    $html .= '<td width="' . ($output->getCELLWIDTH200() + $output->getCELLWIDTH30()) . '">' . h($storeroom['name']) . '</td>';
+                    $html .= '<td width="' . $output->getCELLWIDTH70() . '">' . $this->App->getArticleConf($storeroom['Article']['qta'], $storeroom['Article']['um']) . '</td>';
+                    $html .= '<td width="' . $output->getCELLWIDTH70() . '">' . $storeroom['prezzo_e'] . '</td>';
+                    $html .= '<td width="' . ($output->getCELLWIDTH70()+$output->getCELLWIDTH20()) . '">' . $this->App->getArticlePrezzoUM($storeroom['prezzo'], $storeroom['Article']['qta'], $storeroom['Article']['um'], $storeroom['Article']['um_riferimento']) . '</td>';
+                    $html .= '<td style="text-align:center;" width="' . $output->getCELLWIDTH70() . '">' . $storeroom['qta'] . '</td>';
+                    $html .= '<td width="' . $output->getCELLWIDTH70() . '" style="text-align:right;">' . $this->App->getArticleImporto($storeroom['prezzo'], $storeroom['qta']) . '</td>';
+                    $html .= '</tr>';
+
+					$tot_qta = ($tot_qta + $storeroom['qta']);
+					$tot_importo = ($tot_importo + ($storeroom['prezzo'] * $storeroom['qta']));
+					$importo_completo_all_orders += $tot_importo;
+					
+                    $supplier_organization_id_old = $storeroom['SuppliersOrganization']['id'];
+                }
+                $html .= '</tbody>';
+                
+                $tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                
+                
+                $html .= '<tr>';
+                $html .= '<tfooter>';
+                $html .= '	<th></th>';
+                $html .= '	<th></th>';
+                $html .= '	<th></th>';
+                $html .= '	<th></th>';
+                $html .= '	<th></th>';
+                $html .= '	<th style="text-align:center;">'.$tot_qta.'</th>';
+                $html .= '	<th style="text-align:right;">'.$tot_importo.'&nbsp;&euro;</th>';
+                $html .= '</tr>';
+                $html .= '</tfooter>';
+                                
+                $html .= '</table>';
+                $output->writeHTML($css . $html, $ln = true, $fill = false, $reseth = true, $cell = true, $align = '');
+            } // end if($delivery['totStorerooms'])			
+        } // end if(isset($storeroomResults['Delivery'][$numDelivery])) 
+
+			
 }  // end foreach($results['Delivery'] as $numDelivery => $result['Delivery']) 
 
 
@@ -248,4 +340,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

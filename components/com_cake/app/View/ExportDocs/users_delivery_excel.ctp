@@ -22,7 +22,7 @@ $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => tru
 
 foreach($results as $numResult => $result) {
 
-	$data = array();
+	$data = [];
 	
 	$telephone = "";
 	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';

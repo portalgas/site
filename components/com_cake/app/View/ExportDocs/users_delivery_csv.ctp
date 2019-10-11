@@ -14,10 +14,10 @@ $headers = array('csv' => array(
 		)
 ); 
 
-$data = array();
+$data = [];
 foreach($results as $numResult => $result) {
 
-	$dataTmp = array();	
+	$dataTmp = [];	
 	$telephone = "";
 	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];	
 	$address = "";	if(!empty($result['Profile']['address'])) $address = $result['Profile']['address'];

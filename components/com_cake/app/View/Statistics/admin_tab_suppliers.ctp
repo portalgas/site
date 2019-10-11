@@ -21,7 +21,7 @@ if(!empty($results)) {
 		if($supplier_organization_id_old!=$result['StatOrder']['supplier_organization_id']) {
 			echo '<td width="50">';
 			if(!empty($result['StatOrder']['supplier_img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['StatOrder']['supplier_img1']))
-				echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';	
+				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['StatOrder']['supplier_img1'].'" />';	
 			echo '</td>';		
 			echo '<td>'.$result['StatOrder']['supplier_organization_name'].'</td>';
 		}	
@@ -29,7 +29,7 @@ if(!empty($results)) {
 			echo '<td></td>';
 			echo '<td></td>';
 		}
-		echo '<td style="text-align:center;">'.$tot_importo.' &euro;</td>';
+		echo '<td style="text-align:center;">'.$tot_importo.'&nbsp;&euro;</td>';
 		echo '</tr>';
 		
 		$supplier_organization_id_old=$result['StatOrder']['supplier_organization_id'];
@@ -40,7 +40,7 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td></td>';
-	echo '<td style="text-align:center;">'.$totale.' &euro;</td>';
+	echo '<td style="text-align:center;">'.$totale.'&nbsp;&euro;</td>';
 	echo '</tr>';	
 	echo '</table>';
 
@@ -101,5 +101,5 @@ if(!empty($results)) {
 	echo $this->Html->script('d3/myGrafics', array('date' => uniqid()));		
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>

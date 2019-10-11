@@ -1,0 +1,86 @@
+<ion-view view-title="Carrello - Consegne" cache-view="false"> 
+<ion-nav-buttons side="right">
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content>
+ 
+	<div ng-switch on="organization_id">
+		<div ng-switch-when="0">
+			<ng-include src="'templates/organizations-choice.html'"></ng-include>
+		</div>
+		<div ng-switch-default>
+
+			<li ng-show="!deliveries.length">
+				<div class="card">
+				  <div class="item item-text-wrap">
+					Non ci sono consegne aperte
+				  </div>
+				</div>	
+			</li>
+			
+			
+			
+			<ion-list>  
+			<div ng-repeat="delivery in deliveries | orderBy:'data'">
+				   <ion-item class="item-content" type="item-text-wrap"
+							ng-click="toggleBlock(delivery)"
+							ng-class="{active: isBlockShown(delivery)}"
+							>
+				   
+						<div ng-if="delivery.data == '2025-01-01T00:00:00+0000' || delivery.data == '2025-01-01'">
+							<h2>Luogo e data da definire</h2>
+						</div>
+						<div ng-if="delivery.data != '2025-01-01T00:00:00+0000' && delivery.data != '2025-01-01'">
+							<h2><span ng-bind="delivery.data | date:'EEEE d MMMM yyyy'"></span>,
+							<br />{{delivery.luogo| htmlToPlaintext}}
+							<br />dalle ore  {{delivery.orario_da}} alle {{delivery.orario_a}}
+							
+								<span ng-if="delivery.daysToEndConsegna == 0" class="item-note badge badge-assertive">oggi</span>
+								<span ng-if="delivery.daysToEndConsegna > 0" class="item-note badge badge-positive">{{delivery.daysToEndConsegna}}</span>
+								<span ng-if="delivery.daysToEndConsegna < 0" class="item-note badge badge-energized">{{delivery.daysToEndConsegna}}</span>
+							</h2>
+						</div>
+								
+				  </ion-item>
+				  
+				<ion-item class="item-accordion list"
+						ng-show="isBlockShown(delivery)">
+					<a class="item item-icon-left" href="#/app/carts/{{delivery.id}}">
+						<i class="icon ion-card"></i> Per questa consegna hai speso<br />
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>{{delivery.tot_importo_delivery| arrotondaNumero| number:2}} &euro;</b>
+					</a>
+					
+					<a class="item item-icon-left" href="#/app/carts/{{delivery.id}}">
+						<i class="icon ion-android-cart"></i> Controlla il tuo carrello</a>
+			
+					<a class="item item-icon-left" ng-if="delivery.nota != null && delivery.nota != ''">
+						<i class="icon ion-android-chat"></i> {{delivery.nota| htmlToPlaintext}}
+					</a>
+					
+
+					<a class="item item-icon-left" href="#/app/cartsPrint/{{delivery.id}}">
+						<i class="icon ion-clipboard"></i> Versione report
+					</a>
+					
+					
+				</ion-item>	
+			</div>		
+			</ion-list>
+		
+		</div>
+	</div>
+
+  </ion-content>
+</ion-view>
+<style>
+.item-content {
+	padding-left: 5px;
+}
+.icon-badge {
+  position: absolute;
+  top: 3px;
+  right: 0px;
+  font-size: 8px;
+}
+</style>

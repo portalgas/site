@@ -1,12 +1,13 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdGasPromotionsOrganization extends AppModel {
 	
 	public $validate = array(
 		'supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -16,7 +17,7 @@ class ProdGasPromotionsOrganization extends AppModel {
 		),
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -85,7 +86,7 @@ class ProdGasPromotionsOrganization extends AppModel {
 		return $results;
 	}	
 	
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if (!empty($this->data['ProdGasPromotionsOrganization']['cost_more']))
 			$this->data['ProdGasPromotionsOrganization']['cost_more'] = $this->importoToDatabase($this->data['ProdGasPromotionsOrganization']['cost_more']);
 

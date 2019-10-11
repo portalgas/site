@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class TemplatesOrdersState extends AppModel {
 
 	/*
@@ -16,7 +17,7 @@ class TemplatesOrdersState extends AppModel {
 					UserGroup.id = TemplatesOrdersState.group_id
 				GROUP BY UserGroup.id, UserGroup.title
 				ORDER BY UserGroup.title ";
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
 		}
@@ -25,7 +26,7 @@ class TemplatesOrdersState extends AppModel {
 			CakeLog::write('error',$e);
 		}		
 		
-		$newResults = array();
+		$newResults = [];
 		if(!empty($results))
 			foreach ($results as $result) 
 			$newResults[$result['UserGroup']['id']] = $result['UserGroup']['title'];
@@ -36,62 +37,32 @@ class TemplatesOrdersState extends AppModel {
 	public $validate = array(
 		'template_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 		'state_code' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'group_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 		'action_controller' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'action_action' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'sort' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 	);
@@ -103,6 +74,13 @@ class TemplatesOrdersState extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'Template' => array(
+			'className' => 'Template',
+			'foreignKey' => 'template_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		)		
 	);
 }

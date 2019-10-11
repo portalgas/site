@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if($isReferenteTesoriere)  {
 	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 	if(isset($order_id))
@@ -12,14 +12,16 @@ else {
 $this->Html->addCrumb(__('List Request Payments'), array('controller' => 'RequestPayments', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Request Payments Generic'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-<div class="RequestPaymentsGeneric form">
 
-	<h2 class="ico-pay">
-		<?php echo __('Add Request Payments Generic')." alla richiesta numero ".$requestPaymentResults['RequestPayment']['num'];?>
-	</h2>
+echo '<div class="contentMenuLaterale form">';
 
-	<?php	
+	echo '<h2 class="ico-pay">';
+	echo __('Add Request Payments Generic')." alla ".__('request_payment_num').' '.$requestPaymentResults['RequestPayment']['num'].' di '.$tot_importo.' &euro; ('.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['created'],"%A %e %B %Y").')';
+	echo '<span style="float:right;">';
+	echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).' <span style="padding-left: 20px;" title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']).'"></span>';
+	echo '</span>';
+	echo '</h2>';
+
 	echo $this->Form->create('RequestPaymentsGeneric',array('id' => 'formGas'));
 	?>
 	<fieldset>
@@ -45,18 +47,18 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		foreach ($users as $key => $user) {
 			echo '<tr>';
 			echo '<td>'.$user.'</td>';
-			echo '<td>';
-			echo $this->Form->input('importo_diff',array('name' => 'data[RequestPaymentsGeneric][Importo]['.$key.']', 'label' => false, 'type' => 'text', 'after' => '&nbsp;&euro;', 'size' => '15', 'default' => '0,00', 'class' => 'noWidth double', 'tabindex'=>($i+1)));
+			echo '<td style="white-space: nowrap;">';
+			echo $this->Form->input('importo_diff',array('name' => 'data[RequestPaymentsGeneric][Importo]['.$key.']', 'label' => false, 'type' => 'text', 'after' => '&nbsp;&euro;','style' => 'display:inline', 'default' => '0,00', 'class' => 'double', 'tabindex'=>($i+1)));
 			echo '</td>';
 			echo '</tr>';		
 		}
 		echo '</table>';
 		echo '</div>';
 		
-		echo $this->Form->input('name',array('type' => 'text', 'label' => 'Nota di spesa', 'tabindex'=>($i+1)));
+		echo $this->Form->input('name',array('type' => 'text', 'label' => 'Nota di spesa', 'style' => 'display:inline', 'tabindex'=>($i+1)));
 
-		echo '<div id="importo_singolo" style="display:none;">';
-		echo $this->Form->input('importo',array('label' => 'Importo', 'type' => 'text', 'after' => '&nbsp;&euro;', 'size' => '15', 'class' => 'noWidth double', 'tabindex'=>($i+1)));
+		echo '<div id="importo_singolo" style="display:none;white-space: nowrap;">';
+		echo $this->Form->input('importo',array('label' => 'Importo', 'type' => 'text', 'after' => '&nbsp;&euro;', 'style' => 'display:inline', 'class' => 'double', 'tabindex'=>($i+1)));
 		echo '</div>';
 		
 		echo $this->element('legendaRequestPaymentsGeneric');
@@ -67,39 +69,29 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<?php 
 	echo $this->Form->hidden('request_payment_id',array('value' => $requestPaymentResults['RequestPayment']['id']));
 	echo $this->Form->end(__('Add Request Payments Generic')." alla richiesta numero ".$requestPaymentResults['RequestPayment']['num']);
-	?>
-</div>
 
-<div class="actions">
-	<?php include(Configure::read('App.root').Configure::read('App.component.base').'/View/RequestPayments/admin_sotto_menu.ctp');?>		
-</div>
+echo '</div>'; // end contentMenuLaterale
 
-<script type="text/javascript">
-<?php
-if($isReferenteTesoriere) 
-	echo 'viewReferenteTesoriereSottoMenu("0", "bgLeft");';
-else
-	echo 'viewTesoriereSottoMenu("0", "bgLeft");';
+$options = [];
+echo $this->MenuRequestPayment->drawWrapper($requestPaymentResults['RequestPayment']['id'], $options);
 ?>
-</script>
-
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.double').focusout(function() {validateNumberField(this,'importo');});
+	$('.double').focusout(function() {validateNumberField(this,'importo');});
 	
-	jQuery("input[name='data[RequestPaymentsGeneric][dest_options_qta]']").change(function() {
+	$("input[name='data[RequestPaymentsGeneric][dest_options_qta]']").change(function() {
 		choiceDestOptions();
 	});
 	
 	choiceDestOptions();
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var dest_options_qta = jQuery("input[name='data[RequestPaymentsGeneric][dest_options_qta]']:checked").val();
+		var dest_options_qta = $("input[name='data[RequestPaymentsGeneric][dest_options_qta]']:checked").val();
 		if(dest_options_qta=='SOME') {
-			destinatariScelti = jQuery("#RequestPaymentsGenericUsers").val();
+			destinatariScelti = $("#RequestPaymentsGenericUsers").val();
 
 			if(destinatariScelti==null) {
 				alert("Devi scegliere almeno un destinatario");
@@ -107,15 +99,15 @@ jQuery(document).ready(function() {
 			}
 		}
 
-		var name = jQuery('#RequestPaymentsGenericName').val();
+		var name = $('#RequestPaymentsGenericName').val();
 		if(name=="") {
 			alert("Devi indicare la motivazione della voce di spesa");
-			jQuery('#RequestPaymentsGenericName').focus();
+			$('#RequestPaymentsGenericName').focus();
 			return false;
 		}
 
 		if(dest_options_qta!='SOME_DIFF') {
-			var importo = jQuery('#RequestPaymentsGenericImporto').val();
+			var importo = $('#RequestPaymentsGenericImporto').val();
 			if(importo=='' || importo==null || importo=='0,00' || importo=='0.00' || importo=='0') {
 				alert("Devi indicare l'importo");
 				return false;
@@ -127,34 +119,24 @@ jQuery(document).ready(function() {
 });
 
 function choiceDestOptions() {
-	var dest_options_qta = jQuery("input[name='data[RequestPaymentsGeneric][dest_options_qta]']:checked").val();
+	var dest_options_qta = $("input[name='data[RequestPaymentsGeneric][dest_options_qta]']:checked").val();
 
 	if(dest_options_qta=='ALL') {
-		jQuery('#users').hide();
-		jQuery('#some_diff').hide();
-		jQuery('#importo_singolo').css('display','block');
+		$('#users').hide();
+		$('#some_diff').hide();
+		$('#importo_singolo').css('display','block');
 	}
 	else 
 	if(dest_options_qta=='SOME') {
-		jQuery('#users').show();
-		jQuery('#some_diff').hide();
-		jQuery('#importo_singolo').css('display','block');
+		$('#users').show();
+		$('#some_diff').hide();
+		$('#importo_singolo').css('display','block');
 	}
 	else 
 	if(dest_options_qta=='SOME_DIFF') 	 {	
-		jQuery('#users').hide();
-		jQuery('#some_diff').show();
-		jQuery('#importo_singolo').css('display','none');
+		$('#users').hide();
+		$('#some_diff').show();
+		$('#importo_singolo').css('display','none');
 	}
 }
 </script>
-
-<style type="text/css">
-.cakeContainer div.form, .cakeContainer div.index, .cakeContainer div.view {
-    width: 74%;
-    padding-left: 5px;    
-}
-.cakeContainer div.actions {
-    width: 25%;
-}
-</style>

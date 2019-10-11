@@ -37,16 +37,16 @@ echo $this->Form->hidden('delivery_id',array('id' => 'delivery_id', 'value' => $
 ?>	
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.exportDelivery').click(function() {
-		var delivery_id = jQuery('#delivery_id').val();
+	$('.exportDelivery').click(function() {
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];

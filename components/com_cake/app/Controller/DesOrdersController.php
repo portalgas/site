@@ -565,7 +565,7 @@ class DesOrdersController extends AppController {
 		}
 		
 		$this->DesOrder->id = $des_order_id;
-		if (!$this->DesOrder->exists()) {
+		if (!$this->DesOrder->exists($this->DesOrder->id)) {
 			throw new NotFoundException(__('Invalid DesOrder'));
 		}
 		
@@ -584,8 +584,8 @@ class DesOrdersController extends AppController {
 		 * dati DesOrder
 		 */		
 		$options = [];
-		$options['conditions'] = array('DesOrder.id' => $des_order_id,
-									   'DesOrder.des_id' => $this->user->des_id);
+		$options['conditions'] = ['DesOrder.id' => $des_order_id,
+								   'DesOrder.des_id' => $this->user->des_id];
 		$options['recursive'] = 0;
 		$this->request->data = $this->DesOrder->find('first', $options);
 		
@@ -594,10 +594,10 @@ class DesOrdersController extends AppController {
 		 */
 		App::import('Model', 'DesSupplier'); 
 		$DesSupplier = new DesSupplier;
-		$DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization')));
+		$DesSupplier->unbindModel(['belongsTo' => ['De', 'OwnOrganization']]);
 		
 		$options = [];
-		$options['conditions'] = array('DesSupplier.id' => $this->request->data['DesSupplier']['id']);
+		$options['conditions'] = ['DesSupplier.id' => $this->request->data['DesSupplier']['id']];
 		$options['recursive'] = 0;
 		$desSupplierResults = $DesSupplier->find('first', $options);			
 		
@@ -620,9 +620,9 @@ class DesOrdersController extends AppController {
 		$DesOrder->unbindModel(array('belongsTo' => array('De', 'DesOrder')));
 		
 		$options = [];
-		$options['conditions'] = array('DesOrder.des_id' => $this->user->des_id,
-									   'DesOrder.id' => $des_order_id);
-		$options['fields'] = array('DesSupplier.supplier_id');
+		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,
+									   'DesOrder.id' => $des_order_id];
+		$options['fields'] = ['DesSupplier.supplier_id'];
 		$options['recursive'] = 1;
 		$results = $DesOrder->find('first', $options);
 				
@@ -632,22 +632,27 @@ class DesOrdersController extends AppController {
 		$SuppliersOrganization = new SuppliersOrganization();
 
 		$options = [];
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-									   'SuppliersOrganization.stato' => 'Y',
-									   'SuppliersOrganization.supplier_id' => $supplier_id);
-		$options['fields'] = array('SuppliersOrganization.id');
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'], 'SuppliersOrganization.supplier_id' => $supplier_id];
+		$options['fields'] = ['SuppliersOrganization.id', 'SuppliersOrganization.stato'];
 		$options['recursive'] = -1;
 		
 		$results = $SuppliersOrganization->find('first', $options);
-		
-		$supplier_organization_id = $results['SuppliersOrganization']['id']; 
-		if(empty($supplier_organization_id)) {
+		 
+		if(empty($results)) {
 			$this->Session->setFlash("Il produttore non compare nella lista dei produttori associati al tuo GAS!");
 
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
 			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;				
 		}
+		else 
+		if($results['SuppliersOrganization']['stato']=='N') {
+			$this->Session->setFlash("Il produttore ha lo stato disabilitato!");
+
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
+			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;			
+		}
 		else {
+			$supplier_organization_id = $results['SuppliersOrganization']['id'];
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
 			$url .= '&controller=Orders&action=add';
 			$url .= '&delivery_id=0&order_id=0';

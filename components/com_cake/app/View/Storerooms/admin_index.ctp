@@ -26,17 +26,18 @@ else
 				<tr>
 					<td>
 						<?php 
-							$options = array('label' => false,
-											 'escape' => false,
-											 'id' => 'supplier_organization_id',
-											 'name'=>'FilterStoreroomSupplierId',
-											 'default'=>$FilterStoreroomSupplierId,
-											 'onChange' => 'javascript:add_list_articles(this);',
-											 'empty'=> 'Filtra per produttore',
-											 'label'=> '&nbsp;',
-											 'options' => $suppliersOrganization);
+							$options = ['label' => false,
+										 'escape' => false,
+										 'id' => 'supplier_organization_id',
+										 'name'=>'FilterStoreroomSupplierId',
+										 'default'=>$FilterStoreroomSupplierId,
+										 'onChange' => 'javascript:add_list_articles(this);',
+										 'label'=> '&nbsp;',
+										 'options' => $suppliersOrganization];
+							if(count($suppliersOrganization) > 1) 
+								$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];										 
 							if(count($suppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
-								$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
+								$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 
 
 							echo $this->Form->input('supplier_organization_id',$options);
 						?>
@@ -128,9 +129,9 @@ if(!empty($results)) {
 		if($isUserCurrentStoreroom || $result['SuppliersOrganization']['IsReferente']=='Y') 
 			echo $this->Html->link(null, array('action' => 'add', $result['Storeroom']['id'], 'supplier_organization_id='.$result['SuppliersOrganization']['id']),array('class' => 'action actionEdit', 'title' => __('Edit')));
 		echo '</td>';
-		echo '<td class="actions-table">';
-		if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y' && $result['SuppliersOrganization']['IsReferente']=='Y')
-			echo $this->Html->link(__('Storeroom To User'), array('action' => 'storeroomToUser', $result['Storeroom']['id']),array('title' => __('Storeroom To User')));
+		echo '<td>';
+		if($user->organization['Organization']['hasStoreroomFrontEnd']=='Y' && ($isUserCurrentStoreroom || $result['SuppliersOrganization']['IsReferente']=='Y'))
+			echo $this->Html->link(__('Storeroom To User'), array('action' => 'storeroomToUser', $result['Storeroom']['id']), array('class' => 'btn btn-primary', 'title' => __('Storeroom To User')));
 		echo '</td>';
 		echo '</tr>';
 		echo '<tr class="trView" id="trViewId-'.$result['Storeroom']['id'].'">';
@@ -147,22 +148,9 @@ if(!empty($results)) {
 }
 else {
  	if($iniCallPage)
-		echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFonud', 'msg' => __('msg_search_no_parameter')));
+		echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFound', 'msg' => __('msg_search_no_parameter')));
 	else
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora articoli in dispensa"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora articoli in dispensa"));
 }
 echo '</div>';
 ?>
-<script type="text/javascript">
-$(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	$('.filter').click(function() {
-		$("input[name^='page']").val('');
-	});
-	
-});		
-</script>

@@ -14,18 +14,18 @@
 
 <script type="text/javascript">
 function choiceDesOrganization() {
-	var des_id = jQuery("#des_id").val();
+	var des_id = $("#des_id").val();
 	if(des_id!='') {
-		jQuery('#formGas').submit();
+		$('#formGas').submit();
 	}
 }
 
 $( document ).ready(function() {
-	if(jQuery('#des_id > option').length==2) {
-		var options = jQuery('#des_id').children(); 
-		var des_id = jQuery(options[1]).val();
-		jQuery(options[1]).attr('selected','selected');
-		jQuery('#formGas').submit();		
+	if($('#des_id > option').length==2) {
+		var options = $('#des_id').children(); 
+		var des_id = $(options[1]).val();
+		$(options[1]).attr('selected','selected');
+		$('#formGas').submit();		
 	}
 });
 </script>

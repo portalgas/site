@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Mails'),array('controller'=>'Mails','action'=>'index'));
 $this->Html->addCrumb(__('Send Mail'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -13,102 +13,98 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	</ul>
 	</div>
 	</h2>
+<?php 
+echo $this->Form->create('Mail', ['id'=>'formGas','enctype' => 'multipart/form-data']);
+echo '<fieldset>';
+echo '<legend>'.__('Send Mail').'</legend>';
+	
+$i=0;
+echo $this->Form->input('mittenti', ['options' => $mittenti, 'value' => Configure::read('Mail.no_reply_mail'), 'label'=>__('A chi rispondere'),'tabindex'=>($i+1)]);
 
+echo $this->App->drawFormRadio('Mail','dest_options', ['options' => $dest_options, 'value'=>'USERS', 'name' => 'dest-options', 'label' => __('A chi inviarla'),'tabindex'=>($i+1)]);
 
-<?php echo $this->Form->create('Mail',array('id'=>'formGas','enctype' => 'multipart/form-data'));?>
-
-	<fieldset>
-		<legend><?php echo __('Send Mail'); ?></legend>
-	<?php
-		$i=0;
-		echo $this->Form->input('mittenti', array('options' => $mittenti, 'value' => Configure::read('Mail.no_reply_mail'), 'label'=>__('A chi rispondere'),'tabindex'=>($i+1)));
-
-		echo $this->App->drawFormRadio('Mail','dest_options',array('options' => $dest_options, 'value'=>'USERS', 'name' => 'dest-options', 'label' => __('A chi inviarla'),'tabindex'=>($i+1)));
+echo $this->App->drawFormRadio('Mail','dest_options_qta', ['options' => $dest_options_qta, 'value'=>'ALL', 'name' => 'dest-options-qta', 'label' => __('A quanti'),'tabindex'=>($i+1)]);
 		
-		echo $this->App->drawFormRadio('Mail','dest_options_qta',array('options' => $dest_options_qta, 'value'=>'ALL', 'name' => 'dest-options-qta', 'label' => __('A quanti'),'tabindex'=>($i+1)));
-		
-		/*
-		 * produttori
-		 */
-		echo '<div id="suppliersorganization" style="display:none;">';
-		$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
-		echo $this->Form->input('supplier_organization',array('label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true));
-		echo '</div>';
+/*
+ * produttori
+ */
+echo '<div id="suppliersorganization" style="display:none;">';
+$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
+echo $this->Form->input('supplier_organization', ['label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true]);
+echo '</div>';
 				
-		/*
-		 * utenti dell'ordine
-		 */
-		echo '<div id="users_cart" style="display:none;">';
-		$label = "Utenti che hanno effettuato acquisti";
-		echo $this->Form->input('orders',array('label' => $label,'options' => $orders, 'empty' => Configure::read('option.empty'), 'escape' => false));
-		echo '</div>';
+/*
+ * utenti dell'ordine
+ */
+echo '<div id="users_cart" style="display:none;">';
+$label = "Utenti che hanno effettuato acquisti";
+echo $this->Form->input('orders', ['label' => $label,'options' => $orders, 'empty' => Configure::read('option.empty'), 'escape' => false]);
+echo '</div>';
 
-		echo '<div id="users_cart_articles_orders" style="display:none;">';
-		echo '</div>';
-		
-		/*
-		 * gruppi
-		 */
-		echo '<div id="userGroups" style="display:none;">';
-		$label = __('Groups').'&nbsp;('.count($userGroups).')';
-		echo $this->Form->input('usergroups',array('label' => $label,'options' => $userGroups,'escape' => false,'multiple' => true));
-		echo '</div>';
-				
-		/*
-		 * utenti
-		 */
-		echo '<div id="users" style="display:none;">';
-		$label = __('Users').'&nbsp;('.count($users).')';
-		echo '<label for="MailUser">'.$label.'</label> ';
-		
-		echo $this->Form->select('master_user_id', $users, array('label' => $label, 'multiple' => true, 'size' =>10));
-		echo $this->Form->select('user_id', array(), array('multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));					
-		echo $this->Form->hidden('user_ids',array('id' => 'user_ids','value' => ''));
-		echo '</div>';
-		
-		/*
-		 * referenti
-		 */
-		echo '<div id="referenti" style="display:none;">';
-		$label = __('Referenti').'&nbsp;('.count($referenti).')';
-		echo '<label for="MailUser">'.$label.'</label> ';
-		
-		echo $this->Form->select('master_referente_id', $referenti, array('label' => $label, 'multiple' => true, 'size' =>10));
-		echo $this->Form->select('referente_id', array(), array('multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));					
-		echo $this->Form->hidden('referente_ids',array('id' => 'referente_ids','value' => ''));
-		echo '</div>';
-		
-		echo $this->Form->input('subject');
-		
-		echo $this->Form->input('name',array('label' => 'Intestazione', 'value' => str_replace('<br />', '', $body_header), 'disabled' => 'true'));
+echo '<div id="users_cart_articles_orders" style="display:none;background: transparent none repeat scroll 0px 0px;overflow-y: scroll;height: 300px;">';
+echo '</div>';
 
-		echo '<div class="clearfix"></div>';
-		echo '<div class="input text"><label></label> ';
-		echo $body_header_mittente; 
+/*
+ * gruppi
+ */
+echo '<div id="userGroups" style="display:none;">';
+$label = __('Groups').'&nbsp;('.count($userGroups).')';
+echo $this->Form->input('usergroups', ['label' => $label,'options' => $userGroups,'escape' => false,'multiple' => true]);
+echo '</div>';
 		
-		echo $this->Form->textarea('body', array('rows' => '15', 'cols' => '75'));
-		
-		echo '<div class="clearfix"></div>';
-		echo '<div class="input text"><label>Piè di pagina</label> ';
-		
-		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer_no_reply" style="display:inline;">'.str_replace('<br />', '', $body_footer_no_reply).'</textarea>';
-		echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer" style="display:none;">'.str_replace('<br />', '', $body_footer).'</textarea>';
-		
-		echo '</div>';		
-		
-		echo '<div class="clearfix"></div>';
-		echo $this->Form->input('Document.img1', array(
-													'label' => 'Allegato',
-												    'between' => '<br />',
-												    'type' => 'file'
-												));	
-		
-		echo '</fieldset>';
-		
-		echo $this->Form->end(__('Send'));
-		?>
-</div>
+/*
+ * utenti
+ */
+echo '<div id="users" style="display:none;">';
+$label = __('Users').'&nbsp;('.count($users).')';
+echo '<label for="MailUser">'.$label.'</label> ';
 
+echo $this->Form->select('master_user_id', $users, ['label' => $label, 'multiple' => true, 'size' =>10]);
+echo $this->Form->select('user_id', [], ['multiple' => true, 'size' => 10, 'style' => 'min-width:300px']);					
+echo $this->Form->hidden('user_ids', ['id' => 'user_ids','value' => '']);
+echo '</div>';
+
+/*
+ * referenti
+ */
+echo '<div id="referenti" style="display:none;">';
+$label = __('Referenti').'&nbsp;('.count($referenti).')';
+echo '<label for="MailUser">'.$label.'</label> ';
+
+echo $this->Form->select('master_referente_id', $referenti,['label' => $label, 'multiple' => true, 'size' =>10]);
+echo $this->Form->select('referente_id', [], ['multiple' => true, 'size' => 10, 'style' => 'min-width:300px']);					
+echo $this->Form->hidden('referente_ids', ['id' => 'referente_ids', 'value' => '']);
+echo '</div>';
+
+echo $this->Form->input('subject');
+
+echo $this->Form->input('name', ['label' => 'Intestazione', 'value' => str_replace('<br />', '', $body_header), 'disabled' => 'true']);
+
+echo '<div class="clearfix"></div>';
+echo '<div class="input text"><label></label> ';
+echo $body_header_mittente; 
+
+echo $this->Form->textarea('body', ['rows' => '15', 'cols' => '75']);
+
+echo '<div class="clearfix"></div>';
+echo '<div class="input text"><label>Piè di pagina</label> ';
+
+echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer_no_reply" style="display:inline;">'.str_replace('<br />', '', $body_footer_no_reply).'</textarea>';
+echo '<textarea cols="85%" rows="4" class="noeditor" disabled="true" id="body_footer" style="display:none;">'.str_replace('<br />', '', $body_footer).'</textarea>';
+
+echo '</div>';		
+
+echo '<div class="clearfix"></div>';
+echo $this->Form->input('Document.img1', ['label' => 'Allegato',
+											'between' => '<br />',
+											'type' => 'file']);	
+
+echo '</fieldset>';
+
+echo $this->Form->end(__('Send'));
+		
+echo '</div>';
+?>
 <script type="text/javascript">
 function drawArticlesOrders(order_id) {
 	/* console.log("order_id "+order_id); */
@@ -197,8 +193,9 @@ $(document).ready(function() {
 	$('#formGas').submit(function() {
 
 		var dest_options_qta = $("input[name='data[Mail][dest_options_qta]']:checked").val();
+		var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
+
 		if(dest_options_qta=='SOME') {
-			var dest_options = $("input[name='data[Mail][dest_options]']:checked").val();
 			
 			var destinatariScelti = null;
 			if(dest_options=='USERS') {
@@ -238,11 +235,40 @@ $(document).ready(function() {
 					alert("Devi scegliere almeno un destinatario");
 					return false;
 				}			
-			}
+			}			
 		}
+		else {
+
+			if(dest_options=='USERS_CART') {
+				var order_id = $('#MailOrders').val();
+				if(order_id=='') {
+					alert("Devi scegliere un ordine");
+					return false;				
+				}
+				
+				var article_order_key_selecteds = '';
+				for(i = 0; i < $("input[name='data[Mail][article_order_key_selected]']:checked").length; i++) {
+					var elem = $("input[name='data[Mail][article_order_key_selected]']:checked").eq(i);
+					article_order_key_selecteds += $(elem).val()+'|';
+				}
+				
+				$('#article_order_key_selecteds').val("");
+				
+				if(article_order_key_selecteds!='') {
+					 article_order_key_selecteds = article_order_key_selecteds.substring(0,article_order_key_selecteds.length-1); 		
+					$('#article_order_key_selecteds').val(article_order_key_selecteds);
+				}	
+				else {
+					alert("Devi scegliere un articolo");
+					return false;								
+				}		
+			}
+		
+		}
+		
 		var subject = $('#MailSubject').val();
 		if(subject=="") {
-			alert("Devi indicare il soggetto della mail");
+			alert("Devi indicare l'oggetto della mail");
 			return false;
 		}
 	
@@ -252,13 +278,15 @@ $(document).ready(function() {
 			return false;
 		}
 	
-		alert("Verrà inviata la mail, attendere che venga terminata l'esecuzione");
-	
+		if(!confirm("Verrà inviata la mail, attendere che venga terminata l'esecuzione")) 
+			return false;
+		
 		$("input[type=submit]").attr('disabled', 'disabled');
 		$("input[type=submit]").css('background-image', '-moz-linear-gradient(center top , #ccc, #dedede)');
 		$("input[type=submit]").css('box-shadow', 'none');
 
 		return true;
+			
 	});	
 });
 

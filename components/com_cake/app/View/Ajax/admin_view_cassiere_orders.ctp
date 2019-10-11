@@ -1,19 +1,15 @@
 <?php		
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 		
 if(!empty($results)) {
 		
-	$tmp .= '<table cellpadding="0" cellspacing="0">';
+	$tmp .= '<div class="table-responsive"><table class="table table-hover">';
 	$tmp .= '<tr>';
 	$tmp .= '<th>'.__('N').'</th>';
 	$tmp .= '<th colspan="2">'.__('Username').'</th>';
 	$tmp .= '<th>'.__('Importo').'</th>';
-	$tmp .= '<th>'.__('Importo pagato').'</th>';
-	$tmp .= '<th>'.__('Modalità').'</th>';
+	$tmp .= '<th>'.__('Importo_pagato').'</th>';
+	$tmp .= '<th>'.__('Modality').'</th>';
 	$tmp .= '<th colspan="2">'.__('Esito').'</th>';
 	$tmp .= '</tr>';
 
@@ -76,7 +72,7 @@ if(!empty($results)) {
 	$tmp .= '<td></td>';
 	$tmp .= '</tr>';
 			
-	$tmp .= '</table>';
+	$tmp .= '</table></div>';
 }
 else
 	$tmp .= $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "L'ordine non ha acquisti"));

@@ -193,7 +193,7 @@ class MonitoringOrdersController extends AppController {
 		App::import('Model', 'SuppliersOrganization');
 			
 		$Delivery->id = $this->delivery_id;
-		if (!$Delivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$Delivery->exists($Delivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}

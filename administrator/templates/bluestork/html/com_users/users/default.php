@@ -160,7 +160,7 @@ $loggeduser = JFactory::getUser();
 					<?php echo $this->escape($item->email); ?>
 				</td>
 				<td class="center">
-					<?php if ($item->lastvisitDate!='0000-00-00 00:00:00'):?>
+					<?php if ($item->lastvisitDate!='0000-00-00 00:00:00' && $item->lastvisitDate != '1970-01-01 00:00:00'):?> 
 						<?php echo JHtml::_('date', $item->lastvisitDate, 'Y-m-d H:i:s'); ?>
 					<?php else:?>
 						<?php echo JText::_('JNEVER'); ?>

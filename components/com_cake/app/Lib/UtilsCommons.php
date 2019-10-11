@@ -1,5 +1,4 @@
 <?php
-
 /*
  * class inclusa in AppController ($this->utilsCommons)
  * 				 in DataBehavior  ($this->utilsCommons)
@@ -42,7 +41,6 @@ class UtilsCommons {
     /*
      * se l'anno di date2 e' > 2039 bugs
      */
-
     public function dayDiffToDate($date1, $date2 = null) {
         // 86400 seconds = day
         date_default_timezone_set('Europe/London');
@@ -65,7 +63,6 @@ class UtilsCommons {
      *  - impostarlo a if(1==1) o
      *  - cancellare apc
      */
-
     public function getLegendaProdDeliveriesState() {
 
         $debug = false;
@@ -90,9 +87,9 @@ class UtilsCommons {
             App::import('Model', 'ProdDeliveriesState');
             $ProdDeliveriesState = new ProdDeliveriesState;
 
-            $options = array();
-            $options['conditions'] = array('ProdDeliveriesState.flag_produttore' => 'Y');
-            $options['order'] = array('sort');
+            $options = [];
+            $options['conditions'] = ['ProdDeliveriesState.flag_produttore' => 'Y'];
+            $options['order'] = ['ProdDeliveriesState.sort'];
             $options['recursive'] = -1;
             $prodDeliveriesStates = $ProdDeliveriesState->find('all', $options);
 
@@ -174,31 +171,52 @@ class UtilsCommons {
     }
 
     public function getOrderTime($order) {
-
-        /* echo "<pre>";
-          print_r($order);
-          echo "</pre>";
-         */
+		/*
+         echo "<pre>";
+         print_r($order);
+         echo "</pre>";
+        */
 
         $str = '';
 
         if ($order['state_code'] != 'CREATE-INCOMPLETE') {
 
-            if ($order['state_code'] == 'OPEN-NEXT')
-                $str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($order['data_inizio'], "%A %e %B") . '</span>';
-            else
-            if ($order['state_code'] == 'OPEN' || $order['state_code'] == 'RI-OPEN-VALIDATE') {
-                if ($order['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
-                    $str .= '<span style="background-color:#999999;color:yellow;">Si sta chiudendo! ';
-                    if ($order['dayDiffToDateFine'] == 0)
-                        $str .= 'oggi';
-                    else
-                        $str .= 'Tra&nbsp;' . (-1 * $order['dayDiffToDateFine']) . '&nbsp;gg';
-                    $str .= '</span>';
-                } else
-                    $str .= '<span style="color:green;font-weight:bold;">Aperto</span>';
-            } else
-                $str .= '<span style="color:red;font-weight: bold;">Chiuso</span>';
+			switch($order['state_code']) {
+				case 'OPEN-NEXT':
+					$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($order['data_inizio'], "%A %e %B") . '</span>';
+				break;
+				case 'OPEN':
+				case 'RI-OPEN-VALIDATE':
+					if ($order['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
+						$str .= '<span style="background-color:#999999;color:yellow;">Si sta chiudendo! ';
+						if ($order['dayDiffToDateFine'] == 0)
+							$str .= 'oggi';
+						else
+							$str .= 'Tra&nbsp;' . (-1 * $order['dayDiffToDateFine']) . '&nbsp;gg';
+						$str .= '</span>';
+					} else
+						$str .= '<span style="color:green;font-weight:bold;">Aperto</span>';
+				break;
+				// case ProdGasPromotion
+				case 'TRASMISSION-TO-GAS': 
+				case 'WORKING':          
+					if ($order['dayDiffToDateInizio'] < 0) 
+						$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($order['data_inizio'], "%A %e %B") . '</span>';
+					else
+					if ($order['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
+						$str .= '<span style="background-color:#999999;color:yellow;">Si sta chiudendo! ';
+						if ($order['dayDiffToDateFine'] == 0)
+							$str .= 'oggi';
+						else
+							$str .= 'Tra&nbsp;' . (-1 * $order['dayDiffToDateFine']) . '&nbsp;gg';
+						$str .= '</span>';
+					} else
+						$str .= '<span style="color:green;font-weight:bold;">Aperto</span>';				
+				break;
+				default:
+					$str .= '<span style="color:red;font-weight: bold;">Chiuso</span>';
+				break;
+			}
         }
 
         return $str;
@@ -254,11 +272,18 @@ class UtilsCommons {
 
     public function getFileData($user, $doc_options, $params = null, $user_target = null) {
 
+		$debug = false;
+		
         $fileName = '';
         $fileTitle = '';
 
+		if($debug) {
+			echo "<pre>";
+			print_r($doc_options);
+			echo "</pre>";
+		}
+		
         switch ($doc_options) {
-
             /*
              * stampe dei referenti e tesoriere
              */
@@ -276,9 +301,8 @@ class UtilsCommons {
                     App::import('Model', 'Order');
                     $Order = new Order;
 
-                    $conditions = array('Order.organization_id' => (int) $user->organization['Organization']['id'],
-                        'Order.id' => $order_id);
-                    $results = $Order->find('first', array('conditions' => $conditions, 'recursive' => 0));
+                    $conditions = ['Order.organization_id' => (int) $user->organization['Organization']['id'], 'Order.id' => $order_id];
+                    $results = $Order->find('first', ['conditions' => $conditions, 'recursive' => 0]);
                     if ($results['Delivery']['sys'] == 'N')
                         $delivery_data = $this->dateFormat($results['Delivery']['data']);
                     else
@@ -296,9 +320,8 @@ class UtilsCommons {
                     App::import('Model', 'Delivery');
                     $Delivery = new Delivery;
 
-                    $conditions = array('Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-                        'Delivery.id' => $delivery_id);
-                    $results = $Delivery->find('first', array('conditions' => $conditions, 'recursive' => -1));
+                    $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+                    $results = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
 
                     if ($results['Delivery']['sys'] == 'N')
                         $delivery_data = $this->dateFormat($results['Delivery']['data']);
@@ -345,7 +368,7 @@ class UtilsCommons {
             /*
              * stampa carrello utente o
              * tutti gli acquisti di un utente per una consegna (cassiere) 
-             */
+             */ 
             case 'user_cart':
             case 'to-delivery-cassiere-users-all-split':
             case 'to-delivery-cassiere-user-one':
@@ -355,9 +378,8 @@ class UtilsCommons {
 
                     App::import('Model', 'Delivery');
                     $Delivery = new Delivery;
-                    $conditions = array('Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-                        'Delivery.id' => $delivery_id);
-                    $resultsDelivery = $Delivery->find('first', array('conditions' => $conditions, 'recursive' => -1));
+                    $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+                    $resultsDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
                     if ($resultsDelivery['Delivery']['sys'] == 'N')
                         $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']);
                     else
@@ -378,6 +400,25 @@ class UtilsCommons {
                         $fileTitle .= 'di ' . $resultsUser['User']['name'];
                 }
                 break;
+            case 'storeroom_cart':
+                if (isset($params['delivery_id'])) {
+                    $delivery_id = $params['delivery_id'];
+ 
+                    App::import('Model', 'Delivery');
+                    $Delivery = new Delivery;
+                    $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+                    $resultsDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+                    if ($resultsDelivery['Delivery']['sys'] == 'N')
+                        $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']);
+                    else
+                        $delivery_data = Configure::read('DeliveryToDefinedLabel');
+
+                    $fileName .= 'cosa_arrivera_dispensa_' . strtolower(__('Delivery')) . '_' . $delivery_data . '_';
+
+                    $fileTitle .= 'Cosa arrivera in dispensa ' . strtolower(__('Delivery')) . ' del ' . $delivery_data . ' '; 
+                }
+                break;
+                
             /*
              * stampa richieste di pagamento dell'utente
              */
@@ -388,9 +429,8 @@ class UtilsCommons {
 
                     App::import('Model', 'User');
                     $User = new User;
-                    $conditions = array('User.organization_id' => (int) $user->organization['Organization']['id'],
-                        'User.id' => $user_id);
-                    $resultsUser = $User->find('first', array('conditions' => $conditions, 'recursive' => -1));
+                    $conditions = ['User.organization_id' => (int) $user->organization['Organization']['id'], 'User.id' => $user_id];
+                    $resultsUser = $User->find('first', ['conditions' => $conditions, 'recursive' => -1]);
 
                     $fileName .= 'richiesta_pagamento_n_' . $request_payment_num . '_';
                     if (!empty($resultsUser))
@@ -429,7 +469,7 @@ class UtilsCommons {
                     App::import('Model', 'SuppliersOrganization');
                     $SuppliersOrganization = new SuppliersOrganization;
 
-                    $conditions = array('SuppliersOrganization.id' => $supplier_organization_id);
+                    $conditions = ['SuppliersOrganization.id' => $supplier_organization_id];
                     $supplier = current($SuppliersOrganization->getSuppliersOrganization($user, $conditions));
 
                     $fileName .= 'elenco_articoli_' . __('Supplier') . '_' . $supplier['SuppliersOrganization']['name'] . '_';
@@ -463,21 +503,28 @@ class UtilsCommons {
                 $fileTitle .= 'Elenco referenti ';
                 break;
             case 'users_data_delivery':
+			case 'users_data_delivery_sum_orders':
                 if (isset($params['delivery_id'])) {
                     $delivery_id = $params['delivery_id'];
 
                     App::import('Model', 'Delivery');
                     $Delivery = new Delivery;
-                    $conditions = array('Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-                        'Delivery.id' => $delivery_id);
-                    $resultsDelivery = $Delivery->find('first', array('conditions' => $conditions, 'recursive' => -1));
+                    $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+                    $resultsDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
                     if ($resultsDelivery['Delivery']['sys'] == 'N')
                         $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']);
                     else
                         $delivery_data = Configure::read('DeliveryToDefinedLabel');
 
-                    $fileName = 'elenco_utenti_presenti_alla_' . strtolower(__('Delivery')) . '_' . $delivery_data . '_';
-                    $fileTitle = 'Elenco utenti presenti alla ' . strtolower(__('Delivery')) . ' del ' . $delivery_data . ' ';
+					if ($doc_options == 'users_data_delivery') {
+						$fileName = 'elenco_utenti_presenti_alla_' . strtolower(__('Delivery')) . '_' . $delivery_data . '_';
+						$fileTitle = 'Elenco utenti presenti alla ' . strtolower(__('Delivery')) . ' del ' . $delivery_data . ' ';
+					}
+					if ($doc_options == 'users_data_delivery_sum_orders') {
+						$fileName = 'elenco_acquisti_utenti_presenti_alla_' . strtolower(__('Delivery')) . '_' . $delivery_data . '_';
+						$fileTitle = 'Elenco acquisti utenti presenti alla ' . strtolower(__('Delivery')) . ' del ' . $delivery_data . ' ';						
+					}
+					
                 }
                 break;
             case 'des-referent-to-supplier':
@@ -492,9 +539,9 @@ class UtilsCommons {
                     $DesOrder = new DesOrder;
 
                     $options = [];
-                    $options['conditions'] = array('DesOrder.id' => $des_order_id,
-                                                      'DesOrder.des_id' => $user->des_id);
-                    $options['fields'] = array('DesOrder.luogo');
+                    $options['conditions'] = ['DesOrder.id' => $des_order_id,
+                                              'DesOrder.des_id' => $user->des_id];
+                    $options['fields'] = ['DesOrder.luogo'];
                     $options['recursive'] = -1;
                     $desOrderResults = $DesOrder->find('first', $options);
 
@@ -530,9 +577,8 @@ class UtilsCommons {
 
                     App::import('Model', 'Delivery');
                     $Delivery = new Delivery;
-                    $conditions = array('Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-                        'Delivery.id' => $delivery_id);
-                    $resultsDelivery = $Delivery->find('first', array('conditions' => $conditions, 'recursive' => -1));
+                    $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+                    $resultsDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
                     if ($resultsDelivery['Delivery']['sys'] == 'N')
                         $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']);
                     else
@@ -618,7 +664,7 @@ class UtilsCommons {
                 $prezzo_um_riferimento = ($prezzo_um_riferimento / 100);
             else
             if ($um == 'HG' && $um_riferimento == 'KG')
-                $prezzo_um_riferimento = ($prezzo_um_riferimento * 100);
+                $prezzo_um_riferimento = ($prezzo_um_riferimento * 10);
             else
             if ($um == 'KG' && $um_riferimento == 'GR')
                 $prezzo_um_riferimento = ($prezzo_um_riferimento / 1000);
@@ -627,7 +673,7 @@ class UtilsCommons {
                 $prezzo_um_riferimento = ($prezzo_um_riferimento / 100);
             else
             if ($um == 'ML' && $um_riferimento == 'DL')
-                $prezzo_um_riferimento = ($prezzo_um_riferimento * 100);
+                $prezzo_um_riferimento = ($prezzo_um_riferimento * 10);
             else
             if ($um == 'ML' && $um_riferimento == 'LT')
                 $prezzo_um_riferimento = ($prezzo_um_riferimento * 1000);
@@ -636,7 +682,7 @@ class UtilsCommons {
                 $prezzo_um_riferimento = ($prezzo_um_riferimento / 100);
             else
             if ($um == 'DL' && $um_riferimento == 'LT')
-                $prezzo_um_riferimento = ($prezzo_um_riferimento * 100);
+                $prezzo_um_riferimento = ($prezzo_um_riferimento * 10);
             else
             if ($um == 'LT' && $um_riferimento == 'ML')
                 $prezzo_um_riferimento = ($prezzo_um_riferimento / 1000);
@@ -674,6 +720,36 @@ class UtilsCommons {
         return $str;
     }
 
+	function formatSizeUnits($bytes)
+	{
+		if ($bytes >= 1073741824)
+		{
+			$bytes = number_format($bytes / 1073741824, 2) . ' GB';
+		}
+		elseif ($bytes >= 1048576)
+		{
+			$bytes = number_format($bytes / 1048576, 2) . ' MB';
+		}
+		elseif ($bytes >= 1024)
+		{
+			$bytes = number_format($bytes / 1024, 2) . ' KB';
+		}
+		elseif ($bytes > 1)
+		{
+			$bytes = $bytes . ' bytes';
+		}
+		elseif ($bytes == 1)
+		{
+			$bytes = $bytes . ' byte';
+		}
+		else
+		{
+			$bytes = '0 bytes';
+		}
+	
+		return $bytes;
+	}
+	
     private function dateFormat($dateEN) {
 
         $dateIT = "";
@@ -684,7 +760,5 @@ class UtilsCommons {
 
         return $dateIT;
     }
-
 }
-
 ?>

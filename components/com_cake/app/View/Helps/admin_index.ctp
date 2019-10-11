@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Help'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
@@ -72,6 +72,8 @@ ul.help  {
 	<li><a href="#model">Model</a></li>
 	<li><a href="#order_actions_component">OrderActions component</a></li>
 -->	
+	<li><a href="#account">account</a></li>
+	<li><a href="#prod_gas">produttori (ProdGas)</a></li>
 	<li><a href="#cron">cron</a></li>
 	<li><a href="#tcpdf">tcpdf</a></li>
 	<li><a href="#upgrade_joomla">Joomla Upgrade</a></li>
@@ -208,6 +210,12 @@ ul.help  {
 		</li>
 		*/
 	?>
+		<li><a name="account"></a>
+			<?php include('box_account.ctp');?>
+		</li>	
+		<li><a name="prod_gas"></a>
+			<?php include('box_prod_gas.ctp');?>
+		</li>	
 		<li><a name="cron"></a>
 			<?php include('box_cron.ctp');?>
 		</li>	

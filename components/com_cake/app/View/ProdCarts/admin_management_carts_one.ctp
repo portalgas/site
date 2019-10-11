@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdDeliveries'),array('controller' => 'ProdDeliveries', 'action' => 'index'));
 if(isset($prod_delivery_id) && !empty($prod_delivery_id))
 	$this->Html->addCrumb(__('ProdDelivery home'),array('controller'=>'ProdDeliveries','action'=>'home', null, 'prod_delivery_id='.$prod_delivery_id));
@@ -20,7 +20,7 @@ function choiceProdDeliveryPermission() {
 }
 function choiceReportOptions() {	
 	var div_contenitore = 'report-options';
-	var reportOptions = jQuery("input[name='report-options']:checked").val();
+	var reportOptions = $("input[name='report-options']:checked").val();
 	if(debugLocal) alert("choiceReportOptions - reportOptions "+reportOptions);
 
 	if(prod_delivery_id=="" || reportOptions=="") {
@@ -35,15 +35,15 @@ function choiceReportOptions() {
 	}
 	else
 	if(reportOptions=='report-articles-details') {
-		jQuery('#users-result').css('display', 'none');  /* showHideBox non mi nasconde tutti perche' users-result e articles-options non li uso */
-		jQuery('#articles-result').css('display', 'block');
+		$('#users-result').css('display', 'none');  /* showHideBox non mi nasconde tutti perche' users-result e articles-options non li uso */
+		$('#articles-result').css('display', 'block');
 		
 		AjaxCallToArticlesDetailsResult(prod_delivery_id, order_by = 'articles_asc'); /* chiamata Ajax l'elenco degli articoli aggregati con il dettaglio degli utenti */
 	}
 }
 function choiceUser() {
-	var div_contenitore = jQuery('#user_id').parent().parent().attr('id');  /* users-result */
-	var user_id = jQuery('#user_id').val();
+	var div_contenitore = $('#user_id').parent().parent().attr('id');  /* users-result */
+	var user_id = $('#user_id').val();
 	if(debugLocal) alert("choiceUser - div_contenitore "+div_contenitore+", user_id "+user_id);
 	if(user_id=='') {
 		showHideBox(div_contenitore,call_child=false);
@@ -55,7 +55,7 @@ function choiceUser() {
 }	
 function choiceUserAnagrafica() {
 	var div_contenitore = 'user-anagrafica';
-	var user_id = jQuery('#user_id').val();
+	var user_id = $('#user_id').val();
 	if(debugLocal) alert("choiceUserAnagrafica - div_contenitore "+div_contenitore+", user_id "+user_id);
 	if(user_id=='') {
 		showHideBox(div_contenitore,call_child=false);
@@ -70,8 +70,8 @@ function choiceArticlesOptions() {
 
 	var div_contenitore = 'articles-options';
 
-	var prod_delivery_id = jQuery('#prod_delivery_id').val();
-	var user_id     = jQuery('#user_id').val();
+	var prod_delivery_id = $('#prod_delivery_id').val();
+	var user_id     = $('#user_id').val();
 	
 	if(debugLocal) alert("choiceArticlesOptions - div_contenitore "+div_contenitore+", articlesOptions "+articlesOptions);
 	if(prod_delivery_id == '' || user_id=='' || articlesOptions=='') {
@@ -80,7 +80,7 @@ function choiceArticlesOptions() {
 	}
 	showHideBox(div_contenitore,call_child=true);
 	
-	var articlesOptions = jQuery("input[name='articles-options']:checked").val();
+	var articlesOptions = $("input[name='articles-options']:checked").val();
 
 	if(user_id=='ALL')
 		AjaxCallToArticlesDetailsResult(prod_delivery_id, order_by = 'users_asc');  /* chiamata Ajax per elenco articoli aggregati con il dettaglio degli utenti */
@@ -100,7 +100,7 @@ function AjaxCallToReportOptions() {
  * chiamata Ajax per elenco utenti
  */
 function AjaxCallToUsers(reportOptions) {
-	var prod_delivery_id = jQuery('#prod_delivery_id').val();
+	var prod_delivery_id = $('#prod_delivery_id').val();
 	var url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_users&prod_delivery_id='+prod_delivery_id+'&reportOptions='+reportOptions+'&format=notmpl';
 	var idDivTarget = 'users-result';
 	ajaxCallBox(url, idDivTarget);
@@ -174,10 +174,25 @@ function AjaxCallToArticlesDetailsResult(prod_delivery_id, order_by) {
 </div>
 
 
-<div id="dialogmodal" title="Nota da associare all'articolo acquistato">
-	<p>
-		<textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
-	</p>
+<div id="dialogmodal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Nota da associare all'articolo acquistato</h4>
+      </div>
+      <div class="modal-body">
+        <p><textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
+		<div class="clearfix"></div>
+		</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Close');?></button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Submit');?></button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <?php 
@@ -186,71 +201,59 @@ echo $this->element('menuProdDeliveryLaterale');
 echo $this->element('legendaProdDeliveriesState',array('htmlLegenda' => $htmlLegenda));
 ?>
 <script type="text/javascript">
-var dialogmodal =  jQuery('#dialogmodal').dialog({modal:true, height:300, width:600, autoOpen:false, buttons: {
-                "Cancel": function () { jQuery(this).dialog("close"); },
-                "Ok": function () { jQuery(this).dialog("close"); }
-            },
-            open: function (event, ui) {
-            
-	            var numRowData = jQuery("#dialogmodal");
-	            numRow = numRowData.data('numRow');
-                
-				jQuery('#notaTextEcomm').val("");
-						
-				var prod_delivery_id = jQuery('#prod_delivery_id-'+numRow).val();
-				var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-				var article_id = jQuery('#article_id-'+numRow).val();
-				var user_id = jQuery('#user_id-'+numRow).val();
-				var key = prod_delivery_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
-						
-				jQuery.ajax({
-					type: "GET",
-					url: "/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=getNotaForzato&key="+key+"&format=notmpl",
-					data: "",
-					success: function(response){
-						jQuery('#notaTextEcomm').val(response);
-					},
-					error:function (XMLHttpRequest, textStatus, errorThrown) {
-					}
-				});
-				return false;
-			}
-        });
-
-jQuery('#dialogmodal').dialog({
-   close: function(event, ui) {
+$(document).ready(function() {
 	
-		    var numRowData = jQuery("#dialogmodal");
-	        numRow = numRowData.data('numRow');
-	            
-			var notaTextEcomm = jQuery('#notaTextEcomm').val();
+    $('#dialogmodal').on('shown.bs.modal', function() {
+		var numRowData = $("#dialogmodal");
+		numRow = numRowData.data('numRow');
+		
+		$('#notaTextEcomm').val("");
+				
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id-'+numRow).val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+				
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=getNotaForzato&key="+key+"&format=notmpl",
+			data: "",
+			success: function(response){
+				$('#notaTextEcomm').val(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    })
+	.on('hidden.bs.modal', function() {
+
+		var numRowData = $("#dialogmodal");
+		numRow = numRowData.data('numRow');
 			
-			var prod_delivery_id = jQuery('#prod_delivery_id-'+numRow).val();
-			var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-			var article_id = jQuery('#article_id-'+numRow).val();
-			var user_id = jQuery('#user_id-'+numRow).val();
-			var key = prod_delivery_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+		var notaTextEcomm = $('#notaTextEcomm').val();
+		
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id-'+numRow).val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
 
-			jQuery.ajax({
-				type: "POST",
-				url: "/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=setNotaForzato&key="+key+"&format=notmpl",
-				data: "notaTextEcomm="+notaTextEcomm,
-				success: function(response){
-					if(notaTextEcomm=="")
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
-					else	
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
-				},
-				error:function (XMLHttpRequest, textStatus, errorThrown) {
-				}
-			});
-			return false;
-
-	}
+		$.ajax({
+			type: "POST",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=setNotaForzato&key="+key+"&format=notmpl",
+			data: "notaTextEcomm="+notaTextEcomm,
+			success: function(response){
+				if(notaTextEcomm=="")
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
+				else	
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    });
 });
 </script>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

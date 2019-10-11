@@ -35,6 +35,7 @@ class DesUsersController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
 		
+		$this->set('isUserFlagPrivay', $this->isUserFlagPrivay());
 		$this->set('isManagerUserDes', $this->isManagerUserDes());
 
 		$this->modelClass = 'User'; // setto User perche' codice filtro preso da User::index_flag_privacy

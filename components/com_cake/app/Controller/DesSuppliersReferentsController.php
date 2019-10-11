@@ -45,13 +45,24 @@ class DesSuppliersReferentsController extends AppController {
 		
 		App::import('Model', 'Organization');
 		$Organization = new Organization;
-				
+		
+		/*
+		*  elenco Supplier profilati
+		*		ReferenteDes
+		*		SuperReferenteDes
+		*/
+		$ACLSuppliersResults = [];
+		if($this->isManagerDes() || $this->isSuperReferenteDes())
+			$ACLSuppliersResults = $DesSupplier->getListDesSuppliers($this->user);
+		else
+			$ACLSuppliersResults = $this->getACLsuppliersIdsDes();
+		$this->set('ACLdesSuppliers',$ACLSuppliersResults);
+		
 		/*
 		 * non lo passo dal metodo perche' quando ho i filtri di ricerca lo sovrascrive
 		 */
 		$group_id = $this->request->params['pass']['group_id'];
-		if($debug) echo '<br />group_id - join '.$group_id.' '.$this->userGroups[$group_id]['join'];
-		
+		self::d('group_id - join '.$group_id.' '.$this->userGroups[$group_id]['join'], $debug);
 		if (empty($group_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			if(!$debug) $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -62,7 +73,6 @@ class DesSuppliersReferentsController extends AppController {
 		
 		$resultsFound = '';
 		$results = [];
-		$SqlLimit = 20;
 		
 		$conditions = ['DesSuppliersReferent.des_id' => (int)$this->user->des_id,
 					   'DesSuppliersReferent.group_id' => $group_id];
@@ -83,20 +93,20 @@ class DesSuppliersReferentsController extends AppController {
 				
 		/*
 		 *  Supplier.ids di cui lo user e' referente
-		 */
-		if($this->userGroups[$group_id]['join'] == 'DesSupplier') 
-			$arrayACLsuppliersIdsDes = explode(",", $this->user->get('ACLsuppliersIdsDes')); 
-
-		if($debug) {
-			echo "<pre> arrayACLsuppliersIdsDes () Supplier.ids di cui lo user e' referente ";
-			print_r($arrayACLsuppliersIdsDes);
-			echo "</pre>";
+		 */	
+		$arrayACLsuppliersIdsDes = []; 
+		if($this->userGroups[$group_id]['join'] == 'DesSupplier' && !empty($ACLSuppliersResults)) {
+			foreach($ACLSuppliersResults as $key => $ACLSuppliersResult)
+				array_push($arrayACLsuppliersIdsDes, $key); 
 		}
-		
+
+		self::d("arrayACLsuppliersIdsDes () Supplier.ids di cui lo user e' referente", $debug);
+		self::d($arrayACLsuppliersIdsDes, $debug);
+
 		if(!empty($FilterDesSuppliersReferentId)) {
 			
-			if($debug) echo "<br />FilterDesSuppliersReferentId (ctrl se e' tra quelli di cui e' referente) ".$FilterDesSuppliersReferentId;
-				
+			self::d("FilterDesSuppliersReferentId (ctrl se e' tra quelli di cui e' referente) ".$FilterDesSuppliersReferentId, $debug);
+			
 			/*
 			 * ctrl che il produttore scelto sia tra quelli possibili per l'utente
 			*/
@@ -105,11 +115,12 @@ class DesSuppliersReferentsController extends AppController {
 				if(!$debug) $this->myRedirect(Configure::read('routes_msg_stop'));
 			}					
 							
-			$conditions += array('DesSuppliersReferent.des_supplier_id' => $FilterDesSuppliersReferentId);		}	
+			$conditions += ['DesSuppliersReferent.des_supplier_id' => $FilterDesSuppliersReferentId];		}	
 
-		$this->DesSuppliersReferent->recursive = 1;
-		$this->paginate = ['conditions' => $conditions];
-		$results = $this->paginate('DesSuppliersReferent');
+		$options = [];
+		$options['conditions'] = $conditions;
+		$options['recursive'] = 1;
+		$results = $this->DesSuppliersReferent->find('all', $options);
 
 		if(empty($results))
 			$resultsFound = 'N';
@@ -121,67 +132,59 @@ class DesSuppliersReferentsController extends AppController {
 			*/
 			foreach ($results as $numResult => $result) {
 
-				/*	
-				echo '<br />des_supplier_id '.$result['DesSuppliersReferent']['des_supplier_id'];	
-				echo "<pre>ho i permessi in ";
-				print_r($arrayACLsuppliersIdsDes);
-				echo "</pre>";
-				*/
-				
 				/*
-				 * solo se sono 
-				 *   SuperReferenteDes o Referente del produttore
-				 *   e il referente e' del mio GAS
+				 * bug, potrebbero non avere + il riferimento son DesSupplier
 				 */
-				if($result['DesSuppliersReferent']['organization_id']==$this->user->organization['Organization']['id'] &&
-					($this->isSuperReferenteDes() || 
-					in_array($result['DesSuppliersReferent']['des_supplier_id'], $arrayACLsuppliersIdsDes)))
-					$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'] = true;
-				else
-					$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'] = false;
+				if(empty($result['DesSupplier']['id']))
+					unset($results[$numResult]);
+				else {
+					/*	
+					echo '<br />des_supplier_id '.$result['DesSuppliersReferent']['des_supplier_id'];	
+					echo "<pre>ho i permessi in ";
+					print_r($arrayACLsuppliersIdsDes);
+					echo "</pre>";
+					*/
+					
+					/*
+					 * solo se sono 
+					 *   SuperReferenteDes o Referente del produttore
+					 *   e il referente e' del mio GAS
+					 */
+					if($result['DesSuppliersReferent']['organization_id']==$this->user->organization['Organization']['id'] &&
+						($this->isSuperReferenteDes() || 
+						in_array($result['DesSuppliersReferent']['des_supplier_id'], $arrayACLsuppliersIdsDes)))
+						$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'] = true;
+					else
+						$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'] = false;
 
-				/*
-				 * Organization
-				 */
-				$options = [];
-				$options['conditions'] = ['Organization.id' => $result['User']['organization_id']];
-				$options['recursive'] = -1;
-				$organizationResults = $Organization->find('first', $options);
-				
-				$results[$numResult]['Organization'] = $organizationResults['Organization'];	
+					/*
+					 * Organization
+					 */
+					$options = [];
+					$options['conditions'] = ['Organization.id' => $result['User']['organization_id']];
+					$options['recursive'] = -1;
+					$organizationResults = $Organization->find('first', $options);
+					
+					$results[$numResult]['Organization'] = $organizationResults['Organization'];	
 
-				/*
-				 * Supplier
-				 */
-				$options = [];
-				$options['conditions'] = ['Supplier.id' => $result['DesSupplier']['supplier_id']];
-				$options['recursive'] = -1;
-				$supplierResults = $Supplier->find('first', $options);
-				$results[$numResult]['Supplier'] = $supplierResults['Supplier'];	
+					/*
+					 * Supplier
+					 */
+					$options = [];
+					$options['conditions'] = ['Supplier.id' => $result['DesSupplier']['supplier_id']];
+					$options['recursive'] = -1;
+					$supplierResults = $Supplier->find('first', $options);
+					$results[$numResult]['Supplier'] = $supplierResults['Supplier'];	
 
-				if($debug) {
-					echo '<br />'.$result[$numResult]['Supplier']['name'].' ('.$result[$numResult]['Supplier']['id'].')';
-					echo ' - canUserDesGestRole. '.$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'];
-				}			
-			}
+					self::d($result[$numResult]['Supplier']['name'].' ('.$result[$numResult]['Supplier']['id'].')', $debug);
+					self::d(' - canUserDesGestRole. '.$results[$numResult]['DesSuppliersReferent']['canUserDesGestRole'], $debug);
+				} // if(empty($result['DesSupplier']['id']))
+			} // end loops
 		}
 		
 		self::d($results, false);
-		
-		$this->set('results', $results);
-		
-		/*
-		*  elenco Supplier profilati
-		*		ReferenteDes
-		*		SuperReferenteDes
-		*/
-		$ACLSuppliersResults = [];
-		if($this->isManagerDes() || $this->isSuperReferenteDes())
-			$ACLSuppliersResults = $DesSupplier->getListDesSuppliers($this->user);
-		else
-			$ACLSuppliersResults = $this->getACLsuppliersIdsDes();
-		$this->set('ACLdesSuppliers',$ACLSuppliersResults);
-				
+		$this->set(compact('results'));
+						
 		/*
 		 * elenco utenti
 		 */
@@ -199,7 +202,6 @@ class DesSuppliersReferentsController extends AppController {
 		$this->set('FilterDesSuppliersReferentId', $FilterDesSuppliersReferentId);
 		$this->set('desSuppliersReferentOrganizationId', $desSuppliersReferentOrganizationId);		
 		$this->set('resultsFound', $resultsFound);
-		$this->set('SqlLimit', $SqlLimit);
 		$this->set('group_id', $group_id);
 	}
 

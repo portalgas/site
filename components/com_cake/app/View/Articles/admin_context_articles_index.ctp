@@ -1,4 +1,6 @@
 <?php
+$this->App->d($results, false);
+
 if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y' && $user->organization['Organization']['hasFieldArticleCodice']=='Y')
 	$colspan = 15;
 else
@@ -44,18 +46,18 @@ echo '</h2>';
 				echo '</div>';
 				echo '</div>';
 			
-				if($user->organization['Organization']['type']=='GAS' && $user->organization['Organization']['hasFieldArticleCategoryId']=='Y') { 
+				if(($user->organization['Organization']['type']=='GAS' || $user->organization['Organization']['type']=='PRODGAS') && $user->organization['Organization']['hasFieldArticleCategoryId']=='Y') { 
 					echo '<div class="row">';
-					echo '<div class="col-md-10">';
+					echo '<div class="col-md-8">';
 					echo $this->Form->input('category_article_id', array('label' => '&nbsp;', 'class' => 'form-control', 'options' => $categories, 'empty' => 'Filtra per categoria','name'=>'FilterArticleCategoryArticleId','default'=>$FilterArticleCategoryArticleId,'escape' => false));
 					echo '</div>';
-					echo '<div class="col-md-2">';
+					echo '<div class="col-md-4">';
 					echo $this->Form->input('flag_presente_articlesorders',array('label' => __('FlagPresenteArticlesorders'), 'class' => 'form-control', 'options' => $flag_presente_articlesorders,'name'=>'FilterArticleFlagPresenteArticlesorders','default'=>$FilterArticleFlagPresenteArticlesorders,'escape' => false)); 
 					echo '</div>';
 					echo '</div>';
 				}	
 				else {
-					if($user->organization['Organization']['type']=='GAS' && $user->organization['Organization']['hasFieldArticleCategoryId']=='Y') { 
+					if(($user->organization['Organization']['type']=='GAS' || $user->organization['Organization']['type']=='PRODGAS') && $user->organization['Organization']['hasFieldArticleCategoryId']=='Y') { 
 						echo '<div class="row">';
 						echo '<div class="col-md-2 col-md-offset-10">';
 						echo $this->Form->input('flag_presente_articlesorders',array('label' => __('FlagPresenteArticlesorders'), 'class' => 'form-control', 'options' => $flag_presente_articlesorders,'name'=>'FilterArticleFlagPresenteArticlesorders','default'=>$FilterArticleFlagPresenteArticlesorders,'escape' => false)); 
@@ -67,15 +69,17 @@ echo '</h2>';
 				echo '<div class="row">';
 				echo '<div class="col-md-8">';
 				if($user->organization['Organization']['type']=='GAS') {
-					$options = array('label' => '&nbsp;', 'options' => $ACLsuppliersOrganization,
-											'empty' => 'Filtra per produttore',
-											'name'=>'FilterArticleSupplierId','default'=>$FilterArticleSupplierId,'escape' => false);
+					$options = ['label' => '&nbsp;', 
+								'options' => $ACLsuppliersOrganization,
+								'name'=>'FilterArticleSupplierId', 'default' => $FilterArticleSupplierId, 'escape' => false];
+					if(count($ACLsuppliersOrganization) > 1) 
+						$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];								
 					if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
-						$options += array('class'=> 'selectpicker', 'data-live-search' => true);
+						$options += ['class'=> 'selectpicker', 'data-live-search' => true];
 					echo $this->Form->input('supplier_organization_id',$options);					
 				}
 				else
-					echo $this->Form->input('category_article_id', array('label' => '&nbsp;', 'class' => 'form-control', 'options' => $categories, 'empty' => 'Filtra per categoria','name'=>'FilterArticleCategoryArticleId','default'=>$FilterArticleCategoryArticleId,'escape' => false));
+					echo $this->Form->input('supplier_organization_id', ['label' => '&nbsp;', 'class' => 'form-control', 'options' => $ACLsuppliersOrganization, 'name'=>'FilterArticleSupplierId','default'=>$FilterArticleSupplierId,'escape' => false]);
 				echo '</div>';
 				
 				echo '<div class="col-md-2">';
@@ -87,15 +91,15 @@ echo '</h2>';
 				echo '</div>';	
 				
 				echo '<div class="row">';
-				echo '<div class="col-md-6">';				 
+				echo '<div class="col-md-8">';				 
 				echo $this->Ajax->autoComplete('FilterArticleName', 
 									   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteContextArticlesArticles_name&format=notmpl',
 										array('label' => 'Nome', 'class' => 'form-control', 'name'=>'FilterArticleName','value'=>$FilterArticleName,'escape' => false));
 				echo '</div>';
-				echo '<div class="col-md-3">';	
+				echo '<div class="col-md-2">';	
 				echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); 
 				echo '</div>';	
-				echo '<div class="col-md-3">';	
+				echo '<div class="col-md-2">';	
 				echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none'))); 
 				echo '</div>';		
 				echo '</div>';
@@ -104,43 +108,56 @@ echo '</h2>';
 
 	if(!empty($results)) { 
 
+		if($isSupplierOrganizationDesTitolare)
+			echo $this->element('boxArticleOwnOrganization',array('ownOrganizationResults' => $ownOrganizationResults));
+		
 		echo $this->Form->create('Article',array('id' => 'formGas'));
 		echo $this->Form->hidden('articles_in_articlesorders',array('id' =>'articles_in_articlesorders', 'value'=>''));
 
-		echo '<table cellpadding="0" cellspacing="0">';	
+		echo '<div class="table-responsive"><table class="table table-hover">';	
 		echo '<tr>';	
-			echo '<th></th>';	
-			echo '<th>'.__('N').'</th>';	
-			if($user->organization['Organization']['type']=='GAS')
-				echo '<th>'.$this->Paginator->sort('supplier_id').'</th>';			
-			if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') 
-				echo '<th>'.$this->Paginator->sort('Category').'</th>';
-			if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-				echo '<th>'.$this->Paginator->sort('codice').'</th>';
-			?>
-			<th colspan="2"><?php echo $this->Paginator->sort('name','Nome prodotto');?></th>
-			<th><?php echo $this->Paginator->sort('confezione');?></th>
-			<th><?php echo $this->Paginator->sort('PrezzoUnita');?></th>
-			<th><?php echo $this->Paginator->sort('Prezzo/UM');?></th>
-			<th><?php echo $this->Paginator->sort('bio',__('Bio'));?></th>
-			<th><?php echo __('Type');?></th>
-			<th><?php echo $this->Paginator->sort('stato',__('Stato'));?></th>
-			<th>Associabili<?php echo '<span style="float:right;">'.$this->App->drawTooltip('Articoli associabili ad un ordine', __('toolFlag_presente_articlesorders'),$type='HELP',$pos='LEFT').'</span>';?>
-			<th style="width:15px"></th>
-			</th>
-			<th class="actions"><?php echo __('Actions');?></th>
-	</tr>
-	<?php
-	foreach ($results as $i => $result):
-		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1);
+		echo '<th></th>';	
+		echo '<th>'.__('N').'</th>';	
+		if($user->organization['Organization']['type']=='GAS')
+			echo '<th>'.$this->Paginator->sort('supplier_id').'</th>';			
+		if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') 
+			echo '<th>'.$this->Paginator->sort('Category').'</th>';
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
+			echo '<th>'.$this->Paginator->sort('codice').'</th>';
+		echo '<th colspan="2">'.$this->Paginator->sort('name','Nome prodotto').'</th>';
+		echo '<th>'.$this->Paginator->sort('Package').'</th>';
+		echo '<th>'.$this->Paginator->sort('PrezzoUnita').'</th>';
+		echo '<th>'.$this->Paginator->sort('Prezzo/UM').'</th>';
+		echo '<th>'.$this->Paginator->sort('bio',__('Bio')).'</th>';
+		echo '<th>'.__('Type').'</th>';
+		echo '<th>'.$this->Paginator->sort('stato',__('Stato')).'</th>';
+		echo '<th>Associabili <span style="float:right;">'.$this->App->drawTooltip('Articoli associabili ad un ordine', __('toolFlag_presente_articlesorders'),$type='HELP',$pos='LEFT').'</span>';
+		echo '<th style="width:15px"></th>';
+		echo '<th class="actions">'.__('Actions').'</th>';
+		echo '</tr>';
+
+	foreach ($results as $numResults => $result) {
+		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $numResults+1);
 
 		echo '<tr class="view">';
-		echo '<td><a action="article_carts-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+		echo '<td>';
+		echo '<a name="anchor_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></a>';
+		switch($user->organization['Organization']['type']) {
+			case 'PROD':
+			break;
+			case 'PRODGAS':
+				echo '<a action="prodgas_article_carts-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+			break;
+			case 'GAS':
+				echo '<a action="article_carts-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+			break;
+		}
+		echo '</td>';
 		echo '<td>'.$numRow.'</td>';
 		
 		if($user->organization['Organization']['type']=='GAS') {
 			echo '<td>';
-			echo $this->Html->link($result['SuppliersOrganization']['name'], array('controller' => 'articles', 'action' => 'context_articles_index',null,'FilterArticleSupplierId='.$result['SuppliersOrganization']['id']),array('title' => 'filtra per produttore'));
+			echo $this->Html->link($result['SuppliersOrganization']['name'], ['controller' => 'articles', 'action' => 'context_articles_index',null,'FilterArticleSupplierId='.$result['SuppliersOrganization']['id']], ['title' => __('FilterToSuppliers')]);
 			echo '</td>';
 		}
 		if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') 
@@ -150,18 +167,17 @@ echo '</h2>';
 		
 		echo '<td>';
 		if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 		}		
 		echo '</td>';
 		
 		echo '<td>'.$result['Article']['name'].'&nbsp;';
 		echo $this->App->drawArticleNota($i, strip_tags($result['Article']['nota']));
 		echo '</td>';
-		?>
-		<td><?php echo $this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']); ?></td>
-		<td><?php echo $result['Article']['prezzo_e'];?></td>
-		<td><?php echo $this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']); ?></td>
-		<?php 
+		echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
+		echo '<td>'.$result['Article']['prezzo_e'].'</td>';
+		echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
+		 
 		/*		 * qui calcolo runtime se e' bio, se no prendo il campo article.bio		*/		
 		echo '<td>';
 		if($this->App->isArticlesTypeBio($result['ArticlesType'])) 
@@ -191,61 +207,57 @@ echo '</h2>';
 		echo '>';
 		echo '</td>';
 
-
+		/*
+		 * TODO 
+		echo '<td>';
+		$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Menus&action=article&article_organization_id='.$result['Article']['organization_id'].'&id='.$result['Article']['id'].'&format=notmpl';
+		$modal_size = 'md'; 
+		$modal_header = __('Article');
+		echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
+		echo '</td>';
+		*/
+		
 		echo '<td class="actions-table-img-3">';
 			
 			/*
 			 *  ad admin_edit passo i parametri della ricerca, ordinamento e paginazione
 			 * 	cosi' quando ritorno ad admin_index mantengo i filtri
 			 */
-			 
-			/*
-			 * se Organization.id == Article.organization_id 
-			 *		e' il proprietario degli articoli
-			 * se NO, gli articoli sono di ProdGas
-			 *
-			 * se SuppliersOrganization.owner_articles == 'REFERENT'
-			 *		e' il proprietario degli articoli
-			 * se NO, gli articoli sono di ProdGasSupplier 
-			 */			
-			if($user->organization['Organization']['id']==$result['Article']['organization_id'] &&
-			   $result['SuppliersOrganization']['owner_articles']=='REFERENT') {
-				echo $this->Html->link(null, array('action' => 'context_articles_edit', $result['Article']['id'],  
+			if($result['Article']['owner']) {
+				echo $this->Html->link(null, array('action' => 'context_articles_edit', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],  
 														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
 														,array('class' => 'action actionEdit','title' => __('Edit'))); 
-				echo $this->Html->link(null, array('action' => 'context_articles_copy', $result['Article']['id'],
+				echo $this->Html->link(null, array('action' => 'context_articles_copy', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
 														,array('class' => 'action actionCopy','title' => __('Copy')));
-				echo $this->Html->link(null, array('action' => 'context_articles_delete', $result['Article']['id'],
+				echo $this->Html->link(null, array('action' => 'context_articles_delete', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
 														,array('class' => 'action actionDelete','title' => __('Delete'))); 
 			}
 			else {
-				echo $this->Html->link(null, array('action' => 'context_articles_view', $result['Article']['id'],
-														'article_organization_id' => $result['Article']['organization_id'],
+				echo $this->Html->link(null, array('action' => 'context_articles_view', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-														,array('class' => 'action actionView','title' => __('View'))); 			
+														,array('class' => 'action actionView','title' => __('View'))); 
+				
+				// owner echo $result['SuppliersOrganization']['name'];
 			}
-			?>
-		</td>
-	</tr>
-	<tr class="trView" id="trViewId-0_<?php echo $result['Article']['organization_id'];?>_<?php echo $result['Article']['id'];?>">
-		<td colspan="2"></td>
-		<td colspan="<?php echo $colspan;?>" id="tdViewId-0_<?php echo $result['Article']['organization_id'];?>_<?php echo $result['Article']['id'];?>"></td> 
-	</tr>
-<?php 
-endforeach;
-?>
-	</table>
-	<p>
-	<?php
+		echo '</td>';
+		echo '</tr>';
+		echo '<tr class="trView" id="trViewId-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
+		echo '<td colspan="2"></td>';
+		echo '<td colspan="'.$colspan.'" id="tdViewId-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></td> ';
+		echo '</tr>'; 
+	}
+
+	echo '</table></div>';
+	echo '<p>';
 	echo $this->Paginator->counter(array(
 	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
 	));
-	?>	</p>
+	echo '</p>';
 
-	<div class="paging">
-	<?php
+	echo '<div class="paging">';
+
 		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
 		echo $this->Paginator->numbers(array('separator' => ''));
 		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
@@ -263,48 +275,39 @@ endforeach;
 	}
 	else {    
 		if($iniCallPage)
-			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFonud', 'msg' => __('msg_search_no_parameter')));
+			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFound', 'msg' => __('msg_search_no_parameter')));
 		else
-			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));
+			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	}
 echo '</div>';
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 		
-	jQuery(".actionNotaDetail").each(function () {
-		jQuery(this).click(function() {
+	$(".actionNotaDetail").each(function () {
+		$(this).click(function() {
 			
-			dataElement = jQuery(this).attr('id');
+			dataElement = $(this).attr('id');
 			dataElementArray = dataElement.split('-');
 			var label = dataElementArray[0];
 			var idElement = dataElementArray[1];
 			
-			jQuery('#articleNota-'+idElement).fadeIn();
-			jQuery('#articleNotaContinue-'+idElement).hide();
+			$('#articleNota-'+idElement).fadeIn();
+			$('#articleNotaContinue-'+idElement).hide();
 			
 		});
 	});	
 
-	jQuery('#articles_in_articlesorders_all').click(function () {
-		var checked = jQuery("input[name='articles_in_articlesorders_all']:checked").val();
+	$('#articles_in_articlesorders_all').click(function () {
+		var checked = $("input[name='articles_in_articlesorders_all']:checked").val();
 		if(checked=='ALL')
-			jQuery('input[name=articles_in_articlesorders]').prop('checked',true);
+			$('input[name=articles_in_articlesorders]').prop('checked',true);
 		else
-			jQuery('input[name=articles_in_articlesorders]').prop('checked',false);
+			$('input[name=articles_in_articlesorders]').prop('checked',false);
 	});
 	
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-	jQuery('.actionCopy').click(function() {
+	$('.actionCopy').click(function() {
 
 		if(!confirm("Sei sicuro di voler copiare l'articolo selezionato?")) {
 			return false;

@@ -5,9 +5,9 @@ $this->PhpExcel->setDefaultFont('Calibri', 12);
 // define table cells
 $table[] =	array('label' => __('N.'), 'width' => 'auto');
 $table[] =	array('label' => __('User'), 'width' => 'auto',  'filter' => true);
-$table[] = array('label' => __('Importo Dovuto'), 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => __('Importo Pagato'), 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => __('Differenza'), 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Importo_dovuto'), 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Importo_pagato'), 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Delta'), 'width' => 'auto', 'filter' => false);
 if($user->organization['Organization']['hasFieldPaymentPos']=='Y') 
 	$table[] = array('label' => __('Importo POS'), 'width' => 'auto', 'filter' => false);
 $table[] =	array('label' => __('Cassa'), 'width' => 'auto', 'filter' => false);
@@ -37,7 +37,7 @@ if (!empty($results)) {
 			else
 				$importo_cash = '0,00';
 				
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] = ($numResult+1);
 			$rowsExcel[] = $result['User']['name'];
 			$rowsExcel[] = $tot_importo;
@@ -66,7 +66,7 @@ if (!empty($results)) {
 	$tot_importo_pos = number_format($tot_importo_pos,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 	$tot_differenza_delivery = number_format($tot_differenza_delivery,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 
-	$rowsExcel = array();
+	$rowsExcel = [];
 	$rowsExcel[] =  '';
 			$rowsExcel[] =  '';
 	$rowsExcel[] =  $tot_importo_delivery;

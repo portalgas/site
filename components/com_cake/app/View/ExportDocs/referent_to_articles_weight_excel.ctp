@@ -35,7 +35,7 @@ if(!empty($results)) {
 		else
 			$bio = '';
 
-		$rows = array();
+		$rows = [];
 		$rows[] = $i;
 		$rows[] = $bio;
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') 
@@ -60,7 +60,7 @@ if(!empty($results)) {
 		$peso_pz_totale += $result['Peso']['pz'];
 	}
 
-	$rows = array();
+	$rows = [];
 	$rows[] = '';
 	$rows[] = '';
 	if($user->organization['Organization']['hasFieldArticleCodice']=='Y') 

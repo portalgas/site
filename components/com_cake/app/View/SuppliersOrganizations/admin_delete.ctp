@@ -1,37 +1,35 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Suppliers'), array('controller' => 'SuppliersOrganizations', 'action' => 'index'));
 $this->Html->addCrumb(__('Title Delete Supplier Organization'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
 
-<div class="suppliers form">
-<?php echo $this->Form->create('SuppliersOrganization', array('type' => 'post'));?>
-	<fieldset>
-		<legend><?php echo __('Title Delete Supplier Organization'); ?></legend>
+echo '<div class="suppliers form">';
+echo $this->Form->create('SuppliersOrganization', ['type' => 'post']);
+echo '<fieldset>';
+echo '<legend>'.__('Title Delete Supplier Organization').'</legend>';
 
-		<div class="input text"><label for="">Categoria</label><?php echo $results['CategoriesSupplier']['name'];?></div>
-		<div class="input text"><label for="">Ragione sociale</label><?php echo $results['SuppliersOrganization']['name'];?></div>
-		<div class="input text"><label for="">Descrizione</label><?php echo $results['Supplier']['descrizione'];?></div>
+echo '<div class="input text"><label for="">'.__('Category').'</label> '.$results['CategoriesSupplier']['name'].'</div>';
+echo '<div class="input text"><label for="">'.__('Business name').'</label> '.$results['SuppliersOrganization']['name'].'</div>';
+echo '<div class="input text"><label for="">'.__('Description').'</label> '.$results['Supplier']['descrizione'].'</div>';
 
-		<?php echo $this->Element('boxMsg',array('msg' => "Elementi associati che verranno cancellati definitivamente")); ?>
+$this->Element('boxMsg', ['msg' => "Elementi associati che verranno cancellati definitivamente"]); 
 
-		<?php (count($results['Article']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');?>
-		<div class="input text"><label for="">Totale articoli</label><span class="<?php echo $class;?>"><?php echo count($results['Article']);?></span></div>
+(count($results['Article']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');
+echo '<div class="input text"><label for="">'.__('TotaleArticles').'</label><span class="'.$class.'">'.count($results['Article']).'</span></div>';
 
-		<?php (count($results['Order']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');?>
-		<div class="input text"><label for="">Totale ordini</label><span class="<?php echo $class;?>"><?php echo count($results['Order']);?></span></div>
+(count($results['Order']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');
+echo '<div class="input text"><label for="">'.__('TotaleOrders').'</label><span class="'.$class.'">'.count($results['Order']).'</span></div>';
 
-		<?php (count($results['SuppliersOrganizationsReferent']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');?>
-		<div class="input text"><label for="">Totale referenti</label><span class="<?php echo $class;?>"><?php echo count($results['SuppliersOrganizationsReferent']);?></span></div>
+(count($results['SuppliersOrganizationsReferent']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');
+echo '<div class="input text"><label for="">'.__('TotaleSuppliersOrganizationsReferents').'</label><span class="'.$class.'">'.count($results['SuppliersOrganizationsReferent']).'</span></div>';
+echo '</fieldset>';
 
-	</fieldset>
-<?php
 echo $this->Form->hidden('id',array('value' => $results['SuppliersOrganization']['id']));
 echo $this->Form->end(__('Submit Delete'));
-?>
-</div>
 
+echo '</div>';
+?>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>

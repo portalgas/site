@@ -112,7 +112,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -165,7 +165,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -706,11 +706,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if ($Order->getOrderPermissionToEditReferente($results['Order'])) {
             /*
              * ctrl eventuali occorrenze di SummaryOrder
@@ -757,11 +757,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if ($results['Order']['state_code'] == 'PROCESSED-POST-DELIVERY' || $results['Order']['state_code'] == 'INCOMING-ORDER' || $results['Order']['state_code'] == 'PROCESSED-ON-DELIVERY') {
             /*
              * ctrl eventuali occorrenze di CartsSplit
@@ -843,11 +843,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -865,11 +865,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -885,11 +885,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -911,11 +911,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         /*
@@ -980,11 +980,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         /*
@@ -1047,11 +1047,11 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+        $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         $this->set(compact('results', $results));
 
         /*
@@ -1182,7 +1182,8 @@ class AjaxGasCodesController extends AppController {
 		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
 
 		// precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
-		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, [$owner_articles], $debug);
+		$filters['ownerArticles'] = $owner_articles;
+		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, $filters, $debug);
 		
 		$currentOrganization = $organizationResults['Supplier']['Organization'];
 		$currentOrganization = current($currentOrganization);
@@ -1705,7 +1706,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1820,7 +1821,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 		
         $Order->id = $this->order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1880,7 +1881,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
         
         $Order->id = $order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -1944,7 +1945,7 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
         
         $Order->id = $order_id;
-        if (!$Order->exists($this->user->organization['Organization']['id'])) {
+        if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }

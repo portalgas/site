@@ -9,6 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+require_once(__DIR__.'/../myController.php');
+
 /**
  * Joomla! Cache callback type object
  *
@@ -16,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Cache
  * @since       11.1
  */
-class JCacheControllerCallback extends JCacheController
+class JCacheControllerCallback extends MyJCacheController /* JCacheController */
 {
 	/**
 	 * Executes a cacheable callback if not found in cache else returns cached output and result

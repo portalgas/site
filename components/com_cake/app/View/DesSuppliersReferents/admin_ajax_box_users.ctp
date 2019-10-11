@@ -11,25 +11,25 @@ echo $this->Form->hidden('referent_user_ids', array('id' => 'referent_user_ids',
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#master_user_id').click(function() {
-		jQuery("#master_user_id option:selected" ).each(function (){			
-			jQuery('#referent_user_id').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#master_user_id').click(function() {
+		$("#master_user_id option:selected" ).each(function (){			
+			$('#referent_user_id').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#referent_user_id').click(function() {
-		jQuery("#referent_user_id option:selected" ).each(function (){			
-			jQuery('#master_user_id').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#referent_user_id').click(function() {
+		$("#referent_user_id option:selected" ).each(function (){			
+			$('#master_user_id').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 });

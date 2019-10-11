@@ -1,10 +1,11 @@
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleKey');?>&sensor=false&v=3.exp"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleApiKey');?>&v=3.exp"></script>
+
 <script type="text/javascript">
 var marker = new Array();
 var icon1 = '/images/cake/puntina.png';
 var icon2 = '/images/cake/puntina03.png';
 
-jQuery(document).ready(function () {
+$(document).ready(function () {
 
     var map;
     var myOptions = {
@@ -62,14 +63,14 @@ jQuery(document).ready(function () {
 	}
 	?>	
 		
-	jQuery('.listsUser > li > a').mouseover(function () {
-		var markerId = jQuery(this).attr('markerId');
+	$('.listsUser > li > a').mouseover(function () {
+		var markerId = $(this).attr('markerId');
 		marker[markerId].setIcon(icon2);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').mouseout(function () {
-		var markerId = jQuery(this).attr('markerId');
+	$('.listsUser > li > a').mouseout(function () {
+		var markerId = $(this).attr('markerId');
 		marker[markerId].setIcon(icon1);
 		return false;
 	});

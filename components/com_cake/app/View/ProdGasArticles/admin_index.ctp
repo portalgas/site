@@ -24,7 +24,7 @@ echo '</h2>';
 			echo '<th>'.$this->Paginator->sort('codice').'</th>';
 			?>
 			<th colspan="2"><?php echo $this->Paginator->sort('name','Nome prodotto');?></th>
-			<th><?php echo $this->Paginator->sort('confezione');?></th>
+			<th><?php echo $this->Paginator->sort('Package');?></th>
 			<th><?php echo $this->Paginator->sort('PrezzoUnita');?></th>
 			<th><?php echo $this->Paginator->sort('Prezzo/UM');?></th>
 			<th><?php echo $this->Paginator->sort('bio',__('Bio'));?></th>
@@ -40,8 +40,8 @@ echo '</h2>';
 		echo '<td>'.$result['ProdGasArticle']['codice'].'</td>';
 		
 		echo '<td>';
-		if(!empty($result['ProdGasArticle']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$result['ProdGasArticle']['supplier_id'].DS.$result['ProdGasArticle']['img1'])) {
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$result['ProdGasArticle']['supplier_id'].'/'.$result['ProdGasArticle']['img1'].'" />';
+		if(!empty($result['ProdGasArticle']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$result['ProdGasArticle']['organization_id'].DS.$result['ProdGasArticle']['img1'])) {
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_article').'/'.$result['ProdGasArticle']['organization_id'].'/'.$result['ProdGasArticle']['img1'].'" />';
 		}		
 		echo '</td>';
 		
@@ -107,40 +107,31 @@ endforeach;
 	}
 	else {    
 		if($iniCallPage)
-			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFonud', 'msg' => __('msg_search_no_parameter')));
+			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFound', 'msg' => __('msg_search_no_parameter')));
 		else
-			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));
+			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	}
 echo '</div>';
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 		
-	jQuery(".actionNotaDetail").each(function () {
-		jQuery(this).click(function() {
+	$(".actionNotaDetail").each(function () {
+		$(this).click(function() {
 			
-			dataElement = jQuery(this).attr('id');
+			dataElement = $(this).attr('id');
 			dataElementArray = dataElement.split('-');
 			var label = dataElementArray[0];
 			var idElement = dataElementArray[1];
 			
-			jQuery('#articleNota-'+idElement).fadeIn();
-			jQuery('#articleNotaContinue-'+idElement).hide();
+			$('#articleNota-'+idElement).fadeIn();
+			$('#articleNotaContinue-'+idElement).hide();
 			
 		});
 	});	
 	
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-	jQuery('.actionCopy').click(function() {
+	$('.actionCopy').click(function() {
 
 		if(!confirm("Sei sicuro di voler copiare l'articolo selezionato?")) {
 			return false;

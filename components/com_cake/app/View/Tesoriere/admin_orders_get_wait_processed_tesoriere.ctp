@@ -1,7 +1,7 @@
 <?php
 echo '<div class="old-menu">';
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $delivery_id));
 $this->Html->addCrumb(__('OrdersWaitProcessedTesoriere'));
@@ -80,6 +80,7 @@ echo '</h2>';
 echo $this->Form->create(array('id'=>'formGas'));
 echo '<fieldset>';
 
+// $this->App->dd($deliveries);
 $options = array('id'=>'delivery_id');
 if(!empty($delivery_id) && $delivery_id>0)
 	$options += array('default' => $delivery_id);

@@ -158,12 +158,12 @@ class DocsCreatesController extends AppController {
 		$conditions = [];
 		if(!empty($users_ids)) {
 			$users_ids = substr($users_ids, 0, (strlen($users_ids)-1));
-			$conditions += ["User.id NOT IN ('$users_ids')"];
+			$conditions += ["User.id NOT IN" => "('$users_ids')"];
 		}
 		
 		$conditions += ['UserGroupMap.group_id' => Configure::read('group_id_user')];
-		$users = $User->getUsersList($this->user, $conditions, Configure::read('orderUser'), ['User.name', 'User.email']);
-		$this->set('users',$users);
+		$users = $User->getUsersList($this->user, $conditions, Configure::read('orderUser'), ['name', 'email']);
+		$this->set(compact('users'));
 		
 		$stato = ClassRegistry::init('DocsCreate')->enumOptions('stato');
 		$this->set(compact('stato'));
@@ -374,7 +374,7 @@ class DocsCreatesController extends AppController {
 			$data['year'] = date('Y');				
 			$data['name'] = $this->request->data['DocsCreate']['name'];
 			$data['txt_testo'] = $this->request->data['DocsCreate']['txt_testo'];
-			if(!empty($results['DocsCreate']['txt_data']))
+			if(!empty($results['DocsCreate']['txt_data']) && $results['DocsCreate']['txt_data']!=Configure::read('DB.field.date.empty'))
 				$data['txt_data'] = $this->request->data['DocsCreate']['txt_data']['day'].'/'.$this->request->data['DocsCreate']['txt_data']['month'].'/'.$this->request->data['DocsCreate']['txt_data']['year'];
 			else
 				$data['txt_data'] = date('d/m/Y');
@@ -441,7 +441,7 @@ class DocsCreatesController extends AppController {
 			$data['year'] = $results['DocsCreateUser']['year'];
 			$data['name'] = $results['DocsCreate']['name'];
 			$data['txt_testo'] = $results['DocsCreate']['txt_testo'];
-			if(!empty($results['DocsCreate']['txt_data'])) {
+			if(!empty($results['DocsCreate']['txt_data']) && $results['DocsCreate']['txt_data']!=Configure::read('DB.field.date.empty')) {
 				list($aaaa, $mm, $gg) = explode("-", $results['DocsCreate']['txt_data']);
 				$data['txt_data'] = $gg . '-' . $mm . '-' . $aaaa;
 			}

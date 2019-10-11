@@ -1,32 +1,62 @@
 <?php 
+$this->App->d($user, false);
+$this->App->d($results, false);
+
 echo '<div class="related">';
 
-echo $this->Form->submit(__('Add Supplier Organization Id'), array('id' => 'submit_only_supplier', 'div'=> 'submitMultiple'));
+/*
+ * ctrl se e' un produttore 
+ * 	NO => puo' copiare i dati
+ *	SI => diverso al prodduttore con il quale sono autenticato => NON puo' copiare i dati
+ *	   => uguale  al prodduttore con il quale sono autenticato => puo' copiare i dati (sono i suoi)
+ */
+$copy = false;
+if($results['Supplier']['owner_organization_id']==0) {
+	$copy = true;
+	if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization']))
+		echo $this->Form->submit(__('Add Supplier Organization Id And Article'), ['id' => 'submit_supplier_articles_'.$results['Supplier']['id'], 'div'=> 'submitMultiple','class' => 'buttonBlu']);
+}	
+else {
+	if($results['Supplier']['owner_organization_id']==$user->organization['Organization']['id']) { // soon il produttore scelto
+		$copy = true;
+		echo $this->element('boxMsg',['class_msg' => 'message','msg' => 'Importo i miei articoli dai GAS']);
+		if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization']))
+			echo $this->Form->submit(__('Add Supplier Organization Id And Article'), ['id' => 'submit_supplier_articles_'.$results['Supplier']['id'], 'div'=> 'submitMultiple','class' => 'buttonBlu']);
+	} else { 
+		$copy = false;
+		echo $this->element('boxMsg',['class_msg' => 'message','msg' => 'Il produttore gestisce il listino articoli']);
+	}
+}	
 
-if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization']))
-	echo $this->Form->submit(__('Add Supplier Organization Id And Article'), array('id' => 'submit_supplier_articles', 'div'=> 'submitMultiple','class' => 'buttonBlu'));
+echo $this->Form->submit(__('Add Supplier Organization Id'), ['id' => 'submit_only_supplier_'.$results['Supplier']['id'], 'div'=> 'submitMultiple']);
 
-echo $this->Form->hidden('supplier_id',array('value' => $results['Supplier']['id']));
+echo $this->Form->hidden('supplier_id', ['value' => $results['Supplier']['id']]);
 
 
 echo '<h3 class="title_details">'.__('Related Suppliers').'</h3>';
 
 if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization'])) {
 
-	echo '<table cellpadding = "0" cellspacing = "0">';
+	echo '<table cellpadding="0" cellspacing="0">';
 	echo '<tr>';
-	echo '<th colspan="4">'.__('Name').' del G.A.S.</th>';
+	echo '<th colspan="2">'.__('Name').' del G.A.S.</th>';
+	echo '<th colspan="3" style="text-align:right">';
+	if($copy)
+		echo 'Copia gli articoli del G.A.S.';
+	echo '</th>';
 	//echo '<th>Contatti del produttore</th>';
 	//echo '<th>Contatti con i referenti del G.A.S.</th>';
 	echo '</tr>';
 	
+	$first_gas=false;
+	$first_gas_list_articles=false;
 	$tmp = '';
-	foreach ($results['SuppliersOrganization'] as $numResult  => $result) {
+	foreach ($results['SuppliersOrganization'] as $numResult => $result) {
 		
 		echo '<tr>';
 		// echo '<td>'.($numResult+1).'</td>';
 		echo '<td>';
-		echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
+		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
 		echo '</td>';
 		echo '<td>';
 		echo $result['Organization']['name'];
@@ -47,7 +77,7 @@ if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganiz
 		echo '<td>';
 		if(!empty($result['Organization']['telefono'])) echo h($result['Organization']['telefono']).'<br />';
 		if(!empty($result['Organization']['telefono2'])) echo  h($result['Organization']['telefono2']).'<br />';
-		if(!empty($result['Organization']['mail'])) echo '<a title="'.__('Email send').'" href="mailto:'.h($result['Organization']['mail']).'" class="link_mailto"></a>'.'<br />';
+		if(!empty($result['Organization']['mail'])) echo '<a title="'.__('Email send').'" href="mailto:'.h($result['Organization']['mail']).'" class="fa fa-envelope-o fa-lg"></a>'.'<br />';
 		echo '</td>';
 		*/
 		
@@ -58,28 +88,40 @@ if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganiz
 		if(isset($result['SuppliersOrganizationsReferent']) && !empty($result['SuppliersOrganizationsReferent'])) {
 
 			echo '<div class="actions-img" style="float:none;">';
-			echo $this->Html->link(__('Send mail to referents to info'), array(), array( 'class' => 'action actionEdit sendMail','title' => __('Send mail to referents'),
+			echo $this->Html->link(__('Send mail to referents to info'), [], ['class' => 'action actionEdit sendMail','title' => __('Send mail to referents'),
 																				'pass_org_id' => $result['SuppliersOrganization']['organization_id'], 
 																				'pass_id' => $result['SuppliersOrganization']['id'], 
-																				'pass_entity' => 'suppliersOrganization'));
+																				'pass_entity' => 'suppliersOrganization']);
 			
 			echo '</div>';
 		}
 		else 
 			echo "Nessun referente associato";
 		echo '</td>';
-		
+		echo '<td>';
+		if($copy) {
+			if(isset($result['Article']) && !empty($result['Article'])) {
+				echo '<input type="radio" name="organization_id" value="'.$result['Organization']['id'].'" ';
+				if(!$first_gas) echo ' checked';
+				echo '/>';
+			
+				$first_gas=true;
+			}
+		}
+		echo '<td>'; 
+		echo '</td>';
 		echo '</tr>';
 		
 		/*
 		 * articoli
 		 */
-		if($numResult==0 && isset($result['Article'])) {
+		if(!$first_gas_list_articles && isset($result['Article']) && !empty($result['Article'])) {
 
-
+			$first_gas_list_articles = true;
+			
 			$tmp .= '<tr>';
 			$tmp .= '<td></td>';
-			$tmp .= '<td colspan="3"><br />';
+			$tmp .= '<td colspan="4"><br />';
 
 			$tmp .= '<h3 class="title_details">'.__('Related Suppliers Articles').'</h3>';
 			
@@ -103,7 +145,7 @@ if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganiz
 				$tmp .= '</td>';
 				$tmp .= '<td>';
 				if(!empty($article['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['organization_id'].DS.$articles['img1'])) {
-					$tmp .= '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['organization_id'].'/'.$article['img1'].'" />';	
+					$tmp .= '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['organization_id'].'/'.$article['img1'].'" />';	
 				}
 				$tmp .= '</td>';
 	
@@ -133,34 +175,38 @@ if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganiz
 	echo $this->element('send_mail_popup');
 }
 else {
-	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "Il produttore non è ancora associato ad alcun G.A.S."));
+	echo $this->element('boxMsg', ['class_msg' => 'notice', 'msg' => "Il produttore non è ancora associato ad alcun G.A.S."]);
 }
 echo '</div>';
 ?>	
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+function msg_<?php echo $results['Supplier']['id'];?>() {
+	<?php 
+	if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization']) && $copy) {
+	?>
+		var supplier_articles = $('#supplier_articles').val();
+		if(supplier_articles=='N') {
+			if(!confirm("Sei sicuro di non voler importare anche gli articoli del produttore?"))
+				return false;
+		}
+	<?php 
+	}
+	?>
+	return true;	
+}
 
-	jQuery('#submit_only_supplier').click(function() {	
-		jQuery('#supplier_articles').val('N');
+$(document).ready(function() {
+
+	$('#submit_only_supplier_<?php echo $results['Supplier']['id'];?>').click(function() {	
+		$('#supplier_articles').val('N');
 	});
-	jQuery('#submit_supplier_articles').click(function() {	
-		jQuery('#supplier_articles').val('Y');
+	$('#submit_supplier_articles_<?php echo $results['Supplier']['id'];?>').click(function() {	
+		$('#supplier_articles').val('Y');
 	});
 	
-	jQuery('#formGas').submit(function() {
-		<?php 
-		if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganization'])) {
-		?>
-			var supplier_articles = jQuery('#supplier_articles').val();
-			if(supplier_articles=='N') {
-				if(!confirm("Sei sicuro di non voler importare anche gli articoli del produttore?"))
-					return false;
-			}
-		<?php 
-		}
-		?>			
-		return true;
+	$('#formGas').submit(function() {
+		return msg_<?php echo $results['Supplier']['id'];?>();
 	});
 
 });

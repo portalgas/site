@@ -34,7 +34,7 @@ echo '</p>';
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.submit').css('display','block');
+$(document).ready(function() {
+	$('.submit').css('display','block');
 });
 </script>

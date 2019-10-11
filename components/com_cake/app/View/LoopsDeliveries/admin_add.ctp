@@ -1,16 +1,14 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List LoopsDeliveries'), array('controller' => 'LoopsDeliveries', 'action' => 'index'));
 $this->Html->addCrumb(__('Add LoopsDelivery'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-<div class="loopsDeliveries form">
-<?php echo $this->Form->create('LoopsDelivery', array('id'=>'formGas'));?>
-	<fieldset>
-		<legend><?php echo __('Add LoopsDelivery'); ?></legend>
-		
-		
-		<?php 
+
+echo '<div class="loopsDeliveries form">';
+echo $this->Form->create('LoopsDelivery', array('id'=>'formGas'));
+echo '<fieldset>';
+echo '<legend>'.__('Add LoopsDelivery').'</legend>';
+
 		if(isset($data_master) &&isset($data_copy)) {
 			echo $this->Html->css('fullcalendar-min');
 			echo $this->Html->script('fullcalendar/moment.min');
@@ -18,11 +16,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			echo $this->Html->script('fullcalendar/lang-all');
 		?>
 			<script type="text/javascript">
-			jQuery(document).ready(function() {
+			$(document).ready(function() {
 			
 				var currentLangCode = 'it';
 			
-				jQuery('#calendar_master').fullCalendar({
+				$('#calendar_master').fullCalendar({
 					header: false,
 					theme: false,
 					lang: currentLangCode,
@@ -39,7 +37,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 					]
 				});
 
-				jQuery('#calendar_copy').fullCalendar({
+				$('#calendar_copy').fullCalendar({
 					header: false,
 					theme: false,
 					lang: currentLangCode,
@@ -55,11 +53,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 					]							
 				});		
 
-				jQuery('#calendar_master').fullCalendar( 'gotoDate', '<?php echo $data_master;?>' );	
-				jQuery('#calendar_copy').fullCalendar( 'gotoDate', '<?php echo $data_copy;?>' );
+				$('#calendar_master').fullCalendar( 'gotoDate', '<?php echo $data_master;?>' );	
+				$('#calendar_copy').fullCalendar( 'gotoDate', '<?php echo $data_copy;?>' );
 
-				jQuery('.fc-time').css('display', 'none');
-				jQuery('.fc-title').css('display', 'none');
+				$('.fc-time').css('display', 'none');
+				$('.fc-title').css('display', 'none');
 				
 			});
 			</script>
@@ -99,7 +97,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<div style="float:right;width:70%;clear: none;">
 
 					<div id="type_week" style="display:none;">
-						ricorre ogni <input type="text" value="<?php echo $this->request->data['LoopsDelivery']['week_every_week'];?>" class="noWidth" name="data[LoopsDelivery][week_every_week]" /> settimana/e
+						ricorre ogni <input type="text" value="<?php echo $this->request->data['LoopsDelivery']['week_every_week'];?>" name="data[LoopsDelivery][week_every_week]" /> settimana/e
 					</div>	
 					
 					<div id="type_month" style="display:none;">
@@ -108,7 +106,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 							<table>
 								<tr>
 									<td><input type="radio" value="MONTH1" name="data[LoopsDelivery][type_month]" <?php echo (($this->request->data['LoopsDelivery']['type_month']=='MONTH1') ? "checked" : "");?> /> Giorno</td>
-									<td><input class="type_month1 noWidth" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month1_day'];?>" name="data[LoopsDelivery][month1_day]" /> ogni <input class="type_month1 noWidth" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month1_every_month'];?>" name="data[LoopsDelivery][month1_every_month]" /> mese/i</td>
+									<td><input class="type_month1" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month1_day'];?>" name="data[LoopsDelivery][month1_day]" /> ogni <input class="type_month1" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month1_every_month'];?>" name="data[LoopsDelivery][month1_every_month]" /> mese/i</td>
 								</tr>
 							</table>
 							
@@ -122,7 +120,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 									<tr>
 										<td></td>
 										<td>
-											<select class="type_month2" name="data[LoopsDelivery][month2_every_type]">
+											<select class="type_month2 form-control" name="data[LoopsDelivery][month2_every_type]">
 												<option value="FIRST" <?php echo (($this->request->data['LoopsDelivery']['month2_every_type']=='FIRST') ? "selected" : "");?> ><?php echo $this->App->traslateEnum('FIRST');?></option>
 												<option value="SECOND" <?php echo (($this->request->data['LoopsDelivery']['month2_every_type']=='SECOND') ? "selected" : "");?> ><?php echo $this->App->traslateEnum('SECOND');?></option>
 												<option value="THIRD" <?php echo (($this->request->data['LoopsDelivery']['month2_every_type']=='THIRD') ? "selected" : "");?> ><?php echo $this->App->traslateEnum('THIRD');?></option>
@@ -134,7 +132,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 									<tr>
 										<td></td>
 									<td>
-											<ul>
+											<ul class="noStyle">
 												<li><input class="type_month2" type="checkbox" value="MON" name="data[LoopsDelivery][month2_day_week]" <?php echo (($this->request->data['LoopsDelivery']['month2_day_week']=='MON') ? "checked" : "");?> /><?php echo $this->App->traslateEnum('MON');?></option>
 												<li><input class="type_month2" type="checkbox" value="TUE" name="data[LoopsDelivery][month2_day_week]" <?php echo (($this->request->data['LoopsDelivery']['month2_day_week']=='TUE') ? "checked" : "");?>  /><?php echo $this->App->traslateEnum('TUE');?></option>
 												<li><input class="type_month2" type="checkbox" value="WED" name="data[LoopsDelivery][month2_day_week]" <?php echo (($this->request->data['LoopsDelivery']['month2_day_week']=='WED') ? "checked" : "");?>  /><?php echo $this->App->traslateEnum('WED');?></option>
@@ -149,7 +147,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 									<tr>
 										<td></td>
 										<td>
-											ogni <input class="type_month2 noWidth" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month2_every_month'];?>" name="data[LoopsDelivery][month2_every_month]" /> mese/i					
+											ogni <input class="type_month2" type="text" value="<?php echo $this->request->data['LoopsDelivery']['month2_every_month'];?>" name="data[LoopsDelivery][month2_every_month]" /> mese/i					
 										</td>
 									</tr>
 								</table>
@@ -166,11 +164,16 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 									  Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteDeliveries_luogo&format=notmpl',
 									  array('label' => 'Luogo Consegna','div' => 'required'));
 	
-		echo $this->Form->input('orario_da', array('type' => 'time','selected' => $orario_da,'timeFormat'=>'24','interval' => 15));
-		echo $this->Form->input('orario_a',  array('type' => 'time','selected' => $orario_a, 'timeFormat'=>'24','interval' => 15));
+		echo '<div class="row">';
+		echo $this->App->drawHour('LoopsDelivery', 'orario_da', __('Orario da'), $orario_da);
+		echo '</div>';
+
+		echo '<div class="row">';
+		echo $this->App->drawHour('LoopsDelivery', 'orario_a', __('Orario a'), $orario_a);
+		echo '</div>';
 
 		echo $this->Form->input('nota');
-	
+		echo $this->Html->div('clearfix','');
 		echo $this->Form->input('nota_evidenza',array('options' => $nota_evidenza,
 													'id' => 'DeliveryNotaEvidenza',
 													'value' => $this->Form->value('LoopsDelivery.nota_evidenza'),
@@ -202,59 +205,59 @@ echo $this->Form->end();
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.type_month1').attr('disabled',true);
-	jQuery('.type_month1').css('opacity','0.3');
+	$('.type_month1').attr('disabled',true);
+	$('.type_month1').css('opacity','0.3');
 	
-	jQuery('.type_month2').attr('disabled',true);
-	jQuery('.type_month2').css('opacity','0.3');
+	$('.type_month2').attr('disabled',true);
+	$('.type_month2').css('opacity','0.3');
 	
-	jQuery("input[name='data[LoopsDelivery][type]']").change(function() {
-		var type = jQuery("input[name='data[LoopsDelivery][type]']:checked").val();
+	$("input[name='data[LoopsDelivery][type]']").change(function() {
+		var type = $("input[name='data[LoopsDelivery][type]']:checked").val();
 
 		if(type=='WEEK') {
-			jQuery('#type_week').show();
-			jQuery('#type_month').hide();
+			$('#type_week').show();
+			$('#type_month').hide();
 		}
 		else
 		if(type=='MONTH') {
-			jQuery('#type_week').hide();
-			jQuery('#type_month').show();		
+			$('#type_week').hide();
+			$('#type_month').show();		
 		}			
 	});
 				
-	jQuery("input[name='data[LoopsDelivery][type_month]']").change(function() {
-		var type_month = jQuery("input[name='data[LoopsDelivery][type_month]']:checked").val();
+	$("input[name='data[LoopsDelivery][type_month]']").change(function() {
+		var type_month = $("input[name='data[LoopsDelivery][type_month]']:checked").val();
 
 		if(type_month=='MONTH1') {
-			jQuery('.type_month1').attr('disabled',false);
-			jQuery('.type_month1').css('opacity','1');
+			$('.type_month1').attr('disabled',false);
+			$('.type_month1').css('opacity','1');
 			
-			jQuery('.type_month2').attr('disabled',true);
-			jQuery('.type_month2').css('opacity','0.3');
+			$('.type_month2').attr('disabled',true);
+			$('.type_month2').css('opacity','0.3');
 		}
 		else
 		if(type_month=='MONTH2') {
-			jQuery('.type_month1').attr('disabled',true);
-			jQuery('.type_month1').css('opacity','0.3');
+			$('.type_month1').attr('disabled',true);
+			$('.type_month1').css('opacity','0.3');
 			
-			jQuery('.type_month2').attr('disabled',false);
-			jQuery('.type_month2').css('opacity','1');		
+			$('.type_month2').attr('disabled',false);
+			$('.type_month2').css('opacity','1');		
 		}			
 	});
 
 	<?php 
 	if($this->request->data['LoopsDelivery']['type']=='WEEK') {
 	?>
-		jQuery('#type_week').show();
-		jQuery('#type_month').hide();
+		$('#type_week').show();
+		$('#type_month').hide();
 	<?php 
 	}else 
 	if($this->request->data['LoopsDelivery']['type']=='MONTH') {	
 	?>
-		jQuery('#type_week').hide();
-		jQuery('#type_month').show();
+		$('#type_week').hide();
+		$('#type_month').show();
 	<?php 
 	}
 	?>
@@ -262,46 +265,46 @@ jQuery(document).ready(function() {
 	<?php 
 	if($this->request->data['LoopsDelivery']['type_month']=='MONTH1') {
 	?>
-		jQuery('.type_month1').attr('disabled',false);
-		jQuery('.type_month1').css('opacity','1');
+		$('.type_month1').attr('disabled',false);
+		$('.type_month1').css('opacity','1');
 		
-		jQuery('.type_month2').attr('disabled',true);
-		jQuery('.type_month2').css('opacity','0.3');
+		$('.type_month2').attr('disabled',true);
+		$('.type_month2').css('opacity','0.3');
 	<?php 
 	} else {
 	?>
-		jQuery('.type_month1').attr('disabled',true);
-		jQuery('.type_month1').css('opacity','0.3');
+		$('.type_month1').attr('disabled',true);
+		$('.type_month1').css('opacity','0.3');
 		
-		jQuery('.type_month2').attr('disabled',false);
-		jQuery('.type_month2').css('opacity','1');	
+		$('.type_month2').attr('disabled',false);
+		$('.type_month2').css('opacity','1');	
 	<?php 
 	}
 	?>
 
-	jQuery('#action_submit').click(function() {	
-		jQuery('#action_post').val('action_submit');
+	$('#action_submit').click(function() {	
+		$('#action_post').val('action_submit');
 	});
-	jQuery('#action_preview').click(function() {	
-		jQuery('#action_post').val('action_preview');
+	$('#action_preview').click(function() {	
+		$('#action_post').val('action_preview');
 	});
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 			return ctrlValidateForm();
 	});	
 
 	<?php 
 	if($action_submit=='hidden') 
-		echo "jQuery('#action_submit').hide();";
+		echo "$('#action_submit').hide();";
 	else 
-		echo "jQuery('#action_submit').show();";
+		echo "$('#action_submit').show();";
 	?>		
 
 
-	jQuery('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('LoopsDelivery.nota_evidenza'));?>");
+	$('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('LoopsDelivery.nota_evidenza'));?>");
 	
-	jQuery('#DeliveryNotaEvidenza').change(function() {
-		var deliveryNotaEvidenza = jQuery(this).val();
+	$('#DeliveryNotaEvidenza').change(function() {
+		var deliveryNotaEvidenza = $(this).val();
 		setNotaEvidenza(deliveryNotaEvidenza);
 	});
 	
@@ -312,97 +315,97 @@ jQuery(document).ready(function() {
 });
 
 function ctrlValidateForm() {
-	var type = jQuery("input[name='data[LoopsDelivery][type]']:checked").val();
+	var type = $("input[name='data[LoopsDelivery][type]']:checked").val();
 	if(type==undefined) {
 		alert("Indica la tipologia di ricorsione: settimanale o mensile?");
 		return false;
 	}
 
 	if(type=="WEEK") {
-		var week_every_week = jQuery("input[name='data[LoopsDelivery][week_every_week]']").val();
+		var week_every_week = $("input[name='data[LoopsDelivery][week_every_week]']").val();
 		if(week_every_week=="") {
 			alert("Indica ogni quanto ricorre.");
-			jQuery("input[name='data[LoopsDelivery][week_every_week]']").focus();
+			$("input[name='data[LoopsDelivery][week_every_week]']").focus();
 			return false;
 		}	
 		if(!isNumber(week_every_week)) {
 			alert("Il valore che indica ogni quanto ricorre dev'essere un valore numerico.");
-			jQuery("input[name='data[LoopsDelivery][week_every_week]']").focus();
+			$("input[name='data[LoopsDelivery][week_every_week]']").focus();
 			return false;
 		}		
 	}
 	else
 	if(type=="MONTH") {
-		var type_month = jQuery("input[name='data[LoopsDelivery][type_month]']:checked").val();
+		var type_month = $("input[name='data[LoopsDelivery][type_month]']:checked").val();
 		if(type_month==undefined) {
 			alert("Indica la tipologia di ricorsione mensile");
 			return false;
 		}
 
 		if(type=="MONTH1") {
-			var month1_day = jQuery("input[name='data[LoopsDelivery][month1_day]']").val();
+			var month1_day = $("input[name='data[LoopsDelivery][month1_day]']").val();
 			if(month1_day=="") {
 				alert("Indica ogni quanto deve ricorrere.");
-				jQuery("input[name='data[LoopsDelivery][month1_day]']").focus();
+				$("input[name='data[LoopsDelivery][month1_day]']").focus();
 				return false;
 			}	
 			if(!isNumber(month1_day)) {
 				alert("Il valore che indica ogni quanto ricorre dev'essere un valore numerico.");
-				jQuery("input[name='data[LoopsDelivery][month1_day]']").focus();
+				$("input[name='data[LoopsDelivery][month1_day]']").focus();
 				return false;
 			}
 						
-			var month1_every_month = jQuery("input[name='data[LoopsDelivery][month1_every_month]']").val();
+			var month1_every_month = $("input[name='data[LoopsDelivery][month1_every_month]']").val();
 			if(month1_every_month=="") {
 				alert("Indica quanti mesi deve ricorrere.");
-				jQuery("input[name='data[LoopsDelivery][month1_every_month]']").focus();
+				$("input[name='data[LoopsDelivery][month1_every_month]']").focus();
 				return false;
 			}	
 			if(!isNumber(month1_every_month)) {
 				alert("Il valore che indica ogni quanti mese dev'essere un valore numerico.");
-				jQuery("input[name='data[LoopsDelivery][month1_every_month]']").focus();
+				$("input[name='data[LoopsDelivery][month1_every_month]']").focus();
 				return false;
 			}			
 		}
 		else
 		if(type=="MONTH2") {
-			var month2_every_type = jQuery("input[name='data[LoopsDelivery][month2_every_type]']:selected").val();
+			var month2_every_type = $("input[name='data[LoopsDelivery][month2_every_type]']:selected").val();
 			if(month2_every_type==undefined) {
 				alert("Indica ogni quanto deve ricorrere.");
 				return false;
 			}
 
-			var month2_day_week = jQuery("input[name='data[LoopsDelivery][month2_day_week]']:checked").val();
+			var month2_day_week = $("input[name='data[LoopsDelivery][month2_day_week]']:checked").val();
 			if(month2_day_week==undefined) {
 				alert("Indica ogni quanto deve ricorrere.");
 				return false;
 			}
 
-			var month2_every_month = jQuery("input[name='data[LoopsDelivery][month2_every_month]']").val();
+			var month2_every_month = $("input[name='data[LoopsDelivery][month2_every_month]']").val();
 			if(month2_every_month=="") {
 				alert("Indica quanti mesi deve ricorrere.");
-				jQuery("input[name='data[LoopsDelivery][month2_every_month]']").focus();
+				$("input[name='data[LoopsDelivery][month2_every_month]']").focus();
 				return false;
 			}	
 			if(!isNumber(month2_every_month)) {
 				alert("Il valore che indica ogni quanti mese dev'essere un valore numerico.");
-				jQuery("input[name='data[LoopsDelivery][month2_every_month]']").focus();
+				$("input[name='data[LoopsDelivery][month2_every_month]']").focus();
 				return false;
 			}			
 		}
 	}
 	
-	var luogo = jQuery("input[name='data[LoopsDelivery][luogo]']").val();
+	var luogo = $("input[name='data[LoopsDelivery][luogo]']").val();
 	if(luogo=="") {
 		alert("Indica il luogo della consegna.");
-		jQuery("input[name='data[LoopsDelivery][luogo]']").focus();
+		$("input[name='data[LoopsDelivery][luogo]']").focus();
 		return false;
 	}
 		
 	return true;
 }
 function setNotaEvidenza(deliveryNotaEvidenza) {
-	jQuery('#DeliveryNotaEvidenzaImg').removeClass();
-	jQuery('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
+	$('#DeliveryNotaEvidenzaImg').removeClass();
+	$('#DeliveryNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
 }
 </script>

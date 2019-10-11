@@ -1,0 +1,45 @@
+<ion-view view-title="Gasisti" cache-view="false"> 
+<ion-nav-buttons side="right">
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content>
+
+	<div>
+		<div class="button button-full button-positive">
+		Ricerca
+		</div>
+		
+		  <div class="bar bar-header item-input-inset">
+				  <label class="item-input-wrapper">
+					<i class="icon ion-ios-search placeholder-icon"></i>
+					<input ng-model="search.name" type="text" placeholder="Ricerca per nome" />
+				 </label>
+			</div>
+	</div>
+
+		
+		<ion-list>  
+		   <ion-item class="item-content" ng-repeat="user in users | filter:search:strict" type="item-text-wrap">
+				
+					<div class="item-avatar item-icon-left item-icon-right item-text-wrap">
+						<img ng-src="{{user.User_avatar}}" ng-if="user.User_avatar != null && user.User_avatar != ''" />
+						<h2>{{user.name| htmlToPlaintext}}</h2> 
+							<p>
+								<a style="text-decoration:none;" href="mailto:{{user.email}}">{{user.email}}</a>
+								<a ng-if="user.Profile['profile.phone'] != null && user.Profile['profile.phone'] != ''" style="text-decoration:none;" href="tel:{{user.Profile['profile.phone']}}"><br />{{user.Profile['profile.phone']}}</a>
+								<a ng-if="user.Profile['profile.phone2'] != null && user.Profile['profile.phone2'] != ''" style="text-decoration:none;" href="tel:{{user.Profile['profile.phone2']}}"><br />{{user.Profile['profile.phone2']}}</a>
+								<br />{{user.Profile['profile.address']}} {{user.Profile['profile.city']}} {{user.Profile['profile.postal_code']}} ({{user.Profile['profile.region']}})
+								
+
+								<a style="float:right" href="#/app/user/{{user.id}}"><i class="icon ion-map"></i></a>
+																
+							</p>
+	
+					</div>			
+			
+		  </ion-item>
+		</ion-list>
+		
+  </ion-content>
+</ion-view>

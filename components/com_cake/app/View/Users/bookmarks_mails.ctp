@@ -30,7 +30,7 @@ if(!empty($results)) {
 		echo '<td>'.$result['CategoriesSupplier']['name'].'</td>';
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';		
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';		
 		echo '</td>';		
 		echo '<td>';
 		echo $result['SuppliersOrganization']['name'];
@@ -56,7 +56,7 @@ if(!empty($results)) {
                     echo '<div class="checkbox">';
                     echo '<label><input type="checkbox" name="order_open" value="'.$result['SuppliersOrganization']['id'].'" ';
                     if($result['BookmarksMail']['order_open']=='Y') echo "checked"; 
-                    echo '></label>';
+                    echo '></label> ';
                     echo '</div>';
                     echo '</td>';                    
                 }
@@ -84,7 +84,7 @@ if(!empty($results)) {
                     echo '<div class="checkbox">';
                     echo '<label><input type="checkbox" name="order_close" value="'.$result['SuppliersOrganization']['id'].'" ';
                     if($result['BookmarksMail']['order_close']=='Y') echo "checked"; 
-                    echo '></label>';
+                    echo '></label> ';
                     echo '</div>';
                     echo '</td>';                    
                 }                
@@ -100,65 +100,65 @@ else
 function updateDb(supplier_organization_id, field, value) {
     /* console.log("Per il produttore "+supplier_organization_id+" "+field+" "+value); */
  
-    jQuery("#esito_img-" + supplier_organization_id).css('opacity' ,'1');
-    jQuery("#esito_msg-" + supplier_organization_id).css('opacity' ,'1');
+    $("#esito_img-" + supplier_organization_id).css('opacity' ,'1');
+    $("#esito_msg-" + supplier_organization_id).css('opacity' ,'1');
     
-    jQuery.ajax({
+    $.ajax({
             type: "GET",
             url: "/?option=com_cake&controller=Users&action=bookmarks_mails_update&supplier_organization_id="+supplier_organization_id+"&field="+field+"&value="+value+"&format=notmpl",
             data: "",
             success: function(response) {
-                    jQuery("#esito_img-" + supplier_organization_id).attr("src", app_img + "/actions/32x32/bookmark.png");
-                    jQuery("#esito_msg-" + supplier_organization_id).html("Salvato!");
-                    jQuery("#esito_img-" + supplier_organization_id).delay(1000).animate({
+                    $("#esito_img-" + supplier_organization_id).attr("src", app_img + "/actions/32x32/bookmark.png");
+                    $("#esito_msg-" + supplier_organization_id).html("Salvato!");
+                    $("#esito_img-" + supplier_organization_id).delay(1000).animate({
                         opacity: 0
                     }, 750);
-                    jQuery("#esito_msg-" + supplier_organization_id).delay(1000).animate({
+                    $("#esito_msg-" + supplier_organization_id).delay(1000).animate({
                         opacity: 0
                     }, 750);
             },
             error:function (XMLHttpRequest, textStatus, errorThrown) {
-                jQuery('#esito_msg-'+supplier_organization_id).html(textStatus);
-                jQuery('#esito_img-'+supplier_organization_id).attr('src',app_img+'/blank32x32.png');
+                $('#esito_msg-'+supplier_organization_id).html(textStatus);
+                $('#esito_img-'+supplier_organization_id).attr('src',app_img+'/blank32x32.png');
             }
     });
 
     return false;    
 }
 
-jQuery(document).ready(function() {
-    jQuery("input[name=order_open]").click(function() {
+$(document).ready(function() {
+    $("input[name=order_open]").click(function() {
         var value = 'Y';
         if(this.checked)
             value = 'Y';
         else
             value = 'N';
         
-        var supplier_organization_id = jQuery(this).val();
+        var supplier_organization_id = $(this).val();
 
         updateDb(supplier_organization_id, 'order_open', value);
         
         if(value=='Y')
-            jQuery(this).parent().parent().parent().removeClass('mail_no');
+            $(this).parent().parent().parent().removeClass('mail_no');
         else
-            jQuery(this).parent().parent().parent().addClass('mail_no');
+            $(this).parent().parent().parent().addClass('mail_no');
     });
     
-    jQuery("input[name=order_close]").click(function() {
+    $("input[name=order_close]").click(function() {
         var value = 'Y';
         if(this.checked)
             value = 'Y';
         else
             value = 'N';
         
-        var supplier_organization_id = jQuery(this).val();
+        var supplier_organization_id = $(this).val();
         
         updateDb(supplier_organization_id, 'order_close', value);
         
         if(value=='Y')
-            jQuery(this).parent().parent().parent().removeClass('mail_no');
+            $(this).parent().parent().parent().removeClass('mail_no');
         else
-            jQuery(this).parent().parent().parent().addClass('mail_no');        
+            $(this).parent().parent().parent().addClass('mail_no');        
     });    
 });    
 </script>

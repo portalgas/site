@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if($isReferenteTesoriere)  {
 	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 	if(isset($order_id))
@@ -13,15 +13,16 @@ $this->Html->addCrumb(__('List Request Payments'), array('controller' => 'Reques
 $this->Html->addCrumb(__('Edit Request Payments'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
-echo '<div class="requestPayment form">';
+echo '<div class="contentMenuLaterale form">';
+
 echo $this->Form->create('RequestPayment',array('id' => 'formGas'));
 ?>
 	<fieldset>
 		<legend><?php echo __('Title Delete Request Payment'); ?></legend>
 
-		<div class="input text"><label for=""><?php echo __('request_payment_num');?> </label><?php echo $requestPaymentResults['RequestPayment']['num'];?></div>
+		<div class="input text"><label for=""><?php echo __('request_payment_num');?> </label> <?php echo $requestPaymentResults['RequestPayment']['num'];?></div>
 
-		<div class="input text"><label for=""><?php echo __('stato_elaborazione');?></label><?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?> <span style="padding-left: 20px;" title="<?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?>" class="stato_<?php echo strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']);?>"></span></li></div>
+		<div class="input text"><label for=""><?php echo __('StatoElaborazione');?></label> <?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?> <span style="padding-left: 20px;" title="<?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']);?>" class="stato_<?php echo strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']);?>"></span></li></div>
 
 		<?php include('box_detail.ctp');?>
 
@@ -34,11 +35,11 @@ echo $this->Form->create('RequestPayment',array('id' => 'formGas'));
 			?>
 			<table cellpadding="0" cellspacing="0">
 			<tr>
-					<th>Utente</th>
-					<th>Importo dovuto</th>
-					<th>Importo pagato</th>
+					<th><?php echo __('User');?></th>
+					<th><?php echo __('Importo_dovuto');?></th>
+					<th><?php echo __('Importo_pagato');?></th>
 					<th>Stato</th>
-					<th>Modalità</th>
+					<th><?php echo __('Modality');?></th>
 					<th>Data del pagamento</th>
 			</tr>			
 			<?php
@@ -47,7 +48,7 @@ echo $this->Form->create('RequestPayment',array('id' => 'formGas'));
 				$importo_dovuto = number_format($summaryPaymentResult['SummaryPayment']['importo_dovuto'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				$importo_pagato = number_format($summaryPaymentResult['SummaryPayment']['importo_pagato'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				
-				if(!empty($summaryPaymentResult['SummaryPayment']['created']) && $summaryPaymentResult['SummaryPayment']['created']!='0000-00-00 00:00:00') 
+				if(!empty($summaryPaymentResult['SummaryPayment']['created']) && $summaryPaymentResult['SummaryPayment']['created']!=Configure::read('DB.field.datetime.empty')) 
 					$created = $this->Time->i18nFormat($summaryPaymentResult['SummaryPayment']['created'],"%A %e %B");
 				else
 					$created = "";
@@ -71,29 +72,9 @@ echo $this->Form->create('RequestPayment',array('id' => 'formGas'));
 echo $this->Form->hidden('request_payment_id',array('value' => $requestPaymentResults['RequestPayment']['id']));
 
 echo $this->Form->end(__('Submit Delete'));
+
+echo '</div>'; // end contentMenuLaterale
+
+$options = [];
+echo $this->MenuRequestPayment->drawWrapper($requestPaymentResults['RequestPayment']['id'], $options);
 ?>
-	
-</div>
-
-<div class="actions">
-	<?php include(Configure::read('App.root').Configure::read('App.component.base').'/View/RequestPayments/admin_sotto_menu.ctp');?>		
-</div>
-
-<script type="text/javascript">
-<?php
-if($isReferenteTesoriere) 
-	echo 'viewReferenteTesoriereSottoMenu("0", "bgLeft");';
-else
-	echo 'viewTesoriereSottoMenu("0", "bgLeft");';
-?>
-</script>
-
-<style type="text/css">
-.cakeContainer div.form, .cakeContainer div.index, .cakeContainer div.view {
-    width: 74%;
-    padding-left: 5px;
-}
-.cakeContainer div.actions {
-    width: 25%;
-}
-</style>

@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order_id) && !empty($order_id))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
@@ -15,8 +15,8 @@ function choiceOrderPermission() {
 	var div_contenitore = 'order-permission';
 	showHideBox(div_contenitore,call_child=true); 
 
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 	
 	AjaxCallToSummaryOrdersOptions(delivery_id, order_id); 	/* chiamata Ajax opzioni summary orders */
 }
@@ -24,16 +24,16 @@ function choiceSummaryOrdersOptions() {
 
 	var div_contenitore = 'summary-orders-options';
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 
 	var summaryOrdersOptions = '';
-	if(jQuery("input[name='summary_orders-options']").length>0)
-		summaryOrdersOptions = jQuery("input[name='summary_orders-options']:checked").val(); 
+	if($("input[name='summary_orders-options']").length>0)
+		summaryOrdersOptions = $("input[name='summary_orders-options']:checked").val(); 
 
 	if(summaryOrdersOptions=='options-delete-yes') {
 		if(!confirm("Sei sicuro di voler rigenerare i dati cancellando quelli sottostanti?")) {
-			jQuery("#options-summary_orders-delete-no").prop('checked',true);
+			$("#options-summary_orders-delete-no").prop('checked',true);
 			return;
 		}
 	}
@@ -51,8 +51,8 @@ function choiceSummaryOrdersOptionsReadOnly() {
 
 	var div_contenitore = 'summary-orders-options';
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 
 	if(debugLocal) alert("choiceSummaryOrdersOptions - div_contenitore "+div_contenitore);
 	if(delivery_id == '' || order_id=='') {
@@ -112,20 +112,36 @@ echo $this->element('boxDesOrder', array('results' => $desOrdersResults, 'summar
 	<?php 
 	echo $this->element('boxOrder',array('results' => $results));
 	?>	
-	
-	<div id="summary-orders-options" style="display:none;margin-top:5px;"></div>
 
-	<div id="doc-preview" style="display:none;"></div>
+	<div id="summary-orders-options" style="display:none;margin-top:5px;clear: both;"></div>
+
+	<div id="doc-preview" style="display:none;clear: both;"></div>
 	
 	</fieldset>
 </div>
 
 
-<div id="dialogmodal" title="Nota da associare all'articolo acquistato">
-	<p>
-		<textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
-	</p>
+
+<div id="dialogmodal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Nota da associare all'articolo acquistato</h4>
+      </div>
+      <div class="modal-body">
+        <p><textarea class="noeditor" id="notaTextEcomm" name="nota" style="width: 100%;" rows="10"></textarea>
+		<div class="clearfix"></div></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Close');?></button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><?php echo __('Submit');?></button>
+      </div>
+    </div>
+
+  </div>
 </div>
+
 
 <?php 
 $options = [];
@@ -137,73 +153,59 @@ echo $this->MenuOrders->drawWrapper($order_id, $options);
 echo $this->App->drawLegenda($user, $orderStatesToLegenda);
 ?>
 <script type="text/javascript">
-var dialogmodal =  jQuery('#dialogmodal').dialog({modal:true, height:300, width:600, autoOpen:false, buttons: {
-                "Cancel": function () { jQuery(this).dialog("close"); },
-                "Ok": function () { jQuery(this).dialog("close"); }
-            },
-            open: function () {
-					jQuery('#notaTextEcomm').val("");
-
-					var order_id = jQuery('#order_id-'+numRow).val();
-					var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-					var article_id = jQuery('#article_id-'+numRow).val();
-					var user_id = jQuery('#user_id').val();
-					var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
-							
-					jQuery.ajax({
-						type: "GET",
-						url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=getNotaForzato&key="+key+"&format=notmpl",
-						data: "",
-						success: function(response){
-							jQuery('#notaTextEcomm').val(response);
-						},
-						error:function (XMLHttpRequest, textStatus, errorThrown) {
-						}
-					});
-					return false;
-
-				}
-        });
-
-jQuery('#dialogmodal').dialog({
-   close: function(event, ui) {
+$(document).ready(function() {
 	
-			var notaTextEcomm = jQuery('#notaTextEcomm').val();
+    $('#dialogmodal').on('shown.bs.modal', function() {
+		$('#notaTextEcomm').val("");
 
-			var order_id = jQuery('#order_id-'+numRow).val();
-			var article_organization_id = jQuery('#article_organization_id-'+numRow).val();
-			var article_id = jQuery('#article_id-'+numRow).val();
-			var user_id = jQuery('#user_id').val();
-			var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id').val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
+				
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=getNotaForzato&key="+key+"&format=notmpl",
+			data: "",
+			success: function(response){
+				$('#notaTextEcomm').val(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    })
+	.on('hidden.bs.modal', function() {
+		var notaTextEcomm = encodeURIComponent($('#notaTextEcomm').val());
 
-			jQuery.ajax({
-				type: "POST",
-				url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=setNotaForzato&key="+key+"&format=notmpl",
-				data: "notaTextEcomm="+notaTextEcomm,
-				success: function(response){
-					if(notaTextEcomm=="")
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
-					else	
-						jQuery('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
-				},
-				error:function (XMLHttpRequest, textStatus, errorThrown) {
-				}
-			});
-			return false;
+		var order_id = $('#order_id-'+numRow).val();
+		var article_organization_id = $('#article_organization_id-'+numRow).val();
+		var article_id = $('#article_id-'+numRow).val();
+		var user_id = $('#user_id').val();
+		var key = order_id+"_"+article_organization_id+"_"+article_id+"_"+user_id;
 
-	}
-});
+		$.ajax({
+			type: "POST",
+			url: "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=setNotaForzato&key="+key+"&format=notmpl",
+			data: "notaTextEcomm="+notaTextEcomm,
+			success: function(response){
+				if(notaTextEcomm=="")
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/filenew.png');					
+				else	
+					$('#notaEcomm-'+numRow).attr('src','<?php echo Configure::read('App.img.cake');?>/actions/32x32/playlist.png');
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+			}
+		});
+		return false;
+    });
 
-jQuery(document).ready(function() {
+	
 	<?php if(!empty($alertModuleConflicts)) {
 		if(!$popUpDisabled)
-			echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl')";
+			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl', '')";
 	}
 	?>
 });
 </script>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

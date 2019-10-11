@@ -11,7 +11,7 @@
 	<?php
 	if(!empty($results)) {
 	?>		
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th colspan="2"><?php echo __('N');?></th>
 			<th colspan="2"><?php echo $this->Paginator->sort('name');?></th>
@@ -104,7 +104,7 @@
 	echo '<td></td>';
 	echo '</tr>';	
 	
-	echo '</table>';
+	echo '</table></div>';
 	
 	echo $this->element('legendaCash');
 	
@@ -124,7 +124,7 @@
 	 	echo '</div>';
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono voci in cassa"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono voci in cassa"));
 		
 echo '</div>';
 ?>

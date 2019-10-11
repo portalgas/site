@@ -1,28 +1,31 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List DesOrders'), array('controller' => 'DesOrders', 'action' => 'index'));
 if(isset($des_order_id) && !empty($des_order_id))
 	$this->Html->addCrumb(__('Order home DES'),array('controller'=>'DesOrdersOrganizations','action'=>'index', null, 'des_order_id='.$des_order_id));
 $this->Html->addCrumb(__('Edit DesOrder'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
-echo '<div class="deliveries form">';
+echo '<div class="contentMenuLaterale">';
 echo $this->Form->create('DesOrder',array('id' => 'formGas'));
 echo '<fieldset>';
 echo '<legend>'.__('Edit DesOrder').'</legend>';
 	
 	echo $this->Form->input('id');
 	
-	echo '<div class="input text required">';
-	echo '<label for="DesOrderSupplier">'.__('DesSupplier').'</label>';
+	echo '<div class="row">';
+	echo '<div class="col-md-10">';
+	echo '<label for="DesOrderSupplier">'.__('DesSupplier').'</label> ';
 	echo $this->Form->value('Supplier.name');
-	echo '<div style="float:right;" id="des_supplier_details"></div>';
+	echo '</div>';
+	echo '<div class="col-md-2" id="des_supplier_details">';
+	echo '</div>';
 	echo '</div>';
 	echo '<input type="hidden" name="data[DesOrder][des_supplier_id]" value="'.$this->Form->value('DesOrder.des_supplier_id').'" />';
 		
 	echo $this->Form->input('luogo', array('label' => __('DesDelivery')));
 
-	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('Data fine max'), 'value' => $this->Time->i18nFormat($this->Form->value('DesOrder.data_fine_max'),"%A, %e %B %Y"), 'required' => 'false'));	
+	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $this->Time->i18nFormat($this->Form->value('DesOrder.data_fine_max'),"%A, %e %B %Y"), 'required' => 'false'));	
 	echo $this->Ajax->datepicker('DesOrderDataFineMax',array('dateFormat' => 'DD, d MM yy','altField' => '#DesOrderDataFineMaxDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="DesOrderDataFineMaxDb" name="data[DesOrder][data_fine_max_db]" value="'.$this->Form->value('DesOrder.data_fine_max').'" />';
 	
@@ -50,17 +53,15 @@ echo '<legend>'.__('Edit DesOrder').'</legend>';
 
 echo '<input type="hidden" name="data[DesOrder][des_order_id]" value="'.$this->Form->value('DesOrder.id').'" />';	
 echo $this->Form->end(__('Submit'));
-?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List DesOrders'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
-		<li><?php echo $this->Html->link(__('Order home DES'), array('controller' => 'DesOrdersOrganizations', 'action' => 'index', null, 'des_order_id='.$des_order_id),array('class'=>'action actionWorkflow'));?></li>
-		<li><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', null, 'des_order_id='.$this->Form->value('DesOrder.id')),array('class' => 'action actionDelete','title' => __('Delete'))); ?></li>
-	</ul>
-</div>
 
+echo '</div>';
+
+$links = [];
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List DesOrders').' </span><span class="fa fa-reply"></span>', array('controller' => 'DesOrders', 'action' => 'index'), ['class' => 'animate', 'escape' => false]);
+$links[] = $this->Html->link('<span class="desc animate"> '.__('Order home DES').' </span><span class="fa fa-home"></span>', array('controller' => 'DesOrdersOrganizations', 'action' => 'index', null, 'des_order_id='.$des_order_id), ['class' => 'animate', 'escape' => false]);
+$links[] = $this->Html->link('<span class="desc animate"> '.__('Delete').' </span><span class="fa fa-trash"></span>', array('controller' => 'DesOrders', 'action' => 'delete', null, 'des_order_id='.$this->Form->value('DesOrder.id')), array('title' => __('Delete'), 'class' => 'animate', 'escape' => false));
+echo $this->Menu->draw($links);
+?>
 <script type="text/javascript">
 function desSuppliersDetails(des_supplier_id) {
 	if(des_supplier_id!=0 && des_supplier_id!='') {
@@ -70,14 +71,14 @@ function desSuppliersDetails(des_supplier_id) {
 	}
 }	
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	desSuppliersDetails(<?php echo $this->Form->value('DesOrder.des_supplier_id');?>);
 
-	jQuery('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('DesOrder.nota_evidenza'));?>");
+	$('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('DesOrder.nota_evidenza'));?>");
 	
-	jQuery('#DesOrderNotaEvidenza').change(function() {
-		var deliveryNotaEvidenza = jQuery(this).val();
+	$('#DesOrderNotaEvidenza').change(function() {
+		var deliveryNotaEvidenza = $(this).val();
 		setNotaEvidenza(deliveryNotaEvidenza);
 	});
 	
@@ -86,9 +87,9 @@ jQuery(document).ready(function() {
 		echo 'setNotaEvidenza(\''.$nota_evidenzaDefault.'\');';
 	?>
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var desOrderDataFineMaxDb = jQuery('#DesOrderDataFineMaxDb').val();
+		var desOrderDataFineMaxDb = $('#DesOrderDataFineMaxDb').val();
 		if(desOrderDataFineMaxDb=='' || desOrderDataFineMaxDb==undefined) {
 			alert("Devi indicare la data massima di chiusura dell'ordine");
 			return false;
@@ -100,7 +101,7 @@ jQuery(document).ready(function() {
 });
 
 function setNotaEvidenza(deliveryNotaEvidenza) {
-	jQuery('#DesOrderNotaEvidenzaImg').removeClass();
-	jQuery('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
+	$('#DesOrderNotaEvidenzaImg').removeClass();
+	$('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
 }
 </script>

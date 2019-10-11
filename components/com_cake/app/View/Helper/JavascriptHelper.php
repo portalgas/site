@@ -61,7 +61,7 @@ class JavascriptHelper extends AppHelper {
  * @access protected
  * @see JavascriptHelper::codeBlock()
  */
-	var $_blockOptions = array();
+	var $_blockOptions = [];
 /**
  * Caches events written by event() for output at the end of page execution
  *
@@ -69,7 +69,7 @@ class JavascriptHelper extends AppHelper {
  * @access protected
  * @see JavascriptHelper::event()
  */
-	var $_cachedEvents = array();
+	var $_cachedEvents = [];
 /**
  * Indicates whether generated events should be cached for later output (can be written at the
  * end of the page, in the <head />, or to an external file).
@@ -107,7 +107,7 @@ class JavascriptHelper extends AppHelper {
  * @see JavascriptHelper::event()
  * @link          http://alternateidea.com/event-selectors/
  */
-	var $_rules = array();
+	var $_rules = [];
 /**
  * @var string
  * @access private
@@ -159,7 +159,7 @@ class JavascriptHelper extends AppHelper {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('allowCache' => $options);
 		} elseif (empty($options)) {
-			$options = array();
+			$options = [];
 		}
 		$defaultOptions = array('allowCache' => true, 'safe' => true, 'inline' => true);
 		$options = array_merge($defaultOptions, $options);
@@ -201,7 +201,7 @@ class JavascriptHelper extends AppHelper {
 		echo $this->__scriptBuffer;
 		$this->__scriptBuffer = null;
 		$options = $this->_blockOptions;
-		$this->_blockOptions = array();
+		$this->_blockOptions = [];
 		$this->inBlock = false;
 		
 		if (empty($script)) {
@@ -462,7 +462,7 @@ class JavascriptHelper extends AppHelper {
  */
 	function getCache($clear = true) {
 		$out = '';
-		$rules = array();
+		$rules = [];
 
 		if (!empty($this->_rules)) {
 			foreach ($this->_rules as $sel => $event) {
@@ -476,9 +476,9 @@ class JavascriptHelper extends AppHelper {
 			$data .= "\nEventSelectors.start(Rules);\n";
 		}
 		if ($clear) {
-			$this->_rules = array();
+			$this->_rules = [];
 			$this->_cacheEvents = false;
-			$this->_cachedEvents = array();
+			$this->_cachedEvents = [];
 		}
 		return $data;
 	}
@@ -492,7 +492,7 @@ class JavascriptHelper extends AppHelper {
  */
 	function writeEvents($inline = true, $options = array()) {
 		$out = '';
-		$rules = array();
+		$rules = [];
 
 		if (!$this->_cacheEvents) {
 			return;
@@ -573,7 +573,7 @@ class JavascriptHelper extends AppHelper {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('block' => $options);
 		} else if (empty($options)) {
-			$options = array();
+			$options = [];
 		}
 
 		$defaultOptions = array(
@@ -586,7 +586,7 @@ class JavascriptHelper extends AppHelper {
 			$data = get_object_vars($data);
 		}
 
-		$out = $keys = array();
+		$out = $keys = [];
 		$numeric = true;
 
 		if ($this->useNative) {
@@ -616,10 +616,10 @@ class JavascriptHelper extends AppHelper {
 						($options['quoteKeys'] && in_array($key, $options['stringKeys'], true)) ||
 						(!$options['quoteKeys'] && !in_array($key, $options['stringKeys'], true))
 					);
-					$val = $this->value($val, $quoteStrings);
+					$val = $this->myValue($val, $quoteStrings);
 				}
 				if (!$numeric) {
-					$val = $options['q'] . $this->value($key, false) . $options['q'] . ':' . $val;
+					$val = $options['q'] . $this->myValue($key, false) . $options['q'] . ':' . $val;
 				}
 				$out[] = $val;
 			}
@@ -645,7 +645,7 @@ class JavascriptHelper extends AppHelper {
  * @param boolean $quoteStrings If false, leaves string values unquoted
  * @return string a JavaScript-safe/JSON representation of $val
  */
-	function value($val, $quoteStrings = true) {
+	function myValue($val, $quoteStrings = true) {
 		switch (true) {
 			case (is_array($val) || is_object($val)):
 				$val = $this->object($val);
@@ -676,7 +676,7 @@ class JavascriptHelper extends AppHelper {
  *
  * @return null
  */
-	function afterRender() {
+	function afterRender($viewFile=null) {
 		if (!$this->enabled) {
 			return;
 		}

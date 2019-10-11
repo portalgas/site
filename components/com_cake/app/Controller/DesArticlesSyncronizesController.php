@@ -34,16 +34,16 @@ class DesArticlesSyncronizesController extends AppController {
 			 */
 			if($des_supplier_id>0) {
 				$options = [];
-				$options['conditions'] = array('DesSupplier.des_id' => $this->user->des_id,
-												'DesSupplier.id' => $des_supplier_id);
-				$options['fields'] = array('DesSupplier.supplier_id');
+				$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id,
+											'DesSupplier.id' => $des_supplier_id];
+				$options['fields'] = ['DesSupplier.supplier_id'];
 				$options['recursive'] = -1;
 				$desSupplierResults = $DesSupplier->find('first', $options);
 				$supplier_id = $desSupplierResults['DesSupplier']['supplier_id'];
 			
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=DesArticlesSyncronizes&action=index&organization_id='.$organization_id.'&supplier_id='.$supplier_id;
 				if($debug) 
-					echo "<br />admin_intro() ".$url;
+					self::d($url, $debug);
 				else
 					$this->myRedirect($url);				
 			}			
@@ -56,9 +56,9 @@ class DesArticlesSyncronizesController extends AppController {
         $DesOrganization = new DesOrganization;
 				
         $options = [];
-        $options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id, 
-									   'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']);
-        $options['order'] = array('Organization.name' => 'asc');
+        $options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id, 
+								   'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']];
+        $options['order'] = ['Organization.name' => 'asc'];
         $options['recursive'] = 1;
         $desOrganizationsResults = $DesOrganization->find('all', $options);
 		$desOrganizations = [];
@@ -85,7 +85,7 @@ class DesArticlesSyncronizesController extends AppController {
 	 * la prima volta passo $des_supplier_id=0
 	 * dopo action sincronizzazione gli passo $supplier_id
 	 */
-	public function admin_index($organization_id, $supplier_id) { 
+	public function admin_index($organization_id=0, $supplier_id=0) { 
 	
 		$debug = false;
 		
@@ -107,21 +107,20 @@ class DesArticlesSyncronizesController extends AppController {
 		 * dati GAS scelto
 		 */		
         $options = [];
-        $options['conditions'] = array('Organization.id' => $organization_id);
+        $options['conditions'] = ['Organization.id' => $organization_id];
         $options['recursive'] = -1;
         $organizationsResults = $Organization->find('first', $options);
 		$this->set(compact('organizationsResults'));
 	
 		/*
-		 *  get SuppliersOrganization
+		 *  get SuppliersOrganization del GAS da cui copiare
 		 */
    		$options = [];
-   		$options['conditions'] = array('SuppliersOrganization.organization_id' => $organization_id,
-										'SuppliersOrganization.supplier_id' => $supplier_id,
-										'SuppliersOrganization.stato' => 'Y');
+   		$options['conditions'] = ['SuppliersOrganization.organization_id' => $organization_id,
+								'SuppliersOrganization.supplier_id' => $supplier_id,
+								'SuppliersOrganization.stato' => 'Y'];
    		$options['recursive'] = 0;
    		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
-		
 		$this->set(compact('suppliersOrganizationResults'));
 		
 		$supplier_organization_id = $suppliersOrganizationResults['SuppliersOrganization']['id'];
@@ -135,14 +134,33 @@ class DesArticlesSyncronizesController extends AppController {
 		 * get elenco Master Article 
 		 */	
 		$options = [];
-		$options['conditions'] = array('Article.organization_id' => $organization_id,
-									   'Article.supplier_organization_id' => $supplier_organization_id,
-									   'Article.stato' => 'Y');
-		$options['order'] = array('Article.name');
+		$options['conditions'] = ['Article.organization_id' => $organization_id,
+								   'Article.supplier_organization_id' => $supplier_organization_id,
+								   'Article.stato' => 'Y'];
+		$options['order'] = ['Article.name'];
 		$options['recursive'] = -1;
 		$articlesMasters = $Article->find('all', $options);	
 		$this->set(compact('articlesMasters'));
 
+		/*
+		 * importo tutto il listino
+		 */
+		if(isset($this->request->params['pass']['modalita']) && $this->request->params['pass']['modalita']=='IMPORT_ALL') {
+			if(!empty($articlesMasters))
+			foreach($articlesMasters as $articlesMaster) {
+				self::d($articlesMaster);
+				$master_organization_id = $articlesMaster['Article']['organization_id'];
+				$master_article_id = $articlesMaster['Article']['id'];
+				$category_article_id = 0;
+				$esito = $this->DesArticlesSyncronize->syncronize_insert($this->user, $master_organization_id, $master_article_id, $supplier_id, $category_article_id, false);
+				if($esito!==true) {
+					self::dd($articlesMaster);
+					self::dd($esito);exit;
+				}
+				
+			} // end foreach($articlesMasters as $articlesMaster)
+		}
+	
 		/*
 		 * get elenco propri Articles 
 		 */	
@@ -150,19 +168,43 @@ class DesArticlesSyncronizesController extends AppController {
 		$mySuppliersOrganizationResults = [];
 		
    		$options = [];
-   		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										'SuppliersOrganization.supplier_id' => $supplier_id);
-   		$options['fields'] = array('SuppliersOrganization.id', 'SuppliersOrganization.name', 'SuppliersOrganization.stato');
+   		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.supplier_id' => $supplier_id];
+   		$options['fields'] = ['SuppliersOrganization.id', 'SuppliersOrganization.supplier_id', 'SuppliersOrganization.name', 'SuppliersOrganization.stato', 'SuppliersOrganization.owner_articles'];
    		$options['recursive'] = -1;
 		$SuppliersOrganization = new SuppliersOrganization;	
    		$mySuppliersOrganizationResults = $SuppliersOrganization->find('first', $options);		
 		
+		/*
+		 * ACL chi gestisce il listino articoli
+		 */
+		switch ($mySuppliersOrganizationResults['SuppliersOrganization']['owner_articles']) {
+			case 'REFERENT':
+			case 'REFERENT-TMP':
+				$msg = '';
+			break;
+			case 'SUPPLIER':
+				$msg = "Il listino articolo del produttore scelto è gestito da '".__('ArticlesOwnerSUPPLIER')."', per poterlo gestire dev'essere '".__('ArticlesOwnerREFERENT')."'";
+			break;
+			case 'DES':
+				$msg = "Il listino articolo del produttore scelto è gestito da '".__('ArticlesOwnerDES')."', per poterlo gestire dev'essere '".__('ArticlesOwnerREFERENT')."'";
+			break;
+			default:
+				self::x(__('msg_error_supplier_organization_owner_articles'));
+			break;
+		}
+		if(!empty($msg)) {
+			$this->Session->setFlash($msg);
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=DesArticlesSyncronizes&action=intro';
+			$this->myRedirect($url);
+		}
+		
 		if($mySuppliersOrganizationResults['SuppliersOrganization']['stato']!='N') {
 			$options = [];
-			$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
-										   'Article.supplier_organization_id' => $mySuppliersOrganizationResults['SuppliersOrganization']['id'],
-										   'Article.stato' => 'Y');
-			$options['order'] = array('Article.name');
+			$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'],
+									  'Article.supplier_organization_id' => $mySuppliersOrganizationResults['SuppliersOrganization']['id'],
+									  'Article.stato' => 'Y'];
+			$options['order'] = ['Article.name'];
 			$options['recursive'] = -1;
 			$Article = new Article;
 			$myArticlesResults = $Article->find('all', $options);
@@ -180,7 +222,7 @@ class DesArticlesSyncronizesController extends AppController {
 		*/
 		$Article = new Article;
 		
-		$conditionsCategoriesArticle = array('organization_id' => $organization_id);
+		$conditionsCategoriesArticle = ['organization_id' => $organization_id];
 		$categories = $Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
 		$this->set(compact('categories'));
 
@@ -208,9 +250,9 @@ class DesArticlesSyncronizesController extends AppController {
 		 * Master articles 
 		 */		
 		$options = [];
-		$options['conditions'] = array('Article.organization_id' => $master_organization_id,
-									   'Article.id' => $master_article_id,
-									   'Article.stato' => 'Y');
+		$options['conditions'] = ['Article.organization_id' => $master_organization_id,
+								   'Article.id' => $master_article_id,
+								   'Article.stato' => 'Y'];
 		$options['recursive'] = -1;
 		$Article = new Article;
 		$masterResults = $Article->find('first', $options);
@@ -219,18 +261,18 @@ class DesArticlesSyncronizesController extends AppController {
 		 * MY articles 
 		 */
    		$options = [];
-   		$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-										'SuppliersOrganization.supplier_id' => $supplier_id);
-   		$options['fields'] = array('SuppliersOrganization.id');
+   		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+									'SuppliersOrganization.supplier_id' => $supplier_id];
+   		$options['fields'] = ['SuppliersOrganization.id'];
    		$options['recursive'] = -1;
 		$SuppliersOrganization = new SuppliersOrganization;	
    		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 		
 		$options = [];
-		$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
-									   'Article.supplier_organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['id'],
-									   'Article.id' => $article_id,
-									   'Article.stato' => 'Y');
+		$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'],
+								   'Article.supplier_organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['id'],
+								   'Article.id' => $article_id,
+								   'Article.stato' => 'Y'];
 		$options['recursive'] = -1;
 		$Article = new Article;
 		$results = $Article->find('first', $options);
@@ -239,9 +281,9 @@ class DesArticlesSyncronizesController extends AppController {
 			 * ctrl se l'articolo e' stato ordinato
 			 */
 			$options = [];
-			$options['conditions'] = array('ArticlesOrder.organization_id' => $results['Article']['organization_id'],
-										   'ArticlesOrder.article_id' => $results['Article']['id'],
-										   'ArticlesOrder.stato != ' => 'N');
+			$options['conditions'] = ['ArticlesOrder.organization_id' => $results['Article']['organization_id'],
+									   'ArticlesOrder.article_id' => $results['Article']['id'],
+									   'ArticlesOrder.stato != ' => 'N'];
 			$options['recursive'] = -1;
 			$articlesOrderResults = $ArticlesOrder->find('all', $options);	
 			if(empty($articlesOrderResults))
@@ -286,7 +328,7 @@ class DesArticlesSyncronizesController extends AppController {
 		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=DesArticlesSyncronizes&action=index&organization_id='.$master_organization_id.'&supplier_id='.$supplier_id;
 
 		if($debug) {
-			echo '<br />'.$url;
+			self::d($url, $debug);
 			exit;
 		}
 		$this->myRedirect($url);

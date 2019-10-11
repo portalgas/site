@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.7" type="plugin" group="content" method="upgrade">
+	<name>Content - Facebook Like Button</name>
+	<author>Gyula Komar</author>
+	<creationDate>September 2011</creationDate>
+	<authorEmail>gkomar@freemail.hu</authorEmail>
+	<authorUrl>buildweb.eu</authorUrl>
+	<version>1.7.23</version>
+	<description>Replaces {flike} tag in content with Facebook Like Button</description>
+	<license>http://www.gnu.org/licenseses/gpl-2.0.html GNU/GPL</license>
+	<files>
+		<filename plugin="flike">flike.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="send_button" type="radio" default="1" label="Show Send Button" description="">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+				</field>
+				<field name="layout" type="list" default="standard" label="Layout" description="">
+					<option value="standard">standard</option>
+					<option value="button_count">button_count</option>
+					<option value="box_count">box_count</option>
+				</field>
+				<field name="width" type="text" size="20" default="450" label="Width" description=""/>
+				<field name="show_faces" type="radio" default="0" label="Show Faces" description="">
+					<option value="0">No</option>
+					<option value="1">Yes</option>
+				</field>
+				<field name="action" type="list" default="like" label="Action" description="">
+					<option value="like">like</option>
+					<option value="recommend">recommend</option>
+				</field>
+				<field name="app_id" type="text" size="20" default="" label="Facebook Application ID" description=""/>
+				<field name="colorscheme" type="list" default="light" label="Color Scheme" description="">
+					<option value="light">light</option>
+					<option value="dark">dark</option>
+				</field>
+				<field name="og_url" type="radio" default="1" label="Add FB URL Property (og:url)" description="">
+					<option value="0">Do not Add</option>
+					<option value="1">Add</option>
+				</field>
+				<field name="og_type" type="text" size="20" default="article" label="FB Property (og:type)" description="http://developers.facebook.com/docs/opengraph/#types"/>
+				<field name="og_image" type="text" size="50" default="" label="FB Property (og:image)" description="Needs full URL"/>
+				<field name="url_from" type="text" size="50" default="" label="URL Replace From" description=""/>
+				<field name="url_to" type="text" size="50" default="" label="URL Replace To" description=""/>
+			</fieldset>
+		</fields>
+	</config>
+</install>

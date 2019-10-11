@@ -8,12 +8,12 @@
 	per visualizzare i dati del tuo carrello e<br /><br />contatta l'amministratore del sistema all'indirizzo <a title="Scrivi a <?php echo Configure::read('SOC.mail-assistenza');?>" href="mailto:<?php echo Configure::read('SOC.mail-assistenza');?>"><?php echo Configure::read('SOC.mail-assistenza');?></a> per segnalare il problema, grazie. 
 	
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.cartPreview').click(function () {
+	$('.cartPreview').click(function () {
 
-		jQuery('html, body').animate({scrollTop:0}, 'slow');		
-		jQuery('#box-account-dashboard').show();
+		$('html, body').animate({scrollTop:0}, 'slow');		
+		$('#box-account-dashboard').show();
 	});
 	
 });	

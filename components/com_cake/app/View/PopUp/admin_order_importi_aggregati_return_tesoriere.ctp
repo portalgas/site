@@ -1,3 +1,6 @@
+<?php
+echo $this->Html->css('popupSlider-min');
+?>
 <h3>Riporta l'ordine al referente</h3>
 		
 <div class="sp-slideshow">

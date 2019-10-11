@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Gest MonitoringOrders'), array('controller' => 'MonitoringOrders', 'action' => 'home'));
 $this->Html->addCrumb(__('Gest MonitoringSuppliersOrganizations'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -43,7 +43,7 @@ if(!empty($results)) {
 		echo '<td>'.($numResult+1).'</td>';	
 		echo '	<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 		echo '	</td>';	
 		echo '	<td>';
 		echo $result['SuppliersOrganization']['name'];
@@ -71,5 +71,5 @@ if(!empty($results)) {
 	
 } // end if(!empty($results)) 
 else 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora produttori da monitorare"));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora produttori da monitorare"));
 ?>

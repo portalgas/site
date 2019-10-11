@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Categories Suppliers'), array('controller' => 'CategoriesSuppliers', 'action' => 'index'));
 $this->Html->addCrumb(__('Title Delete Category Supplier'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -10,7 +10,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	<fieldset>
 		<legend><?php echo __('Title Delete Category Supplier'); ?></legend>
 
-		<div class="input text"><label for="">Decorrenza</label><?php echo $results['CategoriesSupplier']['name'];?></div>
+		<div class="input text"><label for="">Decorrenza</label> <?php echo $results['CategoriesSupplier']['name'];?></div>
 
 		<?php echo $this->Element('boxMsg',array('msg' => "Elementi associati che verranno cancellati definitivamente")); ?>
 

@@ -174,7 +174,7 @@ class ProdDeliveriesArticlesController extends AppController {
 	}
 
 	public function admin_edit($id = null) {
-		if (!$this->ProdDeliveriesArticle->exists($id)) {
+		if (!$this->ProdDeliveriesArticle->exists($id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod deliveries article'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
@@ -195,7 +195,7 @@ class ProdDeliveriesArticlesController extends AppController {
 
 	public function admin_delete($id = null) {
 		$this->ProdDeliveriesArticle->id = $id;
-		if (!$this->ProdDeliveriesArticle->exists()) {
+		if (!$this->ProdDeliveriesArticle->exists($this->ProdDeliveriesArticle->id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid prod deliveries article'));
 		}
 		$this->request->onlyAllow('post', 'delete');

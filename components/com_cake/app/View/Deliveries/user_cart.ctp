@@ -113,9 +113,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 	
 				$html .= '<tr>';
 				$html .= '	<th></th>';
-				$html .= '	<th colspan="2" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '	<th colspan="2" style="text-align:right;">'.__('qta_tot').'</th>';
 				$html .= '	<th style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-				$html .= '	<th colspan="3" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo_sub,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+				$html .= '	<th colspan="3" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo_sub,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 				$html .= '</tr>';
 
 				/*
@@ -218,9 +218,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		*/
 		$tot_importo = ($tot_importo + $tot_importo_trasport + ($tot_importo_cost_less) + $tot_importo_cost_more);	
 		
-		if($user->organization['Organization']['payToDelivery']=='POST')
+		if($user->organization['Template']['payToDelivery']=='POST')
 			$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-		if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+		if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 			$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
 		
 		$html = '';

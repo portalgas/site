@@ -24,7 +24,7 @@ class JAdminCssMenu extends JTree
 	function __construct()
 	{
 		$this->_root = new JMenuNode('ROOT');
-		$this->_current = & $this->_root;
+		$this->_current = $this->_root;
 	}
 
 	function addSeparator()

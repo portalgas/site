@@ -4,11 +4,7 @@
  * Documento con articoli per peso
  */
  
- /*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 
 if($this->layout=='pdf') {
 	App::import('Vendor','xtcpdf');
@@ -73,7 +69,7 @@ if(!empty($results)) {
 			$html .= '<td width="'.$output->getCELLWIDTH50().'">'.$result['Article']['codice'].'</td>';
 			$html .= '<td width="'.$output->getCELLWIDTH50().'">';
 			if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-				$html .= '<img width="40" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
+				$html .= '<img width="40" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 			}				
 			$html .= '</td>';		
 			$html .= '<td width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'">'.$result['ArticlesOrder']['name'].'</td>';
@@ -81,7 +77,7 @@ if(!empty($results)) {
 		else {
 			$html .= '<td width="'.$output->getCELLWIDTH50().'">';
 			if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-				$html .= '<img width="40" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
+				$html .= '<img width="40" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 			}				
 			$html .= '</td>';
 			
@@ -133,4 +129,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 $html .= $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

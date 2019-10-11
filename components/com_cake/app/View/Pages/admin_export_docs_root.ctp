@@ -47,15 +47,15 @@
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.organizationsPayment').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.organizationsPayment').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 		
-		var year = jQuery('#years').val();
+		var year = $('#years').val();
 		
 		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&year='+year+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});	

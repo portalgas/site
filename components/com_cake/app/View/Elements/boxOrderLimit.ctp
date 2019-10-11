@@ -28,8 +28,8 @@ if(($orderResult['Order']['state_code']=='OPEN' || $orderResult['Order']['state_
 		if($orderResult['Order']['importo_massimo']>0) {
 		?>	
 		<tr>
-			<th style="width:20%">Limite imposto all'<b>importo</b>: <?php echo $orderResult['Order']['importo_massimo'];?> &euro;</th>
-			<td>Importo attualmente raggiunto: <b><?php echo $orderResult['Order']['importo_massimo_current'];?></b> &euro;</td>
+			<th style="width:20%">Limite imposto all'<b>importo</b>: <?php echo $orderResult['Order']['importo_massimo'];?>&nbsp;&euro;</th>
+			<td>Importo attualmente raggiunto: <b><?php echo $orderResult['Order']['importo_massimo_current'];?></b>&nbsp;&euro;</td>
 		</tr>
 		<?php
 		}

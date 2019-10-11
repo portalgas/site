@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Gest MonitoringSuppliersOrganizations'), array('controller' => 'MonitoringSuppliersOrganizations', 'action' => 'home'));
 $this->Html->addCrumb(__('Gest MonitoringOrders'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -13,12 +13,12 @@ echo '	</ul>';
 echo '</div>';
 echo '</h2>';
 
+echo '<p style="clear: both;">';
+
 /*
  *  elenco ordini
  */
 if(!empty($results)) {
-	
-	echo '<p style="clear: both;">';
 	
 	foreach ($results as $result) {
 
@@ -26,7 +26,7 @@ if(!empty($results)) {
 		
 		echo '<div id="tabs-'.$id.'" style="margin-top:5px;">';
 		
-		echo '<table cellpadding = "0" cellspacing = "0">';
+		echo '<div class="table-responsive"><table class="table table-hover">';
 		echo '<tr style="border-radius:5px;">';
 
 		echo '	<th width="20%">'.$this->App->drawOrdersStateDiv($result).'&nbsp;'.__($result['Order']['state_code'].'-label').'</th>';
@@ -50,22 +50,24 @@ if(!empty($results)) {
 		echo '</th>';
 		
 		echo '</tr>';
-		echo '</table>';
+		echo '</table></div>';
 		
-		echo ' <ul>';
+		echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 		if($result['Order']['toValidate'] || $result['Order']['toQtaMassima'] || $result['Order']['toQtaMinimaOrder'])
-			echo ' <li><a href="#tabs-0-'.$id.'" class="tabsDelivery" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-monitoring\', \'tabs-0-'.$id.'\')">'.__('to_articles_short').'</a></li>';
+			echo ' <li class="active"><a href="#tabs-0-'.$id.'" class="tabsDelivery" data-toggle="tab" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-monitoring\', \'tabs-0-'.$id.'\')">'.__('to_articles_short').'</a></li>';
 		else
-			echo ' <li><a href="#tabs-0-'.$id.'" class="tabsDelivery" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles\', \'tabs-0-'.$id.'\')">'.__('to_articles_short').'</a></li>';
-		echo ' <li><a href="#tabs-1-'.$id.'" class="tabsDelivery" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-details\', \'tabs-1-'.$id.'\')">'.__('to_articles_details_short').'</a></li>';
-		echo ' <li><a href="#tabs-2-'.$id.'" class="tabsDelivery" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-users\', \'tabs-2-'.$id.'\')">'.__('to_users_short').'</a></li>';
-		echo ' <li><a href="#tabs-3-'.$id.'" class="tabsDelivery" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-weight\', \'tabs-3-'.$id.'\')">'.__('to_articles_weight_short').'</a></li>';
+			echo ' <li><a href="#tabs-0-'.$id.'" class="tabsDelivery" data-toggle="tab" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles\', \'tabs-0-'.$id.'\')">'.__('to_articles_short').'</a></li>';
+		echo ' <li><a href="#tabs-1-'.$id.'" class="tabsDelivery" data-toggle="tab" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-details\', \'tabs-1-'.$id.'\')">'.__('to_articles_details_short').'</a></li>';
+		echo ' <li><a href="#tabs-2-'.$id.'" class="tabsDelivery" data-toggle="tab" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-users\', \'tabs-2-'.$id.'\')">'.__('to_users_short').'</a></li>';
+		echo ' <li><a href="#tabs-3-'.$id.'" class="tabsDelivery" data-toggle="tab" onClick="javascript:AjaxCallToDocPreview'.$id.'(\'to-articles-weight\', \'tabs-3-'.$id.'\')">'.__('to_articles_weight_short').'</a></li>';
 		
 		echo '</ul>';
-		echo '<div style="min-height:50px;" id="tabs-0-'.$id.'"></div>';
-		echo '<div style="min-height:50px;" id="tabs-1-'.$id.'"></div>';
-		echo '<div style="min-height:50px;" id="tabs-2-'.$id.'"></div>';
-		echo '<div style="min-height:50px;" id="tabs-3-'.$id.'"></div>';
+		echo '<div class="tab-content">';
+		echo '<div style="min-height:50px;" class="tab-pane fade active in" id="tabs-0-'.$id.'"></div>';
+		echo '<div style="min-height:50px;" class="tab-pane fade" id="tabs-1-'.$id.'"></div>';
+		echo '<div style="min-height:50px;" class="tab-pane fade"  id="tabs-2-'.$id.'"></div>';
+		echo '<div style="min-height:50px;" class="tab-pane fade"  id="tabs-3-'.$id.'"></div>';
+		echo '</div>';
 		
 		echo $this->element('boxOrderLimit', array('orderResult' => $result));
 				
@@ -91,39 +93,39 @@ if(!empty($results)) {
 				var g = '';
 				var h = '';
 				if(doc_options=='to-users-all-modify') {
-					a = 'N';  /* jQuery("input[name='trasport1']:checked").val(); */
+					a = 'N';  /* $("input[name='trasport1']:checked").val(); */
 				}
 				else	
 				if(doc_options=='to-users') {
-					a = 'Y';  /* jQuery("input[name='user_phone1']:checked").val(); */
-					b = 'Y';  /* jQuery("input[name='user_email1']:checked").val(); */
-					c = 'N';  /* jQuery("input[name='user_address1']:checked").val(); */
-					d = 'Y';  /*  jQuery("input[name='totale_per_utente']:checked").val(); */
-					e = 'N';  /* jQuery("input[name='trasport2']:checked").val(); */
-					f = 'N';  /* jQuery("input[name='user_avatar1']:checked").val(); */
-					g = 'Y';  /*  jQuery("input[name='dettaglio_per_utente']:checked").val(); */
-					h = 'N';  /* jQuery("input[name='note1']:checked").val(); */
+					a = 'Y';  /* $("input[name='user_phone1']:checked").val(); */
+					b = 'Y';  /* $("input[name='user_email1']:checked").val(); */
+					c = 'N';  /* $("input[name='user_address1']:checked").val(); */
+					d = 'Y';  /*  $("input[name='totale_per_utente']:checked").val(); */
+					e = 'N';  /* $("input[name='trasport2']:checked").val(); */
+					f = 'N';  /* $("input[name='user_avatar1']:checked").val(); */
+					g = 'Y';  /*  $("input[name='dettaglio_per_utente']:checked").val(); */
+					h = 'N';  /* $("input[name='note1']:checked").val(); */
 				}
 				else
 				if(doc_options=='to-users-label') {
-					a = 'Y';  /* jQuery("input[name='user_phone']:checked").val(); */
-					b = 'Y';  /* jQuery("input[name='user_email']:checked").val(); */
-					c = 'N';  /* jQuery("input[name='user_address']:checked").val(); */
-					d = 'N';  /* jQuery("input[name='trasport3']:checked").val(); */
-					e = 'N';  /* jQuery("input[name='user_avatar2']:checked").val(); */
+					a = 'Y';  /* $("input[name='user_phone']:checked").val(); */
+					b = 'Y';  /* $("input[name='user_email']:checked").val(); */
+					c = 'N';  /* $("input[name='user_address']:checked").val(); */
+					d = 'N';  /* $("input[name='trasport3']:checked").val(); */
+					e = 'N';  /* $("input[name='user_avatar2']:checked").val(); */
 				}
 				else
 				if(doc_options=='to-articles') {
-					a = 'N';  /* jQuery("input[name='trasport4']:checked").val(); */
-					b = 'Y';  /* jQuery("input[name='codice2']:checked").val(); */ 
+					a = 'N';  /* $("input[name='trasport4']:checked").val(); */
+					b = 'Y';  /* $("input[name='codice2']:checked").val(); */ 
 				}
 				else
 				if(doc_options=='to-articles-details') {
-					a = 'Y';  /* jQuery("input[name='acquistato_il']:checked").val(); */
-					b = 'N';  /* jQuery("input[name='article_img']:checked").val(); */
-					c = 'N';  /* jQuery("input[name='trasport5']:checked").val(); */
-					d = 'Y';  /* jQuery("input[name='totale_per_articolo']:checked").val();	*/
-					e = 'Y';  /* jQuery("input[name='codice1']:checked").val(); */	
+					a = 'Y';  /* $("input[name='acquistato_il']:checked").val(); */
+					b = 'N';  /* $("input[name='article_img']:checked").val(); */
+					c = 'N';  /* $("input[name='trasport5']:checked").val(); */
+					d = 'Y';  /* $("input[name='totale_per_articolo']:checked").val();	*/
+					e = 'Y';  /* $("input[name='codice1']:checked").val(); */	
 				}
 				
 				if(doc_options=='to-articles-weight') 
@@ -132,12 +134,8 @@ if(!empty($results)) {
 					var url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToReferent&delivery_id=<?php echo $result['Order']['delivery_id'];?>&order_id=<?php echo $result['Order']['id'];?>&doc_options='+doc_options+'&doc_formato=PREVIEW&a='+a+'&b='+b+'&c='+c+'&d='+d+'&e='+e+'&f='+f+'&g='+g+'&h='+h+'&format=notmpl';
 				ajaxCallBox(url, idDivTarget);	
 			}
-			jQuery(document).ready(function() {
+			$(document).ready(function() {
 				<?php
-				echo 'jQuery(\'#tabs-'.$id.'\').tabs({event: "click"});';
-				
-				echo "\r\n";
-				
 				if($result['Order']['toValidate'] || $result['Order']['toQtaMassima'] || $result['Order']['toQtaMinimaOrder'])
 					echo 'AjaxCallToDocPreview'.$id.' (\'to-articles-monitoring\', \'tabs-0-'.$id.'\');';
 				else
@@ -149,41 +147,38 @@ if(!empty($results)) {
 		
 	} // end foreach ($results as $i => $result)
 	
-	echo '</p>';
-	
 } // end if(!empty($results)) 
 else 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora ordini da monitorare"));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora ordini da monitorare"));
 
+echo '</p>';
 ?>
-
-
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});		
 });

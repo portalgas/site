@@ -29,7 +29,7 @@ class DesDelivery extends AppModel {
 	
 	public $validate = array(
 		'luogo' => array(
-			'rule' => array('notempty'),
+			'rule' => ['notBlank'],
 			'message' => 'Indica il luogo della consegna',
 			'allowEmpty' => false
 		),
@@ -46,7 +46,7 @@ class DesDelivery extends AppModel {
 		),
 		'orario_da' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica a che ora ha inizio la consegna",
 			),
 			'orarioCtrl' => array(
@@ -56,7 +56,7 @@ class DesDelivery extends AppModel {
 		),
 		'orario_a' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica a che ora si conclude la consegna",
 			),
 			'orarioCtrl' => array(

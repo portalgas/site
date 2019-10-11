@@ -2,23 +2,29 @@
 /*
  * header
  */
-$csv = array(); 
+$csv = []; 
 foreach($struttura_file as $field) {
 	$csv[$field['INPUT_NAME']] = $this->ExportDocs->prepareCsvAccenti($field['LABEL']);
 } 			
-$headers = array('csv' => $csv);
+$headers = ['csv' => $csv];
+
+$this->App->d($results);
 
 /*
  * body
  */
-$data = array();
+$data = [];
 if(isset($results) && !empty($results)) {
 	foreach($results as $numResult => $result) {
 		foreach($struttura_file as $numField => $field) {
 			if($numField==0)
-				$data[$numResult]['csv'] = array();
+				$data[$numResult]['csv'] = [];
 			
-			$data[$numResult]['csv'] += array($field['INPUT_NAME'] => $result['Article'][$field['INPUT_NAME']]);
+			$value = $result['Article'][$field['INPUT_NAME']];
+			$value = str_replace('"', "'", $value);
+			$value = str_replace(array("\n","\r"), "", $value);
+			
+			$data[$numResult]['csv'] += array($field['INPUT_NAME'] => $value);
 		}
 	}
 }

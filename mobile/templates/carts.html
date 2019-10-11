@@ -1,0 +1,174 @@
+<style>
+.close-order {
+	cursor:pointer;
+	position:absolute;
+	top:3px;
+	right:3px;
+	z-index:1000;
+}
+</style>
+<ion-view view-title="" cache-view="false"> 
+
+<ion-nav-buttons side="right">
+	<button class="button button-clear icon ion-android-list" ng-click="visibleComplete()" title="versione completa/compatta"></button>
+	<a href="#/app/cartsPrint/{{delivery_id}}"><button class="button button-clear icon ion-clipboard" title="prospetto carrello"></button></a>
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content class="padding">
+  
+		
+		<div class="card" ng-show="rowsFound==0">
+			  <div class="item item-text-wrap">
+				 Per la consegna scelta, non ci sono articoli acquistati
+			  </div>
+		</div>	
+		<div ng-show="carts.length">
+
+				<div class="bar bar-header item-input-inset">
+					  <label class="item-input-wrapper">
+						<i class="icon ion-ios-search placeholder-icon"></i>
+						<input ng-model="searchSupplier.Supplier_name" type="text" placeholder="Ricerca per produttore" />
+					 </label>
+				</div>	
+				<div class="bar bar-header item-input-inset">
+					  <label class="item-input-wrapper">
+						<i class="icon ion-ios-search placeholder-icon"></i>
+						<input ng-model="searchArticle.ArticlesOrder_name" type="text" placeholder="Ricerca per articolo" />
+					 </label>
+				</div>					
+
+					   
+				<div class="list" ng-repeat="order in carts | filter:searchSupplier:strict">
+
+						<div ng-init="isOrderToCart = order.isOrderToCart"></div>
+						
+						<i class="close-order" ng-class="isReplyFormOpen ? 'ion-minus-round' : 'ion-navicon-round'" 
+							ng-click="isReplyFormOpen = !isReplyFormOpen"></i>
+
+
+							
+						<div class="item item-avatar item-divider">
+
+								<img ng-src="http://www.portalgas.it/images/organizations/contents/{{order.Supplier_img1}}" ng-if="order.Supplier_img1 != null && order.Supplier_img1 != ''" />
+								<h2>{{order.Supplier_name}}</h2> 
+								<p>da <span ng-bind="order.Order_data_inizio | date:'EEEE d MMMM yyyy'"></span><br />
+								a <span ng-bind="order.Order_data_fine | date:'EEEE d MMMM yyyy'"></span></p>
+							
+							
+							
+								<div ng-switch on="order.Order_state_code">
+									<div ng-switch-when="OPEN">
+										<span class="badge badge-positive">Aperto</span>
+									</div>
+									<div ng-switch-when="RI-OPEN-VALIDATE">
+										<span class="badge badge-positive">Riaperto</span>
+									</div>
+									<div ng-switch-default>	
+										<span class="badge badge-assertive">Chiuso</span>
+									</div>
+								</div>
+								
+								
+								
+								
+								<i class="button button-small button-stable icon block" ng-class="isBlockShown(order) ? 'ion-minus' : 'ion-plus'"
+									ng-click="toggleBlock(order)"
+									ng-class="{active: isBlockShown(order)}"></i>
+						</div>
+						<div class="item item-avatar item-divider">
+								<h2>Importo ordine {{order.Order_tot_importo_order | arrotondaNumero| number:2}} &euro;</h2> 
+								<h2 ng-if="order.SummaryOrderTrasport!=null">Trasporto {{order.SummaryOrderTrasport.importo_trasport | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderCostMore!=null">Costo aggiuntivo {{order.SummaryOrderCostMore.importo_cost_more | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderCostLess!=null">Sconto {{order.SummaryOrderCostLess.importo_cost_less | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderTrasport!=null || order.SummaryOrderCostMore!=null || order.SummaryOrderCostLess!=null">Importo ordine {{order.SummaryOrder.importo | arrotondaNumero| number:2}} &euro;</h2>
+						</div>	
+
+						
+						
+						
+						<div class="item-accordion list" ng-show="isBlockShown(order)">
+
+							  <div class="item item-text-wrap" ng-if="order.Order_nota != null && order.Order_nota != '' && order.Order_nota != '<br />' && order.Order_nota != '<br/>' && order.Order_nota != '<br>'">
+									{{order.Order_nota| htmlToPlaintext}}
+							  </div>
+
+							<div class="item item-divider" >
+								Referenti
+							</div>
+							<ion-item ng-repeat="referent in order.Referents">
+								<div class="item-avatar item-text-wrap">
+									<img ng-src="{{referent.User_avatar}}" ng-if="referent.User_avatar != null && referent.User_avatar != ''" />
+									 <h2><a href="#/app/user/{{referent.User_id}}">{{referent.User_name| htmlToPlaintext}}</a></h2>
+									 <p>
+										 <a style="text-decoration:none;" href="mailto:{{referent.User_email}}">{{referent.User_email}}</a> 
+										 <br />
+										 <a ng-if="referent.UserProfile_phone != null && referent.UserProfile_phone != ''" style="text-decoration:none;" href="tel:{{referent.UserProfile_phone}}">{{referent.UserProfile_phone}}</a>
+									 </p>
+							
+								</div>
+								
+							</ion-item>
+						</div>			
+
+
+			
+ 
+					<div ng-repeat="result in order.Carts | filter:searchArticle:strict" ng-hide="isReplyFormOpen" id="replyForm">
+	
+						<div ng-if="isLogged && isOrderToCart">
+					
+							<div ng-show="device=='IOS'" ng-include="'templates/sub_cart_open_ios.html'"></div>
+							<div ng-show="device!='IOS'" ng-include="'templates/sub_cart_open.html'"></div>
+						
+						</div>
+						<div ng-if="!isLogged || !isOrderToCart">
+						
+									<div class="item cart-{{checkboxModel.value}} item-text-wrap">
+									
+										<div class="item-thumbnail-left animate-show" ng-if="result.Article_img1 != null && result.Article_img1 != ''" ng-show="isVisibleComplete">
+											<img ng-src="http://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" />
+										</div>
+
+										<h2>{{result.ArticlesOrder_name}}</h2> 
+											<span ng-show="isVisibleComplete" ng-if="result.Article_bio == 'Y'" class="bio animate-show" title="Biologico o biodinamico"></span>
+
+										<div class="animate-show" ng-show="isVisibleComplete">
+												<p>Confezione {{result.Article_qta}} {{result.Article_um}}</p>
+												<p>Prezzo/UM {{result.ArticlesOrder_prezzo| getArticlePrezzoUM:result.Article_qta:result.Article_um:result.Article_um_riferimento| htmlToPlaintext}}</p>
+												<p>Prezzo unit&agrave; {{result.ArticlesOrder_prezzo | arrotondaNumero| number:2}} &euro;</p>
+										</div>
+										<div class="cartQta">
+												<p ng-show="result.Cart_qta == 1">Acquistata {{result.Cart_qta_final}} conf.</p>
+												<p ng-show="result.Cart_qta > 1">Acquistate {{result.Cart_qta_final}} conf.</p>
+												<p>Importo {{ result.Cart_importo_final | arrotondaNumero| number:2}} &euro;</p>
+										  
+												<div style="text-align:right;">
+													<label class="toggle">
+													   <input type="checkbox" ng-model="checkboxModel.value" ng-true-value="'select'" ng-false-value="'noselect'">
+													   <div class="track">
+														 <div class="handle"></div>
+													   </div>
+													</label>
+												</div>									
+										</div>
+								</div>
+								
+						</div>							
+				
+					</div> 
+				
+				</div>  
+		
+		</div>
+		
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		
+  </ion-content>
+ 			
+</ion-view>
+
+<div class="bar bar-footer bar-positive">
+   <h1 class="title">{{cart_import_total + "&euro;"}} </h1>
+</div>

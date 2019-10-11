@@ -58,7 +58,7 @@ if(!empty($results)) {
 	echo '</table>';		
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora GAS associati"));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora GAS associati"));
 	
 echo '</div>';
 ?>

@@ -34,7 +34,7 @@ if(!empty($utente)) {
 }
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	if($call=='managementCartsOne')
 		echo 'choiceUserAnagrafica();';

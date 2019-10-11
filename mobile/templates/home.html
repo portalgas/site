@@ -1,0 +1,189 @@
+<style>
+.service-item {
+    margin-bottom: 30px;
+    text-align: center;
+}
+.fa-stack {
+    display: inline-block;
+    height: 2em;
+    line-height: 2em;
+    position: relative;
+    vertical-align: middle;
+    width: 2em;
+}
+.fa-4x {
+    font-size: 4em;
+}
+.services i.ion-record {
+    color: #0a659e;
+}
+.services i {
+    color: #fff;
+}
+.fa-stack-2x {
+    font-size: 2em;
+}
+.fa-stack-1x, .fa-stack-2x {
+    left: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+.fa {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-feature-settings: normal;
+    font-kerning: auto;
+    font-language-override: normal;
+    font-size: inherit;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-synthesis: weight style;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    text-rendering: auto;
+}
+.services i {
+    color: #fff;
+}
+.fa-stack-1x {
+    line-height: inherit;
+}
+.fa-stack-1x, .fa-stack-2x {
+    left: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+.service-item p.title {
+    color: inherit;
+    font-weight: 400;
+    line-height: 1.1;
+}
+p {
+    font-size: 20px;
+}
+p {
+    margin: 0 0 10px;
+}
+
+
+
+.box-menu {
+    background: #0a659e none repeat scroll 0 0;
+   // border-radius: 50%;
+    color: #fff;
+    display: inline-block;
+    font-family: "Glyphicons Halflings";
+    font-size: 37px;
+    font-style: normal;
+    font-weight: normal;
+    height: 75px;
+    line-height: 1;
+    margin-bottom: 5px;
+    padding: 20px 0 0;
+    position: relative;
+    text-align: center;
+    top: 1px;
+    width: 75px;
+}
+.box-menu:hover {
+    background: #c10c1b none repeat scroll 0 0;
+}
+.box-menu:hover::after {
+    border-top: 9px solid #c10c1b;
+}
+.box-menu::after {
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid #0a659e;
+    bottom: -8px;
+    content: " ";
+    display: block;
+    height: 0;
+    left: 50%;
+    margin-left: -9px;
+    position: absolute;
+    width: 0;
+    z-index: 2;
+}
+.box-menu h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+.col {
+    text-align: center;
+}
+.col a {
+    text-decoration: none;
+}
+</style>
+<ion-view view-title="Benvenuto in PortAlGas Mobile" cache-view="false"> 
+
+  
+  <ion-content class="padding">
+
+		  <div class="item item-body">
+			<a href="http://www.portalgas.it/" target="_blank">
+				<img border="0" src="http://www.portalgas.it/images/cake/loghi/0/150h50.png" title="PortAlGas" alt="PortAlGas" /></a>
+			<h2>{{organization_label}}</h2>
+			<p>{{user_name}}</p>
+		
+				<div class="row responsive-sm">		
+					<div class="col" ng-show="!isLogged">				
+				        <a href="#" ng-click="openModalLogin()" ui-sref-opts="{reload: true}"">
+							<span class="box-menu ion-person" aria-hidden="true"></span>
+							<h3>Login</h3>
+						</a>
+					</div>				
+					<!-- div class="col">				
+				        <a href="#" ng-click="openModalOrganizations()">
+							<span class="box-menu ion-android-people" aria-hidden="true"></span>
+							<h3>Il tuo G.A.S.</h3>
+						</a>
+					</div -->
+					<div class="col" ng-show="isLogged">				
+				        <a href="#/app/deliveriesCarts">
+							<span class="box-menu ion-android-cart" aria-hidden="true"></span>
+							<h3>Carrello</h3>
+						</a>
+					</div>
+					<div class="col" ng-show="isLogged">				
+				        <a href="#/app/deliveries">
+							<span class="box-menu ion-calendar" aria-hidden="true"></span>
+							<h3>Consegne</h3>
+						</a>
+					</div>
+					<div class="col" ng-show="isLogged">
+				        <a href="#/app/orders">
+							<span class="box-menu ion-calendar" aria-hidden="true"></span>
+							<h3>Ordini aperti</h3>
+						</a>
+					</div>
+					<div class="col">			
+				        <a href="#/app/suppliers">
+							<span class="box-menu ion-map" aria-hidden="true"></span>
+							<h3>Produttori</h3>
+						</a>
+					</div>
+					<div class="col" ng-show="isLogged">			
+				        <a href="#/app/users">
+							<span class="box-menu ion-android-people" aria-hidden="true"></span>
+							<h3>Gasisti</h3>
+						</a>
+					</div>
+					<div class="col" ng-show="isLogged">				
+				        <a ui-sref="app.logout" ui-sref-opts="{reload: true}">
+							<span class="box-menu ion-android-exit" aria-hidden="true"></span>
+							<h3>Logout</h3>
+						</a>
+					</div>
+				</div>
+				
+		  </div>
+				
+  </ion-content>
+</ion-view>

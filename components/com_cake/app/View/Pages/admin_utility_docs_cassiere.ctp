@@ -36,10 +36,10 @@
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.cashsData').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.cashsData').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
@@ -47,13 +47,13 @@ jQuery(document).ready(function() {
 		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});	
 	
-	jQuery('.exportToCassiereListSuppliersAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListSuppliersAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
@@ -62,13 +62,13 @@ jQuery(document).ready(function() {
 		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-suppliers-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});
 	
-	jQuery('.exportToCassiereListOrdersAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListOrdersAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
@@ -77,13 +77,13 @@ jQuery(document).ready(function() {
 		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-orders-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});		
 	
-	jQuery('.exportToCassiereListUsersDeliveryAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListUsersDeliveryAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;

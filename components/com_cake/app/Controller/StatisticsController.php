@@ -196,7 +196,7 @@ class StatisticsController extends AppController {
 					ORDER BY tot_importo desc";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -235,7 +235,7 @@ class StatisticsController extends AppController {
 					";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -272,7 +272,7 @@ class StatisticsController extends AppController {
 					ORDER BY tot_importo desc";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -320,7 +320,7 @@ class StatisticsController extends AppController {
 					";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -367,7 +367,7 @@ class StatisticsController extends AppController {
 					ORDER BY tot_importo desc, tot_qta desc";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -383,7 +383,7 @@ class StatisticsController extends AppController {
 
         $sql = "
                 SELECT 
-                        sum(StatCart.importo) as tot_importo, sum(StatCart.qta) as tot_qta,
+                        sum(StatCart.importo) as tot_importo, sum(StatCart.qta*StatArticlesOrder.qta) as tot_qta,
                         StatArticlesOrder.um, 
                         StatOrder.supplier_organization_id, StatOrder.supplier_organization_name, StatOrder.supplier_img1, 
                         StatArticlesOrder.name   
@@ -413,7 +413,7 @@ class StatisticsController extends AppController {
 					ORDER BY tot_importo desc, tot_qta desc";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
     }
@@ -511,7 +511,7 @@ class StatisticsController extends AppController {
                     StatArticlesOrder.codice;";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 		
         self::d($results,false);
 		
@@ -568,7 +568,7 @@ class StatisticsController extends AppController {
                     StatOrder.supplier_organization_name;";
         self::d($sql, false);
         $results = $this->Statistic->query($sql);
-        $this->set('results', $results);
+        $this->set(compact('results'));
         
 		self::d($results,false);
 		

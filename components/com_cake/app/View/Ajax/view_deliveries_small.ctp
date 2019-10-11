@@ -7,10 +7,10 @@
 	<tr>
 		<th><?php echo __('N');?></th>
 		<th colspan="2"><?php echo __('Supplier')?></th>
-		<th><?php echo __('Data inizio');?></th>
-		<th><?php echo __('Data fine');?></th>		
-		<th><?php echo __('Aperto/Chiuso');?></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('DataInizio');?></th>
+		<th><?php echo __('DataFine');?></th>		
+		<th><?php echo __('OpenClose');?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<?php 
 		if($user->organization['Organization']['hasVisibility']=='Y')
 			echo '<th>'.__('isVisibleFrontEnd').'</th>';	
@@ -23,7 +23,7 @@
 		<tr>
 			<td><?php echo ($i+1);?></td>
 			<td><?php if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-					echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+					echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 			?>
 			</td>
 			<td><?php echo $result['SuppliersOrganization']['name']; ?></td>

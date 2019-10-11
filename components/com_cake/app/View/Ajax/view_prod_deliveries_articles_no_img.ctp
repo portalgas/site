@@ -136,12 +136,12 @@
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	if(!empty($evidenzia)) 
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
 	else	
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
 	?>	
 });
 </script>

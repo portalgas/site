@@ -5,8 +5,8 @@
 </div>	
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='articles-options']").change(function() {
+$(document).ready(function() {
+	$("input[name='articles-options']").change(function() {
 		choiceArticlesOptions();
 	});
 

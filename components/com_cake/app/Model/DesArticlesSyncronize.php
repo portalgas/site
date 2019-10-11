@@ -85,6 +85,7 @@ class DesArticlesSyncronize extends AppModel {
 		$myResults['Article']['flag_presente_articlesorders'] = 'Y';
 		
 		$Article->set($myResults);
+		$Article->validator()->remove('prezzo'); // remove 'rule' => 'decimalIT' perche' gia' corretto
 		if(!$Article->validates()) {
 			$errors = $Article->validationErrors;
 			
@@ -157,7 +158,7 @@ class DesArticlesSyncronize extends AppModel {
 
 		$msg_esito = "";
 		
-        if(empty($master_organization_id) || empty($master_article_id) || empty($supplier_id) || empty($category_article_id)) {
+        if(empty($master_organization_id) || empty($master_article_id) || empty($supplier_id)) {
             return false;
         }
 
@@ -207,6 +208,7 @@ class DesArticlesSyncronize extends AppModel {
 		$row['Article']['category_article_id'] = $category_article_id;
 				
 		$Article->set($row);
+		$Article->validator()->remove('prezzo'); // remove 'rule' => 'decimalIT' perche' gia' corretto
 		if(!$Article->validates()) {
 			$errors = $Article->validationErrors;
 			
@@ -295,6 +297,7 @@ class DesArticlesSyncronize extends AppModel {
 		$results['Article']['flag_presente_articlesorders'] = 'N';
 		
 		$Article->set($results);
+		$Article->validator()->remove('prezzo'); // remove 'rule' => 'decimalIT' perche' gia' corretto
 		if(!$Article->validates()) {
 			$errors = $Article->validationErrors;
 			

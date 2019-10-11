@@ -40,12 +40,12 @@ class plgSystemPlugin_component extends JPlugin
 			// Do some extra initialisation in this constructor if required
 			$this->subject = $subject;
 			$this->config = $config;
-			$plugin =& JPluginHelper::getPlugin('system', 'plugin_component');
+			$plugin = JPluginHelper::getPlugin('system', 'plugin_component');
 			$this->params = new JParameter( $plugin->params );
 			// define the regular expression for the bot
 			$this->regex = "#(<p\b[^>]*>\s*)?{component\surl='(.*?)'}(\s*</p>)?#s";
 			// Get document and doctype
-			$this->document =& JFactory::getDocument();
+			$this->document = JFactory::getDocument();
 			$this->doctype = $this->document->getType();
 			// Get ignores for stylesheets and scripts
 			$this->ignore_scripts = $this->params->get( 'ignore_script', '' );
@@ -219,7 +219,7 @@ class plgSystemPlugin_component extends JPlugin
 		}
 	
 		// Close session so the other component can use it
-		$session =& JFactory::getSession();
+		$session = JFactory::getSession();
 		$session->close();
 		
 		if (ini_get('allow_url_fopen')&&$this->method!='curl')

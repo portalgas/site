@@ -6,6 +6,7 @@
 
 $data = "";
 
+if(isset($results['Delivery']) && !empty($results['Delivery']))
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
@@ -19,7 +20,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$csv += array('codice' => __('Codice'));
 			
 			$csv += array('name' => __('Name'),
-						'qta' => __('qta'));		
+						'pezzi_confezioni' => __('pezzi_confezione_short'),
+						'qta' => __('qta'));
 
 			if($pezzi_confezione1=='Y')
 				$csv += array('pezzi_confezione' => __('Colli'));
@@ -48,25 +50,17 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 						$data[$numArticlesOrder]['csv'] += array('codice' => $codiceArticle);
 											
-					$data[$numArticlesOrder]['csv'] += array(							'name' => $name,							'qta' => $tot_qta_single_article);
+					$data[$numArticlesOrder]['csv'] += array(							'name' => $name,							'qta' => $tot_qta_single_article,
+							'pezzi_confezione' => $pezzi_confezione);
 					
 					$tmp = '';
 					if($pezzi_confezione1=='Y') {
 						/*
 						 * colli_completi
 						*/
-						if($pezzi_confezione>1) {
+						$tmp .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 					
-							$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-							if($colli_completi>0) {
-								$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-								$tmp .= ' '.$colli_completi.' colli da '.$pezzi_confezione;
-								if($differenza_da_ordinare != $pezzi_confezione)
-									$tmp .= ' e '.$differenza_da_ordinare;
-							}
-						}
-					
-						$data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => $tmp);
+						$data[$numArticlesOrder]['csv'] += array('colli' => $tmp);
 					}
 										$data[$numArticlesOrder]['csv'] += array(
 							'prezzo_unita' => $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo)),
@@ -148,24 +142,16 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$data[$numArticlesOrder]['csv'] += array('codice' => $codiceArticle);
 			
 			$data[$numArticlesOrder]['csv'] += array(
-					'name' => $name,					'qta' => $tot_qta_single_article);					
+					'name' => $name,					'qta' => $tot_qta_single_article,
+					'pezzi_confezione' => $pezzi_confezione);					
 			$tmp = '';
 			if($pezzi_confezione1=='Y') {
 				/*
 				 * colli_completi
 				*/
-				if($pezzi_confezione>1) {
+				$tmp .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 			
-					$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-					if($colli_completi>0) {
-						$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-						$tmp .= ' '.$colli_completi.' colli da '.$pezzi_confezione;
-						if($differenza_da_ordinare != $pezzi_confezione)
-							$tmp .= ' e '.$differenza_da_ordinare;
-					}
-				}
-			
-				$data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => $tmp);
+				$data[$numArticlesOrder]['csv'] += array('colli' => $tmp);
 			}	
 
 			$data[$numArticlesOrder]['csv'] += array(
@@ -208,7 +194,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			$data[$numArticlesOrder]['csv'] += array(
 					'name' => '',
-					'qta' => $tot_qta);
+					'qta' => $tot_qta,
+					'pezzi_confezione' => $pezzi_confezione);
 			
 			if($pezzi_confezione1=='Y') $data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => '');
 				
@@ -233,7 +220,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 			$data[$numArticlesOrder]['csv'] += array(
 					'name' => '',
-					'qta' => '');
+					'qta' => '',
+					'pezzi_confezione' => '');
 				
 			if($pezzi_confezione1=='Y') $data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => '');
 			
@@ -257,7 +245,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				
 			$data[$numArticlesOrder]['csv'] += array(
 					'name' => '',
-					'qta' => '');
+					'qta' => '',
+					'pezzi_confezione' => '');
 			
 			if($pezzi_confezione1=='Y') $data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => '');
 				
@@ -281,7 +270,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				
 			$data[$numArticlesOrder]['csv'] += array(
 					'name' => '',
-					'qta' => '');
+					'qta' => '',
+					'pezzi_confezione' => '');
 			
 			if($pezzi_confezione1=='Y') $data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => '');
 				
@@ -307,7 +297,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 			$data[$numArticlesOrder]['csv'] += array(
 					'name' => '',
-					'qta' => '');
+					'qta' => '',
+					'pezzi_confezione' => '');
 				
 			if($pezzi_confezione1=='Y') $data[$numArticlesOrder]['csv'] += array('pezzi_confezione' => '');
 			

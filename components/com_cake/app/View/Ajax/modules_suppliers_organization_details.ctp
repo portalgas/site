@@ -13,8 +13,8 @@
 		</li>
 		<li><?php 
 			if(!empty($results['Supplier']['telefono'])) echo $results['Supplier']['telefono'].'&nbsp;';
-			if(!empty($results['Supplier']['mail']))  echo '<a class="link_mailto" title="'.__('Email send').'" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$results['Supplier']['mail']).'"></a>&nbsp;';
-			if(!empty($results['Supplier']['www']))  echo '<a class="link_www" target="_blank" href="'.$this->App->traslateWww($results['Supplier']['www']).'"><img alt="Vai al sito del produttore" src="'.Configure::read('App.img.cake').'/icons/16x16/world_link.png" /></a>&nbsp;';
+			if(!empty($results['Supplier']['mail']))  echo '<a class="fa fa-envelope-o fa-lg" title="'.__('Email send').'" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$results['Supplier']['mail']).'"></a>&nbsp;';
+			if(!empty($results['Supplier']['www']))  echo '<a class="fa fa-globe fa-lg" target="_blank" href="'.$this->App->traslateWww($results['Supplier']['www']).'"><img alt="Vai al sito del produttore" src="'.Configure::read('App.img.cake').'/icons/16x16/world_link.png" /></a>&nbsp;';
 			?>
 		</li>
 	</ul>
@@ -27,7 +27,7 @@
 			foreach($results['SuppliersOrganizationsReferent'] as $referent) {
 				echo '<li>';
 				echo $referent['User']['name'].'&nbsp;';
-				if(!empty($referent['User']['email']))  echo '<a class="link_mailto" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$referent['User']['email']).'"></a>&nbsp;';
+				if(!empty($referent['User']['email']))  echo '<a class="fa fa-envelope-o fa-lg" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$referent['User']['email']).'"></a>&nbsp;';
 				echo '</li>';			
 			}
 			?>

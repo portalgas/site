@@ -91,50 +91,66 @@
                     </div>
             </div>
 
-            <div class="form-group">
-                    <label class="control-label col-xs-3">Visualizza gli ingredienti</label>
-                    <div class="col-xs-2">
-                            <label class="radio-inline">
-                                    <input type="radio" id="filterIngredientiY<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /> Si
-                            </label>
-                    </div>
-                    <div class="col-xs-2">
-                            <label class="radio-inline">
-                                    <input type="radio" id="filterIngredientiN<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /> No
-                            </label>
-                    </div>
-            </div>				
+			<?php 
+			if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
+			?>				
+				<div class="form-group">
+						<label class="control-label col-xs-3">Visualizza gli ingredienti</label>
+						<div class="col-xs-2">
+								<label class="radio-inline">
+										<input type="radio" id="filterIngredientiY<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /> Si
+								</label>
+						</div>
+						<div class="col-xs-2">
+								<label class="radio-inline">
+										<input type="radio" id="filterIngredientiN<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /> No
+								</label>
+						</div>
+				</div>				
         <?php
+			}
         }
         else {
         /*
          *  BACKOFFICE
          */
         ?>
-            <div class="left label" style="width:125px !important;">Opzioni stampa</div>
-            <div class="left radio">
-                    <p>
-                            <label for="filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>">Visualizza le tipologie</label>
-                            <input type="radio" id="filterTypeYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /><label for="filterTypeYDes<?php echo $desOrganizationResult['De']['id'];?>">Si</label>
-                            <input type="radio" id="filterTypeNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /><label for="filterTypeNDes<?php echo $desOrganizationResult['De']['id'];?>">No</label>
-                    </p>
-                    <p>
-                            <label for="filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>">Visualizza le categorie</label>
-                            <input type="radio" id="filterCategoryYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /><label for="filterCategoryYDes<?php echo $desOrganizationResult['De']['id'];?>">Si</label>
-                            <input type="radio" id="filterCategoryNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /><label for="filterCategoryNDes<?php echo $desOrganizationResult['De']['id'];?>">No</label>
-                    </p>	
-                    <p>
-                            <label for="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>">Visualizza le note</label>
-                            <input type="radio" id="filterNotaYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /><label for="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>">Si</label>
-                            <input type="radio" id="filterNotaNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /><label for="filterNotaNDes<?php echo $desOrganizationResult['De']['id'];?>">No</label>
-                    </p>
-                    <p>
-                            <label for="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>">Visualizza gli ingredienti</label>
-                            <input type="radio" id="filterIngredientiYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="Y" checked /><label for="filterIngredientiYDes<?php echo $desOrganizationResult['De']['id'];?>">Si</label>
-                            <input type="radio" id="filterIngredientiNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" value="N" /><label for="filterIngredientiNDes<?php echo $desOrganizationResult['De']['id'];?>">No</label>
-                    </p>
-            </div>	
-        <?php
+		
+			<p>Opzioni stampa</p>
+
+			<div class="input ">
+				<label class="control-label" for="filterTypeDes">Visualizza le tipologie </label>
+				<label class="radio-inline" for="filterTypeYDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input checked="checked" value="Y" id="filterTypeYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> Si</label>
+				<label class="radio-inline" for="filterTypeNDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input value="N" id="filterTypeNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> No</label>
+			</div>
+			<div class="input ">
+				<label class="control-label" for="filterCategoryDes">Visualizza le categorie </label>
+				<label class="radio-inline" for="filterCategoryYDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input checked="checked" value="Y" id="filterCategoryYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> Si</label>
+				<label class="radio-inline" for="filterCategoryNDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input value="N" id="filterCategoryNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> No</label>
+			</div>
+			<div class="input ">
+				<label class="control-label" for="filterNotaDes">Visualizza le note </label>
+				<label class="radio-inline" for="filterNotaYDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input checked="checked" value="Y" id="filterNotaYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> Si</label>
+				<label class="radio-inline" for="filterNotaNDes<?php echo $desOrganizationResult['De']['id'];?>">
+					<input value="N" id="filterNotaNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> No</label>
+			</div>
+			<?php 
+			if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
+			?>			
+				<div class="input ">
+					<label class="control-label" for="filterIngredientiDes">Visualizza gli ingredienti </label>
+					<label class="radio-inline" for="filterIngredientiYDes<?php echo $desOrganizationResult['De']['id'];?>">
+						<input checked="checked" value="Y" id="filterIngredientiYDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> Si</label>
+					<label class="radio-inline" for="filterIngredientiNDes<?php echo $desOrganizationResult['De']['id'];?>">
+						<input value="N" id="filterIngredientiNDes<?php echo $desOrganizationResult['De']['id'];?>" name="filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>" type="radio"> No</label>
+				</div>
+			<?php 
+			}
         }
 	echo '</td>';
     echo '</tr>';
@@ -142,18 +158,18 @@
     } // foreach($desOrganizationResults as $desOrganizationResult) 
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
         <?php 
         foreach($desOrganizationResults as $desOrganizationResult) {
         ?>
-	jQuery('.exportArticlesDes<?php echo $desOrganizationResult['De']['id'];?>').click(function() {
-		var des_supplier_id = jQuery('#des_supplier_id_<?php echo $desOrganizationResult['De']['id'];?>').val();
+	$('.exportArticlesDes<?php echo $desOrganizationResult['De']['id'];?>').click(function() {
+		var des_supplier_id = $('#des_supplier_id_<?php echo $desOrganizationResult['De']['id'];?>').val();
 		if(des_supplier_id=="") {
 			alert("Devi scegliere il produttore D.E.S. <?php echo $desOrganizationResult['De']['name'];?>");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('data-action');
+		var id =  $(this).attr('data-action');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
@@ -161,10 +177,10 @@ jQuery(document).ready(function() {
 		/*
 		 * filtri
 		 */
-		var filterType = jQuery("input[name='filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
-		var filterCategory = jQuery("input[name='filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
-		var filterNota = jQuery("input[name='filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
-                var filterIngredienti = jQuery("input[name='filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();	
+		var filterType = $("input[name='filterTypeDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
+		var filterCategory = $("input[name='filterCategoryDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
+		var filterNota = $("input[name='filterNotaDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();
+                var filterIngredienti = $("input[name='filterIngredientiDes<?php echo $desOrganizationResult['De']['id'];?>']:checked").val();	
 		        
                 <?php
                 if($type=='FE')

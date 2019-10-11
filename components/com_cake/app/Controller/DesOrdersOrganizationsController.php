@@ -68,8 +68,8 @@ class DesOrdersOrganizationsController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));	    
 	    }
-	    $this->set('results', $results);
-   		   
+	    $this->set(compact('results'));
+		
 	   /*
 		 * escludo il GAS dall'array di tutti i GAS del DES
 		 */		
@@ -88,15 +88,14 @@ class DesOrdersOrganizationsController extends AppController {
 		$DesOrganization = new DesOrganization;
 		   
 		$options = [];
-		$options['conditions'] = array('DesOrganization.des_id' => $this->user->des_id);
+		$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id];
 		if(!empty($desOrganizationIds)) {
 			$desOrganizationIds = substr($desOrganizationIds, 0, strlen($desOrganizationIds)-1);
-			$options['conditions'] += array('DesOrganization.organization_id NOT IN ('.$desOrganizationIds.')');
+			$options['conditions'] += ['DesOrganization.organization_id NOT IN ('.$desOrganizationIds.')'];
 		}
 		$options['recursive'] = 1;
 		$desOrganizationsResults = $DesOrganization->find('all', $options);
-					
-		$this->set('desOrganizationsResults', $desOrganizationsResults);
+		$this->set(compact('desOrganizationsResults'));
 		
 		/*
 		 * ctrl ACL, se titolare, se non ci sono ordini, il primo lo può creare solo lui 
@@ -112,16 +111,49 @@ class DesOrdersOrganizationsController extends AppController {
 		$desOrdersOrganizationResults = $DesOrdersOrganization->find('all', $options);
 		$totaliDesOrdersOrganization = count($desOrdersOrganizationResults);
 		self::d($totaliDesOrdersOrganization, $debug);
+		$this->set(compact('totaliDesOrdersOrganization'));
 		
 		/*
 		 * non e' stato creato alcun ordine, solo il titolare puo'
 		 */
-		if($totaliDesOrdersOrganization==0) {
-			$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);		
-			$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
-		}		
-		$this->set('totaliDesOrdersOrganization', $totaliDesOrdersOrganization);	
+		$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);		
+		$this->set(compact('isTitolareDesSupplier'));
 		
+
+	   /*
+	    *  ctrl se il produttore ha il owner_articles DES o REFERENT + Titolare
+	    */
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+		   
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.supplier_id' => $results['Supplier']['id']];
+		$options['fields'] = ['id', 'owner_articles', 'owner_organization_id', 'owner_supplier_organization_id'];
+		$options['recursive'] = -1;
+		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+		if(!empty($suppliersOrganizationResults)) {
+			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='DES' && !$isTitolareDesSupplier)
+				$acl_owner_articles = true;
+			else
+			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='REFERENT' && $isTitolareDesSupplier)
+				$acl_owner_articles = true;
+			else
+			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='SUPPLIER' && $isTitolareDesSupplier)
+				$acl_owner_articles = true;
+			else {
+				$acl_owner_articles['supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
+				$acl_owner_articles['owner_articles'] = $suppliersOrganizationResults['SuppliersOrganization']['owner_articles']; // per esempio REFERENT-TMP
+			}
+			self::d($acl_owner_articles, $debug);
+		}
+		else  {
+			// il GAS non ha il produttore
+			$acl_owner_articles['supplier_organization_id'] = 0;
+			$acl_owner_articles['owner_articles'] = '';
+		}
+		$this->set(compact('acl_owner_articles'));
+				
 		$group_id = Configure::read('group_id_titolare_des_supplier');
 		$desOrderStatesToLegenda = $this->ActionsDesOrder->getDesOrderStatesToLegenda($this->user, $group_id);
 		$this->set('desOrderStatesToLegenda', $desOrderStatesToLegenda);	
@@ -216,7 +248,7 @@ class DesOrdersOrganizationsController extends AppController {
    		}
 
 		$this->DesOrdersOrganization->id = $id;
-		if (!$this->DesOrdersOrganization->exists()) {
+		if (!$this->DesOrdersOrganization->exists($this->DesOrdersOrganization->id)) {
 			throw new NotFoundException(__('Invalid DesOrdersOrganization'));
 		}
 		$this->request->onlyAllow('get');
@@ -227,7 +259,7 @@ class DesOrdersOrganizationsController extends AppController {
 		}
 
 		/*
-		if (!$this->DesOrdersOrganization->exists($id)) {
+		if (!$this->DesOrdersOrganization->exists($id, $this->user->organization['Organization']['id'])) {
 			throw new NotFoundException(__('Invalid DesOrdersOrganization'));
 		}
 		if ($this->request->is(array('get'))) {

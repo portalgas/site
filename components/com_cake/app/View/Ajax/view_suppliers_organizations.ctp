@@ -13,10 +13,10 @@
 	<tr>
 		<th><?php echo __('N');?></th>
 		<th><?php echo __('Delivery'); ?></th>
-		<th><?php echo __('Data Inizio'); ?></th>
-		<th><?php echo __('Data Fine'); ?></th>
-		<th><?php echo __('Aperto/Chiuso');?></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>	
+		<th><?php echo __('DataInizio'); ?></th>
+		<th><?php echo __('DataFine'); ?></th>
+		<th><?php echo __('OpenClose');?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>	
 		<?php 
 		if($user->organization['Organization']['hasVisibility']=='Y')
 			echo '<th>'.__('isVisibleFrontEnd').'</th>';	

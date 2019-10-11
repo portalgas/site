@@ -1,6 +1,11 @@
 <?php
 $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_content&task=article.edit&id=';
 ?>
+<style>
+.white {
+	background-color: #fff;
+}
+</style>
 <div class="suppliers">
 	<h2 class="ico-suppliers">
 		<?php echo __('Suppliers Generics');?>
@@ -9,67 +14,94 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 	<?php echo $this->Form->create('Filtersupplier',array('id'=>'formGasFilter','type'=>'get'));?>
 		<fieldset class="filter">
 			<legend><?php echo __('Filter Suppliers'); ?></legend>
-			<table>
+			<div class="table"><table class="table"> <!-- il div non e' table-responsive se no overflow-x: auto; e selectpicker viene nascosto -->
 				<tr>
 					<?php 
 					echo '<td>';
-					$options = array('label' => false, 
+					$options = ['label' => '&nbsp;', 
 									'options' => $organizations,
 									'empty' => __('FilterToOrganizations'),
 									'name' => 'FilterSupplierOrganizationId',
 									'default' => $FilterSupplierOrganizationId,
-									'escape' => false);
+									'escape' => false];
 					if(count($organizations) > Configure::read('HtmlSelectWithSearchNum')) 
-						$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
+						$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 
 						echo $this->Form->input('organization_id', $options);					echo '</td>';
 					
 					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 						echo '<td>';
-						echo $this->Form->input('category_supplier_id',array('label' => false,'options' => $categories,'empty' => __('FilterToCategories'),'name'=>'FilterSupplierCategoryId','default'=>$FilterSupplierCategoryId,'escape' => false)); 
+						echo $this->Form->input('category_supplier_id', ['label' => '&nbsp;', 'options' => $categories,'empty' => __('FilterToCategories'), 'name' => 'FilterSupplierCategoryId', 'default' =>  $FilterSupplierCategoryId, 'escape' => false]); 
 						echo '</td>';
 					}
-					?>
-					<td>
-						<?php echo $this->Ajax->autoComplete('FilterSupplierName', 
-															   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteRootSuppliers_name&format=notmpl',
-								   								array('label' => 'Nome','name'=>'FilterSupplierName','value'=>$FilterSupplierName,'size'=>'75','escape' => false));
-						?>
-					</td>						
-					<td>
-						<?php echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); ?>
-					</td>
-					<td>
-						<?php echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none'))); ?>
-					</td>
-				</tr>	
-			</table>
-		</fieldset>					
 					
-	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th><?php echo __('N');?></th>
+					echo '<td>';
+					$options = ['label' => '&nbsp;', 
+									'options' => $geoRegions,
+									'empty' => __('FilterToGeoRegions'),
+									'name' => 'FilterSupplierRegion',
+									'default' => $FilterSupplierRegion,
+									'escape' => false];					
+					echo $this->Form->input('geo_region_id', $options); 
+					echo '</td>';
+					
+					echo '<td>';
+					$options = ['label' => '&nbsp;', 
+									'options' => $geoProvinces,
+									'empty' => __('FilterToGeoProvinces'),
+									'name' => 'FilterSupplierProvince',
+									'default' => $FilterSupplierProvince,
+									'escape' => false];
+					if(count($geoProvinces) > Configure::read('HtmlSelectWithSearchNum')) 
+						$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 					
+					echo $this->Form->input('geo_province_id', $options); 
+					echo '</td>';					
+					
+					echo '<td>';
+					echo $this->Ajax->autoComplete('FilterSupplierName', 
+									   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteRootSuppliers_name&format=notmpl',
+										array('label' => 'Nome', 'name' => 'FilterSupplierName','value' => $FilterSupplierName, 'size' => '50', 'escape' => false));
+					echo '</td>	';					
+					/*
+					echo '<td>';
+					echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset'));
+					echo '</td>';
+					*/
+					echo '<td>';
+					echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none')));
+					echo '</td>';
+				echo '</tr>';
+			echo '</table></div>';
+		echo '</fieldset>';				
+
+	echo '<div class="table-responsive"><table class="table">';
+	echo '<tr>';
+			echo '<th></th>';
 			
-			<?php 
 			if(empty($FilterSupplierOrganizationId))
-				echo '<th colspan="3">G.A.S.</th>';
+				echo '<th colspan="3">'.__('GasOrganizations').'</th>';
 			else
 				echo '<th>'.__('Vote').'</th>';
-			
+			echo '<th>'.$this->Paginator->sort('name',__('Business name')).'</th>';
+			echo '<th></th>';
+			echo '<th>'.$this->Paginator->sort('descrizione',__('Description')).'</th>';			
 			if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 				echo '<th>';
 				echo $this->Paginator->sort('category_supplier_id'); 	
 				echo '</th>';
 			}
-			?>
-			<th></th>
-			<th><?php echo $this->Paginator->sort('name',__('Business name'));?></th>
-			<th><?php echo $this->Paginator->sort('descrizione',__('Description'));?></th>
-			<th><?php echo __('Place');?></th>
-			<th><?php echo __('Contacts');?></th>
-	</tr>
-	<?php
-	foreach ($results as $i => $result):
+			echo '<th>'.$this->Paginator->sort('suppliers_deliveries_types',__('SuppliersDeliveriesTypes')).'</th>';
+		
+			echo '<th>'.__('Place').'</th>';
+			echo '<th>'.__('Contacts').'</th>';
+	echo '</tr>';
+	$row_css = '';
+	foreach ($results as $i => $result) {
 	
+		if($numRow%2==0)
+			$row_css = 'active';
+		else
+			$row_css = 'white';
+		
 		if(!empty($FilterSupplierOrganizationId)) 	
 			$rowspan = 1;	
 		else
@@ -81,9 +113,9 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 	
 		if($result['Supplier']['j_content_id']>0) $class_j_content_id = 'j_content_id_si';
 		else $class_j_content_id = 'j_content_id_no';
-		
-		echo '<tr class="view-2">';
-		echo '<td rowspan="'.$rowspan.'">'.$numRow.'</td>';
+				
+		echo '<tr class="'.$row_css.'">';
+		echo '<td rowspan="'.$rowspan.'"><a action="supplier_details-'.$result['Supplier']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 		
 		if(empty($FilterSupplierOrganizationId)) {
 			$tmpRowsSpan = "";
@@ -103,7 +135,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 						echo '</td>';					
 					}
 					else {
-						$tmpRowsSpan .= '<tr><td>';
+						$tmpRowsSpan .= '<tr class="'.$row_css.'"><td>';
 						$tmpRowsSpan .= '<img style="width:20px;padding:0px;" src="'.Configure::read('App.web.img.upload.content').'/'.$suppliersOrganization['Organization']['img1'].'" alt="'.$suppliersOrganization['Organization']['name'].'" /> ';
 						$tmpRowsSpan .= '</td>';
 						$tmpRowsSpan .= '<td style="white-space: nowrap;">';
@@ -126,21 +158,23 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 			echo '</td>';			
 		}
 
-			
+
+		echo '<td rowspan="'.$rowspan.'" style="width:50px;">';
+		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
+		echo '</td>';
+		
+		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['name'].'</td>';
+		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['descrizione'].'</td>';
+		
 		if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 			echo '<td rowspan="'.$rowspan.'">';
 			echo $result['CategoriesSupplier']['name']; 	
 			echo '</td>';
 		}
 		
-		echo '</td>';
-		echo '<td rowspan="'.$rowspan.'">';
-		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
-		echo '</td>';
-		
-		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['name'].'</td>';
-		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['descrizione'].'</td>';
+		echo '<td rowspan="'.$rowspan.'">'.$result['SuppliersDeliveriesType']['name'].'</td>';
+
 		echo '<td rowspan="'.$rowspan.'">';
 		if(!empty($result['Supplier']['indirizzo'])) echo $result['Supplier']['indirizzo'].'&nbsp;<br />';
 		if(!empty($result['Supplier']['localita'])) echo $result['Supplier']['localita'].'&nbsp;';
@@ -150,18 +184,25 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 		echo '<td rowspan="'.$rowspan.'">';
 		echo $result['Supplier']['telefono'];
 		if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
-		if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="link_mailto"></a>';
-		if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank link_www"></a>';
+		if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
+		if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
-	echo '</tr>';
-	
-	if(!empty($tmpRowsSpan) && empty($FilterSupplierOrganizationId)) {
-		echo $tmpRowsSpan;
-	}
-				
-endforeach;
+		echo '</tr>';
+ 					
+		if(!empty($tmpRowsSpan) && empty($FilterSupplierOrganizationId)) {
+			echo $tmpRowsSpan;
+		}
 
-	echo '</table>';
+		echo '<tr class="trView" id="trViewId-'.$result['Supplier']['id'].'" style="display:none;">';
+		echo '<td></td>';
+		echo '<td colspan="';
+		echo ($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') ? '11': '10';
+		echo '" id="tdViewId-'.$result['Supplier']['id'].'"></td>';
+		echo '</tr>';
+		
+	} // end loop
+
+	echo '</table></div>';
 
 	echo '<p>';
 	echo $this->Paginator->counter(array(
@@ -173,19 +214,6 @@ endforeach;
 	echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
 	echo $this->Paginator->numbers(array('separator' => ''));
 	echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
-</div>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-});		
-</script>
+
+echo '</div>';
+echo '</div>';

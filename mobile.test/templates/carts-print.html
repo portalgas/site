@@ -1,0 +1,98 @@
+<style>
+.close-order {
+	cursor:pointer;
+	position:absolute;
+	top:3px;
+	right:3px;
+	z-index:1000;
+}
+</style>
+<ion-view view-title="" cache-view="false"> 
+
+<ion-nav-buttons side="right">
+	<button class="button button-clear icon ion-android-list" ng-click="visibleComplete()" title="versione completa/compatta"></button>
+	<a href="#/app/carts/{{delivery_id}}"><button class="button button-clear icon ion-android-cart" title="carrello"></button></a>
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content class="padding">
+  
+		
+		<div class="card" ng-show="rowsFound==0">
+			  <div class="item item-text-wrap">
+				 Per la consegna scelta, non ci sono articoli acquistati
+			  </div>
+		</div>	
+		<div ng-show="carts.length">
+
+				<div class="bar bar-header item-input-inset">
+					  <label class="item-input-wrapper">
+						<i class="icon ion-ios-search placeholder-icon"></i>
+						<input ng-model="searchSupplier.Supplier_name" type="text" placeholder="Ricerca per produttore" />
+					 </label>
+				</div>	
+				<div class="bar bar-header item-input-inset">
+					  <label class="item-input-wrapper">
+						<i class="icon ion-ios-search placeholder-icon"></i>
+						<input ng-model="searchArticle.ArticlesOrder_name" type="text" placeholder="Ricerca per articolo" />
+					 </label>
+				</div>					
+
+					   
+				<div class="list" ng-repeat="order in carts | filter:searchSupplier:strict">
+
+						<i class="close-order" ng-class="isReplyFormOpen ? 'ion-minus-round' : 'ion-navicon-round'" ng-click="isReplyFormOpen = !isReplyFormOpen"></i>
+
+						<div class="item item-divider"><h2>{{order.Supplier_name}}: {{order.Order_tot_importo_order | arrotondaNumero| number:2}} &euro;</h2> 
+								<h2 ng-if="order.SummaryOrderTrasport!=null">Trasporto {{order.SummaryOrderTrasport.importo_trasport | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderCostMore!=null">Costo aggiuntivo {{order.SummaryOrderCostMore.importo_cost_more | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderCostLess!=null">Sconto {{order.SummaryOrderCostLess.importo_cost_less | arrotondaNumero| number:2}} &euro;</h2>
+								<h2 ng-if="order.SummaryOrderTrasport!=null || order.SummaryOrderCostMore!=null || order.SummaryOrderCostLess!=null">Importo ordine {{order.SummaryOrder.importo | arrotondaNumero| number:2}} &euro;</h2>
+						</div>	
+
+ 
+					<div ng-repeat="result in order.Carts | filter:searchArticle:strict" ng-hide="isReplyFormOpen" id="replyForm">
+							
+									<div class="item cart-{{checkboxModel.value}} item-text-wrap">
+									
+										<div class="item-thumbnail-left animate-show" ng-if="result.Article_img1 != null && result.Article_img1 != ''" ng-show="isVisibleComplete">
+											<img ng-src="http://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" />
+										</div>
+
+										<h2>{{result.ArticlesOrder_name}}</h2> 
+
+										<div class="animate-show" ng-show="isVisibleComplete">
+												<p>Conf. {{result.Article_qta}} {{result.Article_um}} - Prezzo unit&agrave; {{result.ArticlesOrder_prezzo | arrotondaNumero| number:2}} &euro;</p>
+										</div>
+										<div class="cartQta">
+												<span ng-show="result.Cart_qta == 1">Acquistata {{result.Cart_qta_final}} conf.</span>
+												<span ng-show="result.Cart_qta > 1">Acquistate {{result.Cart_qta_final}} conf.</span>
+												: {{ result.Cart_importo_final | arrotondaNumero| number:2}} &euro;
+										  
+												<div style="text-align:right;">
+													<label class="toggle">
+													   <input type="checkbox" ng-model="checkboxModel.value" ng-true-value="'select'" ng-false-value="'noselect'">
+													   <div class="track">
+														 <div class="handle"></div>
+													   </div>
+													</label>
+												</div>									
+										</div>
+								</div>						
+				
+					</div> 
+				
+				</div>  
+		
+		</div>
+		
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		
+  </ion-content>
+ 			
+</ion-view>
+
+<div class="bar bar-footer bar-positive">
+   <h1 class="title">{{cart_import_total + "&euro;"}} </h1>
+</div>

@@ -17,7 +17,8 @@ class UsersController extends AppController {
         $FilterUserUserGroups = null;
         $FilterUserUsername = null;
         $FilterUserName = '';
-
+        $FilterUserBlock = 'ALL';
+        $FilterUserSort = Configure::read('orderUser');	
 
         /*
          * filtri per gruppo
@@ -55,8 +56,8 @@ class UsersController extends AppController {
          * conditions
          */
         $conditions = [];
-        $conditions[] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-							'User.block' => 1];
+        $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+						'User.block' => "User.block in (0,1)"];  // 0 attivo - li prendo tutti perche' ora li posso disabilitare
 
         /* recupero dati dalla Session gestita in appController::beforeFilter */
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Username')) {
@@ -73,7 +74,23 @@ class UsersController extends AppController {
 			self::d($FilterUserUserGroups, $debug);
             $conditions['UserGroup.group_id'] = $FilterUserUserGroups;
         }
-
+		
+		if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
+            $FilterUserBlock = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Block');
+            if ($FilterUserBlock != 'ALL')
+                $conditions['User.block'] = "User.block = $FilterUserBlock";  // 0 attivi / 1 disattivati
+            else
+                $conditions['User.block'] = "User.block IN ('0','1')";
+        }
+        else {
+            $FilterUserBlock = 'ALL';
+            $conditions['User.block'] = "User.block IN ('0','1')"; // di default li prende tutti
+        }
+		
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Sort')) 
+            $FilterUserSort = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Sort');
+        else 
+            $FilterUserSort = Configure::read('orderUser');
 
         if (empty($FilterUserUserGroups))
             $FilterUserUserGroups = Configure::read('prod_gas_supplier_manager') . ',' . 
@@ -90,11 +107,32 @@ class UsersController extends AppController {
         $this->set('FilterUserUsername', $FilterUserUsername);
         $this->set('FilterUserName', $FilterUserName);
         $this->set('FilterUserUserGroups', $FilterUserUserGroups);
-
-        $results = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
-        $this->set('results', $results);
-        
-		self::d($results, false);
+        $this->set('FilterUserBlock', $FilterUserBlock);
+        $this->set('FilterUserSort', $FilterUserSort);
+		
+        $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];	
+		$sorts = [Configure::read('orderUser') => __('Name'), 
+				'User.registerDate' => __('registerDate'), 
+			   /* 'Profile.dataRichEnter' => __('dataRichEnter'), 
+				'Profile.dataEnter' => __('dataEnter'), 
+				'Profile.dataRichExit' => __('dataRichExit'), 
+				'Profile.dataExit' => __('dataExit')*/
+			];
+        $this->set(compact('sorts', 'block'));
+		
+		App::import('Model', 'Cart');
+		$Cart = new Cart;
+		
+        $userResults = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
+		if(!empty($userResults)) {
+			foreach($userResults as $numResult => $userResult) {
+				$tmp->user->organization['Organization']['id'] = $userResult['User']['organization_id']; 
+				$cartResults = $Cart->getLastCartDateByUser($tmp->user, $userResult['User']['id'], $debug);
+				$userResults[$numResult] += $cartResults; 
+			}
+		}
+		self::d($userResults, $debug);		
+        $this->set('results', $userResults);
     }
 
     public function admin_index_block() {
@@ -134,6 +172,9 @@ class UsersController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
 
+		$isUserFlagPrivay = $this->isUserFlagPrivay();
+		$this->set(compact('isUserFlagPrivay'));
+		
         if(isset($this->user->organization['Organization']['hasUserFlagPrivacy']) && $this->user->organization['Organization']['hasUserFlagPrivacy'] == 'Y') {
         	
 			App::import('Model', 'UserGroupMap');
@@ -787,4 +828,66 @@ class UsersController extends AppController {
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
    }    
+   
+	/* 
+	 * passato un campo (User.block) inverte il valore Y => N
+	 */
+    public function admin_inverseValueNoDES($user_id, $field, $format='notmpl') {
+
+		$debug = false;
+		
+        if (empty($user_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+		
+        if (!$this->isManager()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+        /* ctrl ACL */
+		
+        $options = [];
+        $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
+								  'User.id' => $user_id];
+        $options['recursive'] = -1;
+        $userResults = $this->User->find('first', $options);
+		if(empty($userResults)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+		
+		self::d($field, $debug);
+		self::d($userResults, $debug);
+
+		if(isset($userResults['User'][$field])) {
+
+			self::d($userResults['User'][$field], $debug);
+
+			switch ($userResults['User'][$field]) {
+				case '0':
+					$userResults['User'][$field] = '1';
+				break;
+				case '1':
+					$userResults['User'][$field] = '0';
+				break;
+				default:
+					$userResults['User'][$field] = '0';
+				break;
+			}
+
+			self::d($userResults['User'][$field], $debug);
+			self::d($userResults, $debug);
+			
+			$this->User->create();
+			if (!$this->User->save($userResults)) {
+			}
+		
+		}
+
+        $this->set('content_for_layout', '');
+
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');
+   }       
 }

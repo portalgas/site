@@ -24,14 +24,14 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 				<tr>
 					<td>
 						<?php 
-						$options =  array('label' => false,
+						$options =  ['label' => '&nbsp;',
 										  'empty' => 'Tutti i produttori',
 										  'options' => $ACLdesSuppliers,
 										  'name' => 'FilterDesSuppliersReferentId',
 										  'default'=>$FilterDesSuppliersReferentId,
-										  'escape' => false);
+										  'escape' => false];
 						if(count($ACLdesSuppliers) > Configure::read('HtmlSelectWithSearchNum')) 
-							$options += array('class'=> 'selectpicker', 'data-live-search' => true); 						
+							$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 						
 						echo $this->Form->input('supplier_id', $options); ?>
 					</td>
 					<td>
@@ -53,27 +53,29 @@ if(!empty($results)) {
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo __('N');?></th>
-			<th colspan="2"><?php echo $this->Paginator->sort('des_supplier_id',__('DesSuppliers'));?></th>
+			<th colspan="2"><?php echo __('DesSuppliers');?></th>
 			<th colspan="2"><?php echo __('Organization');?></th>
-			<th colspan="3"><?php echo $this->Paginator->sort('user_id');?></th>
-			<th><?php echo $this->Paginator->sort('created');?></th>
+			<th colspan="3"><?php echo __('user_id');?></th>
+			<th><?php echo __('Created');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
-	foreach ($results as $i => $result):
-		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1); ?>
-	<tr>
-		<td><?php echo $numRow; ?></td>
-		<td><?php 
+	$numResult=0;
+	foreach ($results as $result) {
+		$numResult++;
+	
+		echo '<tr>';
+		echo '<td>'.$numResult.'</td>';
+		echo '<td>';
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';	
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';	
 			?>
 		</td>		
 		<td>		
 			<?php echo $result['Supplier']['name']; ?>
 		</td>	
 		<td>
-			<?php echo '<img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" />';?>
+			<?php echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" />';?>
 		</td>
 		<td>		
 			<?php echo $result['Organization']['name']; ?>
@@ -108,28 +110,14 @@ if(!empty($results)) {
 			?>
 		</td>		
 	</tr>
-<?php endforeach; ?>
+	<?php } // end loops ?>
 	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
-	?>
-	</div>
 	
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 	
-		jQuery(".actionDelete").each(function () {
-			jQuery(this).click(function() {
+		$(".actionDelete").each(function () {
+			$(this).click(function() {
 				if(!confirm("Sei sicuro di voler eliminare il <?php echo $userGroups[$group_id]['name'];?> associato al produttore?"))
 					return false;
 				else
@@ -143,7 +131,7 @@ if(!empty($results)) {
 } // end if(!empty($results) 
 else 
 if($resultsFound=='N') 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => __('msg_search_not_result')));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	
 ?>
 </div>

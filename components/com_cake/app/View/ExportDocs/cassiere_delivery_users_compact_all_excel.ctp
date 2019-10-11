@@ -31,18 +31,21 @@ $table[] = array('label' => __('Supplier'), 'width' => 'auto', 'filter' => true)
 // heading
 $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
 
+$importo_completo_user = 0;
 $importo_completo_all_orders = 0;
+$tot_importo_pos = 0;
 $importo_pos = 0;
 $user_label = '';
+$id_user_old = 0;
 
 foreach($results as $deliveryResults) {
 	$deliveries = $deliveryResults['Delivery'];
 
 	foreach($deliveries as $numDelivery => $delivery) {
 
-		$rowsExcel = array();
+		$rowsExcel = [];
 	
-		if($delivery['totOrders']>0 && $delivery['totArticlesOrder']>0) {
+		if($delivery['totOrders']>0 /* && $delivery['totArticlesOrder']>0 */) {
 
 			foreach($delivery['Order'] as $numOrder => $order) {
 
@@ -52,10 +55,14 @@ foreach($results as $deliveryResults) {
 					$rows = current(array_values($rows));
 					foreach ($rows as $typeRow => $cols) {
 
-						$rowsExcel = array();
+						$rowsExcel = [];
 					
 						switch ($typeRow) {
 							case 'TRGROUP':
+							
+								if($user_id_local!=$id_user_old)
+									$importo_completo_user = 0;						
+							
 								$user_label = substr($cols['LABEL'], strlen("Utente: "), strlen($cols['LABEL']));
 							break;
 							case 'TRSUBTOT':							
@@ -63,31 +70,34 @@ foreach($results as $deliveryResults) {
 								$rowsExcel[] = '';
 								$rowsExcel[] = '';
 								$rowsExcel[] = '';
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);
+								$rowsExcel[] = $cols['IMPORTO'];
 								if($trasportAndCost=='Y') {
 									if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00')  
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_TRASPORTO']);
+										$rowsExcel[] = $cols['IMPORTO_TRASPORTO'];
 									else 
 										$rowsExcel[] = '';
 									if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') 
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_MORE']);
+										$rowsExcel[] = $cols['IMPORTO_COST_MORE'];
 									else 
 										$rowsExcel[] = '';
 									if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') 
-										$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COST_LESS']);
+										$rowsExcel[] = $cols['IMPORTO_COST_LESS'];
 									else 
 										$rowsExcel[] = '';
 
-									$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO_COMPLETO']);
+									$rowsExcel[] = $cols['IMPORTO_COMPLETO'];
 								}
 
-								$importo_completo_all_orders += $this->ExportDocs->prepareCsv($cols['IMPORTO_COMPLETO_DOUBLE']);
+								$importo_completo_user += $cols['IMPORTO_COMPLETO']; 
+								$importo_completo_all_orders += $cols['IMPORTO_COMPLETO'];
 								
 								$importo_pos = 0;
 								if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
 									if(isset($deliveries[$numDelivery]['SummaryDeliveriesPos']))
 										$importo_pos = $deliveries[$numDelivery]['SummaryDeliveriesPos'][$user_id_local]['importo'];
 								}
+																
+								$tot_importo_pos += $importo_pos;
 																
 								$this->PhpExcel->addTableRow($rowsExcel);
 							break;
@@ -99,8 +109,8 @@ foreach($results as $deliveryResults) {
 								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['QTA']);
 								$rowsExcel[] = $name;
 								$rowsExcel[] = $user_label;
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['PREZZO']);
-								$rowsExcel[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);
+								$rowsExcel[] = $cols['PREZZO'];
+								$rowsExcel[] = $cols['IMPORTO'];
 								if($trasportAndCost=='Y') {
 									$rowsExcel[] = '';
 									$rowsExcel[] = '';
@@ -117,13 +127,16 @@ foreach($results as $deliveryResults) {
 						
 					} // end foreach ($rows as $typeRow => $cols)
 								
+					if($user_id_local>0) // quando $typeRow == TRTOT
+						$id_user_old = $user_id_local;
+								
 				} // end foreach ($exportRows as $rows)
 								
 			}  // end foreach($delivery['Order'] as $numOrder => $order)
 				
 		}
 		else {
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] = __('Supplier').' '.$order['SuppliersOrganization']['name'].', '.$order['SuppliersOrganization']['descrizione'];
 			$this->PhpExcel->addTableRow($rowsExcel);
 			
@@ -135,11 +148,9 @@ foreach($results as $deliveryResults) {
 	/*
 	 * totale utente
 	*/
-	if($importo_completo_all_orders>0) {
+	if($importo_completo_user>0) {
 
-		$importo_completo_all_orders = number_format($importo_completo_all_orders,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-
-		$rowsExcel = array();
+		$rowsExcel = [];
 		$rowsExcel[] =  '';
 		$rowsExcel[] =  '';
 		$rowsExcel[] =  '';
@@ -150,28 +161,59 @@ foreach($results as $deliveryResults) {
 			$rowsExcel[] =  '';
 			$rowsExcel[] =  '';
 			$rowsExcel[] =  '';
-			$rowsExcel[] = ' '.$importo_completo_all_orders;
+			$rowsExcel[] = $importo_completo_user;
 		}
 		else
-			$rowsExcel[] = ' '.$importo_completo_all_orders;
+			$rowsExcel[] = $importo_completo_user;
 
 		/*
 		 *  eventuale importo POS
 		 */
 		if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
 			if($importo_pos>0) {
-				$rowsExcel[] =  ' '.$importo_pos;
+				$rowsExcel[] =  $importo_pos;
 				$rowsExcel[] =  'Importo POS';
 			}
 		}
-
 		
-		$this->PhpExcel->addTableRow($rowsExcel);
-		
-		$importo_completo_all_orders = 0;
+		$this->PhpExcel->addTableRow($rowsExcel);		
 	}
 	
 } // loop users
+
+/*
+ * totale orders
+*/
+if($importo_completo_all_orders>0) {
+
+	$rowsExcel = [];
+	$rowsExcel[] =  '';
+	$rowsExcel[] =  '';
+	$rowsExcel[] =  '';
+	$rowsExcel[] =  '';
+	
+	if($trasportAndCost=='Y') {
+		$rowsExcel[] =  '';
+		$rowsExcel[] =  '';
+		$rowsExcel[] =  '';
+		$rowsExcel[] =  '';
+		$rowsExcel[] = $importo_completo_all_orders;
+	}
+	else
+		$rowsExcel[] = $importo_completo_all_orders;
+
+	/*
+	 *  eventuale importo POS
+	 */
+	if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
+		if($tot_importo_pos>0) {
+			$rowsExcel[] =  $tot_importo_pos;
+			$rowsExcel[] =  'Importo POS';
+		}
+	}
+	
+	$this->PhpExcel->addTableRow($rowsExcel);		
+}
 
 $this->PhpExcel->addTableFooter();
 $this->PhpExcel->output($fileData['fileName'].'.xlsx');

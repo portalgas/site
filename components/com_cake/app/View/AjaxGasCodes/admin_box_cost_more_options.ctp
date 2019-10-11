@@ -1,5 +1,4 @@
-<div class="cost-more-options-label left label"></div>
-<div class="cost-more-options left radio">
+<div class="row">
 	<span class="tooltip-box">
 		<a href="#" class="mytooltip  tooltip-help-img">
 			<span class="tooltip-custom tooltip-help">
@@ -9,32 +8,36 @@
 	echo __('toolTipCostMoreOptions');
 	echo '</span></a>';
 	echo '</span>';
+
+	echo '<label class="radio-inline">';
 	echo '<input ';
 	if($results['Order']['cost_more_type']=='QTA') echo 'checked="checked"';
-	echo ' type="radio" name="cost-more-options" id="options-cost_more-qta" value="options-qta">';
-	echo '<label for="options-cost_more-qta">'.__('options_cost_more_qta').'</label>';
+	echo ' type="radio" name="summay-order-plus-options" id="options-qta" value="options-qta" />';
+	echo __('options_cost_more_qta').'</label> ';
 	
 	if($options_weight=='Y') {
+		echo '<label class="radio-inline">';
 		echo '<input ';
 		if($results['Order']['cost_more_type']=='WEIGHT') echo 'checked="checked"';
-		echo ' type="radio" name="cost-more-options" id="options-cost_more-weight" value="options-weight">';
-		echo '<label for="options-cost_more-weight">'.__('options_cost_more_weight').'</label>';
+		echo ' type="radio" name="summay-order-plus-options" id="options-weight" value="options-weight" />';
+		echo __('options_cost_more_weight').'</label> ';
 	}
 	
+	echo '<label class="radio-inline">';
 	echo '<input ';
 	if($results['Order']['cost_more_type']=='USERS') echo 'checked="checked"'; 
-	echo ' type="radio" name="cost-more-options" id="options-cost_more-users" value="options-users">';
-	echo '<label for="options-cost_more-users">'.__('options_cost_more_users').'</label>';
+	echo ' type="radio" name="summay-order-plus-options" id="options-users" value="options-users" />';
+	echo __('options_cost_more_users').'</label> ';
 echo '</div>';	
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='cost-more-options']").change(function() {
-		choiceCostMoreOptions();		
+$(document).ready(function() {
+	$("input[name='summay-order-plus-options']").change(function() {
+		choiceOptions();		
 	});
 
 	<?php if($results['Order']['cost_more_type']!=null) {
-		echo "choiceCostMoreOptions();";
+		echo "choiceOptions();";
 	}?>
 });
 </script>

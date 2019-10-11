@@ -19,11 +19,11 @@
 	</table>
 	
 	<script type="text/javascript">
-	jQuery( ".actionDesSyncronizen" ).mouseenter(function () {
-		jQuery(this).css("background-color","yellow").css("border-radius","15px 15px 15px 15px");
+	$( ".actionDesSyncronizen" ).mouseenter(function () {
+		$(this).css("background-color","yellow").css("border-radius","15px 15px 15px 15px");
 	});
-	jQuery( ".actionDesSyncronizen" ).mouseleave(function () {
-		jQuery(this).css("background-color","#ffffff");
+	$( ".actionDesSyncronizen" ).mouseleave(function () {
+		$(this).css("background-color","#ffffff");
 	});
 	</script>	
 </div>

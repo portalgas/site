@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Request Payments'), array('controller' => 'RequestPayments', 'action' => 'index'));
 $this->Html->addCrumb('Coerenza dati');
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -18,10 +18,10 @@ if(!empty($results)) {
 	echo '	<th>'.__('N').'</th>';
 	echo '	<th>'.__('Delivery').'</th>';
 	echo '	<th>'.__('SupplierOrganizations').'</th>';
-	echo '  <th>'.__('stato_elaborazione').'</th>';
+	echo '  <th>'.__('StatoElaborazione').'</th>';
 	echo '  <th>Totale importo dell\'ordine</th>';
 	echo '  <th>Totale importo dovuto<br />(somma degli importi degli utenti)</th>';
-	echo '  <th>Differenza</th>';
+	echo '  <th>Delta</th>';
 	echo '	<th class="actions">'.__('Actions').'</th>';
 	echo '</tr>';
 	
@@ -30,8 +30,8 @@ if(!empty($results)) {
 	$tot_delta = 0;
 	foreach ($results as $numResult => $result) {
 	
-			$tot_importo_rimborsate_e =  number_format($result['Order']['tot_importo_rimborsate'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			$delta_e =  number_format($result['Order']['delta'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+			$tot_importo_rimborsate_e =  number_format($result['Order']['tot_importo_rimborsate'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			$delta_e =  number_format($result['Order']['delta'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 	 
 			echo '<tr class="view">';
 			echo '	<td><a action="orders-'.$result['Order']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
@@ -123,45 +123,45 @@ if(!empty($results)) {
 	
 	echo '<tr>';
 	echo '	<td colspan="5" style="text-align:right;">Totali</td>'; 
-	echo '	<td>'.$tot_importo.' &euro;</td>';
-	echo '	<td>'.$tot_importo_rimborsate.' &euro;</td>';
-	echo '	<td>'.$tot_delta.' &euro;</td>';
+	echo '	<td>'.$tot_importo.'&nbsp;&euro;</td>';
+	echo '	<td>'.$tot_importo_rimborsate.'&nbsp;&euro;</td>';
+	echo '	<td>'.$tot_delta.'&nbsp;&euro;</td>';
 	echo '	<td></td>'; 
 	echo '</tr>';
 		
 	echo '</table>';	
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora ordini registrati"));
+	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora ordini registrati"));
 
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(".actionMenu").each(function () {
-		jQuery(this).click(function() {
+$(document).ready(function() {
+	$(".actionMenu").each(function () {
+		$(this).click(function() {
 
-			jQuery('.menuDetails').css('display','none');
+			$('.menuDetails').css('display','none');
 			
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).show();
+			$('#menuDetails-'+numRow).show();
 
 			viewOrderSottoMenu(numRow,"bgLeft");
 
-			var offset = jQuery(this).offset();
+			var offset = $(this).offset();
 			var newTop = (offset.top - 100);
 			var newLeft = (offset.left - 350);
 
-			jQuery('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
+			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
 		});
 	});	
 
-	jQuery(".menuDetailsClose").each(function () {
-		jQuery(this).click(function() {
-			var idRow = jQuery(this).attr('id');
+	$(".menuDetailsClose").each(function () {
+		$(this).click(function() {
+			var idRow = $(this).attr('id');
 			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			jQuery('#menuDetails-'+numRow).hide('slow');
+			$('#menuDetails-'+numRow).hide('slow');
 		});
 	});	
 });

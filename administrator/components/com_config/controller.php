@@ -42,9 +42,9 @@ class ConfigController extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$jInput = $app->input; 
 		$verify = $jInput->get('verify');
-		//if($verify!='fractis')
-		//	die('Accesso negato');
-	
+		if($verify!='fractis')
+			die('');
+	 
 	
 	
 	

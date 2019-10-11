@@ -14,15 +14,15 @@
 	echo '</div>';
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=Mails&amp;action=send"><img alt="" src="/administrator/templates/bluestork/images/header/cake/icon-48-writemess.png"><span>Mail</span></a></div>';
+	echo '<div class="icon"><a href="/administrator/index.php?option=com_cake&amp;controller=Mails&amp;action=send"><img alt="" class="img-responsive-disabled" src="/administrator/templates/bluestork/images/header/cake/icon-48-writemess.png"><span>Mail</span></a></div>';
 	echo '</div>';
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.facebook.com/portalgas.it"><img src="/administrator/templates/bluestork/images/header/cake/social-fb.png" alt=""><span>Facebook</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.facebook.com/portalgas.it"><img class="img-responsive-disabled" src="/administrator/templates/bluestork/images/header/cake/social-fb.png" alt=""><span>Facebook</span></a></div>';
 	echo '</div>';
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="/administrator/templates/bluestork/images/header/cake/social-youtube.png" alt=""><span>YouTube</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img class="img-responsive-disabled" src="/administrator/templates/bluestork/images/header/cake/social-youtube.png" alt=""><span>YouTube</span></a></div>';
 	echo '</div>';	
 		
 echo '</div>';	

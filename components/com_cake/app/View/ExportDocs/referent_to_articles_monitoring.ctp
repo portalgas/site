@@ -102,10 +102,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$tot_qta_single_article.'</td>';
 		
 					if($orderToQtaMinimaOrder) {
-						$differenza = ($qta_minima_order - $qta_cart);
+						$differenza = (intval($qta_minima_order) - intval($qta_cart));
 						$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">';
 						if($differenza > 0)
-							$html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$qta_minima_order.' </span>';
+							$html .= '<span class="box_evidenza"> '.$qta_minima_order.' </span>';
 						else
 							$html .= $qta_minima_order;
 						$html .= '</td>';
@@ -128,7 +128,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">';
 						if($pezzi_confezione>1) {
 							if($differenza_da_ordinare!=$pezzi_confezione)  
-								$html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
+								$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
 							else
 								$html .= '0 (collo da '.$pezzi_confezione.')';
 						}
@@ -216,10 +216,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$tot_qta_single_article.'</td>';
 
 			if($orderToQtaMinimaOrder) {
-				$differenza = ($qta_minima_order - $qta_cart);
+				$differenza = (intval($qta_minima_order) - intval($qta_cart));
 				$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">';
 				if($differenza > 0)
-					$html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$qta_minima_order.' </span>';
+					$html .= '<span class="box_evidenza"> '.$qta_minima_order.' </span>';
 				else
 					$html .= $qta_minima_order;
 				$html .= '</td>';
@@ -242,7 +242,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">';
 				if($pezzi_confezione>1) {
 					if($differenza_da_ordinare!=$pezzi_confezione)  
-						$html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
+						$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
 					else
 						$html .= '0 (collo da '.$pezzi_confezione.')';					
 				}
@@ -270,7 +270,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 			$html .= '<tr>';
 			$html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-			$html .= '	<th width="'.$width.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+			$html .= '	<th width="'.$width.'" style="text-align:right;">'.__('qta_tot').'</th>';
 			$html .= '	<th width="'.$output->getCELLWIDTH50().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
 
 			if($orderToQtaMinimaOrder) {
@@ -286,7 +286,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '			<th width="'.$output->getCELLWIDTH80().'"></th>';
 			}
 				
-			$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
+			$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
 			$html .= '</tr>';
 		
 			$html .= '</tbody></table>';
@@ -318,4 +318,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

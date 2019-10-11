@@ -1,5 +1,5 @@
 <?php 
-$csv = array();
+$csv = [];
 $headers = array('csv' => $csv);
 
 
@@ -19,7 +19,7 @@ foreach($results as $numResult => $resultOrg) {
         $num_rows_csv++;
 
 
-        $table = array();
+        $table = [];
         $data[$num_rows_csv]['csv'] = array('N' => __('N'));
         $data[$num_rows_csv]['csv'] += array('bio' => __('Bio'));
         if($showCodice=='Y')
@@ -39,25 +39,23 @@ foreach($results as $numResult => $resultOrg) {
 	$tot_importo = 0;
 	$article_organization_id_old=0;
 	$article_id_old = 0;
+	if(isset($resultOrg['Cart']))
 	foreach($resultOrg['Cart'] as $numResult => $result) {
 
 		if($article_id_old > 0 && // salto la prima volta
 		   ($article_organization_id_old != $result['ArticlesOrder']['article_organization_id'] ||
 			$article_id_old != $result['ArticlesOrder']['article_id'])) {
 		
-			$bio = $result['Article']['bio'];
-			
-
-                        $data[$num_rows_csv]['csv'] = array('N' => $i+1);
-                        if($bio=='Y') 
-                            $data[$num_rows_csv]['csv'] += array('bio' => 'Bio');
+			$data[$num_rows_csv]['csv'] = array('N' => $i+1);
+			if($bio=='Y') 
+				$data[$num_rows_csv]['csv'] += array('bio' => 'Bio');
 			else 
-                            $data[$num_rows_csv]['csv'] += array('bio' => '');
+                $data[$num_rows_csv]['csv'] += array('bio' => '');
                       
 			if($showCodice=='Y') 
-                            $data[$num_rows_csv]['csv'] += array('codice' => $codiceArticle);
+                $data[$num_rows_csv]['csv'] += array('codice' => $codiceArticle);
 			
-                        $data[$num_rows_csv]['csv'] += array('name' => $this->ExportDocs->prepareCsv($name));
+            $data[$num_rows_csv]['csv'] += array('name' => $this->ExportDocs->prepareCsv($name));
 				
 			$data[$num_rows_csv]['csv'] += array('qta' => $tot_qta_single_article);				
 			$data[$num_rows_csv]['csv'] += array('prezzoUnita' => $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo)));

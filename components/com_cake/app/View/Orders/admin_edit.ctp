@@ -8,7 +8,7 @@ if($this->request->data['Delivery']['sys']=='N')
 	$label_crumb = $label_order.': '.__('Supplier').' <b>'.$this->request->data['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b> '.$this->request->data['Delivery']['luogoData'].'</b>';
 else 
 	$label_crumb = $label_order.': '.__('Supplier').' <b>'.$this->request->data['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>'.$this->request->data['Delivery']['luogo'].'</b>';
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
 $this->Html->addCrumb($label_crumb);
@@ -33,13 +33,13 @@ echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
 echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
-echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
+echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 if(empty($des_order_id))
 	echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</a></li>';
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo l\'arrivo della merce').'</a></li>';
 else
-	if($user->organization['Organization']['payToDelivery']=='POST')
+	if($user->organization['Template']['payToDelivery']=='POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo la consegna').'</a></li>';
 echo '<li><a href="#tabs-5" data-toggle="tab">'.__('Suppliers Organizations Referents').'</a></li>';
 echo '</ul>';
@@ -70,7 +70,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		echo $this->element('boxOrdersDelivery', array('modalita' => 'EDIT', 'isManagerDelivery' => $isManagerDelivery));
 		echo $this->Html->div('clearfix','');
 		
-		echo $this->App->drawDate('Order', 'data_inizio', __('Data inizio'), $this->Form->value('Order.data_inizio'));
+		echo $this->App->drawDate('Order', 'data_inizio', __('DataInizio'), $this->Form->value('Order.data_inizio'));
 		
 		if(!empty($this->request->data['Order']['data_fine_validation']) && $this->request->data['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) {
 			
@@ -81,12 +81,12 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 			echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
 		}
 		else {
-			echo $this->App->drawDate('Order', 'data_fine', __('Data fine'), $this->Form->value('Order.data_fine'));
+			echo $this->App->drawDate('Order', 'data_fine', __('DataFine'), $this->Form->value('Order.data_fine'));
 		}
 					
-		if($this->request->data['Order']['data_incoming_order']!='0000-00-00') {
+		if($this->request->data['Order']['data_incoming_order']!=Configure::read('DB.field.date.empty')) {
 			echo '<div class="input text required">';
-			echo '<label>'.__('Data Incoming Order').'</label> ';
+			echo '<label>'.__('DataIncomingOrder').'</label> ';
 			echo $this->Time->i18nFormat($this->Form->value('Order.data_incoming_order'),"%A, %e %B %Y");
 			echo '</div>';
 		}
@@ -95,8 +95,8 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		 * DES, data chiusura ordine
 		 */
 		if(!empty($des_order_id)) {
-			echo '<div class="input text ">';
-			echo '<label>'.__('Data fine max').'</label> ';
+			echo '<div class="input text  alert alert-warning">';
+			echo '<label>'.__('DataFineMax').'</label> ';
 			echo $this->Time->i18nFormat($desOrdersResults['DesOrder']['data_fine_max'],"%A, %e %B %Y");
 			echo '</div>';	
 		}		
@@ -131,10 +131,10 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	 * legenda
 	*/
 	if(($this->Form->value('Order.state_code') == 'CREATE-INCOMPLETE' || $this->Form->value('Order.state_code') == 'OPEN-NEXT' || $this->Form->value('Order.state_code') == 'OPEN')
-		 && $this->Form->value('Order.mail_open_data')=='0000-00-00 00:00:00' || $this->Form->value('Order.mail_open_data')=='')
+		 && $this->Form->value('Order.mail_open_data')==Configure::read('DB.field.datetime.empty') || $this->Form->value('Order.mail_open_data')=='')
 		echo $this->element('legendaOrdersSendMail', array('modalita' => 'EDIT'));
 	else
-	if($this->Form->value('Order.mail_open_data')!='0000-00-00 00:00:00' || $this->Form->value('Order.mail_close_data')!='0000-00-00 00:00:00')
+	if($this->Form->value('Order.mail_open_data')!=Configure::read('DB.field.datetime.empty') || $this->Form->value('Order.mail_close_data')!=Configure::read('DB.field.datetime.empty'))
 		echo $this->element('legendaOrdersJustSendMail',array('mail_open_data' => $this->Form->value('Order.mail_open_data'), 'mail_close_data' => $this->Form->value('Order.mail_close_data')));
 
 		echo $this->element('legendaOrderTestoMailFrontEnd');
@@ -146,7 +146,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
     
 echo '</div>';
 
-echo '<div class="tab-pane fade" id="tabs-2">';
+echo '<div class="tab-pane fade hidden-xs hidden-sm" id="tabs-2">';
 echo $this->element('boxOrdersTypeDraw', array('modalita' => 'EDIT', 'value' => $this->Form->value('Order.type_draw')));
 echo $this->Html->div('clearfix','');
 echo '</div>';
@@ -174,7 +174,7 @@ if(empty($des_order_id))  {
 	echo __('order_importo_massimo');
 	echo '</td>';
 	echo '<td colspan="2"  style="white-space: nowrap;">';
-	echo $this->Form->input('importo_massimo', array('label' => false, 'type' => 'text', 'id' => 'importo_massimo', 'class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;'));
+	echo $this->Form->input('importo_massimo', ['label' => false, 'type' => 'text', 'id' => 'importo_massimo', 'value' => $this->Form->value('Order.importo_massimo_'),'class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;']);
 	echo '</td>';
 	echo '<td><div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div></td>';
 	echo '</tr>';
@@ -183,7 +183,7 @@ if(empty($des_order_id))  {
 	echo '</div>';
 }
 
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	echo '<div class="tab-pane fade" id="tabs-4">';
 	
 	echo $this->element('boxOrdersTypeGest', array('modalita' => 'EDIT', 'value' => $this->Form->value('Order.typeGest')));
@@ -351,7 +351,7 @@ echo $this->MenuOrders->drawWrapper($this->Form->value('Order.id'), $options);
 <script type="text/javascript">
 function suppliersOrganizationDetails(supplier_organization_id) {
 	if(supplier_organization_id!=undefined && supplier_organization_id!=0 && supplier_organization_id!='') {
-		var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationDetails&supplier_organization_id="+supplier_organization_id+"&des_order_id=9999&format=notmpl";
+		var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationWithMsgDetails&supplier_organization_id="+supplier_organization_id+"&des_order_id=9999&format=notmpl";
 		var idDivTarget = 'suppliers_organization_details';
 		ajaxCallBox(url, idDivTarget);		
 	}

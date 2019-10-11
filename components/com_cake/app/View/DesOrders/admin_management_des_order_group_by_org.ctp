@@ -1,10 +1,7 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "<pre>";
-*/
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($results);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('DesOrganizations'),array('controller' => 'DesOrganizations', 'action' => 'index', $user->des_id));
 $this->Html->addCrumb(__('List DesOrders'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -26,7 +23,7 @@ $html .= '	<td></td>';
 $html .= '	<td>'.$this->Form->input('article_id',array('id' => 'addarticle_id-'.$rowId, 'value' => $articles, 'label' => false)).'</td>';
 $html .= '	<td></td>';
 $html .= '	<td>';
-$html .= '	<input tabindex="'.$i.'" type="text" value="" name="qta-'.$rowId.'" id="addqta-'.$rowId.'" size="5" class="qta qtaAdd" />';
+$html .= '	<input tabindex="'.$i.'" type="text" value="" name="qta-'.$rowId.'" id="addqta-'.$rowId.'" class="qta qtaAdd" />';
 
 /*
  * non serve ma allinea l'input text con gli altri
@@ -112,7 +109,7 @@ foreach($results as $numResult => $result) {
 				$html .= '			<td width="" style="text-align:center;">'.$organizationResult['Organization']['tot_qta'].'</td>';
 
 				$html .= '<td>';	
-				$html .= '	<input tabindex="'.$i.'" type="text" value="'.$organizationResult['Organization']['tot_qta'].'" name="qta-'.$rowId.'" id="qta-'.$rowId.'" size="5" class="qtaSubmit" />';
+				$html .= '	<input tabindex="'.$i.'" type="text" value="'.$organizationResult['Organization']['tot_qta'].'" name="qta-'.$rowId.'" id="qta-'.$rowId.'" class="qtaSubmit" />';
 				$html .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
 				$html .= '<div id="msgEcomm-'.$rowId.'" class="msgEcomm"></div>';
 				$html .= '</td>';
@@ -129,9 +126,9 @@ foreach($results as $numResult => $result) {
 		 */
 		$html .= '<tr>';
 		$html .= '	<th width=""></th>';
-		$html .= '	<th colspan="4" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+		$html .= '	<th colspan="4" style="text-align:right;">'.__('qta_tot').'</th>';
 		$html .= '	<th width="" style="text-align:center;">&nbsp;'.$result['Article']['tot_qta_sub'].'</th>';
-		$html .= '	<th width="" colspan="3" style="text-align:right;">Importo totale&nbsp;'.number_format($result['Article']['tot_importo_sub'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+		$html .= '	<th width="" colspan="3" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($result['Article']['tot_importo_sub'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 		$html .= '</tr>';
 		
 		$tot_qta += $result['Article']['tot_qta_sub'];
@@ -142,9 +139,9 @@ foreach($results as $numResult => $result) {
 // totale
 $html .= '<tr>';
 $html .= '	<th width=""></th>';
-$html .= '	<th colspan="4" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+$html .= '	<th colspan="4" style="text-align:right;">'.__('qta_tot').'</th>';
 $html .= '	<th width="" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-$html .= '	<th width="" colspan="3" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';			
+$html .= '	<th width="" colspan="3" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';			
 $html .= '</tr>';
 
 $html .= '</tbody></table>';
@@ -152,45 +149,45 @@ $html .= '</tbody></table>';
 echo $html;
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	/*
 	 * qtaSubmit
 	 */
-	jQuery('.qtaSubmit').change(function() {
+	$('.qtaSubmit').change(function() {
 
 		setNumberFormat(this);
 
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_des_orders_id = numRow;
 		
-		var qtaSubmit = jQuery(this).val();
+		var qtaSubmit = $(this).val();
 		if(qtaSubmit=='' || qtaSubmit==undefined) {
 			alert("Devi indicare la quantità");
-			jQuery(this).val("0");
-			jQuery(this).focus();
+			$(this).val("0");
+			$(this).focus();
 			return false;
 		}	
 		
 		if(qtaSubmit=='0') {
 			alert("L'quantità dev'essere indicato con un valore maggior di 0");
-			jQuery(this).focus();
+			$(this).focus();
 			return false;
 		}
 					
-		jQuery.ajax({
+		$.ajax({
 			type: "GET",
 			url: "/administrator/index.php?option=com_cake&controller=SummaryDesOrders&action=setqta&row_id="+numRow+"&summary_des_order_id="+summary_des_orders_id+"&qtaSubmit="+qtaSubmit+"&format=notmpl",
 			data: "",
 			success: function(response){
-				 jQuery('#msgEcomm-'+numRow).html(response);
+				 $('#msgEcomm-'+numRow).html(response);
 				 
 				 setTotImporto();
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				 jQuery('#msgEcomm-'+numRow).html(textStatus);
-				 jQuery('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
+				 $('#msgEcomm-'+numRow).html(textStatus);
+				 $('#submitEcomm-'+numRow).attr('src',app_img+'/blank32x32.png');
 			}
 		});
 		return false;
@@ -199,49 +196,49 @@ jQuery(document).ready(function() {
 	/*
 	 * delete
 	 */
-	jQuery('.delete').click(function() {
+	$('.delete').click(function() {
 
 		if(!confirm("Sei sicuro di voler cancellare definitivamente il dettaglio dell'ordine?")) {
 			return false;
 		}
 		
-		var idRow = jQuery(this).attr('id');
+		var idRow = $(this).attr('id');
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var summary_des_orders_id = numRow;
 		
-		jQuery('#doc-preview').css('display', 'block');
-		jQuery('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#doc-preview').css('display', 'block');
+		$('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-		jQuery.ajax({
+		$.ajax({
 			type: "get", 
 			url : "/administrator/index.php?option=com_cake&controller=SummaryDesOrders&action=delete&id="+summary_des_orders_id+"&format=notmpl",
 			data: "",  
 			success: function(response) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery("#doc-preview").html(response);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$("#doc-preview").html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#doc-preview').html(textStatus);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$('#doc-preview').html(textStatus);
 			}
 		});
 		
 		return false;
 	});	
 
-	jQuery('.qtaSubmitAdd').change(function() {
-		var idRow = jQuery(this).attr('id');  /* indica order_id */
+	$('.qtaSubmitAdd').change(function() {
+		var idRow = $(this).attr('id');  /* indica order_id */
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var order_id = numRow;
 		
-		var qtaSubmit = jQuery('#addqtaSubmit-'+numRow).val();
+		var qtaSubmit = $('#addqtaSubmit-'+numRow).val();
 		
 		if(!validateNumberField('#addqtaSubmit-'+numRow,'Importo')) return false;
 		
 		qtaSubmit = numberToJs(qtaSubmit);   /* in 1000.50 */
 		qtaSubmit = number_format(qtaSubmit,2,',','.');  /* in 1.000,50 */
-		jQuery('#addqtaSubmit-'+numRow).val(qtaSubmit);
-		qtaSubmit = jQuery('#addqtaSubmit-'+numRow).val();
+		$('#addqtaSubmit-'+numRow).val(qtaSubmit);
+		qtaSubmit = $('#addqtaSubmit-'+numRow).val();
 
 		return false;
 	});	
@@ -249,22 +246,22 @@ jQuery(document).ready(function() {
 	/*
 	 * add
 	 */
-	jQuery('.add').click(function() {
+	$('.add').click(function() {
 		
-		var idRow = jQuery(this).attr('id');  /* indica order_id */
+		var idRow = $(this).attr('id');  /* indica order_id */
 		var numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
 		var order_id_to_add = numRow;
 		
-		var user_id = jQuery('#adduser_id-'+numRow).val();
-		var qtaSubmit = jQuery('#addqtaSubmit-'+numRow).val();
-		var delivery_id = jQuery('#delivery_id').val();
+		var user_id = $('#adduser_id-'+numRow).val();
+		var qtaSubmit = $('#addqtaSubmit-'+numRow).val();
+		var delivery_id = $('#delivery_id').val();
 
 		/*
 		 * l'ordine e' solo 1 dal menu a tendina
 		 *		referente da Carts::managementCartsGroupByUsers 
 		 */
-		if(jQuery('#order_id').length>0) {
-			var order_id    = jQuery('#order_id').val(); 
+		if($('#order_id').length>0) {
+			var order_id    = $('#order_id').val(); 
 		}
 		else  {
 			/*
@@ -273,8 +270,8 @@ jQuery(document).ready(function() {
 			 */
 		
 			var order_id_selected = '';
-			for(i = 0; i < jQuery("input[name='order_id_selected']:checked").length; i++) {
-				order_id_selected += jQuery("input[name='order_id_selected']:checked").eq(i).val()+',';
+			for(i = 0; i < $("input[name='order_id_selected']:checked").length; i++) {
+				order_id_selected += $("input[name='order_id_selected']:checked").eq(i).val()+',';
 			}
 	
 			if(delivery_id=='') {
@@ -302,23 +299,23 @@ jQuery(document).ready(function() {
 		
 		qtaSubmit = numberToJs(qtaSubmit);   /* in 1000.50 */
 		qtaSubmit = number_format(qtaSubmit,2,',','.');  /* in 1.000,50 */
-		jQuery('#addqtaSubmit-'+numRow).val(qtaSubmit);
-		qtaSubmit = jQuery('#addqtaSubmit-'+numRow).val();
+		$('#addqtaSubmit-'+numRow).val(qtaSubmit);
+		qtaSubmit = $('#addqtaSubmit-'+numRow).val();
 
-		jQuery('#doc-preview').css('display', 'block');
-		jQuery('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+		$('#doc-preview').css('display', 'block');
+		$('#doc-preview').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
 
-		jQuery.ajax({
+		$.ajax({
 			type: "get", 
 			url : "/administrator/index.php?option=com_cake&controller=SummaryDesOrders&action=add&delivery_id="+delivery_id+"&order_id="+order_id+"&order_id_to_add="+order_id_to_add+"&user_id="+user_id+"&qtaSubmit="+qtaSubmit+"&format=notmpl",
 			data: "",  
 			success: function(response) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery("#doc-preview").html(response);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$("#doc-preview").html(response);
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
-				jQuery('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
-				jQuery('#doc-preview').html(textStatus);
+				$('#doc-preview').css('background', 'none repeat scroll 0 0 transparent');
+				$('#doc-preview').html(textStatus);
 			}
 		});
 		
@@ -331,8 +328,8 @@ jQuery(document).ready(function() {
 function setTotImporto() {
 
 	var tot_importoSubmit = 0;
-	jQuery(".qtaSubmitSubmit").each(function () {
-		var qtaSubmit = jQuery(this).val();
+	$(".qtaSubmitSubmit").each(function () {
+		var qtaSubmit = $(this).val();
 		
 		qtaSubmit = numberToJs(qtaSubmit);   /* in 1000.50 */
 			
@@ -341,6 +338,6 @@ function setTotImporto() {
 	
 	tot_importoSubmit = number_format(tot_importoSubmit,2,',','.');  /* in 1.000,50 */
 
-	jQuery('#tot_importoSubmit').html(tot_importoSubmit);		
+	$('#tot_importoSubmit').html(tot_importoSubmit);		
 }
 </script>

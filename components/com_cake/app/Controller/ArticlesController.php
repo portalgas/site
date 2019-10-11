@@ -43,7 +43,8 @@ class ArticlesController extends AppController {
 		/* ctrl ACL */	
 
 		if(Cache::read('articlesTypes')===false) {
-			App::import('Model', 'ArticlesType');			$ArticlesType = new ArticlesType;
+			App::import('Model', 'ArticlesType');
+			$ArticlesType = new ArticlesType;
 			$ArticlesTypeResults = $ArticlesType->prepareArray($ArticlesType->getArticlesTypes());
 			Cache::write('articlesTypes',$ArticlesTypeResults);
 		}
@@ -122,12 +123,15 @@ class ArticlesController extends AppController {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-					$conditions = $this->_admin_index_sql_conditions($this->user->organization['Organization']['id'], $context, $FilterArticleSupplierId);
+			
+		$conditions = $this->_admin_index_sql_conditions($this->user->organization['Organization']['id'], $context, $FilterArticleSupplierId);
 		
 		$this->_admin_index_filter_object();
 		
 		if($context=='articles') 
-			$SqlLimit = 25;		else if($context=='order') 			$SqlLimit = 25;
+			$SqlLimit = 25;
+		else if($context=='order') 
+			$SqlLimit = 25;
 				
 		/*
 		 * parametri da passare eventualmente a admin_edit
@@ -143,7 +147,10 @@ class ArticlesController extends AppController {
 		if (!empty($this->request->params['named']['direction'])) 
 			$direction = $this->request->params['named']['direction'];
 		if (!empty($this->request->params['named']['page'])) 
-			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden')) 
 			$fields = array('Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name,ArticlesArticlesType.article_type_id');
 		else
@@ -214,8 +221,13 @@ class ArticlesController extends AppController {
 		
 		$debug = false;
 		
-		/*		 * ctrl configurazione Organization		*/
-		if(!$this->isUserPermissionArticlesOrder($this->user)) {			$this->Session->setFlash(__('msg_not_organization_config'));			$this->myRedirect(Configure::read('routes_msg_stop'));		}
+		/*
+		 * ctrl configurazione Organization
+		*/
+		if(!$this->isUserPermissionArticlesOrder($this->user)) {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
 		
 		switch($this->user->organization['Organization']['type']) {
 			case 'PROD':
@@ -231,7 +243,10 @@ class ArticlesController extends AppController {
 			break;
 		}		
 		
-		$results = [];		$FilterArticleName = null;		$SqlLimit = 1000;		
+		$results = [];
+		$FilterArticleName = null;
+		$SqlLimit = 1000;
+		
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			if($this->user->organization['Organization']['type']=='PROD')
@@ -239,7 +254,9 @@ class ArticlesController extends AppController {
 			else if(isset($this->request->data['ArticlesOrder']['FilterArticleSupplierId']))
 				$FilterArticleSupplierId = $this->request->data['ArticlesOrder']['FilterArticleSupplierId'];
 			
-			if(isset($this->request->data['ArticlesOrder']['FilterArticleName']))				$FilterArticleName = $this->request->data['ArticlesOrder']['FilterArticleName'];				
+			if(isset($this->request->data['ArticlesOrder']['FilterArticleName']))
+				$FilterArticleName = $this->request->data['ArticlesOrder']['FilterArticleName'];
+				
 			if(isset($this->request->data['ArticlesOrder']['article_id_selected']) && !empty($this->request->data['ArticlesOrder']['article_id_selected'])) {
 				$array_article_id = explode(',',$this->request->data['ArticlesOrder']['article_id_selected']);
 				$msg = '';
@@ -250,7 +267,8 @@ class ArticlesController extends AppController {
 											  'Article.id' => $id];
 					$options['recursive'] = -1;
 					$articleResults = $this->Article->find('first', $options);	
-					if (empty($articleResults)) 						$msg .= 'Errore articolo id '.$id.'<br />';
+					if (empty($articleResults)) 
+						$msg .= 'Errore articolo id '.$id.'<br />';
 					else {
 						
 						$article_organization_id = $articleResults['Article']['organization_id'];
@@ -290,7 +308,10 @@ class ArticlesController extends AppController {
 				}
 				$this->Session->setFlash($msg);
 			}	
-		}  // end if ($this->request->is('post') || $this->request->is('put'))						$conditions = [];		$conditions[] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id']];
+		}  // end if ($this->request->is('post') || $this->request->is('put'))
+				
+		$conditions = [];
+		$conditions[] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id']];
 
 		if(!$this->isSuperReferente()) {
 			if(strpos($this->user->get('ACLsuppliersIdsOrganization'), ",")===false)
@@ -301,20 +322,26 @@ class ArticlesController extends AppController {
 		self::d($this->user->get('ACLsuppliersIdsOrganization'), $debug);
 		
 		if(!empty($FilterArticleSupplierId)) {
-			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
-			if(!empty($this->request->params['pass']['FilterArticleName'])) {				$FilterArticleName = $this->request->params['pass']['FilterArticleName'];				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];			}
+			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
+			if(!empty($this->request->params['pass']['FilterArticleName'])) {
+				$FilterArticleName = $this->request->params['pass']['FilterArticleName'];
+				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];
+			}
 			
 			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
 			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
 			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 			
 			self::d($conditions, $debug);
-						$this->paginate = ['conditions' => $conditions,
+			
+			$this->paginate = ['conditions' => $conditions,
 								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],
 								'recursive' => 0,
-								'limit' => $SqlLimit];			$results = $this->paginate('Article');
+								'limit' => $SqlLimit];
+			$results = $this->paginate('Article');
 		
-			self::d($results, $debug);		}
+			self::d($results, $debug);
+		}
 		
 		/*
 		 * get elenco produttori filtrati
@@ -333,7 +360,15 @@ class ArticlesController extends AppController {
 		}
 		else
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
-				/* filtro */		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);		$this->set('FilterArticleName', $FilterArticleName);			$this->set('results', $results);		$this->set('SqlLimit', $SqlLimit);	}	
+		
+		/* filtro */
+		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
+		$this->set('FilterArticleName', $FilterArticleName);
+	
+		$this->set('results', $results);
+		$this->set('SqlLimit', $SqlLimit);
+	}
+	
 	/*
 	 * gestisci le categorie degli articoli
 	 */
@@ -528,7 +563,8 @@ class ArticlesController extends AppController {
 									$options['isUserPermissionArticlesOrder'] = $this->isUserPermissionArticlesOrder($this->user);
 									$esito .= $SiteLifeCyle->changeArticle($this->user, $row, 'EDIT_PRICE', $options);
 									if(isset($esito['CODE']) && $esito['CODE']==200)
-										$msg .= $esito['MSG'];							} // end if($this->request->data['Article']['updateArticlesOrder']=='Y')
+										$msg .= $esito['MSG'];
+							} // end if($this->request->data['Article']['updateArticlesOrder']=='Y')
 						}
 						
 					}
@@ -583,7 +619,7 @@ class ArticlesController extends AppController {
 		/* filtro */
 		if(empty($FilterArticleSupplierId)) {
 			$ACLsuppliersIdsOrganization = $this->user->get('ACLsuppliersIdsOrganization');
-			if(count($ACLsuppliersOrganization)<1)
+			if(!empty($ACLsuppliersOrganization) && count($ACLsuppliersOrganization)<1)
 				$FilterArticleSupplierId = $this->user->get('ACLsuppliersIdsOrganization');
 		}
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
@@ -591,7 +627,15 @@ class ArticlesController extends AppController {
 		$results = [];
 		if (!empty($this->request->params['pass']['FilterArticleSupplierId'])) {
 									
-			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);							$this->paginate = ['conditions' => $conditions,								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],								'recursive' => 0,								'limit' => $SqlLimit];			$results = $this->paginate('Article');				
+			$this->Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+				
+			$this->paginate = ['conditions' => $conditions,
+								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],
+								'recursive' => 0,
+								'limit' => $SqlLimit];
+			$results = $this->paginate('Article');				
 		}
 		$this->set('results', $results);
 
@@ -622,7 +666,14 @@ class ArticlesController extends AppController {
 	
 	public function admin_context_order_add() {
 		$results = $this->_set_context_order($this->order_id);
-		$supplier_organization_id = $results['Order']['supplier_organization_id'];		$this->_admin_add('order', $supplier_organization_id);	}		public function admin_context_articles_add() {		$this->_admin_add('articles');	}	
+		$supplier_organization_id = $results['Order']['supplier_organization_id'];
+		$this->_admin_add('order', $supplier_organization_id);
+	}
+	
+	public function admin_context_articles_add() {
+		$this->_admin_add('articles');
+	}
+	
 	/*
 	 * se aggiungo un articolo richiamo syncronizeArticlesOrder
 	 *	ctrl se il produttore e' associato ad ordine
@@ -656,7 +707,8 @@ class ArticlesController extends AppController {
 			if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')
 				$this->request->data['Article']['category_article_id'] = 0;
 			else 
-			if(empty($this->request->data['Article']['category_article_id'])) $this->request->data['Article']['category_article_id'] = 0;				
+			if(empty($this->request->data['Article']['category_article_id'])) $this->request->data['Article']['category_article_id'] = 0;
+				
 			if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N')
 				$this->request->data['Article']['alert_to_qta'] = 0;
 			
@@ -719,7 +771,8 @@ class ArticlesController extends AppController {
 			$conditions = [];
 			$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
 			$categories = $this->Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
-			$this->set(compact('categories'));		}
+			$this->set(compact('categories'));
+		}
 		
 		$um = ClassRegistry::init('Article')->enumOptions('um');
 		$this->set(compact('um'));
@@ -751,8 +804,14 @@ class ArticlesController extends AppController {
 	}
 
 	public function admin_context_order_edit($id=0) {
-		$this->_set_context_order($this->order_id);		$this->_admin_edit('order', $id,  $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare  	}		public function admin_context_articles_edit($id=0) {
-		$this->_admin_edit('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare	}	
+		$this->_set_context_order($this->order_id);
+		$this->_admin_edit('order', $id,  $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare  
+	}
+	
+	public function admin_context_articles_edit($id=0) {
+		$this->_admin_edit('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
+	}
+	
 	/*
 	 * $sort					 passati dalla ricerca da admin_index  sort:value
 	 * $direction				 passati dalla ricerca da admin_index  direction:asc
@@ -794,7 +853,11 @@ class ArticlesController extends AppController {
 			 * Article.state prima del salvataggio
 			 */
 			$options = [];
-			$options['conditions'] = ['Article.organization_id' => $article_organization_id,									  'Article.id' => $id];			$options['recursive'] = -1;			$options['fields'] = ['stato', 'img1'];			$resultsOld = $this->Article->find('first', $options);
+			$options['conditions'] = ['Article.organization_id' => $article_organization_id,
+									  'Article.id' => $id];
+			$options['recursive'] = -1;
+			$options['fields'] = ['stato', 'img1'];
+			$resultsOld = $this->Article->find('first', $options);
 						
 			
 			$this->request->data['Article']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -802,16 +865,23 @@ class ArticlesController extends AppController {
 			if($this->user->organization['Organization']['type']=='PROD')
 				$this->request->data['Article']['supplier_organization_id'] = $this->user->organization['Organization']['prodSupplierOrganizationId'];
 			
-			if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')				$this->request->data['Article']['category_article_id'] = 0;			else			if(empty($this->request->data['Article']['category_article_id'])) $this->request->data['Article']['category_article_id'] = 0;
+			if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N')
+				$this->request->data['Article']['category_article_id'] = 0;
+			else
+			if(empty($this->request->data['Article']['category_article_id'])) $this->request->data['Article']['category_article_id'] = 0;
 			
-			if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N')				$this->request->data['Article']['alert_to_qta'] = 0;
+			if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N')
+				$this->request->data['Article']['alert_to_qta'] = 0;
 								
-			/*			 * richiamo la validazione			*/
+			/*
+			 * richiamo la validazione
+			*/
 			$msg_errors = $this->Article->getMessageErrorsToValidate($this->Article, $this->request->data);
 			if(!empty($msg_errors)) {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.').'<br />'.$msg_errors);
 			}
-			else {									 
+			else {			
+						 
 				$this->Article->create();
 				if($this->Article->save($this->request->data)) {
 				
@@ -851,7 +921,8 @@ class ArticlesController extends AppController {
 										
 					$this->Session->setFlash($msg);
 						
-					$filterParams = '';					$filterParams .= '&sort:'.$this->request->data['Article']['sort'];
+					$filterParams = '';
+					$filterParams .= '&sort:'.$this->request->data['Article']['sort'];
 					$filterParams .= '&direction:'.$this->request->data['Article']['direction'];
 					$filterParams .= '&page:'.$this->request->data['Article']['page'];
 					$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_'.$context.'_index'.$filterParams.'#anchor_'.$article_organization_id.'_'.$id);  
@@ -868,18 +939,20 @@ class ArticlesController extends AppController {
 		$options = [];
 		$options['conditions'] = ['Article.id' => $id, 'Article.organization_id' => $article_organization_id];
 		$this->request->data = $this->Article->getArticlesDataAnagr($this->user, $options);
-		
+
 		if(!empty($this->request->data['Article']['img1']) && 
 		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article_organization_id.DS.$this->request->data['Article']['img1'])) {
 			
 			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article_organization_id.DS.$this->request->data['Article']['img1']);
-			$this->set('file1', $file1);
+			$this->set(compact('file1'));
 		}
 		
 		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {
 			$conditions = [];
-			$conditions = ['organization_id' => $this->user->organization['Organization']['id']];			$categories = $this->Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
-			$this->set(compact('categories'));		}
+			$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
+			$categories = $this->Article->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
+			$this->set(compact('categories'));
+		}
 				
 		$um = ClassRegistry::init('Article')->enumOptions('um');
 		$this->set(compact('um'));
@@ -915,7 +988,18 @@ class ArticlesController extends AppController {
 		/*
 		 * parametri di ricerca da ripassare a admin_index
 		 */ 
-		$sort = '';		$direction = '';		$page = 0;		if (!empty($this->request->params['named']['sort']))			$sort = $this->request->params['named']['sort'];		if (!empty($this->request->params['named']['direction']))			$direction = $this->request->params['named']['direction'];		if (!empty($this->request->params['named']['page']))			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);
+		$sort = '';
+		$direction = '';
+		$page = 0;
+		if (!empty($this->request->params['named']['sort']))
+			$sort = $this->request->params['named']['sort'];
+		if (!empty($this->request->params['named']['direction']))
+			$direction = $this->request->params['named']['direction'];
+		if (!empty($this->request->params['named']['page']))
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);
 	}
 
 	/*
@@ -1046,12 +1130,23 @@ class ArticlesController extends AppController {
 		$this->myRedirect($url);
 	}
 	
-	public function admin_context_order_delete($id=0) {		$this->_set_context_order($this->order_id);		$this->_admin_delete('order', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare	}		public function admin_context_articles_delete($id=0) {
-		$this->_admin_delete('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare	}
+	public function admin_context_order_delete($id=0) {
+		$this->_set_context_order($this->order_id);
+		$this->_admin_delete('order', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
+	}
+	
+	public function admin_context_articles_delete($id=0) {
+		$this->_admin_delete('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
+	}
 	
    /*
     * articles_Trigger
-	*	* $sort					 passati dalla ricerca da admin_index  sort:value	* $direction		     passati dalla ricerca da admin_index  direction:asc	* $page					 passati dalla ricerca da admin_index  page:2	*/	private function _admin_delete($context, $id, $article_organization_id) {
+	*
+	* $sort					 passati dalla ricerca da admin_index  sort:value
+	* $direction		     passati dalla ricerca da admin_index  direction:asc
+	* $page					 passati dalla ricerca da admin_index  page:2
+	*/
+	private function _admin_delete($context, $id, $article_organization_id) {
 	
 		$debug = false;
 		
@@ -1138,11 +1233,14 @@ class ArticlesController extends AppController {
 				}	
 				else
 					$this->Session->setFlash(__('Article was not deleted'));
-			} // end if($isArticleInCart)
+			} // end if($isArticleInCart)
 				
-			if(!$debug) $this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_'.$context.'_index'.$filterParams.'#anchor_'.$article_organization_id.'_'.$id);					}
+			if(!$debug) $this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_'.$context.'_index'.$filterParams.'#anchor_'.$article_organization_id.'_'.$id);			
+		}
 		
-		/*		 * estraggo articolo		*/
+		/*
+		 * estraggo articolo
+		*/
 		$options = [];
 		$options['conditions'] = ['Article.id' => $id, 'Article.organization_id' => $article_organization_id];
 		$this->request->data = $this->Article->getArticlesDataAnagr($this->user, $options);
@@ -1183,7 +1281,7 @@ class ArticlesController extends AppController {
 					 * consegna
 					 */
 					$Delivery = new Delivery;
-					$deliveryResults = $Delivery->read($this->user->organization['Organization']['id'], null, $result['Order']['delivery_id']);
+					$deliveryResults = $Delivery->read($result['Order']['delivery_id'], $this->user->organization['Organization']['id']);
 					$orderResults[$numResult]['Delivery'] = $deliveryResults['Delivery'];
 				}
 
@@ -1195,34 +1293,99 @@ class ArticlesController extends AppController {
 		self::d($orderResults); 
 		$this->set(compact('orderResults'));
 		
-		/*		 * parametri di ricerca da ripassare a admin_index		*/		$sort = '';		$direction = '';		$page = 0;		if (!empty($this->request->params['named']['sort']))			$sort = $this->request->params['named']['sort'];		if (!empty($this->request->params['named']['direction']))			$direction = $this->request->params['named']['direction'];		if (!empty($this->request->params['named']['page']))			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);		
+		/*
+		 * parametri di ricerca da ripassare a admin_index
+		*/
+		$sort = '';
+		$direction = '';
+		$page = 0;
+		if (!empty($this->request->params['named']['sort']))
+			$sort = $this->request->params['named']['sort'];
+		if (!empty($this->request->params['named']['direction']))
+			$direction = $this->request->params['named']['direction'];
+		if (!empty($this->request->params['named']['page']))
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);		
 	}
 	
 	private function _set_context_order($order_id) {
 		
-		App::import('Model', 'Order');		$Order = new Order;		
-		$Order->id = $order_id;		if (!$Order->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}
+		App::import('Model', 'Order');
+		$Order = new Order;
 		
-		$results = $Order->read($this->user->organization['Organization']['id'], null, $order_id);		
+		$Order->id = $order_id;
+		if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$results = $Order->read($order_id, $this->user->organization['Organization']['id']);
+		
 		return $results;
 	}
 
-	/*	 * crea sql per l'elenco articoli
-	 * passo $organization_id perche' se non trovo risultati gli passo l'eventuale organization_id del Gas DES titolate	*/	private function _admin_index_sql_conditions($organization_id, $context, $FilterArticleSupplierId) {			$FilterArticleCategoryArticleId = null;		$FilterArticleName = null;		$FilterArticleOrderId = 0;		$FilterArticleArticleIds = null;		$FilterArticleStato = 'Y';
-		$FilterArticleFlagPresenteArticlesorders = 'ALL';		$FilterArticleUm = null;			$conditions = [];			/* recupero dati dalla Session gestita in appController::beforeFilter */
+	/*
+	 * crea sql per l'elenco articoli
+	 * passo $organization_id perche' se non trovo risultati gli passo l'eventuale organization_id del Gas DES titolate
+	*/
+	private function _admin_index_sql_conditions($organization_id, $context, $FilterArticleSupplierId) {
+	
+		$FilterArticleCategoryArticleId = null;
+		$FilterArticleName = null;
+		$FilterArticleOrderId = 0;
+		$FilterArticleArticleIds = null;
+		$FilterArticleStato = 'Y';
+		$FilterArticleFlagPresenteArticlesorders = 'ALL';
+		$FilterArticleUm = null;
+	
+		$conditions = [];
+	
+		/* recupero dati dalla Session gestita in appController::beforeFilter */
 		
 		/*
 		 * fields Article
 		 * se organization_id != $this->user->organization['Organization']['id'] prendo article Gas DES titolare
 		 *		escludo quelli filtrati dal form
 		 */
-		 if($organization_id == $this->user->organization['Organization']['id']) {			if($context=='articles') {				if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'SupplierId')) {					$FilterArticleSupplierId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'SupplierId');					$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];				}			}			else			if($context=='order')				$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];		}
+		 if($organization_id == $this->user->organization['Organization']['id']) {
+			if($context=='articles') {
+				if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'SupplierId')) {
+					$FilterArticleSupplierId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'SupplierId');
+					$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
+				}
+			}
+			else
+			if($context=='order')
+				$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
+		}
 		else {
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
 		}
-								if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId')) {			$FilterArticleCategoryArticleId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId');			$conditions[] = ['Article.category_article_id' => $FilterArticleCategoryArticleId];		}		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {			$FilterArticleName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');			$conditions[] = ['Article.name LIKE '=>'%'.$FilterArticleName.'%'];		}
+						
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId')) {
+			$FilterArticleCategoryArticleId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId');
+			$conditions[] = ['Article.category_article_id' => $FilterArticleCategoryArticleId];
+		}
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {
+			$FilterArticleName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');
+			$conditions[] = ['Article.name LIKE '=>'%'.$FilterArticleName.'%'];
+		}
 		
-		/*		 * solo per il context=article		* per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)		*/		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Stato')) {			$FilterArticleStato = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Stato');			if($FilterArticleStato!='ALL')				$conditions[] = ['Article.stato' => $FilterArticleStato];		}		else {			if(!empty($FilterArticleStato))  // cosi' di default e' Y				$conditions[] = ['Article.stato' => $FilterArticleStato];		}
+		/*
+		 * solo per il context=article
+		* per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)
+		*/
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Stato')) {
+			$FilterArticleStato = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Stato');
+			if($FilterArticleStato!='ALL')
+				$conditions[] = ['Article.stato' => $FilterArticleStato];
+		}
+		else {
+			if(!empty($FilterArticleStato))  // cosi' di default e' Y
+				$conditions[] = ['Article.stato' => $FilterArticleStato];
+		}
 		
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'FlagPresenteArticlesorders')) {
 			$FilterArticleFlagPresenteArticlesorders = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'FlagPresenteArticlesorders');
@@ -1234,7 +1397,18 @@ class ArticlesController extends AppController {
 				$conditions[] = ['Article.flag_presente_articlesorders' => $FilterArticleFlagPresenteArticlesorders];
 		}
 		
-				if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Um')) {			$FilterArticleUm = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Um');			$conditions[] = ['Article.um' => $FilterArticleUm];		}			/*		 * fields articleType  $hasAndBelongsToMany, $hasOne, 		*/		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden')) {			$FilterArticleArticleIds = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden');				$conditions[] = ['ArticlesArticlesType.article_type_id IN ('.$FilterArticleArticleIds.')'];
+		
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Um')) {
+			$FilterArticleUm = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Um');
+			$conditions[] = ['Article.um' => $FilterArticleUm];
+		}
+	
+		/*
+		 * fields articleType  $hasAndBelongsToMany, $hasOne, 
+		*/
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden')) {
+			$FilterArticleArticleIds = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden');	
+			$conditions[] = ['ArticlesArticlesType.article_type_id IN ('.$FilterArticleArticleIds.')'];
 		}
 
 		$this->Article->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$organization_id;
@@ -1244,27 +1418,48 @@ class ArticlesController extends AppController {
 		/*
 		 * fields articleOrder  $hasAndBelongsToMany, $hasOne, 
 		*/
-		if($context=='articles') {			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'OrderId')) {				$FilterArticleOrderId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrderId');				$conditions[] = ['ArticlesOrder.order_id' => $FilterArticleOrderId];
+		if($context=='articles') {
+			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'OrderId')) {
+				$FilterArticleOrderId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrderId');
+				$conditions[] = ['ArticlesOrder.order_id' => $FilterArticleOrderId];
 				
 			$this->Article->hasOne['ArticlesOrder']['conditions'] = 'ArticlesOrder.article_organization_id = Article.organization_id and Article.organization_id = '. $organization_id.' and ArticlesOrder.order_id = '.$FilterArticleOrderId;
 			$this->Article->hasMany['ArticlesOrder']['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,
 																      'ArticlesOrder.order_id' => $FilterArticleOrderId];
 			$this->Article->hasAndBelongsToMany['Order']['conditions'] = ['Order.organization_id' => 'ArticlesOrder.organization_id',
 																		  'Order.organization_id' => $organization_id,
-																		  'ArticlesOrder.order_id' => $FilterArticleOrderId];			}	
+																		  'ArticlesOrder.order_id' => $FilterArticleOrderId];
+			}	
 			else {
-				$this->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);				$this->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);				$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);			
-			}		}		else		if($context=='order') {
+				$this->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
+				$this->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
+				$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);			
+			}
+		}
+		else
+		if($context=='order') {
 			$this->Article->hasOne['ArticlesOrder']['conditions'] = 'ArticlesOrder.article_organization_id = Article.organization_id and Article.organization_id = '. $organization_id.' and ArticlesOrder.order_id ='.$this->order_id;
 			$this->Article->hasMany['ArticlesOrder']['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,
 																		  'ArticlesOrder.order_id' => $this->order_id];
 			$this->Article->hasAndBelongsToMany['Order']['conditions'] = ['Order.organization_id' => 'ArticlesOrder.organization_id',
 																		  'Order.organization_id' => $organization_id,
-																		  'ArticlesOrder.order_id' => $this->order_id];			$conditions[] = ['ArticlesOrder.order_id' => $this->order_id];
+																		  'ArticlesOrder.order_id' => $this->order_id];
+			$conditions[] = ['ArticlesOrder.order_id' => $this->order_id];
 		}
 		
-		/*		 * ctrl se non e' ancora stata effettuata una ricerca		* */		if(empty($conditions))			$this->set('iniCallPage', true);		else			$this->set('iniCallPage', false);			/*		 * conditions obbligatorie		*/		$conditions[] = ['SuppliersOrganization.organization_id' => $organization_id];
-		if(!$this->isSuperReferente()) {
+		/*
+		 * ctrl se non e' ancora stata effettuata una ricerca
+		* */
+		if(empty($conditions))
+			$this->set('iniCallPage', true);
+		else
+			$this->set('iniCallPage', false);
+	
+		/*
+		 * conditions obbligatorie
+		*/
+		$conditions[] = ['SuppliersOrganization.organization_id' => $organization_id];
+		if(!$this->isSuperReferente()) {
 			if(strpos($this->user->get('ACLsuppliersIdsOrganization'), ",")===false)
 				$conditions[] = ['SuppliersOrganization.id' => $this->user->get('ACLsuppliersIdsOrganization')];
 			else
@@ -1273,9 +1468,22 @@ class ArticlesController extends AppController {
 		self::d($this->user->get('ACLsuppliersIdsOrganization'), false);
 		self::d($conditions, false);
 		
-		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);		$this->set('FilterArticleCategoryArticleId', $FilterArticleCategoryArticleId);		$this->set('FilterArticleName', $FilterArticleName);		$this->set('FilterArticleOrderId', $FilterArticleOrderId);		$this->set('FilterArticleArticleIds', $FilterArticleArticleIds);
+		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
+		$this->set('FilterArticleCategoryArticleId', $FilterArticleCategoryArticleId);
+		$this->set('FilterArticleName', $FilterArticleName);
+		$this->set('FilterArticleOrderId', $FilterArticleOrderId);
+		$this->set('FilterArticleArticleIds', $FilterArticleArticleIds);
 		$this->set('FilterArticleStato', $FilterArticleStato);
-		$this->set('FilterArticleFlagPresenteArticlesorders', $FilterArticleFlagPresenteArticlesorders);		$this->set('FilterArticleUm', $FilterArticleUm);			return $conditions;	}		/*	 * crea i filtri l'elenco articoli	*/	private function _admin_index_filter_object() {
+		$this->set('FilterArticleFlagPresenteArticlesorders', $FilterArticleFlagPresenteArticlesorders);
+		$this->set('FilterArticleUm', $FilterArticleUm);
+	
+		return $conditions;
+	}
+	
+	/*
+	 * crea i filtri l'elenco articoli
+	*/
+	private function _admin_index_filter_object() {
 		/*
 		 * get elenco produttori filtrati
 		*/
@@ -1293,10 +1501,23 @@ class ArticlesController extends AppController {
 		}
 		else
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
-			/*		 * get elenco ordini filtrati		*/		App::import('Model', 'Order');
+	
+		/*
+		 * get elenco ordini filtrati
+		*/
+		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$conditionsOrder = ['Order.organization_id' => (int)$this->user->organization['Organization']['id'],								 'Order.isVisibleBackOffice'=> 'Y'];		if(!$this->isSuperReferente())			$conditionsOrder += ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];			$results = $Order->find('all', ['conditions' => $conditionsOrder,										'order' => ['Delivery.data' => 'asc', 'Order.data_inizio' => 'asc'], 'recursive' => 1]);		$orders = [];		if(!empty($results)) 			foreach ($results as $result) {
+		$conditionsOrder = ['Order.organization_id' => (int)$this->user->organization['Organization']['id'],
+								 'Order.isVisibleBackOffice'=> 'Y'];
+		if(!$this->isSuperReferente())
+			$conditionsOrder += ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
+	
+		$results = $Order->find('all', ['conditions' => $conditionsOrder,
+										'order' => ['Delivery.data' => 'asc', 'Order.data_inizio' => 'asc'], 'recursive' => 1]);
+		$orders = [];
+		if(!empty($results)) 
+			foreach ($results as $result) {
 				if($result['Delivery']['sys']=='N')
 					$label = $result['Delivery']['luogoData'];
 				else 
@@ -1306,10 +1527,19 @@ class ArticlesController extends AppController {
 					$data_fine = $result['Order']['data_fine_validation_'];
 				else
 					$data_fine = $result['Order']['data_fine_'];
-								$orders[$result['Order']['id']] = $result['Delivery']['luogo'].' '.$result['SuppliersOrganization']['name'].' - dal '.$result['Order']['data_inizio_'].' al '.$data_fine;
-			}			$this->set(compact('orders'));			/*		 * get elenco categorie		*/
-		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {			$conditionsCategoriesArticle = ['organization_id' => $this->user->organization['Organization']['id']];			$categories = $this->Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
-			$this->set(compact('categories'));		}
+				
+				$orders[$result['Order']['id']] = $result['Delivery']['luogo'].' '.$result['SuppliersOrganization']['name'].' - dal '.$result['Order']['data_inizio_'].' al '.$data_fine;
+			}	
+		$this->set(compact('orders'));
+	
+		/*
+		 * get elenco categorie
+		*/
+		if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y')  {
+			$conditionsCategoriesArticle = ['organization_id' => $this->user->organization['Organization']['id']];
+			$categories = $this->Article->CategoriesArticle->generateTreeList($conditionsCategoriesArticle, null, null, '&nbsp;&nbsp;&nbsp;');
+			$this->set(compact('categories'));
+		}
 			
 		$um = ClassRegistry::init('Article')->enumOptions('um');
 		$flag_presente_articlesorders = ['Y' => __('Y'), 'N' => __('No'), 'ALL' => __('ALL')];
@@ -1319,7 +1549,10 @@ class ArticlesController extends AppController {
 		/*
 		 * solo per il context=article
 		 * per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)
-		 */		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];		$this->set(compact('stato'));	}
+		 */
+		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];
+		$this->set(compact('stato'));
+	}
 	
 	private function _delete_img($article_id, $article_organization_id, $img1, $debug=false) {
 
@@ -1413,11 +1646,9 @@ class ArticlesController extends AppController {
 			}
 
 			$fileNewName = $article_id.'.'.$ext;
-			if($debug) {
-				echo "<br />path_upload ".$path_upload;
-				echo "<br />ext ".$ext;
-				echo "<br />fileNewName ".$fileNewName;
-			}
+			self::d("path_upload ".$path_upload, $debug);
+			self::d("ext ".$ext, $debug);
+			self::d("fileNewName ".$fileNewName, $debug);
 			
 			if(move_uploaded_file($img1['tmp_name'], $path_upload.$fileNewName)) {
 				
@@ -1438,7 +1669,7 @@ class ArticlesController extends AppController {
 							'height' => ''
 					));
 					
-					if($debug) echo "<br />ridimensiono ".$status;
+					self::d("ridimensiono ".$status, $debug);
 				}
 										
 				/*

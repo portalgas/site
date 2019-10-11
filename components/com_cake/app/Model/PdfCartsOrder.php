@@ -7,32 +7,32 @@ class PdfCartsOrder extends AppModel {
 	public $validate = array(
 		'supplier_organzations_name	' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 			),
 		),
 		'organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'user_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'delivery_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'supplier_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'supplier_organzations_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 	);

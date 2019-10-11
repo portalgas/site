@@ -161,7 +161,7 @@ class OrderLifeCycle extends AppModel {
 					$esito['ctrlModuleConflicts'] = $this->_ctrlModuleConflicts($user, $orderResult, $opts['moduleConflicts'], $debug);
 				}
 				
-				$esito['msgOrderToClose'] = $this->_msgOrderToClose($user, $orderResult, $controller, $action, $debug);				
+				$esito['msgOrderToClose'] = $this->_msgOrderToClose($user, $orderResult, $controller, $action, $debug);
 			break;
 			case 'PROCESSED-ON-DELIVERY':  // in carico al Cassiere			   
 				$esito['isOrderValidateToTrasmit'] = $this->_isOrderValidateToTrasmit($user, $orderResult, $controller, $action, $debug);	
@@ -625,7 +625,7 @@ class OrderLifeCycle extends AppModel {
 	
 	public function msgGgArchiveStatics($user, $orderResult, $debug=false) {
 
-		$results = '';
+		$results = [];
 		$delta_gg = 0;
 		
 		if(!is_array($orderResult))
@@ -693,7 +693,7 @@ class OrderLifeCycle extends AppModel {
 			/*
 			 * il btn "Riportalo 'in carico al referente' solo se sono WAIT-PROCESSED-TESORIERE 
 			 */
-			if($orderResult['Order']['state_code']=='RI-OPEN-VALIDATE' && $user->organization['Template']['payToDelivery']=='POST') {
+			if($orderResult['Order']['state_code']=='RI-OPEN-VALIDATE' && ($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='POST')) {
 				$stateCodeAfter = '';
 			}
 			else 
@@ -779,13 +779,47 @@ class OrderLifeCycle extends AppModel {
 		return $results;    
     }
 	
-	public function canOrdersClose($user, $debug=false) {
+	public function canOrdersClose($user, $orderResult, $debug=false) {
 	
 		$results = false;
-	
+			
+		if(!is_array($orderResult))
+	    	$orderResult = $this->_getOrderById($user, $orderResult, $debug);
+
+		self::l("OrderLifeCycle::canOrdersClose order_id [".$orderResult['Order']['id']."] ".$orderResult['Order']['state_code'], $debug);
+		
 		if(!isset($user->organization['Organization']['canOrdersClose']))
 			$user->organization['Organization']['canOrdersClose'] = 'ALL';
 
+		/*
+		 * calcolo il totale degli importi degli acquisti dell'ordine
+		 * se ZERO => non puo' chiuderlo => Si DELETE
+		 */
+		App::import('Model', 'Order');
+		$Order = new Order;		 
+
+		$importo_totale = $Order->getTotImporto($user, $orderResult['Order']['id']);
+		if($importo_totale==0 || $importo_totale==Configure::read('DB.field.double.empty') || $importo_totale=='0,00')
+			return false;
+		else {
+			/*
+			 * salvo totImporto cosi' il msg in beforeRendering e' aggiornato
+			 */
+			$orderResult['Order']['tot_importo'] = $importo_totale;			
+			if(!$this->save($orderResult)) {
+				$errors = $this->validationErrors;
+				self::l("OrderLifeCycle::canOrdersClose order_id [".$orderResult['Order']['id']."] ERROR salvando l'ordine", $debug);
+				self::l($errors, $debug);
+				
+				$esito['CODE'] = "500";
+				$esito['MSG'] = $errors;
+				return $esito; 	
+			}
+		}
+		
+		if($orderResult['Delivery']['sys']=='Y')
+			return false;
+		
 		self::d('canOrdersClose '.$user->organization['Organization']['canOrdersClose'], $debug); 
 		self::d($user->getAuthorisedGroups(), $debug); 
 		self::d(['group_id_super_referent '.Configure::read('group_id_super_referent'), 'group_id_referent '.Configure::read('group_id_referent')], $debug);
@@ -954,7 +988,7 @@ class OrderLifeCycle extends AppModel {
 		
 		self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id, $debug);
 		self::l($user->organization['Template'], $debug);
-		self::l('OrderLifeCycle::stateCodeAfter Order.state_code CURRENT '.$state_code, $debug);
+		self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' Order.state_code CURRENT '.$state_code, $debug);
 		
 		switch ($state_code) {
 			
@@ -962,7 +996,7 @@ class OrderLifeCycle extends AppModel {
 			
 				if(!$SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
 					// rimane invariato
-					self::l("OrderLifeCycle::stateCodeAfter - NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
+					self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
 					
 					$state_code_next = $orderResult['Order']['state_code'];
 				}	
@@ -979,7 +1013,7 @@ class OrderLifeCycle extends AppModel {
 						 else 
 							$state_code_next = 'SUPPLIER-PAID';
 						 
-						 self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
+						 self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
 					}
 					else 
 						$state_code_next = 'CLOSE';
@@ -996,12 +1030,12 @@ class OrderLifeCycle extends AppModel {
 			
 				if(!$SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
 					// rimane invariato
-					self::l("OrderLifeCycle::stateCodeAfter - NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
+					self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
 					
 					$state_code_next = 'USER-PAID';
 				}	
 				else {
-					self::l("OrderLifeCycle::stateCodeAfter - saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE", $debug);
+					self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE", $debug);
 				
 					$state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
 				} 
@@ -1017,7 +1051,7 @@ class OrderLifeCycle extends AppModel {
 			 */								
 			case 'WAIT-REQUEST-PAYMENT-CLOSE-ALL': //  (solo per gestione con Tesoriere)	
 			
-				self::l("OrderLifeCycle::stateCodeAfter - saldato da parte di tutti i gasisti", $debug);
+				self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." saldato da parte di tutti i gasisti", $debug);
 			
 				if($user->organization['Template']['orderSupplierPaid']=='Y') {
 					
@@ -1031,7 +1065,7 @@ class OrderLifeCycle extends AppModel {
 					 else 
 				 		$state_code_next = 'SUPPLIER-PAID';
 					 
-					 self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
+					 self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
 			    }
 				else 
 					$state_code_next = 'CLOSE';
@@ -1046,17 +1080,17 @@ class OrderLifeCycle extends AppModel {
 					 self::d($paidUsersResults, $debug);
 					 
 					 if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
-						self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template", $debug);
+						self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template", $debug);
 					 	$rule_sort_next = 1;
 					 }
 					 else {
-						self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
+						self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
 						$state_code_next = $orderResult['Order']['state_code'];
 					 }
 				}
 			break;
 			default:
-				self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." Order.state_code [".$state_code."] non previsto", $debug);
+				self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." Order.state_code [".$state_code."] non previsto", $debug);
 			break;			
 		}
 		
@@ -1064,7 +1098,7 @@ class OrderLifeCycle extends AppModel {
 			/*
 			 * non ancora definito, lo calcolo con calcolo del sort precedente o successivo
 			 */
-			self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." ricerco Order.state_code posizionato con SORT $rule_sort_next a ".$state_code, $debug);
+			self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." ricerco Order.state_code posizionato con SORT $rule_sort_next a ".$state_code, $debug);
 				
 			App::import('Model', 'TemplatesOrdersState');
 			$TemplatesOrdersState = new TemplatesOrdersState;
@@ -1093,10 +1127,61 @@ class OrderLifeCycle extends AppModel {
 			$options['recursive'] = -1;
 			$results = $TemplatesOrdersState->find('all', $options);
 			
-			$state_code_next = $results[0]['TemplatesOrdersState']['state_code'];		 
+			$state_code_next = $results[0]['TemplatesOrdersState']['state_code'];	
+
+			self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." state_code_next ".$state_code_next." => ctrl se e' valido o lo ricalcolo", $debug);
+					
+			/*
+			 * ctrl se state_code_next e' valido, ex SUPPLIER-PAID ma e' gia' saldato
+			 */
+			switch ($state_code_next) {
+				
+				/* 
+				 * Template.payToDelivery = POST / ON-POST 
+				 * 	da USER-PAID => saldato da tutti i gasisti = N => rimane USER-PAID
+				 * 	da USER-PAID => saldato da tutti i gasisti = Y => WAIT-REQUEST-PAYMENT-CLOSE 
+				 *
+				 * Template.payToDelivery = ON => mai, ha gli stati (PROCESSED-ON-DELIVERY, SUPPLIER-PAID)
+				 */				
+				case 'USER-PAID':  // Da saldare da parte dei gasisti (solo per gestione con Tesoriere)	
+				
+					if(!$SummaryOrderLifeCycle->isSummaryOrderAllSaldato($user, $orderResult, $debug)) { // ctrl se e' stato saldato da tutti i gasisti
+						// rimane invariato
+						self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." NON saldato da parte di tutti i gasisti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
+						
+						$state_code_next = 'USER-PAID';
+					}	
+					else {
+						self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." saldato da parte di tutti i gasisti => WAIT-REQUEST-PAYMENT-CLOSE", $debug);
+					
+						$state_code_next = 'WAIT-REQUEST-PAYMENT-CLOSE';
+					} 
+				break;
+				case 'SUPPLIER-PAID':
+					if($user->organization['Template']['orderUserPaid']=='Y') {
+						
+						/*
+						 * ctrl se il produttore e' pagato
+						 */ 
+						 $paidUsersResults = $this->getPaidUsers($user, $orderResult, $debug);
+						 self::d($paidUsersResults, $debug);
+						 
+						 if(!empty($paidUsersResults) && $paidUsersResults['totalSummaryOrderNotPaid']==0) {
+							self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." hanno SALDATO tutti => estraggo lo stato posizionato con SORT $rule_sort_next di un Ordine in base al template", $debug);
+							$state_code_next = 'CLOSE';
+						 }
+						 else {
+							self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." NON hanno SALDATO tutti => NON aggiorno lo stato ordine, rimane ".$orderResult['Order']['state_code'], $debug);
+							$state_code_next = $orderResult['Order']['state_code'];
+						 }
+					}
+				break;
+				default:
+				break;			
+			}			 
 		}
 				
-		self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id." state_code_next ".$state_code_next, $debug);
+		self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." state_code_next ".$state_code_next, $debug);
 
 		return $state_code_next;		
 	}
@@ -1193,6 +1278,16 @@ class OrderLifeCycle extends AppModel {
 		$results[] = 'WAIT-REQUEST-PAYMENT-CLOSE';
 		$results[] = 'USER-PAID';				
 		$results[] = 'SUPPLIER-PAID';	
+		
+		return $results;
+	}
+
+	/*
+	 * stati dell'ordine che li escludono per calcolare gli acquisti di un gasista
+	 */		
+	public function getStateCodeUsersCash($user) {
+
+		$results[] = 'CLOSE';	
 		
 		return $results;
 	}
@@ -1601,31 +1696,35 @@ class OrderLifeCycle extends AppModel {
 		self::d($orderResult['Order']['state_code'], false);
 		
 		if($orderResult['Delivery']['sys']=='Y') {
-			$esito = "Per poter chiudere l'ordine dovrai prima associarlo ad una consegna valida";
+			$esito = "Per poter chiudere l'ordine dovrai prima associarlo ad una <b>consegna valida</b>, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>modificare</b> la consegna associata</a>";
 		}
 		else {
-			switch ($orderResult['Order']['state_code']) {
-				case 'INCOMING-ORDER':
-					if($user->organization['Template']['payToDelivery']=='POST')
-						$esito = "Se chiudi l'ordine non potrai passarlo al TESORIERE per gestire i pagamenti";
-					else
-					if($user->organization['Template']['payToDelivery']=='ON')
-						$esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE per gestire i pagamenti";
-					else
-					if($user->organization['Template']['payToDelivery']=='ON-POST')
-						$esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE o al TESORIERE per gestire i pagamenti";			
-				break;
-				case 'PROCESSED-ON-DELIVERY':
-					if($user->organization['Template']['payToDelivery']=='POST')
-						$esito = "Se chiudi l'ordine il TESORIERE non potr&agrave; più gestire i pagamenti";
-					else
-					if($user->organization['Template']['payToDelivery']=='ON')
-						$esito = "Se chiudi l'ordine il CASSIERE non potr&agrave; più gestire i pagamenti";
-					else
-					if($user->organization['Template']['payToDelivery']=='ON-POST')
-						$esito = "Se chiudi l'ordine il CASSIERE o il TESORIERE non potr&agrave; più gestire i pagamenti";
-				break;
+		    if($orderResult['Order']['tot_importo']>0) {
+				switch ($orderResult['Order']['state_code']) {
+					case 'INCOMING-ORDER':
+						if($user->organization['Template']['payToDelivery']=='POST')
+							$esito = "Se chiudi l'ordine non potrai passarlo al TESORIERE per gestire i pagamenti";
+						else
+						if($user->organization['Template']['payToDelivery']=='ON')
+							$esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE per gestire i pagamenti";
+						else
+						if($user->organization['Template']['payToDelivery']=='ON-POST')
+							$esito = "Se chiudi l'ordine non potrai passarlo al CASSIERE o al TESORIERE per gestire i pagamenti";			
+					break;
+					case 'PROCESSED-ON-DELIVERY':
+						if($user->organization['Template']['payToDelivery']=='POST')
+							$esito = "Se chiudi l'ordine il TESORIERE non potr&agrave; più gestire i pagamenti";
+						else
+						if($user->organization['Template']['payToDelivery']=='ON')
+							$esito = "Se chiudi l'ordine il CASSIERE non potr&agrave; più gestire i pagamenti";
+						else
+						if($user->organization['Template']['payToDelivery']=='ON-POST')
+							$esito = "Se chiudi l'ordine il CASSIERE o il TESORIERE non potr&agrave; più gestire i pagamenti";
+					break;
+				}
 			}
+			else
+				$esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>cancellalo</b></a>";
 		}
 			
 		return $esito;

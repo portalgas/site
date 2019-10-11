@@ -1,5 +1,7 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+$debug=false;
+
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 if (!empty($results['Order'])):
@@ -8,24 +10,24 @@ if (!empty($results['Order'])):
 	 * legenda con gli Order.OrderTesoriereStatoPay
 	 */
 	echo '<div style="float:right;">';
-	echo '	<a id="legendaOrderState" href="#" title="'.__('Href_title_expand').'"><img src="/images/cake/actions/32x32/viewmag+.png" /> Visualizza/Nascondi gli ordini</a>';
+	echo '	<a id="legendaOrderState" href="#" title="'.__('Href_title_expand').'"><img class="img-responsive-disabled" src="/images/cake/actions/32x32/viewmag+.png" /> Visualizza/Nascondi gli ordini</a>';
 	echo '<div id="legendaOrderStateContent" class="legenda">';
 	echo '<div id="box-account-close"></div>';
 	foreach ($orderTesoriereStatoPayResults as $key => $label) {
 	
-		echo '<div>';
-		echo '<span class="action orderStato'.$key.' ';
+		echo '<div class="checkbox"><label>';
+		echo '<span style="float: right;" class="action orderStato'.$key.' ';
 		
 		if($key=='Y') echo 'orderStatoCLOSE';
 		else
 		if($key=='N') echo 'orderStatoOPEN';
 		
 		echo '" title="'.$label.'"></span>';
-		echo '&nbsp;';
+		echo ' ';
 		echo '<input style="clear: none;float: none;" type="checkbox" name="order_tesoriere_stato_pay_selected" value="'.$key.'" checked="checked" />';
 		echo '&nbsp;';		
 		echo $label;
-		echo '</div>';
+		echo '</label></div>';
 	}
 	echo '</div>';
 	echo '</div>';
@@ -51,91 +53,98 @@ if (!empty($results['Order'])):
 }
 </style>
 
-	<table cellpadding = "0" cellspacing = "0">
-	<tr>
-		<th></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
-		<th colspan="2"><?php echo __('Supplier'); ?></th>
-		<th><?php echo __('Importo totale ordine'); ?></th>
-		<th colspan="2"><?php echo __('Tesoriere fattura importo'); ?></th>
-		<th><?php echo __('Tesoriere Importo Pay'); ?></th>
-		<th><?php echo __('Tesoriere Data Pay'); ?></th>
-		<th><?php echo __('Saldato'); ?></th>
-	</tr>
 	<?php
-		foreach ($results['Order'] as $numResult => $order):
+
+	echo '<div class="table-responsive"><table class="table table-hover">';
+	echo '<tr>';
+	echo '<th></th>';
+	echo '<th>'.__('StatoElaborazione').'</th>';
+	echo '<th colspan="2">'.__('Supplier').'</th>';
+	echo '<th>'.__('Importo totale ordine').'</th>';
+	echo '<th colspan="2">'.__('Tesoriere fattura importo').'</th>';
+	echo '<th style="min-width:100px;">'.__('Tesoriere Importo Pay').'</th>';
+	echo '<th style="min-width:200px;">'.__('Tesoriere Data Pay').'</th>';
+	echo '<th>'.__('Saldato').'</th>';
+	echo '</tr>';
+
+	foreach ($results['Order'] as $numResult => $result) {
 		
-		if($order['tesoriere_stato_pay']=='N') 
-			echo '<tr class="OrderTesoriereStatoPay'.$order['tesoriere_stato_pay'].'">';
+		if($result['tesoriere_stato_pay']=='N') 
+			echo '<tr class="OrderTesoriereStatoPay'.$result['tesoriere_stato_pay'].'">';
 		else
-			echo '<tr class="OrderTesoriereStatoPay'.$order['tesoriere_stato_pay'].'">';
+			echo '<tr class="OrderTesoriereStatoPay'.$result['tesoriere_stato_pay'].'">';
 
-			echo '<td>';
-			echo '<a action="orders_tesoriere-'.$order['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
-			echo '</td>';
-			echo '<td>';
-			echo __($order['state_code'].'-label');
-			echo '&nbsp;';
-			echo $this->App->drawOrdersStateDiv($order);
-			echo '</td>';
-			echo '<td>';
-			if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
-			echo '</td>';
-			echo '<td>'.$order['SuppliersOrganization']['name'].'</td>';
-			echo '<td>';
-			echo number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			echo '</td>';
-			echo '<td>';
-			echo number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
-			echo '</td>';
+		echo '<td>';
+		echo '<a action="orders_tesoriere-'.$result['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+		echo '</td>';
+		echo '<td>';
+		echo __($result['state_code'].'-label');
+		echo '&nbsp;';
+		echo $this->App->drawOrdersStateDiv($result);
+		echo '</td>';
+		echo '<td>';
+		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+		echo '</td>';
+		echo '<td>'.$result['SuppliersOrganization']['name'].'</td>';
+		echo '<td>';
+		echo number_format($result['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+		echo '</td>';
+		echo '<td>';
+		echo $result['tesoriere_fattura_importo_e'];
+		echo '</td>';
 
-			echo '<td>';
-			echo $this->Html->link(null, array() ,array('class' => 'action actionCopy', 'title' => __('Copy'), 'id' => $order['id'], 'importo' => number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))));
-			echo '</td>';
+		echo '<td>';
+		echo $this->Html->link(null, [] ,['class' => 'action actionCopy', 'title' => __('Copy'), 'id' => $result['id'], 'importo' => number_format($result['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))]);
+		echo '</td>';
 
-			echo '<td>';
-			echo '<input class="double noWidth" size="15" type="text" name="data[Order]['.$order['id'].'][tesoriere_importo_pay]" value="'.$order['tesoriere_importo_pay_'].'" />';
-			echo '</td>';
-			
-			echo '<td>';
-			if($order['tesoriere_data_pay']=='000-00-00')
-				$tesoriere_data_pay = '';
-			else
-				$tesoriere_data_pay = $this->Time->i18nFormat($order['tesoriere_data_pay'],"%A, %e %B %Y");
-							
-			echo $this->Form->input('tesoriere_data_pay',array('type' => 'text','size'=>'20','label' => false, 'class' => 'noWidth', 'value' => $tesoriere_data_pay, 'name' => 'data[Order]['.$order['id'].'][tesoriere_data_pay]', 'id' => 'OrderTesoriereDataPay'.$order['id'], 'required' => 'false'));
-			echo $this->Ajax->datepicker('OrderTesoriereDataPay'.$order['id'],array('dateFormat' => 'DD, d MM yy','altField' => '#OrderTesoriereDataPayDb'.$order['id'], 'altFormat' => 'yy-mm-dd'));
-			echo '<input type="hidden" id="OrderTesoriereDataPayDb'.$order['id'].'" name="data[Order]['.$order['id'].'][tesoriere_data_pay_db]" value="'.$order['tesoriere_data_pay'].'" />';
-				
-			echo '</td>';
-			echo '<td>';
-			echo '<input type="checkbox" name="data[Order]['.$order['id'].'][tesoriere_stato_pay]" value="Y" ';
-			if($order['tesoriere_stato_pay']=='Y')
-				echo 'checked=checked ';
-			echo '/>';
-			
-			/*
-			 * campi hidden per confronto se cambiato per update
-			 */
-			 echo $this->Form->hidden('tesoriere_importo_pay_old',array('name' => 'data[Order]['.$order['id'].'][tesoriere_importo_pay_old]', 'value' => $order['tesoriere_importo_pay']));
-			 echo $this->Form->hidden('tesoriere_data_pay_old',array('name' => 'data[Order]['.$order['id'].'][tesoriere_data_pay_old]', 'value' => $order['tesoriere_data_pay']));
-			 echo $this->Form->hidden('tesoriere_stato_pay_old',array('name' => 'data[Order]['.$order['id'].'][tesoriere_stato_pay_old]', 'value' => $order['tesoriere_stato_pay']));
-			 
-			echo '</td>';
-			echo '</tr>';
-			
-			echo '<tr class="trView" id="trViewId-'.$order['id'].'">';
-			echo '	<td></td>'; 
-			echo '	<td colspan="9" id="tdViewId-'.$order['id'].'"></td>';
-			echo '</tr>';
+		echo '<td>';
+		echo '<input class="form-control double" type="text" name="data[Order]['.$result['id'].'][tesoriere_importo_pay]" value="'.$result['tesoriere_importo_pay_'].'" />';
+		echo '</td>';
 		
-	endforeach;
+		echo '<td>';
+		if($result['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
+			$tesoriere_data_pay = '';
+		else
+			$tesoriere_data_pay = $this->Time->i18nFormat($result['tesoriere_data_pay'],"%A, %e %B %Y");
+						
+		echo $this->Form->input('tesoriere_data_pay', ['type' => 'text','size'=>'20','label' => false,  'value' => $tesoriere_data_pay, 'name' => 'data[Order]['.$result['id'].'][tesoriere_data_pay]', 'id' => 'OrderTesoriereDataPay'.$result['id'], 'required' => 'false']);
+		echo $this->Ajax->datepicker('OrderTesoriereDataPay'.$result['id'], ['dateFormat' => 'DD, d MM yy','altField' => '#OrderTesoriereDataPayDb'.$result['id'], 'altFormat' => 'yy-mm-dd']);
+		echo '<input type="hidden" id="OrderTesoriereDataPayDb'.$result['id'].'" name="data[Order]['.$result['id'].'][tesoriere_data_pay_db]" value="'.$result['tesoriere_data_pay'].'" />';
+			
+		echo '</td>';
+		echo '<td>';
+		echo '<input class="form-control" type="checkbox" name="data[Order]['.$result['id'].'][tesoriere_stato_pay]" value="Y" ';
+		if($result['tesoriere_stato_pay']=='Y') 
+			echo 'checked=checked '; // non + disabled se no non passa il valore
+		if($debug) {
+			echo 'tesoriere_stato_pay '.$result['tesoriere_stato_pay'].'<br />';
+		}				
+		echo '/>';
+		
+		/*
+		 * campi hidden per confronto se cambiato per update
+		 */
+		 echo $this->Form->hidden('tesoriere_importo_pay_old', ['name' => 'data[Order]['.$result['id'].'][tesoriere_importo_pay_old]', 'value' => $result['tesoriere_importo_pay']]);
+		 echo $this->Form->hidden('tesoriere_data_pay_old', ['name' => 'data[Order]['.$result['id'].'][tesoriere_data_pay_old]', 'value' => $result['tesoriere_data_pay']]);
+		 echo $this->Form->hidden('tesoriere_stato_pay_old', ['name' => 'data[Order]['.$result['id'].'][tesoriere_stato_pay_old]', 'value' => $result['tesoriere_stato_pay']]);
+		 
+		echo '</td>';
+		echo '</tr>';
+		
+		echo '<tr class="trView" id="trViewId-'.$result['id'].'">';
+		echo '	<td></td>'; 
+		echo '	<td colspan="9" id="tdViewId-'.$result['id'].'"></td>';
+		echo '</tr>';
+		
+	} // end foreach
 
-	echo '</table>';
+	echo '</table></div>';
 else: 
-	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati"));
+	echo $this->element('boxMsg', ['class_msg' => 'message', 'msg' => "Non ci sono ordini associati"]);
 endif; 
+
+echo '</div>';
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -190,10 +199,16 @@ $(document).ready(function() {
 		var id = $(this).attr('id');
 		var importo = $(this).attr('importo');
 		
-		$("input[name='data[Order]["+id+"][tesoriere_importo_pay]']").val(importo);
+		if(!$("input[name='data[Order]["+id+"][tesoriere_stato_pay]']").prop('checked')) {
+			$("input[name='data[Order]["+id+"][tesoriere_importo_pay]']").val(importo);
+			$("input[name='data[Order]["+id+"][tesoriere_stato_pay]']").prop('checked', true);
+		}
+		else {
+			$("input[name='data[Order]["+id+"][tesoriere_importo_pay]']").val("0,00");
+			$("input[name='data[Order]["+id+"][tesoriere_stato_pay]']").prop('checked', false);			
+		}
 		
 		return false;
 	});
 });
 </script>
-</div>

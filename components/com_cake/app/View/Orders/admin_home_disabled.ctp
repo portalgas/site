@@ -9,7 +9,7 @@ if($this->request->data['Delivery']['sys']=='N')
 else
 	$label_crumb = __('Order home').': '.__('Supplier').' <b>'.$this->request->data['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>'.$this->request->data['Delivery']['luogo'].'</b>';
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb($label_crumb);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -91,7 +91,7 @@ if($results['Order']['state_code']=='OPEN') {
 	/*	 * box - ini	*/
 	$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 	
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 				
 	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>false,'ULclass'=>'workflow'), array('span'=>'statoCurrent','href'=>'actionOpenWF'));
@@ -126,7 +126,7 @@ if($results['Order']['state_code']=='RI-OPEN-VALIDATE') {
 	*/
 	$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 
 	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>false,'ULclass'=>'workflow'), array('span'=>'statoCurrent','href'=>'actionOpenWF'));
@@ -326,7 +326,7 @@ if($results['Order']['state_code']=='WAIT-PROCESSED-TESORIERE') {
 	
 	$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 	
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 	
 	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>true,'ULclass'=>'workflow'), array('href'=>'actionOpenWF'));
@@ -341,7 +341,7 @@ if($results['Order']['state_code']=='PROCESSED-TESORIERE') {
 
 	echo $this->OrderHome->drawBoxTitleUlClose();		$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 	
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 		echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>true,'ULclass'=>'workflow'), array('href'=>'actionOpenWF'));		$title = "L'ordine si e&grave; chiuso ".$this->Time->i18nFormat($results['Order']['data_fine'],"%A %e %B %Y")." - la consegna si e&grave; chiusa ".$this->Time->i18nFormat($results['Delivery']['data'],"%A %e %B");	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 1, array('ULopen'=>true,'ULclose'=>true,'ULclass'=>'workflow'), array('href'=>'actionCloseWF'));
 	$title = "Ordine in carico al tesoriere";
@@ -354,7 +354,7 @@ if($results['Order']['state_code']=='TO-PAYMENT') {
 	
 	$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 
 	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>true,'ULclass'=>'workflow'), array('href'=>'actionOpenWF'));
@@ -371,7 +371,7 @@ if($results['Order']['state_code']=='CLOSE') {
 	
 	$title = "L'ordine si e&grave; aperto ".$this->Time->i18nFormat($results['Order']['data_inizio'],"%A %e %B %Y").'&nbsp;';
 	
-	if($results['Order']['mail_open_data']!='0000-00-00 00:00:00')
+	if($results['Order']['mail_open_data']!=Configure::read('DB.field.datetime.empty'))
 		$title .= "(il ".$this->Time->i18nFormat($results['Order']['mail_open_data'],"%e %B")." e&grave; stata inviata la mail ai gasisti)&nbsp;";
 	
 	echo $this->OrderHome->drawBoxTitle($results['Order']['state_code'], $title, 0, array('ULopen'=>true,'ULclose'=>true,'ULclass'=>'workflow'), array('href'=>'actionOpenWF'));

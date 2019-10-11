@@ -1,7 +1,7 @@
 	<h2>Stampe</h2>
 
 	<?php
-	if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 		echo '<div role="alert" class="alert alert-success">';
 		echo '<a class="close" data-dismiss="alert">&times;</a>';
 				
@@ -314,7 +314,7 @@
 				echo '<input type="checkbox" id="filterUsersImg" name="filterUsersImg" value="Y" />';
 				echo '<label for="filterUsersImg">';
 				echo "Immagine degli utenti";
-				echo '</label>';
+				echo '</label> ';
 				echo '</div>';
 				*/		
 				?>
@@ -359,7 +359,26 @@
 	
 	<?php
 	if($user->organization['Organization']['hasStoreroom']=='Y') 
-		echo $this->element('reportStoreroom', array('type' => 'FE'));
+		echo $this->element('reportStoreroom', array('type' => 'FE', 'isUserCurrentStoreroom' => $isUserCurrentStoreroom, 'isManager' => $isManager, 'deliveries' => $deliveriesStorerooms));
+	?>
+
+	<?php
+	if(!empty($docsCreatesResults)) {
+	?>
+		<tr>
+			<td></td>
+			<td>Stampa i tuoi <b>documenti</b> <a name="user-docs"></a></td>
+			<td>
+				<?php
+					echo $this->Form->input('doc_create_id',array('label' => false, 'id' => 'doc_create_id', 'options' => $docsCreatesResults,
+																'empty' => 'Scegli il documento','escape' => false));
+				?>		
+			</td>
+			<td><a class="pdf_createData" id="pdf_create-PDF" style="cursor:pointer;" rel="nofollow" title="stampa i tuoi documenti <?php echo __('formatFilePdf');?>"><i class="fa fa-file-pdf-o fa-2x"></i></a></td>
+			<td></td>		
+		</tr>
+	<?php
+	}
 	?>
 	
 	</tbody>	
@@ -371,16 +390,16 @@
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 		
-	jQuery('.exportDelivery').click(function() {
-		var delivery_id = jQuery('#delivery_id').val();
+	$('.exportDelivery').click(function() {
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
@@ -388,14 +407,14 @@ jQuery(document).ready(function() {
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');	
 	});
 	
-	jQuery('.exportArticles').click(function() {
-		var supplier_organization_id = jQuery('#supplier_organization_id').val();
+	$('.exportArticles').click(function() {
+		var supplier_organization_id = $('#supplier_organization_id').val();
 		if(supplier_organization_id=="") {
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
@@ -403,14 +422,14 @@ jQuery(document).ready(function() {
 		/*
 		 * filtri
 		 */
-		var filterType = jQuery("input[name='filterType1']:checked").val();
-		var filterCategory = jQuery("input[name='filterCategory1']:checked").val();
-		var filterNota = jQuery("input[name='filterNota1']:checked").val();
+		var filterType = $("input[name='filterType1']:checked").val();
+		var filterCategory = $("input[name='filterCategory1']:checked").val();
+		var filterNota = $("input[name='filterNota1']:checked").val();
 		var filterIngredienti = 'N';
 		<?php 
 		if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
 		?>
-		filterIngredienti = jQuery("input[name='filterIngredienti1']:checked").val();	
+		filterIngredienti = $("input[name='filterIngredienti1']:checked").val();	
 		<?php 
 		}
 		?>
@@ -418,14 +437,14 @@ jQuery(document).ready(function() {
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&supplier_organization_id='+supplier_organization_id+'&filterType='+filterType+'&filterCategory='+filterCategory+'&filterNota='+filterNota+'&filterIngredienti='+filterIngredienti+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');	
 	});
 
-	jQuery('.exportArticlesOrders').click(function() {
-		var order_id = jQuery('#order_id').val();
+	$('.exportArticlesOrders').click(function() {
+		var order_id = $('#order_id').val();
 		if(order_id=="" || order_id==undefined) {
 			alert("Devi scegliere l'ordine");
 			return false;
 		}
 		
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
@@ -433,14 +452,14 @@ jQuery(document).ready(function() {
 		/*
 		 * filtri
 		 */
-		var filterType = jQuery("input[name='filterType2']:checked").val();
-		var filterCategory = jQuery("input[name='filterCategory2']:checked").val();
-		var filterNota = jQuery("input[name='filterNota2']:checked").val();
+		var filterType = $("input[name='filterType2']:checked").val();
+		var filterCategory = $("input[name='filterCategory2']:checked").val();
+		var filterNota = $("input[name='filterNota2']:checked").val();
 		var filterIngredienti = 'N';
 		<?php 
 		if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
 		?>
-		filterIngredienti = jQuery("input[name='filterIngredienti2']:checked").val();	
+		filterIngredienti = $("input[name='filterIngredienti2']:checked").val();	
 		<?php 
 		}
 		?>
@@ -448,8 +467,8 @@ jQuery(document).ready(function() {
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&order_id='+order_id+'&filterType='+filterType+'&filterCategory='+filterCategory+'&filterNota='+filterNota+'&filterIngredienti='+filterIngredienti+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');
 	});
 
-	jQuery('.suppliersOrganizations').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.suppliersOrganizations').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
@@ -457,17 +476,17 @@ jQuery(document).ready(function() {
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});
 	
-	jQuery('.usersData').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.usersData').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action          = idArray[0];
 		var doc_formato = idArray[1];
 
-		var checked = jQuery("input[name='filterUserGroups']:checked").val();
+		var checked = $("input[name='filterUserGroups']:checked").val();
 		var userGroupIds = "";
-		jQuery("input[name='filterUserGroups']").each(function() {
-		  if(jQuery(this).is(":checked")) {
-		     userGroupId = jQuery(this).val();
+		$("input[name='filterUserGroups']").each(function() {
+		  if($(this).is(":checked")) {
+		     userGroupId = $(this).val();
 		     userGroupIds += userGroupId+",";
 		  } 
 		});
@@ -479,14 +498,14 @@ jQuery(document).ready(function() {
 		else
 			userGroupIds = userGroupIds.substring(0,(userGroupIds.length-1));
 
-		/* var filterUsersImg = jQuery("input[name='filterUsersImg']:checked").val(); 
+		/* var filterUsersImg = $("input[name='filterUsersImg']:checked").val(); 
 		if(filterUsersImg!='Y') */ filterUsersImg = 'N';
 		
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&userGroupIds='+userGroupIds+'&filterUsersImg='+filterUsersImg+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});
 
-	jQuery('.referentsData').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.referentsData').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
@@ -494,22 +513,29 @@ jQuery(document).ready(function() {
 		/*
 		 * filtri
 		 */
-		var filterOrder = jQuery("input[name='filterOrder']:checked").val();
+		var filterOrder = $("input[name='filterOrder']:checked").val();
 		
 		window.open('/?option=com_cake&controller=ExportDocs&action='+action+'&filterOrder='+filterOrder+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
 	});	
 	
-	jQuery('.exportStoreroom').click(function() {
-		var id =  jQuery(this).attr('id');
+	$('.pdf_createData').click(function() {
+	
+		var doc_create_id = $('#doc_create_id').val();
+		if(doc_create_id=="") {
+			alert("Scegli un documento");
+			return false;
+		}
+		
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
-		var id =  jQuery(this).attr('id');
+		var id =  $(this).attr('id');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 				
-		window.open('/?option=com_cake&controller=Storerooms&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');	
+		window.open('/?option=com_cake&controller=DocsCreates&action='+action+'&doc_id='+doc_create_id+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');	
 	});
 	
-	jQuery('.selectpicker-report').selectpicker({
+	$('.selectpicker-report').selectpicker({
 		style: 'selectpicker'
 	});
 });

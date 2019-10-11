@@ -1,9 +1,5 @@
 <?php
-/*
-echo "<pre>";
-print_r($resultsWithModifies);
-echo "</pre>";
-*/
+$this->App->d($resultsWithModifies, false);
 /*
  * ctrl se ho un occorrenza
  */
@@ -160,7 +156,7 @@ else {
 										echo __('Supplier').': '.$order['SuppliersOrganization']['name'];
 										if(!empty($order['SuppliersOrganization']['descrizione'])) echo '/'.$order['SuppliersOrganization']['descrizione'];
 									
-										echo '<span style="float:right">'.__('StateOrder').'&nbsp;';
+										echo '<span style="float:right">'.__('StateOrder').': '.__($order['Order']['state_code'].'-label').'&nbsp;';
 										
 										echo $this->App->utilsCommons->getOrderTime($order['Order']);
 										
@@ -176,6 +172,9 @@ else {
 										echo '</tr>';
 									}
 							
+									if($order['Order']['state_code']=='RI-OPEN-VALIDATE') // non permetto modifiche per gestione colli
+										$order['Order']['permissionToEditUtente']=false;
+									
 									echo $this->RowEcomm->drawFrontEndSimple($numArticlesOrder, $order, $this->RowEcomm->prepareResult($numArticlesOrder, $order));
 										 
 									/*
@@ -326,13 +325,13 @@ else {
 						/*
 						 * sub totale singolo ordine
 						 */
-						if(isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti
+						if(isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti						
 							echo '<tr>';
 							echo '	<th></th>';
 							echo '	<th colspan="6" style="text-align:right;"></th>';
 							echo '	<th style="text-align:center;"></th>';
 							echo '	<th colspan="2" style="text-align:right;">Totale dell\'ordine&nbsp;&nbsp;</th>';
-							echo '<th style="white-space:nowrap;">'.number_format($tot_importo_order,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+							echo '<th style="white-space:nowrap;"><span class="totalePrezzoNew-'.$order['ArticlesOrder'][0]['order_id'].'">'.number_format($tot_importo_order,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</span></th>';
 							echo '</tr>';
 						}
 					 }
@@ -345,10 +344,10 @@ else {
 			*/
 			$tot_importo = ($tot_importo_storeroom + $tot_importo + $tot_importo_trasport + ($tot_importo_cost_less) + $tot_importo_cost_more);	
 			
-			if($user->organization['Organization']['payToDelivery']=='POST')
-				$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-			if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
-				$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
+			if($user->organization['Template']['payToDelivery']=='POST')
+				$msg = sprintf(__('TotaleConfirmTesoriere'), '<span class="totalePrezzoNewALL">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;').'</span>';
+			if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
+				$msg = sprintf(__('TotaleConfirmCassiere'), '<span class="totalePrezzoNewALL">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;').'</span>';
 			
 					
 					
@@ -397,7 +396,6 @@ $(document).ready(function() {
 	});
 });	
 </script>
-
 
 <?php
 if(!empty($arrayDistances)) {

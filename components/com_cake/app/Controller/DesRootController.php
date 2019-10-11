@@ -75,7 +75,7 @@ class DesRootController extends AppController {
 
     public function admin_delete($id = null) {
 		$this->DesRoot->id = $id;
-		if (!$this->DesRoot->exists()) {
+		if (!$this->DesRoot->exists($this->DesRoot->id)) {
 			throw new NotFoundException(__('Invalid de'));
 		}
 		$this->request->onlyAllow('post', 'delete');

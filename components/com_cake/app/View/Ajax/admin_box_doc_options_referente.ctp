@@ -20,7 +20,7 @@ if(!empty($results))
 	 */
 	if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) { 
 		echo '<p>';
-		echo' <input type="radio" name="doc_options" id="to-articles-monitoring" value="to-articles-monitoring" /><label for="to-articles-monitoring">'.__('to_articles_monitoring').'</label>';
+		echo' <input type="radio" name="doc_options" id="to-articles-monitoring" value="to-articles-monitoring" /><label for="to-articles-monitoring">'.__('to_articles_monitoring').'</label> ';
 		echo '</p>';
 	}
 	?>
@@ -233,105 +233,105 @@ if(!empty($results))
 	</div>
 </div>
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery("input[name='doc_options']").change(function() {	
+$(document).ready(function() {
+	$("input[name='doc_options']").change(function() {	
 
-		jQuery('#setting-to-users-all-modify').hide();
-		jQuery('#setting-to-users').hide();
-		jQuery('#setting-to-users-label').hide();
-		jQuery('#setting-to-articles').hide();
-		jQuery('#setting-to-articles-details').hide();
+		$('#setting-to-users-all-modify').hide();
+		$('#setting-to-users').hide();
+		$('#setting-to-users-label').hide();
+		$('#setting-to-articles').hide();
+		$('#setting-to-articles-details').hide();
 	
-		var doc_options = jQuery("input[name='doc_options']:checked").val();
+		var doc_options = $("input[name='doc_options']:checked").val();
 
 		if(doc_options=='to-users-all-modify')
-			jQuery('#setting-to-users-all-modify').show();
+			$('#setting-to-users-all-modify').show();
 		else		
 		if(doc_options=='to-users')
-			jQuery('#setting-to-users').show();
+			$('#setting-to-users').show();
 		else
 		if(doc_options=='to-users-label')
-			jQuery('#setting-to-users-label').show();
+			$('#setting-to-users-label').show();
 		else
 		if(doc_options=='to-articles')
-			jQuery('#setting-to-articles').show();
+			$('#setting-to-articles').show();
 		else
 		if(doc_options=='to-articles-details')
-			jQuery('#setting-to-articles-details').show();
+			$('#setting-to-articles-details').show();
 			
 		choiceDocOptions();
 	});
 
-	jQuery("input[name='totale_per_utente']").change(function() {			
+	$("input[name='totale_per_utente']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='dettaglio_per_utente']").change(function() {			
+	$("input[name='dettaglio_per_utente']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_phone1']").change(function() {			
+	$("input[name='user_phone1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_email1']").change(function() {			
+	$("input[name='user_email1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_address1']").change(function() {			
+	$("input[name='user_address1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_phone']").change(function() {			
+	$("input[name='user_phone']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_email']").change(function() {			
+	$("input[name='user_email']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_address']").change(function() {			
+	$("input[name='user_address']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_avatar1']").change(function() {			
+	$("input[name='user_avatar1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='user_avatar2']").change(function() {			
+	$("input[name='user_avatar2']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='delete_to_referent2']").change(function() {			
+	$("input[name='delete_to_referent2']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='note1']").change(function() {			
+	$("input[name='note1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='delete_to_referent1']").change(function() {			
+	$("input[name='delete_to_referent1']").change(function() {			
 		choiceDocOptions();
 	});	
-	jQuery("input[name='acquistato_il']").change(function() {			
+	$("input[name='acquistato_il']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='article_img']").change(function() {			
+	$("input[name='article_img']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport1']").change(function() {			
+	$("input[name='trasport1']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport2']").change(function() {			
+	$("input[name='trasport2']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport3']").change(function() {			
+	$("input[name='trasport3']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport4']").change(function() {			
+	$("input[name='trasport4']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport5']").change(function() {			
+	$("input[name='trasport5']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='trasport5']").change(function() {			
+	$("input[name='trasport5']").change(function() {			
 		choiceDocOptions();
 	});	
-	jQuery("input[name='totale_per_articolo']").change(function() {			
+	$("input[name='totale_per_articolo']").change(function() {			
 		choiceDocOptions();
 	});
-	jQuery("input[name='codice1']").change(function() {			
+	$("input[name='codice1']").change(function() {			
 		choiceDocOptions();
 	});	
-	jQuery("input[name='codice2']").change(function() {			
+	$("input[name='codice2']").change(function() {			
 		choiceDocOptions();
 	});	
 });

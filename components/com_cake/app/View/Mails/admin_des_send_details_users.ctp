@@ -1,13 +1,9 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/					
+$this->App->d($results);					
 
 echo '<table cellpadding="0" cellspacing="0">';
 echo '<tr>';
-echo '<th colspan="2">'.__('Organizations').'</th>';
+echo '<th colspan="2">'.__('GasOrganizations').'</th>';
 echo '<th colspan="3">'.__('Destinatari').'</th>';
 echo '</tr>';
 		
@@ -24,7 +20,7 @@ foreach ($results as $numResult => $result) {
 	 *  referenti
 	 */
 	if(empty($result['Organization']['Referenti'])) {
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono referenti associati!"));				
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono referenti associati!"));				
 	}
 	else {
 		

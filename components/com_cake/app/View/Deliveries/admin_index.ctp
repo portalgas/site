@@ -27,7 +27,7 @@ else
 			<th><?php echo $this->Paginator->sort('luogo');?></th>
 			<th></th>
 			<th><?php echo $this->Paginator->sort('data');?></th>
-			<th><?php echo __('Aperto/Chiuso');?></th>
+			<th><?php echo __('OpenClose');?></th>
 			<?php 
 			if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 				echo '<th>'.$this->Paginator->sort('isToStoreroom','Dispensa').'</th>';
@@ -40,7 +40,7 @@ else
 			}
 			?>
 			<th style="width50px;"></th>
-			<th><?php echo $this->Paginator->sort('stato_elaborazione',__('stato_elaborazione'));?></th>
+			<th><?php echo $this->Paginator->sort('stato_elaborazione',__('StatoElaborazione'));?></th>
 			<th><?php echo $this->Paginator->sort('Created');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
@@ -124,7 +124,7 @@ else
 
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora consegne registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora consegne registrate"));
 	
 echo '</div>';
 ?>

@@ -1,27 +1,41 @@
 <?php
+$debug = false;
+
 if(empty($des_order_id)) {
-	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') {
+	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') 
 		$label = __('Edit ArticlesOrder');
-	}
-	else {
+	else 
 		$label = __('Edit ArticlesOrder OPEN-NEXT');
-	}
 }
 else {
-	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') {
+	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') 
 		$label = __('Edit ArticlesOrder DES');
-	}
-	else {
+	else 
 		$label = __('Edit ArticlesOrder DES OPEN-NEXT');
-	}
 }
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
-$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
-if(isset($order['Order']['id']) && !empty($order['Order']['id']))
-	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order['Order']['id']));
-$this->Html->addCrumb($label);
-echo $this->Html->getCrumbList(array('class'=>'crumbs'));
+switch($user->organization['Organization']['type']) {
+	case 'PRODGAS':
+		$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+		$this->Html->addCrumb(__('ProdGasSupplier home'),array('controller' => 'ProdGasSuppliers', 'action' => 'index'));
+		$this->Html->addCrumb(__('ProdGasOrders'),array('controller' => 'ProdGasOrders', 'action' => 'index'));
+		$this->Html->addCrumb($label);
+		echo $this->Html->getCrumbList(array('class'=>'crumbs'));			
+	break;
+	case 'GAS':
+		$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+		$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
+		if(isset($order['Order']['id']) && !empty($order['Order']['id']))
+			$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order['Order']['id']));
+		$this->Html->addCrumb($label);
+		echo $this->Html->getCrumbList(array('class'=>'crumbs'));	
+	break;
+	case 'PROD':
+	
+	break;
+}
+
+
 
 if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
 	$colspan = '14';
@@ -30,30 +44,32 @@ if($user->organization['Organization']['hasFieldArticleCodice']=='N' && $user->o
 	$colspan = '12';
 else
 	$colspan = '13';
-?>
-		
-<h2 class="ico-edit-cart">
-	<?php echo $label;?>
-	<div class="actions-img">
-		<ul>
-			<li><?php echo $this->Html->link(__('Order home'), array('controller' => 'Orders', 'action' => 'home', null, 'order_id='.$order['Order']['id']),array('class' => 'action actionWorkflow','title' => __('Order home'))); ?></li>
-		</ul>
-	</div>
-</h2>
-<?php 
+
+
+echo '<h2 class="ico-edit-cart">';
+echo $label;
+echo '<div class="actions-img">';
+echo '<ul>';
+if($user->organization['Organization']['type']=='GAS')	
+	echo '<li>'.$this->Html->link(__('Order home'), ['controller' => 'Orders', 'action' => 'home', null, 'order_id='.$order['Order']['id']], ['class' => 'action actionWorkflow','title' => __('Order home')]).'</li>';
+echo '</ul>';
+echo '</div>';
+echo '</h2>';
+
 if(!empty($des_order_id))
 	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
 
 	
 echo '<div class="contentMenuLaterale">';
 
-echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
-echo $this->Form->hidden('article_order_key_selected',array('id' =>'article_order_key_selected', 'value'=>''));
-echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected', 'value'=>''));
-?>
-<fieldset>
+echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
+echo $this->Form->hidden('article_order_key_selected', ['id' => 'article_order_key_selected', 'value' => '']);
+echo $this->Form->hidden('article_id_selected', ['id' => 'article_id_selected', 'value' => '']);
 
-	<?php include('box_order_detail.ctp');?>
+echo '<fieldset>';
+
+echo $this->element('boxOrder', ['results' => $order]);
+?>
 
 	<div class="panel-group">
 	  <div class="panel panel-primary">
@@ -65,36 +81,64 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 		<div id="collapse1" class="panel-collapse collapse in">
 		  <div class="panel-body">
 		  
-				<?php 
-				if(count($results)>0) {
-				?>
-				<table cellpadding="0" cellspacing="0">
-				<tr>
-						<th></th>
-						<th><?php echo __('N');?></th>
-						<th colspan="<?php echo ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '3' :'2';?>">
-							<input type="checkbox" id="article_order_key_selected_all" name="article_order_key_selected_all" value="ALL" />
-							<img alt="Seleziona gli articoli da cancellare dall'ordine" src="<?php echo Configure::read('App.img.cake');?>/actions/24x24/button_cancel.png" />
-							Seleziona gli articoli da cancellare dall'ordine
-						</th>
-						<th></th>
-						<th><?php echo __('Prezzo');?></th>
-						<th><?php echo __('pezzi_confezione');?></th>
-						<th><?php echo __('qta_minima_short');?></th>
-						<th><?php echo __('qta_massima_short');?></th>
-						<th><?php echo __('qta_multipli');?></th>
-						<th><?php echo __('qta_minima_order_short');?></th>
-						<th><?php echo __('qta_massima_order_short');?></th>
-						<?php
-						if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-							echo '<th>'.__('alert_to_qta').'</th>';
-						?>
-						<th>Stato</th>	
-						<th class="actions"><?php echo __('Actions');?></th>		
-				</tr>
-				<?php
-				foreach ($results as $i => $result):
+			<?php 
+			if(count($results)>0) {
 				
+				echo '<div class="table-responsive"><table class="table table-hover">';
+				echo '<tr>';
+					echo '<th></th>';
+					echo '<th>'.__('N').'</th>';
+					echo '<th colspan="';
+					echo ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '3' :'2';
+					echo '">';
+					echo '	<input type="checkbox" id="article_order_key_selected_all" name="article_order_key_selected_all" value="ALL" />';
+					echo '	<img alt="Seleziona gli articoli da cancellare dall\'ordine" src="'.Configure::read('App.img.cake').'/actions/24x24/button_cancel.png" />';
+					echo "	Seleziona gli articoli da cancellare dall'ordine";
+					echo '</th>';
+					echo '<th></th>';
+					echo '<th style="text-align:center;">'.__('Prezzo').'</th>';
+					echo '<th style="text-align:center;">'.__('pezzi_confezione').'</th>';
+					echo '<th style="text-align:center;">'.__('qta_minima_short').'</th>';
+					echo '<th style="text-align:center;">'.__('qta_massima_short').'</th>';
+					echo '<th style="text-align:center;">'.__('qta_multipli').'</th>';
+					echo '<th style="text-align:center;">'.__('qta_minima_order_short').'</th>';
+					echo '<th style="text-align:center;">'.__('qta_massima_order_short').'</th>';
+					
+					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
+						echo '<th style="text-align:center;">'.__('alert_to_qta').'</th>';
+					
+					echo '<th>Stato</th>';
+					echo '<th class="actions">';
+					if($canEdit)
+						echo __('Actions');
+					echo '</th>';
+				echo '</tr>';
+				
+				foreach ($results as $numResult => $result) {
+
+					$box_detail_link = '';
+					$box_detail_id = '';	
+					$edit_link = '';
+
+					switch($user->organization['Organization']['type']) {
+						case 'PRODGAS':
+							if($currentOrganization['SuppliersOrganization']['can_view_orders']!='Y' && $currentOrganization['SuppliersOrganization']['can_view_orders_users']!='Y')
+								$box_detail_link = '<a action="prodgas_articles_order_carts-'.$order['Order']['organization_id'].'_'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+							$box_detail_id = $order['Order']['organization_id'].'_'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'];
+							// if($canEdit)  il ctrl lo faccio dopo perche' alcuni campi sono modificabili
+							$edit_link = $this->Html->link(null, ['action' => 'prodgas_edit', null, 'organization_id='.$result['ArticlesOrder']['organization_id'].'&order_id='.$result['ArticlesOrder']['order_id'], 'article_organization_id='.$result['ArticlesOrder']['article_organization_id'], 'article_id='.$result['ArticlesOrder']['article_id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+						break;
+						case 'GAS':
+							$box_detail_link = '<a action="articles_order_carts-'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
+							$box_detail_id = $order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'];
+							// if($canEdit)  il ctrl lo faccio dopo perche' alcuni campi sono modificabili
+							$edit_link = $this->Html->link(null, ['action' => 'edit', null, 'order_id='.$result['ArticlesOrder']['order_id'], 'article_organization_id='.$result['ArticlesOrder']['article_organization_id'], 'article_id='.$result['ArticlesOrder']['article_id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+						break;
+						case 'PROD':
+						
+						break;
+					}
+									
 					/*
 				     * ctrl se l'articolo e' gia' stato acquaitato
 					 */
@@ -105,9 +149,16 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 				
 					echo '<tr class="view">';
 					
-					echo '<td><a action="articles_order_carts-'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+					echo '<td>'.$box_detail_link;
+					if($debug) {
+						echo 'ArticlesOrder.organization_id '.$result['ArticlesOrder']['organization_id'].'<br />';
+						echo 'ArticlesOrder.article_id '.$result['ArticlesOrder']['article_id'].'<br />';
+						echo 'ArticlesOrder.article_organization_id '.$result['ArticlesOrder']['article_organization_id'].'<br />';
+						echo 'ArticlesOrder.order_id '.$result['ArticlesOrder']['order_id'];
+					}
+					echo '</td>';
 					
-					echo '<td>'.($i+1).'</td>';
+					echo '<td>'.($numResult+1).'</td>';
 					echo '<td ';
 					if($articleJustInCart) echo 'style="background-color:red;" title="Articolo già acquistato"';
 					echo '>';
@@ -116,7 +167,7 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 						echo ' articleJustInCart=true '; 
 					else 
 						echo ' articleJustInCart=false '; 
-					echo 'id="'.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_id'].'" name="article_order_key_selected" value="'.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_id'].'" />';
+					echo ' name="article_order_key_selected" value="'.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_organization_id'].'_'.$result['ArticlesOrder']['article_id'].'" />';
 					echo '</td>';
 
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
@@ -131,19 +182,19 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 					echo '</td>';
 					echo '<td>';
 					if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
+						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 					}
 					echo '</td>';
 					echo '<td nowrap>'.$result['ArticlesOrder']['prezzo_e'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['qta_minima'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['qta_massima'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['qta_multipli'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['qta_minima_order'].'</td>';
-					echo '<td>'.$result['ArticlesOrder']['qta_massima_order'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_minima'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_massima'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_multipli'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_minima_order'].'</td>';
+					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_massima_order'].'</td>';
 					
 					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-						echo '<td>'.$result['ArticlesOrder']['alert_to_qta'].'</td>';
+						echo '<td style="text-align:center;">'.$result['ArticlesOrder']['alert_to_qta'].'</td>';
 						
 					echo '<td ';
 					echo 'title="'.$this->App->traslateArticlesOrderStato($result).'" ';
@@ -154,18 +205,19 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 					echo ' class="stato_'.strtolower($stato).'">';
 					echo '</td>';
 
-					echo '<td class="actions-table-img">';
-					echo $this->Html->link(null, array('action' => 'edit', null, 'order_id='.$result['ArticlesOrder']['order_id'], 'article_organization_id='.$result['ArticlesOrder']['article_organization_id'], 'article_id='.$result['ArticlesOrder']['article_id']) ,array('class' => 'action actionEdit','title' => __('Edit')));
-					echo '</td>';
-				echo '</tr>';
-				echo '<tr class="trView" id="trViewId-'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
-				echo '<td colspan="2"></td>';
-				echo '<td colspan="'.$colspan.'" id="tdViewId-'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></td>';
-				echo '</tr>';
+					echo '<td class="actions-table-img">'.$edit_link.'</td>';
+					echo '</tr>';
+					echo '<tr class="trView" id="trViewId-'.$box_detail_id.'">';
+					echo '<td colspan="2"></td>';
+					echo '<td colspan="'.$colspan.'" id="tdViewId-'.$box_detail_id.'"></td>';
+					echo '</tr>';
 				
-				endforeach;
-				
-				echo '</table>';
+					echo $this->Form->hidden('article_organization_id',['name' => 'data[ArticlesOrder]['.$result['Article']['id'].'][article_organization_id]', 'value' => $result['ArticlesOrder']['article_organization_id']]);
+					echo $this->Form->hidden('article_id',['name' => 'data[ArticlesOrder]['.$result['Article']['id'].'][article_id]', 'value' => $result['ArticlesOrder']['article_id']]);
+					
+				} // end foreach ($results as $numResult => $result)
+			
+				echo '</table></div>';
 				
 				} 
 				else // if(count($results)>0)
@@ -187,7 +239,7 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 			<?php 
 			if(count($articles)>0) {
 			?>
-			<table cellpadding="0" cellspacing="0">
+			<div class="table-responsive"><table class="table table-hover">
 			<tr>
 				<th><?php echo __('N');?></th>
 				<th colspan="<?php echo ($user->organization['Organization']['hasFieldArticleCodice']=='Y') ? '3' :'2';?>">
@@ -210,11 +262,27 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 							
 				echo '</tr>';
 				
-				foreach ($articles as $ii => $article):
+				$disabledOpts = ['disabled' => 'disabled'];
+				$numResult=0;
+				foreach ($articles as $article) {
+					
+					$numResult++;
+					
+					$opts = ['label' => false, 'type' => 'text'];
+					if(!$canEdit) 
+						$noOwnerOpts = array_merge($opts, $disabledOpts);
+					else 
+						$noOwnerOpts = $opts;
+									
 					echo '<tr class="view">';
-					echo '<td>'.($ii+1).'</td>';
+					echo '<td>'.$numResult.'</td>';
 					echo '<td>';
 					echo '<input type="checkbox" id="'.$article['Article']['id'].'" name="article_id_selected" value="'.$article['Article']['id'].'" />';
+					if($debug) {
+						echo 'Article.organization_id '.$result['Article']['organization_id'].'<br />';
+						echo 'Article.id '.$result['Article']['id'].'<br />';
+						echo 'Article.supplier_organization_id '.$result['Article']['supplier_organization_id'];
+					}					
 					echo '</td>';
 					
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
@@ -225,23 +293,34 @@ echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected
 					echo '</td>';
 					echo '<td>';
 					if(!empty($article['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['Article']['organization_id'].DS.$article['Article']['img1'])) {
-						echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
+						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
 					}
 					echo '</td>';
-					echo '<td nowrap>'.$this->Form->input('prezzo',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['prezzo_'],'size'=>10,'tabindex'=>($ii+1),'after'=>'&nbsp;&euro;' ,'class'=>'double')).'</td>';
-					echo '<td>'.$this->Form->input('pezzi_confezione',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['pezzi_confezione'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-					echo '<td>'.$this->Form->input('qta_minima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_minima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_massima'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-					echo '<td>'.$this->Form->input('qta_multipli',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_multipli'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-					echo '<td>'.$this->Form->input('qta_minima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_minima_order'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima_order',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]','type' => 'text','class' => 'noWidth','value'=>$article['Article']['qta_massima_order'],'size'=>3,'tabindex'=>($ii+1))).'</td>';
+					
+					/*
+					 * campi bloccati se non si e' proprietari dell'articolo
+					 */							
+					echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $article['Article']['prezzo_'], 'tabindex'=>($numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts)).'</td>';
+					echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $article['Article']['pezzi_confezione'], 'tabindex'=>($numResult+1)], $noOwnerOpts)).'</td>';
+					
+					/*
+					 * campi gestiti anche da chi non e' proprietario dell'articolo
+					 */					
+					echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $article['Article']['qta_minima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $article['Article']['qta_massima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $article['Article']['qta_multipli'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $article['Article']['qta_minima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $article['Article']['qta_massima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
 					
 					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-						echo '<td>'.$this->Form->input('alert_to_qta',array('label'=>false,'name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value'=>$article['Article']['alert_to_qta'],'size'=>3,'tabindex'=>($ii+1))).'</td>'; 
+						echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $article['Article']['alert_to_qta'],'tabindex'=>($numResult+1)], $opts)).'</td>';
 				
+					echo $this->Form->hidden('organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][article_organization_id]', 'value' => $article['Article']['organization_id']]);
+					echo $this->Form->hidden('supplier_organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][supplier_organization_id]', 'value' => $article['Article']['supplier_organization_id']]);
+					
 					echo '</tr>';
-					endforeach;
-					echo '</table>';
+				} // end loop 
+				echo '</table></div>';
 			} 
 			else // if(count($articles)>0)
 				echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono articoli ancora da associare all'ordine."));

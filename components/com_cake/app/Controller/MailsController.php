@@ -4,7 +4,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class MailsController extends AppController {
 
-	public $components = array('ActionsDesOrder');
+	public $components = ['ActionsDesOrder'];
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -17,7 +17,7 @@ class MailsController extends AppController {
 		
 		$this->paginate = ['conditions' => [$conditions], 'order' => 'Mail.created desc, User.name', 'limit' => 100];
 		$results = $this->paginate('Mail');
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 		
 		$this->set('isRoot',$this->isRoot());
 		$this->set('isManager',$this->isManager());
@@ -283,187 +283,160 @@ class MailsController extends AppController {
 			App::import('Model', 'User');
 			$User = new User;
 			
-			if($this->request->data['Mail']['dest_options']=='USERGROUPS') {
-				if($this->request->data['Mail']['dest_options_qta']=='ALL') {
-					$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
-					$destinatari = $User->getUsersList($this->user, $conditions);					
-				}
-				else { 
-					$usergroups = $this->request->data['Mail']['usergroups'];
-					$usergroups_ids = "";
-					foreach($usergroups as $usergroup) 
-						$usergroups_ids .= $usergroup.',';
-					if(!empty($usergroups_ids))
-						$usergroups_ids = substr($usergroups_ids, 0, (strlen($usergroups_ids)-1));
-						
-					$conditions = ['UserGroupMap.group_id IN' => "(".$usergroups_ids.")"];
-					$destinatari = $User->getUsersList($this->user, $conditions);
-				}
-			}
-			else			
-			if($this->request->data['Mail']['dest_options']=='USERS') {
-				if($this->request->data['Mail']['dest_options_qta']=='ALL') {
-					$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
-					$destinatari = $User->getUsersList($this->user, $conditions);					
-				}
-				else 
-					$destinatari = $this->request->data['Mail']['user_ids'];
-			}
-			else
-			if($this->request->data['Mail']['dest_options']=='USERS_CART') {
-				/*
-				 * utenti che hanno effettuato ordini ad una consegna
-				 */				
-				$order_id = $this->request->data['Mail']['orders'];
-				$conditions = [];
-				
-				if($this->request->data['Mail']['article_order_key_selected_all']!='ALL') {
-					$article_order_key_selecteds = $this->request->data['Mail']['article_order_key_selecteds'];
-					$article_order_key_selecteds = explode('|', $article_order_key_selecteds);
-					$article_ids = '';
-					
-					foreach($article_order_key_selecteds as $article_order_key_selected) {
-						
-						list($article_organization_id, $article_id) = explode('-', $article_order_key_selected);
-						
-						if(!empty($article_id))
-							$article_ids .= $article_id.',';
-					} 
-					
-					if(!empty($article_ids))
-						$article_ids = substr($article_ids, 0, (strlen($article_ids)-1));
-					$conditions += ['ArticlesOrder.article_ids' => $article_ids];
-					
-				} // end if($this->request->data['Mail']['article_order_key_selected_all']!='ALL')
-				
-				$conditions += ['ArticlesOrder.order_id' => $order_id];
-				$destinatari  = $User->getUserWithCartByOrder($this->user ,$conditions);		
-			}
-			else
-			if($this->request->data['Mail']['dest_options']=='REFERENTI') {
-				if($this->request->data['Mail']['dest_options_qta']=='ALL') {
+			$ids = [];
+			switch($this->request->data['Mail']['dest_options']) {
+				case 'USERGROUPS';
+					if($this->request->data['Mail']['dest_options_qta']=='ALL') {
+						$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
+						$destinatari = $User->getUsersList($this->user, $conditions);
+					}
+					else { 
+						$usergroups = $this->request->data['Mail']['usergroups'];
+						$usergroups_ids = "";
+						foreach($usergroups as $usergroup) 
+							$usergroups_ids .= $usergroup.',';
+						if(!empty($usergroups_ids))
+							$usergroups_ids = substr($usergroups_ids, 0, (strlen($usergroups_ids)-1));
+							
+						$conditions = ['UserGroupMap.group_id IN' => "(".$usergroups_ids.")"];
+						$destinatari = $User->getUsersList($this->user, $conditions);
+					}	
+
+					foreach ($destinatari as $key => $value) 
+						array_push($ids, $key);	
+				break;
+				case 'USERS';
+					if($this->request->data['Mail']['dest_options_qta']=='ALL') {
+						$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
+						$destinatari = $User->getUsersList($this->user, $conditions);
+
+						$ids = [];
+						foreach ($destinatari as $key => $value) 
+							array_push($ids, $key);						
+					}
+					else 
+						$ids = explode(',', $this->request->data['Mail']['user_ids']);	
+				break;
+				case 'USERS_CART';
 					/*
-					 * referenti
-					*/
-					$conditions = array('UserGroupMap.group_id IN' => '('.Configure::read('group_id_referent').')');
-					$destinatari = $User->getUsersList($this->user, $conditions);
-				}
-				else 
-					$destinatari = $this->request->data['Mail']['referente_ids'];
+					 * utenti che hanno effettuato ordini ad una consegna
+					 */				
+					$order_id = $this->request->data['Mail']['orders'];
+					$conditions = [];
+					
+					if($this->request->data['Mail']['article_order_key_selected_all']!='ALL') {
+						$article_order_key_selecteds = $this->request->data['Mail']['article_order_key_selecteds'];
+						$article_order_key_selecteds = explode('|', $article_order_key_selecteds);
+						$article_ids = '';
+						
+						foreach($article_order_key_selecteds as $article_order_key_selected) {
+							
+							list($article_organization_id, $article_id) = explode('-', $article_order_key_selected);
+							
+							if(!empty($article_id))
+								$article_ids .= $article_id.',';
+						} 
+						
+						if(!empty($article_ids))
+							$article_ids = substr($article_ids, 0, (strlen($article_ids)-1));
+						$conditions += ['ArticlesOrder.article_ids' => $article_ids];
+						
+					} // end if($this->request->data['Mail']['article_order_key_selected_all']!='ALL')
+					
+					$conditions += ['ArticlesOrder.order_id' => $order_id];
+					$destinatari  = $User->getUserWithCartByOrder($this->user ,$conditions);	
+
+					foreach ($destinatari as $destinatario) 
+						array_push($ids, $destinatario['User']['id']);	
+					
+				break;
+				case 'REFERENTI';
+					if($this->request->data['Mail']['dest_options_qta']=='ALL') {
+						/*
+						 * referenti
+						*/
+						$conditions = ['UserGroupMap.group_id IN' => '('.Configure::read('group_id_referent').')'];
+						$destinatari = $User->getUsersList($this->user, $conditions);
+						
+						foreach ($destinatari as $key => $value) 
+							array_push($ids, $key);						
+					}
+					else 
+						$ids = explode(',', $this->request->data['Mail']['referente_ids']);
+
+				break;
+				case 'SUPPLIERS';
+					if($this->request->data['Mail']['dest_options_qta']=='ALL') {
+
+						if($this->isReferentGeneric()) {
+							App::import('Model', 'SuppliersOrganization');
+							$SuppliersOrganization = new SuppliersOrganization;
+							
+							$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
+							$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
+							
+							$options = [];
+							if($this->isSuperReferente()) {
+								$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										'SuppliersOrganization.stato' => 'Y',
+										"(Supplier.mail is not null and Supplier.mail != '')",
+										"(Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG')"];
+							}
+							else {
+								$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										'SuppliersOrganization.stato' => 'Y',
+										"(Supplier.mail is not null and Supplier.mail != '')",
+										"(Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG')",
+										'SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
+							}
+							
+							$options['fields'] = array('SuppliersOrganization.id');
+							$options['recursive'] = 1;
+							$options['order'] = array('SuppliersOrganization.id');
+							$results = $SuppliersOrganization->find('all', $options);
+							
+							self::d($options, $debug);
+							
+							if(!empty($results))
+								foreach($results as $result) 
+									array_push($ids, $result['SuppliersOrganization']['id']);
+									
+						} // end if($this->isReferentGeneric()) 
+					}
+					else 
+						$ids = $this->request->data['Mail']['supplier_organization'];				
+				break;
+				default:
+					die("Mail.dest_options not valid!");
+				break;
 			}
-			else
-			if($this->request->data['Mail']['dest_options']=='SUPPLIERS') {
 			
-				/*
-				 *  produttori
-				*/
-				if($this->request->data['Mail']['dest_options_qta']=='ALL') {
-
-					if($this->isReferentGeneric()) {
-						App::import('Model', 'SuppliersOrganization');
-						$SuppliersOrganization = new SuppliersOrganization;
-						
-						$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
-						$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
-						
-						$options = [];
-						if($this->isSuperReferente()) {
-							$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-									'SuppliersOrganization.stato' => 'Y',
-									"(Supplier.mail is not null and Supplier.mail != '')",
-									"(Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG')");
-						}
-						else {
-							$options['conditions'] = array('SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
-									'SuppliersOrganization.stato' => 'Y',
-									"(Supplier.mail is not null and Supplier.mail != '')",
-									"(Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG')",
-									'SuppliersOrganization.id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')');
-						}
-						
-						$options['fields'] = array('SuppliersOrganization.id');
-						$options['recursive'] = 1;
-						$options['order'] = array('SuppliersOrganization.id');
-						$results = $SuppliersOrganization->find('all', $options);
-						
-						self::d($options, $debug);
-						
-						$destinatari = [];
-						if(!empty($results))
-							foreach($results as $result) 
-								$destinatari[$result['SuppliersOrganization']['id']] = $result['SuppliersOrganization']['id'];
-					} // end if($this->isReferentGeneric()) 
-				}
-				else 
-					$destinatari = $this->request->data['Mail']['supplier_organization'];
-			} 
-
-			self::d($destinatari,$debug);
+			self::d($ids, $debug);
 	
-			if(!empty($destinatari)) {
-				/*
-				 * estraggo i destinatari
-				 */
-				$ids = "";
-				if($this->request->data['Mail']['dest_options']=='USERS_CART') {
-					foreach ($destinatari as $destinatario) {
-						$ids .= $destinatario['User']['id'].',';						
-					}
-					$ids = substr($ids , 0, strlen($ids)-1);
-				}
-				else
-				if($this->request->data['Mail']['dest_options_qta']=='ALL') {  
-					foreach($destinatari as $key => $value) 
-						$ids .= $key.',';
-					$ids = substr($ids , 0, strlen($ids)-1);
-				}
-				else {
-					if($this->request->data['Mail']['dest_options']=='USERS') {
-						$destinatari = explode(',',  $destinatari);
-					}
-					else
-					if($this->request->data['Mail']['dest_options']=='USERGROUPS') {
-						foreach($destinatari as $key => $value)
-							$ids .= $key.',';
-						$ids = substr($ids , 0, strlen($ids)-1);
-					}
-					else
-					if($this->request->data['Mail']['dest_options']=='REFERENTI') {
-						$ids = $destinatari;
-					}
-					else {
-						foreach($destinatari as $key => $value)
-							$ids .= $value.',';
-						$ids = substr($ids , 0, strlen($ids)-1);
-					}
-				}
-				
+			if(!empty($ids)) {
+
 				if($this->request->data['Mail']['dest_options']=='SUPPLIERS') {
 	
 					$sql = "SELECT
-								Supplier.mail,
-								SuppliersOrganization.name
+								Supplier.mail, SuppliersOrganization.name
 				    		FROM
 								".Configure::read('DB.prefix')."suppliers AS Supplier,
 								".Configure::read('DB.prefix')."suppliers_organizations AS SuppliersOrganization
 							WHERE
-								SuppliersOrganization.organization_id = ".(int)$this->user->organization['Organization']['id']."
+								SuppliersOrganization.organization_id = ".$this->user->organization['Organization']['id']."
 								AND Supplier.id = SuppliersOrganization.supplier_id
 								AND (Supplier.mail is not null and Supplier.mail != '') 
-								AND (Supplier.stato = 'Y' OR Supplier.stato = 'T' OR Supplier.stato = 'PG') 
-								AND SuppliersOrganization.id IN (".$ids.")";
+								AND Supplier.stato IN ('Y', 'T', 'PG') 
+								AND SuppliersOrganization.id IN (".implode(',', $ids).")";
 					self::d($sql, false);
 					$results = $User->query($sql);
 				}
 				else {
-					if($this->request->data['Mail']['dest_options_qta']=='ALL')
-						$results = $User->getUsersToMail($this->user, false);
-					else
-						$results = $User->getUsersToMailByIds($this->user, $destinatari, false);
+					$results = $User->getUsersToMailByIds($this->user, $ids, false);
 				}
 				
 				self::d($results, false);
-				
+			
 				/*
 				 * save Mail
 				 */	
@@ -775,7 +748,7 @@ class MailsController extends AppController {
 		
 		$this->paginate = array('conditions' => array($conditions), 'order' => 'Mail.created desc, User.name');
 		$results = $this->paginate('Mail');
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 	}
 	
 	public function admin_root_send() {
@@ -1133,7 +1106,7 @@ class MailsController extends AppController {
 			$results[$numResult]['DesSupplier'] = $desSupplierResults['DesSupplier'];
 			$results[$numResult]['Supplier'] = $desSupplierResults['Supplier'];
 		}
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 	}
 	
 	/*
@@ -1375,7 +1348,7 @@ class MailsController extends AppController {
 	
 		self::d($results, $debug);
 
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 
 		$this->set('body_header', sprintf(Configure::read('Mail.body_header'), 'Mario Rossi'));
 		$this->set('body_header_mittente', $body_header_mittente);
@@ -1427,7 +1400,7 @@ class MailsController extends AppController {
 		
 		self::d($results, $debug);
 			
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 		
 		$this->set('userGroups',$this->userGroups);
 		
@@ -1442,7 +1415,7 @@ class MailsController extends AppController {
 		}
 		
 		$this->Mail->id = $id;
-		if (!$this->Mail->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Mail->exists($this->Mail->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1465,7 +1438,7 @@ class MailsController extends AppController {
 		}
 		
 		$this->Mail->id = $id;
-		if (!$this->Mail->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Mail->exists($this->Mail->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1485,7 +1458,7 @@ class MailsController extends AppController {
 		}
 		
 		$this->Mail->id = $id;
-		if (!$this->Mail->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Mail->exists($this->Mail->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1515,7 +1488,7 @@ class MailsController extends AppController {
 		
 		$this->paginate = array('conditions' => array($conditions), 'order' => 'Mail.created desc, User.name');
 		$results = $this->paginate('Mail');
-		$this->set('results', $results);
+		$this->set(compact('results'));	
 	}
 	
 	public function admin_prod_gas_supplier_send() {
@@ -1777,8 +1750,8 @@ class MailsController extends AppController {
 		 */
 		App::import('Model', 'ProdGasSuppliersImport');
 		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
-		
-		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], 0, ['SUPPLIER'], $debug);
+		$filters['ownerArticles'] = 'SUPPLIER';
+		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], 0, $filters, $debug);
 		self::d($organizationResults['Supplier']['Organization']);
 		
 		$newOrganizationResults = [];
@@ -1803,15 +1776,11 @@ class MailsController extends AppController {
 	public function admin_ajax_users_cart_articles_orders($order_id) {
 		
 		$debug = false;
-		
-		App::import('Model', 'ArticlesOrder');
-		$ArticlesOrder = new ArticlesOrder;
-		
-		$results = $ArticlesOrder->getArticlesOrdersInOrderOnlyCart($this->user, $order_id);
-		
-		self::d($results, $debug);
+				
+		$results = $this->Mail->getArticlesByOrderId_ConAcquisti($this->user, $order_id, [], $debug); 
+        self::d($results, $debug);
 
-        $this->set('results', $results);
+        $this->set(compact('results'));	
 				
         $this->layout = 'ajax';
         $this->render('/Mails/ajax_users_cart_articles_orders');	

@@ -5,14 +5,9 @@ class Tesoriere extends AppModel {
 
 	public $useTable = false;
 	
-	public function updateAfterUpload($user, $request, $esito, $tesoriere_sorce='REFERENTE', $debug=false) {
+	public function updateAfterUpload($user, $request, $esito, $inviato_al_tesoriere_da='REFERENTE', $debug=false) {
 		
-		if($debug) {
-			echo "<pre>Tesoriere::updateAfterUpload() ";
-			print_r($request);
-			print_r($esito);
-			echo "</pre>";
-		}
+		self::d([$request,$esito], $debug);
 		
 		$tesoriere_fattura_importo = $request['Order']['tesoriere_fattura_importo'];
 		if(empty($tesoriere_fattura_importo))
@@ -31,10 +26,6 @@ class Tesoriere extends AppModel {
 			$Order = new Order;
 		
 			$tot_importo = $Order->getTotImporto($user, $request['Order']['id']);
-			/* 
-			 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-			 */
-			if(strpos($tot_importo,',')!==false)  $tot_importo = str_replace(',','.',$tot_importo);					 
 			
 			$sql = "UPDATE
 				`".Configure::read('DB.prefix')."orders`
@@ -46,13 +37,14 @@ class Tesoriere extends AppModel {
 			$sql .= "
 				tesoriere_nota = '".addslashes($request['Order']['tesoriere_nota'])."', 
 				tesoriere_fattura_importo = ".$this->importoToDatabase($tesoriere_fattura_importo).",
-				tesoriere_sorce = '".$tesoriere_sorce."', 
+				inviato_al_tesoriere_da = '".$inviato_al_tesoriere_da."', 
 				tot_importo = ".$tot_importo." ,  
 				modified = '".date('Y-m-d H:i:s')."'
 			WHERE
 				organization_id = ".(int)$user->organization['Organization']['id']."
 				and id = ".(int)$request['Order']['id'];
-			if($debug) echo '<br />'.$sql;
+			self::d($sql, $debug);
+			self::l($sql, $debug);			
 			$result = $Order->query($sql);
 		}
 		catch (Exception $e) {
@@ -69,7 +61,7 @@ class Tesoriere extends AppModel {
 	 * data: dati del form $this->request->data (tot_importo, tesoriere_fattura_importo, tesoriere_nota)
 	 * results: dati ordine precedenti al salvataggio
 	*/	
-	public function sendMailToUpload($user, $data, $results, $tesoriere_sorce='REFERENTE', $debug=false) {
+	public function sendMailToUpload($user, $data, $results, $inviato_al_tesoriere_da='REFERENTE', $debug=false) {
 		
 		$importo_totale = $data['Order']['importo_totale'];
 		$tesoriere_fattura_importo = $data['Order']['tesoriere_fattura_importo'];
@@ -95,10 +87,10 @@ class Tesoriere extends AppModel {
 		
 		$subject_mail = "Ordine di ".$results['SuppliersOrganization']['name']." passato al tesoriere";
 		$body_mail  = "L'ordine del produttore <b>".$results['SuppliersOrganization']['name']."</b> per la consegna <b>".$results['Delivery']['luogoData']."</b> ";
-		if($tesoriere_sorce=='REFERENTE')
+		if($inviato_al_tesoriere_da=='REFERENTE')
 			$body_mail  .= "è stato passato dal referente ";
 		else
-		if($tesoriere_sorce=='CASSIERE')
+		if($inviato_al_tesoriere_da=='CASSIERE')
 			$body_mail  .= "è stato passato dal cassiere ";
 		$body_mail  .= "(".$user->name." - <a href=mailto:".$user->email.">".$user->email."</a>) del produttore al tesoriere"; 
 		$body_mail  .= "<br />";
@@ -107,7 +99,7 @@ class Tesoriere extends AppModel {
 		if(!empty($tesoriere_nota)) $body_mail  .= "<br />Nota del referente: ".$tesoriere_nota;
 	
 		$Email->subject($subject_mail);
-		$Email->viewVars(array('body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))));
+		$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 		
 		if($debug) 
 			echo "<br />Tesoriere::sendMailToUpload() ".$body_mail;
@@ -118,7 +110,7 @@ class Tesoriere extends AppModel {
 			$mail = $userResult['User']['email'];
 				
 			if(!empty($mail)) {
-				$Email->viewVars(array('body_header' => sprintf(Configure::read('Mail.body_header'), $name)));
+				$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 				$Email->to($mail);
 					
 				$Mail->send($Email, $mail, $body_mail, $debug);
@@ -126,4 +118,55 @@ class Tesoriere extends AppModel {
 		} // end foreach ($userResults as $userResult)		
 	}
 	
+	/*
+	 * aggiornamento dei dati da 
+ 	 * 	Tesoriere::pay_suppliers (Pagamenti per consegna)
+ 	 *  Tesoriere::pay_suppliers_by_supplier (Pagamenti per produttore)
+	 */
+	public function updateFromModulo($user, $order_id, $data, $debug=false) {
+
+		/*
+		 *   ctrl che siano cambiati i dati
+		 */
+		 $sqlTmp = "";
+		 if($this->importoToDatabase($data['tesoriere_importo_pay']) != $data['tesoriere_importo_pay_old'])
+		 	$sqlTmp .= " tesoriere_importo_pay = ".$this->importoToDatabase($data['tesoriere_importo_pay']).',';
+		 	
+		 if($data['tesoriere_data_pay_db'] != $data['tesoriere_data_pay_old'])
+		 	$sqlTmp .= " tesoriere_data_pay = '".$data['tesoriere_data_pay_db']."',";
+		 
+		 if(empty($data['tesoriere_stato_pay'])) 
+			$data['tesoriere_stato_pay'] = 'N';
+		 	
+		 if($data['tesoriere_stato_pay'] != $data['tesoriere_stato_pay_old'])
+		 	$sqlTmp .= " tesoriere_stato_pay = '".$data['tesoriere_stato_pay']."',";
+
+		self::d('Order.id '.$order_id.' ctrl se parametri diversi', $debug);
+		self::d('	tesoriere_importo_pay '.$this->importoToDatabase($data['tesoriere_importo_pay']).' tesoriere_importo_pay_old '.$data['tesoriere_importo_pay_old'], $debug);
+		self::d('	tesoriere_data_pay_db '.$data['tesoriere_data_pay_db'].' tesoriere_data_pay_old '.$data['tesoriere_data_pay_old'], $debug);
+		self::d('	tesoriere_stato_pay '.$data['tesoriere_stato_pay'].' tesoriere_stato_pay_old '.$data['tesoriere_stato_pay_old'], $debug);
+		self::d('	sqlTmp '.$sqlTmp, $debug);
+		
+		if(!empty($sqlTmp)) {
+		
+			try {
+				$sql = "UPDATE
+							`".Configure::read('DB.prefix')."orders`
+						SET
+							".$sqlTmp."
+							modified = '".date('Y-m-d H:i:s')."'
+						WHERE
+							organization_id = ".(int)$user->organization['Organization']['id']."
+							and id = ".(int)$order_id;
+				self::d($sql, $debug);
+				$resultUpdate = $this->query($sql);
+			}
+			catch (Exception $e) {
+				CakeLog::write('error',$sql);
+				CakeLog::write('error',$e);
+			}
+		} // if(!empty($sqlTmp))
+	
+		return true;
+	}
 }

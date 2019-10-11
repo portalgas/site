@@ -35,18 +35,18 @@ if(!empty($users)) {
 	echo $tmp;
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 		$('.detail-users').on('hidden.bs.collapse', function(){
 			$(this).parent().find(".fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-down");
 			
-			var user_id = jQuery(this).attr('data-attr-id');
+			var user_id = $(this).attr('data-attr-id');
 			var idDivTarget = 'collapseUser'+user_id;
-			jQuery('#'+idDivTarget).html("");
+			$('#'+idDivTarget).html("");
 		}).on('shown.bs.collapse', function(){
 			$(this).parent().find(".fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-up");
 
-			var delivery_id = jQuery('#delivery_id').val();
-			var user_id = jQuery(this).attr('data-attr-id');
+			var delivery_id = $('#delivery_id').val();
+			var user_id = $(this).attr('data-attr-id');
 			var idDivTarget = 'collapseUser'+user_id;
 			AjaxCallToOrdersUsersCart(delivery_id, user_id, idDivTarget);
 		});	
@@ -55,5 +55,5 @@ if(!empty($users)) {
 <?php 
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Nessun utente ha effettuato acquisti"));
+	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Nessun utente ha effettuato acquisti"));
 ?>

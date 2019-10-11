@@ -2,7 +2,7 @@
 <p>Il <b>nome</b> del file non pu&ograve; contenere <b>caratteri strani</b>
 <ul>
 	<li>- caratteri ammessi: lettere, numeri e . (punto) - (trattino) _ (underscore)</li>
-	<li>- alcuni caratteri <b>non</b> ammessi: &euro; " | \ / £ $ % & ( ) = ? ' ^ ç ° § > < ; : , - @ #  [ ]
+	<li>- alcuni caratteri <b>non</b> ammessi:&nbsp;&euro; " | \ / £ $ % & ( ) = ? ' ^ ç ° § > < ; : , - @ #  [ ]
 </ul>
 </p>
 

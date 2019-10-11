@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
 $this->Html->addCrumb(__('Csv Import'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -8,50 +8,74 @@ echo $this->Form->create('CsvImport',array('action' => 'articles_prepare', 'id'=
 echo '<fieldset class="filter">';
 echo '<legend>'.__('CsvImport').'</legend>';	
 
-$options = array('id'=>'supplier_organization_id', 'options' => $ACLsuppliersOrganization,'empty' => 'Filtra per produttore', 'default' => $supplier_organization_id, 'escape' => false);
+$options = ['id' => 'supplier_organization_id', 
+			'options' => $ACLsuppliersOrganization, 
+			'default' => $supplier_organization_id, 'escape' => false];
+if(count($ACLsuppliersOrganization) > 1) 
+	$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];
 if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum'))
-    $options += array('class'=> 'selectpicker', 'data-live-search' => true);
+    $options += ['class'=> 'selectpicker', 'data-live-search' => true];
 echo $this->Form->input('supplier_organization_id', $options); 
 
 if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y')
-	echo $this->Form->input('category_article_id', array('id' => 'category_article_id', 'options' => $categories, 'empty' => 'Filtra per categoria','default'=>$category_article_id,'escape' => false));
+	echo $this->Form->input('category_article_id', ['id' => 'category_article_id', 'options' => $categories, 'empty' => 'Filtra per categoria','default'=>$category_article_id,'escape' => false]);
 		
-echo $this->Form->input('deliminatore', array('label' => 'Delimitatore', 'id' => 'deliminatore', 'value' => $deliminatore, 'style' => 'width:50px;'));
+echo $this->Form->input('deliminatore', ['label' => 'Delimitatore', 'id' => 'deliminatore', 'value' => $deliminatore, 'style' => 'width:50px;']);
+
+echo $this->Form->input('version', ['label' => 'Versione', 'id' => 'version', 'options' => $versions, 'value' => $version]);
 		
-echo $this->Form->input('Document.file1', array(
+echo $this->Form->input('Document.file1', [
 	'between' => '<br />',
 	'type' => 'file',
 	'label' => 'Carica il file CSV da importare'
-));
+]);
 
-echo $this->element('legendaCsvImport', array('array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles')));
+echo $this->element('legendaCsvImport', ['array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles')]);
 
 echo '</fieldset>';
 
-echo $this->Form->end(array('label' => __('Invia')));
+echo '<div style="padding-right:75px;">';
+echo $this->Form->end(['label' => __('Invia')]);
+echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+function settingVersion(version) {
+	if(version=='COMPLETE') {
+		$('#version_complete').collapse('show');
+		$('#version_simple').collapse('hide');
+	}
+	else {
+		$('#version_complete').collapse('hide');
+		$('#version_simple').collapse('show');
+	}
+}
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
-		var supplier_organization_id = jQuery('#supplier_organization_id').val();
+	settingVersion('<?php echo $version;?>');
+	
+	$('#version').change(function() {
+		settingVersion($('#version').val());
+	});
+	
+	$('#formGas').submit(function() {
+		var supplier_organization_id = $('#supplier_organization_id').val();
 		if(supplier_organization_id=='' || supplier_organization_id==undefined) {
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
-			jQuery('#supplier_organization_id').focus();
+			$('#supplier_organization_id').focus();
 			return false;
 		}
-		if(jQuery('#category_article_id').length>0) {
-			var category_article_id = jQuery('#category_article_id').val();
+		if($('#category_article_id').length>0) {
+			var category_article_id = $('#category_article_id').val();
 			if(category_article_id=='' || category_article_id==undefined) {
 				alert("Devi scegliere la categoria da associare");
-				jQuery('#category_article_id').focus();
+				$('#category_article_id').focus();
 				return false;
 			}
 		}
-		var deliminatore = jQuery('#deliminatore').val();
+		var deliminatore = $('#deliminatore').val();
 		if(deliminatore=='' || deliminatore==undefined) {
 			alert("Devi scegliere il deliminatore dei valori nel file .csv");
-			jQuery('#deliminatore').focus();
+			$('#deliminatore').focus();
 			return false;
 		}		
 		return true;

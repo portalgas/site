@@ -3,34 +3,27 @@ App::uses('AppModel', 'Model');
 
 class StatCart extends AppModel {
 	
-	public $belongsTo = array(
-			'User' => array(
+	public $belongsTo =[
+			'User' =>[
 					'className' => 'User',
 					'foreignKey' => 'user_id',
 					'conditions' => 'User.organization_id = StatCart.organization_id',
 					'fields' => '',
 					'order' => ''
-			),
-			'Article' => array(
-					'className' => 'Article',
-					'foreignKey' => 'article_id',
-					'conditions' => 'Article.organization_id = StatCart.organization_id',
-					'fields' => '',
-					'order' => ''
-			),
-			'StatOrder' => array(
-					'className' => 'Order',
-					'foreignKey' => 'stat_order_id',
-					'conditions' => 'StatCartOrder.organization_id = StatCart.organization_id',
-					'fields' => '',
-					'order' => ''
-			),
-			'StatArticlesOrder' => array(
+			],
+			'StatArticlesOrder' =>[
 					'className' => 'StatArticlesOrder',
 					'foreignKey' => '',
-					'conditions' => 'StatArticlesOrder.organization_id = StatCart.organization_id AND StatArticlesOrder.order_id = StatCart.order_id AND StatArticlesOrder.article_id = StatCart.article_id',
+					'conditions' => 'StatArticlesOrder.organization_id = StatCart.organization_id AND StatArticlesOrder.stat_order_id = StatCart.stat_order_id AND StatArticlesOrder.article_id = StatCart.article_id and StatArticlesOrder.article_organization_id = StatCart.article_organization_id',
 					'fields' => '',
 					'order' => ''
-			),
-	);	
+			],
+			'StatOrder' => array(
+					'className' => 'StatOrder',
+					'foreignKey' => 'stat_order_id',
+					'conditions' => 'StatOrder.organization_id = StatCart.organization_id',
+					'fields' => '',
+					'order' => ''
+			),			
+	];	
 }

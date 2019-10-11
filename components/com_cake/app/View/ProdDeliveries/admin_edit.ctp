@@ -8,11 +8,11 @@ echo $this->Form->input('id');
 echo $this->Form->input('prod_group_id');
 echo $this->Form->input('name');
 echo $this->Form->value('ProdDelivery.data_inizio');
-echo $this->Form->input('data_inizio',array('type' => 'text','size'=>'30','label' => __('Data inizio'), 'value' => $this->Time->i18nFormat($this->Form->value('ProdDelivery.data_inizio'),"%A, %e %B %Y")));
+echo $this->Form->input('data_inizio',array('type' => 'text','size'=>'30','label' => __('DataInizio'), 'value' => $this->Time->i18nFormat($this->Form->value('ProdDelivery.data_inizio'),"%A, %e %B %Y")));
 echo $this->Ajax->datepicker('ProdDeliveryDataInizio',array('dateFormat' => 'DD, d MM yy','altField' => '#ProdDeliveryDataInizioDb', 'altFormat' => 'yy-mm-dd'));
 echo '<input type="hidden" id="ProdDeliveryDataInizioDb" name="data[ProdDelivery][data_inizio_db]" value="'.$this->Form->value('ProdDelivery.data_inizio').'" />';
 
-echo $this->Form->input('data_fine',array('type' => 'text','size'=>'30','label' => __('Data fine'), 'value' => $this->Time->i18nFormat($this->Form->value('ProdDelivery.data_fine'),"%A, %e %B %Y")));
+echo $this->Form->input('data_fine',array('type' => 'text','size'=>'30','label' => __('DataFine'), 'value' => $this->Time->i18nFormat($this->Form->value('ProdDelivery.data_fine'),"%A, %e %B %Y")));
 echo $this->Ajax->datepicker('ProdDeliveryDataFine',array('dateFormat' => 'DD, d MM yy','altField' => '#ProdDeliveryDataFineDb', 'altFormat' => 'yy-mm-dd'));
 echo '<input type="hidden" id="ProdDeliveryDataFineDb" name="data[ProdDelivery][data_fine_db]" value="'.$this->Form->value('ProdDelivery.data_fine').'" />';
 
@@ -24,7 +24,7 @@ if($user->organization['Organization']['hasVisibility']=='Y') {
 												   		    'after'=>$this->App->drawTooltip(null,__('toolTipIsVisibleBackOfficeProdDelivery'),$type='HELP')));
 }
 
-echo $this->Form->input('ricorrenza_num',  array('type' => 'text', 'size'=>'4', 'class' => 'noWidth', 'value' => $ricorrenza_num, 'required'=>'false'));
+echo $this->Form->input('ricorrenza_num',  array('type' => 'text', 'size'=>'4',  'value' => $ricorrenza_num, 'required'=>'false'));
 echo $this->Form->input('ricorrenza_type',array('options' => $ricorrenza_type,
 		'default' => '',
 		'required'=>'false'));		

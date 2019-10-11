@@ -11,7 +11,7 @@
 	<?php
 	if(!empty($results)) {
 	?>	
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover table-striped">	
 	<thead>
 	<tr>
 			<th>N</th>
@@ -26,84 +26,75 @@
 	</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($results as $numResult => $result):
-	?>
-		<tr class="view">
-			<td><?php echo ($numResult+1);?></td>
-			<td style="white-space:nowrap;">
-				<?php 
-				echo $this->Time->i18nFormat($result['LoopsDelivery']['data_master_reale'],"%A %e %B %Y"); 
-				?>
-			</td>
-			<td style="white-space:nowrap;">
-				<?php 
-				echo $this->Time->i18nFormat($result['LoopsDelivery']['data_copy_reale'],"%A %e %B %Y"); 
-				?>
-			</td>
-			<td>
-				<?php 
-				echo 'Luogo '.$result['LoopsDelivery']['luogo'].'<br />';
-				echo 'Orario, dalle ore '.$this->App->formatOrario($result['LoopsDelivery']['orario_da']).'&nbsp;alle&nbsp;'.$this->App->formatOrario($result['LoopsDelivery']['orario_a']).'<br />'; 
-				if(!empty($result['LoopsDelivery']['nota']))  echo '<div class="small">'.$result['LoopsDelivery']['nota'].'</div>';
-				?>		
-			</td>
-			<td class="nota_evidenza_<?php echo strtolower($result['LoopsDelivery']['nota_evidenza']); ?>">&nbsp;</td>
-			<td>
-				<?php
-				if($result['LoopsDelivery']['type']=='WEEK') echo "Settimanale";
+	<?php foreach ($results as $numResult => $result) {
+		
+		echo '<tr class="view">';
+		echo '<td><?php echo ($numResult+1);?></td>';
+		echo '<td style="white-space:nowrap;">';
+		echo $this->Time->i18nFormat($result['LoopsDelivery']['data_master_reale'],"%A %e %B %Y"); 
+		echo '</td>';
+		echo '<td style="white-space:nowrap;">';
+		echo $this->Time->i18nFormat($result['LoopsDelivery']['data_copy_reale'],"%A %e %B %Y"); 
+		echo '</td>';
+		echo '<td>';
+		echo 'Luogo '.$result['LoopsDelivery']['luogo'].'<br />';
+		echo 'Orario, dalle ore '.$this->App->formatOrario($result['LoopsDelivery']['orario_da']).'&nbsp;alle&nbsp;'.$this->App->formatOrario($result['LoopsDelivery']['orario_a']).'<br />'; 
+		if(!empty($result['LoopsDelivery']['nota']))  echo '<div class="small">'.$result['LoopsDelivery']['nota'].'</div>';
+		echo '</td>';
+		echo '<td class="nota_evidenza_'.strtolower($result['LoopsDelivery']['nota_evidenza']).'">&nbsp;</td>';
+		echo '<td>';
+		if($result['LoopsDelivery']['type']=='WEEK') echo "Settimanale";
+		else
+		if($result['LoopsDelivery']['type']=='MONTH') echo "Mensile";
+		echo '</td>';			
+		echo '<td>';
+		if($result['LoopsDelivery']['type']=='WEEK') {
+			if($result['LoopsDelivery']['week_every_week']==1)
+				echo ' ogni settimana';
+			else
+				echo ' ogni '.$result['LoopsDelivery']['week_every_week'].' settimane';
+		}
+		else
+		if($result['LoopsDelivery']['type']=='MONTH') {					
+			if($result['LoopsDelivery']['type_month']=='MONTH1') {
+				echo ' il '.$result['LoopsDelivery']['month1_day'].' di';
+				if($result['LoopsDelivery']['month1_every_month']==1)
+					echo ' ogni mese';
+				else	
+					echo ' '.$result['LoopsDelivery']['month1_every_month'].' mese';
+			}
+			else
+			if($result['LoopsDelivery']['type_month']=='MONTH2') {
+				echo $this->App->traslateEnum($result['LoopsDelivery']['month2_every_type']).' '.$this->App->traslateEnum($result['LoopsDelivery']['month2_day_week']);
+				if($result['LoopsDelivery']['month2_every_month']==1)
+					echo ' ogni mese';
 				else
-				if($result['LoopsDelivery']['type']=='MONTH') echo "Mensile";
-				?>
-			</td>			
-			<td>
-				<?php
-				if($result['LoopsDelivery']['type']=='WEEK') {
-					if($result['LoopsDelivery']['week_every_week']==1)
-						echo ' ogni settimana';
-					else
-						echo ' ogni '.$result['LoopsDelivery']['week_every_week'].' settimane';
-				}
-				else
-				if($result['LoopsDelivery']['type']=='MONTH') {					
-					if($result['LoopsDelivery']['type_month']=='MONTH1') {
-						echo ' il '.$result['LoopsDelivery']['month1_day'].' di';
-						if($result['LoopsDelivery']['month1_every_month']==1)
-							echo ' ogni mese';
-						else	
-							echo ' '.$result['LoopsDelivery']['month1_every_month'].' mese';
-					}
-					else
-					if($result['LoopsDelivery']['type_month']=='MONTH2') {
-						echo $this->App->traslateEnum($result['LoopsDelivery']['month2_every_type']).' '.$this->App->traslateEnum($result['LoopsDelivery']['month2_day_week']);
-						if($result['LoopsDelivery']['month2_every_month']==1)
-							echo ' ogni mese';
-						else
-							echo ' ogni '.$result['LoopsDelivery']['month2_every_month'].' mesi';
-					}
-				} // end if($result['LoopsDelivery']['type']=='MONTH')
-			 ?>
-			 
-			 <?php 
-			 if($result['LoopsDelivery']['data_master']!=$result['LoopsDelivery']['data_master_reale'])
-					echo '<div class="small">La data relae per calcolare la consegna ricorsiva è '.$this->Time->i18nFormat($result['LoopsDelivery']['data_master'],"%A %e %B %Y").'</div>'; 
-			 ?>
-			 </td>
-			<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['LoopsDelivery']['created']); ?></td>
-			<td><?php echo $result['User']['name']; ?></td>
-			<td class="actions-table-img">
-			<?php
-			echo $this->Html->link(null, array('action' => 'edit', $result['LoopsDelivery']['id']),array('class' => 'action actionEdit','title' => __('Edit'))); 
-			echo $this->Html->link(null, array('action' => 'delete', $result['LoopsDelivery']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
-			?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</tbody>
-	</table>
-	<?php 	
+					echo ' ogni '.$result['LoopsDelivery']['month2_every_month'].' mesi';
+			}
+		} // end if($result['LoopsDelivery']['type']=='MONTH')
+	
+	 if($result['LoopsDelivery']['data_master']!=$result['LoopsDelivery']['data_master_reale'])
+			echo '<div class="small">La data reale per calcolare la consegna ricorsiva è '.$this->Time->i18nFormat($result['LoopsDelivery']['data_master'],"%A %e %B %Y").'</div>'; 
+	 
+		echo '</td>';
+		echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['LoopsDelivery']['created']).'</td>';
+		echo '<td>'.$result['User']['name'].'</td>';
+		if($isRoot) {
+			echo '<td class="actions-table-img-3">';
+			echo $this->Html->link(null, array('action' => 'testing', $result['LoopsDelivery']['id']),array('class' => 'action actionConfig','title' => __('Testing')));
+		}
+		else
+			echo '<td class="actions-table-img">'; 
+		echo $this->Html->link(null, array('action' => 'edit', $result['LoopsDelivery']['id']),array('class' => 'action actionEdit','title' => __('Edit'))); 
+		echo $this->Html->link(null, array('action' => 'delete', $result['LoopsDelivery']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
+		echo '</td>';
+		echo '</tr>';
+	}
+		echo '</tbody>';
+		echo '</table></div>';
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora consegne ricorsive"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora consegne ricorsive"));
 	
 echo '</div>';
 ?>

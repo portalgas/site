@@ -26,9 +26,9 @@ if (!empty($results)) {
 		$html .= '<tr>';		
 		$html .= '<th width="'.$output->getCELLWIDTH30().'">N.</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('User').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Importo Dovuto').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Importo Pagato').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Differenza').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Importo_dovuto').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Importo_pagato').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Delta').'</th>';
 			if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
 			$html .= '<th width="'.$output->getCELLWIDTH50().'">'.__('Importo POS').'</th>';
 			$html .= '<th width="'.$output->getCELLWIDTH50().'">'.__('Cassa').'</th>';
@@ -63,9 +63,9 @@ if (!empty($results)) {
 			$html .= '<tr>';
 			$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.($numResult+1).'</td>';
 			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
-			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo.' &euro;</td>';
-			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo_pagato.' &euro;</td>';
-			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$differenza.' &euro;</td>';
+			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo.'&nbsp;&euro;</td>';
+			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo_pagato.'&nbsp;&euro;</td>';
+			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$differenza.'&nbsp;&euro;</td>';
 			if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
 				$html .= '	<td width="'.$output->getCELLWIDTH50().'">'.$result['SummaryDeliveriesPos']['importo_e'].'</td>';
 				$html .= '	<td width="'.$output->getCELLWIDTH50().'">'.$importo_cash.'</td>';
@@ -95,15 +95,15 @@ if (!empty($results)) {
 	$html .= '<tr>';
 	$html .= '	<th width="'.$output->getCELLWIDTH30().'"></th>';
 	$html .= '	<th style="text-align:right" width="'.$output->getCELLWIDTH100().'"><b>Totali</b>&nbsp;&nbsp;&nbsp;</th>';
-	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_delivery.' &euro;</th>';
-	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_pagato_delivery.' &euro;</th>';
-	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_differenza_delivery.' &euro;</th>';
+	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_delivery.'&nbsp;&euro;</th>';
+	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_pagato_delivery.'&nbsp;&euro;</th>';
+	$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_differenza_delivery.'&nbsp;&euro;</th>';
 	if($user->organization['Organization']['hasFieldPaymentPos']=='Y') {
-		$html .= '	<th width="'.$output->getCELLWIDTH50().'">'.$tot_importo_pos.' &euro;</th>';
-		$html .= '	<th width="'.$output->getCELLWIDTH50().'">'.$tot_importo_cash.' &euro;</th>';
+		$html .= '	<th width="'.$output->getCELLWIDTH50().'">'.$tot_importo_pos.'&nbsp;&euro;</th>';
+		$html .= '	<th width="'.$output->getCELLWIDTH50().'">'.$tot_importo_cash.'&nbsp;&euro;</th>';
 	}
 	else {
-		$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_cash.' &euro;</th>';
+		$html .= '	<th width="'.$output->getCELLWIDTH100().'">'.$tot_importo_cash.'&nbsp;&euro;</th>';
 	}		
 	$html .= '	<th width="'.$output->getCELLWIDTH100().'"></th>';
 	$html .= '</tr>';
@@ -120,4 +120,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

@@ -1,75 +1,90 @@
 <?php
-/*
-echo "<pre>";
-print_r($this->request->data);
-echo "</pre>";
-*/
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($this->request->data, false);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
 $this->Html->addCrumb(__('View Article'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
-echo '<div class="articles form">';
+echo '<div class="contentMenuLaterale">';
 
 echo $this->Form->create('Article',array('id'=>'formGas'));
 ?>
 	<fieldset>
 		<legend><?php echo __('View Article'); ?></legend>
 
-         <div class="tabs">
-             <ul>
-                 <li><a href="#tabs-0"><span><?php echo __('Dati articolo'); ?></span></a></li>
-                 <li><a href="#tabs-1"><span><?php echo __('Prezzo'); ?></span></a></li>
-                 <li><a href="#tabs-2"><span><?php echo __('Condizioni d\'acquisto'); ?></span></a></li>
-                 <li><a href="#tabs-3"><span><?php echo __('Immagine'); ?></span></a></li>
-             </ul>
+		<?php
+			echo '<div class="tabs">';
+			echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
+			echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati articolo').'</a></li>';
+			echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Price').'</a></li>';
+			echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Condizioni d\'acquisto').'</a></li>';
+			echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Img').'</a></li>';			
+			echo '</ul>';
 
-             <div id="tabs-0">
-					<?php
+			echo '<div class="tab-content">';
+			echo '<div class="tab-pane fade active in" id="tabs-0">';
+			
+					/*
+					 * dati owner_articles listino REFERENT / DES / SUPPLIER 
+					 */	
+					if(isset($organizationResults)) {
+						echo '<div class="input text ">';
+						echo '<label>'.__('organization_owner_articles').'</label> ';
+						echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organizationResults['Organization']['img1'].'" alt="'.$organizationResults['Organization']['name'].'" /> ';	
+						echo $organizationResults['Organization']['name']; 
+						echo '</div>';
+					}
+	
 					echo '<div class="input text ">';
-					echo '<label>'.__('SuppliersOrganization').'</label>';
+					echo '<label>'.__('SuppliersOrganization').'</label> ';
 					echo $this->request->data['SuppliersOrganization']['name'];
 					echo '</div>';
 					
 					if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') {
 						echo '<div class="input text ">';
-						echo '<label>'.__('Category').'</label>';
+						echo '<label>'.__('Category').'</label> ';
 						echo $this->request->data['CategoriesArticle']['name'];
 						echo '</div>';						
 					}
 		
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
 						echo '<div class="input text ">';
-						echo '<label>'.__('Code').'</label>';
+						echo '<label>'.__('Code').'</label> ';
 						echo $this->request->data['Article']['codice'];
 						echo '</div>';						
 					}
 					
+					echo '<div class="input text ">';
+					echo '<label>'.__('Name').'</label> ';
+					echo $this->request->data['Article']['name'];
+					echo '</div>';
+						
 					if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y') {
 						echo '<div class="input text ">';
-						echo '<label>'.__('Ingredienti').'</label>';
+						echo '<label>'.__('Ingredienti').'</label> ';
 						echo $this->request->data['Article']['ingredienti'];
 						echo '</div>';						
 					}
 					
 					echo '<div class="input text ">';
-					echo '<label>'.__('Nota').'</label>';
+					echo '<label>'.__('Nota').'</label> ';
 					echo $this->request->data['Article']['nota'];
 					echo '</div>';						
-					?>
-				</div>
-            <div id="tabs-1">
-						<?php
+
+			echo '</div>';
+			echo '<div class="tab-pane fade" id="tabs-1">';					
+					
 							echo "\r\n";
 							echo '<table>';
 							echo '<tr>';
-							echo '<th colspan="2" style="text-align:center;border-bottom:medium none;">Confezione</th>';
+							echo '<th colspan="2" style="text-align:center;border-bottom:medium none;">'.__('Package').'</th>';
 							echo '<th rowspan="2">Prezzo</th>';
 							echo '<th rowspan="2">Prezzo/UM (Unit&agrave; di misura di riferimento)</th>';
 							echo '</tr>';
 
 							echo '<tr>';
-							echo '<th style="width:135px;">Quantit&agrave;</th>';
+							echo '<th style="width:135px;">'.__('qta').'</th>';
 							echo '<th style="width:135px;">Unit&agrave; di misura</th>';
 							echo '<tr>';
 								
@@ -93,80 +108,67 @@ echo $this->Form->create('Article',array('id'=>'formGas'));
 							echo '</tr>';
 							echo '</table>';
 							echo "\r\n";							
-					?>
-			</div>
-			<div id="tabs-2">
-					<?php
+
+			echo '</div>';
+			echo '<div class="tab-pane fade" id="tabs-2">';							
+							
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('qta_minima').'</label>';
+					echo '<label style="width:30% !important">'.__('qta_minima').'</label> ';
 					echo $this->request->data['Article']['qta_minima'];
 					echo '</div>';	
 
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('qta_massima').'</label>';
+					echo '<label style="width:30% !important">'.__('qta_massima').'</label> ';
 					echo $this->request->data['Article']['qta_massima'];
 					echo '</div>';	
 
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('pezzi_confezione').'</label>';
+					echo '<label style="width:30% !important">'.__('pezzi_confezione').'</label> ';
 					echo $this->request->data['Article']['pezzi_confezione'];
 					echo '</div>';	
 
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('qta_multipli').'</label>';
+					echo '<label style="width:30% !important">'.__('qta_multipli').'</label> ';
 					echo $this->request->data['Article']['qta_multipli'];
 					echo '</div>';	
 
 					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
 						echo '<div class="input text ">';
-						echo '<label style="width:30% !important">'.__('alert_to_qta').'</label>';
+						echo '<label style="width:30% !important">'.__('alert_to_qta').'</label> ';
 						echo $this->request->data['Article']['alert_to_qta'];
 						echo '</div>';	
 					}
 
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('qta_minima_order').'</label>';
+					echo '<label style="width:30% !important">'.__('qta_minima_order').'</label> ';
 					echo $this->request->data['Article']['qta_minima_order'];
 					echo '</div>';
 					
 					echo '<div class="input text ">';
-					echo '<label style="width:30% !important">'.__('qta_massima_order').'</label>';
+					echo '<label style="width:30% !important">'.__('qta_massima_order').'</label> ';
 					echo $this->request->data['Article']['qta_massima_order'];
 					echo '</div>';	
-					?>
-			</div>
-			<div id="tabs-3">
-					<?php
+
+			echo '</div>';
+			echo '<div class="tab-pane fade" id="tabs-3">';					
+					
 					if(!empty($this->request->data['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$this->request->data['Article']['organization_id'].DS.$this->request->data['Article']['img1'])) {
-						echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$this->request->data['Article']['organization_id'].'/'.$this->request->data['Article']['img1'].'" />';
+						echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$this->request->data['Article']['organization_id'].'/'.$this->request->data['Article']['img1'].'" />';
 					}	
-					?>
-				</div>
-			</div>
-	</fieldset>
-<?php 
+
+			echo '</div>';
+			echo '</div>'; // tab-content
+			echo '</div>';
+			echo '</fieldset>';
+			
 if(!empty($sort)) echo $this->Form->hidden('sort',array('value'=>$sort));
 if(!empty($direction)) echo $this->Form->hidden('direction',array('value'=>$direction));
 if(!empty($page)) echo $this->Form->hidden('page',array('value'=>$page));
 
 echo $this->Form->end();
-?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List Articles'), array('action' => 'context_articles_index',null,
-																	'sort:'.$sort,'direction:'.$direction,'page:'.$page),
-																	array('class'=>'action actionReload'));?></li>
-	</ul>
-</div>
+echo '</div>';
 
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(function() {
-		jQuery( ".tabs" ).tabs({
-			event: "click"
-		});
-	});	
-});
-</script>
+$links = [];
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles').' </span><span class="fa fa-reply"></span>', array('controller' => 'Articles', 'action' => 'context_articles_index'), ['class' => 'animate', 'escape' => false]);
+echo $this->Menu->draw($links);
+?>

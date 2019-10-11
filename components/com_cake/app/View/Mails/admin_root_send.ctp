@@ -1,25 +1,25 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Mails'),array('controller'=>'Mails','action'=>'root_index'));
 $this->Html->addCrumb(__('Send Mail'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-<div class="mails">
-	<h2 class="ico-mails">
-		<?php echo __('Send Mail');?>
-	<div class="actions-img">
-	<ul>
-		<li><?php echo $this->Html->link(__('List Mails'), array('action' => 'root_index'),array('class' => 'action actionConfig','title' => __('List Mails'))); ?></li>
-	</ul>
-	</div>
-	</h2>
+
+echo '<div class="mails">';
+echo '<h2 class="ico-mails">';
+echo __('Send Mail');
+echo '<div class="actions-img">';
+echo '<ul>';
+echo '<li>'.$this->Html->link(__('List Mails'), ['action' => 'root_index'], ['class' => 'action actionConfig','title' => __('List Mails')]).'</li>';
+echo '</ul>';
+echo '</div>';
+echo '</h2>';
 
 
-<?php echo $this->Form->create('Mail',array('id'=>'formGas','enctype' => 'multipart/form-data'));?>
+echo $this->Form->create('Mail', ['id'=>'formGas','enctype' => 'multipart/form-data']);
 
-	<fieldset>
-		<legend><?php echo __('Send Mail'); ?></legend>
-	<?php
+echo '<fieldset>';
+echo '<legend>'.__('Send Mail').'</legend>';
+	
 		$i=0;
 		echo $this->Form->input('mittenti', array('options' => $mittenti, 'value' => Configure::read('Mail.no_reply_mail'), 'label'=>__('A chi rispondere'),'tabindex'=>($i+1)));
 
@@ -34,11 +34,19 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '</div>';
 	
 		/*
-		 * organizations
+		 * organizations GAS
 		 */
-		echo '<div id="organization" style="display:block;">';
-		$label = __('Organization').'&nbsp;('.count($organizationResults).')';
-		echo $this->Form->input('organizations',array('label' => $label,'options' => $organizationResults,'escape' => false,'multiple' => true));
+		echo '<div id="gas" style="display:block;">';
+		$label = __('GasOrganizations').' '.__('GasOrganizations').'&nbsp;('.count($organizationResults).')';
+		echo $this->Form->input('gas',array('label' => $label,'options' => $organizationResults,'escape' => false,'multiple' => true));
+		echo '</div>';
+		
+		/*
+		 * organizations PRODGAS
+		 */		
+		echo '<div id="prodgas" style="display:block;">';
+		$label = __('ProdGasOrganization').' '.__('ProdGasOrganizations').'&nbsp;('.count($organizationProdGasResults).')';
+		echo $this->Form->input('prodgas',array('label' => $label, 'options' => $organizationProdGasResults,'escape' => false,'multiple' => true));
 		echo '</div>';
 		
 		/*
@@ -65,17 +73,16 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '</div>';		
 		
 		echo '<div class="clearfix"></div>';
-		echo $this->Form->input('Document.img1', array(
-													'label' => 'Allegato',
-												    'between' => '<br />',
-												    'type' => 'file'
-												));	
+		echo $this->Form->input('Document.img1', ['label' => 'Allegato',
+												'between' => '<br />',
+												'type' => 'file']);	
 		
 		echo '</fieldset>';
 		
 		echo $this->Form->end(__('Send'));
 		?>
 </div>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -109,7 +116,7 @@ $(document).ready(function() {
 
 	$('#formGas').submit(function() {
 
-		if(dest_options=='ORGANIZATIONS') {
+		if(dest_options=='GAS' || dest_options=='PRODGAS') {
 			var dest_options_qta_gas = $("input[name='data[Mail][dest_options_qta_gas]']:checked").val();
 		}
 		else	
@@ -164,8 +171,9 @@ function choiceDestOptions() {
 	$('#Maildest_options_qta_gasSOME').attr('disabled',false);
 
 	
-	if(dest_options=='ORGANIZATIONS') {
-		$('#organization').css('display','block');
+	if(dest_options=='GAS') {
+		$('#gas').css('display','block');
+		$('#prodgas').css('display','none');
 		$('#suppliersorganization').css('display','none');
 		
 		$('#dest_options_qta_supplier').hide();
@@ -173,13 +181,31 @@ function choiceDestOptions() {
 		$('#Maildest_options_qta_gasSOME').attr('disabled',false);
 		
 		if(dest_options_qta_gas=='ALL') {
-			$('#organization').css('display','none');
+			$('#gas').css('display','none');
+			$('#prodgas').css('display','none');
+			$('#suppliersorganization').css('display','none');
+		}			
+	}
+	else	
+	if(dest_options=='PRODGAS') {
+		$('#prodgas').css('display','block');
+		$('#gas').css('display','none');
+		$('#suppliersorganization').css('display','none');
+		
+		$('#dest_options_qta_supplier').hide();
+		$('#dest_options_qta_gas').show();			
+		$('#Maildest_options_qta_gasSOME').attr('disabled',false);
+		
+		if(dest_options_qta_gas=='ALL') {
+			$('#gas').css('display','none');
+			$('#prodgas').css('display','none');
 			$('#suppliersorganization').css('display','none');
 		}			
 	}
 	else	
 	if(dest_options=='SUPPLIERS') {
-		$('#organization').css('display','none');
+		$('#gas').css('display','none');
+		$('#prodgas').css('display','none');
 		$('#suppliersorganization').css('display','block');
 		
 		$('#dest_options_qta_supplier').show();
@@ -187,7 +213,8 @@ function choiceDestOptions() {
 		$('#Maildest_options_qta_supplierSOME').attr('disabled',false);
 		
 		if(dest_options_qta_supplier=='ALL') {
-			$('#organization').css('display','none');
+			$('#gas').css('display','none');
+			$('#prodgas').css('display','none');
 			$('#suppliersorganization').css('display','none');
 		}			
 	}

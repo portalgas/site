@@ -11,6 +11,12 @@ class CashesUser extends AppModel {
      */
     public function getTotImportoAcquistato($user, $user_id, $debug=false) {
 
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+		
+		$stateCodeUsersCash = $OrderLifeCycle->getStateCodeUsersCash($user);
+		$stateCodeUsersCash = "'".implode("','", $stateCodeUsersCash)."'";
+		
     	$tot_importo = '0.00';
 		$zero = floatval(0);
 		
@@ -25,13 +31,14 @@ class CashesUser extends AppModel {
 					ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
 				    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
 				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
-				    and Cart.user_id = ".$user_id."
+				    and Cart.user_id = $user_id
 				    and Cart.order_id = `Order`.id  
 				    and Cart.article_organization_id = ArticlesOrder.article_organization_id
 				    and Cart.article_id = ArticlesOrder.article_id  
 				    and ArticlesOrder.order_id = `Order`.id  
 				    and Cart.deleteToReferent = 'N' 
-				    and `Order`.isVisibleBackOffice = 'Y'";
+				    and `Order`.isVisibleBackOffice = 'Y'
+					and `Order`.state_code not in ($stateCodeUsersCash)";
 		self::d($sql, $debug); 
 		$results = $this->query($sql);
 

@@ -1,0 +1,45 @@
+<div ng-class="{strike: deleted, bold: important, 'has-error': error}" class="item item-body item-text-wrap" 
+ ng-mouseenter="count = count + 1; viewSubmitCart = true" ng-init="count = 0" 
+ ng-mouseleave="count = count - 1; viewSubmitCart = false; result.esitoCart=null; result.msg=null;ctrlCartSave(result);">
+
+	<span ng-if="result.msg != null && result.msg != ''" class="badge badge-positive">Se ne possono acquistare<br />{{result.msg}}</span>
+	<span ng-if="result.msgCartSave != null && result.msgCartSave != ''" class="badge button-large badge-assertive">{{result.msgCartSave}}</span>
+
+	<img class="item-avatar-right" ng-src="http://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" ng-if="result.Article_img1 != null && result.Article_img1 != ''" />
+	<div>
+		<h2>{{result.ArticlesOrder_name}}</h2> <span ng-if="result.Article_bio == 'Y'" class="bio" title="Biologico o biodinamico"></span>
+	</div>
+	
+	<div>
+		<p>Confezione {{result.Article_qta}} {{result.Article_um}}</p>
+		<p>Prezzo/UM {{result.ArticlesOrder_prezzo| getArticlePrezzoUM:result.Article_qta:result.Article_um:result.Article_um_riferimento| htmlToPlaintext}}</p>		
+		<p ng-show="isLogged">Prezzo unit&agrave; {{(result.ArticlesOrder_prezzo| number:2) + " &euro;"}}</p>
+	</div>
+
+
+	<div class="row" ng-show="isLogged && isOrderToCart && count > 0"> 
+		<div class='item item-input-inset' style="border:0px solid;">
+			<button class="button button-small icon ion-minus" ng-click='viewSubmitCart = true; qtaLess(result);' style="margin-right: 10px;"></button>
+			<label class="item-input-wrapper">
+				{{result.Cart_qta}}
+			</label>
+			<button class="button button-small icon ion-plus" ng-click='viewSubmitCart = true; qtaAdd(result);'></button>
+		</div>
+
+		<button ng-show="(result.Cart_qta != result.Cart_qta_orig) && (viewSubmitCart)" 
+					class="icon-left ion-play button button-positive animate-show submitCart" 
+					style="float:right;" ng-click="viewSubmitCart = false; managementCart(result);"> Salva</button>
+
+		<span ng-if="result.esitoCart.esito == 'NO'" class="badge badge-assertive">{{result.esitoCart.msg}}</span>
+		<span ng-if="result.esitoCart.esito == 'OK'" class="badge badge-energized">{{result.esitoCart.msg}}</span>
+
+	</div>
+		
+	<div class="cartQta button" ng-show="isLogged && isOrderToCart && result.Cart_qta != 0 && result.Cart_qta_orig != 0" style="background-color:#F8FBDE">
+		<p ng-show="result.Cart_qta == 1"><span><i data-tags="images, levels, light, dark, settings" data-pack="default" class="ion-wand"></i></span> Acquistata {{result.Cart_qta}} conf: {{(result.Cart_qta * result.ArticlesOrder_prezzo| number:2) + " &euro;"}}</p>
+		<p ng-show="result.Cart_qta > 1"><span><i data-tags="images, levels, light, dark, settings" data-pack="default" class="ion-wand"></i></span> Acquistate {{result.Cart_qta}} conf: {{(result.Cart_qta * result.ArticlesOrder_prezzo| number:2) + " &euro;"}}</p>
+	</div>
+	<div class="cartQta" ng-show="isLogged && result.Cart_qta != result.Cart_qta_orig">
+		<p>Importo {{(result.Cart_qta * result.ArticlesOrder_prezzo| number:2) + " &euro;"}}</p>								  
+	</div>	
+</div> 

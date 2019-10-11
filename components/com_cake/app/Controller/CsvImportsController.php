@@ -12,7 +12,8 @@ class CsvImportsController extends AppController {
 	
 		$this->array_um = ClassRegistry::init('Article')->enumOptions('um');
 		$this->set('array_um', $this->array_um);
-		$this->set('array_y_n', $this->array_y_n);	}
+		$this->set('array_y_n', $this->array_y_n);
+	}
 
 	public function admin_users() {
 		
@@ -882,8 +883,9 @@ class CsvImportsController extends AppController {
 		$supplier_organization_id = $this->request->data['CsvImport']['supplier_organization_id'];
 		$file1 = $this->request->data['Document']['file1'];
 		$deliminatore = ',';
-		$version = $this->request->data['CsvImport']['version'];
-		
+		$version = 'COMPLETE';
+		$this->set(compact('version'));
+
 		if(empty($supplier_organization_id) || $file1['size']==0) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -891,6 +893,9 @@ class CsvImportsController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {	
 		
+			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
+			$this->set(compact('struttura_file'));	
+
 			$result = $this->_readFileSend($file1, $deliminatore, $version, true, $supplier_organization_id, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
@@ -1034,7 +1039,7 @@ class CsvImportsController extends AppController {
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_articles_index&FilterArticleSupplierId='.$supplier_organization_id;
 			}
 			else 
-				$url = ['action' => 'articles_import'];
+				$url = ['action' => 'articles_form_import'];
 
 			self::d($msg, $debug);
 			self::d($url, $debug);			
@@ -1067,7 +1072,7 @@ class CsvImportsController extends AppController {
 
 		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version, $debug);
 		self::d($struttura_file);
-		
+
 		$results = [];
 		if($file['error'] == UPLOAD_ERR_OK && is_uploaded_file($file['tmp_name'])) {
 

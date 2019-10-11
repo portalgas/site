@@ -28,7 +28,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) 
 			$supplier_organization_id = $this->request->data['SuppliersOrganizationsJcontent']['supplier_organization_id'];
 		
-		$SuppliersOrganization->id = $supplier_organization_id;		if (!$SuppliersOrganization->exists($this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}			
+		$SuppliersOrganization->id = $supplier_organization_id;		if (!$SuppliersOrganization->exists($SuppliersOrganization->id, $this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}			
 			
 		$this->set('supplier_organization_id', $supplier_organization_id);
 					/*		 * dati produttore		*/

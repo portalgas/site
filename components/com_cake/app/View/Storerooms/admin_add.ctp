@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Storeroom'), array('controller' => 'Storerooms', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Storeroom'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -41,19 +41,19 @@ function add_list_articles() {
 		echo '<fieldset>';
 		echo '<legend>'.__('Add Storeroom').'</legend>';
 		
-		$options = array('id' => 'supplier_organization_id',
+		$options = ['id' => 'supplier_organization_id',
 						 'name'=>'supplier_organization_id',
 						 'onChange' => 'javascript:add_list_articles(this);',
 						 'empty'=> Configure::read('option.empty'),
-						 'options' => $suppliersOrganization);
+						 'options' => $suppliersOrganization];
 		if(count($suppliersOrganization) > Configure::read('HtmlSelectWithSearchNum')) 
-			$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
+			$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 
 
 		/*
 		* $storeroom_id / $supplier_organization_id valorizzati se chiamato da admin_index per modifica
 		*/
 		if(!empty($supplier_organization_id))
-			$options += array('default'=> $supplier_organization_id);
+			$options += ['default'=> $supplier_organization_id];
 		
 		echo $this->Form->input('supplier_organization_id',$options);	
 		

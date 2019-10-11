@@ -26,17 +26,17 @@ class MonitoringOrder extends AppModel {
 	public $validate = array(
 			'organization_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 					),
 			),
 			'order_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 					),
 			),
 			'user_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 					),
 			),
 	);

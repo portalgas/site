@@ -1,13 +1,13 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 if (!empty($results['Order'])):
 ?>
-	<table cellpadding = "0" cellspacing = "0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 		<th></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<th colspan="2"><?php echo __('Supplier'); ?></th>
 		<th><?php echo __('Tesoriere Importo Pay'); ?></th>
 		<th><?php echo __('Tesoriere Data Pay'); ?></th>
@@ -30,7 +30,7 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			echo '<td>';
 			if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
 			echo '</td>';
 			echo '<td>'.$order['SuppliersOrganization']['name'].'</td>';
 
@@ -39,7 +39,7 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			
 			echo '<td>';
-			if($order['tesoriere_data_pay']=='000-00-00')
+			if($order['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
 				$tesoriere_data_pay = '';
 			else
 				$tesoriere_data_pay = $this->Time->i18nFormat($order['tesoriere_data_pay'],"%A, %e %B %Y");
@@ -55,7 +55,7 @@ if (!empty($results['Order'])):
 			echo '</tr>';					
 	endforeach;
 
-	echo '</table>';
+	echo '</table></div>';
 else: 
 	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati"));
 endif; 

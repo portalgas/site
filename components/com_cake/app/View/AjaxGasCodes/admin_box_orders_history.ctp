@@ -8,7 +8,7 @@ else
 echo $this->Form->input('order_id',$options);
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	if(order_id>0)	choiceOrderHistory();
 });
 </script>

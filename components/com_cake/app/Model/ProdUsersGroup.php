@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class ProdUsersGroup extends AppModel {
 
 	/*
@@ -8,9 +9,9 @@ class ProdUsersGroup extends AppModel {
 	 * */
 	public function getUsersListToAssocite($user, $prod_group_id, $debug=false) {
 		
-		$results = $this->__getUsersAssocite($user, $prod_group_id, $debug);
+		$results = $this->_getUsersAssocite($user, $prod_group_id, $debug);
 		
-		$resultsNew = array();
+		$resultsNew = [];
 		foreach ($results as $result) 
 			$resultsNew[$result['User']['id']] = $this->getUserLabel($result);
 		
@@ -19,7 +20,7 @@ class ProdUsersGroup extends AppModel {
 		return $resultsNew;
 	}	
 	
-	private function __getUsersAssocite($user, $prod_group_id, $debug) {
+	private function _getUsersAssocite($user, $prod_group_id, $debug) {
 	
 		App::import('Model', 'User');
 		$User = new User;
@@ -70,7 +71,7 @@ class ProdUsersGroup extends AppModel {
 					AND UserGroup.group_id = ".Configure::read('group_id_user')." ";
 		if(!empty($user_ids)) $sql .= "AND ('User.id not IN ('.$user_ids.')') ";
 		$sql .= " ORDER BY ".Configure::read('orderUser');
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$users = $this->query($sql);
 		}
@@ -125,7 +126,7 @@ class ProdUsersGroup extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -135,7 +136,7 @@ class ProdUsersGroup extends AppModel {
 		),
 		'prod_group_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -145,7 +146,7 @@ class ProdUsersGroup extends AppModel {
 		),
 		'sort' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,

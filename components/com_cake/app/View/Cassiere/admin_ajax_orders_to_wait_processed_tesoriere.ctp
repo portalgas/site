@@ -1,16 +1,16 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
-if (!empty($results['Order'])):
+if (!empty($results['Order'])) {
 ?>
-	<table cellpadding = "0" cellspacing = "0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 		<th></th>
 		<th colspan="2"><?php echo __('Supplier'); ?></th>
 		<th>
-			<?php echo __('Data inizio');?><br />
-			<?php echo __('Data fine');?>
+			<?php echo __('DataInizio');?><br />
+			<?php echo __('DataFine');?>
 		</th>
 		<th><?php echo __('Referenti'); ?></th>
 		<th colspan="3"><?php echo __('Fattura'); ?></th>
@@ -19,10 +19,16 @@ if (!empty($results['Order'])):
 		<th><?php echo __('Actions'); ?></th>
 	</tr>
 	<?php
+		$tot_orders = 0;
 		foreach ($results['Order'] as $numResult => $order):
 
-			if($order['totUserToTesoriere']>0) {
+			/*
+			 * totalSummaryOrderNotPaid (Utenti da passare al tesoriere): totale di tutti i SummaryOrder che non sono stati pagati, se tutti pagati non e' da passare al Tesoriere
+			 */
+			if($order['PaidUsers']['totalSummaryOrderNotPaid']>0) {
 			
+				$tot_orders++;
+				
 				echo '<tr>';
 				
 				echo '<td>';
@@ -31,7 +37,7 @@ if (!empty($results['Order'])):
 				
 				echo '<td>'; 
 				if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-					echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';	
+					echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';	
 				echo '</td>';
 				?>
 				<td><?php echo $order['SuppliersOrganization']['name']; ?></td>
@@ -60,45 +66,31 @@ if (!empty($results['Order'])):
 				
 				echo '<td>';
 				if(!empty($order['tesoriere_nota'])) {
-					
-					echo '<img style="cursor:pointer;" class="tesoriere_nota" id="'.$order['id'].'" src="'.Configure::read('App.img.cake').'/icon-28-info.png" title="Leggi il messaggio del referente" border="0" />';
-					
-					echo '<div id="dialog-msg-'.$order['id'].'" title="Messaggio del referente">';
-					echo '<p>';
-					echo $order['tesoriere_nota'];
-					echo '</p>';
+								
+					echo '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#order_nota_'.$order['id'].'"><i class="fa fa-2x fa-info-circle" aria-hidden="true"></i></button>';
+					echo '<div id="order_nota_'.$order['id'].'" class="modal fade" role="dialog">';
+					echo '<div class="modal-dialog">';
+					echo '<div class="modal-content">';
+					echo '<div class="modal-header">';
+					echo '<button type="button" class="close" data-dismiss="modal">&times;</button>';
+					echo '<h4 class="modal-title">Nota del referente</h4>';
 					echo '</div>';
-					
-					echo '<script type="text/javascript">';
-					echo 'jQuery("#dialog-msg-'.$order['id'].'" ).dialog({';
-					echo "\r\n";
-					echo '	autoOpen: false,';
-					echo "\r\n";
-					echo '	height: 450,';
-					echo "\r\n";
-					echo '	width: 600,';
-					echo "\r\n";
-					echo '	modal: true,';
-					echo "\r\n";
-					echo '	buttons: {';
-					echo "\r\n";
-					echo '		"Chiudi": function() {';
-					echo "\r\n";
-					echo '			jQuery( this ).dialog( "close" );';
-					echo "\r\n";
-					echo '		},';
-					echo "\r\n";
-					echo '	}';
-					echo '});';
-					echo '</script>';
+					echo '<div class="modal-body"><p>'.$result['tesoriere_nota'].'</p>';
+					echo '</div>';
+					echo '<div class="modal-footer">';
+					echo '<button type="button" class="btn btn-primary" data-dismiss="modal">'.__('Close').'</button>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';
+					echo '</div>';
 						
 				} // end if(!empty($order['tesoriere_nota']))
 				echo '</td>';
 				echo '<td style="text-align="center;">';
 				if($order['tesoriere_fattura_importo']>0)
-					echo '<b>'.__('Tesoriere fattura importo Short').'</b> '.number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+					echo '<b>'.__('Tesoriere fattura importo Short').'</b> '.number_format($order['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				if($order['tot_importo']>0)
-					echo '<br /><b>'.__('Importo totale ordine Short').'</b> '.number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+					echo '<br /><b>'.__('Importo totale ordine Short').'</b> '.number_format($order['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				echo '</td>';
 				echo '<td style="background-color:';
 				if($order['tot_importo']=='0.00') echo '#fff';
@@ -111,7 +103,7 @@ if (!empty($results['Order'])):
 					
 				echo '"></td>';
 				
-				echo '<td style="text-align:center">'.$order['totUserToTesoriere'].'</td>';
+				echo '<td style="text-align:center">'.$order['PaidUsers']['totalSummaryOrderNotPaid'].'</td>';
 				
 				echo '<td class="actions-table-img-4">';
 				echo $this->Html->link(null, array('action' => 'order_state_in_WAIT_PROCESSED_TESORIERE', null, 'delivery_id='.$order['delivery_id'].'&order_id='.$order['id']),array('class' => 'action actionFromRefToTes','title' => __('OrdersReferenteInWaitProcessedTesoriere'))); 
@@ -125,28 +117,25 @@ if (!empty($results['Order'])):
 			echo '	<td colspan="9" id="tdViewId-'.$order['id'].'"></td>';
 			echo '</tr>';
 			
-		} // end if($order['totUserToTesoriere']>0) 			
+		} // end if($order['PaidUsers']['totalSummaryOrderNotPaid']>0) 			
 	endforeach;
 
-	echo '</table>';
-
-else: 
-	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati"));
-endif; 
-?>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	echo '</table></div>';
 	
-	jQuery('.actionTrView').each(function () {
-		actionTrView(this);
-	});
+	if($tot_orders==0) 
+		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Gli ordini della consegna ha tutti gli importi dei gasisti pagati"));
+}	
+else { 
+	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati")); 
+}
+?>
+<script type="text/javascript">
+$(document).ready(function() {
 
-	jQuery('.tesoriere_nota').click(function() {
-		var id = jQuery(this).attr('id');
-		jQuery("#dialog-msg-"+id ).dialog("open");
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	
+	$('.actionTrView').each(function () {
+		actionTrView(this);
 	});	
 });
 </script>

@@ -322,7 +322,7 @@ class plgUserJoomla extends JPlugin
 				$app->redirect('http://'.$_SERVER['HTTP_HOST'].'/');
 			}
 						
-			break;
+			// break;
 		}
 			
 		else

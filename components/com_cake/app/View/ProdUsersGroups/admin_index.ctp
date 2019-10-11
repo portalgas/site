@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdGroups'), array('controller' => 'ProdGroups', 'action' => 'index'));
 $this->Html->addCrumb(__('List ProdUsersGroups'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -33,7 +33,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '</ul>';
 	}
 	else
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	
 echo '</div>';
 ?>
@@ -90,18 +90,18 @@ echo '</div>';
 </style>
 
 <script type="text/javascript">     
- jQuery(document).ready(function() {
+ $(document).ready(function() {
 	var original_sort;
 
-	jQuery( "#sortable" ).sortable({
+	$( "#sortable" ).sortable({
 	    start: function(e, ui) {
 	    	original_sort = ui.item.index(); 
 		},
 	    update: function(event, ui) {
 	        var new_sort = ui.item.index(); 				        
 	        
-	        var item = jQuery(ui.item);
-	        var user_id = jQuery(item).find('.cbp_tmicon').attr('id');
+	        var item = $(ui.item);
+	        var user_id = $(item).find('.cbp_tmicon').attr('id');
 	        
 	        var prod_group_id = 1;
 	        
@@ -115,27 +115,27 @@ echo '</div>';
 				url: url,
 				data: "",
 				success: function(response) {
-					jQuery('#esito_'+user_id).css('display', 'block');
-					jQuery('#esito_'+user_id).html("ok");
-					jQuery('#esito_'+user_id).fadeOut(3000);
+					$('#esito_'+user_id).css('display', 'block');
+					$('#esito_'+user_id).html("ok");
+					$('#esito_'+user_id).fadeOut(3000);
 					
 					ricalcola_contatore();
 				},
 				error: function(response){
-					jQuery('#esito_'+user_id).html("error!");
+					$('#esito_'+user_id).html("error!");
 				}
 			});	
 	    }
 	});
-/*	jQuery( "#sortable").disableSelection(); */
-	jQuery( "#sortable").sortable({ cursor: "move" });
-	jQuery( "#sortable").sortable({ placeholder: "placeholder" });
+/*	$( "#sortable").disableSelection(); */
+	$( "#sortable").sortable({ cursor: "move" });
+	$( "#sortable").sortable({ placeholder: "placeholder" });
 });
  
 function ricalcola_contatore() {
-	jQuery('.cbp_tmicon').each(function( index ) {
+	$('.cbp_tmicon').each(function( index ) {
 		var count = (index+1);
-		jQuery(this).html(count);
+		$(this).html(count);
 	});
 }
 </script>

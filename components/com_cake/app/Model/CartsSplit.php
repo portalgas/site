@@ -94,7 +94,7 @@ class CartsSplit extends CartsSplitMultiKey {
 	public $validate = array(
 			'organization_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -104,7 +104,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'user_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -114,7 +114,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'order_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -124,7 +124,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'article_organization_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -134,7 +134,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'article_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -144,7 +144,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'num_split' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,
@@ -154,7 +154,7 @@ class CartsSplit extends CartsSplitMultiKey {
 			),
 			'importo_forzato' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
+							'rule' => ['numeric'],
 							//'message' => 'Your custom message here',
 							//'allowEmpty' => false,
 							//'required' => false,

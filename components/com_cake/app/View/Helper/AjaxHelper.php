@@ -27,7 +27,7 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $helpers = array('Html', 'Javascript', 'Form');
+	var $helpers = ['Html', 'Javascript', 'Form'];
 /**
  * HtmlHelper instance
  *
@@ -47,65 +47,52 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $callbacks = array(
-		'beforeSend', 'complete', 'error', 'success', 'dataFilter'
-	);
+	var $callbacks = ['beforeSend', 'complete', 'error', 'success', 'dataFilter'];
 /**
  * Names of AJAX options.
  *
  * @var array
  */
-	var $ajaxOptions = array(
-		'after', 'async', 'before', 'confirm', 'condition', 'contentType',
-		'form', 'beforeSend', 'complete', 'error',
-		'success', 'parameters',
-		'cache', 'data', 'dataFilter', 'dataType', 'global', 'ifModified', 
-		'jsonp', 'password', 'processData', 'scriptCharset', 'timeout', 'type',
-		'url', 'username', 'xhr', 'with'
-	);
+	var $ajaxOptions = ['after', 'async', 'before', 'confirm', 'condition', 'contentType',
+						'form', 'beforeSend', 'complete', 'error',
+						'success', 'parameters',
+						'cache', 'data', 'dataFilter', 'dataType', 'global', 'ifModified', 
+						'jsonp', 'password', 'processData', 'scriptCharset', 'timeout', 'type',
+						'url', 'username', 'xhr', 'with'];
 /**
  * Options for draggable.
  *
  * @var array
  */
-	var $dragOptions = array(
-        'addClasses', 'appendTo', 'axis', 'cancel', 'connectToSortable', 'containment', 
-        'cursor', 'cursorAt', 'delay', 'distance', 'grid', 'handle', 'helper', 'iframeFix', 
-        'opacity', 'refreshPositions', 'revert', 'revertDuration', 'scope', 'scroll', 
-        'scrollSensitivity', 'scrollSpeed', 'snap', 'snapMode', 'snapTolerance', 'stack', 'zIndex',
-        'start', 'drag', 'stop'
-	);
+	var $dragOptions = ['addClasses', 'appendTo', 'axis', 'cancel', 'connectToSortable', 'containment', 
+				        'cursor', 'cursorAt', 'delay', 'distance', 'grid', 'handle', 'helper', 'iframeFix', 
+				        'opacity', 'refreshPositions', 'revert', 'revertDuration', 'scope', 'scroll', 
+				        'scrollSensitivity', 'scrollSpeed', 'snap', 'snapMode', 'snapTolerance', 'stack', 'zIndex',
+				        'start', 'drag', 'stop'];
 /**
  * Options for droppable.
  *
  * @var array
  */
-	var $dropOptions = array(
-		'accept', 'activeClass', 'addClasses', 'greedy', 'hoverClass', 'scope', 'tolerance',
-		'activate', 'deactivate', 'over', 'out', 'drop'
-	);
+	var $dropOptions = ['accept', 'activeClass', 'addClasses', 'greedy', 'hoverClass', 'scope', 'tolerance',
+						'activate', 'deactivate', 'over', 'out', 'drop'];
 /**
  * Options for sortable.
  *
  * @var array
  */
-	var $sortOptions = array(
-        'appendTo', 'axis', 'cancel', 'connectWith', 'containment', 'cursor', 'cursorAt', 'delay', 
-        'distance', 'dropOnEmpty', 'forceHelperSize', 'forcePlaceholderSize', 'grid', 'handle', 
-        'helper', 'items', 'opacity', 'placeholder', 'revert', 'scroll', 'scrollSensitivity', 
-        'scrollSpeed', 'tolerance', 'zIndex',
-        'start', 'sort', 'change', 'beforeStop', 'stop', 'update', 'receive', 'remove', 'over', 
-        'out', 'activate', 'deactivate',
-	);
+	var $sortOptions = ['appendTo', 'axis', 'cancel', 'connectWith', 'containment', 'cursor', 'cursorAt', 'delay', 
+				        'distance', 'dropOnEmpty', 'forceHelperSize', 'forcePlaceholderSize', 'grid', 'handle', 
+				        'helper', 'items', 'opacity', 'placeholder', 'revert', 'scroll', 'scrollSensitivity', 
+				        'scrollSpeed', 'tolerance', 'zIndex',
+				        'start', 'sort', 'change', 'beforeStop', 'stop', 'update', 'receive', 'remove', 'over', 
+				        'out', 'activate', 'deactivate'];
 /**
  * Options for slider.
  *
  * @var array
  */
-	var $sliderOptions = array(
-		'animate', 'max', 'min', 'change', 'orientation', 'range', 'slide', 'start', 'step', 
-		'stop', 'value', 'values'
-	);
+	var $sliderOptions = ['animate', 'max', 'min', 'change', 'orientation', 'range', 'slide', 'start', 'step', 'stop', 'value', 'values'];
 /**
  * Options for resizable.
  *
@@ -224,7 +211,7 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $__ajaxBuffer = array();
+	var $__ajaxBuffer = [];
 /**
  * Returns link to remote action
  *
@@ -1285,7 +1272,7 @@ class AjaxHelper extends AppHelper {
  */
 	function _buildOptions($options, $acceptable) {
 		if (is_array($options)) {
-			$out = array();
+			$out = [];
 
 			foreach ($options as $k => $v) {
 				if (in_array($k, $acceptable)) {
@@ -1315,7 +1302,7 @@ class AjaxHelper extends AppHelper {
  * @access protected
  */
 	function _buildCallbacks($options) {
-		$callbacks = array();
+		$callbacks = [];
 
 		foreach ($this->callbacks as $callback) {
 			if (isset($options[$callback])) {
@@ -1356,7 +1343,7 @@ class AjaxHelper extends AppHelper {
 	}
 	
 	function _buildUICallbacks($options, $ui_calbacks = array()) {	
-		$callbacks = array();
+		$callbacks = [];
 		foreach ($ui_calbacks as $callback) {
 		    if (isset($options[$callback])) {
 				$name = $callback;
@@ -1401,11 +1388,11 @@ class AjaxHelper extends AppHelper {
  * @access public
  */
  //TODO Moze jednak to kiedys naprawics
-	function afterRender() {
+	function afterRender($viewFile=null) {
 		if (env('HTTP_X_UPDATE') != null && !empty($this->__ajaxBuffer)) {
 			@ob_end_clean();
 
-			$data = array();
+			$data = [];
 			$divs = explode(' ', env('HTTP_X_UPDATE'));
 			$keys = array_keys($this->__ajaxBuffer);
 

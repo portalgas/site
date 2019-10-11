@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('ValidateDates'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -9,35 +9,35 @@ echo '</h2>';
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#request_payment_id').change(function() {
+	$('#request_payment_id').change(function() {
 		caricaOrdini();
 	});
 });
 	
 function caricaOrdini() {
-	var request_payment_id = jQuery('#request_payment_id').val();
+	var request_payment_id = $('#request_payment_id').val();
 	if(request_payment_id=="" || request_payment_id==undefined) {
-		jQuery('#orders-result').html('');
-		jQuery('#orders-result').css('display', 'none');
+		$('#orders-result').html('');
+		$('#orders-result').css('display', 'none');
 		return;
 	}
 
-	jQuery('#orders-result').html('');
-	jQuery('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
-	jQuery('#orders-result').css('display', 'block');	
-	jQuery.ajax({
+	$('#orders-result').html('');
+	$('#orders-result').css('background', 'url("<?php echo Configure::read('App.server').Configure::read('App.img.cake');?>/ajax-loader.gif") no-repeat scroll center 0 transparent');
+	$('#orders-result').css('display', 'block');	
+	$.ajax({
 		type: "get",
 		url: "/administrator/index.php?option=com_cake&controller=ValidateDates&action=ajax_index_request_payments&request_payment_id="+request_payment_id+"&format=notmpl",
 		data: "", 
 		success: function(response) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(response);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(response);
 		},
 		error:function (XMLHttpRequest, textStatus, errorThrown) {
-			jQuery('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
-			jQuery('#orders-result').html(textStatus);
+			$('#orders-result').css('background', 'none repeat scroll 0 0 transparent');
+			$('#orders-result').html(textStatus);
 		}
 	});	
 }

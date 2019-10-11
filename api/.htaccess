@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	
+	RewriteRule (.*) /?option=com_cake&controller=Rests&action=$1&$2 [L,QSA,NC]
+</IfModule>

@@ -32,11 +32,35 @@ class ContactControllerContact extends JControllerForm
 		// Get the data from POST
 		$data = JRequest::getVar('jform', array(), 'post', 'array');
 
-
 		/*
 		 * fractis
-		 */
-		$debug = false; 
+		 */		 
+		$debug = false;
+
+		$userIP = $_SERVER["REMOTE_ADDR"];
+		$recaptchaResponse = $_POST['g-recaptcha-response'];
+		$secretKey = "6Lf1LSQUAAAAAG9unINLsgXEqoQnCFyEGyraM0vi";
+		$url = "https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}&remoteip={$userIP}";
+		if($debug) {
+			echo '<br />url '.$url;
+			echo "<pre>";
+			print_r($requestGoolge);
+			echo "</pre>";	
+		}
+		$requestGoolge = file_get_contents($url);
+		if(!strstr($requestGoolge, "true")){
+			if($debug) echo "NOPE (Failed Verification)";
+			JError::raiseError(500, $model->getError());
+			if($debug) 
+				exit;
+			else
+				return false;			
+		}
+		else {
+			if($debug) 
+				echo '<br />Code verify';		
+		}
+
 		$contactOrganizationId  = 0;
 		if(isset($data['contact_contactOrganizationId']))
 			$contactOrganizationId = $data['contact_contactOrganizationId'];

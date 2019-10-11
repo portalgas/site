@@ -11,11 +11,19 @@ class Order extends AppModel {
 	public function aclReferenteSupplierOrganization($user, $order_id) {
 
 		$options = [];
-		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];		$options['recursive'] = -1;
+		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
+		$options['recursive'] = -1;
 		$options['fields'] = ['Order.supplier_organization_id'];
 		
-		$results = [];		$results = $this->find('first', $options);
-		$supplier_organization_id = $results['Order']['supplier_organization_id'];				if(!in_array($supplier_organization_id,explode(",",$user->get('ACLsuppliersIdsOrganization'))))			return false;		else			return true;	}
+		$results = [];
+		$results = $this->find('first', $options);
+		$supplier_organization_id = $results['Order']['supplier_organization_id'];
+		
+		if(!in_array($supplier_organization_id,explode(",",$user->get('ACLsuppliersIdsOrganization'))))
+			return false;
+		else
+			return true;
+	}
 	
 	public function getOrderPermissionToEditUtente($order) {
 		if($order['state_code']=='OPEN' || $order['state_code']=='RI-OPEN-VALIDATE')
@@ -47,8 +55,31 @@ class Order extends AppModel {
 			return false;
 	}
 		
-	/*	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli	*/	public function isOrderToValidate($user, $order_id) {			App::import('Model', 'ArticlesOrder');		$ArticlesOrder = new ArticlesOrder;					$conditions = ['Order.id' => (int)$order_id,					   'ArticlesOrder.pezzi_confezione' => '1'];	
-		$results = [];		try {			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);			if(empty($results))				$isToValidate = false;			else				$isToValidate = true;						return $isToValidate;						}		catch (Exception $e) {			CakeLog::write('error',$e);		}
+	/*
+	 * ctrl se la validazione del carrello e' abilitata (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
+	*/
+	public function isOrderToValidate($user, $order_id) {
+	
+		App::import('Model', 'ArticlesOrder');
+		$ArticlesOrder = new ArticlesOrder;
+			
+		$conditions = ['Order.id' => (int)$order_id,
+					   'ArticlesOrder.pezzi_confezione' => '1'];
+	
+		$results = [];
+		try {
+			$results = $ArticlesOrder->getArticlesOrdersInOrder($user ,$conditions);
+			if(empty($results))
+				$isToValidate = false;
+			else
+				$isToValidate = true;
+			
+			return $isToValidate;
+				
+		}
+		catch (Exception $e) {
+			CakeLog::write('error',$e);
+		}
 	}
 	
 	/*
@@ -561,7 +592,8 @@ class Order extends AppModel {
 	public $validate = array(
 		'supplier_organization_id' => array(
 			'empty' => array(
-					'rule' => array('naturalNumber', false),					'message' => "Scegli il produttore da associare all'ordine",
+					'rule' => array('naturalNumber', false),
+					'message' => "Scegli il produttore da associare all'ordine",
 					),
 			'totArticles' => array(
 					'rule'       =>  array('tot_articles'),
@@ -572,6 +604,24 @@ class Order extends AppModel {
 					'message'    => 'Esiste già un ordine del produttore sulla consegna scelta',
 					)
 		),
+		'owner_articles' => [
+			'notempty' => [
+				'rule' => ['notBlank'],
+				'message' => "Indica il gestore del listino articoli",
+			],
+		],
+		'owner_organization_id' => [
+			'notempty' => [
+				'rule' => ['notBlank'],
+				'message' => "Indica il gestore del listino articoli",
+			],
+		],
+		'owner_supplier_organization_id' => [
+			'notempty' => [
+				'rule' => ['notBlank'],
+				'message' => "Indica il gestore del listino articoli",
+			],
+		],		
 		'delivery_id' => array(
 			'rule' => array('naturalNumber', false),
 			'message' => "Scegli la consegna da associare all'ordine",
@@ -632,7 +682,7 @@ class Order extends AppModel {
 				$organization_id = $this->data[$this->alias]['organization_id'];
 				 
 				$this->Delivery->unbindModel(array('hasMany' => array('Order','Cart')));
-				$delivery = $this->Delivery->read($organization_id, 'data', $delivery_id);
+				$delivery = $this->Delivery->read($delivery_id, $organization_id, 'data');
 				$delivery_data = $delivery['Delivery']['data'];
 			
 				if (!Validation::comparison($delivery_data, $operator, $value))
@@ -648,28 +698,43 @@ class Order extends AppModel {
 		
 		/*
 		 * se e' DES posso anche non avere articoli associati
-		 */
 		if(!empty($this->data[$this->alias]['des_order_id'])) 
 			return true;
-
+		 */
+		 
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+				
 		foreach( $field as $key => $value) {
 			$supplier_organization_id = $value;
-			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];			
-			App::import('Model', 'SuppliersOrganization');			$SuppliersOrganization = new SuppliersOrganization;
-			$articleCount = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id);					}
+			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];
 		
-		if($articleCount==0)			return false;
+			App::import('Model', 'SuppliersOrganization');
+			$SuppliersOrganization = new SuppliersOrganization;
+			$articleCount = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id);			
+		}
+		
+		if($articleCount==0)
+			return false;
 		else
 			return true;		
 	}
 	
 	function order_duplicate($field=[]) {
 		foreach( $field as $key => $value) {
-			
+
 			$supplier_organization_id = $value;
 			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];
 			$delivery_id = $this->data[$this->alias]['delivery_id'];
-			
+
+			/*
+			 * type_draw SIMPLE / COMPLETE / PROMOTION 
+			 */
+			 if(isset($this->data[$this->alias]['prod_gas_promotion_id']) && !empty($this->data[$this->alias]['prod_gas_promotion_id']))
+			 	$type_draws = ['PROMOTION'];
+			 else
+			 	$type_draws = ['SIMPLE', 'COMPLETE'];
+			 				
 			App::import('Model', 'Order');
 			$Order = new Order;
 			
@@ -677,8 +742,8 @@ class Order extends AppModel {
 			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
 									'Order.delivery_id' => $delivery_id,
 									'Order.supplier_organization_id' => $supplier_organization_id,
-									'Order.isVisibleBackOffice' => 'Y'];
-
+									'Order.isVisibleBackOffice' => 'Y',
+									'Order.type_draw' => $type_draws]; 
 			/*
 			 * per edit
 			 */
@@ -687,8 +752,8 @@ class Order extends AppModel {
 				
 			$options['fields'] = ['Order.id'];
 			$options['recursive'] = -1;
+			// self::d($options);
 			$results = $Order->find('first', $options);
-				
 		}
 			
 		if(!empty($results))
@@ -751,6 +816,8 @@ class Order extends AppModel {
 					$results[$key]['Order']['tesoriere_fattura_importo_'] = number_format($val['Order']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tesoriere_fattura_importo_e'] = $results[$key]['Order']['tesoriere_fattura_importo_'].' &euro;';
 
+					$results[$key]['Order']['importo_massimo_'] = number_format($val['Order']['importo_massimo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['Order']['importo_massimo_e'] = $results[$key]['Order']['importo_massimo_'].' &euro;';
 
 					$results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';					
@@ -759,12 +826,20 @@ class Order extends AppModel {
 				/*
 				 * se il find() arriva da $hasAndBelongsToMany
 				 */
-				if (isset($val['data_inizio'])) {					$results[$key]['dayDiffToDateInizio'] = $this->utilsCommons->dayDiffToDate($val['data_inizio']);
+				if (isset($val['data_inizio'])) {
+					$results[$key]['dayDiffToDateInizio'] = $this->utilsCommons->dayDiffToDate($val['data_inizio']);
 					if(!empty($val['data_fine_validation']) && $val['data_fine_validation']!=Configure::read('DB.field.date.empty'))
 						$results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);
-					else						$results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);											$results[$key]['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val);
+					else
+						$results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);
+						
+					$results[$key]['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val);
 					$results[$key]['permissionToEditReferente'] = $this->getOrderPermissionToEditReferente($val);
-					$results[$key]['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val);					$results[$key]['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val);											$results[$key]['data_inizio_'] = date('d',strtotime($val['data_inizio'])).'/'.date('n',strtotime($val['data_inizio'])).'/'.date('Y',strtotime($val['data_inizio']));					$results[$key]['data_fine_'] = date('d',strtotime($val['data_fine'])).'/'.date('n',strtotime($val['data_fine'])).'/'.date('Y',strtotime($val['data_fine']));
+					$results[$key]['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val);
+					$results[$key]['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val);
+						
+					$results[$key]['data_inizio_'] = date('d',strtotime($val['data_inizio'])).'/'.date('n',strtotime($val['data_inizio'])).'/'.date('Y',strtotime($val['data_inizio']));
+					$results[$key]['data_fine_'] = date('d',strtotime($val['data_fine'])).'/'.date('n',strtotime($val['data_fine'])).'/'.date('Y',strtotime($val['data_fine']));
 					$results[$key]['data_fine_validation_'] = date('d',strtotime($val['data_fine_validation'])).'/'.date('n',strtotime($val['data_fine_validation'])).'/'.date('Y',strtotime($val['data_fine_validation']));
 					$results[$key]['tesoriere_data_pay_'] = date('d',strtotime($val['tesoriere_data_pay'])).'/'.date('n',strtotime($val['tesoriere_data_pay'])).'/'.date('Y',strtotime($val['tesoriere_data_pay']));
 				}	
@@ -818,7 +893,17 @@ class Order extends AppModel {
 					$results[$key]['tesoriere_fattura_importo_'] = number_format($val['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['tesoriere_fattura_importo_e'] = $results['Order']['tesoriere_fattura_importo_'].' &euro;';
 				}
-				
+	
+				if(isset($val['Order']['importo_massimo'])) {
+					$results[$key]['Order']['importo_massimo_'] = number_format($val['Order']['importo_massimo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['Order']['importo_massimo_e'] = $results[$key]['Order']['importo_massimo_'].' &euro;';
+				}
+				else
+				if(isset($val['importo_massimo'])) {
+					$results[$key]['importo_massimo_'] = number_format($val['importo_massimo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['importo_massimo_e'] = $results['Order']['importo_massimo_'].' &euro;';
+				}
+
 				if(isset($val['Order']['tot_importo'])) {
 					$results[$key]['Order']['tot_importo_'] = number_format($val['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Order']['tot_importo_e'] = $results[$key]['Order']['tot_importo_'].' &euro;';
@@ -830,7 +915,7 @@ class Order extends AppModel {
 				}
 			}				
 		}
-		
+	
 		return $results;
 	}
 	
@@ -842,28 +927,66 @@ class Order extends AppModel {
 		if (!empty($this->data['Order']['data_fine']))
 			$this->data['Order']['data_fine'] = $this->data['Order']['data_fine_db'];
 
-		if (!empty($this->data['Order']['data_fine_validation']))
+		if (!empty($this->data['Order']['data_fine_validation_db']))
 			$this->data['Order']['data_fine_validation'] = $this->data['Order']['data_fine_validation_db'];
 		
-		if (!empty($this->data['Order']['tesoriere_data_pay']))
+		if (!empty($this->data['Order']['tesoriere_data_pay_db']))
 			$this->data['Order']['tesoriere_data_pay'] = $this->data['Order']['tesoriere_data_pay_db'];
-		
+			
 		return true;
 	}
 		
 	public function beforeSave($options = []) {
-		if (!empty($this->data['Order']['data_inizio'])) 
+		if (!empty($this->data['Order']['data_inizio_db'])) 
 	    	$this->data['Order']['data_inizio'] = $this->data['Order']['data_inizio_db'];
 
-		if (!empty($this->data['Order']['data_fine']))
+		if (!empty($this->data['Order']['data_fine_db']))
 			$this->data['Order']['data_fine'] = $this->data['Order']['data_fine_db'];
 				
-	    if (!empty($this->data['Order']['data_fine_validation']))
+	    if (!empty($this->data['Order']['data_fine_validation_db']))
 	    	$this->data['Order']['data_fine_validation'] = $this->data['Order']['data_fine_validation_db'];
 			
-	    if (!empty($this->data['Order']['tesoriere_data_pay']))
+	    if (!empty($this->data['Order']['tesoriere_data_pay_db']))
 	    	$this->data['Order']['tesoriere_data_pay'] = $this->data['Order']['tesoriere_data_pay_db'];
 
+		if (empty($this->data['Order']['data_fine_validation']) || $this->data['Order']['data_fine_validation']==Configure::read('DB.field.date.error'))
+			$this->data['Order']['data_fine_validation'] = Configure::read('DB.field.date.empty');
+		
+		if (empty($this->data['Order']['tesoriere_data_pay']) || $this->data['Order']['tesoriere_data_pay']==Configure::read('DB.field.date.error'))
+			$this->data['Order']['tesoriere_data_pay'] = Configure::read('DB.field.date.empty');
+		
+		if (empty($this->data['Order']['data_incoming_order']) || $this->data['Order']['data_incoming_order']==Configure::read('DB.field.date.error'))
+			$this->data['Order']['data_incoming_order'] = Configure::read('DB.field.date.empty');
+				
+		if (empty($this->data['Order']['data_state_code_close']) || $this->data['Order']['data_state_code_close']==Configure::read('DB.field.date.error'))
+			$this->data['Order']['data_state_code_close'] = Configure::read('DB.field.date.empty');
+		
+		if (empty($this->data['Order']['trasport']))
+			$this->data['Order']['trasport'] = Configure::read('DB.field.double.empty');
+		
+		if (empty($this->data['Order']['cost_more']))
+			$this->data['Order']['cost_more'] = Configure::read('DB.field.double.empty');
+		
+		if (empty($this->data['Order']['cost_less']))
+			$this->data['Order']['cost_less'] = Configure::read('DB.field.double.empty');
+	
+		if (empty($this->data['Order']['tot_importo']))
+			$this->data['Order']['tot_importo'] = Configure::read('DB.field.double.empty');
+
+		if (empty($this->data['Order']['importo_massimo']))
+			$this->data['Order']['importo_massimo'] = Configure::read('DB.field.double.empty');
+		else
+			$this->data['Order']['importo_massimo'] = $this->importoToDatabase($this->data['Order']['importo_massimo']);
+
+		if (empty($this->data['Order']['tesoriere_fattura_importo']))
+			$this->data['Order']['tesoriere_fattura_importo'] = Configure::read('DB.field.double.empty');
+	
+		if (empty($this->data['Order']['mail_open_data']))
+			$this->data['Order']['mail_open_data'] = Configure::read('DB.field.datetime.empty');
+		
+		if (empty($this->data['Order']['mail_close_data']))
+			$this->data['Order']['mail_close_data'] = Configure::read('DB.field.datetime.empty');
+				
 	    return true;
 	}
 }

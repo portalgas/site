@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class SummaryDesOrder extends AppModel {
   
 	/* 
@@ -8,7 +9,7 @@ class SummaryDesOrder extends AppModel {
 	 */
 	public function select_to_des_order($user, $des_order_id, $organization_id=0, $debug=false) {
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SummaryDesOrder.des_id' => $user->des_id,
 									   'SummaryDesOrder.des_order_id' => $des_order_id);
 		if($organization_id>0) 
@@ -46,7 +47,7 @@ class SummaryDesOrder extends AppModel {
 			 * estraggo gli ordini associati
 			 */ 
 			$DesOrdersOrganization = new DesOrdersOrganization;			
-	    	$options = array();
+	    	$options = [];
 	    	$options['conditions'] = array('DesOrdersOrganization.des_id' => $user->des_id,
 							    			'DesOrdersOrganization.organization_id' => $organization_id,
 							    			'DesOrdersOrganization.des_order_id' => $des_order_id);
@@ -61,10 +62,6 @@ class SummaryDesOrder extends AppModel {
 			 */
 			$tmp_user->organization['Organization']['id'] = $organization_id;
 			$importo_totale = $Order->getTotImporto($tmp_user, $order_id, $debug);
-			/* 
-			 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-			 */
-			if(strpos($importo_totale,',')!==false)  $importo_totale = str_replace(',','.',$importo_totale);
 			
 			try {
 				$sql = "UPDATE ".Configure::read('DB.prefix')."summary_des_orders  
@@ -109,7 +106,7 @@ class SummaryDesOrder extends AppModel {
 					SummaryDesOrder.des_id = ".(int)$user->des_id."
 					AND SummaryDesOrder.des_order_id = ".(int)$des_order_id."
 				ORDER BY SummaryDesOrder.organization_id";
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$result = current($this->query($sql));
 		}
@@ -147,7 +144,7 @@ class SummaryDesOrder extends AppModel {
 			App::import('Model', 'DesOrder');
 			$DesOrder = new DesOrder();			 
 
-			$options = array();
+			$options = [];
 			$options['conditions'] = array('DesOrder.des_id' => $user->des_id,
 										   'DesOrder.id' => $des_order_id
 										);
@@ -202,7 +199,7 @@ class SummaryDesOrder extends AppModel {
 			/*
 			 * loop per aggregare gli importi degli acquisti per GAS
 			 */
-			$summaryCarts = array();
+			$summaryCarts = [];
 			$organization_id_old=0;
 			$importo=0;
 			$i=0;	
@@ -255,7 +252,7 @@ class SummaryDesOrder extends AppModel {
 			/*
 			 * inserisco in SummaryDesOders aggiungendo trasporto / spese generiche, sconti
 			 */
-			$summaryDesOrderData = array();
+			$summaryDesOrderData = [];
 			foreach($summaryCarts as $summaryCart) {
 				$summaryDesOrderData['SummaryDesOrder']['des_id'] = $user->des_id;
 				$summaryDesOrderData['SummaryDesOrder']['des_order_id'] = $des_order_id;
@@ -337,7 +334,7 @@ class SummaryDesOrder extends AppModel {
 	public $validate = array(
 		'des_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -347,7 +344,7 @@ class SummaryDesOrder extends AppModel {
 		),
 		'des_order_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -357,7 +354,7 @@ class SummaryDesOrder extends AppModel {
 		),
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -400,7 +397,7 @@ class SummaryDesOrder extends AppModel {
 	
 	/*
 	 * il save lo faccio in populate_to_order() ed e' gia' corretto
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if(!empty($this->data['SummaryDesOrder']['importo'])) {
 			$this->data['SummaryDesOrder']['importo'] =  $this->importoToDatabase($this->data['SummaryDesOrder']['importo']);
 		}

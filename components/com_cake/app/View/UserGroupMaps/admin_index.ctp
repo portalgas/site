@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('UserGroups'),array('controller' => 'UserGroupMaps', 'action' => 'intro'));
 $this->Html->addCrumb(__('List Users UserGroups').': '.$userGroups[$group_id]['name']);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -30,7 +30,7 @@ if(!empty($results)) {
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo __('N');?></th>
-			<th><?php echo __('Nominativo');?></th>
+			<th><?php echo __('Nominative');?></th>
 			<th><?php echo __('Username');?></th>
 			<th><?php echo __('Mail');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
@@ -58,10 +58,10 @@ if(!empty($results)) {
 	</table>
 	
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 	
-		jQuery(".actionDelete").each(function () {
-			jQuery(this).click(function() {
+		$(".actionDelete").each(function () {
+			$(this).click(function() {
 				if(!confirm("Sei sicuro di voler eliminare l'utente dal ruolo <?php echo $userGroups[$group_id]['name'];?>?"))
 					return false;
 				else
@@ -74,7 +74,7 @@ if(!empty($results)) {
 <?php
 } // end if(!empty($results) 
 else 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	
 ?>
 </div>

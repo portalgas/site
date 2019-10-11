@@ -6,7 +6,7 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
-
+if(isset($results['Delivery']) && !empty($results['Delivery']))
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
@@ -19,6 +19,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 				$table[] = array('label' => __('Codice'), 'width' => 'auto', 'filter' => true);
 			$table[] = array('label' => __('Name'), 'width' => 'auto', 'filter' => true);
+			$table[] = array('label' => __('pezzi_confezione_short'), 'width' => 'auto', 'filter' => true);
 			$table[] = array('label' => __('qta'), 'width' => 'auto', 'filter' => true);
 			if($pezzi_confezione1=='Y')
 				$table[] = array('label' => __('Colli'), 'width' => 'auto', 'filter' => true);
@@ -42,28 +43,20 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				    $article_organization_id_old != $order['ArticlesOrder'][$numArticlesOrder]['article_organization_id'] ||
 				    $article_id_old != $order['ArticlesOrder'][$numArticlesOrder]['article_id'])) {
 					
-					$rows = array();
+					$rows = [];
 					$rows[] = ($i+1);
 					$rows[] = $bio;
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 						$rows[] = $codiceArticle;
 					$rows[] = $name;
+					$rows[] = $pezzi_confezione;
 					$rows[] = $tot_qta_single_article;
 					$tmp = '';
 					if($pezzi_confezione1=='Y') {
 						/*
 						 * colli_completi
 						*/
-						if($pezzi_confezione>1) {
-						
-							$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-							if($colli_completi>0) {
-								$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-								$tmp .= ' '.$colli_completi.' colli da '.$pezzi_confezione;
-								if($differenza_da_ordinare != $pezzi_confezione)
-									$tmp .= ' e '.$differenza_da_ordinare;
-							}
-						}
+						$tmp .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 						
 						$rows[] = $tmp;
 					}
@@ -141,28 +134,20 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						
 			}  // end foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
 			 	
-			$rows = array();
+			$rows = [];
 			$rows[] = ($i+1);
 			$rows[] = $bio;
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 				$rows[] = $codiceArticle;			
 			$rows[] = $name;
+			$rows[] = $pezzi_confezione;
 			$rows[] = $tot_qta_single_article;
 			$tmp = '';
 			if($pezzi_confezione1=='Y') {
 				/*
 				 * colli_completi
 				*/
-				if($pezzi_confezione>1) {
-				
-					$colli_completi = intval($tot_qta_single_article / $pezzi_confezione);
-					if($colli_completi>0) {
-						$differenza_da_ordinare = (($pezzi_confezione * ($colli_completi +1)) - $tot_qta_single_article);
-						$tmp .= ' '.$colli_completi.' colli da '.$pezzi_confezione;
-						if($differenza_da_ordinare != $pezzi_confezione)
-							$tmp .= ' e '.$differenza_da_ordinare;
-					}
-				}
+				$tmp .= $this->App->getColli($tot_qta_single_article, $pezzi_confezione);
 				
 				$rows[] = $tmp;
 			}
@@ -184,11 +169,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$importo_modificato = false;
 			}
 			
-			$rows = array();
+			$rows = [];
 			$rows[] = '';
 			$rows[] = '';
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 				$rows[] = '';			
+			$rows[] = '';		
 			$rows[] = '';
 			$rows[] = $tot_qta;
 			if($pezzi_confezione1=='Y')
@@ -205,12 +191,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 				$trasport = $order['Order']['trasport'];
 
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 					$rows[] = '';
 				$rows[] = '';
+				$rows[] = '';		
 				$rows[] = '';
 				if($pezzi_confezione1=='Y')
 					$rows[] = '';
@@ -228,12 +215,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					
 				$cost_more = $order['Order']['cost_more'];
 					
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 					$rows[] = '';
 				$rows[] = '';
+				$rows[] = '';		
 				$rows[] = '';
 				if($pezzi_confezione1=='Y')
 					$rows[] = '';
@@ -251,12 +239,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					
 				$cost_less = $order['Order']['cost_less'];
 					
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 					$rows[] = '';
 				$rows[] = '';
+				$rows[] = '';		
 				$rows[] = '';
 				if($pezzi_confezione1=='Y')
 					$rows[] = '';
@@ -282,12 +271,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else
 					$importo_completo = ($tmp_importo + $order['Order']['trasport'] + $order['Order']['cost_more'] + (-1 * $order['Order']['cost_less']));
 				
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
 					$rows[] = '';
 				$rows[] = '';
+				$rows[] = '';		
 				$rows[] = '';
 				if($pezzi_confezione1=='Y')
 					$rows[] = '';

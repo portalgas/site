@@ -1,14 +1,14 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Events'), array('controller' => 'Events', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Event'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-<div class="events form">
-<?php echo $this->Form->create('Event', array('id' => 'formGas'));?>
-	<fieldset>
- 		<legend><?php __('Add Event'); ?></legend>
-	<?php
+
+echo '<div class="events form">';
+echo $this->Form->create('Event', array('id' => 'formGas'));
+echo '<fieldset>';
+echo '<legend>'.__('Add Event').'</legend>';
+
 		echo $this->Form->input('event_type_id', array('label' => __('EventsType')));
 		echo $this->Form->input('title');
 
@@ -25,14 +25,14 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->input('nota', array('label' => __('EventNota')));
 
 		echo '<div class="row">';
-		echo $this->App->drawDateTime('Event', 'start', __('EventStart'));
+		echo $this->App->drawDateTime('Event', 'start', __('EventStart'), $this->request->data['Event']['start']);
 		echo '</div>';		
 		echo '<div class="row">';
-		echo $this->App->drawDateTime('Event', 'end', __('Eventend'));
+		echo $this->App->drawDateTime('Event', 'end', __('Eventend'), $this->request->data['Event']['end']);
 		echo '</div>';
 		
-		echo $this->App->drawDate('Event', 'date_alert_mail', __('EventDateAlertMail'), '');
-		echo $this->App->drawDate('Event', 'date_alert_fe', __('EventDateAlertFE'), '');
+		echo $this->App->drawDate('Event', 'date_alert_mail', __('EventDateAlertMail'), $this->request->data['Event']['date_alert_mail']);
+		echo $this->App->drawDate('Event', 'date_alert_fe', __('EventDateAlertFE'), $this->request->data['Event']['date_alert_fe']);
 		
 		echo $this->App->drawFormRadio('Event','isVisibleFrontEnd',array('options' => $isVisibleFrontEnd, 'value'=> 'Y', 'label'=>__('isVisibleFrontEnd'), 'required'=>'required',
 																'after'=>$this->App->drawTooltip(null,__('toolTipIsVisibleFrontEnd'),$type='HELP')));				
@@ -51,7 +51,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	 * utenti ancora da associare
 	 */
 	echo '<div class="row"><div class="col-md-12">';
-	echo '<label for="User">'.__('Users').'</label>';
+	echo '<label for="User">'.__('Users').'</label> ';
 
 	echo $this->Form->select('master_user_id', $usersResults, array('label' => __('Users'), 'id' => 'master_user_id', 'multiple' => true, 'size' =>10));
 	echo $this->Form->select('event_user_id', $eventUsersResults, array('id' => 'event_user_id', 'multiple' => true, 'size' => 10, 'style' => 'min-width:300px'));

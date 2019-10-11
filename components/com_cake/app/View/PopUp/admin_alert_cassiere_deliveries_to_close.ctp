@@ -1,3 +1,6 @@
+<?php
+echo $this->Html->css('popupSlider-min');
+?>
 <div class="cakeContainer">		
 	<div class="cassiere">
 		<h2 class="ico-users"><?php echo __('Cassiere');?></h2>

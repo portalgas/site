@@ -1,9 +1,5 @@
 <?php
-/*
-  echo "<pre>";
-  print_r($results);
-  echo "</pre>";
-*/
+$this->App->d($results);
 ?>
   <div class="cashs">
 	<h2 class="ico-cashs">
@@ -13,15 +9,14 @@
 	<?php
 	if(!empty($results)) {
 		?>		
-		<table cellpadding="0" cellspacing="0">
+		<div class="table-responsive"><table class="table table-hover">
 		<tr>
 				<th colspan="2"><?php echo __('N');?></th>
 				<th colspan="2"><?php echo __('Name');?></th>
-				<th><?php echo __('Mail');?></th>
 				<th colspan="3"><?php echo __('CashSaldo');?></th>
 				<th>Sottrai importo</th>
                 <th>Aggiungi importo</th>
-				<th><?php echo __('nota');?></th>
+				<th><?php echo __('Nota');?></th>
 		</tr>
 		<?php
 		echo $this->Form->create('Cash',array('id' => 'formGas'));
@@ -41,11 +36,10 @@
 				echo '<td>'.($numResult + 1).'</td>';
 					
 				echo '<td>'.$this->App->drawUserAvatar($user, $result['User']['id'], $result['User']).'</td>';
-				echo '<td>'.$result['User']['name'].'</td>';
-				
 				echo '<td>';
+				echo $result['User']['name'];
 				if(!empty($result['User']['email']))	
-					echo ' <a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';
+					echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';				
 				echo '</td>';
 				
 				echo '<td id="'.$result['User']['id'].'-color" style="width:10px;background-color:';
@@ -56,8 +50,8 @@
 				if($result['Cash']['importo']>0) echo 'green';
 				echo '"></td>';
 				
-				echo '<td>';
-				echo $this->Form->input('importo', array('id' => $result['User']['id'].'-importo', 'class' => 'importoSubmit activeUpdate noWidth double', 'value' => $result['Cash']['importo_'], 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'size' => '8', 'tabindex' => ($i+1)));
+				echo '<td style="min-width: 150px;white-space: nowrap;">';
+				echo $this->Form->input('importo', array('id' => $result['User']['id'].'-importo', 'class' => 'importoSubmit activeUpdate double', 'value' => $result['Cash']['importo_'], 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'style' => 'display:inline', 'tabindex' => ($i+1)));
 				echo '</td>';
 				
 				echo '<td>';
@@ -66,23 +60,23 @@
 				echo '</td>';
 		
 
-				echo '<td>';
-				echo $this->Form->input('importo_subtract', array('id' => $result['User']['id'].'-importo-subtract', 'class' => 'activeUpdateSubtract noWidth double', 'value' => '0,00', 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'size' => '8', 'tabindex' => ($i+1)));
+				echo '<td style="white-space: nowrap;">';
+				echo $this->Form->input('importo_subtract', array('id' => $result['User']['id'].'-importo-subtract', 'class' => 'activeUpdateSubtract double', 'value' => '0,00', 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'style' => 'display:inline', 'tabindex' => ($i+1)));
+				echo '</td>';
+        
+				echo '<td style="white-space: nowrap;">';
+				echo $this->Form->input('importo_add', array('id' => $result['User']['id'].'-importo-add', 'class' => 'activeUpdateAdd double', 'value' => '0,00', 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'style' => 'display:inline', 'tabindex' => ($i+1)));
 				echo '</td>';
         
 				echo '<td>';
-				echo $this->Form->input('importo_add', array('id' => $result['User']['id'].'-importo-add', 'class' => 'activeUpdateAdd noWidth double', 'value' => '0,00', 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'size' => '8', 'tabindex' => ($i+1)));
-				echo '</td>';
-        
-				echo '<td>';
-				echo $this->Form->input('nota', array('id' => $result['User']['id'].'-nota', 'value' => $result['Cash']['nota'], 'class' => 'noeditor', 'type' => 'textarea', 'label' => false, 'rows' => '2', 'tabindex' => ($i+1)));
+				echo $this->Form->input('nota', array('id' => $result['User']['id'].'-nota', 'value' => $result['Cash']['nota'], 'class' => 'noeditor', 'type' => 'textarea', 'label' => false, 'rows' => '2')); // lo tolgo dalla nota se no scatta sempre l'evento onfocus
 				echo '</td>';			
 			echo '</tr>';
 
 			if(!empty($result['Cash']['id'])) {
 				echo '<tr class="trView" id="trViewId-'.$result['Cash']['id'].'">';
 				echo '	<td colspan="2"></td>'; 
-				echo '	<td colspan="10" id="tdViewId-'.$result['Cash']['id'].'"></td>';
+				echo '	<td colspan="8" id="tdViewId-'.$result['Cash']['id'].'"></td>';
 				echo '</tr>';
 			}
 						
@@ -112,33 +106,33 @@
 		echo '<td></td>';
 		echo '</tr>';	
 		
-		echo '</table>';
+		echo '</table></div>';
 		
 		echo $this->element('legendaCash');
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono utenti attivi!"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono utenti attivi!"));
 		
 echo '</div>';
 ?>
 <script type="text/javascript">
 function settaColorRow(user_id) {
-	var importo = jQuery('#'+user_id+'-importo').val();
+	var importo = $('#'+user_id+'-importo').val();
 	importo = numberToJs(importo);
 	
 	if(importo < 0)
-		jQuery('#'+user_id+'-color').css('background-color', 'red');
+		$('#'+user_id+'-color').css('background-color', 'red');
 	else
 	if(importo > 0)
-		jQuery('#'+user_id+'-color').css('background-color', 'green');
+		$('#'+user_id+'-color').css('background-color', 'green');
 	else
-		jQuery('#'+user_id+'-color').css('background-color', '#fff');
+		$('#'+user_id+'-color').css('background-color', '#fff');
 }
 function settaImportoTotale() {
 
 	var importo_totale = 0;
-	jQuery('.importoSubmit').each(function( index ) {
-		var importo = jQuery(this).val();
+	$('.importoSubmit').each(function( index ) {
+		var importo = $(this).val();
 		importo = numberToJs(importo);
 
 		importo_totale = (parseFloat(importo_totale) + parseFloat(importo));
@@ -149,48 +143,54 @@ function settaImportoTotale() {
        console.log(importo_totale);
 	*/
 	if(importo_totale < 0)
-		jQuery('#importo_totale_color').css('background-color', 'red');
+		$('#importo_totale_color').css('background-color', 'red');
 	else
 	if(importo_totale > 0)
-		jQuery('#importo_totale_color').css('background-color', 'green');
+		$('#importo_totale_color').css('background-color', 'green');
 	else
-		jQuery('#importo_totale_color').css('background-color', '#fff');
+		$('#importo_totale_color').css('background-color', '#fff');
 		
 	importo_totale = number_format(importo_totale,2,',','.');
 	/*console.log(importo_totale);*/
 	
-	jQuery('#importo_totale').html(importo_totale+' &euro;');
+	$('#importo_totale').html(importo_totale+'&nbsp;&euro;');
 }
 
 function callUpdateImporto(user_id, importo) {
-
-	if(importo=='' || importo==undefined || importo=='0,00' || importo=='0.00' || importo=='0') {
+	
+	/* console.log("callUpdateImporto - importo "+importo); */
+	
+	if(importo=='' || importo==undefined) { /* || importo=='0,00' || importo=='0.00' || importo=='0') { permetto di portare il saldo a ZERO */
 		return;
 	}
 	
-	jQuery("#submitEcomm-" + user_id).animate({opacity: 1});
+	$("#submitEcomm-" + user_id).animate({opacity: 1});
 	
 
     var url = '';
     url = "/administrator/index.php?option=com_cake&controller=Cashs&action=index_quick_update&format=notmpl";
 
-    jQuery.ajax({
+    $.ajax({
         type: "POST",
         url: url,
         data: "user_id="+user_id+"&value="+encodeURIComponent(importo),
         success: function(response){
-            jQuery("#submitEcomm-" + user_id).attr("src", app_img + "/actions/32x32/bookmark.png");
-            jQuery("#msgEcomm-" + user_id).html("Salvato!");
-            jQuery("#submitEcomm-" + user_id).delay(1000).animate({
+            $("#submitEcomm-" + user_id).attr("src", app_img + "/actions/32x32/bookmark.png");
+            $("#msgEcomm-" + user_id).html("Salvato!");
+			$('#'+user_id+"-importo-subtract").val('0,00');
+			$('#'+user_id+"-importo-add").val('0,00');			
+            $("#submitEcomm-" + user_id).delay(1000).animate({
                 opacity: 0
             }, 1500);
-            jQuery("#msgEcomm-" + user_id).delay(1000).animate({
+            $("#msgEcomm-" + user_id).delay(1000).animate({
                 opacity: 0
             }, 1500);
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
-             jQuery('#msgEcomm-'+user_id).html(textStatus);
-             jQuery('#submitEcomm-'+user_id).attr('src',app_img+'/blank32x32.png');
+             $('#msgEcomm-'+user_id).html(textStatus);
+             $('#submitEcomm-'+user_id).attr('src',app_img+'/blank32x32.png');
+			 $('#'+user_id+"-importo-subtract").val('0,00');
+			 $('#'+user_id+"-importo-add").val('0,00');
         }
     });
 
@@ -198,106 +198,119 @@ function callUpdateImporto(user_id, importo) {
     settaImportoTotale();	        
 }
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	settaImportoTotale();
 	
-	jQuery('.double').focusout(function() {validateNumberField(this, 'importo');});
+	$('.double').focusout(function() {validateNumberField(this, 'importo');});
 
-	jQuery(".activeUpdate").each(function () {
-		jQuery(this).change(function() {
+	$(".activeUpdate").each(function () {
+		$(this).change(function() {
 			/* get id da id="id-field-table"  */
-			var idRow = jQuery(this).attr('id');
+			var idRow = $(this).attr('id');
 			
 			var user_id = idRow.substring(0,idRow.indexOf('-'));
-			var importo =  jQuery(this).val();
+			var importo =  $(this).val();
 			
             callUpdateImporto(user_id, importo);
             return false;
 		});
 	});
 	
-	jQuery('.activeUpdateSubtract').change(function() {
+	$('.activeUpdateSubtract').change(function() {
         /* get id da id="id-field-table"  */
-        var idRow = jQuery(this).attr('id');
+        var idRow = $(this).attr('id');
 
         var user_id = idRow.substring(0,idRow.indexOf('-'));
-        var value =  jQuery(this).val();
-        var importo_cassa_orig = jQuery('#'+user_id+'-importo').val();
-        /*console.log(importo_cassa_orig);*/
+        var value =  $(this).val();
+		if(value=='' || value=='0' || value=='00' || value=='0.0' || value=='0.00' || value=='0,00' || value=='0,0') {
+			alert("Inserisci un importo diverso da zero!");
+			return;	
+		}
+		/*console.log('activeUpdateSubtract '+value);*/
         value = numberToJs(value);
+		/*console.log('activeUpdateAdd numberToJs '+value);*/
+
+        var importo_cassa_orig = $('#'+user_id+'-importo').val();
+        /*console.log(importo_cassa_orig);*/
         importo_cassa_orig = numberToJs(importo_cassa_orig);
         
         var importo_cassa_new = (parseFloat(importo_cassa_orig) - parseFloat(value));
         importo_cassa_new = number_format(importo_cassa_new,2,',','.');
-        jQuery('#'+user_id+'-importo').val(importo_cassa_new);
+        $('#'+user_id+'-importo').val(importo_cassa_new);
         
         callUpdateImporto(user_id, importo_cassa_new);
         return false;        
     });
     	
-	jQuery('.activeUpdateAdd').change(function() {
+	$('.activeUpdateAdd').change(function() {
         /* get id da id="id-field-table"  */
-        var idRow = jQuery(this).attr('id');
+        var idRow = $(this).attr('id');
 
         var user_id = idRow.substring(0,idRow.indexOf('-'));
-        var value =  jQuery(this).val();
-        var importo_cassa_orig = jQuery('#'+user_id+'-importo').val();
-        
+        var value =  $(this).val();
+		if(value=='' || value=='0' || value=='00' || value=='0.0' || value=='0.00' || value=='0,00' || value=='0,0'){
+			alert("Inserisci un importo diverso da zero!");
+			return;	
+		}
+		/*console.log('activeUpdateAdd '+value);*/
         value = numberToJs(value);
-        importo_cassa_orig = numberToJs(importo_cassa_orig);
+		/*console.log('activeUpdateAdd numberToJs '+value);*/
+		
+        var importo_cassa_orig = $('#'+user_id+'-importo').val();
+		importo_cassa_orig = numberToJs(importo_cassa_orig);
         
         var importo_cassa_new = (parseFloat(importo_cassa_orig) + parseFloat(value));
         importo_cassa_new = number_format(importo_cassa_new,2,',','.');
-        jQuery('#'+user_id+'-importo').val(importo_cassa_new);
+        $('#'+user_id+'-importo').val(importo_cassa_new);
         
         callUpdateImporto(user_id, importo_cassa_new);
         return false;           
     });
     
-	jQuery('.importoSubmit').change(function() {
+	$('.importoSubmit').change(function() {
 
-		var importo = jQuery(this).val();
+		var importo = $(this).val();
 
-		if(importo=='' || importo==undefined || importo=='0,00' || importo=='0.00' || importo=='0') {
+		if(importo=='' || importo==undefined) { /* || importo=='0,00' || importo=='0.00' || importo=='0') { permetto di portare il saldo a ZERO */ 
 			alert("Devi indicare l'importo da associare all'utente");
-			jQuery(this).val("0,00");
-			jQuery(this).focus();
+			$(this).val("0,00");
+			$(this).focus();
 			return false;
 		}	
 	});
 	
-	jQuery('.noeditor').focusout(function() {
+	$('.noeditor').focusout(function() {
 
-		var nota = jQuery(this).val();
+		var nota = $(this).val();
 
 		if(nota!='') {
 
-	        var idRow = jQuery(this).attr('id');
+	        var idRow = $(this).attr('id');
 	        var user_id = idRow.substring(0,idRow.indexOf('-'));
 	        
-			jQuery("#submitEcomm-" + user_id).animate({opacity: 1});
+			$("#submitEcomm-" + user_id).animate({opacity: 1});
 				
 		    var url = '';
 		    url = "/administrator/index.php?option=com_cake&controller=Cashs&action=index_quick_update_nota&format=notmpl";
 		
-		    jQuery.ajax({
+		    $.ajax({
 		        type: "POST",
 		        url: url,
 		        data: "user_id="+user_id+"&value="+encodeURIComponent(nota),
 		        success: function(response){
-		            jQuery("#submitEcomm-" + user_id).attr("src", app_img + "/actions/32x32/bookmark.png");
-		            jQuery("#msgEcomm-" + user_id).html("Salvato!");
-		            jQuery("#submitEcomm-" + user_id).delay(1000).animate({
+		            $("#submitEcomm-" + user_id).attr("src", app_img + "/actions/32x32/bookmark.png");
+		            $("#msgEcomm-" + user_id).html("Salvato!");
+		            $("#submitEcomm-" + user_id).delay(1000).animate({
 		                opacity: 0
 		            }, 1500);
-		            jQuery("#msgEcomm-" + user_id).delay(1000).animate({
+		            $("#msgEcomm-" + user_id).delay(1000).animate({
 		                opacity: 0
 		            }, 1500);
 		        },
 		        error:function (XMLHttpRequest, textStatus, errorThrown) {
-		             jQuery('#msgEcomm-'+user_id).html(textStatus);
-		             jQuery('#submitEcomm-'+user_id).attr('src',app_img+'/blank32x32.png');
+		             $('#msgEcomm-'+user_id).html(textStatus);
+		             $('#submitEcomm-'+user_id).attr('src',app_img+'/blank32x32.png');
 		        }
 		    });
 		

@@ -79,7 +79,9 @@ class AppController extends Controller {
         $debug = false;
 
         date_default_timezone_set('Europe/Rome');
-
+		setlocale(LC_ALL,  'it_IT', 'it', 'it_IT.utf8', 'it_IT.iso88591');
+		// self::d(localeconv());
+		
 		/*
 		 * gestione sito offline
 		 */
@@ -192,6 +194,29 @@ class AppController extends Controller {
 			switch($this->user->organization['Organization']['type']) {
 				case 'GAS':
 				case 'PRODGAS':
+					/*
+					 * precedenza a dati in POST per gasista che ha 2 tab aperti
+					 */				
+					if (isset($this->request->data['delivery_id'])) {
+						$delivery_id = $this->request->data['delivery_id'];
+						if ($delivery_id != '' && $delivery_id != null && !is_numeric($delivery_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('delivery_id', $delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
+						$this->Session->write('delivery_id', $delivery_id);
+					} 
+					else			
+					if (isset($this->request->data['Order']['delivery_id'])) {
+						$delivery_id = $this->request->data['Order']['delivery_id'];
+						if ($delivery_id != '' && $delivery_id != null && !is_numeric($delivery_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('delivery_id', $delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
+						$this->Session->write('delivery_id', $delivery_id);
+					} 
+					else					
 					if (isset($this->request->pass['delivery_id'])) {
 						$delivery_id = $this->request->pass['delivery_id'];
 						if ($delivery_id != '' && $delivery_id != null && !is_numeric($delivery_id)) {
@@ -200,10 +225,34 @@ class AppController extends Controller {
 						}
 						setcookie('delivery_id', $delivery_id, time() + 86400 * 365 * 1, Configure::read('App.server'));  // (86400 secs per day for 1 years)
 						$this->Session->write('delivery_id', $delivery_id);
-					} else
+					} 
+					else
 					if (isset($_COOKIE['delivery_id']) && !empty($_COOKIE['delivery_id']))
 						$this->Session->write('delivery_id', $_COOKIE['delivery_id']);
 
+					/*
+					 * precedenza a dati in POST per gasista che ha 2 tab aperti
+					 */	
+					if (isset($this->request->data['order_id'])) {
+						$order_id = $this->request->data['order_id'];
+						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
+						$this->Session->write('order_id', $order_id);
+					} 
+					else
+					if (isset($this->request->data['Order']['id'])) {
+						$order_id = $this->request->data['Order']['id'];
+						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
+						$this->Session->write('order_id', $order_id);
+					} 
+					else
 					if (isset($this->request->pass['order_id'])) {
 						$order_id = $this->request->pass['order_id'];
 						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
@@ -212,13 +261,18 @@ class AppController extends Controller {
 						}
 						setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
 						$this->Session->write('order_id', $order_id);
-					} else
+					} 
+					else
 					if (isset($_COOKIE['order_id']) && !empty($_COOKIE['order_id']))
 						$this->Session->write('order_id', $_COOKIE['order_id']);
 
 					$this->delivery_id = $this->Session->read('delivery_id');
 					$this->order_id = $this->Session->read('order_id');
-
+					/*
+					self::dd($this->request->data);
+					self::dd($this->request->pass);
+					self::dd($this->order_id);
+					*/
 					$this->set('delivery_id', $this->delivery_id);
 					$this->set('order_id', $this->order_id);
 
@@ -1187,8 +1241,9 @@ class AppController extends Controller {
 	 *	DES quando utilizza piu' GAS
 	 */ 
 	public function aclOrganizationIdinUso($organization_id=0, $debug=false) {
-	
-        if (empty($organization_id) || $this->isRoot()) {
+		
+        if ((empty($organization_id) || $this->isRoot()) || 
+		    ($organization_id==$this->user->organization['Organization']['id'])) {
             $organization_id = $this->user->organization['Organization']['id'];
         }
 		else {

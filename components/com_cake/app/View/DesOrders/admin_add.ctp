@@ -1,31 +1,36 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List DesOrders'), array('controller' => 'DesOrders', 'action' => 'index'));
 $this->Html->addCrumb(__('Add DesOrder'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
-echo '<div class="deliveries form">';
+echo '<div class="contentMenuLaterale">';
 
 if(!empty($ACLDesSuppliersResults)) {
 	echo $this->Form->create('DesOrder',array('id' => 'formGas'));
 	echo '<fieldset>';
 	echo '<legend>'.__('Add DesOrder').'</legend>';
 		
+	echo '<div class="row">';
+	echo '<div class="col-md-10">';
 	$options = array('id' => 'des_supplier_id', 
 					 'data-placeholder' => 'Scegli un produttore',
 					 'options' => $ACLDesSuppliersResults, 
 					 'default' => $des_supplier_id, 
-					 'required' => 'false', 
-					 'after' => '<div style="float:right;" id="des_supplier_details"></div>');
+					 'required' => 'false');
 	if(count($ACLDesSuppliersResults) > Configure::read('HtmlSelectWithSearchNum')) 
 		$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
 	else
 		$options += array('empty' => Configure::read('option.empty')); 
 	echo $this->Form->input('des_supplier_id', $options);
+	echo '</div>';
+	echo '<div class="col-md-2" id="des_supplier_details">';
+	echo '</div>';
+	echo '</div>';
 	
 	echo $this->Form->input('luogo', array('label' => __('DesDelivery')));
 
-	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('Data fine max'), 'value' => $data_fine_max, 'required'=>'false'));
+	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $data_fine_max, 'required'=>'false'));
 	echo $this->Ajax->datepicker('DesOrderDataFineMax',array('dateFormat' => 'DD, d MM yy','altField' => '#DesOrderDataFineMaxDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="DesOrderDataFineMaxDb" name="data[DesOrder][data_fine_max_db]" value="'.$data_fine_max_db.'" />';
 	
@@ -62,16 +67,14 @@ if(!empty($ACLDesSuppliersResults)) {
 	echo $this->Form->end(__('Submit'));
 }
 else 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non hai produttori associati"));
-?>
-</div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('List DesOrders'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
-	</ul>
-</div>
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non hai produttori associati"));
 
+echo '</div>';
+
+$links = [];
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List DesOrders').' </span><span class="fa fa-reply"></span>', array('controller' => 'DesOrders', 'action' => 'index'), ['class' => 'animate', 'escape' => false]);
+echo $this->Menu->draw($links);
+?>
 <script type="text/javascript">
 function desSuppliersDetails(des_supplier_id) {
 	if(des_supplier_id!=0 && des_supplier_id!='') {
@@ -81,17 +84,17 @@ function desSuppliersDetails(des_supplier_id) {
 	}
 }	
  
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#des_supplier_id').change(function() {
-		var des_supplier_id = jQuery(this).val();
+	$('#des_supplier_id').change(function() {
+		var des_supplier_id = $(this).val();
 		desSuppliersDetails(des_supplier_id);
 	});
 	 
-	jQuery('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('DesOrder.nota_evidenza'));?>");
+	$('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_<?php echo strtolower($this->Form->value('DesOrder.nota_evidenza'));?>");
 	
-	jQuery('#DesOrderNotaEvidenza').change(function() {
-		var deliveryNotaEvidenza = jQuery(this).val();
+	$('#DesOrderNotaEvidenza').change(function() {
+		var deliveryNotaEvidenza = $(this).val();
 		setNotaEvidenza(deliveryNotaEvidenza);
 	});
 	
@@ -100,16 +103,16 @@ jQuery(document).ready(function() {
 		echo 'setNotaEvidenza(\''.$nota_evidenzaDefault.'\');';
 	?>
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 	
-		var des_supplier_id = jQuery('#des_supplier_id').val();
+		var des_supplier_id = $('#des_supplier_id').val();
 		if(des_supplier_id=='' || des_supplier_id==undefined) {
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
-			jQuery('#des_supplier_id').focus();
+			$('#des_supplier_id').focus();
 			return false;
 		}
 		
-		var desOrderDataFineMaxDb = jQuery('#DesOrderDataFineMaxDb').val();
+		var desOrderDataFineMaxDb = $('#DesOrderDataFineMaxDb').val();
 		if(desOrderDataFineMaxDb=='' || desOrderDataFineMaxDb==undefined) {
 			alert("Devi indicare la data massima di chiusura dell'ordine");
 			return false;
@@ -121,7 +124,7 @@ jQuery(document).ready(function() {
 });
 
 function setNotaEvidenza(deliveryNotaEvidenza) {
-	jQuery('#DesOrderNotaEvidenzaImg').removeClass();
-	jQuery('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
+	$('#DesOrderNotaEvidenzaImg').removeClass();
+	$('#DesOrderNotaEvidenzaImg').addClass("nota_evidenza_"+deliveryNotaEvidenza.toLowerCase());
 }
 </script>

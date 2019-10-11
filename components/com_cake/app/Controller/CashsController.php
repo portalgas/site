@@ -63,17 +63,25 @@ class CashsController extends AppController {
 
     public function admin_index_quick_update() {
 
+		$debug = false;
+		
         $user_id = $this->request->data['user_id'];
         $value = $this->request->data['value'];
 
+		self::d('admin_index_quick_update', $debug);
+		self::d($this->request->data, $debug);
+		
         /*
          *   ctrl se insert / update 
          */
         $options = [];
         $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
             					  'Cash.user_id' => $user_id];
+        $options['fields'] = ['Cash.id'];
         $options['recursive'] = -1;
         $results = $this->Cash->find('first', $options);
+		self::d($options, $debug);
+		self::d($results, $debug); 
         if (!empty($results)) {
             /*
              * UPDATE
@@ -95,13 +103,19 @@ class CashsController extends AppController {
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['importo'] = $this->importoToDatabase($value);
         
-		self::d($data, false);
+		self::d($data, $debug);
 		
-        $this->Cash->create();
-        $this->Cash->save($data);
+		$msg_errors = $this->Cash->getMessageErrorsToValidate($this->Cash, $data);
+		if(!empty($msg_errors)) {
+			self::d($msg_errors, $debug);
+		}
+		else {			
+			$this->Cash->create();
+			$this->Cash->save($data);
 
-        $this->layout = 'ajax';
-        $this->render('/Layouts/ajax');
+			$this->layout = 'ajax';
+			$this->render('/Layouts/ajax');
+		}
     }
 
 	/*
@@ -109,15 +123,20 @@ class CashsController extends AppController {
 	 */ 
     public function admin_index_quick_update_nota() {
 
+		$debug = false;
+		
         $user_id = $this->request->data['user_id'];
         $value = $this->request->data['value'];
+	
+		self::d('admin_index_quick_update_nota', $debug);
+		self::d($this->request->data, $debug);
 
         /*
          *   ctrl se insert / update 
          */
         $options = [];
-        $options['conditions'] = array('Cash.organization_id' => $this->user->organization['Organization']['id'],
-            							'Cash.user_id' => $user_id);
+        $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+            					  'Cash.user_id' => $user_id];
 
         $options['recursive'] = -1;
         $results = $this->Cash->find('first', $options);
@@ -125,7 +144,7 @@ class CashsController extends AppController {
             /*
              * UPDATE
              */
-            $data['Cash']['id'] = $results['Cash']['id'];	        	            
+            $data['Cash'] = $results['Cash'];	        	            
 		}
 		
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -240,7 +259,7 @@ class CashsController extends AppController {
     public function admin_edit($id = null) {
 
         $this->Cash->id = $id;
-        if (!$this->Cash->exists()) {
+        if (!$this->Cash->exists($this->Cash->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
@@ -313,7 +332,7 @@ class CashsController extends AppController {
     public function admin_delete($id = null) {
 
         $this->Cash->id = $id;
-        if (!$this->Cash->exists()) {
+        if (!$this->Cash->exists($this->Cash->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }

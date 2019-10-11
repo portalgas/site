@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
 $this->Html->addCrumb(__('Csv Export-Import'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -19,9 +19,13 @@ echo $this->Form->create();
 echo '<fieldset class="filter">';
 echo '<legend>'.__('ExportImport').'</legend>';	
 
-$options = array('id'=>'supplier_organization_id', 'options' => $ACLsuppliersOrganization,'empty' => 'Filtra per produttore', 'default' => $supplier_organization_id, 'escape' => false);
+$options = ['id' => 'supplier_organization_id', 
+			'options' => $ACLsuppliersOrganization, 
+			'default' => $supplier_organization_id, 'escape' => false];
+if(count($ACLsuppliersOrganization) > 1) 
+	$options += ['data-placeholder'=> __('FilterToSuppliers'), 'empty' => __('FilterToSuppliers')];			
 if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum'))
-    $options += array('class'=> 'selectpicker', 'data-live-search' => true);
+    $options += ['class'=> 'selectpicker', 'data-live-search' => true];
 echo $this->Form->input('supplier_organization_id', $options); 
 ?>
 
@@ -30,18 +34,12 @@ echo $this->Form->input('supplier_organization_id', $options);
 				<?php echo __('Print Doc');?>
 				<div class="actions-img">
 					<ul>
-						<li><?php echo $this->Form->input('typeDoc', array(
-											 'type' => 'radio',
-											 'name' => 'doc_formato',
-											 'fieldset' => false,
-											 'legend' => false,
-											 'div' => array('class' => ''),
-											 'options' => $typeDocOptions,
-											 'default' => 'CSV',
-									   ));
-							?>
+						<li>
+							<?php echo $this->App->drawFormRadio('typeDoc', 'doc_formato', array('options' => $typeDocOptions,
+											 'value' => 'CSV', 'label' => false));
+							?>						
 						</li>
-						<li><?php echo $this->Html->link(__('Export Report'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Export Report'))); ?></li>
+						<li style="margin-left:25px;"><?php echo $this->Html->link(__('Export Report'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Export Report'))); ?></li>
 					</ul>
 				</div>
 			</h2>		
@@ -56,17 +54,17 @@ echo '</fieldset>';
 echo $this->Form->end();
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	
-	jQuery(function() {
-		jQuery(".blank").attr("target","_blank");
+	$(function() {
+		$(".blank").attr("target","_blank");
 	});
 	
-	jQuery('#actionExportDoc').click(function() {
-		var supplier_organization_id = jQuery('#supplier_organization_id').val();
+	$('#actionExportDoc').click(function() {
+		var supplier_organization_id = $('#supplier_organization_id').val();
 		
-		var doc_options = 'export_file_csv'; /* jQuery("input[name='doc_options']:checked").val(); */
-		var doc_formato = jQuery("input[name='doc_formato']:checked").val();
+		var doc_options = 'export_file_csv'; /* $("input[name='doc_options']:checked").val(); */
+		var doc_formato = $("input[name='data[typeDoc][doc_formato]']:checked").val();
 
 		if(supplier_organization_id=='') {
 			alert("<?php echo __('jsAlertSupplierRequired');?>");
@@ -83,7 +81,7 @@ jQuery(document).ready(function() {
 		}
 
 		url = '/administrator/index.php?option=com_cake&controller=CsvImports&action=articles_export&supplier_organization_id='+supplier_organization_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl';
-		jQuery('#actionExportDoc').attr('href', url);
+		$('#actionExportDoc').attr('href', url);
     	
 		return true;
 	});	

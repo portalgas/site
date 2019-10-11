@@ -85,7 +85,8 @@ class ProdGasPromotion extends AppModel {
 		App::import('Model', 'ProdGasSupplier');
 		$ProdGasSupplier = new ProdGasSupplier;
 		
-		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id']);
+		$filters['organization_id'] = $organization_id;
+		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id'], $filters);
 		self::d($supplierResults, $debug); 
 
 		$results += $supplierResults;
@@ -265,7 +266,36 @@ class ProdGasPromotion extends AppModel {
 		}
 		return true;
 	}
-	
+	/*
+	public $validate = [
+		'organization_id' => [
+			'numeric' => [
+				'rule' => ['numeric'],
+			],
+		],
+		'name' => [
+			'rule' => 'alphaNumeric',
+			'required' => true
+		],
+		'contact_mail' => 'email',
+		'contact_name' => [
+			'rule' => 'alphaNumeric',
+			'required' => true
+		],
+		'contact_phone' => [
+			'rule' => 'alphaNumeric',
+			'required' => true
+		],
+		'state_code' => [
+			'rule' => 'alphaNumeric',
+			'required' => true
+		],
+		'state' => [
+			'rule' => 'alphaNumeric',
+			'required' => true
+		]
+	];
+	*/
 	public $hasMany = [
 		'ProdGasPromotionsOrganization' => [
 				'className' => 'ProdGasPromotionsOrganization',

@@ -1,0 +1,61 @@
+# Custom #
+##########################
+configuration.php
+/_sql/*
+/logs/*
+/tmp/*
+/cache/*
+/images/articles/*
+/images/organizations/*
+/images/pdf/*
+/images/prod_gas_articles/*
+/images/prod_gas_promotions/*
+/images/tesoriere/*
+/images/users/*
+/components/com_cake/app/Config/core.portalgas.it.php
+/components/com_cake/app/Config/core.www.portalgas.it.php
+/components/com_cake/app/Config/core.test.portalgas.it.php
+/components/com_cake/app/Config/core.next.portalgas.it.php
+/components/com_cake/app/Config/core.new.portalgas.it.php
+/components/com_cake/app/tmp/*
+
+# CakePHP specific files #
+##########################
+/config/app.php
+/config/.env
+/logs/*
+/tmp/*
+/vendor/*
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Tool specific files #
+#######################
+# vim
+*~
+*.swp
+*.swo
+# sublime text & textmate
+*.sublime-*
+*.stTheme.cache
+*.tmlanguage.cache
+*.tmPreferences.cache
+# Eclipse
+.settings/*
+# JetBrains, aka PHPStorm, IntelliJ IDEA
+.idea/*
+# NetBeans
+nbproject/*
+# Visual Studio Code
+.vscode
+# Sass preprocessor
+.sass-cache/

@@ -146,8 +146,8 @@ class DeliveryLifeCycle extends AppModel {
 							AND RequestPayment.stato_elaborazione != 'CLOSE'
 							AND RequestPaymentsOrder.delivery_id = " . $result['Delivery']['id'];	
 			                self::d($sql, false);
-			                $requestPaymentResults = $this->query($sql);	
-							if(empty($requestPaymentClose)) {
+			                $requestPaymentResults = $this->query($sql);							
+							if(empty($requestPaymentClose) || count($requestPaymentResults)==0) {
 			                	$requestPaymentClose=true;
 								self::d("Nessun ordine e' legata ad una RICHIESTA DI PAGAMENTO chiusa => potrei chiudere la consegna", $debug);
 			                }

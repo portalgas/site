@@ -1,6 +1,6 @@
 <?php
-if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
-	echo '<table cellpadding = "0" cellspacing = "0">';
+if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
 	echo '<th>Aperto/Chiuso</th>';
 	echo '<th>'.__('Referenti').'</th>';
@@ -36,18 +36,22 @@ if($user->organization['Organization']['payToDelivery']=='POST' || $user->organi
 	echo '</td>';				
 	
 	echo '</tr>';
-	echo '</table>';
-} // end if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+	echo '</table></div>';
+} // end if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
 
 echo '<br />';
-echo '<table cellpadding = "0" cellspacing = "0">';
+echo '<div class="table-responsive"><table class="table table-hover">';
 echo '<tr>';
-echo '<th>'.__('Supplier').'</th>';
+echo '<th colspan="2">'.__('Supplier').'</th>';
 echo '<th colspan="2">'.__('Contatti').'</th>';
-echo '<th>Dati per il pagamento</th>';
+echo '<th>'.__('Payment profile').'</th>';
 echo '</tr>';
 
 echo '<tr>';
+echo '<td>';
+if(!empty($supplier['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$supplier['Supplier']['img1']))
+	echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$supplier['Supplier']['img1'].'" alt="'.$supplier['SupplierOrganization']['name'].'" /> ';
+echo '</td>';
 echo '<td style="white-space:nowrap;">';
 echo $supplier['Supplier']['name'];
 echo '</td>';
@@ -60,8 +64,8 @@ echo '</td>';
 
 echo '<td>';
 if(!empty($supplier['Supplier']['telefono2'])) echo '<br />'.$supplier['Supplier']['telefono2'];
-if(!empty($supplier['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" href="mailto:'.$supplier['Supplier']['mail'].'" class="link_mailto"></a>';
-if(!empty($supplier['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($supplier['Supplier']['www']).'" target="_blank" class="blank link_www"></a>';
+if(!empty($supplier['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" href="mailto:'.$supplier['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
+if(!empty($supplier['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($supplier['Supplier']['www']).'" target="_blank" class="blank fa fa-globe fa-lg"></a>';
 echo '</td>';
 
 echo '<td>';
@@ -72,5 +76,5 @@ if(!empty($supplier['Supplier']['nota'])) echo '<br />'.$supplier['Supplier']['n
 echo '</td>';
 
 echo '</tr>';
-echo '</table>';
+echo '</table></div>';
 ?>

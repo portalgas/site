@@ -202,7 +202,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -212,7 +212,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'prod_delivery_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -222,7 +222,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'article_organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -232,7 +232,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'article_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -242,7 +242,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'qta_cart' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -252,17 +252,12 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'pezzi_confezione' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 		'qta_minima' => array(
 			'notempty' => array(
-				'rule' => array('notempty', false),
+				'rule' => array('notBlank', false),
 				'message' => 'Indica la quantità minima che un gasista può acquistare',
 			),
 			'numeric' => array(
@@ -273,7 +268,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'qta_massima' => array(
 			'notempty' => array(
-				'rule' => array('notempty', false),
+				'rule' => array('notBlank', false),
 				'message' => 'Indica la quantità massima che un gasista può acquistare',
 			),
 			'numeric' => array(
@@ -284,7 +279,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'qta_minima_order' => array(
 			'notempty' => array(
-					'rule' => array('notempty', false),
+					'rule' => array('notBlank', false),
 					'message' => "Indica la quantità minima rispetto a tutti gli acquisti dell'ordine",
 			),		
 			'numeric' => array(
@@ -295,7 +290,7 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'qta_massima_order' => array(
 			'notempty' => array(
-					'rule' => array('notempty', false),
+					'rule' => array('notBlank', false),
 					'message' => "Indica la quantità massima rispetto a tutti gli acquisti dell'ordine",
 			),		
 			'numeric' => array(
@@ -306,22 +301,12 @@ class ProdDeliveriesArticle extends ProdDeliveriesArticleMultiKey {
 		),
 		'qta_multipli' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 		'alert_to_qta' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 	);

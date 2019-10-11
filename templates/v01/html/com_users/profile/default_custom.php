@@ -34,11 +34,18 @@ foreach ($fieldsets as $group => $fieldset): // Iterate through the form fieldse
 			 $field->name!='jform[profile][hasArticlesOrder]' &&
 			 $field->name!='jform[profile][codice]' &&
 			 $field->name!='jform[profile][phone2]' &&
-			 $field->name!='jform[profile][aboutme]' &&
-			 $field->name!='jform[profile][dataRichEnter]' &&
-			 $field->name!='jform[profile][dataEnter]' &&
-			 $field->name!='jform[profile][dataRichExit]' &&
-			 $field->name!='jform[profile][dataExit]') {
+			 $field->name!='jform[profile][aboutme]'  &&
+			$field->name!='jform[profile][dataRichEnter]' &&
+			$field->name!='jform[profile][dataEnter]' &&
+			$field->name!='jform[profile][numDeliberaEnter]' &&
+			$field->name!='jform[profile][dataDeliberaEnter]' &&
+			$field->name!='jform[profile][dataRichExit]' &&
+			$field->name!='jform[profile][motivoRichExit]' &&
+			$field->name!='jform[profile][dataExit]' &&
+			$field->name!='jform[profile][numDeliberaExit]' &&
+			$field->name!='jform[profile][dataDeliberaExit]' &&
+			$field->name!='jform[profile][dataRestituzCassa]' &&
+			$field->name!='jform[profile][notaRestituzCassa]') {
 		?>
 
 		<div class="form-group">

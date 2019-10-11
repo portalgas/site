@@ -30,10 +30,10 @@ echo "</ol>";
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery( document ).ready(function() {
-	jQuery('.imgExample').click(function() {
+$( document ).ready(function() {
+	$('.imgExample').click(function() {
 		alert("Sono solo un immagine d'esempio... il menù dei produttori è un pò più sopra!" );
-		jQuery("[data-id='order_<?php echo $id;?>']").css('border', '1px solid red');
+		$("[data-id='order_<?php echo $id;?>']").css('border', '1px solid red');
 	});
 });
 </script>

@@ -80,10 +80,15 @@ class modMenuHelper
 					// Reverted back for CMS version 2.5.6
 					switch ($item->type)
 					{
+						/*
+						Warning: "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"?
 						case 'separator':
 							// No further action needed.
 							continue;
-
+						*/
+						case 'separator':
+						
+						break;
 						case 'url':
 							if ((strpos($item->link, 'index.php?') === 0) && (strpos($item->link, 'Itemid=') === false)) {
 								// If this is an internal Joomla link, ensure the Itemid is set.

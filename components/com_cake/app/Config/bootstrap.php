@@ -118,11 +118,17 @@ CakeLog::config('ecomm', array(
 	'scopes' => array('ecomm'),
 	'file' => 'ecomm.log',
 ));
+CakeLog::config('myDebug', array(
+	'engine' => 'FileLog',
+	'types' => array('info', 'debug', 'error'),
+	'scopes' => array('myDebug'),
+	'file' => 'myDebug.log',
+));
 
 // CakePlugin::load('AclExtras');
 
 // comand ubuntu locale -a
-setlocale(LC_ALL,  'it_IT', 'it', 'it_IT.utf8');
+setlocale(LC_ALL,  'it_IT', 'it', 'it_IT.utf8', 'it_IT.iso88591');
 setlocale(LC_TIME, 'it_IT', 'it', 'it_IT.utf8');
 
 /*

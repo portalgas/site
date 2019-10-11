@@ -1,23 +1,23 @@
 <style type="text/css">
-ol li {
+ol.delivery_info li {
 	margin:0 0 5px;
 }
-ul {
+ul.delivery_info {
 
 }
-ul li {
+ul.delivery_info li {
 	margin: 5px 0 0 25px;list-style: disc outside none;
 }
 </style>
 
-<ol>
+<ol class="delivery_info">
 	<li>
 				clicca sul tabs della <b>consegna</b> per visualizzare l'elenco dei produttori associati<br />
 				<img alt="tabs consegne" src="<?php echo Configure::read('App.img.cake'); ;?>/info_tabs_consegne.png" />
 	</li>
 	<li>
 				ogni riga della tabella relativa ad un produttore puo&grave; presentare 4 diverse tipologie <b>di STATO</b>: 
-				<ul>
+				<ul class="delivery_info">
 					<li><span style="color:red;">Chiuso</span>: non si possono fare piu&grave; acquisti.</li>
 					<li><span style="color:green;">Aperto</span>: si possono effetturare acquisti (controllare la colonna "Data di chiusura" per sapere quando l'ordine si chiudera&grave;).</li>
 					<li><span style="color:yellow;background-color:#999;">In chiusura</span>: mancano pochi giorni alla chiusura dell'ordine (controllare la colonna "Data di chiusura" per sapere quando l'ordine si chiudera&grave;).</li>

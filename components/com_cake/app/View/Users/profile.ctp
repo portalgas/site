@@ -83,7 +83,41 @@ else
 		</div>
 	</div>
 
-
+	<?php
+	if(!isset($results['Profile']['satispay']) || empty($results['Profile']['satispay']))
+		$satispay = 'No';
+	else 
+	if($results['Profile']['satispay']=='Y')	
+		$satispay = 'Si';
+	else
+		$satispay = 'No';
+	
+	$satispay_phone = '';
+	if(isset($results['Profile']['satispay']) && $results['Profile']['satispay']=='Y') {
+		if(isset($results['Profile']['satispay_phone']) && empty($results['Profile']['satispay_phone']))
+			$satispay_phone = $results['Profile']['satispay_phone'];
+	}
+	?>
+	<div class="form-group">
+	  <label class="control-label col-xs-3">Hai Satispay: <img src="/images/satispay.png" style="width:75px;" /></label>
+		<div class="col-xs-9">
+			<?php echo $satispay;?>
+		</div>
+	</div>
+	
+	<?php
+	if(!empty($satispay_phone)) {
+	?>
+		<div class="form-group">
+		  <label class="control-label col-xs-3">Altro telefono:</label>
+			<div class="col-xs-9">
+				<?php echo $results['Profile']['phone2'];?>
+			</div>
+		</div>
+	<?php
+	}
+	?>
+	
 	<div class="content-btn">
 		<a class="validate btn btn-success pull-right" href="<?php echo JRoute::_('index.php?option=com_users&task=profile.edit&user_id='.(int) $results['User']['id']);?>">
 			Modifica i tuoi dati</a>
@@ -193,7 +227,7 @@ if(!empty($results['SuppliersOrganization'])) {
 		echo '<td>'.($numResult+1).'</td>';
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';		
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';		
 		echo '</td>';		
 		echo '<td>';
 		echo $result['SuppliersOrganization']['name'];
@@ -238,14 +272,14 @@ echo '	</form>';
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 
-		var doc1 = jQuery('#DocumentImg1').val();
+		var doc1 = $('#DocumentImg1').val();
 		if(doc1=='' || doc1==undefined) {
 			alert("Devi scelgliere dal tuo PC un immagine da uplodare");
-			jQuery(this).focus();
+			$(this).focus();
 			return false;
 		}	
 		

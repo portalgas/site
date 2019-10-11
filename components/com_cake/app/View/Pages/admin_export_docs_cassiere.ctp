@@ -4,12 +4,14 @@
 	<tr>
 		<th>Tipologia di documento</th>
 		<th></th>
+		<th>Preview</th>
 		<th>Formato pdf</th>
 		<th>Formato excel</th>
 	</tr>
 	<tr>
 		<td>Stampa della <b>Cassa</b></td>
 		<td></td>
+		<td><a class="cashsData" id="cashsData-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima della cassa"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>
 		<td><a class="cashsData" id="cashsData-PDF" style="cursor:pointer;" rel="nofollow" title="stampa la cassa <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -23,6 +25,7 @@
 	<tr>
 		<td>Stampa della <b>Cassa</b> con storico</td>
 		<td></td>
+		<td><a class="cashsHistoryData" id="cashsHistoryData-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima della cassa on lo storico"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>		
 		<td><a class="cashsHistoryData" id="cashsHistoryData-PDF" style="cursor:pointer;" rel="nofollow" title="stampa la cassa con lo storico <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -45,6 +48,7 @@
 															'empty' => 'Scegli l\'anno','escape' => false));
 			?>		
 		</td>
+		<td><a class="exportToCassiereImportoPos" id="exportToCassiereImportoPos-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima della <?php echo __('to_cassiere_pos');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>				
 		<td><a class="exportToCassiereImportoPos" id="exportToCassiereImportoPos-PDF" style="cursor:pointer;" rel="nofollow" title="<?php echo __('to_cassiere_pos');?> <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -58,7 +62,7 @@
 	<?php
 	}
 	
-	if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST') {
+	if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	?>
 	<tr>
 		<td><?php echo __('to_lists_suppliers_cassiere');?></td>
@@ -68,6 +72,7 @@
 															'empty' => 'Scegli la consegna','escape' => false));
 			?>		
 		</td>
+		<td><a class="exportToCassiereListSuppliersAll" id="exportToCassiereListOrders-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima <?php echo __('to_lists_suppliers_cassiere');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>				
 		<td><a class="exportToCassiereListSuppliersAll" id="exportToCassiereListOrders-PDF" style="cursor:pointer;" rel="nofollow" title="<?php echo __('to_lists_suppliers_cassiere');?> <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -80,6 +85,7 @@
 	</tr>
 	<tr>
 		<td><?php echo __('to_lists_orders_cassiere');?></td>
+		<td><a class="exportToCassiereListOrdersAll" id="exportToCassiereListOrdersAll-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima <?php echo __('to_lists_orders_cassiere');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>						
 		<td><a class="exportToCassiereListOrdersAll" id="exportToCassiereListOrdersAll-PDF" style="cursor:pointer;" rel="nofollow" title="<?php echo __('to_lists_orders_cassiere');?> <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -92,6 +98,7 @@
 	</tr>		
 	<tr>
 		<td><?php echo __('to_list_users_delivery_cassiere');?></td>
+		<td><a class="exportToCassiereListUsersDeliveryAll" id="exportToCassiereListUsersDeliveryAll-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima <?php echo __('to_list_users_delivery_cassiere');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>								
 		<td><a class="exportToCassiereListUsersDeliveryAll" id="exportToCassiereListUsersDeliveryAll-PDF" style="cursor:pointer;" rel="nofollow" title="<?php echo __('to_list_users_delivery_cassiere');?> <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
 			<?php
@@ -106,89 +113,149 @@
 	}
 	?>				
 	</table>
+	
+	<div class="clearfix" id="doc-preview" style="display:none;"></div>
+	
 </div>
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+var idDivTarget = 'doc-preview';
+var url = "";
 
-	jQuery('.cashsData').click(function() {	
-		var id =  jQuery(this).attr('id');
+$(document).ready(function() {
+
+	$('.cashsData').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 		
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}				
 	});	
 	
-	jQuery('.cashsHistoryData').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.cashsHistoryData').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 		
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}	
 	});	
 	
-	jQuery('.exportToCassiereImportoPos').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereImportoPos').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var years_pos = jQuery('#years_pos').val();
+		var years_pos = $('#years_pos').val();
 		if(years_pos=="") {
 			alert("Devi scegliere l'anno");
 			return false;
 		}
-																													
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&years_pos='+years_pos+'&doc_options=to-cassiere-pos&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+			
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&years_pos='+years_pos+'&doc_options=to-cassiere-pos&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&years_pos='+years_pos+'&doc_options=to-cassiere-pos&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}	
 	});
 
 	
-	jQuery('.exportToCassiereListSuppliersAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListSuppliersAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
 		}
-																													
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-suppliers-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+				
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-suppliers-cassiere&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-suppliers-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}			
 	});
 	
-	jQuery('.exportToCassiereListOrdersAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListOrdersAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
 		}
 			
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-orders-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-orders-cassiere&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-lists-orders-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}
 	});		
 	
-	jQuery('.exportToCassiereListUsersDeliveryAll').click(function() {	
-		var id =  jQuery(this).attr('id');
+	$('.exportToCassiereListUsersDeliveryAll').click(function() {	
+		var id =  $(this).attr('id');
 		idArray = id.split('-');
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 
-		var delivery_id = jQuery('#delivery_id').val();
+		var delivery_id = $('#delivery_id').val();
 		if(delivery_id=="") {
 			alert("<?php echo __('jsAlertDeliveryRequired');?>");
 			return false;
 		}
-			
-		window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-list-users-delivery-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');		
+		
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-list-users-delivery-cassiere&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_options=to-list-users-delivery-cassiere&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}
 	});	
 	
 });

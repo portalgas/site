@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 /**
  * DROP TRIGGER IF EXISTS `k_suppliers_organizations_Trigger`;
  * DELIMITER |
@@ -20,11 +21,11 @@ class SuppliersOrganization extends AppModel {
 	
 	public function getSupplier($user, $supplier_organization_id) {
 	
-		$options = array();
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   'SuppliersOrganization.id' => $supplier_organization_id);
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+							      'SuppliersOrganization.id' => $supplier_organization_id];
 		$options['recursive'] = -1;
-		//$options['fields'] = array('supplier_id');
+		//$options['fields'] = ['supplier_id'];
 		$results = $this->find('first', $options);
 		
 		return $results;
@@ -50,10 +51,11 @@ class SuppliersOrganization extends AppModel {
 					AND SuppliersOrganization.stato = 'Y'
 					AND (Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG') ";
 		if(isset($conditions['SuppliersOrganization.id'])) $sql .= " AND SuppliersOrganization.id = ".$conditions['SuppliersOrganization.id'];
+		if(isset($conditions['SuppliersOrganization.stato'])) $sql .= " AND SuppliersOrganization.stato = '".$conditions['SuppliersOrganization.stato']."'";
 		if(isset($conditions['SuppliersOrganization.supplier_id'])) $sql .= " AND SuppliersOrganization.supplier_id = ".$conditions['SuppliersOrganization.supplier_id'];
 			$sql .= ' ORDER BY '.$order;
 
-		// echo '<br />'.$sql;
+		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
 		}
@@ -64,14 +66,121 @@ class SuppliersOrganization extends AppModel {
 		
 		return $results;
 	}
+		
+	/*
+	 * dato un SuppliersOrganization estraggo i possibili OwnerArticles SUPPLIER / REFERENT / DES
+	 */
+	public function getOwnerArticles($user, $suppliersOrganizationResults, $debug=false) {
+		
+		$supplier_owner_articles = ClassRegistry::init('SuppliersOrganization')->enumOptions('owner_articles');
+		
+		if(!is_array($suppliersOrganizationResults))
+			$suppliersOrganizationResults = $this->_getSuppliersOrganizationResultsById($user, $suppliersOrganizationResults, $debug);
+
+		/*
+		 * ctrl se il produttore e' Organization.type = 'PRODGAS'
+		 */
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;
+		
+		$supplierResults = $ProdGasSupplier->getBySupplierId($user, $suppliersOrganizationResults['SuppliersOrganization']['supplier_id'], $debug);
+		 		
+		/*
+		 * ctrl se GAS e' DES
+		 */
+		$desSupplierResults = [];
+		$isGasTitolare = false;
+		
+		if($user->organization['Organization']['hasDes'] == 'Y') { 
+			App::import('Model', 'DesOrganization');
+			$DesOrganization = new DesOrganization;
 			
+			App::import('Model', 'DesSupplier');
+			$DesSupplier = new DesSupplier;	
+	
+			$options = [];
+			$options['conditions'] = ['DesOrganization.organization_id' => $user->organization['Organization']['id']];
+			$options['recursive'] = -1;
+			$options['fields'] = ['DesOrganization.des_id'];
+			$desOrganizationResults = $DesOrganization->find('all', $options);
+			self::d($desOrganizationResults);
+			
+			if(!empty($desOrganizationResults)) {
+				$des_ids = [];
+				foreach($desOrganizationResults as $desOrganizationResult)
+					array_push($des_ids, $desOrganizationResult['DesOrganization']['des_id']);
+	
+				// self::d($des_ids, $debug);
+				/*
+				 * ctrl se produttote DES
+				 */			
+				$options = [];
+				$options['conditions'] = ['DesSupplier.des_id' => $des_ids,
+										  'DesSupplier.supplier_id' => $suppliersOrganizationResults['SuppliersOrganization']['supplier_id']];
+				$options['recursive'] = -1;
+				$desSupplierResults = $DesSupplier->find('first', $options);
+				self::d($options, $debug);
+				self::d($desSupplierResults, $debug);
+	
+				if(!empty($desSupplierResults)) {
+					/*
+					 * ctrl se il GAS e' titolare
+					 */
+					if($desSupplierResults['DesSupplier']['own_organization_id']==$user->organization['Organization']['id'])
+						$isGasTitolare = true;
+					else
+						$isGasTitolare = false;
+					
+				}			
+			} // if(!empty($desOrganizationResults))
+		} // if($user->organization['Organization']['hasDes'] == 'Y')
+				
+		if(empty($desSupplierResults)) {
+			unset($supplier_owner_articles['DES']);			
+		}
+		else {
+			if($isGasTitolare)
+				unset($supplier_owner_articles['DES']);
+		}
+
+		switch ($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']) {
+			case 'SUPPLIER':
+				if(empty($desSupplierResults))
+					unset($supplier_owner_articles['DES']);			
+			break;
+			case 'REFERENT':
+				if(empty($supplierResults))
+					unset($supplier_owner_articles['SUPPLIER']);	
+			break;
+			case 'DES':
+				if(empty($supplierResults))
+					unset($supplier_owner_articles['SUPPLIER']);
+			break;
+		}
+		
+		self::d($supplier_owner_articles, $debug);
+		
+		return $supplier_owner_articles;
+	}	
+
+	private function _getSuppliersOrganizationResultsById($user, $suppliersOrganizationResults, $debug) {
+	
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+							      'SuppliersOrganization.id' => $suppliersOrganizationResults];
+		$options['recursive'] = 1;
+		$results = $this->find('first', $options);
+		
+		return $results;		
+	}
+	
 	/*
 	 * get elenco dei suppliersOrganization
 	 * 	1, 3, 4, 56
 	 */
 	public function getSuppliersOrganizationIds($user) {
 
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
 									   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
 		$options['recursive'] = 1;
@@ -102,67 +211,62 @@ class SuppliersOrganization extends AppModel {
 	 */
 	public function getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id) {
 
-		$totArticles = array();
-		$sql = "SELECT count(id) as totArticles 
-				FROM ".Configure::read('DB.prefix')."articles
-				WHERE
-					stato = 'Y' 
-					AND flag_presente_articlesorders = 'Y' 
-					AND supplier_organization_id = ".$supplier_organization_id;
-		/*
-		 * non + il produttore puo' essere un ProdGas
-		 *  AND organization_id = ".(int)$user->organization['Organization']['id']."
-		 */	    
-		//echo '<br />'.$sql;
-		try {
-			$totArticles = current($this->query($sql));
-		}
-		catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
-		}
+		$debug = false;
 				
-		return $totArticles[0];
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $supplier_organization_id];
+		$options['fields'] = ['SuppliersOrganization.owner_articles', 'SuppliersOrganization.owner_organization_id', 'SuppliersOrganization.owner_supplier_organization_id'];
+		$options['recursive'] = -1;
+		self::d($options, $debug);
+		$suppliersOrganizationResults = $this->find('first', $options);
+			
+		App::import('Model', 'Article');
+		$Article = new Article;
+		$Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesArticlesType', 'ArticlesOrder']]);
+			
+		$options = [];
+		$options['conditions'] = ['Article.stato' => 'Y',
+								  'Article.flag_presente_articlesorders' => 'Y',
+								  'Article.organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'],
+								  'Article.supplier_organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id']];
+		$options['recursive'] = 0;						  
+		$articleCount = $Article->find('count', $options);
+		self::d($options['conditions'], $debug);
+		self::d($articleCount, $debug);
+				
+		return $articleCount;
 	} 		
 	
-	public function getTotArticlesAttivi($user, $supplier_organization_id) {
+	/*
+	 * $opts['conditions'] = ['Article.stato' => 'Y'];
+	 */
+	public function getTotArticlesAttivi($user, $supplier_organization_id, $opts=[], $debug=false) {
+	
+		$articlesResults = $this->getArticlesBySupplierOrganizationId($user, $supplier_organization_id, $opts, $debug);
+		$articlesCountResults = count($articlesResults);
+		self::d($articlesResults, $debug);	
+		self::d($articlesCountResults, $debug);	
 
-		$totArticles = array();
-		$sql = "SELECT count(id) as totArticles 
-				FROM ".Configure::read('DB.prefix')."articles
-				WHERE
-					stato = 'Y'
-					AND supplier_organization_id = ".$supplier_organization_id;
-		/*
-		 * non + il produttore puo' essere un ProdGas
-		 *  AND organization_id = ".(int)$user->organization['Organization']['id']."
-		 */	    
-		//echo '<br />'.$sql;
-		try {
-			$totArticles = current($this->query($sql));
-		}
-		catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
-		}
-				
-		return $totArticles[0];
+		return $articlesCountResults;		
 	} 
 	
 	public $validate = array(
 		'organization_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 		'category_supplier_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 	);

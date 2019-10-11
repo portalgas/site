@@ -11,6 +11,12 @@ class OrdersController extends AppController {
    public function beforeFilter() {
    		parent::beforeFilter();
    		
+		if(isset($this->request->data['Order']['id']))
+			$this->order_id = $this->request->data['Order']['id'];
+		else	
+		if(isset($this->request->params['pass']['order_id']))
+			$this->order_id = $this->request->params['pass']['order_id'];
+		
    		/* ctrl ACL */
 	   	$actionWithPermission = ['admin_home', 'admin_edit', 'admin_delete', 'admin_close', 'admin_sotto_menu', 'admin_sotto_menu_bootstrap', 'admin_edit_validation_cart', 'admin_delivery_change', 'admin_mail_supplier'];
 	   	if (in_array($this->action, $actionWithPermission)) {
@@ -42,7 +48,7 @@ class OrdersController extends AppController {
    				 
    				App::import('Model', 'Delivery');
    				$Delivery = new Delivery;
-   				$results = $Delivery->read($this->user->organization['Organization']['id'], null, $this->delivery_id);
+   				$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
    				if(!empty($results) && $results['Delivery']['isVisibleBackOffice']=='N') {
    					$this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
    					$this->myRedirect(Configure::read('routes_msg_stop'));
@@ -52,7 +58,7 @@ class OrdersController extends AppController {
    			/*
    			 * ctrl che l'ordine sia visibile in backoffice
    			*/
-   			$results = $this->Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+   			$results = $this->Order->read($this->order_id, $this->user->organization['Organization']['id']);
    			if($results['Order']['isVisibleBackOffice']=='N') {
    				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));
    				$this->myRedirect(Configure::read('routes_msg_stop'));
@@ -229,8 +235,8 @@ class OrdersController extends AppController {
 			  
 		} // loop Orders
  
-		$this->set('results', $results);
-		$this->set('SqlLimit', $SqlLimit);
+		$this->set(compact('results'));
+		$this->set(compact('SqlLimit'));
 		
 		/*
 		 * ctrl se ho i permessi per modificare le consegne
@@ -353,7 +359,7 @@ class OrdersController extends AppController {
 			 
 		}
 		
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		$this->set('SqlLimit', $SqlLimit);
 	}
 	
@@ -470,7 +476,7 @@ class OrdersController extends AppController {
 					$data['DesOrdersOrganization']['order_id'] = $this->order_id;
 					
 					$data['DesOrdersOrganization']['luogo'] = '';
-					$data['DesOrdersOrganization']['data'] = '0000-00-00';
+					$data['DesOrdersOrganization']['data'] = Configure::read('DB.field.date.empty');
 					$data['DesOrdersOrganization']['orario'] = '00:00:00';
 					$data['DesOrdersOrganization']['contatto_nominativo'] = '';
 					$data['DesOrdersOrganization']['contatto_telefono'] = '';
@@ -723,10 +729,30 @@ class OrdersController extends AppController {
 		
 		$requestData['Order']['tesoriere_importo_pay'] = '0.00';
 		$requestData['Order']['tesoriere_stato_pay'] = 'N';
-
+		 
 		unset($requestData['typeDelivery']);
 		unset($requestData['option']);
 		
+		/*
+		 * riporto SuppliersOrganization owner_articles / owner_organization_id / owner_supplier_organization_id 
+		 * cosi' se vengono cambiati rimangono legati all'ordine
+		 */
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $requestData['Order']['organization_id'],
+								  'SuppliersOrganization.id' => $requestData['Order']['supplier_organization_id']];
+		$options['fields'] = ['SuppliersOrganization.owner_articles', 'SuppliersOrganization.owner_organization_id', 'SuppliersOrganization.owner_supplier_organization_id'];
+		$options['recursive'] = -1;
+		self::d($options, $debug);
+		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+		if(!empty($suppliersOrganizationResults)) {
+			$requestData['Order']['owner_articles'] = $suppliersOrganizationResults['SuppliersOrganization']['owner_articles'];
+			$requestData['Order']['owner_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'];
+			$requestData['Order']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'];
+		}
+				
 		self::d('OrderController::oggi '.$data_oggi.' = '.$data_inizio_db, $debug);
 		self::d($requestData, $debug);
 
@@ -773,7 +799,7 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		
 		/*
 		 * gestione colli (pezzi_confezione)
@@ -833,7 +859,7 @@ class OrdersController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		$this->set('results', $results);
+		$this->set(compact('results'));
 
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($this->user);	
 		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($this->user, $group_id, $results['Order']['id'], $debug);
@@ -886,6 +912,7 @@ class OrdersController extends AppController {
 	public function admin_edit() {
 	
 		$debug=false;
+		$continua = true;
 		
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
@@ -961,7 +988,9 @@ class OrdersController extends AppController {
 			$options['recursive'] = -1;
 			$OrderOldresults = $this->Order->find('first', $options);
 			self::d($OrderOldresults, $debug);
-			
+			$this->request->data['Order']['owner_organization_id'] = $OrderOldresults['Order']['owner_organization_id'];
+			$this->request->data['Order']['owner_supplier_organization_id'] = $OrderOldresults['Order']['owner_supplier_organization_id'];
+						
 			$this->request->data['Order']['data_inizio'] = $this->request->data['Order']['data_inizio_db'];
 			$this->request->data['Order']['data_fine'] = $this->request->data['Order']['data_fine_db'];
 			$this->request->data['Order']['data_fine_validation'] = $this->request->data['Order']['data_fine_validation_db'];
@@ -1029,8 +1058,23 @@ class OrdersController extends AppController {
 				$this->request->data['Order']['delivery_id'] = $deliverySysResults ['Delivery']['id'];
 			}
 			
-			$this->Order->create();
-			if ($this->Order->save($this->request->data)) {
+			/*
+			 * richiamo la validazione 
+			 */
+			$msg_errors = $this->Order->getMessageErrorsToValidate($this->Order, $this->request->data);
+			if(!empty($msg_errors)) {
+				self::d($requestData, $debug);
+				self::d($msg_errors, $debug);
+				$continua=false;
+			}
+		
+			if($continua) {	
+				$this->Order->create();
+				if (!$this->Order->save($this->request->data))
+					$continua=false;
+			}
+			
+			if($continua) {
 				$msg .= __('The order has been saved').'<br/>';
 				 
 				/*
@@ -1088,7 +1132,8 @@ class OrdersController extends AppController {
 					$this->myRedirect($redirect);
 						
 			} else 
-				$this->Session->setFlash(__('The order could not be saved. Please, try again.'));
+				$this->Session->setFlash(__('The order could not be saved. Please, try again.').$msg_errors);
+			
 		} // else if ($this->request->is('post') || $this->request->is('put'))
 
 		$options = [];
@@ -1193,7 +1238,7 @@ class OrdersController extends AppController {
 		
 		$msg = '';
 		$this->Order->id = $this->order_id;
-		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1247,7 +1292,7 @@ class OrdersController extends AppController {
 		
 		$msg = '';
 		$this->Order->id = $this->order_id;
-		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1306,7 +1351,7 @@ class OrdersController extends AppController {
 					App::import('Model', 'User');
 					$User = new User;
 					
-					$usersResults = $User->getUsersToMail($organization_id);
+					$usersResults = $User->getUsersToMail($this->user->organization['Organization']['id']);
 					
 					if(!empty($usersResults)) {
 		
@@ -1438,7 +1483,7 @@ class OrdersController extends AppController {
 			
 		$msg = '';
 		$this->Order->id = $this->order_id;
-		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1602,10 +1647,14 @@ class OrdersController extends AppController {
 
 		$debug = false;
 		
-		self::d($this->request->data, $debug);
+		if(isset($this->request->data['Order']['id']))
+			$order_id = $this->request->data['Order']['id'];
+		else	
+		if(isset($this->request->params['pass']['order_id']))
+			$order_id = $this->request->params['pass']['order_id'];
 		
-		$this->Order->id = $this->order_id;
-		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+		$this->Order->id = $order_id;
+		if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -1619,7 +1668,7 @@ class OrdersController extends AppController {
 		$this->set(compact('canOrdersDelete'));
 			
 		$options = [];
-		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		$this->set(compact('results'));
@@ -1627,7 +1676,7 @@ class OrdersController extends AppController {
         /*
          * D.E.S.
          */
-		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $order_id, $debug);
 		$des_order_id = $desResults['des_order_id'];
 		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
 		$this->set('des_order_id',$des_order_id);
@@ -1647,7 +1696,7 @@ class OrdersController extends AppController {
 				 */
 				App::import('Model', 'BackupOrder');
 				$BackupOrder = new BackupOrder();				
-				$BackupOrder->copyData($this->user, $this->order_id, $debug);
+				$BackupOrder->copyData($this->user, $order_id, $debug);
 				
 				$msg_ok = '';
 				$msg_no = '';
@@ -1673,7 +1722,7 @@ class OrdersController extends AppController {
 					$User = new User;
 
 					$conditions = [];
-					$conditions = ['ArticlesOrder.order_id' => $this->order_id];
+					$conditions = ['ArticlesOrder.order_id' => $order_id];
 					$users = $User->getUserWithCartByOrder($this->user ,$conditions);
 			
 					if(!empty($users)) {
@@ -1741,7 +1790,7 @@ class OrdersController extends AppController {
 								$sql = "DELETE FROM ".Configure::read('DB.prefix')."des_orders_organizations
 										WHERE
 											organization_id = ".(int)$this->user->organization['Organization']['id']."
-											AND order_id = ".(int)$this->order_id;
+											AND order_id = ".(int)$order_id;
 								self::d($sql, $debug);
 								$resultDelete = $this->Order->query($sql);
 							}
@@ -1780,9 +1829,9 @@ class OrdersController extends AppController {
 		$ArticlesOrder->unbindModel(['belongsTo' => ['Order']]);
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
-								   'ArticlesOrder.order_id' => $this->order_id,
+								   'ArticlesOrder.order_id' => $order_id,
 								   'Article.stato' => 'Y',
-								   'Cart.order_id' => $this->order_id];
+								   'Cart.order_id' => $order_id];
 		$totCart = $ArticlesOrder->find('count', $options);
 		$this->set(compact('totCart'));
 		
@@ -1836,7 +1885,7 @@ class OrdersController extends AppController {
 		$ArticlesOrder->unbindModel(['belongsTo' => ['Cart', 'Order']]);
 		$options = [];
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $this->user->organization['Organization']['id'],
-									'ArticlesOrder.order_id' => $this->order_id,
+									'ArticlesOrder.order_id' => $order_id,
 									'Article.stato' => 'Y'];
 		$totArticlesOrder = $ArticlesOrder->find('count', $options);
 		$this->set(compact('totArticlesOrder'));
@@ -1854,26 +1903,34 @@ class OrdersController extends AppController {
 		self::d($this->request->data, $debug);
 	
 		$this->Order->id = $this->order_id;
-		if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 	
-		$canOrdersClose = true;
-
-		App::import('Model', 'OrderLifeCycle');
-		$OrderLifeCycle = new OrderLifeCycle();
-		if(!$OrderLifeCycle->canOrdersClose($this->user, $debug)) 
-			$canOrdersClose = false;
-		$this->set(compact('canOrdersClose'));
-			
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
 		$this->set(compact('results'));
-	
 		self::d($results, $debug);
+
+		$canOrdersClose = true;
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle();
+		if(!$OrderLifeCycle->canOrdersClose($this->user, $results, $debug)) 
+			$canOrdersClose = false;
+		else {
+			// rileggo Order con totImport aggiornato
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
+			$options['recursive'] = 0;
+			$results = $this->Order->find('first', $options);
+			$this->set(compact('results'));
+			self::d($results, $debug);			
+		}
+		$this->set(compact('canOrdersClose'));
 		
 		/*
 		 * msg 
@@ -1967,7 +2024,7 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 				
-		$this->set('results', $results);
+		$this->set(compact('results'));
 		
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($user);
 		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($user, $group_id, $results['Order']['id'], $debug);
@@ -2015,7 +2072,7 @@ class OrdersController extends AppController {
 	   	}
 	   	    	   
 	   	$this->Order->id = $this->order_id;
-	   	if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+	   	if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 	   		$this->Session->setFlash(__('msg_error_params'));
 	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
 	   	}
@@ -2079,7 +2136,7 @@ class OrdersController extends AppController {
 	   	}
 	   	   
 	   	$this->Order->id = $this->order_id;
-	   	if (!$this->Order->exists($this->user->organization['Organization']['id'])) {
+	   	if (!$this->Order->exists($this->Order->id, $this->user->organization['Organization']['id'])) {
 	   		$this->Session->setFlash(__('msg_error_params'));
 	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
 	   	}
@@ -2120,6 +2177,8 @@ class OrdersController extends AppController {
 		
 			$destinatatio_mail = $supplierResults['Supplier']['mail'];
 			$subject = $this->request->data['Order']['subject'];
+			if(empty($subject))
+				$subject = '';
 			$intestazione = $this->request->data['Order']['intestazione'];
 			$mail_open_testo = $this->request->data['Order']['mail_open_testo'];
 			if(!empty($intestazione)) 

@@ -11,7 +11,7 @@ if($results['Delivery']['sys']=='N')
 else
 	$crum_label = $crum_label_home.': '.__('Supplier').' <b>'.$results['SuppliersOrganization']['name'].'</b> '.__('piecesToDelivery').' <b>'.$results['Delivery']['luogo'].'</b>';
 
-	$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 	$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 	$this->Html->addCrumb($crum_label);
 	echo $this->Html->getCrumbList(array('class'=>'crumbs'));

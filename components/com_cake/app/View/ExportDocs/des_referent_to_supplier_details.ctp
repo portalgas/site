@@ -1,10 +1,5 @@
 <?php 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
-
+$this->App->d($results);
 
 if($this->layout=='pdf') {
 	App::import('Vendor','xtcpdf');
@@ -25,9 +20,10 @@ if($this->layout=='ajax') {
 }
 
 
-
-	
 $html = '';
+if(isset($desOrdersResults['Supplier']))
+	$html = $this->ExportDocs->desSupplier($desOrdersResults['Supplier']);
+	
 $html .= '	<table cellpadding="0" cellspacing="0">';
 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '		<tr>';
@@ -113,9 +109,9 @@ foreach($results as $numResult => $result) {
 			$colspan = '3';
 		
 		$html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-		$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+		$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 		$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$tot_qta_article.'</th>';
-		$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+		$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo_article,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 		$html .= '</tr>';
 		
 		$tot_qta += $tot_qta_article;
@@ -132,9 +128,9 @@ else
 	$colspan = '3';
 
 $html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 $html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';			
+$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';			
 $html .= '</tr>';
 
 $html .= '</tbody></table>';
@@ -173,7 +169,7 @@ $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true,
 			$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$desOrdersOrganization['Organization']['name'].'</td>';
 			$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'">';
 			$html .= $desOrdersOrganization['DesOrdersOrganization']['luogo'];
-			if($desOrdersOrganization['DesOrdersOrganization']['data']!='0000-00-00')
+			if($desOrdersOrganization['DesOrdersOrganization']['data']!=Configure::read('DB.field.date.empty'))
 				$html .= '<br />'.$this->Time->i18nFormat($desOrdersOrganization['DesOrdersOrganization']['data'],"%A, %e %B %Y");
 			if($desOrdersOrganization['DesOrdersOrganization']['orario']!='00:00:00')
 				$html .= '<br />'.$this->App->formatOrario($desOrdersOrganization['DesOrdersOrganization']['orario']);
@@ -214,4 +210,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

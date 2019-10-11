@@ -23,7 +23,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					switch ($typeRow) {
 						case 'TRGROUP':
 						
-							$rows = array();
+							$rows = [];
 							$rows[] = $cols['LABEL'];
 							
 							/*
@@ -33,12 +33,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$user_id2 = current(array_keys($rows2));								$rows2 = current(array_values($rows2));								foreach ($rows2 as $typeRow2 => $cols2) 
 									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
 										if($trasportAndCost=='Y') {
-											$totale += $cols2['IMPORTO_COMPLETO_DOUBLE'];
-											$rows[] = $this->ExportDocs->prepareCsv($cols2['IMPORTO_COMPLETO']);
+											$totale += $cols2['IMPORTO_COMPLETO'];
+											$rows[] = $cols2['IMPORTO_COMPLETO'];
 										}
 										else {
-											$totale += $cols2['IMPORTO_DOUBLE'];
-											$rows[] = $this->ExportDocs->prepareCsv($cols2['IMPORTO']);
+											$totale += $cols2['IMPORTO'];
+											$rows[] = $cols2['IMPORTO'];
 										}
 									}							}
 							if($user_phone=='Y')
@@ -53,7 +53,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		
 
 							// define table cells
-							$table = array();
+							$table = [];
 							$table[] = array('label' => __('qta'), 'width' => 'auto', 'filter' => false);
 							$table[] = array('label' => __('Name'), 'width' => 'auto', 'filter' => false);
 							$table[] =	array('label' => __('PrezzoUnita'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
@@ -70,11 +70,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						break;
 						case 'TRSUBTOT':
 						
-							$rows = array();
+							$rows = [];
 							$rows[] = $cols['QTA'];
 							$rows[] = '';
 							$rows[] = '';
-							$rows[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);
+							$rows[] = $cols['IMPORTO'];
 							if($trasportAndCost=='Y') {
 								
 								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $rows[] = __('TrasportShort').' '.$cols['IMPORTO_TRASPORTO'].'<br />';
@@ -88,7 +88,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							
 							
 							
-							$rows = array();
+							$rows = [];
 							$rows[] = '';
 							$rows[] = '';
 							$rows[] = '';
@@ -102,21 +102,25 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						case 'TRTOT':
 						break;								
 						case 'TRDATA':
-							
-							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']));
+						
+							if($codice=='Y' && $user->organization['Organization']['hasFieldArticleCodice']=='Y')		
+								$name = $cols['CODICE'].' '.$cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
+							else
+								$name = $cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
+							$name = $this->ExportDocs->prepareCsv($name);
 							if($cols['DELETE_TO_REFERENT']=='Y') $name .= " (CANCELLATO)";
 							
-							$rows = array();
+							$rows = [];
 							$rows[] = $cols['QTA'];
 							$rows[] = $name;							$rows[] = $cols['PREZZO'];
 							if($cols['DELETE_TO_REFERENT']=='Y')
 								$rows[] = '0,00';
-							else								$rows[] = $this->ExportDocs->prepareCsv($cols['IMPORTO']);							if($trasportAndCost=='Y') {
+							else								$rows[] = $cols['IMPORTO'];							if($trasportAndCost=='Y') {
 								$rows[] = '';							}
 							
 							$this->PhpExcel->addTableRow($rows);						break;
 						case 'TRDATABIS':
-							$rows = array();
+							$rows = [];
 							$rows[] = $cols['NOTA'];
 							
 							$this->PhpExcel->addTableRow($rows);
@@ -138,7 +142,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		/*
 		 *  totale
 		 */		
-		$rows = array();
+		$rows = [];
 		$rows[] = 'Totale dell\'ordine';
 		$rows[] = '';
 		$rows[] = '';

@@ -160,13 +160,13 @@ class ProdGasArticle extends AppModel {
 		),
 		'name' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica il nome dell'articolo",
 			),
 		),
 		'qta' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 				'message' => "Indica la quantità dell'articolo",
 			),
 		),
@@ -175,10 +175,19 @@ class ProdGasArticle extends AppModel {
 			'message' => "Indica il prezzo dell'articolo con un valore numerico con 2 decimali (1,00)",
 		),		
 		'pezzi_confezione' => array(
-			'notempty' => array(					'rule' => array('notempty', false),					'message' => 'Indica il numero di pezzi che può contenere una confezione',			),			'numeric' => array(					'rule' => array('naturalNumber', false),					'message' => "Il numero di pezzi che può contenere una confezione dev'essere indicato con un valore numerico maggiore di zero",					'allowEmpty' => false,			),		),
+			'notempty' => array(
+					'rule' => array('notBlank', false),
+					'message' => 'Indica il numero di pezzi che può contenere una confezione',
+			),
+			'numeric' => array(
+					'rule' => array('naturalNumber', false),
+					'message' => "Il numero di pezzi che può contenere una confezione dev'essere indicato con un valore numerico maggiore di zero",
+					'allowEmpty' => false,
+			),
+		),
 		'qta_minima' => array(
 			'notempty' => array(
-				'rule' => array('notempty', false),
+				'rule' => array('notBlank', false),
 				'message' => 'Indica la quantità minima che un gasista può acquistare',
 			),
 			'numeric' => array(
@@ -189,7 +198,7 @@ class ProdGasArticle extends AppModel {
 		),
 		'qta_multipli' => array(
 			'notempty' => array(
-					'rule' => array('notempty', false),
+					'rule' => array('notBlank', false),
 					'message' => 'Indica la quantità minima che si può acquistabile',
 			),		
 			'numeric' => array(
@@ -236,8 +245,14 @@ class ProdGasArticle extends AppModel {
 					$results[$key]['ProdGasArticle']['prezzo_e'] = $results[$key]['ProdGasArticle']['prezzo_'].' &euro;';
 				}
 				else
-					/*					 * se il find() arriva da $hasAndBelongsToMany					*/
-				 if(isset($val['prezzo'])) {					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';				}				
+					/*
+					 * se il find() arriva da $hasAndBelongsToMany
+					*/
+				 if(isset($val['prezzo'])) {
+					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';
+				}
+				
 				/*
 				 * qta, da 1.00 a 1
 				 * 		da 0.75 a 0,75  
@@ -249,8 +264,15 @@ class ProdGasArticle extends AppModel {
 					$results[$key]['ProdGasArticle']['qta_'] = $qta;
 				}
 				else
-				/*				 * se il find() arriva da $hasAndBelongsToMany				*/	
-				if(isset($val['qta'])) {					$qta = str_replace(".", ",", $val['qta']);					$arrCtrlTwoZero = explode(",",$qta);					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];					$results[$key]['qta_'] = $qta;				}
+				/*
+				 * se il find() arriva da $hasAndBelongsToMany
+				*/	
+				if(isset($val['qta'])) {
+					$qta = str_replace(".", ",", $val['qta']);
+					$arrCtrlTwoZero = explode(",",$qta);
+					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];
+					$results[$key]['qta_'] = $qta;
+				}
 			}
 		}
 		

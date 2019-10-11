@@ -2,16 +2,16 @@
 App::uses('UtilsCommons', 'Lib');
 
 /*
- * $result['Order']['permission'] = array('permissionToEditUtente' => true, 
- * 							  			  'permissionToEditReferente' => false, 
- * 							  			  'permissionToEditCassiere' => false, 
- * 							   			  'permissionToEditTesoriere' => false, );
+ * $result['Order']['permission'] = ['permissionToEditUtente' => true, 
+ * 							  	     'permissionToEditReferente' => false, 
+ * 							  		 'permissionToEditCassiere' => false, 
+ * 							   		 'permissionToEditTesoriere' => false];
  * 	Gestisce gli ORDER.state_code (ex PROCESSED-BEFORE-DELIVERY)
  *  
  *  
- * $permissions          = array('isReferentGeneric' => $this->isReferentGeneric(),
- * 								 'isCassiereGeneric' => $this->isCassiereGeneric(),
- *	 					         'isTesoriereGeneric' => $this->isTesoriereGeneric());
+ * $permissions = ['isReferentGeneric' => $this->isReferentGeneric(),
+ * 				   'isCassiereGeneric' => $this->isCassiereGeneric(),
+ *	 			   'isTesoriereGeneric' => $this->isTesoriereGeneric()];
  *	Gestisce i RUOLI (ex group_id_referent)
  * */
 
@@ -23,7 +23,7 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * gestione con Article.img
 	 */
-	public function drawFrontEndComplete($numArticlesOrder, $order, $result, $options=array()) { 
+	public function drawFrontEndComplete($numArticlesOrder, $order, $result, $options=[]) { 
 			
 		/*
 		 * qta Cart
@@ -53,7 +53,7 @@ class RowEcommHelper extends AppHelper {
 	
 		$tmp = "";
 
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 
 		$k=0;
 		if(!isset($options['tr.no_display'])) {
@@ -69,40 +69,40 @@ class RowEcommHelper extends AppHelper {
 			$type_input = 'hidden';
 		
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
 		
 		if($this->debug) $tmp .= 'AO.stato';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_organization_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= '<br />AO.qta_cart';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';  
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';  
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_mult';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'C.qta_prima_mod';
 		if(empty($result['Cart']['qta'])) $result['Cart']['qta']=0;
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
 		$tmp .= "\n";
 		
 		$tmp .= '<div class="cart-img">';
@@ -112,7 +112,7 @@ class RowEcommHelper extends AppHelper {
 			$height = $info[1];			
 			if($height > 150) $height = '150';
 			
-			$tmp .= '<img style="height:'.$height.'px" class="img-responsive-dis" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+			$tmp .= '<img style="height:'.$height.'px" class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 		}
 		
 		if(empty($importo_cart)) // Prezzo unità __('PrezzoUnita')
@@ -139,7 +139,7 @@ class RowEcommHelper extends AppHelper {
 	    * C A R T
 	    */
 		if($order['Order']['permissionToEditUtente']) {
-			// $tmp .= $this->__ordineModificabileFrontEnd($rowId, $result);  // ordine modificabile (attivo)
+			// $tmp .= $this->_ordineModificabileFrontEnd($rowId, $result);  // ordine modificabile (attivo)
 		
 				$tmp .= "\n";  // ArticlesOrder.Stato 'Y', 'N', 'LOCK', 'QTAMAXORDER'
 				if($result['ArticlesOrder']['stato']!='Y') {	
@@ -163,7 +163,8 @@ class RowEcommHelper extends AppHelper {
 				$tmp .= '</div>';
 				
 				$tmp .= '<div class="col-cart-md-4">';
-				$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
+				$tmp .= "\n";
+				$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo_cart.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo_cart.'">';
 				if(!empty($importo_cart)) 
 					$tmp .= number_format($importo_cart,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				$tmp .= '</div>';
@@ -174,7 +175,7 @@ class RowEcommHelper extends AppHelper {
 				$tmp .= '</div>';
 		}
 		else 
-			$tmp .= $this->__ordineNonModificabileFrontEnd($rowId, $result); // ordine non modificabile (scaduto)
+			$tmp .= $this->_ordineNonModificabileFrontEnd($rowId, $result); // ordine non modificabile (scaduto)
 
 		$tmp .= '<p class="details-left"><strong>'.__('Prezzo/UM').'</strong> '.$this->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</p>';
 		
@@ -200,7 +201,7 @@ class RowEcommHelper extends AppHelper {
 			$tmp .= '</div>';
 		}
 		else {
-			$tmp .= $this->__draw_js_frontend($rowId);
+			$tmp .= $this->_draw_js_frontend($rowId, $result['ArticlesOrder']['order_id']);
 		}
 				
 		$k = 1 - $k;
@@ -209,13 +210,13 @@ class RowEcommHelper extends AppHelper {
 	}
 
 	/*
-	 * gestione senza con Article.img
+	 * gestione con Article.img in rows
 	*/
-	public function drawFrontEndSimple($numArticlesOrder, $order, $result, $options=array()) {
+	public function drawFrontEndSimple($numArticlesOrder, $order, $result, $options=[]) {
 	
 		$tmp = "";
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 	
 		$k=0;
 		if(!isset($options['tr.no_display'])) {
@@ -234,40 +235,40 @@ class RowEcommHelper extends AppHelper {
 		}
 		
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
 	
 		if($this->debug) $tmp .= 'AO.stato';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_organization_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= '<br />AO.qta_cart';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_mult';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'C.qta_prima_mod';
 		if(empty($result['Cart']['qta'])) $result['Cart']['qta']=0;
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
 		$tmp .= "\n";
 	
 		$tmp .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"><i class="fa fa-search-plus fa-2x"></a></td>';
@@ -282,6 +283,16 @@ class RowEcommHelper extends AppHelper {
 		$tmp .= '</td>';
 		$tmp .= "\n";
 		$tmp .= '<td>';
+		$tmp .= '<div class="cart-img">';
+		if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
+			$info = getimagesize(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1']);
+			$width = $info[0];
+			$height = $info[1];			
+			if($height > 150) $height = '150';
+			
+			$tmp .= '<img style="height:'.$height.'px" class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+		}	
+		$tmp .= '</div>';		
 		$tmp .= $result['ArticlesOrder']['name'];
 		$tmp .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));
 		$tmp .= '</td>';
@@ -308,12 +319,12 @@ class RowEcommHelper extends AppHelper {
 		 * C A R T
 		*/
 		if($order['Order']['permissionToEditUtente'])
-			$tmp .= $this->__ordineModificabileFrontEnd($rowId, $result);  // ordine modificabile (attivo)
+			$tmp .= $this->_ordineModificabileFrontEnd($rowId, $result);  // ordine modificabile (attivo)
 		else
-			$tmp .= $this->__ordineNonModificabileFrontEnd($rowId, $result); // ordine non modificabile (scaduto)
-	
+			$tmp .= $this->_ordineNonModificabileFrontEnd($rowId, $result); // ordine non modificabile (scaduto)
+
 		if(isset($options['tr.no_display'])) 
-			$tmp  .= $this->__draw_js_frontend($rowId);
+			$tmp  .= $this->_draw_js_frontend($rowId, $result['ArticlesOrder']['order_id']);
 		else {		
 			$tmp .= '</tr>';
 	
@@ -332,11 +343,11 @@ class RowEcommHelper extends AppHelper {
 	 * gestione senza con Article.img
 	 * in versione preview, dal link della mail: non posso modificare gli acquisti, devo effettuare la login
 	*/
-	public function drawFrontEndPreviewSimple($numArticlesOrder, $order, $result, $options=array()) {
+	public function drawFrontEndPreviewSimple($numArticlesOrder, $order, $result, $options=[]) {
 	
 		$tmp = "";
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 	
 		$k=0;
 		if(!isset($options['tr.no_display'])) {
@@ -382,10 +393,10 @@ class RowEcommHelper extends AppHelper {
 		/*
 		 * C A R T
 		*/
-		$tmp .= $this->__ordinePreviewFrontEnd($rowId, $result); // ordine non modificabile
+		$tmp .= $this->_ordinePreviewFrontEnd($rowId, $result); // ordine non modificabile
 	
 		if(isset($options['tr.no_display']))
-			$tmp  .= $this->__draw_js_frontend($rowId);
+			$tmp  .= $this->_draw_js_frontend($rowId, $result['ArticlesOrder']['order_id']);
 		else {
 			$tmp .= '</tr>';
 	
@@ -404,11 +415,11 @@ class RowEcommHelper extends AppHelper {
 	 * header table per gli acquisti da validate (ArticlesOrder.pezzi_confezione > 1)
 	 * gestione senza con Article.img
 	*/
-	public function drawFrontEndCartsValidationSimple($numArticlesOrder, $order, $result, $options=array()) {
+	public function drawFrontEndCartsValidationSimple($numArticlesOrder, $order, $result, $options=[]) {
 		
 		$tmp = "";
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 	
 		$k=0;
 		if(!isset($options['tr.no_display'])) {
@@ -427,40 +438,40 @@ class RowEcommHelper extends AppHelper {
 		}
 	
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
 	
 		if($this->debug) $tmp .= 'AO.stato';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_organization_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= '<br />AO.qta_cart';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_mult';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'C.qta_prima_mod';
 		if(empty($result['Cart']['qta'])) $result['Cart']['qta']=0;
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
 		$tmp .= "\n";
 	
 		$tmp .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
@@ -501,10 +512,10 @@ class RowEcommHelper extends AppHelper {
 		/*
 		 * C A R T
 		*/
-		$tmp .= $this->__ordineModificabileFrontEndCartsValidation($rowId, $result);  // ordine modificabile (attivo)
+		$tmp .= $this->_ordineModificabileFrontEndCartsValidation($rowId, $result);  // ordine modificabile (attivo)
 
 		if(isset($options['tr.no_display'])) 
-			$tmp  .= $this->__draw_js_frontend($rowId);
+			$tmp  .= $this->_draw_js_frontend($rowId, $result['ArticlesOrder']['order_id']);
 		else {	
 			$tmp .= '</tr>';
 	
@@ -522,11 +533,11 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * header table per gli acquisti da ProdGasPromotion
 	*/
-	public function drawFrontEndPromotion($numArticlesOrder, $order, $result, $options=array()) {
-		
+	public function drawFrontEndPromotion($numArticlesOrder, $order, $result, $options=[]) {
+	
 		$tmp = "";
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 	
 		$k=0;
 		if(!isset($options['tr.no_display'])) {
@@ -545,40 +556,40 @@ class RowEcommHelper extends AppHelper {
 		}
 	
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
 		$tmp .= "\n";
-		$tmp .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
 	
 		if($this->debug) $tmp .= 'AO.stato';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_organization_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.article_id';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= '<br />AO.qta_cart';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_min_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_max_order';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'AO.qta_mult';
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'C.qta_prima_mod';
 		if(empty($result['Cart']['qta'])) $result['Cart']['qta']=0;
-		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
+		$tmp .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['Cart']['qta'].'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
 		$tmp .= "\n";
 	
 		$tmp .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
@@ -592,7 +603,17 @@ class RowEcommHelper extends AppHelper {
 			$tmp .= "";
 		$tmp .= '</td>';
 		$tmp .= "\n";
-		$tmp .= '<td>';
+		$tmp .= '<td>'; 
+		$tmp .= '<div class="cart-img">';
+		if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
+			$info = getimagesize(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1']);
+			$width = $info[0];
+			$height = $info[1];			
+			if($height > 150) $height = '150';
+			
+			$tmp .= '<img style="height:'.$height.'px" class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+		}	
+		$tmp .= '</div>';
 		$tmp .= $result['ArticlesOrder']['name'];
 		// $tmp .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));
 		$tmp .= '</td>';
@@ -605,14 +626,14 @@ class RowEcommHelper extends AppHelper {
 		
 		$tmp .= "\n";  // Prezzo unita' in pormozione
 		$tmp .= '<td style="white-space: nowrap;">';
-		$tmp .= '<span style="text-decoration: line-through;">'.$result['ArticlesOrder']['prezzo_e'].'</span>';
+		$tmp .= '<span style="text-decoration: line-through;">'.$result['Article']['prezzo_e'].'</span>';
 		$tmp .= '<br />';
 		$tmp .= $result['ProdGasArticlesPromotion']['prezzo_unita_e'];		
 		$tmp .= '</td>';
 		
 		$tmp .= "\n";  // Prezzo/UM
 		$tmp .= '<td style="white-space: nowrap;">';
-		$tmp .= '<span style="text-decoration: line-through;">'.$this->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</span>';
+		$tmp .= '<span style="text-decoration: line-through;">'.$this->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</span>';
 		$tmp .= '<br />';
 		$tmp .= $this->getArticlePrezzoUM($result['ProdGasArticlesPromotion']['prezzo_unita'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);
 		$tmp .= '</td>';
@@ -620,10 +641,10 @@ class RowEcommHelper extends AppHelper {
 		/*
 		 * C A R T
 		*/
-		$tmp .= $this->__ordineModificabileFrontEndPromotion($rowId, $result);  // ordine modificabile (attivo)
+		$tmp .= $this->_ordineModificabileFrontEndPromotion($rowId, $result);  // ordine modificabile (attivo)
 
 		if(isset($options['tr.no_display'])) 
-			$tmp  .= $this->__draw_js_frontend($rowId);
+			$tmp  .= $this->_draw_js_frontend($rowId, $result['ArticlesOrder']['order_id']);
 		else {	
 			$tmp .= '</tr>';
 	
@@ -648,10 +669,10 @@ class RowEcommHelper extends AppHelper {
 		echo "</pre>";
 		*/
 		if(isset($order['SuppliersOrganization'])) $suppliersOrganization = $order['SuppliersOrganization'];
-		else $suppliersOrganization = array();
+		else $suppliersOrganization = [];
 	
 		if(isset($order['SuppliersOrganizationsReferent'])) $suppliersOrganizationsReferent = $order['SuppliersOrganizationsReferent'];
-		else $suppliersOrganizationsReferent = array();
+		else $suppliersOrganizationsReferent = [];
 	
 		if(!isset($order['Cart'][$numArticlesOrder])) {
 			$order['Cart'][$numArticlesOrder]['qta'] = 0;
@@ -667,15 +688,16 @@ class RowEcommHelper extends AppHelper {
 				'Article' => $order['Article'][$numArticlesOrder],
 				'Cart' => $order['Cart'][$numArticlesOrder],
 				'User' => $order['User'][$numArticlesOrder],
+				'SummaryOrder' => $order['SummaryOrder'][$numArticlesOrder],
 				'SuppliersOrganization' => $suppliersOrganization,
 				'SuppliersOrganizationsReferent' => $suppliersOrganizationsReferent);
 	
 		return $result;
 	}
 	
-	public function drawBackOfficeReportUsers($numArticlesOrder, $result, $permissions, $options=array()) {
+	public function drawBackOfficeReportUsers($numArticlesOrder, $result, $permissions, $options=[]) {
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 		
 		$tmp = "";
 		
@@ -685,7 +707,7 @@ class RowEcommHelper extends AppHelper {
 			$tmp  .= '<tr class="row'.$k.' suppliersOrganizationId'.$result['Order']['supplier_organization_id'].' rowEcomm" id="row-'.$rowId.'" style="display:table-row;">';
 		}
 		
-		$tmp  .= $this->__drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options);
+		$tmp  .= $this->_drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options);
 		
 		$tmp  .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 	
@@ -712,19 +734,19 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= $this->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);		$tmp  .= '</td>';
 		$tmp  .= "\n";
 	
-		$tmp  .= $this->__drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options);
+		$tmp  .= $this->_drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options);
 
 		if(isset($options['tr.no_display'])) 
-			$tmp  .= $this->__draw_js_backoffice($rowId);
+			$tmp  .= $this->_draw_js_backoffice($rowId);
 		
 		$k = 1 - $k;
 				
 		return $tmp;
 	}
 
-	public function drawBackOfficeReportArticlesDetails($numArticlesOrder, $result, $permissions, $options=array()) {
+	public function drawBackOfficeReportArticlesDetails($numArticlesOrder, $result, $permissions, $options=[]) {
 	
-		$rowId = $this->__getRowId($numArticlesOrder, $result);
+		$rowId = $this->_getRowId($numArticlesOrder, $result);
 
 		$tmp = "";
 		
@@ -734,7 +756,7 @@ class RowEcommHelper extends AppHelper {
 			$tmp  .= '<tr class="row'.$k.' suppliersOrganizationId'.$result['Order']['supplier_organization_id'].' rowEcomm" id="row-'.$rowId.'" style="display:table-row;">';
 		}
 	
-		$tmp  .= $this->__drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options);
+		$tmp  .= $this->_drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options);
 		
 		$tmp  .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 	
@@ -771,17 +793,17 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= '</td>';
 		$tmp  .= "\n";
 		*/
-		$tmp  .= $this->__drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options);
+		$tmp  .= $this->_drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options);
 	
 		if(isset($options['tr.no_display']))
-			$tmp  .= $this->__draw_js_backoffice($rowId);
+			$tmp  .= $this->_draw_js_backoffice($rowId);
 		
 		$k = 1 - $k;
 		
 		return $tmp;
 	}
 	
-	private function __drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options) {
+	private function _drawBackOfficeFieldsHidden($rowId, $numArticlesOrder, $result, $permissions, $options) {
 
 		$tmp  = "";
 		$tmp  .= "\n";
@@ -795,40 +817,40 @@ class RowEcommHelper extends AppHelper {
 		}
 		
 		$tmp  .= "\n";
-		$tmp  .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['order_id'].'" id="order_id-'.$rowId.'" />';
 		$tmp  .= "\n";
-		$tmp  .= '<input class="debug" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="hidden" value="'.$result['ArticlesOrder']['prezzo'].'" id="prezzo-'.$rowId.'" />';
 		
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.stato';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['stato'].'" id="articleOrder_stato-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.article_organization_id';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
-		$tmp  .= "\n";		if($this->debug) $tmp  .= 'AO.article_id';		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
+		$tmp  .= "\n";		if($this->debug) $tmp  .= 'AO.article_id';		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= '<br />AO.qta_cart';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.qta_min';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima'].'" id="qta_minima-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.qta_max';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima'].'" id="qta_massima-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.qta_min_order';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_minima_order'].'" id="qta_minima_order-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.qta_max_order';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_massima_order'].'" id="qta_massima_order-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.qta_mult';
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp  .= "\n";
 		
 		if(empty($result['User']['id']) && isset($result['Cart']['user_id'])) $result['User']['id'] = $result['Cart']['user_id'];
 			
-		if($this->debug) $tmp  .= 'U.id';		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';		
+		if($this->debug) $tmp  .= 'U.id';		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';		
 		/*
 		 * qta_prima_modifica
 		 * 	la prima volta che da backOffice modifico la qta, qta_prima_modifica = $result['Cart']['qta']
@@ -840,19 +862,37 @@ class RowEcommHelper extends AppHelper {
 		
 		if($this->debug) $tmp  .= 'C.qta_prima_mod';
 		if(empty($qta_prima_modifica)) $qta_prima_modifica=0;
-		$tmp  .= '<input class="debug" type="'.$type_input.'" value="'.$qta_prima_modifica.'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$qta_prima_modifica.'" id="qta_prima_modifica-'.$rowId.'" />';  // serve in caso ArticlesOrder.stato = QTAMAXORDER o Carts.stato = LOCK per bloccare il tasto +
 		
 		return $tmp;
 	}		
 	
-	private function __drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options) {
+	private function _drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options) {
 		
 		$tmp  = "";
-		
+		//self::d($result['SummaryOrder'], true); exit;
+		if($result['SummaryOrder']>0) { 
+
+			$tmp  .= '<td colspan="8">';
+			$tmp .= '<div class="alert alert-info alert-dismissable">'; 
+			$tmp .= __('msg_summary_order_just_saldato');
+			$tmp .= '</div>';
+			$tmp  .= '</td>';		
+
+			if(!isset($options['tr.no_display'])) {
+				$tmp  .= '</tr>';
+					
+				$tmp  .= '<tr class="trView" id="trViewId-'.$rowId.'">';
+				$tmp  .= '<td colspan="2"></td>';
+				$tmp  .= '<td colspan="10" id="tdViewId-'.$rowId.'"></td>';
+				$tmp  .= '</tr>';
+			}				
+		}
+		else
 		if($result['Order']['permissionToEditReferente'] && $permissions['isReferentGeneric'] ||
 		   $result['Order']['permissionToEditCassiere'] && $permissions['isCassiereGeneric'] ||
 		   $result['Order']['permissionToEditTesoriere'] && $permissions['isTesoriereGeneric']) {
-			$tmp  .=$this->__ordineModificabileBackOffice($rowId, $result);
+			$tmp  .= $this->_ordineModificabileBackOffice($rowId, $result);
 				
 			if(!isset($options['tr.no_display'])) {
 				$tmp  .= '</tr>';
@@ -865,7 +905,7 @@ class RowEcommHelper extends AppHelper {
 		
 		}
 		else {
-			$tmp  .=$this->__ordineNonModificabileBackOffice($rowId, $result); // ordine non modificabile (scaduto)
+			$tmp  .= $this->_ordineNonModificabileBackOffice($rowId, $result); // ordine non modificabile (scaduto)
 				
 			if(!isset($options['tr.no_display'])) {
 				$tmp  .= '</tr>';
@@ -883,7 +923,7 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * O R D E R   M O D I F I C A B I L E       B A C K - O F F I C E 
 	 */
-	private function __ordineModificabileBackOffice($rowId, $result) {
+	private function _ordineModificabileBackOffice($rowId, $result) {
 		
 		$tmp = "";
 		
@@ -941,9 +981,11 @@ class RowEcommHelper extends AppHelper {
 	
 		$tmp  .= "\n";  // Importo calcolato (qta_forzato * prezzo) modificato dal referente
 		$tmp  .= '<td style="white-space:nowrap;">';
-		$tmp  .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
-		$importo = number_format(($qta_forzato * $result['ArticlesOrder']['prezzo']),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')); 
-		if($importo>0) $tmp  .= $importo.'&nbsp;&euro;';
+		
+		$importo = ($qta_forzato * $result['ArticlesOrder']['prezzo']);
+		$tmp  .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';
+		$importo = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')); 
+		if($importo!='0,00') $tmp  .= $importo.'&nbsp;&euro;';	
 		$tmp  .= '</div>';
 		
 		$tmp  .= "\n";
@@ -963,7 +1005,7 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= '<td id="importoForzato-'.$rowId.'" style="white-space:nowrap;">';
 		if($result['Cart']['deleteToReferent']=='N') {	
 			$importo_forzato = number_format($result['Cart']['importo_forzato'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));	
-			$tmp  .= '<input tabindex="'.($this->tabindex++).'" type="text" style="'.$display.'" value="'.$importo_forzato.'" name="importo_forzato-'.$rowId.'" id="importo_forzato-'.$rowId.'" size="5" class="importo_forzato" />&nbsp;<span id="importo_forzato_testo-'.$rowId.'" style="'.$display.'">&euro;</span>';
+			$tmp  .= '<input tabindex="'.($this->tabindex++).'" type="text" style="'.$display.'" value="'.$importo_forzato.'" name="importo_forzato-'.$rowId.'" id="importo_forzato-'.$rowId.'" size="5" class="importo_forzato form-control" />&nbsp;<span id="importo_forzato_testo-'.$rowId.'" style="'.$display.'">&euro;</span>';
 		}
 		else 
 		if($result['Cart']['deleteToReferent']=='Y') {
@@ -974,7 +1016,7 @@ class RowEcommHelper extends AppHelper {
 			 * mai acquistato
 			 */
 			$importo_forzato = number_format(0,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-			$tmp  .= '<input tabindex="'.($this->tabindex++).'" type="text" style="'.$display.'" value="'.$importo_forzato.'" name="importo_forzato-'.$rowId.'" id="importo_forzato-'.$rowId.'" size="5" class="importo_forzato" />&nbsp;<span id="importo_forzato_testo-'.$rowId.'" style="'.$display.'">&euro;</span>';
+			$tmp  .= '<input tabindex="'.($this->tabindex++).'" type="text" style="'.$display.'" value="'.$importo_forzato.'" name="importo_forzato-'.$rowId.'" id="importo_forzato-'.$rowId.'" size="5" class="importo_forzato form-control" />&nbsp;<span id="importo_forzato_testo-'.$rowId.'" style="'.$display.'">&euro;</span>';
 		}	
 			
 		$tmp  .= '</td>';
@@ -982,9 +1024,9 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= "\n"; // Nota
 		$tmp  .= '<td id="nota-'.$rowId.'">';
 		if(!empty($result['Cart']['nota']))
-			$tmp  .= '<img style="'.$display.'" class="notaEcomm" id="notaEcomm-'.$rowId.'" alt="Aggiungi una nota all\'acquisto" src="'.Configure::read('App.img.cake').'/actions/32x32/playlist.png"></span>';
+			$tmp  .= '<img style="'.$display.';cursor:pointer;" class="notaEcomm" id="notaEcomm-'.$rowId.'" alt="Aggiungi una nota all\'acquisto" src="'.Configure::read('App.img.cake').'/actions/32x32/playlist.png"></span>';
 		else
-			$tmp  .= '<img style="'.$display.'" class="notaEcomm" id="notaEcomm-'.$rowId.'" alt="Aggiungi una nota all\'acquisto" src="'.Configure::read('App.img.cake').'/actions/32x32/filenew.png"></span>';
+			$tmp  .= '<img style="'.$display.';cursor:pointer;" class="notaEcomm" id="notaEcomm-'.$rowId.'" alt="Aggiungi una nota all\'acquisto" src="'.Configure::read('App.img.cake').'/actions/32x32/filenew.png"></span>';
 		$tmp  .= '</td>';	
 
 		return $tmp;
@@ -993,7 +1035,7 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * O R D E R   M O D I F I C A B I L E   F R O N T _ E N D
 	 */
-	private function __ordineModificabileFrontEnd($rowId, $result) {
+	private function _ordineModificabileFrontEnd($rowId, $result) {
 		
 		$tmp = "";
 
@@ -1040,12 +1082,9 @@ class RowEcommHelper extends AppHelper {
 		}
 		
 		$tmp .= '<td style="white-space:nowrap;">';
-		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
-
-		$tmp .= "\n";
+		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';
 		if(!empty($importo)) 
 			$tmp .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
-		
 		$tmp .= '</div>';
 		$tmp .= "\n";
 		$tmp .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
@@ -1061,7 +1100,7 @@ class RowEcommHelper extends AppHelper {
 	 * O R D E R   M O D I F I C A B I L E   F R O N T _ E N D 
 	 *  gestisco gli ordini da validare i colli (pezzi_confezione)
 	*/
-	private function __ordineModificabileFrontEndCartsValidation($rowId, $result) {
+	private function _ordineModificabileFrontEndCartsValidation($rowId, $result) {
 	
 		$tmp = "";
 	
@@ -1113,9 +1152,7 @@ class RowEcommHelper extends AppHelper {
 		}
 	
 		$tmp .= '<td style="white-space:nowrap;">';
-		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
-	
-		$tmp .= "\n";
+		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';
 		if(!empty($importo))
 			$tmp .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 	
@@ -1134,9 +1171,9 @@ class RowEcommHelper extends AppHelper {
 	 * O R D E R   M O D I F I C A B I L E   F R O N T _ E N D 
 	 *  gestisco gli ordini in ProdGasPromotion
 	*/
-	private function __ordineModificabileFrontEndPromotion($rowId, $result) {
+	private function _ordineModificabileFrontEndPromotion($rowId, $result) {
 		/*
-		echo "<pre>__ordineModificabileFrontEndPromotion \n ";
+		echo "<pre>_ordineModificabileFrontEndPromotion \n ";
 		print_r($result);
 		echo "</pre>";
 		*/
@@ -1149,7 +1186,7 @@ class RowEcommHelper extends AppHelper {
 	
 		$tmp .= "\n";  // la qta totale da raggiungere per la promozione
 		$tmp .= '<td style="white-space: nowrap;">';
-		$tmp .= $result['ProdGasArticlesPromotion']['qta'];
+		// $tmp .= $result['ProdGasArticlesPromotion']['qta'].' '.$result['ProdGasArticlesPromotion']['differenza_da_ordinare'];
 		$tmp .= '<div  id="differenza_da_ordinare-'.$rowId.'" class="qtaEvidenza">'.$result['ProdGasArticlesPromotion']['differenza_da_ordinare'].'</div>';
 		$tmp .= '</td>';
 		
@@ -1191,12 +1228,10 @@ class RowEcommHelper extends AppHelper {
 		}
 	
 		$tmp .= '<td style="white-space:nowrap;">';
-		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
-	
 		$tmp .= "\n";
+		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';
 		if(!empty($importo))
 			$tmp .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
-	
 		$tmp .= '</div>';
 		$tmp .= "\n";
 		$tmp .= '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$rowId.'" class="buttonCarrello submitEcomm" />';
@@ -1211,7 +1246,7 @@ class RowEcommHelper extends AppHelper {
 	/* 
 	 * O R D E R   N O N   M O D I F I C A B I L E   F R O N T _ E N D 
 	 */
-	private function __ordineNonModificabileFrontEnd($rowId, $result) {
+	private function _ordineNonModificabileFrontEnd($rowId, $result) {
 		
 		$tmp = "";
 
@@ -1250,8 +1285,8 @@ class RowEcommHelper extends AppHelper {
 		}
 		
 		$tmp .= '<td style="white-space:nowrap;">';
-		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
 		$tmp .= "\n";
+		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';		
 		if(!empty($importo)) 
 			$tmp .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';	
 		$tmp .= '</div>';
@@ -1263,7 +1298,7 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * O R D E R   N O N   M O D I F I C A B I L E   F R O N T _ E N D
 	*/
-	private function __ordinePreviewFrontEnd($rowId, $result) {
+	private function _ordinePreviewFrontEnd($rowId, $result) {
 		
 			$tmp = "";
 		
@@ -1306,8 +1341,8 @@ class RowEcommHelper extends AppHelper {
 			}
 		
 			$tmp .= '<td style="white-space:nowrap;">';
-			$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
 			$tmp .= "\n";
+			$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';
 			if(!empty($importo))
 				$tmp .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 			$tmp .= '</div>';
@@ -1315,11 +1350,11 @@ class RowEcommHelper extends AppHelper {
 		
 			return $tmp;
 	}
-	
+		
 	/*
 	 * O R D E R   N O N   M O D I F I C A B I L E   B A C K - O F F I C E
 	*/
-	private function __ordineNonModificabileBackOffice($rowId, $result) {
+	private function _ordineNonModificabileBackOffice($rowId, $result) {
 		
 		$tmp  = "";
 		
@@ -1337,7 +1372,8 @@ class RowEcommHelper extends AppHelper {
 	
 		$tmp  .= "\n";  // Importo dell'utente
 		$tmp  .= '<td style="white-space:nowrap;">';
-		$tmp  .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNew">';
+		$tmp .= "\n";
+		$tmp .= '<div id="prezzoNew-'.$rowId.'" class="prezzoNewALL prezzoNew-'.$result['ArticlesOrder']['order_id'].'" data-attr-prezzoNewALL="'.$importo.'" data-attr-prezzoNew-'.$result['ArticlesOrder']['order_id'].'="'.$importo.'">';	
 		if($importo > 0) 
 			$tmp  .= number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 		$tmp  .= '</div>';
@@ -1356,7 +1392,7 @@ class RowEcommHelper extends AppHelper {
 	 * crea un ID per identificare la riga univoca
 	 * $numArticlesOrder = numero incrementale della riga, serve quando ricostruisco la riga dopo il save 
 	 */
-	private function __getRowId($numArticlesOrder, $result) {
+	private function _getRowId($numArticlesOrder, $result) {
 		 
 		$rowId = $result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_organization_id'].'_'.$result['ArticlesOrder']['article_id'].'_'.$result['ArticlesOrder']['stato'].'_'.$numArticlesOrder;
 		 
@@ -1366,21 +1402,25 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * viene ri-caricata solo la righa dopo il salvataggio
 	*/
-	private function __draw_js_frontend($rowId) {
+	private function _draw_js_frontend($rowId, $order_id=0) {
 		$tmp = "";
 	
 		$tmp  .= '<script type="text/javascript">';
 		$tmp  .= "\r\n";
-		$tmp  .= 'jQuery(document).ready(function() {';
+		$tmp  .= '$(document).ready(function() {';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeSubmitEcomm(jQuery("#row-'.$rowId.'"));';
+		$tmp  .= '	activeSubmitEcomm($("#row-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeEcommRows(jQuery("#row-'.$rowId.'"));';
+		$tmp  .= '	activeEcommRows($("#row-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	actionTrView(jQuery("#actionTrView-'.$rowId.'"));';
+		$tmp  .= '	actionTrView($("#actionTrView-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	actionNotaView(jQuery("#actionNotaView-'.$rowId.'"));';
+		$tmp  .= '	actionNotaView($("#actionNotaView-'.$rowId.'"));';
 		$tmp  .= "\r\n";
+		$tmp  .= '	settingEcommTotale(\'prezzoNew-'.$order_id.'\',\'totalePrezzoNew-'.$order_id.'\');';
+		$tmp  .= "\r\n";
+		$tmp  .= '	settingEcommTotale(\'prezzoNewALL\',\'totalePrezzoNewALL\');';
+		$tmp  .= "\r\n";	
 		$tmp  .= '});';
 		$tmp  .= '</script>';
 	
@@ -1390,24 +1430,24 @@ class RowEcommHelper extends AppHelper {
 	/*
 	 * viene ri-caricata solo la righa dopo il salvataggio
 	*/
-	private function __draw_js_backoffice($rowId) {
+	private function _draw_js_backoffice($rowId) {
 		$tmp = "";
 	
 		$tmp  .= '<script type="text/javascript">';
 		$tmp  .= "\r\n";
-		$tmp  .= 'jQuery(document).ready(function() {';
+		$tmp  .= '$(document).ready(function() {';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeSubmitEcomm(jQuery("#row-'.$rowId.'"));';
+		$tmp  .= '	activeSubmitEcomm($("#row-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeEcommRows(jQuery("#row-'.$rowId.'"));';
+		$tmp  .= '	activeEcommRows($("#row-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	actionTrView(jQuery("#actionTrView-'.$rowId.'"));';
+		$tmp  .= '	actionTrView($("#actionTrView-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	actionNotaView(jQuery("#actionNotaView-'.$rowId.'"));';
+		$tmp  .= '	actionNotaView($("#actionNotaView-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeImportoForzato(jQuery("#importoForzato-'.$rowId.'"));';
+		$tmp  .= '	activeImportoForzato($("#importoForzato-'.$rowId.'"));';
 		$tmp  .= "\r\n";
-		$tmp  .= '	activeNotaEcomm(jQuery("#nota-'.$rowId.'"));';
+		$tmp  .= '	activeNotaEcomm($("#nota-'.$rowId.'"));';
 		$tmp  .= "\r\n";
 		$tmp  .= '});';
 		$tmp  .= '</script>';

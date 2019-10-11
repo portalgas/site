@@ -1,11 +1,23 @@
 <?php 
+App::uses('Component', 'Controller');
+
 class UserGroupsComponent extends Component {
 
 	private $debug = false;
 	
+    private $Controller = null;
+
+    public function initialize(Controller $controller) 
+    {
+		$this->Controller = $controller;
+    }
+	
 	public function getUserGroups($user) {
 
-		$userGroups = array();
+		$debug = false;
+		$controllerLog = $this->Controller;
+		
+		$userGroups = [];
 
 		/*
 		 * gruppo non legato all'organization, se non sono Root in AppController lo elimino
@@ -78,7 +90,7 @@ class UserGroupsComponent extends Component {
 		/*
 		 * referente cassa (pagamento degli utenti alla consegna)
 		 */ 
-		if(isset($user->organization['Organization']) && $user->organization['Organization']['payToDelivery']=='ON') {
+		if(isset($user->organization['Organization']) && $user->organization['Template']['payToDelivery']=='ON') {
 			if($user->organization['Organization']['hasUserGroupsCassiere']=='Y') {
 				$userGroups[Configure::read('group_id_cassiere')]['id'] = Configure::read('group_id_cassiere');
 				$userGroups[Configure::read('group_id_cassiere')]['name'] = __('UserGroupsCassiere');
@@ -98,7 +110,7 @@ class UserGroupsComponent extends Component {
 		 * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
 		 * 		gestisce anche il pagamento del suo produttore
 		 */ 
-		if(isset($user->organization['Organization']) && $user->organization['Organization']['payToDelivery']=='POST') {
+		if(isset($user->organization['Organization']) && $user->organization['Template']['payToDelivery']=='POST') {
 			if($user->organization['Organization']['hasUserGroupsCassiere']=='Y') {
 				$userGroups[Configure::read('group_id_cassiere')]['id'] = Configure::read('group_id_cassiere');
 				$userGroups[Configure::read('group_id_cassiere')]['name'] = __('UserGroupsCassiere');
@@ -121,7 +133,7 @@ class UserGroupsComponent extends Component {
 		}
 		
 
-		if(isset($user->organization['Organization']) && $user->organization['Organization']['payToDelivery']=='ON-POST') {
+		if(isset($user->organization['Organization']) && $user->organization['Template']['payToDelivery']=='ON-POST') {
 			if($user->organization['Organization']['hasUserGroupsCassiere']=='Y') {
 				$userGroups[Configure::read('group_id_cassiere')]['id'] = Configure::read('group_id_cassiere');
 				$userGroups[Configure::read('group_id_cassiere')]['name'] = __('UserGroupsCassiere');
@@ -175,12 +187,25 @@ class UserGroupsComponent extends Component {
 			$userGroups[Configure::read('group_id_referent_des')]['join'] = 'DesSupplier';
 			$userGroups[Configure::read('group_id_referent_des')]['type'] = 'DES';
 
+			if(isset($user->organization['Organization']) && $user->organization['Organization']['hasUserFlagPrivacy'] && $user->organization['Organization']['hasUserFlagPrivacy']=='Y') {
+				$userGroups[Configure::read('group_id_user_flag_privacy')]['id'] = Configure::read('group_id_user_flag_privacy');
+				$userGroups[Configure::read('group_id_user_flag_privacy')]['name'] = __('UserGroupsUserFlagPrivacy');
+				$userGroups[Configure::read('group_id_user_flag_privacy')]['descri'] = __('HasUserGroupsUserFlagPrivacy');
+				$userGroups[Configure::read('group_id_user_flag_privacy')]['join'] = '';
+				$userGroups[Configure::read('group_id_user_flag_privacy')]['type'] = 'GAS';				
+			}
+
+			if(isset($user->organization['Organization']) && $user->organization['Organization']['hasDesUserManager']=='Y') {
+				$userGroups[Configure::read('group_id_user_manager_des')]['id'] = Configure::read('group_id_user_manager_des');
+				$userGroups[Configure::read('group_id_user_manager_des')]['name'] = __('UserGroupsUserManagerDes');
+				$userGroups[Configure::read('group_id_user_manager_des')]['descri'] = __('HasUserGroupsUserManagerDes');
+				$userGroups[Configure::read('group_id_user_manager_des')]['join'] = '';
+				$userGroups[Configure::read('group_id_user_manager_des')]['type'] = 'DES';				
+			}
+			
    		}		
-		/*
-		echo "<pre>";
-		print_r($userGroups);
-		echo "</pre>";
-		*/
+
+		$controllerLog::d($userGroups, $debug);
 		
 		return $userGroups;
 	}

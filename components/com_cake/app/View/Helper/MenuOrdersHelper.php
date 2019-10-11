@@ -3,7 +3,7 @@ class MenuOrdersHelper extends AppHelper {
         
      var $helpers = array('Html', 'App');
 
-     function drawWrapper($order_id, $options = array()) {
+     public function drawWrapper($order_id, $options = array()) {
 
 		$html = "";
 		
@@ -45,7 +45,7 @@ class MenuOrdersHelper extends AppHelper {
 		return $html;
 	}
 	
-    function drawContent($results, $desOrder, $orderActions, $orderStates, $options = array()) {
+    public function drawContent($results, $desOrder, $orderActions, $orderStates, $options = array()) {
 
 		$html = "";
 		
@@ -64,13 +64,13 @@ class MenuOrdersHelper extends AppHelper {
 
 		if(!empty($desOrder)) {
 			$html .= '<h2>';
-			if($desOrder['des_id']==$user->des_id) 
-				$html .= $this->Html->link(__('DesOrder'), array('controller' => 'DesOrdersOrganizations', 'action' => 'index', null, 'des_order_id='.$desOrder['id']), array('title' => ""));
-			else
-				$html .=  __('DesOrder');
-			$html .= $this->App->drawDesOrdersStateDiv($desOrder);
+			// if($desOrder['des_id']==$user->des_id) 
+				$html .= $this->Html->link(__('DesOrder'), array('controller' => 'DesOrdersOrganizations', 'action' => 'index', null, 'des_order_id='.$desOrder['DesOrder']['id']), array('style' => 'color:#fff;', 'title' => ""));
+			//else
+			//	$html .=  __('DesOrder');
+			$html .= $this->App->drawDesOrdersStateDiv($desOrder['DesOrder']);
 			$html .= '<br />'; 
-			$html .= '<small style="color:#000;">'.__($desOrder['state_code'].'-label').'</small>';		
+			$html .= '<small style="color:#fff;">'.__($desOrder['DesOrder']['state_code'].'-label').'</small>';		
 			$html .= '</h2>';
 		}
 

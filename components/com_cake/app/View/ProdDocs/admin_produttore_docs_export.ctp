@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdDeliveries'),array('controller' => 'ProdDeliveries', 'action' => 'index'));
 if(isset($prod_delivery_id) && !empty($prod_delivery_id))
 	$this->Html->addCrumb(__('ProdDelivery home'),array('controller'=>'ProdDeliveries','action'=>'home', null, 'prod_delivery_id='.$prod_delivery_id));
@@ -44,7 +44,7 @@ function AjaxCallToDocOptions() {
  * chiamata Ajax per tasto print
  */
 function AjaxCallToDocPrint() {
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	var url = "/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_doc_print&doc_options="+doc_options+"&format=notmpl";
 	var idDivTarget = 'doc-print';
@@ -54,8 +54,8 @@ function AjaxCallToDocPrint() {
  * chiamata Ajax per anteprima documento
  */
 function AjaxCallToDocPreview() {
-	var prod_delivery_id    = jQuery('#prod_delivery_id').val(); 
-	var doc_options = jQuery("input[name='doc_options']:checked").val();
+	var prod_delivery_id    = $('#prod_delivery_id').val(); 
+	var doc_options = $("input[name='doc_options']:checked").val();
 	
 	if(prod_delivery_id=='' || doc_options=='') return;
 	
@@ -74,48 +74,48 @@ function AjaxCallToDocPreview() {
 	var e = '';
 	var f = '';
 	if(doc_options=='to-users-all-modify') {
-		if(jQuery("input[name='trasport1']").length > 0) 
-			a = jQuery("input[name='trasport1']:checked").val();
+		if($("input[name='trasport1']").length > 0) 
+			a = $("input[name='trasport1']:checked").val();
 	}
 	else	
 	if(doc_options=='to-users') {
-		a = jQuery("input[name='user_phone1']:checked").val();
-		b = jQuery("input[name='user_email1']:checked").val();
-		c = jQuery("input[name='user_address1']:checked").val();
-		d = jQuery("input[name='totale_per_utente']:checked").val();
-		if(jQuery("input[name='trasport2']").length > 0)
-			e = jQuery("input[name='trasport2']:checked").val();
+		a = $("input[name='user_phone1']:checked").val();
+		b = $("input[name='user_email1']:checked").val();
+		c = $("input[name='user_address1']:checked").val();
+		d = $("input[name='totale_per_utente']:checked").val();
+		if($("input[name='trasport2']").length > 0)
+			e = $("input[name='trasport2']:checked").val();
 		else
 			e = 'N';
-		f = jQuery("input[name='user_avatar1']:checked").val();
+		f = $("input[name='user_avatar1']:checked").val();
 	}
 	else
 	if(doc_options=='to-users-label') {
-		a = jQuery("input[name='user_phone']:checked").val();
-		b = jQuery("input[name='user_email']:checked").val();
-		c = jQuery("input[name='user_address']:checked").val();
-		if(jQuery("input[name='trasport3']").length > 0)
-			d = jQuery("input[name='trasport3']:checked").val();
+		a = $("input[name='user_phone']:checked").val();
+		b = $("input[name='user_email']:checked").val();
+		c = $("input[name='user_address']:checked").val();
+		if($("input[name='trasport3']").length > 0)
+			d = $("input[name='trasport3']:checked").val();
 		else
 			d = 'N';
-		e = jQuery("input[name='user_avatar2']:checked").val();
+		e = $("input[name='user_avatar2']:checked").val();
 	}
 	else
 	if(doc_options=='to-articles') {
-		if(jQuery("input[name='trasport4']").length > 0)
-			a = jQuery("input[name='trasport4']:checked").val();
+		if($("input[name='trasport4']").length > 0)
+			a = $("input[name='trasport4']:checked").val();
 		else
 			a = 'N';		
 	}
 	else
 	if(doc_options=='to-articles-details') {
-		a = jQuery("input[name='acquistato_il']:checked").val();
-		if(jQuery("input[name='article_img']").length > 0)
-			b = jQuery("input[name='article_img']:checked").val();
+		a = $("input[name='acquistato_il']:checked").val();
+		if($("input[name='article_img']").length > 0)
+			b = $("input[name='article_img']:checked").val();
 		else
 			b = 'N';		
-		if(jQuery("input[name='trasport5']").length > 0)
-			c = jQuery("input[name='trasport5']:checked").val();
+		if($("input[name='trasport5']").length > 0)
+			c = $("input[name='trasport5']:checked").val();
 		else
 			c = 'N';		
 	}			
@@ -156,8 +156,3 @@ function AjaxCallToDocPreview() {
 <?php 
 echo $this->element('menuProdDeliveryLaterale');
 ?>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

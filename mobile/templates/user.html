@@ -1,0 +1,35 @@
+<ion-view view-title="Gasista">  
+<ion-nav-buttons side="right">
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+  <ion-content data-tap-disabled="true">
+
+  <div class="list card item-text-wrap">
+  
+		<div class="item item-thumbnail-left">
+			<img ng-src="{{user.User_avatar}}" ng-if="user.User_avatar != null && user.User_avatar != ''" />
+			<h2>{{user.name| htmlToPlaintext}}</h2> 
+		</div>
+		<div class="item">
+				<span class="item-note">
+					<a style="text-decoration:none;" href="mailto:{{user.email}}">{{user.email}}</a>
+					<a ng-if="user.Profile['profile.phone'] != null && user.Profile['profile.phone'] != ''" style="text-decoration:none;" href="tel:{{user.Profile['profile.phone']}}"><br />{{user.Profile['profile.phone']}}</a>
+					<a ng-if="user.Profile['profile.phone2'] != null && user.Profile['profile.phone2'] != ''" style="text-decoration:none;" href="tel:{{user.Profile['profile.phone2']}}"><br />{{user.Profile['profile.phone2']}}</a>
+					<br />{{user.Profile['profile.address']}} {{user.Profile['profile.city']}} {{user.Profile['profile.postal_code']}} ({{user.Profile['profile.region']}})			
+				</span>	
+		</div>	
+
+  </div>
+  
+	<ui-gmap-google-map center='map.center' zoom='map.zoom' events="map.markersEvents" ng-if="user.Profile['profile.lat'] != '' && user.Profile['profile.lng'] != '' ">
+		<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id" closeClick="hideMarkerPopup()" onClicked="showMarkerPopup()">
+			<i class="icon ion-looping"></i> Loading
+		</ui-gmap-marker>        
+	</ui-gmap-google-map>
+		
+  </ion-content>
+  
+</ion-view>
+
+<script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>	

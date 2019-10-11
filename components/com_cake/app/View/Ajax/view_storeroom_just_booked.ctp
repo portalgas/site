@@ -1,9 +1,6 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
+
 echo '<div class="related table">';
 
 if(!empty($results)) {
@@ -28,7 +25,7 @@ if(!empty($results)) {
 		echo '<td style="text-align:center">'.$result['Storeroom']['qta'].'</td>';
 		echo '<td>';
 		if(!empty($result['Delivery']['luogo']))
-			echo $result['Delivery']['luogo'].' del '.$this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y").' '.$result['Delivery']['data'];
+			echo $result['Delivery']['luogo'].' del '.$this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y");
 		echo '</td>';
 		echo '</tr>';
 		

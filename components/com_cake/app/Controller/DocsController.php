@@ -18,7 +18,7 @@ class DocsController extends AppController {
 
                 App::import('Model', 'Delivery');
                 $Delivery = new Delivery;
-                $results = $Delivery->read($this->user->organization['Organization']['id'], null, $this->delivery_id);
+                $results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
                 if (!empty($results) && $results['Delivery']['isVisibleBackOffice'] == 'N') {
                     $this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
                     $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -32,7 +32,7 @@ class DocsController extends AppController {
 
                 App::import('Model', 'Order');
                 $Order = new Order;
-                $results = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
+                $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
                 if (!empty($results) && $results['Order']['isVisibleBackOffice'] == 'N') {
                     $this->Session->setFlash(__('msg_order_not_visible_backoffice'));
                     $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -141,7 +141,8 @@ class DocsController extends AppController {
 		 
 		 
 		// precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
-		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, [$owner_articles], $debug);
+		$filters['ownerArticles'] = $owner_articles;
+		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, $filters, $debug);
 		
 		$currentOrganization = $organizationResults['Supplier']['Organization'];
 		$currentOrganization = current($currentOrganization);
@@ -257,9 +258,13 @@ class DocsController extends AppController {
 
         $debug = false;
         $debug_save = false; // se true NON salva
+		$msg = '';
 		
 		App::import('Model', 'SummaryOrderLifeCycle');
-		$SummaryOrderLifeCycle = new SummaryOrderLifeCycle;
+		$SummaryOrderLifeCycle = new SummaryOrderLifeCycle;	
+		
+		App::import('Model', 'SummaryOrder');
+		$SummaryOrder = new SummaryOrder;
 		
 		/*
 		if($this->user->organization['Organization']['id']==33) { // pastamadristiromani
@@ -320,9 +325,11 @@ class DocsController extends AppController {
                 if (empty($modalita))
                     $modalita = 'CONTANTI';
 
-                $data = [];
-                $data['SummaryOrder']['id'] = $summary_order_id;
-                $data['SummaryOrder']['organization_id'] = $this->user->organization['Organization']['id'];
+
+				$options = [];
+				$options['conditions'] = array('SummaryOrder.organization_id' => $this->user->organization['Organization']['id'], 
+											   'SummaryOrder.id' => $summary_order_id);
+				$data = $SummaryOrder->find('first', $options);
                 $data['SummaryOrder']['order_id'] = $order_id;
                 $data['SummaryOrder']['delivery_id'] = $delivery_id;
                 $data['SummaryOrder']['user_id'] = $user_id;
@@ -335,9 +342,9 @@ class DocsController extends AppController {
 	                 * aggiorno lo stato dell'ordine: se tutti hanno pagato (SummaryOrder.saldato_a) Order.state_code a state_code successivo
 					 */				
 					if(!$SummaryOrderLifeCycle->saveToUser($this->user, $data, $debug))
-						$this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
+						$msg = __('The cash could not be saved. Please, try again.');
 					else
-						$this->Session->setFlash(__('The cash has been saved'));
+						$msg = __('The cash has been saved');
 				}
 
                 /*
@@ -351,9 +358,9 @@ class DocsController extends AppController {
                         $SummaryDeliveriesPos = new SummaryDeliveriesPos;
 
                         if ($SummaryDeliveriesPos->saveToDelivery($this->user, $delivery_id, $user_id, $this->importoToDatabase($paymentPos), $debug))
-                            $this->Session->setFlash(__('The SummaryDeliveriesPos has been saved'));
+                            $msg = __('The SummaryDeliveriesPos has been saved');
                         else
-                            $this->Session->setFlash(__('The SummaryDeliveriesPos could not be saved. Please, try again.'));
+                            $msg = __('The SummaryDeliveriesPos could not be saved. Please, try again.');
                     } // end if($modalita=='BANCOMAT' && $paymentPos!='0,00') 					
                 } // end if($this->user->organization['Organization']['hasFieldPaymentPos']=='Y') 
 
@@ -386,7 +393,7 @@ class DocsController extends AppController {
                     /*
                      *  aggiorno
                      */
-                    $row = [];
+					$row = [];
                     $row['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
                     $row['Cash']['user_id'] = $user_id;
                     $row['Cash']['importo'] = $this->importoToDatabase($differenza_in_cassa);
@@ -421,9 +428,9 @@ class DocsController extends AppController {
                     $Cash->create();
                     if(!$debug_save) {
                     if ($Cash->save($row)) 
-                        $this->Session->setFlash(__('The cash has been saved'));
+                        $msg = __('The cash has been saved');
                     else 
-                        $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
+                        $msg = __('The cash could not be saved. Please, try again.');
                     }
                } // end if ($differenza_in_cassa != '0,00')
 				/*     
@@ -445,9 +452,9 @@ class DocsController extends AppController {
                     if (!empty($results)) {
                         if(!$debug_save) {
                             if ($Cash->delete($results['Cash']['id'])) 
-                                $this->Session->setFlash(__('The cash has been saved'));
+                                $msg = __('The cash has been saved');
                             else 
-                                $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
+                                $msg = __('The cash could not be saved. Please, try again.');
                         }
                     }
                 }
@@ -490,6 +497,9 @@ class DocsController extends AppController {
         $this->set(compact('deliveries'));
 
         $this->set(compact('delivery_id', 'user_id'));
+		
+		if(!empty($msg))
+			$this->Session->setFlash(__($msg));
     }
 
     public function admin_des_referent_docs_export($des_order_id) {

@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order_id) && !empty($order_id))
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
@@ -15,87 +15,86 @@ function choiceOrderPermission() {
 	var div_contenitore = 'order-permission';
 	showHideBox(div_contenitore,call_child=true); 
 
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
 	
-	AjaxCallToTrasportImporto(delivery_id, order_id); 	/* chiamata Ajax con il trasporto */
+	AjaxCallToImporto(delivery_id, order_id); 	/* chiamata Ajax con il trasporto */
 	
-	jQuery('.submit').css('display','none');
+	$('.submit').css('display','none');
 }
-function choiceTrasportImporto() {
-	var div_contenitore = 'trasport-importo';
+function choiceImporto() {
+	var div_contenitore = 'summay-order-plus-importo';
 
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
-	var trasport = jQuery('#trasport').val();
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var trasport = $('#trasport').val();
 
 	if(trasport=='' || trasport==null || trasport=='0,00' || trasport=='0.00' || trasport=='0') {
 		alert("Devi indicare l'importo del trasporto");
-		jQuery("input[name='trasport-options']").prop('checked',false);
+		$("input[name='summay-order-plus-options']").prop('checked',false);
 		return false;
 	}
 	
-	if(debugLocal) alert("choiceTrasportImporto - div_contenitore "+div_contenitore+", trasportOptions "+trasportOptions);
 	if(delivery_id == '' || order_id=='') {
 		showHideBox(div_contenitore,call_child=false);
 		return;
 	}
 	showHideBox(div_contenitore,call_child=true);
 	
-	AjaxCallToTrasportOptions(delivery_id, order_id); 	// chiamata Ajax opzioni summary orders
+	AjaxCallToOptions(delivery_id, order_id); 	// chiamata Ajax opzioni summary orders
 }
-function choiceTrasportOptions() {
+function choiceOptions() {
 
-	var div_contenitore = 'trasport-options';
+	var div_contenitore = 'summay-order-plus-options';
 	
-	var delivery_id = jQuery('#delivery_id').val();
-	var order_id    = jQuery('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
-	var trasport = jQuery('#trasport').val();
-	var trasportOptions = jQuery("input[name='trasport-options']:checked").val(); 
+	var delivery_id = $('#delivery_id').val();
+	var order_id    = $('#order_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var trasport = $('#trasport').val();
+	var options = $("input[name='summay-order-plus-options']:checked").val(); 
 
-	if(trasportOptions=='' || trasportOptions==undefined) return;
+	if(options=='' || options==undefined) return;
 	
 	if(trasport=='' || trasport==null || trasport=='0,00' || trasport=='0.00' || trasport=='0') {
 		alert("Devi indicare l'importo del trasporto");
-		jQuery("input[name='trasport-options']").prop('checked',false);
+		$("input[name='summay-order-plus-options']").prop('checked',false);
 		return false;
 	}
 	
-	if(debugLocal) alert("choiceTrasportOptions - div_contenitore "+div_contenitore+", trasportOptions "+trasportOptions);
-	if(delivery_id == '' || order_id=='' || trasportOptions=='') {
+	if(debugLocal) alert("choiceOptions - div_contenitore "+div_contenitore+", summay-order-plus-options "+options);
+	if(delivery_id == '' || order_id=='' || options=='') {
 		showHideBox(div_contenitore,call_child=false);
 		return;
 	}
 	showHideBox(div_contenitore,call_child=true);
 	
-	AjaxCallToTrasportResult(delivery_id, order_id, trasportOptions); /* chiamata Ajax l'elenco degli SummaryOrders con il trasporto calcolato */ 
+	AjaxCallToResults(delivery_id, order_id, options); /* chiamata Ajax l'elenco degli SummaryOrders con il trasporto calcolato */ 
 }
 
 /*
  *  chiamata Ajax per importo del trasporto
  */
-function AjaxCallToTrasportImporto(delivery_id, order_id) {
+function AjaxCallToImporto(delivery_id, order_id) {
 	url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_trasport_importo&delivery_id="+delivery_id+"&order_id="+order_id+"&format=notmpl";
-	var idDivTarget = 'trasport-importo';
+	var idDivTarget = 'summay-order-plus-importo';
 	ajaxCallBox(url, idDivTarget);
 }
 /*
  *  chiamata Ajax per opzioni Trasport
  */
-function AjaxCallToTrasportOptions(delivery_id, order_id) {
+function AjaxCallToOptions(delivery_id, order_id) {
 	url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_trasport_options&delivery_id="+delivery_id+"&order_id="+order_id+"&format=notmpl";
-	var idDivTarget = 'trasport-options';
+	var idDivTarget = 'summay-order-plus-options';
 	ajaxCallBox(url, idDivTarget);
 }
 /*
  *  chiamata Ajax per elenco SummaryOrders e il trasporto calcolato
  */
-function AjaxCallToTrasportResult(delivery_id, order_id, trasportOptions) {
-	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_trasport&delivery_id="+delivery_id+"&order_id="+order_id+"&trasportOptions="+trasportOptions+"&format=notmpl";
-	var idDivTarget = 'trasport-results';
+function AjaxCallToResults(delivery_id, order_id, options) {
+	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_trasport&delivery_id="+delivery_id+"&order_id="+order_id+"&options="+options+"&format=notmpl";
+	var idDivTarget = 'summay-order-plus-results';
 	ajaxCallBox(url, idDivTarget);
 	
-	jQuery('.submit').css('display','block');
+	$('.submit').css('display','block');
 }
 </script>
 
@@ -122,11 +121,11 @@ echo $this->element('boxDesOrder', array('results' => $desOrdersResults, 'summar
 	echo $this->element('boxOrder',array('results' => $results));
 	?>	
 	
-	<div id="trasport-importo" style="display:none;margin-top:5px;"></div>
+	<div id="summay-order-plus-importo" style="display:none;margin-top:5px;"></div>
 
-	<div id="trasport-options" style="display:none;margin-top:5px;"></div>
+	<div id="summay-order-plus-options" style="display:none;margin-top:5px;"></div>
 
-	<div id="trasport-results" style="display:none;min-height:50px;"></div>
+	<div id="summay-order-plus-results" style="display:none;min-height:50px;"></div>
 	
 	<div class="submit" style="float:right;">
 		<div class="submit"><input id="sumbitElabora" type="submit" value="<?php echo __('Submit');?>"></div>
@@ -146,31 +145,26 @@ $options = [];
 echo $this->MenuOrders->drawWrapper($order_id, $options);
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.submit').css('display','none');
+	$('.submit').css('display','none');
 	
-	jQuery('#sumbitElabora').click(function() {
+	$('#sumbitElabora').click(function() {
 
-		var delivery_id = jQuery('#delivery_id').val();
-		var order_id = jQuery('#order_id').val();
-		var trasport = jQuery('#trasport').val();
+		var delivery_id = $('#delivery_id').val();
+		var order_id = $('#order_id').val();
+		var trasport = $('#trasport').val();
 		
 		if(trasport=='' || trasport==null || trasport=='0,00' || trasport=='0.00' || trasport=='0') {
 			alert("Devi indicare l'importo del trasporto");
-			jQuery("input[name='trasport-options']").prop('checked',false);
+			$("input[name='summay-order-plus-options']").prop('checked',false);
 			return false;
 		}
 		
-		jQuery('#actionSubmit').val('submitElabora');
+		$('#actionSubmit').val('submitElabora');
 
 		return true;
 
 	});
 })
 </script>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

@@ -1,9 +1,5 @@
 <?php 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 
 /*
  * aggrego i dati
@@ -47,7 +43,7 @@ print_r($newResults);
 echo "</pre>";
 */
 
-$csv = array();
+$csv = [];
 $headers = array('csv' => $csv);
 
 
@@ -67,7 +63,7 @@ foreach($newResults as $resultOrg) {
         $num_rows_csv++;
 
 
-        $table = array();
+        $table = [];
         $data[$num_rows_csv]['csv'] = array('N' => __('N'));
         $data[$num_rows_csv]['csv'] += array('bio' => __('Bio'));
         if($showCodice=='Y')

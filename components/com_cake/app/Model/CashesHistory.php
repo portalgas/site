@@ -118,17 +118,17 @@ class CashesHistory extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'cash_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'user_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 	);

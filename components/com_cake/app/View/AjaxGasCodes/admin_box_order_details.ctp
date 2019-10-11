@@ -8,7 +8,7 @@ if (!empty($results)) {
 		echo '<th></th>';
 	}	
 	echo '	<th>'.__('StateOrder').'</th>';
-	echo '  <th>'.__('stato_elaborazione').'</th>';
+	echo '  <th>'.__('StatoElaborazione').'</th>';
 	if($user->organization['Organization']['hasVisibility']=='Y')
 		echo '<th>'.__('isVisibleFrontEnd').'</th>';
 	echo '</tr>';
@@ -35,8 +35,8 @@ if (!empty($results)) {
 	echo '</table>';
 	?>
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
-		var order_id = jQuery("#order_id").val();
+	$(document).ready(function() {
+		var order_id = $("#order_id").val();
 		if(order_id>0)	choiceOrderDetails(); 
 	});
 	</script>		

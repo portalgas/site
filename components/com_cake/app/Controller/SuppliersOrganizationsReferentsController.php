@@ -369,7 +369,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		else 
 			$msg .= "<br />ma non cancellato dal gruppo Referenti perchè associato ad altri produttori.";
 		
-		if ($this->SuppliersOrganizationsReferent->delete($this->user->organization['Organization']['id'], $user_id, $group_id, $supplier_organization_id, $type)) {
+		if ($this->SuppliersOrganizationsReferent->myDelete($this->user->organization['Organization']['id'], $user_id, $group_id, $supplier_organization_id, $type)) {
 			
 			// cancello eventuale sessione con il filtro per utente se no la ricerca e' sempre vuota
 			if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'UserId')) {

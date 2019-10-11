@@ -25,7 +25,7 @@ if($user->organization['Organization']['hasFieldArticleIngredienti']=='Y' && $fi
 	$csv += array('ingredienti' => __('ingredienti'));
 
 if($filterNota=='Y')
-	$csv += array('nota' => __('nota'));
+	$csv += array('nota' => __('Nota'));
 
 $csv += array(
 		'pezzi_confezione' => __('pezzi_confezione'),
@@ -47,7 +47,7 @@ $csv += array('flag_presente_articlesorders' => "Presente nell'elenco degli arti
 $headers = array('csv' => $csv); 
 
 
-$data = array();
+$data = [];
 if(isset($results) && !empty($results))
 foreach($results as $numArticle => $result) {
 
@@ -63,7 +63,7 @@ foreach($results as $numArticle => $result) {
 	if($filterType=='Y') {
 		$tmp = "";
 		if(!empty($result['ArticlesType'])) {				foreach($result['ArticlesType'] as $articlesType)
-				$tmp .= $articlesType['descrizione']." ";			}		$data[$numArticle]['csv'] += array('type' => $tmp);	}
+				$tmp .= $articlesType['ArticlesType']['descrizione']." ";			}		$data[$numArticle]['csv'] += array('type' => $tmp);	}
 			if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y' && $filterCategory=='Y') 
 		$data[$numArticle]['csv'] += array('category' => $result['CategoriesArticle']['name']);
 	

@@ -1,7 +1,7 @@
 <?php
 echo '<div class="old-menu">';
 
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Tesoriere'),array('controller' => 'Tesoriere', 'action' => 'home', $delivery_id));
 $this->Html->addCrumb(__('OrdersProcessedTesoriere'));
@@ -68,7 +68,7 @@ $(document).ready(function() {
 	});		
 
 
-	$('#sumbitToTO_PAYMENT').click(function() {
+	$('#sumbitToTO_REQUEST_PAYMENT').click(function() {
 
 		if(!ctrlCampi()) return false;
 
@@ -79,7 +79,7 @@ $(document).ready(function() {
 		order_id_selected = order_id_selected.substring(0,order_id_selected.length-1);
 		$('#order_id_selected').val(order_id_selected);
 		
-		$('#action_submit').val('OrdersToTO_PAYMENT');
+		$('#action_submit').val('OrdersToTO_REQUEST_PAYMENT');
 
 		return true;
 	});		  
@@ -140,17 +140,19 @@ function caricaOrdini() {
 </h2>
 
 
-<?php echo $this->Form->create('Tesoriere',array('id' => 'formGas'));?>
-	<fieldset>
-	<?php
-	$options = array('id'=>'delivery_id');
-	if(!empty($delivery_id) && $delivery_id>0)
-		$options += array('default' => $delivery_id);
-	else
-		$options += array('empty' => Configure::read('option.empty'));
+<?php 
+echo $this->Form->create('Tesoriere',array('id' => 'formGas'));
+echo '<fieldset>';
 	
-	echo $this->Form->input('delivery_id',$options);
-	?>	
+// $this->App->dd($deliveries);
+$options = array('id'=>'delivery_id');
+if(!empty($delivery_id) && $delivery_id>0)
+	$options += array('default' => $delivery_id);
+else
+	$options += array('empty' => Configure::read('option.empty'));
+
+echo $this->Form->input('delivery_id',$options);
+?>	
 	
 	<div id="orders-result" style="display:none;min-height:50px;"></div>
 	
@@ -158,7 +160,7 @@ function caricaOrdini() {
 		<label for="order_id">Azioni</label>
 		<div style="margin-left: 210px;">
 	
-			<table cellpadding="0" cellspacing="0">
+			<div class="table-responsive"><table class="table ">
 				<tr>
 					
 						<?php 
@@ -171,11 +173,11 @@ function caricaOrdini() {
 						echo '<div class="submit"><input id="sumbitToPROCESSED_REFERENTE_POST_DELIVERY" type="submit" class="buttonBlu" value="Porta gli ordini allo stato \'in carico al referente\'" /></div>';
 						echo '</td>';
 						echo '<td>';
-						echo '<div class="submit"><input id="sumbitToTO_PAYMENT" type="submit" class="buttonBlu" value="Porta gli ordini allo stato \'in attesa del pagamento\'" /></div>';
+						echo '<div class="submit"><input id="sumbitToTO_REQUEST_PAYMENT" type="submit" class="buttonBlu" value="Porta gli ordini allo stato \'Possibilità di richiederne il pagamento\'" /></div>';
 						?>
 					</td>
 				</tr>
-			</table>
+			</table></div>
 		</div>
 	</div>
 	

@@ -1,10 +1,7 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/					
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($results);
+					
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Mails'),array('controller'=>'Mails','action'=>'des_index'));
 $this->Html->addCrumb(__('Send Mail'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -92,7 +89,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->end(__('Send'));
 		} 
 		else
-			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non sei abilitato su alcun produttore!"));
+			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non sei abilitato su alcun produttore!"));
 		?>
 </div>
 

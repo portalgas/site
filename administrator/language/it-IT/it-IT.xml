@@ -2,12 +2,12 @@
 <metafile version="2.5" client="administrator">
 	<name>Italian (IT)</name>
 	<description>Italian admin language for Joomla 2.5</description>
-	<version>2.5.6.2</version>
-	<creationDate>2012-06-20</creationDate>
+	<version>2.5.20.1</version>
+	<creationDate>2014-04-30</creationDate>
 	<author>Italian Translation Team </author>
 	<authorEmail>info@joomla.it</authorEmail>
 	<authorUrl>www.joomla.it</authorUrl>
-	<copyright>Copyright (C) 2005 - 2012 Open Source Matters and Joomla.it. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2005 - 2014 Open Source Matters and Joomla.it. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<metadata>
 		<name>Italian (IT)</name>

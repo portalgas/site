@@ -12,18 +12,17 @@ span.esito_no {
 }
 </style>
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
+$this->App->d($struttura_file);
 
 if(!empty($results)) {
-	echo '<table>';
+	echo '<div class="table-responsive"><table class="table">';
 	echo '<tr>';
 	echo '<th></th>';
-	for ($i=0; $i < count($struttura_file); $i++)
-		echo '<th>'.$struttura_file[$i]['LABEL'].'</th>';
+	for ($i=0; $i < count($struttura_file); $i++) {
+		if($version=='COMPLETE' || $struttura_file[$i]['VERSION_SIMPLE']) 
+			echo '<th>'.$struttura_file[$i]['LABEL'].'</th>';
+	}
 	echo '</tr>';
 	
 	$tot_error=0;
@@ -48,7 +47,7 @@ if(!empty($results)) {
 		}
 		echo '</tr>';	
 	}
-	echo '</table>';
+	echo '</table></div>';
 } // end if(!empty($results))
 
 if($tot_error==0 && !empty($results)) {

@@ -136,25 +136,25 @@ class PagesController extends AppController {
 
         $debug = false;
 
+		App::import('Model', 'OrganizationsPayment');
+		$OrganizationsPayment = new OrganizationsPayment;
+
         /*
          * ctrl i dati del pagamento del GAS
          */
         if ($this->isManager()) {
-            App::import('Model', 'OrganizationsPayment');
-            $OrganizationsPayment = new OrganizationsPayment;
-
-            if (!$OrganizationsPayment->isPaymentComplete($this->user)) {
+            if(!$OrganizationsPayment->isPaymentComplete($this->user)) {
                 $this->Session->setFlash(__('msg_organization_payment_incomplete'));
                 $this->myRedirect(['controller' => 'OrganizationsPayments', 'action' => 'edit', 'admin' => true]);
             }
-        }
+		} // if ($this->isManager())
 
         $this->set('isRoot', $this->isRoot());
         $this->set('isManager', $this->isManager());
         $this->set('isManagerDelivery', $this->isManagerDelivery());
         $this->set('isReferentGeneric', $this->isReferentGeneric());
         $this->set('isSuperReferente', $this->isSuperReferente());
-        $this->set('isSuperReferente', $this->isSuperReferente());
+        $this->set('isReferente', $this->isReferente());
         $this->set('isTesoriere', $this->isTesoriere());
         $this->set('isTesoriereGeneric', $this->isTesoriereGeneric());
         $this->set('isCassiere', $this->isCassiereGeneric());
@@ -162,11 +162,26 @@ class PagesController extends AppController {
 
         $this->set('userGroups', $this->userGroups);
 
+		/*
+		 * promozioni
+		 */
+        App::import('Model', 'ProdGasPromotionsOrganizationsManager');
+        $ProdGasPromotionsOrganizationsManager = new ProdGasPromotionsOrganizationsManager;
+	
+		$rules = [];
+		$rules['isSuperReferente'] = $this->isSuperReferente();
+		$rules['isReferente'] = $this->isReferente();
+		$rules['isManager'] = $this->isManager();
+
+		$prodGasPromotionsOrganizationsresults = $ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
+		$this->set(compact('prodGasPromotionsOrganizationsresults'));
+		
         /*
          * per i referenti gli ordini
          */
-        $results = [];
+        $ordersResults = [];
         if ($this->isReferentGeneric()) {
+        
             App::import('Model', 'Order');
             $Order = new Order;
 
@@ -204,53 +219,63 @@ class PagesController extends AppController {
 						                'Delivery.stato_elaborazione' => 'OPEN'];
             $options['recursive'] = 0;
             $options['limit'] = 10;
-            $results = $Order->find('all', $options);
+            $ordersResults = $Order->find('all', $options);
             
-			self::d([$options, $results],false);
+			self::d([$options, $ordersResults],false);
 			
-            foreach ($results as $numResult => $result) {
+            foreach ($ordersResults as $numResult => $ordersResult) {
 
                 /*
                  * ctrl se l'ordine dev'essere validato (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
                  */
-                if ($Order->isOrderToValidate($this->user, $result['Order']['id']))
-                    $results[$numResult]['Order']['toValidate'] = true;
+                if ($Order->isOrderToValidate($this->user, $ordersResult['Order']['id']))
+                    $ordersResults[$numResult]['Order']['toValidate'] = true;
                 else
-                    $results[$numResult]['Order']['toValidate'] = false;
+                    $ordersResults[$numResult]['Order']['toValidate'] = false;
 
                 /*
                  * ctrl se l'ordine ha settato delle quantita' massime > 0
                  */
-                if ($Order->isOrderToQtaMassima($this->user, $result['Order']['id']))
-                    $results[$numResult]['Order']['toQtaMassima'] = true;
+                if ($Order->isOrderToQtaMassima($this->user, $ordersResult['Order']['id']))
+                    $ordersResults[$numResult]['Order']['toQtaMassima'] = true;
                 else
-                    $results[$numResult]['Order']['toQtaMassima'] = false;
+                    $ordersResults[$numResult]['Order']['toQtaMassima'] = false;
 
                 /*
                  * ctrl se l'ordine ha settato delle quantita' minime sugli acquisti di tutto l'ordine > 0
                  */
-                if ($Order->isOrderToQtaMinimaOrder($this->user, $result['Order']['id']))
-                    $results[$numResult]['Order']['toQtaMinimaOrder'] = true;
+                if ($Order->isOrderToQtaMinimaOrder($this->user, $ordersResult['Order']['id']))
+                    $ordersResults[$numResult]['Order']['toQtaMinimaOrder'] = true;
                 else
-                    $results[$numResult]['Order']['toQtaMinimaOrder'] = false;
+                    $ordersResults[$numResult]['Order']['toQtaMinimaOrder'] = false;
 
                 /*
                  *  aggiungo eventuali calcoli dei limiti sulla Order.qta_massima e Order.importo_massimo
                  */
-                if (($result['Order']['state_code'] == 'OPEN' || $result['Order']['state_code'] == 'RI-OPEN-VALIDATE') && ($result['Order']['qta_massima'] > 0))
-                    $results[$numResult]['Order']['qta_massima_current'] = $Order->getTotQuantitaArticlesOrder($this->user, $result, $debug);
+                if (($ordersResult['Order']['state_code'] == 'OPEN' || $ordersResult['Order']['state_code'] == 'RI-OPEN-VALIDATE') && ($ordersResult['Order']['qta_massima'] > 0))
+                    $ordersResults[$numResult]['Order']['qta_massima_current'] = $Order->getTotQuantitaArticlesOrder($this->user, $ordersResult, $debug);
                 else
-                    $results[$numResult]['Order']['qta_massima_current'] = 0;
+                    $ordersResults[$numResult]['Order']['qta_massima_current'] = 0;
 
 
-                if (($result['Order']['state_code'] == 'OPEN' || $result['Order']['state_code'] == 'RI-OPEN-VALIDATE') && ($result['Order']['importo_massimo'] > 0))
-                    $results[$numResult]['Order']['importo_massimo_current'] = $Order->getTotImportoArticlesOrder($this->user, $result['Order']['id'], $debug);
+                if (($ordersResult['Order']['state_code'] == 'OPEN' || $ordersResult['Order']['state_code'] == 'RI-OPEN-VALIDATE') && ($ordersResult['Order']['importo_massimo'] > 0))
+                    $ordersResults[$numResult]['Order']['importo_massimo_current'] = $Order->getTotImportoArticlesOrder($this->user, $ordersResult['Order']['id'], $debug);
                 else
-                    $results[$numResult]['Order']['importo_massimo_current'] = 0;
+                    $ordersResults[$numResult]['Order']['importo_massimo_current'] = 0;
             }
 
-            $this->set('results', $results);
+            $this->set(compact('ordersResults'));
         } // end if($this->isReferentGeneric())
+
+		/*
+		 * msg personalizzato per maganer / tesoriere
+		 */
+        if ($this->isManager() || $this->isTesoriere()) {			
+			$msg = $OrganizationsPayment->hasMgs($this->user);
+            if(!empty($msg)) {
+                $this->Session->setFlash($msg);
+            }			
+        } // if ($this->isManager())
 
         /*
          * msg al Cassiere se ci sono consegne scadute ma OPEN => dovra' chiuderle 
@@ -423,8 +448,15 @@ class PagesController extends AppController {
 
         $this->set('isRoot', $this->isRoot());
         $this->set('isManager', $this->isManager());
+        $this->set('isManagerDelivery', $this->isManagerDelivery());
+        $this->set('isReferentGeneric', $this->isReferentGeneric());
+        $this->set('isSuperReferente', $this->isSuperReferente());
+        $this->set('isReferente', $this->isReferente());
+        $this->set('isTesoriere', $this->isTesoriere());
         $this->set('isTesoriereGeneric', $this->isTesoriereGeneric());
-
+        $this->set('isCassiere', $this->isCassiereGeneric());
+        $this->set('isStoreroom', $this->isStoreroom());
+		
         /*
          * stampa carrello di un utente scelto 
          */

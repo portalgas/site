@@ -1,5 +1,7 @@
-<?php echo $this->Session->flash(); // se cancello un elemento ho qui il msg ?>
-<?php
+<?php 
+// $this->App->dd($results);
+echo $this->Session->flash(); // se cancello un elemento ho qui il msg 
+
 if(isset($carts_splits_regenerated) && $carts_splits_regenerated) 
 	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => __('carts_splits_regenerated')));	
 
@@ -9,10 +11,10 @@ $tmp .= '<div class="clearfix"></div>';
 $tmp .= '<table class="localSelector">';	
 $tmp .= "\r\n";
 $tmp .= '<tr>';
-$tmp .= '	<th><input type="checkbox" id="box-user-all" name="box-user-all" value="ALL" /></th>';
+$tmp .= '	<th><input class="form-control" type="checkbox" id="box-user-all" name="box-user-all" value="ALL" /></th>';
 $tmp .= '	<th colspan="3">Utente</th>';
 $tmp .= '	<th>Prezzo</th>';
-$tmp .= '	<th colspan="2">'.__('importo_forzato').'</th>';
+$tmp .= '	<th colspan="2">'.__('Importo_forzato').'</th>';
 $tmp .= '</tr>';	
 
 $debug = false;
@@ -30,7 +32,7 @@ foreach($results as $numResult => $result) {
 
 	$i++;
 
-	if($debug) $tmpDebug = 'User '.$result['CartsSplit']['user_id'].' ('.$user_id_old.') Article '.$result['CartsSplit']['article_organization_id'].'/'.$result['CartsSplit']['article_id'].' ('.$article_organization_id_old.'/'.$article_id_old.') '.$result['Article']['name'].' '.$result['ArticlesOrder']['prezzo'].' &euro;';
+	if($debug) $tmpDebug = 'User '.$result['CartsSplit']['user_id'].' ('.$user_id_old.') Article '.$result['CartsSplit']['article_organization_id'].'/'.$result['CartsSplit']['article_id'].' ('.$article_organization_id_old.'/'.$article_id_old.') '.$result['Article']['name'].' '.$result['ArticlesOrder']['prezzo'].'&nbsp;&euro;';
 
 
 	$rowId = $result['CartsSplit']['order_id'].'_'.$result['CartsSplit']['user_id'].'_'.$result['CartsSplit']['article_organization_id'].'_'.$result['CartsSplit']['article_id'];
@@ -49,7 +51,7 @@ foreach($results as $numResult => $result) {
 		$tmp .= '	<td></td>';
 		$tmp .= '	<td></td>';
 		$tmp .= '	<td></td>';
-		$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</th>';
+		$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 		
 		$tmp .= '<th style="text-align:right;"><span id="importo-'.$rowId_old.'">'.number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</span>&nbsp;&euro;</th>';
 			
@@ -133,7 +135,7 @@ foreach($results as $numResult => $result) {
 			
 	$tmp .= '<td>';	
 	if($debug)	$tmp .= $tmpDebug.' - '.$tot_prezzo_impostato_user;
-	$tmp .= number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
+	$tmp .= number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 	$tmp .= '</td>';
 	$tmp .= '</tr>';
 	
@@ -150,7 +152,7 @@ $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
-$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</th>';
+$tmp .= '	<th style="text-align:right;">'.number_format($tot_prezzo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 
 $tmp .= '<th style="text-align:right;"><span id="importo-'.$rowId_old.'">'.number_format($tot_prezzo_impostato_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</span>&nbsp;&euro;</th>';
 	
@@ -171,7 +173,7 @@ $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td></td>';
 $tmp .= '	<td style="font-size: 16px;text-align:right;font-weight: bold;">Totale</td>';
-$tmp .= '	<td style="font-size: 16px;text-align:right;">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+$tmp .= '	<td style="font-size: 16px;text-align:right;">'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 $tmp .= '	<td style="font-size: 16px;text-align:right;"><span id="tot_importo"></span>&nbsp;&euro;</td>';
 $tmp .= '	<td></td>';
 $tmp .= '</tr>';
@@ -196,51 +198,51 @@ echo $tmp;
 .cakeContainer .box-user {cursor:pointer;}
 </style>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.box-user').click(function() {
-		var idRow = jQuery(this).attr('id');
+	$('.box-user').click(function() {
+		var idRow = $(this).attr('id');
 		
-		if(jQuery('.box-user-content'+idRow).css('display')=='none')  {
-			jQuery(this).removeClass('close');
-			jQuery(this).addClass('open');
-			jQuery('.box-user-content'+idRow).show();
+		if($('.box-user-content'+idRow).css('display')=='none')  {
+			$(this).removeClass('close');
+			$(this).addClass('open');
+			$('.box-user-content'+idRow).show();
 		}	
 		else {
-			jQuery(this).removeClass('open');
-			jQuery(this).addClass('close');
-			jQuery('.box-user-content'+idRow).hide();
+			$(this).removeClass('open');
+			$(this).addClass('close');
+			$('.box-user-content'+idRow).hide();
 		}
 	});
 
-	jQuery('#article_order_key_selected_all').click(function () {
+	$('#article_order_key_selected_all').click(function () {
 		
 		if(checked=='ALL')
-			jQuery('input[name=article_order_key_selected]').prop('checked',true);
+			$('input[name=article_order_key_selected]').prop('checked',true);
 		else
-			jQuery('input[name=article_order_key_selected]').prop('checked',false);
+			$('input[name=article_order_key_selected]').prop('checked',false);
 	});
 
 
-	jQuery('#box-user-all').click(function() {
-		var checked = jQuery("input[name='box-user-all']:checked").val();
+	$('#box-user-all').click(function() {
+		var checked = $("input[name='box-user-all']:checked").val();
 		
 		if(checked=='ALL')  {
-			jQuery('.box-user').removeClass('close');
-			jQuery('.box-user').addClass('open');
-			jQuery('[class^="box-user-content"]').show();
+			$('.box-user').removeClass('close');
+			$('.box-user').addClass('open');
+			$('[class^="box-user-content"]').show();
 		}	
 		else {
-			jQuery('.box-user').removeClass('open');
-			jQuery('.box-user').addClass('close');
-			jQuery('[class^="box-user-content"]').hide();
+			$('.box-user').removeClass('open');
+			$('.box-user').addClass('close');
+			$('[class^="box-user-content"]').hide();
 		}
 	});
 		
 	<?php 
 	if(isset($hide_carts_splits_options)) {
 	?>
-	jQuery('#carts-splits-options').hide();
+	$('#carts-splits-options').hide();
 	<?php 
 	}
 	?>	

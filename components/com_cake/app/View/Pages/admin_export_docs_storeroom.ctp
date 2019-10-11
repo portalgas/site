@@ -5,31 +5,21 @@
 	<tr>
 		<th colspan="2">Tipologia di documento</th>
 		<th>Filtro</th>
+		<th>Preview</th>
 		<th>Formato pdf</th>
 		<th>Formato csv</th>
 		<th>Formato excel</th>
 	</tr>
 	
 	<?php
-	echo $this->element('reportStoreroom');
+	echo $this->element('reportStoreroom', ['isUserCurrentStoreroom' => $isUserCurrentStoreroom, 
+											'isManager' => $isManager, 
+											'deliveries' => $deliveriesStorerooms,
+											'preview' => true]);
 	?>
-	
 	</table>
+	
+	<div class="clearfix" id="doc-preview" style="display:none;"></div>
+	
 	</fieldset>
 </div>
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-
-	jQuery('.exportStoreroom').click(function() {
-		var id =  jQuery(this).attr('id');
-		idArray = id.split('-');
-		var id =  jQuery(this).attr('id');
-		var action      = idArray[0];
-		var doc_formato = idArray[1];
-				
-		window.open('/administrator/index.php?option=com_cake&controller=Storerooms&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');	
-	});
-
-});
-</script>

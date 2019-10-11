@@ -1,5 +1,5 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 if(!empty($results)) {
@@ -12,9 +12,9 @@ if(!empty($results)) {
 				<input type="checkbox" id="order_ids_selected_all" name="order_ids_selected_all" value="ALL" />
 			</th>
 			<th colspan="2"><?php echo __('Supplier');?></th>
-			<th><?php echo __('Data inizio');?></th>
-			<th><?php echo __('Data fine');?></th>
-			<th><?php echo __('stato_elaborazione'); ?></th>
+			<th><?php echo __('DataInizio');?></th>
+			<th><?php echo __('DataFine');?></th>
+			<th><?php echo __('StatoElaborazione'); ?></th>
 	</tr>
 	<?php
 	foreach ($results as $numResult => $result):
@@ -69,7 +69,7 @@ if(!empty($results)) {
 		
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-			echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 		echo '</td>';
 		?>
 		<td>
@@ -95,46 +95,46 @@ if(!empty($results)) {
 	echo '</table>';
 	} 
 	else 
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora ordini associati"));
+		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora ordini associati"));
 	
 echo '</div>';
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	<?php if (!empty($results)) { ?>
-		jQuery('.submit').css('display','block');
+		$('.submit').css('display','block');
 	<?php
 	} else { ?>
-		jQuery('.submit').css('display','none');
+		$('.submit').css('display','none');
 	<?php
 	}
 	?>	
 
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('#order_ids_selected_all').click(function () {
-		var checked = jQuery("input[name='order_ids_selected_all']:checked").val();
+	$('#order_ids_selected_all').click(function () {
+		var checked = $("input[name='order_ids_selected_all']:checked").val();
 		if(checked=='ALL') 
-			jQuery('.order_ids_selected').prop('checked',true);
+			$('.order_ids_selected').prop('checked',true);
 		else
-			jQuery('.order_ids_selected').prop('checked',false);
+			$('.order_ids_selected').prop('checked',false);
 			
-        jQuery('.order_ids_selected').each(function () {
-			var checked = jQuery(this).prop('checked');
-			var id = jQuery(this).attr('id');
-			jQuery('#'+id+'-new').val(checked);
+        $('.order_ids_selected').each(function () {
+			var checked = $(this).prop('checked');
+			var id = $(this).attr('id');
+			$('#'+id+'-new').val(checked);
 		});			
 	});
 
-	jQuery('.order_ids_selected').change(function () {
-		var checked = jQuery(this).prop('checked');
-		var id = jQuery(this).attr('id');
-		jQuery('#'+id+'-new').val(checked);
+	$('.order_ids_selected').change(function () {
+		var checked = $(this).prop('checked');
+		var id = $(this).attr('id');
+		$('#'+id+'-new').val(checked);
 	});
 
 });

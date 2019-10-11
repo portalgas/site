@@ -1,11 +1,11 @@
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleKey');?>&sensor=false&v=3.exp"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleApiKey');?>&v=3.exp"></script>
 
 <script type="text/javascript">
 var marker = new Array();
 var icon1 = '/images/cake/puntina.png';
 var icon2 = '/images/cake/puntina03.png';
 
-jQuery(document).ready(function () {
+$(document).ready(function () {
 
     var map;
     var myOptions = {
@@ -75,20 +75,20 @@ jQuery(document).ready(function () {
 	}
 	?>	
 		
-	jQuery('.listsUser > li > a').mouseover(function () {
-		var organization_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseover(function () {
+		var organization_id = $(this).attr('data-attr-id');
 		marker[organization_id].setIcon(icon2);
 		return false;
 	});
 	
-	jQuery('.listsUser > li > a').mouseout(function () {
-		var organization_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').mouseout(function () {
+		var organization_id = $(this).attr('data-attr-id');
 		marker[organization_id].setIcon(icon1);
 		return false;
 	});	
 	
-	jQuery('.listsUser > li > a').click(function () {
-		var organization_id = jQuery(this).attr('data-attr-id');
+	$('.listsUser > li > a').click(function () {
+		var organization_id = $(this).attr('data-attr-id');
 		google.maps.event.trigger(marker[organization_id], 'click');
 		return false;
 	});	

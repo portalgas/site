@@ -10,12 +10,12 @@ defined('_JEXEC') or die;
 $content_id = 0;
 
 // /component/content/article/40-produttori/detersivi-c/12-le-erbe-di-brillor
-$uri = split('/', $_SERVER['REQUEST_URI']);
+$uri = explode('/', $_SERVER['REQUEST_URI']);
 if(isset($uri[count($uri)-1])) {
 	$uriUltimo = $uri[count($uri)-1];
 	
 	if(strpos($uriUltimo,'-') > 0) {
-		$path = split('-', $uriUltimo);
+		$path = explode('-', $uriUltimo);
 		$content_id = $path[0];
 	}
 }

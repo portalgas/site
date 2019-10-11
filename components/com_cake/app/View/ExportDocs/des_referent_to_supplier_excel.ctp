@@ -2,6 +2,13 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
+if(isset($desOrdersResults['Supplier'])) {
+	$rows = [];
+	$rows[] = '';
+	$rows[] = $desOrdersResults['Supplier']['name'];
+	$this->PhpExcel->addTableRow($rows);
+}
+
 // define table cells
 $table[] =	array('label' => __('N'), 'width' => 'auto');
 $table[] =	array('label' => __('Bio'), 'width' => 'auto', 'filter' => true);
@@ -26,19 +33,16 @@ foreach($results as $numResult => $result) {
 	   ($article_organization_id_old != $result['ArticlesOrder']['article_organization_id'] ||
 	    $article_id_old != $result['ArticlesOrder']['article_id'])) {
 	
-		$bio = $result['Article']['bio'];
-		
+		$rows = [];
 
-                $rows = array();
-    	
-                $rows[] = ($numArticle+1);
-                $rows[] = $bio;
+		$rows[] = ($numArticle+1);
+		$rows[] = $bio;
 
 		
 		if($showCodice=='Y')
-                    $rows[] = $codiceArticle;
+            $rows[] = $codiceArticle;
 		
-                $rows[] = $this->ExportDocs->prepareCsv($name);
+        $rows[] = $this->ExportDocs->prepareCsv($name);
 			
 		$rows[] = $tot_qta_single_article;				
 		$rows[] = $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo));
@@ -52,9 +56,8 @@ foreach($results as $numResult => $result) {
 		$prezzo = '';
 		$tot_qta_single_article = 0;
 		$tot_importo_single_article = 0;
-		
-                
-                $this->PhpExcel->addTableRow($rows);	
+		        
+        $this->PhpExcel->addTableRow($rows);	
 	}  
 	
 	/*
@@ -97,7 +100,7 @@ foreach($results as $numResult => $result) {
 					
 }  // loop articoli
  	
-$rows = array();
+$rows = [];
 
 $rows[] = ($numArticle+1);
 if($bio=='Y') $rows[] = 'Bio';
@@ -116,7 +119,7 @@ $this->PhpExcel->addTableRow($rows);
 /*
  * totali
  */
-$rows = array();
+$rows = [];
 $rows[] = '';
 if($showCodice=='Y') 
     $rows[] = '';

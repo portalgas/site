@@ -18,20 +18,17 @@ $msg_print_screen_supplier_article_ctrl = '<p>Il testo che hai inserito ha <b>po
 </div>		
 
 <script type="text/javascript">
-$(document).ready(function() {
-	$('.print_screen').click(function() {
-		var id = jQuery(this).attr('id');
-		
+function gestioneModalSupplier(id) {
 		var mymodal = $('#modalSupplierPrintScreen');
 
 		switch(id) {
 			case "print_screen_supplier_nota":
 				mymodal.find('.modal-title').html("Ecco come apparirà la descrizione inserita");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" class="img-responsive" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" class="img-responsive-disabled" />');
 				break;
 			case "print_screen_supplier_article":
 				mymodal.find('.modal-title').html("Ecco come apparirà il testo inserito per la scheda del produttore");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" class="img-responsive" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" class="img-responsive-disabled" />');
 				break;
 			case "print_screen_supplier_article_ctrl":
 				mymodal.find('.modal-title').html("Scheda del produttore");
@@ -39,7 +36,13 @@ $(document).ready(function() {
 				break;
 		}
 		
-		mymodal.modal('show');		
+		mymodal.modal('show');
+}
+		
+$(document).ready(function() {
+	$('.print_screen').click(function() {
+		var id = $(this).attr('id');
+		gestioneModalSupplier(id);
 	});
 });
 </script>

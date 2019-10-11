@@ -5,7 +5,7 @@
 } 
 </style>
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Add Easy Order'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -62,11 +62,11 @@ echo $this->Html->div('clearfix','');
 	echo $this->element('boxOrdersDelivery', array('modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery));
 	echo $this->Html->div('clearfix','');
 	
-	echo $this->Form->input('data_inizio',array('type' => 'text', 'label' => __('Data inizio'), 'value' => $data_inizio, 'required'=>'false', 'class' => 'form-control'));
+	echo $this->Form->input('data_inizio',array('type' => 'text', 'label' => __('DataInizio'), 'value' => $data_inizio, 'required'=>'false', 'class' => 'form-control'));
 	echo $this->Ajax->datepicker('OrderDataInizio',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataInizioDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="OrderDataInizioDb" name="data[Order][data_inizio_db]" value="'.$data_inizio_db.'" />';
 	
-	echo $this->Form->input('data_fine',array('type' => 'text', 'label' => __('Data fine'), 'value' => $data_fine, 'required'=>'false', 'class' => 'form-control'));
+	echo $this->Form->input('data_fine',array('type' => 'text', 'label' => __('DataFine'), 'value' => $data_fine, 'required'=>'false', 'class' => 'form-control'));
 	echo $this->Ajax->datepicker('OrderDataFine',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$data_fine_db.'" />';
 	

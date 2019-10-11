@@ -209,7 +209,7 @@ class LoopsDeliveriesController extends AppController {
 	public function admin_edit($id = null) {
 	
 		$this->LoopsDelivery->id = $id;
-		if (!$this->LoopsDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->LoopsDelivery->exists($this->LoopsDelivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -252,7 +252,7 @@ class LoopsDeliveriesController extends AppController {
 
 	public function admin_delete($id = null) {
 		$this->LoopsDelivery->id = $id;
-		if (!$this->LoopsDelivery->exists($this->user->organization['Organization']['id'])) {
+		if (!$this->LoopsDelivery->exists($this->LoopsDelivery->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}

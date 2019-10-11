@@ -182,7 +182,7 @@ class JObservable extends JObject
 			unset($this->_observers[$key]);
 			$retval = true;
 
-			foreach ($this->_methods as &$method)
+			foreach ($this->_methods as $method)
 			{
 				$k = array_search($key, $method);
 

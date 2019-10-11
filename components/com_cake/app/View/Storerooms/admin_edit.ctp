@@ -1,22 +1,17 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($this->data, $debug);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Storeroom'), array('controller' => 'Storerooms', 'action' => 'index'));
 $this->Html->addCrumb(__('Edit associate article to user'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-/*
-echo "<pre>";
-print_r($this->data);
-echo "</pre>";
-*/
-?>
-	
-<div class="orders form">
-<?php echo $this->Form->create('Storeroom');?>
-	<fieldset>
-		<legend><?php echo __('Edit associate article to user'); ?></legend>
 
-	<?php	
-		echo $this->Form->input('name',array('disabled' => 'true'));
+echo '<div class="orders form">';
+echo $this->Form->create('Storeroom');
+echo '<fieldset>';
+echo '<legend>'.__('Edit associate article to user').'</legend>';
+
+echo $this->Form->input('name', ['disabled' => 'true']);
 
 		echo '<div class="input select">';
 		

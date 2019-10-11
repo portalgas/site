@@ -1,14 +1,15 @@
 <?php
 App::uses('AppModel', 'Model');
 
+
 class SummaryOrder extends AppModel {
   
 	/* 
 	 *  estrae tutti i summarOrder di un ordine
-	 */
-	public function select_to_order($user, $order_id, $user_id=0) {
+	 */	 
+	public function select_to_order($user, $order_id, $user_id=0, $debug=false) {
 	
-		$debug = true;
+		// $debug = true;
 		
 		$sql = "SELECT 
 					SummaryOrder.*,
@@ -23,204 +24,77 @@ class SummaryOrder extends AppModel {
 					AND SummaryOrder.user_id = User.id ";
 		if($user_id>0) $sql .= " AND User.id = ".$user_id;
 		$sql .= " ORDER BY SummaryOrder.user_id";
-		// if($debug) CakeLog::write('debug','SummaryOrder::select_to_order() '.$sql);
+		self::d($sql, $debug) ;
 		try {
-			$result = $this->query($sql);
+			$results = $this->query($sql);
+			
+			if($user_id>0 && !empty($results))
+				$results = current($results);
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
 			CakeLog::write('error',$e);
 		}
-		return $result;
+		return $results;
 	}
 
 	/*
 	 *  calcolare il totale degli importi di un ordine
 	*/
 	public function select_totale_importo_to_order($user, $order_id) {
-		$sql = "SELECT
-					sum(importo) as totale_importo
-				FROM
-					".Configure::read('DB.prefix')."summary_orders as SummaryOrder
-				WHERE
-					organization_id = ".(int)$user->organization['Organization']['id']."
-					AND order_id = ".(int)$order_id."
-				ORDER BY user_id";
-		// echo '<br />'.$sql;
-		try {
-			$result = current($this->query($sql));
-		}
-		catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
-		}		
-		return $result;
+		
+		$options = [];
+		$options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+								  'SummaryOrder.order_id' => $order_id];
+		$options['fields'] = ['sum(SummaryOrder.importo) as totale_importo'];
+		$options['recursive'] = -1;
+		
+		$results = $this->find('first', $options);
+		$results = current($results);
+		if(empty($results['totale_importo'])) 
+			$results = 0;
+		else 
+			$results = $results['totale_importo'];
+						
+		self::l("SummaryOrder::select_totale_importo_to_order order_id ".$order_id." totale_importo ".$results);
+		
+		return $results;
 	}
 
-	public function delete_to_order($user, $order_id, $debug = false) {
-		$sql = "DELETE
-				FROM
-					".Configure::read('DB.prefix')."summary_orders
-				WHERE
-					organization_id = ".(int)$user->organization['Organization']['id']."
-					AND order_id = ".(int)$order_id;
-		if($debug) echo '<br />'.$sql;
-		try {
-			$result = $this->query($sql);
-		}
-		catch (Exception $e) {
-			CakeLog::write('error',$sql);
-			CakeLog::write('error',$e);
-			if($debug) echo '<br />'.$e;
-		}
-	}
-	
-	/*
-	 * tolgo l'importo del trasporto da SummaryOrder.importo perche' il referente ha  
-	 *		modificato l'importo del trasporto => dopo aggiorna_trasporto
-	 * 		cancellato l'importo del trasporto
+	/* 
+	 * non cancello SummaryOrder gia' pagati SummaryOrder.saldato_a CASSIERE / TESORIERE
+	 * se payToDelivery = POST il cassiere gestisce SummaryPayment e da li viene settato SummaryOrder.saldato_a
 	 */
-	public function delete_trasport($user, $order_id, $debug = false) {
+	public function delete_to_order($user, $order_id, $debug = false) {
 		
-		/*
-		 * estraggo gli importi del trasporto spalmati per ogni utente
-		 */
-		App::import('Model', 'SummaryOrderTrasport');
-		$SummaryOrderTrasport = new SummaryOrderTrasport;
+		switch($user->organization['Template']['payToDelivery']) {
+			case "ON":
+			case "ON-POST":
+			case "POST":
+				$options = [];
+				$options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+										  'SummaryOrder.order_id' => $order_id,
+										  'SummaryOrder.saldato_a is null'];				
+				$results = $this->deleteAll($options['conditions'], false);
+			break;
+		}
+
+		self::l("SummaryOrder::delete_to_order order_id order_id ".$order_id." con saldato_a is null ".$sql);
 		
-		$options = array();
-		$options['conditions'] = array('SummaryOrderTrasport.organization_id' => $user->organization['Organization']['id'],
-									   'SummaryOrderTrasport.order_id' => $order_id);
-		$options['recursive'] = -1;
-		$results = $SummaryOrderTrasport->find('all', $options);
-
-		if(!empty($results))
-			foreach($results as $result) {
-				$user_id = $result['SummaryOrderTrasport']['user_id'];
-				$importo_trasport_ = $result['SummaryOrderTrasport']['importo_trasport_'];
-				
-				if($importo_trasport_ != '0,00') {
-					$sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders
-							SET
-							importo = (importo - ".$this->importoToDatabase($importo_trasport_).")
-						WHERE
-							organization_id = ".(int)$user->organization['Organization']['id']."
-							AND user_id = ".(int)$user_id."
-							AND order_id = ".(int)$order_id;
-					if($debug)  echo '<br />'.$sql;
-					try {
-						$result = $this->query($sql);
-					}
-					catch (Exception $e) {
-						CakeLog::write('error',$sql);
-						CakeLog::write('error',$e);
-						if($debug) echo '<br />'.$e;
-					}
-				}
-			}	
+		return true;
 	}
-
-	/*
-	 * tolgo l'importo del costo aggiuntivo da SummaryOrder.importo perche' il referente ha
-	*		modificato l'importo del costo aggiuntivo => dopo aggiorna_trasporto
-	* 		cancellato l'importo del costo aggiuntivo
-	*/
-	public function delete_cost_more($user, $order_id, $debug = false) {
-	
-		/*
-		 * estraggo gli importi del costo aggiuntivo spalmati per ogni utente
-		*/
-		App::import('Model', 'SummaryOrderCostMore');
-		$SummaryOrderCostMore = new SummaryOrderCostMore;
-	
-		$options = array();
-		$options['conditions'] = array('SummaryOrderCostMore.organization_id' => $user->organization['Organization']['id'],
-				'SummaryOrderCostMore.order_id' => $order_id);
-		$options['recursive'] = -1;
-		$results = $SummaryOrderCostMore->find('all', $options);
-	
-		if(!empty($results))
-		foreach($results as $result) {
-			$user_id = $result['SummaryOrderCostMore']['user_id'];
-			$importo_cost_more_ = $result['SummaryOrderCostMore']['importo_cost_more_'];
-	
-			if($importo_cost_more_ != '0,00') {
-				$sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders
-						SET
-							importo = (importo - ".$this->importoToDatabase($importo_cost_more_).")
-						WHERE
-							organization_id = ".(int)$user->organization['Organization']['id']."
-							AND user_id = ".(int)$user_id."
-							AND order_id = ".(int)$order_id;
-				if($debug)  echo '<br />'.$sql;
-				try {
-					$result = $this->query($sql);
-				}
-				catch (Exception $e) {
-					CakeLog::write('error',$sql);
-					CakeLog::write('error',$e);
-					if($debug) echo '<br />'.$e;
-				}
-			}
-		}
-	}
-
-	/*
-	 * tolgo l'importo dello sconto da SummaryOrder.importo perche' il referente ha
-	*		modificato l'importo dello sconto => dopo aggiorna_trasporto
-	* 		cancellato l'importo dello sconto
-	*/
-	public function delete_cost_less($user, $order_id, $debug = false) {
-	
-		/*
-		 * estraggo gli importi dello sconto spalmati per ogni utente
-		*/
-		App::import('Model', 'SummaryOrderCostLess');
-		$SummaryOrderCostLess = new SummaryOrderCostLess;
-	
-		$options = array();
-		$options['conditions'] = array('SummaryOrderCostLess.organization_id' => $user->organization['Organization']['id'],
-				'SummaryOrderCostLess.order_id' => $order_id);
-		$options['recursive'] = -1;
-		$results = $SummaryOrderCostLess->find('all', $options);
-	
-		if(!empty($results))
-		foreach($results as $result) {
-			$user_id = $result['SummaryOrderCostLess']['user_id'];
-			$importo_cost_less_ = $result['SummaryOrderCostLess']['importo_cost_less_'];
-	
-			if($importo_cost_less_ != '0,00') {
-				
-				/*
-				 * importo NEGATIVO perche SCONTO
-				 */
-				$importo_cost_less = (-1 * $importo_cost_less);
-				$sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders
-						SET
-							importo = (importo + ".$this->importoToDatabase($importo_cost_less_).")
-						WHERE
-							organization_id = ".(int)$user->organization['Organization']['id']."
-							AND user_id = ".(int)$user_id."
-							AND order_id = ".(int)$order_id;
-				if($debug)  echo '<br />'.$sql;
-				try {
-					$result = $this->query($sql);
-				}
-				catch (Exception $e) {
-					CakeLog::write('error',$sql);
-					CakeLog::write('error',$e);
-					if($debug) echo '<br />'.$e;
-				}
-			}
-		}
-	}
-	
+		
 	/*
 	 * se user_id valorizzato popolo i dati aggregati dello specifico user 
 	 *		per ex SummaryOrder::admin_ajax_summary_orders_ricalcola()
+	 *
+	 * non cancello SummaryOrder gia' pagati SummaryOrder.saldato_a CASSIERE / TESORIERE => non li carico nuovamente
+	 * se payToDelivery = POST il cassiere gestisce SummaryPayment e da li viene settato SummaryOrder.saldato_a
 	 */
 	public function populate_to_order($user, $order_id, $user_id=0, $debug = false) {
-	
+
+		self::l("SummaryOrder::populate_to_order order_id ".$order_id);
+		
 		try {
 			/*
 			 * ctrl che l'ordine sia in stato valido per creare i dati aggragati
@@ -228,92 +102,111 @@ class SummaryOrder extends AppModel {
 			App::import('Model', 'Order');
 			$Order = new Order;
 			
-			$optinos = array();
-			$options['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-											'Order.id' => $order_id);
+			$options = [];
+			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
+									  'Order.id' => $order_id];
 			$options['recursive'] = -1;
-			$options['fields'] = array('delivery_id', 'hasTrasport', 'trasport', 'hasCostMore', 'cost_more', 'hasCostLess', 'cost_less', 'state_code');
+			$options['fields'] = ['delivery_id', 'typeGest', 'hasTrasport', 'trasport', 'hasCostMore', 'cost_more', 'hasCostLess', 'cost_less', 'state_code'];
 			$results = $Order->find('first', $options);
 			
 			/*
 			 * estraggo eventuale spesa di trasporto
 			 */
 			if($results['Order']['hasTrasport']=='Y' && $results['Order']['trasport']>0) {
+
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine ha le spese di traporto ".$results['Order']['trasport']);
 				
-				if($debug) echo "<br />Ordine ha le spese di traporto ".$results['Order']['trasport'];
 				App::import('Model', 'SummaryOrderTrasport');
 				$SummaryOrderTrasport = new SummaryOrderTrasport;
 				
-				$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($user, $order_id);				
+				$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($user, $order_id, $user_id);				
 			}
-			else
-				if($debug) echo "<br />Ordine NON ha le spese di traporto ".$results['Order']['trasport'];
-				
+			else {
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine NON ha le spese di traporto ".$results['Order']['trasport']);
+			}
+			
 			/*
 			 * estraggo eventuale costo aggiuntivo
 			*/
 			if($results['Order']['hasCostMore']=='Y' && $results['Order']['cost_more']>0) {
 			
-				if($debug) echo "<br />Ordine ha costo aggiuntivo ".$results['Order']['cost_more'];
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine ha costo aggiuntivo ".$results['Order']['cost_more']);				
+				
 				App::import('Model', 'SummaryOrderCostMore');
 				$SummaryOrderCostMore = new SummaryOrderCostMore;
 			
-				$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($user, $order_id);
+				$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($user, $order_id, $user_id);
 			}
-			else
-				if($debug) echo "<br />Ordine NON ha costo aggiuntivo ".$results['Order']['cost_more'];
-
+			else {
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine NON ha costo aggiuntivo ".$results['Order']['cost_more']);			
+			}
 
 			/*
 			 * estraggo eventuale sconto
 			*/
 			if($results['Order']['hasCostLess']=='Y' && $results['Order']['cost_less']>0) {
 					
-				if($debug) echo "<br />Ordine ha uno sconto ".$results['Order']['cost_less'];
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine ha uno sconto ".$results['Order']['cost_less']);			
+				
 				App::import('Model', 'SummaryOrderCostLess');
 				$SummaryOrderCostLess = new SummaryOrderCostLess;
 					
-				$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($user, $order_id);
+				$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($user, $order_id, $user_id);
 			}
-			else
-				if($debug) echo "<br />Ordine NON ha uno sconto ".$results['Order']['cost_less'];
-								
+			else {
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine NON ha uno sconto ".$results['Order']['cost_less']);
+			}
+			
+			/*
+			 * estraggo eventuali dati aggregati
+			 * se non ci sono li estraggo tutti gli acquisti in base all'ordine
+			 */
+			if($results['Order']['typeGest']=='AGGREGATE') {
+				
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine ha i dati aggregati ".$results['Order']['typeGest']);
+				
+				App::import('Model', 'SummaryOrderAggregate');
+				$SummaryOrderAggregate = new SummaryOrderAggregate;
+				
+				$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id);				
+			}
+			else {
+				self::l("SummaryOrder::populate_to_order order_id ".$order_id." Ordine NON ha i dati aggregati ".$results['Order']['typeGest']);
+			}
+				
+				
 			/*
 			 * estraggo tutti gli acquisti in base all'ordine
 			* ottienti dati Article, ArticlesOrder, Cart
 			* */
 			App::import('Model', 'ArticlesOrder');
 			$ArticlesOrder = new ArticlesOrder;
-			$conditions = array('Order.id' => $order_id,
-								'Order.organization_id' => $user->organization['Organization']['id'],
-								'Cart.deleteToReferent' => 'N');
+			$conditions = ['Order.id' => $order_id,
+							'Order.organization_id' => $user->organization['Organization']['id'],
+							'Cart.deleteToReferent' => 'N'];
 			if($user_id>0)
 				$conditions += array('Cart.user_id' => $user_id);
-			$orderBy = array('User' => 'User.id');
+			$orderBy = ['User' => 'User.id'];
 			$articlesOrders = $ArticlesOrder->getArticoliAcquistatiDaUtenteInOrdine($user, $conditions, $orderBy);
-		
+			
 			if(!empty($articlesOrders)) {
 			
-				$summaryCarts = array();
+				$summaryCarts = [];
 				$user_id_old=0;
 				$importo=0;
 				$i=0;
 				foreach($articlesOrders as $articlesOrder) {
 			
-					if($debug) echo "<br />$i) tratto l'utente ".$articlesOrder['User']['name'].' ('.$articlesOrder['Cart']['user_id'].") (precedente $user_id_old)";
+					self::l("SummaryOrder::populate_to_order $i) tratto l'utente ".$articlesOrder['User']['name'].' ('.$articlesOrder['Cart']['user_id'].") (precedente $user_id_old)", $debug);
 			
 					if($user_id_old>0 && $articlesOrder['Cart']['user_id']!=$user_id_old) {
-						if($debug) echo "<br />$i) utente diverso => memorizzo in ";
+						self::l("SummaryOrder::populate_to_order $i) utente diverso => memorizzo in ", $debug);
 			
 						$summaryCarts[$i]['user_id'] = $user_id_old;
 						$summaryCarts[$i]['importo'] = $importo;
 						$importo = 0;
 				
-						if($debug)  {
-							echo "<pre>";
-							print_r($summaryCarts[$i]);
-							echo "</pre>";
-						}
+						self::l($summaryCarts[$i], $debug);
 			
 						$i++;
 					}
@@ -329,7 +222,7 @@ class SummaryOrder extends AppModel {
 					else
 						$importo += ($articlesOrder['ArticlesOrder']['prezzo'] * $articlesOrder['Cart']['qta']);  
 			
-					if($debug) echo "<br />$i)     importo dell'utente ".$articlesOrder['Cart']['user_id'].": $importo";
+					self::l("SummaryOrder::populate_to_order $i)     importo dell'utente ".$articlesOrder['Cart']['user_id'].": ".$importo, $debug);
 		
 					$user_id_old = $articlesOrder['Cart']['user_id'];
 				} // end foreach($articlesOrders as $articlesOrder)
@@ -337,97 +230,129 @@ class SummaryOrder extends AppModel {
 				$summaryCarts[$i]['user_id'] = $articlesOrder['Cart']['user_id'];
 				$summaryCarts[$i]['importo'] = $importo;
 			
+				self::l($summaryCarts[$i], $debug);
 			
-				if($debug)  {
-					echo "<br />$i) ultimo utente => memorizzo in ";
-					echo "<pre>";
-					print_r($summaryCarts[$i]);
-					echo "</pre>";
-				}
-			
-			
-				$summaryOrderData = array();
 				foreach($summaryCarts as $summaryCart) {
-					$summaryOrderData['SummaryOrder']['organization_id'] = $user->organization['Organization']['id'];
-					$summaryOrderData['SummaryOrder']['delivery_id'] = $results['Order']['delivery_id'];
-					$summaryOrderData['SummaryOrder']['order_id'] = $order_id;
-					$summaryOrderData['SummaryOrder']['user_id'] = $summaryCart['user_id'];
-					$summaryOrderData['SummaryOrder']['importo'] = $summaryCart['importo'];
-					$summaryOrderData['SummaryOrder']['importo_pagato'] = '0.00';
-					$summaryOrderData['SummaryOrder']['modalita'] = 'DEFINED';
+					
+					$summaryOrderData = [];
 					
 					/*
-					 * aggiungo eventuale spesa di trasporto
-					*/
-					if($results['Order']['hasTrasport']=='Y' && $results['Order']['trasport']>0) {					
-						foreach($resultsSummaryOrderTrasport as $numSummaryOrderTrasport => $resultSummaryOrderTrasport) {
-							if($resultSummaryOrderTrasport['SummaryOrderTrasport']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
-								
-								if($debug) echo "<br />SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo la spesa di trasporto '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderTrasport['SummaryOrderTrasport']['importo_trasport']);
-								
-								$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderTrasport['SummaryOrderTrasport']['importo_trasport']);
-								break;
-							}
-						}
-					} 
+					 * ctrl se esiste gia' un SummaryOrder per l'utente 
+					 */
+					$options = [];
+					$options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+											  'SummaryOrder.order_id' => $order_id,
+											  'SummaryOrder.user_id' => $summaryCart['user_id']];
+					$options['recursive'] = -1;
+					$ctrlSummaryOrderResults = $this->find('first', $options);
+					if(empty($ctrlSummaryOrderResults)) { 
 
-					/*
-					 * aggiungo eventuale costo aggiuntivo
-					*/
-					if($results['Order']['hasCostMore']=='Y' && $results['Order']['cost_more']>0) {
-						foreach($resultsSummaryOrderCostMore as $numSummaryOrderCostMore => $resultSummaryOrderCostMore) {
-							if($resultSummaryOrderCostMore['SummaryOrderCostMore']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
+						self::l("SummaryOrder::populate_to_order order_id ".$order_id." salvo per lo user_id ".$summaryCart['user_id']." importo ".$summaryCart['importo'].' non ancora SALDATO a CASSIERE / TESORIERE', $debug);
 					
-								if($debug) echo "<br />SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo il costo aggiuntivo '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostMore['SummaryOrderCostMore']['importo_cost_more']);
-					
-								$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostMore['SummaryOrderCostMore']['importo_cost_more']);
-								break;
-							}
-						}
-					} 
+						$summaryOrderData['SummaryOrder']['organization_id'] = $user->organization['Organization']['id'];
+						$summaryOrderData['SummaryOrder']['delivery_id'] = $results['Order']['delivery_id'];
+						$summaryOrderData['SummaryOrder']['order_id'] = $order_id;
+						$summaryOrderData['SummaryOrder']['user_id'] = $summaryCart['user_id'];
+						$summaryOrderData['SummaryOrder']['importo'] = $summaryCart['importo'];
+						$summaryOrderData['SummaryOrder']['importo_pagato'] = '0.00';
+						$summaryOrderData['SummaryOrder']['modalita'] = 'DEFINED';
+						$summaryOrderData['SummaryOrder']['saldato_a'] = null;
 						
-					/*
-					 * aggiungo eventuale sconto
-					*/
-					if($results['Order']['hasCostLess']=='Y' && $results['Order']['cost_less']>0) {
-						foreach($resultsSummaryOrderCostLess as $numSummaryOrderCostLess => $resultSummaryOrderCostLess) {
-							if($resultSummaryOrderCostLess['SummaryOrderCostLess']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
+						/*
+						 * aggiungo eventuali dati aggregati
+						*/
+						if($results['Order']['typeGest']=='AGGREGATE') {		
+							foreach($summaryOrderAggregateResults as $numSummaryOrderAggregate => $summaryOrderAggregateResult) {
+								if($summaryOrderAggregateResult['SummaryOrderAggregate']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
 									
-								if($debug) echo "<br />SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo lo sconto '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostLess['SummaryOrderCostLess']['importo_cost_less']);
+									self::l("SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - sovrascrivo con i dati aggregati '.$summaryOrderAggregateResult['SummaryOrderAggregate']['importo'], $debug);
 									
-								$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + ($resultSummaryOrderCostLess['SummaryOrderCostLess']['importo_cost_less']));
-								break;
+									$summaryOrderData['SummaryOrder']['importo'] = $summaryOrderAggregateResult['SummaryOrderAggregate']['importo'];
+									break;
+								}
 							}
 						}
-					}
-
 					
-					if($debug)  {
-						echo "<pre>salvo il record ";
-						print_r($summaryOrderData);
-						echo "</pre>";
-				    }
+						/*
+						 * aggiungo eventuale spesa di trasporto
+						*/
+						if($results['Order']['hasTrasport']=='Y' && $results['Order']['trasport']>0) {					
+							foreach($resultsSummaryOrderTrasport as $numSummaryOrderTrasport => $resultSummaryOrderTrasport) {
+								if($resultSummaryOrderTrasport['SummaryOrderTrasport']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
 									
-					$this->create();
-					$this->save($summaryOrderData);
-				}	
+									self::l("SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo la spesa di trasporto '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderTrasport['SummaryOrderTrasport']['importo_trasport']), $debug);
+									
+									$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderTrasport['SummaryOrderTrasport']['importo_trasport']);
+									break;
+								}
+							}
+						} 
+
+						/*
+						 * aggiungo eventuale costo aggiuntivo
+						*/
+						if($results['Order']['hasCostMore']=='Y' && $results['Order']['cost_more']>0) {
+							foreach($resultsSummaryOrderCostMore as $numSummaryOrderCostMore => $resultSummaryOrderCostMore) {
+								if($resultSummaryOrderCostMore['SummaryOrderCostMore']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
+						
+									self::l("SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo il costo aggiuntivo '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostMore['SummaryOrderCostMore']['importo_cost_more']), $debug);
+						
+									$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostMore['SummaryOrderCostMore']['importo_cost_more']);
+									break;
+								}
+							}
+						} 
+							
+						/*
+						 * aggiungo eventuale sconto
+						*/
+						if($results['Order']['hasCostLess']=='Y' && $results['Order']['cost_less']>0) {
+							foreach($resultsSummaryOrderCostLess as $numSummaryOrderCostLess => $resultSummaryOrderCostLess) {
+								if($resultSummaryOrderCostLess['SummaryOrderCostLess']['user_id']==$summaryOrderData['SummaryOrder']['user_id']) {
+										
+									self::l("SummaryOrder.importo ".$summaryOrderData['SummaryOrder']['importo'].' - dopo lo sconto '.($summaryOrderData['SummaryOrder']['importo'] + $resultSummaryOrderCostLess['SummaryOrderCostLess']['importo_cost_less']), $debug);
+										
+									$summaryOrderData['SummaryOrder']['importo'] = ($summaryOrderData['SummaryOrder']['importo'] + ($resultSummaryOrderCostLess['SummaryOrderCostLess']['importo_cost_less']));
+									break;
+								}
+							}
+						}
+					
+						self::l($summaryOrderData, $debug);
+										
+						$this->create();
+						$this->save($summaryOrderData);
+					} // end if(empty($ctrlSummaryOrderResults)) 
+					else {
+						self::l("SummaryOrder::populate_to_order order_id ".$order_id." lo user_id ".$ctrlSummaryOrderResults['SummaryOrder']['user_id']." ha gia saldato l'importo ".$ctrlSummaryOrderResults['SummaryOrder']['importo']." a ".$ctrlSummaryOrderResults['SummaryOrder']['saldato_a']);
+					}
+				}	// end loop
 				
 			} // if(!empty($articlesOrders)) 
 				
 			//if($debug) exit;
 		}
 		catch (Exception $e) {
-			CakeLog::write('error',$sql);
+			CakeLog::write('error',$options);
 			CakeLog::write('error',$e);
-		}			
+			return false;
+		}	
+
+		return true;
 	}
 
 	/*
 	 * 	ricalcola i dati aggregati (SummaryOrder) di uno user per un dato ordine
 	 *  	se lo user ha gia' dati aggregati 
+	 * Non + utilizzato perche' 
+	 *		se ho gia' saldato il record e' bloccato
+	 *		SummaryOrder viene ricalcolato ogni volta che e' l'ordine inviato a Cassiere / Tesoriere 
 	 */
 	public function ricalcolaPerSingoloUtente($user, $order_id, $user_id, $debug=false) {
 	
+		return true;
+		
+		
 		// $debug=true;
 	
 		 App::import('Model', 'Order');
@@ -444,7 +369,7 @@ class SummaryOrder extends AppModel {
 							organization_id = ".(int)$user->organization['Organization']['id']."
 							AND order_id = ".(int)$order_id."
 							AND user_id = ".(int)$user_id;
-				if($debug) CakeLog::write('debug','SummaryOrder::ricalcolaPerSingoloUtente() CANCELLO dati aggregati dello user '.$sql);
+				self::l('SummaryOrder::ricalcolaPerSingoloUtente() CANCELLO dati aggregati dello user '.$sql);
 				$result = $this->query($sql);		
 
 
@@ -454,11 +379,6 @@ class SummaryOrder extends AppModel {
 				 * ricalcolo totale importo dell'ordine
 				 */
 				 $tot_importo = $Order->getTotImporto($user, $order_id);
-				 
-				/* 
-				 *  bugs float: i float li converte gia' con la virgola!  li riporto flaot
-				 */
-				if(strpos($tot_importo,',')!==false)  $tot_importo = str_replace(',','.',$tot_importo);					 
 				
 				$sql = "UPDATE
 					`".Configure::read('DB.prefix')."orders`
@@ -467,13 +387,13 @@ class SummaryOrder extends AppModel {
 					modified = '".date('Y-m-d H:i:s')."'
 				WHERE
 					organization_id = ".(int)$user->organization['Organization']['id']."
-					and id = ".(int)$order_id;
-				if($debug) CakeLog::write('debug','AGGIORNO order.tot_importo '.$sql);
+					and id = ".(int)$order_id; 
+				CakeLog::write('debug','AGGIORNO order.tot_importo '.$sql);
 				$result = $this->query($sql);
 				
 			} // if(!empty($summaryOrdersResults))	
 			else {
-				if($debug) CakeLog::write('debug','SummaryOrder::ricalcolaPerSingoloUtente() per lo user '.$user_id.' e order_id '.$order_id.' non ci sono dati aggregati (SummaryOrders)');
+				CakeLog::write('debug','SummaryOrder::ricalcolaPerSingoloUtente() per lo user '.$user_id.' e order_id '.$order_id.' non ci sono dati aggregati (SummaryOrders)');
 			}			
 		}
 		catch (Exception $e) {
@@ -486,7 +406,7 @@ class SummaryOrder extends AppModel {
 	public $validate = array(
 		'user_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -496,7 +416,7 @@ class SummaryOrder extends AppModel {
 		),
 		'delivery_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -506,7 +426,7 @@ class SummaryOrder extends AppModel {
 		),
 		'order_id' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -549,7 +469,7 @@ class SummaryOrder extends AppModel {
 	
 	/*
 	 * il save lo faccio in populate_to_order() ed e' gia' corretto
-	public function beforeSave($options = array()) {
+	public function beforeSave($options = []) {
 		if(!empty($this->data['SummaryOrder']['importo'])) {
 			$this->data['SummaryOrder']['importo'] =  $this->importoToDatabase($this->data['SummaryOrder']['importo']);
 		}

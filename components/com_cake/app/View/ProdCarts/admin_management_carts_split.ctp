@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdDeliveries'),array('controller' => 'ProdDeliveries', 'action' => 'index'));
 if(isset($prod_delivery_id) && !empty($prod_delivery_id))
 	$this->Html->addCrumb(__('ProdDelivery home'),array('controller'=>'ProdDeliveries','action'=>'home', null, 'prod_delivery_id='.$prod_delivery_id));
@@ -14,7 +14,7 @@ function choiceOrderPermission() {
 	var div_contenitore = 'prod_delivery-permission';
 	showHideBox(div_contenitore,call_child=true); 
 
-	var prod_delivery_id    = jQuery('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var prod_delivery_id    = $('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
 	
 	AjaxCallToCartsSplitsOptions(prod_delivery_id); 	/* chiamata Ajax opzioni cart split */
 }
@@ -22,12 +22,12 @@ function choiceCartsSplitsOptions() {
 
 	var div_contenitore = 'cart-splits-options';
 	
-	var prod_delivery_id    = jQuery('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
-	var cartsSplitsOptions = jQuery("input[name='cart-splits-options']:checked").val(); 
+	var prod_delivery_id    = $('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var cartsSplitsOptions = $("input[name='cart-splits-options']:checked").val(); 
 
 	if(cartsSplitsOptions=='options-delete-yes') {
 		if(!confirm("Sei sicuro di voler rigenerare i dati cancellando quelli sottostanti?")) {
-			jQuery("#options-carts_splits-delete-no").prop('checked',true);
+			$("#options-carts_splits-delete-no").prop('checked',true);
 			return;
 		}
 	}
@@ -45,7 +45,7 @@ function choiceCartsSplitsOptionsReadOnly() {
 
 	var div_contenitore = 'cart-splits-options';
 	
-	var prod_delivery_id    = jQuery('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
+	var prod_delivery_id    = $('#prod_delivery_id').val(); /* estraggo info di delivery_id e supplier_id */
 
 	if(debugLocal) alert("choiceCartsSplitsOptions - div_contenitore "+div_contenitore);
 	if(prod_delivery_id=='') {
@@ -115,8 +115,3 @@ echo $this->element('menuProdDeliveryLaterale');
 
 echo $this->element('legendaProdDeliveriesState',array('htmlLegenda' => $htmlLegenda));
 ?>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

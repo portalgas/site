@@ -2,7 +2,7 @@
 
 <table cellpadding="0" cellspacing="0" >
 	<tr>
-		<td colspan="8"><h3>Stato elaborazione delle richiese di pagamento degli ordini</h3></td>
+		<td colspan="8"><h3>Stato elaborazione delle richieste di pagamento degli ordini</h3></td>
 	</tr>
 	<tr>
 		<td title="<?php echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_WAIT');?>" class="stato_wait"></td>

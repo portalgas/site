@@ -7,55 +7,63 @@ class Article extends ArticleMultiKey {
    public $name = 'Article';
    
    /*
-    * filtro per SuppliersOrganization.id => estraggo TUTTI quelli del GAS  (REFERENT / SUPPLIER / DES)
+    * filtro per Order.owner_articles owner_organization_id owner_supplier_organization_id => estraggo TUTTI quelli del GAS  (REFERENT / SUPPLIER / DES)
 	*
     * ottendo i dati anagrafici degli Articoli 
     * 	Article, SupplierOrganization, CategoriesArticle, ArticlesType
    */   
-   public function getBySupplierOrganization($user, $supplier_organization_id, $opts=[], $debug=false) {
+   public function getByOrder($user, $orderResult, $opts=[], $debug=false) {
 	  	
+		$esito = [];
+
+		if(empty($orderResult)) {
+			$esito['CODE'] = "500";
+			$esito['MSG'] = "Parametri errati";
+			return $esito; 
+		}	
+
+		if(!is_array($orderResult))
+			$orderResult = $this->_getOrderById($user, $orderResult, $debug);
+		
+	  	App::import('Model', 'ArticlesArticlesType');
+		$ArticlesArticlesType = new ArticlesArticlesType;
+
 		// $this->unbindModel(['belongsTo' => ['CategoriesArticle']]);
 		$this->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
-		$this->unbindModel(['hasMany' => ['ArticlesArticlesType', 'ArticlesOrder']]);
-			   	
+		$this->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$this->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+				
 		$options = [];
-		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-								  'SuppliersOrganization.id' => $supplier_organization_id];
+		$options['conditions'] = ['Article.organization_id' => $orderResult['Order']['owner_organization_id'],
+								  'Article.supplier_organization_id' => $orderResult['Order']['owner_supplier_organization_id']];
 											  
 		if(!empty($opts))
 			$options['conditions'] = array_merge($options['conditions'], $opts);
-	   	$options['recursive'] = 0;
+	   	$options['recursive'] = 1;
 	   	$options['order'] = ['Article.name'];
+		self::d('Article::getByOrder()', $debug);
+		self::d($options, $debug);
+
 		if (array_key_exists('Article.id', $opts))
 			$results = $this->find('first', $options);
 		else
 			$results = $this->find('all', $options);
-	   	
-		self::d('Article::getBySupplierOrganization()', $debug);
-		self::d($options['conditions'], $debug);
-		self::d($results, $debug);
 		
+		if(!empty($results))	
+		foreach($results as $numResult => $result) {
+			$articlesTypeResults = $ArticlesArticlesType->getArticlesArticlesTypes($user, $result['Article']['organization_id'], $result['Article']['id']);
+			if(!empty($articlesTypeResults))
+				$results[$numResult]['ArticlesType'] = $articlesTypeResults;
+		}	
+		self::d($results, $debug);
+
 	   	return $results;
    }
-   
-	/*
-	 * articoli che si possono ordinare
-	 */   
-   public function getBySupplierOrganizationArticleInArticlesOrder($user, $supplier_organization_id, $debug=false) {
-	   	
-		$opts=[];
-		$opts=['Article.stato' => 'Y',
-			   'Article.flag_presente_articlesorders' => 'Y'];
-		
-		$results = $this->getBySupplierOrganization($user, $supplier_organization_id, $opts, $debug);
-	   	
-	   	return $results;
-   }  
-   
+      
 	/*
 	 * articoli che si possono ordinare, del produttore ProdGasSupplier
-	 *	Article.organization_id          => SuppliersOrganization.owner_organization_id
-	 *	Article.supplier_organization_id => SuppliersOrganization.owner_supplier_organization_id
+	 *	Article.organization_id          => Order.owner_organization_id
+	 *	Article.supplier_organization_id => Order.owner_supplier_organization_id
 	 */   
    public function getBySupplierArticleInArticlesOrder($user, $owner_organization_id, $owner_supplier_organization_id, $article_id_da_escludere=[]) {
 
@@ -66,54 +74,150 @@ class Article extends ArticleMultiKey {
 			$opts += ["NOT" => [ "Article.id" => explode(',', $article_id_da_escludere)]];			   
 		
 		$tmp_user->organization['Organization']['id'] = $owner_organization_id;
-		$results = $this->getBySupplierOrganization($tmp_user, $owner_supplier_organization_id, $opts, $debug);
+		$results = $this->getByOrder($tmp_user, $owner_supplier_organization_id, $opts, $debug);
 	   	
 	   	return $results;
    } 
    
    /*
+    * filtro per SuppliersOrganization.id => estraggo TUTTI quelli del GAS  (REFERENT / SUPPLIER / DES)
+	*
+    * ottendo i dati anagrafici degli Articoli 
+    * 	Article, SupplierOrganization, CategoriesArticle, ArticlesType
+   */   
+   public function getBySupplierOrganization($user, $supplier_organization_id, $opts=[], $debug=false) {
+
+	  	App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $supplier_organization_id];
+		$options['fields'] = ['SuppliersOrganization.owner_articles', 'SuppliersOrganization.owner_organization_id', 'SuppliersOrganization.owner_supplier_organization_id'];
+		$options['recursive'] = -1;
+		self::d($options, $debug);
+		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+	  	
+	  	App::import('Model', 'ArticlesArticlesType');
+		$ArticlesArticlesType = new ArticlesArticlesType;
+
+		// $this->unbindModel(['belongsTo' => ['CategoriesArticle']]);
+		$this->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$this->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$this->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+				
+		$options = [];
+		$options['conditions'] = ['Article.organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'],
+								  'Article.supplier_organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'],
+								  'SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $supplier_organization_id];
+											  
+		if(!empty($opts))
+			$options['conditions'] = array_merge($options['conditions'], $opts);
+	   	$options['recursive'] = 1;
+	   	$options['order'] = ['Article.name'];
+		self::d('Article::getByOrder()', $debug);
+		self::d($options['conditions'], $debug);
+
+		if (array_key_exists('Article.id', $opts))
+			$results = $this->find('first', $options);
+		else
+			$results = $this->find('all', $options);
+		
+		if(!empty($results))	
+		foreach($results as $numResult => $result) {
+			$articlesTypeResults = $ArticlesArticlesType->getArticlesArticlesTypes($user, $result['Article']['organization_id'], $result['Article']['id']);
+			if(!empty($articlesTypeResults))
+				$results[$numResult]['ArticlesType'] = $articlesTypeResults;
+		}	
+		self::d($results, $debug);
+
+	   	return $results;
+   }
+  
+  
+   /*
     * filtro per Article.organization_id => estraggo SOLO quelli del GAS (REFERENT) escludo SUPPLIER / DES
-	*    * ottendo i dati anagrafici degli Articoli 
-    * 	Article, SupplierOrganization, CategoriesArticle, ArticlesType   */   public function getArticlesDataAnagr($user, $options) {   	
-   	$this->unbindModel(['hasOne' => ['ArticlesOrder']]);   	$this->unbindModel(['hasMany' => ['ArticlesOrder']]);   	$this->unbindModel(['hasAndBelongsToMany' => ['Order']]);   	   	if (!array_key_exists('Article.organization_id', $options['conditions']))
+	*
+    * ottendo i dati anagrafici degli Articoli 
+    * 	Article, SupplierOrganization, CategoriesArticle, ArticlesType
+   */
+   public function getArticlesDataAnagr($user, $options, $debug=false) {
+   	
+   	$this->unbindModel(['hasOne' => ['ArticlesOrder']]);
+   	$this->unbindModel(['hasMany' => ['ArticlesOrder']]);
+   	$this->unbindModel(['hasAndBelongsToMany' => ['Order']]);
+   	
+   	if (!array_key_exists('Article.organization_id', $options['conditions']))
 		$this->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$user->organization['Organization']['id'];
 	else
-		$this->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$options['conditions']['Article.organization_id'];   	$this->hasMany['ArticlesArticlesType']['conditions'] = ['ArticlesArticlesType.organization_id' => $user->organization['Organization']['id']];   	$this->hasAndBelongsToMany['ArticlesType']['conditions'] = ['ArticlesArticlesType.organization_id' => $user->organization['Organization']['id']];
+		$this->hasOne['ArticlesArticlesType']['conditions'] = 'ArticlesArticlesType.organization_id = Article.organization_id AND Article.organization_id = '.$options['conditions']['Article.organization_id'];
+   	$this->hasMany['ArticlesArticlesType']['conditions'] = ['ArticlesArticlesType.organization_id' => $user->organization['Organization']['id']];
+   	$this->hasAndBelongsToMany['ArticlesType']['conditions'] = ['ArticlesArticlesType.organization_id' => $user->organization['Organization']['id']];
    	
    	if($user->organization['Organization']['hasFieldArticleCategoryId']=='N')
    		$this->unbindModel(['belongsTo' => ['CategoriesArticle']]);
    		
-	if (!array_key_exists('Article.organization_id', $options['conditions']))			$options['conditions'] += ['Article.organization_id' => $user->organization['Organization']['id']];   	$options['recursive'] = 1;
-   	
-	self::d($options, false);
+	if (!array_key_exists('Article.organization_id', $options['conditions']))	
+		$options['conditions'] += ['Article.organization_id' => $user->organization['Organization']['id']];
+									
+   	$options['recursive'] = 1;
+	self::d($options, $debug);
 
    	if(array_key_exists('Article.id', $options['conditions'])) 
  	  	$results = $this->find('first', $options);
    	else {
-   		$options['fields'] = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.stato,Article.flag_presente_articlesorders,Article.created,Article.modified,SuppliersOrganization.id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,CategoriesArticle.name,ArticlesArticlesType.organization_id,ArticlesArticlesType.article_id,ArticlesArticlesType.article_type_id'];   		$options['group']  = ['Article.id,Article.organization_id,Article.supplier_organization_id'];
+   		$options['fields'] = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.stato,Article.flag_presente_articlesorders,Article.created,Article.modified,SuppliersOrganization.id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,CategoriesArticle.name,ArticlesArticlesType.organization_id,ArticlesArticlesType.article_id,ArticlesArticlesType.article_type_id'];
+   		$options['group']  = ['Article.id,Article.organization_id,Article.supplier_organization_id'];
    		$results = $this->find('all', $options);
    	}
-   	$this->set('results', $results);   	      	return $results;      }
+	self::d($results, $debug);
+   	$this->set(compact('results'));
+   	   
+   	return $results;   
+   }
    
    /*
-    * Organization.type = 'GAS'    * ottendo i dati anagrafici di un Articolo 
+    * Organization.type = 'GAS'
+    * ottendo i dati anagrafici di un Articolo 
     * 		Article, ArticlesOrder 
     * 
-    * call AjaxGasCart!!!!   */   public function getArticleDataAnagrArticlesOrder($user, $article_organization_id, $article_id, $order_id) {   	 		$this->unbindModel(['hasOne' => ['ArticlesArticlesType']]);   		$this->unbindModel(['hasMany' => ['ArticlesArticlesType']]);   	 	$this->unbindModel(['hasAndBelongsToMany' => ['ArticlesType']]);
+    * call AjaxGasCart!!!!
+   */
+   public function getArticleDataAnagrArticlesOrder($user, $article_organization_id, $article_id, $order_id) {
+   	 
+		$this->unbindModel(['hasOne' => ['ArticlesArticlesType']]);
+   		$this->unbindModel(['hasMany' => ['ArticlesArticlesType']]);
+   	 	$this->unbindModel(['hasAndBelongsToMany' => ['ArticlesType']]);
    	 	
-   	 	$this->hasOne['ArticlesOrder']['conditions'] = 'ArticlesOrder.article_organization_id = Article.organization_id and Article.organization_id = '. $article_organization_id.' and ArticlesOrder.order_id ='.$order_id;   	 	$this->hasMany['ArticlesOrder']['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],   	 														'ArticlesOrder.article_organization_id' => $article_organization_id,
+   	 	$this->hasOne['ArticlesOrder']['conditions'] = 'ArticlesOrder.article_organization_id = Article.organization_id and Article.organization_id = '. $article_organization_id.' and ArticlesOrder.order_id ='.$order_id;
+   	 	$this->hasMany['ArticlesOrder']['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
+   	 														'ArticlesOrder.article_organization_id' => $article_organization_id,
    	 														'ArticlesOrder.article_id' => $article_id,
-   	 														'ArticlesOrder.order_id' => $order_id];   	 	$this->hasAndBelongsToMany['Order']['conditions'] = ['Order.organization_id' => 'ArticlesOrder.organization_id',															'Order.organization_id' => $user->organization['Organization']['id'],															'ArticlesOrder.order_id' => $order_id];   	 	
+   	 														'ArticlesOrder.order_id' => $order_id];
+   	 	$this->hasAndBelongsToMany['Order']['conditions'] = ['Order.organization_id' => 'ArticlesOrder.organization_id',
+															'Order.organization_id' => $user->organization['Organization']['id'],
+															'ArticlesOrder.order_id' => $order_id];
+   	 	
    		$options['conditions'] = ['Article.organization_id' => $article_organization_id,
    										'Article.id' => $article_id,
    										'ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
    										'ArticlesOrder.article_organization_id' => $article_organization_id,
-   										'ArticlesOrder.order_id' => $order_id];   	 	   	$options['recursive'] = 1;	   	$results = $this->find('first', $options);
+   										'ArticlesOrder.order_id' => $order_id];
+   	 
+	   	$options['recursive'] = 1;
+	   	$results = $this->find('first', $options);
 	   	
 	   	/*
 	   	 * pulisco i dati
 	   	 */
-	   	$results['Order'] = $results['Order'][0];	   	unset($results['Order'][0]);	   		   	$this->set('results', $results);	   	   	return $results;   }
+	   	$results['Order'] = $results['Order'][0];
+	   	unset($results['Order'][0]);
+	   	
+	   	$this->set(compact('results'));
+	   
+	   	return $results;
+   }
    
    /*
     *  Organization.type = 'PROD'
@@ -151,7 +255,7 @@ class Article extends ArticleMultiKey {
    	$results['ProdDelivery'] = $results['ProdDelivery'][0];
    	unset($results['ProdDelivery'][0]);
    	 
-   	$this->set('results', $results);
+   	$this->set(compact('results'));
    	
    	return $results;   	
    }
@@ -194,9 +298,12 @@ class Article extends ArticleMultiKey {
     */
    public function syncronizeArticleTypeBio($user, $article_id=0, $debug=false) {
 		
-   		$isBio = false;   	
-	   	if(!empty($article_id)) {	   		if (!$this->exists($user->organization['Organization']['id'], $article_id)) return;	   		
-	   		$this->_syncronizeArticleTypeBioExecute($user, $article_id, $debug);
+   		$isBio = false;
+   	
+	   	if(!empty($article_id)) {
+	   		if (!$this->exists($user->organization['Organization']['id'], $article_id)) return;
+	   		
+	   		$this->_syncronizeArticleTypeBioExecute($user, $user->organization['Organization']['id'], $article_id, $debug);
 	   	}
 	   	else {
 			$options = [];
@@ -209,19 +316,58 @@ class Article extends ArticleMultiKey {
 			if($debug)
 				echo "Totale articoli trovati ".count($results);
 			foreach($results as $result) {
-				$this->_syncronizeArticleTypeBioExecute($user, $result['Article']['id'], $debug);
+				$this->_syncronizeArticleTypeBioExecute($user, $result['Article']['organization_id'], $result['Article']['id'], $debug);
 			}
 	   	}
    }
 
-   private function _syncronizeArticleTypeBioExecute($user, $article_id, $debug) {
+   private function _syncronizeArticleTypeBioExecute($user, $organization_id, $article_id, $debug) {
 	   	
-	   	try {		   	App::import('Model', 'ArticlesType');		   	$ArticlesType = new ArticlesType;		   	 		   	App::import('Model', 'ArticlesArticlesType');		   	$ArticlesArticlesType = new ArticlesArticlesType;		   	
+	   	try {
+		   	App::import('Model', 'ArticlesType');
+		   	$ArticlesType = new ArticlesType;
+		   	 
+		   	App::import('Model', 'ArticlesArticlesType');
+		   	$ArticlesArticlesType = new ArticlesArticlesType;
+		   	
 		   	if($debug) echo '<br />Tratto articolo id '.$article_id;
-		   			   	/*		   	 * estraggo tutti gli articleType di un articolo		   	*/		   	$resultsArticlesTypes = $ArticlesArticlesType->getArticlesArticlesTypes($user, $article_id);		   	if(!empty($resultsArticlesTypes)) {		   		foreach ($resultsArticlesTypes as $resultsArticlesType) {		   			$tmp[] = $resultsArticlesType['ArticlesType'];		   		}		   		$resultsArticlesTypes['ArticlesType'] = $tmp;		   			   		self::d($resultsArticlesTypes, $debug);
-		   		 		   		if($ArticlesType->isArticlesTypeBio($resultsArticlesTypes))		   			$isBio = true;		   		else		   			$isBio = false;		   	}		   	else		   		$isBio = false;		   			   	if($isBio) $isBio = 'Y';		   	else $isBio = 'N';		   			   	/*		   	 * aggiorno il campo Article.bio		   	*/		   	$sql = "UPDATE ".Configure::read('DB.prefix')."articles					SET bio = '".$isBio."'					WHERE organization_id = ".$user->organization['Organization']['id']." AND id = ".$article_id;		   	self::d($sql, $debug);		   	$results = $this->query($sql);
+		   	
+		   	/*
+		   	 * estraggo tutti gli articleType di un articolo
+		   	*/
+		   	$resultsArticlesTypes = $ArticlesArticlesType->getArticlesArticlesTypes($user, $organization_id, $article_id);
+		   	if(!empty($resultsArticlesTypes)) {
+		   		foreach ($resultsArticlesTypes as $resultsArticlesType) {
+		   			$tmp[] = $resultsArticlesType['ArticlesType'];
+		   		}
+		   		$resultsArticlesTypes['ArticlesType'] = $tmp;
+		   	
+		   		self::d($resultsArticlesTypes, $debug);
+		   		 
+		   		if($ArticlesType->isArticlesTypeBio($resultsArticlesTypes))
+		   			$isBio = true;
+		   		else
+		   			$isBio = false;
+		   	}
+		   	else
+		   		$isBio = false;
+		   	
+		   	if($isBio) $isBio = 'Y';
+		   	else $isBio = 'N';
+		   	
+		   	/*
+		   	 * aggiorno il campo Article.bio
+		   	*/
+		   	$sql = "UPDATE ".Configure::read('DB.prefix')."articles
+					SET bio = '".$isBio."'
+					WHERE organization_id = ".$user->organization['Organization']['id']." AND id = ".$article_id;
+		   	self::d($sql, $debug);
+		   	$results = $this->query($sql);
 	   	}
-	   	catch (Exception $e) {	   		CakeLog::write('error',$sql);	   		CakeLog::write('error',$e);	   	}
+	   	catch (Exception $e) {
+	   		CakeLog::write('error',$sql);
+	   		CakeLog::write('error',$e);
+	   	}
    }
    
    /* 
@@ -247,7 +393,8 @@ class Article extends ArticleMultiKey {
 				else
 					$ArticlesTypeResults = Cache::read('articlesTypes');	
 		   			   			
-	   			App::import('Model', 'ArticlesArticlesType');	   			
+	   			App::import('Model', 'ArticlesArticlesType');
+	   			
 	   			$article_id = $results['Article']['id'];
 	   			$article_type_ids = explode(",", $results['Article']['article_type_id_hidden']);
 	   			/*
@@ -279,29 +426,49 @@ class Article extends ArticleMultiKey {
 	   				
 	   				$article_type_id = $key;
 	   				
-	   				self::d('ciclo '.$article_type_id.' '.$value, $debug);	   			
+	   				self::d('ciclo '.$article_type_id.' '.$value, $debug);
+	   			
 	   				if(in_array($article_type_id, $article_type_ids)) {
 	
 	   					self::d('match tra la key '.$article_type_id.' e gli id passati: ESISTE', $debug);
 	   					
-	   					/*	   					 * ora e' passato, ctrl se non esiste gia', se Y => insert	   					*/	   					$conditions = ['ArticlesArticlesType.organization_id' => $results['Article']['organization_id'],				   							'ArticlesArticlesType.article_type_id' => $article_type_id,				   							'ArticlesArticlesType.article_id' => $article_id];	   					$ArticlesArticlesTypeResults = $ArticlesArticlesType->find('first', ['conditions' => $conditions]);
-	   					self::d($conditions, $debug);	   					self::d($ArticlesArticlesTypeResults, $debug);
-							   					if(empty($ArticlesArticlesTypeResults)) {
+	   					/*
+	   					 * ora e' passato, ctrl se non esiste gia', se Y => insert
+	   					*/
+	   					$conditions = ['ArticlesArticlesType.organization_id' => $results['Article']['organization_id'],
+				   							'ArticlesArticlesType.article_type_id' => $article_type_id,
+				   							'ArticlesArticlesType.article_id' => $article_id];
+	   					$ArticlesArticlesTypeResults = $ArticlesArticlesType->find('first', ['conditions' => $conditions]);
+	   					self::d($conditions, $debug);
+	   					self::d($ArticlesArticlesTypeResults, $debug);
+						
+	   					if(empty($ArticlesArticlesTypeResults)) {
 	   						self::d('INSERT', $debug);
 	   						$data['ArticlesArticlesType']['organization_id'] = $results['Article']['organization_id'];
 	   						$data['ArticlesArticlesType']['article_type_id'] = $article_type_id;
 	   						$data['ArticlesArticlesType']['article_id'] = $article_id;
-	   						self::d($data, $debug);	   						
-	   						$ArticlesArticlesType->save($data);	   					}
+	   						self::d($data, $debug);
+	   						
+	   						$ArticlesArticlesType->save($data);
+	   					}
 	   					else 	
-	   						self::d('nessun a operazione sul DB ', $debug);	   					
+	   						self::d('nessun a operazione sul DB ', $debug);
+	   					
 	   				}
 	   				else {
 	   					self::d('match tra la key '.$article_type_id.' e gli id passati: NON ESISTE', $debug);
-							   						   					/*	   					 * ora non e' passato, ctrl se esiste gia', se Y => delete	   					*/	   					$conditions = ['ArticlesArticlesType.organization_id' => $results['Article']['organization_id'],				   						'ArticlesArticlesType.article_type_id' => $article_type_id,				   						'ArticlesArticlesType.article_id' => $article_id];	   					$ArticlesArticlesTypeResults = $ArticlesArticlesType->find('first', ['conditions' => $conditions]);
+							   					
+	   					/*
+	   					 * ora non e' passato, ctrl se esiste gia', se Y => delete
+	   					*/
+	   					$conditions = ['ArticlesArticlesType.organization_id' => $results['Article']['organization_id'],
+				   						'ArticlesArticlesType.article_type_id' => $article_type_id,
+				   						'ArticlesArticlesType.article_id' => $article_id];
+	   					$ArticlesArticlesTypeResults = $ArticlesArticlesType->find('first', ['conditions' => $conditions]);
 	   					self::d($conditions, $debug);
 						self::d($ArticlesArticlesTypeResults, $debug);
-												   					if(!empty($ArticlesArticlesTypeResults)) {  
+											
+	   					if(!empty($ArticlesArticlesTypeResults)) {  
 	   						self::d('DELETE ', $debug);
 						   	$sql = "DELETE FROM ".Configure::read('DB.prefix')."articles_articles_types 
 						   			WHERE 
@@ -317,13 +484,20 @@ class Article extends ArticleMultiKey {
 	   						self::d('nessun a operazione sul DB ', $debug);
 	   				}   				
 	   			} // foreach($ArticlesTypeResults as $key as $value) 
-		   	}		   	catch (Exception $e) {		   		CakeLog::write('error',$sql);		   		CakeLog::write('error',$e);		   	}   
-	   	} // end if(!empty($results['Article']['id']))	   	else	   		return false;
+		   	}
+		   	catch (Exception $e) {
+		   		CakeLog::write('error',$sql);
+		   		CakeLog::write('error',$e);
+		   	}   
+	   	} // end if(!empty($results['Article']['id']))
+	   	else
+	   		return false;
 	   
    		return true;
    }
    	
-   /*    * se non ho attivato il modulo aggiornando l'articolo 
+   /*
+    * se non ho attivato il modulo aggiornando l'articolo 
     * 		cerco gli eventuali ArticlesOrder, ctrl lo stato dell'ordine 
     * 	associati agli ordini (con stato_elaborazione != CLOSE)
 	*
@@ -351,25 +525,41 @@ class Article extends ArticleMultiKey {
    		 * ottengo Article cosi' ho prezzo_
    		 */
 		$options = []; 
-   		$options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];   		$options['recursive'] = -1;   		$article = $this->find('first', $options);
+   		$options['conditions'] = ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
+   		$options['recursive'] = -1;
+   		$article = $this->find('first', $options);
 		self::d($article, $debug);
 		
    		$results = [];
    		if($action!='INSERT') {
 		
-	   		/*	   		 * estraggo gli eventuali ordini associati all'articolo
-			 * non filtro per $user->organization['Organization']['id'] cosi' estraggo tutti gli articoli associati all'articolo anche x DES / PRODGAS	   		* */	   		$sql = "SELECT						ArticlesOrder.* 					FROM						".Configure::read('DB.prefix')."articles_orders ArticlesOrder,						".Configure::read('DB.prefix')."articles Article,
-						".Configure::read('DB.prefix')."orders `Order`	   				WHERE
+	   		/*
+	   		 * estraggo gli eventuali ordini associati all'articolo
+			 * non filtro per $user->organization['Organization']['id'] cosi' estraggo tutti gli articoli associati all'articolo anche x DES / PRODGAS
+	   		* */
+	   		$sql = "SELECT
+						ArticlesOrder.* 
+					FROM
+						".Configure::read('DB.prefix')."articles_orders ArticlesOrder,
+						".Configure::read('DB.prefix')."articles Article,
+						".Configure::read('DB.prefix')."orders `Order`
+	   				WHERE
 						`Order`.organization_id =  ArticlesOrder.organization_id 
 						and `Order`.id =  ArticlesOrder.order_id
 	   					and ArticlesOrder.article_organization_id = Article.organization_id 
 	   					and Article.id = ArticlesOrder.article_id
 						and `Order`.state_code NOT IN (".$stateCodeNotUpdateArticle.") 
 						and Article.organization_id = ".$article['Article']['organization_id']."  
-						and Article.id = ".$article['Article']['id'];	   	    self::d('Article::syncronizeArticlesOrder() - '.$sql, $debug);	  		try {
+						and Article.id = ".$article['Article']['id'];
+	   	    self::d('Article::syncronizeArticlesOrder() - '.$sql, $debug);
+	  		try {
 	  			$results = $this->query($sql);
-	  		}	  		catch (Exception $e) {	  			CakeLog::write('error',$sql);
-				CakeLog::write('error',$e);	  		}   		} // end if($action!='INSERT')
+	  		}
+	  		catch (Exception $e) {
+	  			CakeLog::write('error',$sql);
+				CakeLog::write('error',$e);
+	  		}
+   		} // end if($action!='INSERT')
 	
   		/*
   		 * se l'articolo non esiste ma Article.stato = Y da UPDATE -> INSERT
@@ -441,7 +631,7 @@ class Article extends ArticleMultiKey {
 							$isArticleInCart = $ProdGasArticle->isArticleInCart($user, $article_organization_id, $article_id);
 						break;
 						case 'GAS':
-							$isArticleInCart = $this->Article->isArticleInCart($user, $article_organization_id, $article_id);
+							$isArticleInCart = $this->isArticleInCart($user, $article_organization_id, $article_id);
 						break;
 						default:
 							self::x(__('msg_error_org_type').' ['.$user->organization['Organization']['type'].']');
@@ -458,7 +648,10 @@ class Article extends ArticleMultiKey {
 
    			break;
 	  		case 'UPDATE':
-		   		/*		   		 * update, modificato un articolo		   		*/   				foreach($results as $result) {
+		   		/*
+		   		 * update, modificato un articolo
+		   		*/
+   				foreach($results as $result) {
 
 					/*
 					 * ctrl se DES, se Y non lo aggiungo
@@ -479,28 +672,41 @@ class Article extends ArticleMultiKey {
 						else
 							$isDesOrder = 'Y';	
 					} // DES
-				   				if($continue && $isDesOrder == 'N') {	   					$row['ArticlesOrder']['organization_id'] = $result['ArticlesOrder']['organization_id'];
+			
+	   				if($continue && $isDesOrder == 'N') {
+	   					$row['ArticlesOrder']['organization_id'] = $result['ArticlesOrder']['organization_id'];
 	   					$row['ArticlesOrder']['order_id'] = $result['ArticlesOrder']['order_id'];
 		   				$row['ArticlesOrder']['article_organization_id'] = $article['Article']['organization_id'];
 		   				$row['ArticlesOrder']['article_id'] = $article['Article']['id'];
 		   				$row['ArticlesOrder']['name'] = $article['Article']['name'];
-		   				$row['ArticlesOrder']['prezzo']     = $article['Article']['prezzo_'];  // in ArticlesOrder->save() importoToDatabase()		   				$row['ArticlesOrder']['pezzi_confezione'] = $article['Article']['pezzi_confezione'];
+		   				$row['ArticlesOrder']['prezzo']     = $article['Article']['prezzo_'];  // in ArticlesOrder->save() importoToDatabase()
+		   				$row['ArticlesOrder']['pezzi_confezione'] = $article['Article']['pezzi_confezione'];
 		   				$row['ArticlesOrder']['qta_minima'] = $article['Article']['qta_minima'];
 		   				$row['ArticlesOrder']['qta_massima'] = $article['Article']['qta_massima'];
 		   				$row['ArticlesOrder']['qta_minima_order'] = $article['Article']['qta_minima_order'];
-		   				$row['ArticlesOrder']['qta_massima_order'] = $article['Article']['qta_massima_order'];		   				$row['ArticlesOrder']['qta_multipli'] = $article['Article']['qta_multipli'];		   				$row['ArticlesOrder']['alert_to_qta'] = $article['Article']['alert_to_qta'];
-		   				$ArticlesOrder->create();
+		   				$row['ArticlesOrder']['qta_massima_order'] = $article['Article']['qta_massima_order'];
+		   				$row['ArticlesOrder']['qta_multipli'] = $article['Article']['qta_multipli'];
+		   				$row['ArticlesOrder']['alert_to_qta'] = $article['Article']['alert_to_qta'];
+		   				$ArticlesOrder->create();
 		   				try {
-		   					self::d("Article::syncronizeArticlesOrder() - SAVE", $debug);		   					self::d($row, $debug);		   					$ArticlesOrder->save($row);
-		   				}		   				catch (Exception $e) {		   					$continue = false;		   					CakeLog::write('error',$e);		   				}			
+		   					self::d("Article::syncronizeArticlesOrder() - SAVE", $debug);
+		   					self::d($row, $debug);
+		   					$ArticlesOrder->save($row);
+		   				}
+		   				catch (Exception $e) {
+		   					$continue = false;
+		   					CakeLog::write('error',$e);
+		   				}			
 		   			}
 					else {
 						self::d("Article associato all'ordine ".$result['ArticlesOrder']['order_id']." di tipo DesOrder => non aggiorno", $debug);						
-					}		 		} // end foreach
+					}
+		 		} // end foreach
 		 	break;
 	  		case 'INSERT':
 	    			
-	  			foreach($results as $result) {	  					
+	  			foreach($results as $result) {
+	  					
 					/*
 					 * ctrl se DES, se Y non lo aggiungo
 					 */		
@@ -520,15 +726,24 @@ class Article extends ArticleMultiKey {
 						else
 							$isDesOrder = 'Y';	
 					} // DES
-						  				if($continue && $isDesOrder == 'N') {
+					
+	  				if($continue && $isDesOrder == 'N') {
 			  			$row['ArticlesOrder']['organization_id'] = $result['Order']['organization_id'];
 			  			$row['ArticlesOrder']['order_id'] = $result['Order']['id'];
-			  			$row['ArticlesOrder']['article_organization_id'] = $article['Article']['organization_id'];			  			$row['ArticlesOrder']['article_id'] = $article['Article']['id'];
-			  			$row['ArticlesOrder']['name'] = $article['Article']['name'];			  			$row['ArticlesOrder']['prezzo']     = $article['Article']['prezzo_']; // in ArticlesOrder->save() importoToDatabase()			  			$row['ArticlesOrder']['pezzi_confezione'] = $article['Article']['pezzi_confezione'];
+			  			$row['ArticlesOrder']['article_organization_id'] = $article['Article']['organization_id'];
+			  			$row['ArticlesOrder']['article_id'] = $article['Article']['id'];
+			  			$row['ArticlesOrder']['name'] = $article['Article']['name'];
+			  			$row['ArticlesOrder']['prezzo']     = $article['Article']['prezzo_']; // in ArticlesOrder->save() importoToDatabase()
+			  			$row['ArticlesOrder']['pezzi_confezione'] = $article['Article']['pezzi_confezione'];
 			  			$row['ArticlesOrder']['qta_minima'] = $article['Article']['qta_minima'];
 			  			$row['ArticlesOrder']['qta_massima'] = $article['Article']['qta_massima'];
 			  			$row['ArticlesOrder']['qta_minima_order'] = $article['Article']['qta_minima_order'];
-			  			$row['ArticlesOrder']['qta_massima_order'] = $article['Article']['qta_massima_order'];			  			$row['ArticlesOrder']['qta_multipli'] = $article['Article']['qta_multipli'];			  			$row['ArticlesOrder']['alert_to_qta'] = $article['Article']['alert_to_qta'];			  			$ArticlesOrder->create();	  					try {
+			  			$row['ArticlesOrder']['qta_massima_order'] = $article['Article']['qta_massima_order'];
+			  			$row['ArticlesOrder']['qta_multipli'] = $article['Article']['qta_multipli'];
+			  			$row['ArticlesOrder']['alert_to_qta'] = $article['Article']['alert_to_qta'];
+
+			  			$ArticlesOrder->create();
+	  					try {
 		   					self::d("Article::syncronizeArticlesOrder() - SAVE", $debug);
 		   					self::d($row, $debug);
 		   					$ArticlesOrder->save($row);
@@ -540,8 +755,10 @@ class Article extends ArticleMultiKey {
 			  		}
 					else {
 						self::d("Article associato all'ordine ".$result['ArticlesOrder']['order_id']." di tipo DesOrder => non inserisco", $debug);					
-					}								  	} // end foreach			
-	  		break;   		} // end switch($action)
+					}					
+			  	} // end foreach			
+	  		break;
+   		} // end switch($action)
 
    		if($debug) exit;
    		
@@ -568,13 +785,9 @@ class Article extends ArticleMultiKey {
 	   $options['recursive'] = 1;
 	   $results = $this->find('first', $options);
 	   
-	   if($debug) {
-	   		echo '<h1>articolo da copiare</h1>';
-		   	echo "<pre>";
-		   	print_r($options);
-		   	print_r($results);
-		   	echo "</pre>";
-	   }
+		self::d('articolo da copiare', $debug);
+		self::d($options, $debug);
+		self::d($results, $debug);
    
 	   $results['Article']['id'] = $this->getMaxIdOrganizationId($user->organization['Organization']['id']);
 	   	
@@ -666,11 +879,15 @@ class Article extends ArticleMultiKey {
 
 		switch ($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']) {
 			case 'REFERENT':
+			case 'REFERENT-TMP':
 				$return = true;
 			break;
 			case 'SUPPLIER':
 			case 'DES':
 				$return = false;
+			break;
+			default:
+				self::x(__('msg_error_supplier_organization_owner_articles'));
 			break;
 		}
 
@@ -689,27 +906,30 @@ class Article extends ArticleMultiKey {
 			],
 		],
 		'category_article_id' => [
-			'notempty' => [					'rule' => ['notempty', false],					'message' => 'Indica la quantità minima che si può acquistabile',			],
+			'notempty' => [
+					'rule' => ['notBlank', false],
+					'message' => 'Indica la quantità minima che si può acquistabile',
+			],
 		],		
 		'name' => [
 			'notempty' => [
-				'rule' => ['notempty'],
+				'rule' => ['notBlank'],
 				'message' => "Indica il nome dell'articolo",
 			],
 		],
 		'qta' => [
 			'notempty' => [
-				'rule' => ['notempty'],
+				'rule' => ['notBlank'],
 				'message' => "Indica la quantità dell'articolo",
 			],
 		],
 		'prezzo' => [
 			'rule' => ['decimal', 2],
-			'message' => "Indica il prezzo dell'articolo con un valore numerico con 2 decimali (1,00]",
+			'message' => "Indica il prezzo dell'articolo con un valore numerico con 2 decimali (1,00)",
 		],		
 		'qta_minima' => [
 			'notempty' => [
-				'rule' => ['notempty', false],
+				'rule' => ['notBlank', false],
 				'message' => 'Indica la quantità minima che un gasista può acquistare',
 			],
 			'numeric' => [
@@ -720,7 +940,7 @@ class Article extends ArticleMultiKey {
 		],
 		'qta_massima' => [
 			'notempty' => [
-				'rule' => ['notempty', false],
+				'rule' => ['notBlank', false],
 				'message' => 'Indica la quantità massima che un gasista può acquistare',
 			],
 			'numeric' => [
@@ -731,7 +951,7 @@ class Article extends ArticleMultiKey {
 		],
 		'qta_minima_order' => [
 			'notempty' => [
-					'rule' => ['notempty', false],
+					'rule' => ['notBlank', false],
 					'message' => "Indica la quantità minima rispetto a tutti gli acquisti dell'ordine",
 			],		
 			'numeric' => [
@@ -742,7 +962,7 @@ class Article extends ArticleMultiKey {
 		],
 		'qta_massima_order' => [
 			'notempty' => [
-					'rule' => ['notempty', false],
+					'rule' => ['notBlank', false],
 					'message' => "Indica la quantità massima rispetto a tutti gli acquisti dell'ordine",
 			],		
 			'numeric' => [
@@ -752,21 +972,50 @@ class Article extends ArticleMultiKey {
 			],
 		],
 		'pezzi_confezione' => [
-			'notempty' => [					'rule' => ['notempty', false],					'message' => 'Indica il numero di pezzi che può contenere una confezione',			],			'numeric' => [					'rule' => ['naturalNumber', false],					'message' => "Il numero di pezzi che può contenere una confezione dev'essere indicato con un valore numerico maggiore di zero",					'allowEmpty' => false,			],		],
+			'notempty' => [
+					'rule' => ['notBlank', false],
+					'message' => 'Indica il numero di pezzi che può contenere una confezione',
+			],
+			'numeric' => [
+					'rule' => ['naturalNumber', false],
+					'message' => "Il numero di pezzi che può contenere una confezione dev'essere indicato con un valore numerico maggiore di zero",
+					'allowEmpty' => false,
+			],
+		],
 		'qta_multipli' => [
-			'notempty' => [					'rule' => ['notempty', false],					'message' => 'Indica la quantità minima che si può acquistabile',			],					'numeric' => [					'rule' => ['naturalNumber', false],					'message' => "La quantità multipla dev'essere indicata con un valore numerico maggiore di zero",					'allowEmpty' => true,			],		],
-		'alert_to_qta' => [			'numeric' => [					'rule' => ['numeric', false],					'message' => "Il valore che indica quando avvisare raggiunta la quantità di massima dev'essere indicato con un valore numerico",					'allowEmpty' => true,			],		],				
+			'notempty' => [
+					'rule' => ['notBlank', false],
+					'message' => 'Indica la quantità minima che si può acquistabile',
+			],		
+			'numeric' => [
+					'rule' => ['naturalNumber', false],
+					'message' => "La quantità multipla dev'essere indicata con un valore numerico maggiore di zero",
+					'allowEmpty' => true,
+			],
+		],
+		'alert_to_qta' => [
+			'numeric' => [
+					'rule' => ['numeric', false],
+					'message' => "Il valore che indica quando avvisare raggiunta la quantità di massima dev'essere indicato con un valore numerico",
+					'allowEmpty' => true,
+			],
+		],				
 	];
 
 	public $belongsTo = [
 		'SuppliersOrganization' => [
 			'className' => 'SuppliersOrganization',
-			'foreignKey' => '', // 'supplier_organization_id',
+			'foreignKey' => '', // supplier_organization_id la key e' la conditions 
 			'conditions' => 'SuppliersOrganization.owner_supplier_organization_id = Article.supplier_organization_id and SuppliersOrganization.owner_organization_id = Article.organization_id', 
 			'fields' => '',
 			'order' => ''
 		],
-		'CategoriesArticle' => [				'className' => 'CategoriesArticle',				'foreignKey' => 'category_article_id',				'conditions' =>  'CategoriesArticle.organization_id = Article.organization_id',				'fields' => '',				'order' => '',
+			'CategoriesArticle' => [
+				'className' => 'CategoriesArticle',
+				'foreignKey' => 'category_article_id',
+				'conditions' =>  'CategoriesArticle.organization_id = Article.organization_id',
+				'fields' => '',
+				'order' => '',
 		]
 	];
 
@@ -784,10 +1033,35 @@ class Article extends ArticleMultiKey {
 				'finderQuery' => '',
 				'counterQuery' => ''
 		],
-		'ArticlesOrder' => [				'className' => 'ArticlesOrder',				'foreignKey' => 'article_id',				'dependent' => false,				'conditions' => '',				'fields' => '',				'order' => '',				'limit' => '',				'offset' => '',				'exclusive' => '',				'finderQuery' => '',				'counterQuery' => ''		]
+		'ArticlesOrder' => [
+				'className' => 'ArticlesOrder',
+				'foreignKey' => 'article_id',
+				'dependent' => false,
+				'conditions' => '',
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'exclusive' => '',
+				'finderQuery' => '',
+				'counterQuery' => ''
+		]
 	];
 
-	public $hasAndBelongsToMany = [		'ArticlesType' => [				'className' => 'ArticlesType',				'joinTable' => 'articles_articles_types',				'foreignKey' => 'article_id',				'associationForeignKey' => 'article_type_id',				'unique' => 'keepExisting',				'conditions' =>  '',				'fields' => '',				'order' => '',				'limit' => '',				'offset' => '',				'finderQuery' => '',		],
+	public $hasAndBelongsToMany = [
+		'ArticlesType' => [
+				'className' => 'ArticlesType',
+				'joinTable' => 'articles_articles_types',
+				'foreignKey' => 'article_id',
+				'associationForeignKey' => 'article_type_id',
+				'unique' => 'keepExisting',
+				'conditions' =>  '',
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'finderQuery' => '',
+		],
 		'Order' => [
 			'className' => 'Order',
 			'joinTable' => 'articles_orders',
@@ -820,8 +1094,14 @@ class Article extends ArticleMultiKey {
 					$results[$key]['Article']['prezzo_e'] = $results[$key]['Article']['prezzo_'].' &euro;';
 				}
 				else
-					/*					 * se il find() arriva da $hasAndBelongsToMany					*/
-				 if(isset($val['prezzo'])) {					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';				}				
+					/*
+					 * se il find() arriva da $hasAndBelongsToMany
+					*/
+				 if(isset($val['prezzo'])) {
+					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';
+				}
+				
 				/*
 				 * qta, da 1.00 a 1
 				 * 		da 0.75 a 0,75  
@@ -833,15 +1113,27 @@ class Article extends ArticleMultiKey {
 					$results[$key]['Article']['qta_'] = $qta;
 				}
 				else
-				/*				 * se il find() arriva da $hasAndBelongsToMany				*/	
-				if(isset($val['qta'])) {					$qta = str_replace(".", ",", $val['qta']);					$arrCtrlTwoZero = explode(",",$qta);					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];					$results[$key]['qta_'] = $qta;				}
+				/*
+				 * se il find() arriva da $hasAndBelongsToMany
+				*/	
+				if(isset($val['qta'])) {
+					$qta = str_replace(".", ",", $val['qta']);
+					$arrCtrlTwoZero = explode(",",$qta);
+					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];
+					$results[$key]['qta_'] = $qta;
+				}
 
 				if(isset($val['ArticlesOrder'])) {
 
 					if(isset($val['ArticlesOrder']['prezzo'])) {
-						$results[$key]['ArticlesOrder']['prezzo_'] = number_format($val['ArticlesOrder']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));						$results[$key]['ArticlesOrder']['prezzo_e'] = $results[$key]['ArticlesOrder']['prezzo_'].' &euro;';
+						$results[$key]['ArticlesOrder']['prezzo_'] = number_format($val['ArticlesOrder']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results[$key]['ArticlesOrder']['prezzo_e'] = $results[$key]['ArticlesOrder']['prezzo_'].' &euro;';
 					}
-					else					if(isset($val['ArticlesOrder'][0]['prezzo'])) {						$results[$key]['ArticlesOrder'][0]['prezzo_'] = number_format($val['ArticlesOrder'][0]['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));						$results[$key]['ArticlesOrder'][0]['prezzo_e'] = $results[$key]['ArticlesOrder'][0]['prezzo_'].' &euro;';					}	
+					else
+					if(isset($val['ArticlesOrder'][0]['prezzo'])) {
+						$results[$key]['ArticlesOrder'][0]['prezzo_'] = number_format($val['ArticlesOrder'][0]['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results[$key]['ArticlesOrder'][0]['prezzo_e'] = $results[$key]['ArticlesOrder'][0]['prezzo_'].' &euro;';
+					}	
 				}
 				
 				/*
@@ -850,6 +1142,7 @@ class Article extends ArticleMultiKey {
 				if(isset($val['SuppliersOrganization']['owner_articles'])) {
 					switch ($val['SuppliersOrganization']['owner_articles']) {
 						case 'REFERENT':
+						case 'REFERENT-TMP':
 							$results[$key]['Article']['owner'] = true;
 						break;
 						case 'SUPPLIER':

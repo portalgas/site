@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List DesOrders'),array('controller' => 'DesOrders', 'action' => 'index'));
 if(isset($des_order_id) && !empty($des_order_id))
 	$this->Html->addCrumb(__('Order home DES'),array('controller'=>'DesOrdersOrganizations','action'=>'index', null, 'des_order_id='.$des_order_id));
@@ -14,15 +14,15 @@ function choiceSummaryDesOrdersOptions() {
 
 	var div_contenitore = 'summary-des-orders-options';
 	
-	var des_order_id    = jQuery('#des_order_id').val();
+	var des_order_id    = $('#des_order_id').val();
 
 	var summaryDesOrdersOptions = '';
-	if(jQuery("input[name='summary_des_orders-options']").length>0)
-		summaryDesOrdersOptions = jQuery("input[name='summary_des_orders-options']:checked").val(); 
+	if($("input[name='summary_des_orders-options']").length>0)
+		summaryDesOrdersOptions = $("input[name='summary_des_orders-options']:checked").val(); 
 
 	if(summaryDesOrdersOptions=='options-delete-yes') {
 		if(!confirm("Sei sicuro di voler rigenerare i dati cancellando quelli sottostanti?")) {
-			jQuery("#options-summary_des_orders-delete-no").prop('checked',true);
+			$("#options-summary_des_orders-delete-no").prop('checked',true);
 			return;
 		}
 	}
@@ -36,7 +36,7 @@ function choiceSummaryDesOrdersOptionsReadOnly() {
 
 	var div_contenitore = 'summary-des-orders-options';
 	
-	var des_order_id    = jQuery('#des_order_id').val(); 
+	var des_order_id    = $('#des_order_id').val(); 
 
 	if(debugLocal) alert("choiceSummaryDesOrdersOptionsReadOnly - div_contenitore "+div_contenitore);
 	if(des_order_id=='') {
@@ -108,19 +108,14 @@ echo $this->Form->end();
 echo $this->element('menuDesOrderLaterale');
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php if(!empty($alertModuleConflicts)) {
 		if(!$popUpDisabled)
-			echo "apriPopUp('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl')";
+			echo "apriPopUpBootstrap('".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=PopUp&action=".$alertModuleConflicts."&orderHasTrasport=".$orderHasTrasport."&orderHasCostMore=".$orderHasCostMore."&orderHasCostLess=".$orderHasCostLess."&format=notmpl', '')";
 	}
 	?>
 	
-	var des_order_id = jQuery("#des_order_id").val();
+	var des_order_id = $("#des_order_id").val();
 	if(des_order_id>0)	AjaxCallToSummaryDesOrdersOptions(des_order_id);
 });
 </script>
-<style type="text/css">
-.cakeContainer label {
-    width: 100px !important;
-}
-</style>

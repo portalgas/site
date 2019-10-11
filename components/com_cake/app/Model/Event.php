@@ -130,7 +130,7 @@ class Event extends AppModel {
 	var $validate = array(
 		'title' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
+				'rule' => ['notBlank'],
 			),
 		),
 		'start' => array(

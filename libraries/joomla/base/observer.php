@@ -37,13 +37,13 @@ abstract class JObserver extends JObject
 	 * @since   11.1
 	 * @deprecated  12.3
 	 */
-	public function __construct(&$subject)
+	public function __construct($subject)
 	{
 		// Register the observer ($this) so we can be notified
 		$subject->attach($this);
 
 		// Set the subject to observe
-		$this->_subject = &$subject;
+		$this->_subject = $subject;
 	}
 
 	/**
@@ -56,5 +56,5 @@ abstract class JObserver extends JObject
 	 * @since   11.1
 	 * @deprecated  12.3
 	 */
-	public abstract function update(&$args);
+	public abstract function update($args);
 }

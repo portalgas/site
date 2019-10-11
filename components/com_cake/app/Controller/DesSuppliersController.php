@@ -151,7 +151,7 @@ class DesSuppliersController extends AppController {
 		$continua = true;
 	
 		$this->DesSupplier->id = $id;
-		if (!$this->DesSupplier->exists()) {
+		if (!$this->DesSupplier->exists($this->DesSupplier->id)) {
 			throw new NotFoundException(__('Invalid des supplier'));
 		}
 		$this->request->onlyAllow('get', 'delete');
@@ -182,8 +182,12 @@ class DesSuppliersController extends AppController {
 		if(!empty($suppliersOrganizationResults) && 
 			$suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='DES') {
 				
+				/*
+				 * associo il gestore del listino al proprio GAS
+				 */
 				$suppliersOrganizationResults['SuppliersOrganization']['owner_articles'] = 'REFERENT';
 				$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $this->user->organization['Organization']['id'];
+				$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
 	            
 	            $SuppliersOrganization->create();
 	            if (!$SuppliersOrganization->save($suppliersOrganizationResults)) {

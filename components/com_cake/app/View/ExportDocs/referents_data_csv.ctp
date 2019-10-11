@@ -10,7 +10,7 @@ $headers = array('csv' => array(
 		)
 ); 
 
-$data = array();foreach($results as $numResult => $result) {	$dataTmp = array();	$telephone = "";	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];	$dataTmp = array(			'N' => ($numResult+1),			'suppliers' => $result['SuppliersOrganization']['name'],
+$data = [];foreach($results as $numResult => $result) {	$dataTmp = [];	$telephone = "";	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];	$dataTmp = array(			'N' => ($numResult+1),			'suppliers' => $result['SuppliersOrganization']['name'],
 			'frequenza' => $result['SuppliersOrganization']['frequenza'],
 			'code' => $result['Profile']['codice'],
 			'name' => $result['User']['name'],			'mail' => $result['User']['email'],			'telephone' => $telephone,			'type' => $this->App->traslateEnum($result['SuppliersOrganizationsReferent']['type'])	);

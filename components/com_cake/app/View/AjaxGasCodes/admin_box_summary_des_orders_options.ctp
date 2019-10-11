@@ -1,13 +1,13 @@
 <?php 
-if($results['DesOrder']['state_code']=='PROCESSED-POST-DELIVERY' ||
-   $results['DesOrder']['state_code']=='INCOMING-ORDER' ||   
-   $results['DesOrder']['state_code']=='PROCESSED-ON-DELIVERY' ||
+if($desOrdersResults['DesOrder']['state_code']=='PROCESSED-POST-DELIVERY' ||
+   $desOrdersResults['DesOrder']['state_code']=='INCOMING-ORDER' ||   
+   $desOrdersResults['DesOrder']['state_code']=='PROCESSED-ON-DELIVERY' ||
    
    
    1==1)
 
    {
-	if(!empty($resultsSummaryDesOrder)) {
+	if(!empty($summaryDesOrderResults)) {
 	
 		$msg = "I dati sottostanti sono stati precedentemente creati aggregando gli importi degli acquisti degli utenti.";
 		echo $this->element('boxMsg',array('class_msg' => 'notice nomargin','msg' => $msg));
@@ -28,8 +28,8 @@ if($results['DesOrder']['state_code']=='PROCESSED-POST-DELIVERY' ||
 		</div>	
 		
 		<script type="text/javascript">
-		jQuery(document).ready(function() {
-			jQuery("input[name='summary_des_orders-options']").change(function() {
+		$(document).ready(function() {
+			$("input[name='summary_des_orders-options']").change(function() {
 				choiceSummaryDesOrdersOptions();
 			});
 		

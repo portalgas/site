@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.0" client="site" method="upgrade">
+    <name>Facebook LikeBox</name>
+    <author>alexandros itsios</author>
+    <creationDate>September 2012</creationDate>
+    <copyright>Copyright (C) 2012 enterlogic.gr, All rights reserved.</copyright>
+    <license>GNU General Public License</license>
+    <authorEmail>info@enterlogic.gr</authorEmail>
+    <authorUrl>http://www.enterlogic.gr/</authorUrl>
+    <version>1.4</version>
+    <description>A module that displays facebook like box</description>
+    <files>
+        <filename module="mod_sfacebooklikebox">mod_sfacebooklikebox.php</filename>
+		<filename>mod_sfacebooklikebox.xml</filename>
+
+    </files>
+	
+	<config>
+	<fields name="params">
+		<fieldset name="basic">
+		<field name="appid" type="text" default="" label="appid (optional)" description="Like box Application ID." />
+		<field name="href" size="50" type="text" label="Facebook Page URL" description="Place Facebook Url Here" />
+		<field name="width" type="text" label="Width" default="300" description="Like box width in pixels. Default: 300px." />
+		<field name="height" type="text" default="500" label="Height" description="Like box height in pixels." />
+		
+		<field name="colorscheme" type="list" label="Color Scheme" description="The Color of the box." >
+			<option value="light">light</option>
+			<option value="dark">dark</option>
+		</field>
+		
+		<field name="show_faces" type="radio" label="Show Faces" default="1" description="Display the faces of your funs. Default: Show." >
+			<option value="1">Show</option>
+			<option value="0">Hide</option>
+		</field>
+		
+		<field name="stream" type="radio" label="Show stream" default="0" description="Display the stream with the latest posts." >
+			<option value="1">Show</option>
+			<option value="0">Hide</option>
+		</field>
+		
+		<field name="header" type="radio" label="Show header" default="1" description="Display the header of the box. Default: Show" >
+			<option value="1">Show</option>
+			<option value="0">Hide</option>
+		</field>
+		<field name="border" type="radio" label="Show border" default="1" description="Display the border of the box. Default: Show" >
+			<option value="1">Show</option>
+			<option value="0">Hide</option>
+		</field>
+		
+		<field name="displaylanguage" type="list" label="Display Language" default="English (US)" description="Set the display language of your Facebook Like Box Plugin" >
+			<option value="en_GB">English (UK)</option>
+			<option value="en_PI">English (Pirate)</option>
+			<option value="en_UD">English (Upside Down)</option>
+			<option value="en_US">English (US)</option>
+			<option value="af_ZA">Afrikaans</option>
+			<option value="sq_AL">Albanian</option>
+			<option value="ar_AR">Arabic</option>
+			<option value="az_AZ">Azerbaijani</option>
+			<option value="be_BY">Belarusian</option>
+			<option value="bg_BG">Bulgarian</option>
+			<option value="bn_IN">Bengali</option>
+			<option value="bs_BA">Bosnian</option>
+			<option value="ca_ES">Catalan</option>
+			<option value="cs_CZ">Czech</option>
+			<option value="cy_GB">Welsh</option>
+			<option value="da_DK">Danish</option>
+			<option value="de_DE">German</option>
+			<option value="el_GR">Greek</option>
+			<option value="eo_EO">Esperanto</option>
+			<option value="es_ES">Spanish (Spain)</option>
+			<option value="es_LA">Spanish</option>
+			<option value="et_EE">Estonian</option>
+			<option value="eu_ES">Basque</option>
+			<option value="fa_IR">Persian</option>
+			<option value="fb_LT">Leet Speak</option>
+			<option value="fo_FO">Faroese</option>
+			<option value="fi_FI">Finnish</option>
+			<option value="tl_PH">Filipino</option>
+			<option value="fr_CA">French (Canada)</option>
+			<option value="fr_FR">French (France)</option>
+			<option value="fy_NL">Frisian</option>
+			<option value="ga_IE">Irish</option>
+			<option value="gl_ES">Galician</option>
+			<option value="he_IL">Hebrew</option>
+			<option value="hi_IN">Hindi</option>
+			<option value="hr_HR">Croatian</option>
+			<option value="hu_HU">Hungarian</option>
+			<option value="hy_AM">Armenian</option>
+			<option value="id_ID">Indonesian</option>
+			<option value="is_IS">Icelandic</option>
+			<option value="it_IT">Italian</option>
+			<option value="ja_JP">Japanese</option>
+			<option value="ka_GE">Georgian</option>
+			<option value="km_KH">Khmer</option>
+			<option value="ko_KR">Korean</option>
+			<option value="ku_TR">Kurdish</option>
+			<option value="la_VA">Latin</option>
+			<option value="lt_LT">Lithuanian</option>
+			<option value="lv_LV">Latvian</option>
+			<option value="mk_MK">Macedonian</option>
+			<option value="ml_IN">Malayalam</option>
+			<option value="ms_MY">Malay</option>
+			<option value="nb_NO">Norwegian (bokmal)</option>
+			<option value="ne_NP">Nepali</option>
+			<option value="nl_NL">Dutch</option>
+			<option value="nn_NO">Norwegian (nynorsk)</option>
+			<option value="pa_IN">Punjabi</option>
+			<option value="pl_PL">Polish</option>
+			<option value="ps_AF">Pashto</option>
+			<option value="pt_BR">Portuguese (Brazil)</option>
+			<option value="pt_PT">Portuguese (Portugal)</option>
+			<option value="ro_RO">Romanian</option>
+			<option value="ru_RU">Russian</option>
+			<option value="sk_SK">Slovak</option>
+			<option value="sl_SI">Slovenian</option>
+			<option value="sr_RS">Serbian</option>
+			<option value="sv_SE">Swedish</option>
+			<option value="sw_KE">Swahili</option>
+			<option value="ta_IN">Tamil</option>
+			<option value="te_IN">Telugu</option>
+			<option value="th_TH">Thai</option>
+			<option value="tr_TR">Turkish</option>
+			<option value="uk_UA">Ukrainian</option>
+			<option value="vi_VN">Vietnamese</option>
+			<option value="zh_CN">Simplified Chinese (China)</option>
+			<option value="zh_HK">Traditional Chinese (Hong Kong)</option>
+			<option value="zh_TW">Traditional Chinese (Taiwan)</option>
+		</field>
+		
+		</fieldset>
+	</fields>
+
+	</config>
+</extension>

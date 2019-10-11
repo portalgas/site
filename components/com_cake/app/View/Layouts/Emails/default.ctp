@@ -47,7 +47,7 @@
 		th {
 			background-color: #FFFFFF;
 		    color: #000000;
-		    font-size: 14px;
+		    font-size: 16px;
 		    font-weight: normal;
 		    text-align: left;
 			padding: 3px;
@@ -55,6 +55,9 @@
 		td {
 			font-size: 14px;
 		}
+		.bgContenuto td {
+			font-size: 16px;
+		}		
 		.tblHeader {
 			width:100%;
 			height:30px;
@@ -70,7 +73,14 @@
 			list-style: outside none none;
 			margin: 0 0 10px;
 		}                
-		
+		.mobileHide { display: inline; } 
+		  
+		 /* Smartphone Portrait and Landscape */ 
+		 @media only screen 
+			and (min-device-width : 320px) 
+			and (max-device-width : 480px){ 
+			 .mobileHide { display: none;}
+		 }		
 		</style>
 		
     </head>
@@ -78,7 +88,7 @@
 <body>	  
 <center>
    
-	<table border="0" cellpadding="0" cellspacing="0" align="center" height="100%" width="100%" style="margin: 0;padding: 0;background-color:#F6F6F8;height: 100% !important;width: 100% !important;">
+	<table border="0" cellpadding="0" cellspacing="0" align="center" height="100%" width="100%" style="margin: 0;padding: 0;background-color:#F6F6F8;height: 100% !important;max-width: 1240px !important;">
     	<tbody>
 			<tr>
 		    	<td>
@@ -109,7 +119,7 @@
 								<td height="20">
 									<?php 
 									if(isset($content_info) && !empty($content_info)) {
-										echo '<div style="border-radius:5px;border:2px dotted rgb(204, 204, 204); padding: 5px 5px 5px 50px; margin: 0px; background: rgb(255, 255, 255) url(http://www.portalgas.it/images/cake/actions/32x32/info.png) no-repeat scroll 5px center;">'.$content_info.'</div>';										
+										echo '<div style="border-radius:5px;border:2px dotted rgb(204, 204, 204); padding: 10px 10px 10px 50px; margin: 0px; background: rgb(255, 255, 255) url(http://www.portalgas.it/images/cake/actions/32x32/info.png) no-repeat scroll 5px center;">'.$content_info.'</div>';										
 									}
 									else
 										echo '&nbsp;';
@@ -165,7 +175,7 @@
 			</tr>
 			
 			<!-- IMG sfondo -->
-			<tr>
+			<tr class="mobileHide">
 			  <td style="background:url(http://www.portalgas.it/images/mails/<?php echo date('N');?>.jpg) no-repeat scroll center center #000; height: 250px;">
 			  </td>
 			</tr>			

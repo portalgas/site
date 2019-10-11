@@ -23,8 +23,8 @@ if (!empty($results)) {
 		$table[] = array('label' => 'Articoli', 'width' => 'auto', 'filter' => false);
 		$table[] = array('label' => 'Ordini effettuati', 'width' => 'auto', 'filter' => false);
 		$table[] = array('label' => 'Utenti attivi', 'width' => 'auto', 'filter' => false);
-		$table[] = array('label' => __('Importo dovuto'), 'width' => 'auto', 'filter' => false);
-		$table[] = array('label' => __('Importo pagato'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => __('Importo_dovuto'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => __('Importo_pagato'), 'width' => 'auto', 'filter' => false);
 		$table[] = array('label' => __('Data pagamento'), 'width' => 'auto', 'filter' => true);
 		$table[] = array('label' => __('Beneficiario'), 'width' => 'auto', 'filter' => true);
 		$table[] = array('label' => __('Tipologia pagamento'), 'width' => 'auto', 'filter' => true);
@@ -50,7 +50,7 @@ if (!empty($results)) {
 			if($importo_dovuto > Configure::read('OrganizationPayImportMax'))
 				$importo_dovuto = Configure::read('OrganizationPayImportMax');
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			
 			$rowsExcel[] = $result['Organization']['id'];
 			$rowsExcel[] = $result['Organization']['name'];
@@ -70,7 +70,7 @@ if (!empty($results)) {
 			$rowsExcel[] = number_format($importo_dovuto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			$rowsExcel[] = number_format($result['OrganizationsPay']['importo_pagato'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
-			if($result['OrganizationsPay']['importo_pagato']!='0000-00-00')
+			if($result['OrganizationsPay']['importo_pagato']!=Configure::read('DB.field.date.empty'))
 				$rowsExcel[] = $result['OrganizationsPay']['data_pay'];
 			else
 				$rowsExcel[] = '';
@@ -98,7 +98,7 @@ if (!empty($results)) {
 		$tot_importo_pagato = number_format($tot_importo_pagato,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 
 			
-		$rowsExcel = array();
+		$rowsExcel = [];
 		
 		$rowsExcel[] = '';
 		$rowsExcel[] = '';

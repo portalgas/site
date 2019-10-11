@@ -23,7 +23,7 @@ else {
 	<?php	
 	if($numArticlesOrder>0) {	
 	?>
-		<table cellpadding = "0" cellspacing = "0">
+		<div class="table-responsive"><table class="table table-hover">
 			<tr>
 				<th style="height:10px;width:30px;" rowspan="2"><?php echo __('N');?></th>
 				<th style="height:10px;" rowspan="2"><?php echo __('User');?></th>
@@ -120,10 +120,9 @@ else {
 				}
 			}
 		}
-		?>
-		</table>
+		
+		echo '</table></div>';
 	
-	<?php 
 	}
 	else // if($numArticlesOrder>0)
 		echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "L'articolo non &egrave; stato ancora acquistato"));

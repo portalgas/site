@@ -1,3 +1,6 @@
+<?php
+echo $this->Html->css('popupSlider-min');
+?>
 <h3>Attenzione: se modifichi gli importi aggregati</h3>
 
 <div class="sp-slideshow">
@@ -117,9 +120,9 @@
 	-->
 		<li><span class="popupNum">3</span> 
 			<ul style="margin: 0px;">
-				<li><span class="popupVoceMenu bgLeft actionTrasport">Gestione del trasporto</span></li>
-				<li><span class="popupVoceMenu bgLeft actionCostMore">Gestione del costo aggiuntivo</span></li>
-				<li><span class="popupVoceMenu bgLeft actionCostLess">Gestione dello sconto</span></li>
+				<li><span class="popupVoceMenuSub bgLeft actionTrasport">Gestione del trasporto</span></li>
+				<li><span class="popupVoceMenuSub bgLeft actionCostMore">Gestione del costo aggiuntivo</span></li>
+				<li><span class="popupVoceMenuSub bgLeft actionCostLess">Gestione dello sconto</span></li>
 			</ul>
 		 </li>
 		</ul>

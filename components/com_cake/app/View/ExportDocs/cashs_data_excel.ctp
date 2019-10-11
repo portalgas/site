@@ -21,7 +21,7 @@ if (!empty($results)) {
 		$tot_importo=0;
 		foreach ($results as $numResult => $result) {
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			
 			$rowsExcel[] = ($numResult + 1);
 			$rowsExcel[] = $result['User']['name'];
@@ -41,7 +41,7 @@ if (!empty($results)) {
 		$tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 
 			
-		$rowsExcel = array();
+		$rowsExcel = [];
 		
 		$rowsExcel[] = '';
 		$rowsExcel[] = '';

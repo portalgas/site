@@ -1,4 +1,6 @@
 <?php 
+App::uses('Component', 'Controller');
+
 /*
  * setting possibili action in base allo stato (prod_delivery_id) di 
  * 		Organization.type = PROD
@@ -6,10 +8,16 @@
 class ActionsProdDeliveryComponent extends Component {
 
 	private $debug = false;
+    private $Controller = null;
+
+    public function initialize(Controller $controller) 
+    {
+		$this->Controller = $controller;
+    }
 	
 	public function writeCache() {
 
-		$actionsProdDelivery = array();
+		$actionsProdDelivery = [];
 		$actionsProdDelivery['ProdDeliveryView']['id'] = 'ProdDeliveryView';  // consegna in solo lettura
 		$actionsProdDelivery['ProdDeliveryView']['label'] = "Visualizza la consegna";
 		$actionsProdDelivery['ProdDeliveryView']['controller'] = 'ProdDeliveries';
@@ -37,7 +45,7 @@ class ActionsProdDeliveryComponent extends Component {
 		$actionsProdDelivery['ProdCartsManagementSplit']['label'] = __('Management Carts Split Short');  // suddivide la qta di ogni acquisto
 		$actionsProdDelivery['ProdCartsManagementSplit']['controller'] = 'ProdCarts';
 		$actionsProdDelivery['ProdCartsManagementSplit']['action'] = 'managementCartsSplit';
-		$actionsProdDelivery['ProdCartsManagementSplit']['css_class'] = 'actionEditDbSplit';		$actionsProdDelivery['ProdExportDoc']['id'] = 'ProdDoc';		$actionsProdDelivery['ProdExportDoc']['label'] = __('Print ProdDoc');		$actionsProdDelivery['ProdExportDoc']['controller'] = 'ProdDocs';		$actionsProdDelivery['ProdExportDoc']['action'] = 'produttoreDocsExport';		$actionsProdDelivery['ProdExportDoc']['css_class'] = 'actionPrinter';		$actionsProdDelivery['ProdExportDocHistory']['id'] = 'ProdDocHistory';		$actionsProdDelivery['ProdExportDocHistory']['label'] = __('Print ProdDoc');		$actionsProdDelivery['ProdExportDocHistory']['controller'] = 'ProdExportDocs';		$actionsProdDelivery['ProdExportDocHistory']['action'] = 'produttoreDocsExportHistory';		$actionsProdDelivery['ProdExportDocHistory']['css_class'] = 'actionPrinter';		 		$actionsProdDelivery['ProdRequestPayment']['id'] = 'ProdRequestPayment';		$actionsProdDelivery['ProdRequestPayment']['label'] = "Richiesta di pagamento";		$actionsProdDelivery['ProdRequestPayment']['controller'] = 'ProdRequestPayments';		$actionsProdDelivery['ProdRequestPayment']['action'] = 'view';		$actionsProdDelivery['ProdRequestPayment']['css_class'] = 'actionPay';							$actionsProdDeliveries = array();
+		$actionsProdDelivery['ProdCartsManagementSplit']['css_class'] = 'actionEditDbSplit';		$actionsProdDelivery['ProdExportDoc']['id'] = 'ProdDoc';		$actionsProdDelivery['ProdExportDoc']['label'] = __('Print ProdDoc');		$actionsProdDelivery['ProdExportDoc']['controller'] = 'ProdDocs';		$actionsProdDelivery['ProdExportDoc']['action'] = 'produttoreDocsExport';		$actionsProdDelivery['ProdExportDoc']['css_class'] = 'actionPrinter';		$actionsProdDelivery['ProdExportDocHistory']['id'] = 'ProdDocHistory';		$actionsProdDelivery['ProdExportDocHistory']['label'] = __('Print ProdDoc');		$actionsProdDelivery['ProdExportDocHistory']['controller'] = 'ProdExportDocs';		$actionsProdDelivery['ProdExportDocHistory']['action'] = 'produttoreDocsExportHistory';		$actionsProdDelivery['ProdExportDocHistory']['css_class'] = 'actionPrinter';		 		$actionsProdDelivery['ProdRequestPayment']['id'] = 'ProdRequestPayment';		$actionsProdDelivery['ProdRequestPayment']['label'] = "Richiesta di pagamento";		$actionsProdDelivery['ProdRequestPayment']['controller'] = 'ProdRequestPayments';		$actionsProdDelivery['ProdRequestPayment']['action'] = 'view';		$actionsProdDelivery['ProdRequestPayment']['css_class'] = 'actionPay';							$actionsProdDeliveries = [];
 				$i=0;		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i]['label'] = __('Add ProdDeliveriesArticle Error');		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i]['controller'] = 'ProdDeliveriesArticles';		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i]['action'] = 'add';		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i]['css_class'] = 'actionEditCart';		$i++;		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i] = $actionsProdDelivery['ProdDeliveryEdit'];		$i++;		$actionsProdDeliveries[Configure::read('CREATE-INCOMPLETE')][$i] = $actionsProdDelivery['ProdDeliveryDelete'];		 		$i=0;
 		$actionsProdDeliveries[Configure::read('OPEN-NEXT')][$i] = $actionsProdDelivery['ProdDeliveriesArticleEdit'];
 		$i++;		$actionsProdDeliveries[Configure::read('OPEN-NEXT')][$i] = $actionsProdDelivery['ProdDeliveryEdit'];		$i++;		$actionsProdDeliveries[Configure::read('OPEN-NEXT')][$i] = $actionsProdDelivery['ProdDeliveryDelete'];		 		$i=0;		$actionsProdDeliveries[Configure::read('OPEN')][$i] = $actionsProdDelivery['ProdDeliveryEdit'];		$i++;
@@ -70,7 +78,7 @@ class ActionsProdDeliveryComponent extends Component {
 		$actionsProdDeliveries[Configure::read('CLOSE')][$i] = $actionsProdDelivery['ProdRequestPayment'];				Cache::write('actionsProdDeliveries', $actionsProdDeliveries);
 	}
 
-	public function draw_sotto_menu($actionsProdDeliveries, $prod_delivery_id, $pageCurrent=null) {			$actionsProdDeliveriesNew = array();		$urlBase = Configure::read('App.server').'/administrator/index.php?option=com_cake&';
+	public function draw_sotto_menu($actionsProdDeliveries, $prod_delivery_id, $pageCurrent=null) {			$actionsProdDeliveriesNew = [];		$urlBase = Configure::read('App.server').'/administrator/index.php?option=com_cake&';
 		$RoutingPrefixes = Configure::read('Routing.prefixes');		
 		for($i=0; $i < count($actionsProdDeliveries); $i++) {					/*
 			 * pagina corrente, la rendo non cliccabile

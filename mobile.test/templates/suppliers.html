@@ -1,0 +1,59 @@
+<ion-view view-title="Produttori" cache-view="false"> 
+
+<ion-nav-buttons side="right">
+	<button class="button button-clear icon ion-android-settings" ng-click="openPopSearch()"></button>
+	<a href="#/"><button class="button button-clear icon ion-home" title="home"></button></a>
+</ion-nav-buttons>
+
+
+  <ion-content>
+
+
+<div class="animate-show" ng-show="showPopSearch">
+
+	<div class="button button-full button-positive">
+	Ricerca
+	</div>
+	
+	  <div class="bar bar-header item-input-inset">
+			  <label class="item-input-wrapper">
+				<i class="icon ion-ios-search placeholder-icon"></i>
+				<input ng-model="search.name" type="text" placeholder="Ricerca per nome" />
+			 </label>
+		</div>
+		<div class="bar bar-header item-input-inset">
+			  <label class="item-input-wrapper">
+				<i class="icon ion-ios-search placeholder-icon"></i>
+				<input ng-model="search.descrizione" type="text" placeholder="Ricerca per descrizione" />
+			 </label>
+		</div>	
+		<div class="bar bar-header item-input-inset">
+			  <label class="item-input-wrapper">
+				<i class="icon ion-ios-search placeholder-icon"></i>
+				<input ng-model="search.provincia" type="text" placeholder="Ricerca per provincia" />
+			 </label>
+	</div>
+</div>
+
+		
+		<ion-list>  
+		   <ion-item class="item-content" ng-repeat="supplier in suppliers | filter:search:strict" type="item-text-wrap" href="#/app/supplier/{{supplier.id}}">
+				
+					<div class="item-thumbnail-left item-text-wrap">
+						<img ng-src="http://www.portalgas.it/images/organizations/contents/{{supplier.img1}}" ng-if="supplier.img1 != ''" />
+						<h2>{{supplier.name}}</h2> 
+							<p>{{supplier.descrizione}}</p>
+					
+							<span class="item-note">
+								{{supplier.localita}} <span ng-if="supplier.provincia != '' && supplier.provincia != null ">({{supplier.provincia}})</span><br />
+								<span ng-if="supplier.indirizzo != '' && supplier.indirizzo != null ">{{supplier.indirizzo}}</span> <span ng-if="supplier.cap != '' && supplier.cap != null "> - {{supplier.cap}}</span>
+							</span>	
+						</h2>
+					</div>			
+			
+		  </ion-item>
+		</ion-list>
+		
+
+  </ion-content>
+</ion-view>

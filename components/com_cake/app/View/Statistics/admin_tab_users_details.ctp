@@ -25,7 +25,7 @@ if(!empty($results)) {
 		echo '<td>'.$result['User']['name'].'</td>';
 		echo '<td>'.$result['User']['username'].'</td>';
 		echo '<td style="text-align:center;">'.$result[0]['tot_qta'].'</td>';
-		echo '<td style="text-align:center;">'.number_format($result[0]['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+		echo '<td style="text-align:center;">'.number_format($result[0]['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 		echo '</tr>';
 	}
 	
@@ -37,11 +37,11 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td style="text-align:center;"><b>'.$totale_qta.'</b></td>';
-	echo '<td style="text-align:center;"><b>'.$totale.' &euro;</b></td>';
+	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
 	echo '</tr>';	
 	echo '</table>';
 
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));	
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>

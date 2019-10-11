@@ -5,11 +5,11 @@ $this->PhpExcel->setDefaultFont('Calibri', 12);
 // define table cells
 $table[] =	array('label' => __('N.'), 'width' => 'auto');
 $table[] =	array('label' => __('User'), 'width' => 'auto');
-$table[] = array('label' => __('Importo Dovuto'), 'width' => 'auto', 'filter' => true);
-$table[] = array('label' => __('Importo Pagato'), 'width' => 'auto', 'filter' => true);
-$table[] =	array('label' => __('Differenza'), 'width' => 'auto', 'filter' => true);
-$table[] =	array('label' => __('Cassa'), 'width' => 'auto', 'filter' => true);
-$table[] = array('label' => __('Modalità'), 'width' => 'auto', 'filter' => true);
+$table[] = array('label' => __('Importo_dovuto'), 'width' => 'auto', 'filter' => true);
+$table[] = array('label' => __('Importo_pagato'), 'width' => 'auto', 'filter' => true);
+$table[] =	array('label' => __('Delta'), 'width' => 'auto', 'filter' => true);
+$table[] =	array('label' => __('Cash'), 'width' => 'auto', 'filter' => true);
+$table[] = array('label' => __('Modality'), 'width' => 'auto', 'filter' => true);
 if($user->organization['Organization']['hasFieldPaymentPos']=='Y')
 	$table[] = array('label' => __('Importo POS'), 'width' => 'auto', 'filter' => true);
 
@@ -20,11 +20,11 @@ if (!empty($results['Order'])) {
 		$tot_differenza_delivery = 0;
 		foreach ($results['Order'] as $numResult => $order) {
 
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] =  '';
 			$this->PhpExcel->addTableRow($rowsExcel);
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] = '';
 			$rowsExcel[] = __('Supplier').' '.$order['SuppliersOrganization']['name'];
 			$rowsExcel[] = 'dal '.$this->Time->i18nFormat($order['data_inizio'], "%e %b %Y").' al '.$this->Time->i18nFormat($order['data_fine'], "%e %b %Y");
@@ -59,7 +59,7 @@ if (!empty($results['Order'])) {
 					else
 						$importo_cash = '0,00';
 						
-					$rowsExcel = array();
+					$rowsExcel = [];
 					$rowsExcel[] = ($numResult2+1);
 					$rowsExcel[] = $result['User']['name'];
 					$rowsExcel[] = $importo;
@@ -94,7 +94,7 @@ if (!empty($results['Order'])) {
 			$tot_importo_pagato = number_format($tot_importo_pagato,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			$tot_differenza = number_format($tot_differenza,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
-			$rowsExcel = array();
+			$rowsExcel = [];
 			$rowsExcel[] =  '';
 			$rowsExcel[] =  '';
 			$rowsExcel[] = $tot_importo;
@@ -112,7 +112,7 @@ if (!empty($results['Order'])) {
 	$tot_importo_pagato_delivery = number_format($tot_importo_pagato_delivery,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 	$tot_differenza_delivery = number_format($tot_differenza_delivery,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 	
-	$rowsExcel = array();
+	$rowsExcel = [];
 	$rowsExcel[] =  '';
 	$rowsExcel[] =  '';
 	$rowsExcel[] =  $tot_importo_delivery;

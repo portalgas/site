@@ -26,15 +26,13 @@ foreach($results as $numResult => $result) {
 	   ($article_organization_id_old != $result['ArticlesOrder']['article_organization_id'] ||
 	    $article_id_old != $result['ArticlesOrder']['article_id'])) {
 	
-		$bio = $result['Article']['bio'];
-		
-                $data[$numResult]['csv'] = array('N' => ($numArticle+1));
-                if($bio=='Y') $data[$numResult]['csv'] += array('bio' => 'Bio');
-                else $data[$numResult]['csv'] += array('bio' => '');
-                if($showCodice=='Y')
-                    $data[$numResult]['csv'] += array('codice' => $codiceArticle);
- 
-                $data[$numResult]['csv'] += array('name' => $this->ExportDocs->prepareCsv($name));
+		$data[$numResult]['csv'] = array('N' => ($numArticle+1));
+		if($bio=='Y') $data[$numResult]['csv'] += array('bio' => 'Bio');
+		else $data[$numResult]['csv'] += array('bio' => '');
+		if($showCodice=='Y')
+			$data[$numResult]['csv'] += array('codice' => $codiceArticle);
+
+		$data[$numResult]['csv'] += array('name' => $this->ExportDocs->prepareCsv($name));
 			
 		$data[$numResult]['csv'] += array('qta' =>  $tot_qta_single_article);				
 		$data[$numResult]['csv'] += array('prezzoUnita' =>  $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo)));

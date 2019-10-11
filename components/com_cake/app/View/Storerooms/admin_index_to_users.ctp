@@ -1,20 +1,23 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->App->d($results);
+$this->App->d($FilterStoreroomGroupBy);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Storeroom'), array('controller' => 'Storerooms', 'action' => 'index'));
 $this->Html->addCrumb('Cosa è stato acquistato');
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));  
+
+echo '<div class="storerooms">';
+
+echo '<h2 class="ico-storerooms">';
+echo __('Storeroom');
+echo '</h2>';
+
+echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'get'));
+echo '<fieldset class="filter">';
+echo '<legend>'.__('Filter Storeroom').'</legend>';
 ?>
-<div class="storerooms">
-
-	<h2 class="ico-storerooms">
-		<?php echo __('Storeroom');?>
-	</h2>
-
-
-	<?php echo $this->Form->create('FilterStoreroom',array('id'=>'formGasFilter','type'=>'get'));?>
-		<fieldset class="filter">
-			<legend><?php echo __('Filter Storeroom'); ?></legend>
-			<table>
+			<div class="table-responsive"><table class="table">
 				<tr>
 					<td>
 						<?php echo $this->Form->input('delivery_id',array('label' => false,'options' => $deliveries,'empty' => 'Filtra per consegne','name'=>'FilterStoreroomDeliveryId','default'=>$FilterStoreroomDeliveryId,'escape' => false)); ?>
@@ -39,7 +42,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		</fieldset>					
 
 <?php	
-if(!empty($results )) {
+if(!empty($results)) {
 	if($FilterStoreroomGroupBy=='SUPPLIERS') {
 		$delivery_id_old = 0;
 		$supplier_organization_id_old = 0;
@@ -108,8 +111,15 @@ if(!empty($results )) {
 			echo '<td>'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';
 			echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Storeroom']['created']).'</td>';
 			echo '<td class="actions-table-img">';
-				if($result['SuppliersOrganization']['IsReferente']=='Y') 
+			if($result['Delivery']['isToStoreroomPay']=='Y') {
+				echo '<span class="label label-info">'.__('StoreroomArticleInRequestPaymentShort').'</span>';
+			}
+			else {
+				if($result['SuppliersOrganization']['IsReferente']=='Y' || $isUserCurrentStoreroom) 
 					echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica'));
+					echo $this->Html->link(null, ['action' => 'index_to_users', $result['Storeroom']['id']], 
+								['confirm' => "Sei sicuro di voler rimettere in dispensa l'articolo associato ora ad un gasista?", 'class' => 'action actionDelete', 'title' => __('Delete')]);			
+			}
 			echo '</td>';
 		echo '</tr>';
 	
@@ -177,7 +187,7 @@ if(!empty($results )) {
 				echo $result['Storeroom']['name'].'</td>';
 			echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
 			echo '<td>'.$result['Storeroom']['prezzo_e'].'</td>';
-			echo '<td>'.$this->App->getArticlePrezzoUM($result['Storeroom']['prezzo'], $result['Article']['prezzo'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
+			echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
 			
 			echo '<td>';
 			if($result['Storeroom']['qta']==1)
@@ -200,21 +210,7 @@ if(!empty($results )) {
 
 	}
 } //  if(empty($results ))
-else
-	echo $this->element('boxMsg',array('class_msg' => 'message'));	
-
+else 
+	echo $this->element('boxMsg', ['class_msg' => 'message', 'msg' => "Non ci sono ancora articoli associati alla dispensa"]);	
 echo '</div>';
 ?>
-<script type="text/javascript">
-$(document).ready(function() {
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	$('.filter').click(function() {
-		$("input[name^='page']").val('');
-	});
-	
-});		
-</script>

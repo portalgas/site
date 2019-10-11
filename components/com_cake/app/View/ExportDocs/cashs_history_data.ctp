@@ -74,7 +74,7 @@ if (!empty($results)) {
                                 else 
                                     $movimento = ($importo_history_old - ($historyResult['CashesHistory']['importo']));
                                 
-                                $rowsExcel = array();
+                                $rowsExcel = [];
 
                                 $html .= '<tr>';
                                 $html .= '<td width="'.$output->getCELLWIDTH30().'"></td>';
@@ -84,7 +84,7 @@ if (!empty($results)) {
                                 $html .= '</td>';
                                 $html .= '<td width="'.$output->getCELLWIDTH10().'"></td>';
                                 $html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">';
-                                $html .= number_format($movimento,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;</td>';
+                                $html .= number_format($movimento,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
                                 $html .= '<td width="'.$output->getCELLWIDTH200().'" style="text-align:right;">'.$historyResult['CashesHistory']['nota'].'</td>';
                                 $html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.CakeTime::format($historyResult['CashesHistory']['created'], "%e %B %Y").'</td>';
                                 $html .= '</tr>';
@@ -102,7 +102,7 @@ if (!empty($results)) {
 		$html .= '<tr>';
 		$html .= '<th width="'.$output->getCELLWIDTH30().'"></th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'"></th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.$tot_importo.' &euro;</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.$tot_importo.'&nbsp;&euro;</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'"></th>';
 		$html .= '<th width="'.$output->getCELLWIDTH200().'"></th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'"></th>';
@@ -120,4 +120,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

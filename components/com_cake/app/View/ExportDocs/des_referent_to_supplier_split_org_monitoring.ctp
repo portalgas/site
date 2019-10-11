@@ -1,9 +1,5 @@
 <?php 
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
 
 /*
  * aggrego i dati
@@ -150,7 +146,7 @@ foreach($newResults as $resultOrg) {
             if($result['ArticlesOrder']['pezzi_confezione']>1) {
             		
                 if($differenza_da_ordinare != $result['ArticlesOrder']['pezzi_confezione'])  
-                    $html .= '<span style="background-color: #FF0000;padding: 0 5px;"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
+                    $html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
                 else
                     $html .= '0 (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
             }
@@ -190,9 +186,9 @@ foreach($newResults as $resultOrg) {
 	 * totali singolo GAS
 	 */
 	$html .= '	<th width="'.$output->getCELLWIDTH20().'"></th>';
-	$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+	$html .= '	<th colspan="'.$colspan.'" style="text-align:right;">'.__('qta_tot').'</th>';
 	$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$tot_qta.'</th>';
-	$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
+	$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH80()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';			
 
 	$html .= '</tr>';
 
@@ -212,7 +208,7 @@ foreach($newResults as $resultOrg) {
  * totali
  */
 $html .= '<div class="h1Pdf" style="text-align:center">';
-$html .= 'Importo totale&nbsp;'.number_format($importo_totale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato);
+$html .= ''.__('Importo_totale').'&nbsp;'.number_format($importo_totale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato);
 $html .= '</div>';
 
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
@@ -223,4 +219,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

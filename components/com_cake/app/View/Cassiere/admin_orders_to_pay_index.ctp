@@ -1,5 +1,5 @@
 <?php 
-echo '<label for="order_id">Ordini</label>';
+echo '<label for="order_id">Ordini</label> ';
 echo '<div>';
 
 if (!empty($results['Order'])):
@@ -51,10 +51,10 @@ if (!empty($results['Order'])):
 }
 </style>
 
-	<table cellpadding = "0" cellspacing = "0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 		<th></th>
-		<th><?php echo __('stato_elaborazione'); ?></th>
+		<th><?php echo __('StatoElaborazione'); ?></th>
 		<th colspan="2"><?php echo __('Supplier'); ?></th>
 		<th><?php echo __('Tesoriere Importo Pay'); ?></th>
 		<th><?php echo __('Tesoriere Data Pay'); ?></th>
@@ -78,7 +78,7 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			echo '<td>';
 			if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
 			echo '</td>';
 			echo '<td>'.$order['SuppliersOrganization']['name'].'</td>';
 
@@ -87,12 +87,12 @@ if (!empty($results['Order'])):
 			echo '</td>';
 			
 			echo '<td>';
-			if($order['tesoriere_data_pay']=='000-00-00')
+			if($order['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
 				$tesoriere_data_pay = '';
 			else
 				$tesoriere_data_pay = $this->Time->i18nFormat($order['tesoriere_data_pay'],"%A, %e %B %Y");
 							
-			echo $this->Form->input('tesoriere_data_pay',array('type' => 'text','size'=>'25','label' => false, 'class' => 'noWidth', 'value' => $tesoriere_data_pay, 'name' => 'data[Order]['.$order['id'].'][tesoriere_data_pay]', 'id' => 'OrderTesoriereDataPay'.$order['id'], 'required' => 'false'));
+			echo $this->Form->input('tesoriere_data_pay',array('type' => 'text','size'=>'25','label' => false, 'value' => $tesoriere_data_pay, 'name' => 'data[Order]['.$order['id'].'][tesoriere_data_pay]', 'id' => 'OrderTesoriereDataPay'.$order['id'], 'required' => 'false'));
 			echo $this->Ajax->datepicker('OrderTesoriereDataPay'.$order['id'],array('dateFormat' => 'DD, d MM yy','altField' => '#OrderTesoriereDataPayDb'.$order['id'], 'altFormat' => 'yy-mm-dd'));
 			echo '<input type="hidden" id="OrderTesoriereDataPayDb'.$order['id'].'" name="data[Order]['.$order['id'].'][tesoriere_data_pay_db]" value="'.$order['tesoriere_data_pay'].'" />';
 				
@@ -119,57 +119,57 @@ if (!empty($results['Order'])):
 			echo '</tr>';					
 	endforeach;
 
-	echo '</table>';
+	echo '</table></div>';
 else: 
 	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ordini associati"));
 endif; 
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.double').focusout(function() {setNumberFormat(this);});  /* applicato a tutti i campi prezzo */
+	$('.double').focusout(function() {setNumberFormat(this);});  /* applicato a tutti i campi prezzo */
 		
 	<?php if (!empty($results['Order'])) { ?>
-		jQuery('.submit').css('display','block');
+		$('.submit').css('display','block');
 	<?php
 	} else { ?>
-		jQuery('.submit').css('display','none');
+		$('.submit').css('display','none');
 	<?php
 	}
 	?>	
 
-	jQuery('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
+	$('.actionTrView').css('display','inline-block');  /* rendo visibile il tasto espandi per i dettagli ajax */
 	
-	jQuery('.actionTrView').each(function () {
+	$('.actionTrView').each(function () {
 		actionTrView(this);
 	});
 	
-	jQuery('#box-account-close').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#box-account-close').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 
-	jQuery('#legendaOrderState').click(function() {
-		if(jQuery('#legendaOrderStateContent').css('display')=='block')  {
-			jQuery('#legendaOrderStateContent').hide();
+	$('#legendaOrderState').click(function() {
+		if($('#legendaOrderStateContent').css('display')=='block')  {
+			$('#legendaOrderStateContent').hide();
 		}
 		else 
-			jQuery('#legendaOrderStateContent').show();
+			$('#legendaOrderStateContent').show();
 
 		return false;
 	});
 	
-	jQuery("input[name='order_tesoriere_stato_pay_selected']").click(function() {
-		var order_tesoriere_stato_pay = jQuery(this).val();
-		if(jQuery(this).is(':checked')) 
-			jQuery('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','table-row');
+	$("input[name='order_tesoriere_stato_pay_selected']").click(function() {
+		var order_tesoriere_stato_pay = $(this).val();
+		if($(this).is(':checked')) 
+			$('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','table-row');
 		else
-			jQuery('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','none');
+			$('.OrderTesoriereStatoPay'+order_tesoriere_stato_pay).css('display','none');
 	});	
 });
 </script>

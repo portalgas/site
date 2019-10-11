@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
 $this->Html->addCrumb(__('List Articles'));
@@ -65,7 +65,7 @@ else
 	if(!empty($results)) { 
 	?>	
 	
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th></th>
 			<th><?php echo __('N');?></th>
@@ -76,7 +76,7 @@ else
 				echo '<th>'.$this->Paginator->sort('codice').'</th>';
 			?>
 			<th colspan="2"><?php echo $this->Paginator->sort('name','Nome prodotto');?></th>
-			<th><?php echo $this->Paginator->sort('confezione');?></th>
+			<th><?php echo $this->Paginator->sort('Package');?></th>
 			<th><?php echo $this->Paginator->sort('PrezzoUnita');?></th>
 			<th><?php echo $this->Paginator->sort('Prezzo/UM');?></th>
 			<th><?php echo $this->Paginator->sort('bio',__('Bio'));?></th>
@@ -87,13 +87,15 @@ else
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
-	foreach ($results as $i => $result):
-		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1);
-	?>
-	<tr class="view">
-		<td><a action="article_carts-<?php echo $order_id;?>_<?php echo $result['Article']['organization_id'];?>_<?php echo $result['Article']['id'];?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo $numRow;?></td>
-		<?php
+	foreach ($results as $numResults => $result) {
+		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $numResults+1);
+	
+		echo '<tr class="view">';
+		echo '<td>';
+		echo '<a name="anchor_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></a>';
+		echo '<a action="article_carts-'.$order_id.'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+		echo '<td>'.$numRow.'</td>';
+		
 		if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') 
 			echo '<td>'.$result['CategoriesArticle']['name'].'</td>';		
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
@@ -101,18 +103,17 @@ else
 		
 		echo '<td>';
 		if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
-			echo '<img width="50" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 		}
 		echo '</td>';
 		
 		echo '<td>'.$result['Article']['name'].'&nbsp;';
 		echo $this->App->drawArticleNota($i, strip_tags($result['Article']['nota']));
 		echo '</td>';
-		?>			
-		<td><?php echo $this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']); ?></td>
-		<td><?php echo $result['ArticlesOrder'][0]['prezzo_e'];?></td>
-		<td><?php echo $this->App->getArticlePrezzoUM($result['ArticlesOrder'][0]['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);?></td>
-		<?php 
+		echo '<td>'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
+		echo '<td>'.$result['ArticlesOrder'][0]['prezzo_e'].'</td>';
+		echo '<td>'.$this->App->getArticlePrezzoUM($result['ArticlesOrder'][0]['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
+		
 		/*
 		 * qui calcolo runtime se e' bio, se no prendo il campo article.bio
 		 */
@@ -125,41 +126,41 @@ else
 			foreach($result['ArticlesType'] as $articleType)
 				echo $articleType['label'].'<br />';
 		echo '</td>';
-		?>
-		<td title="<?php echo __('toolTipStato');?>" class="stato_<?php echo $this->App->traslateEnum($result['Article']['stato']); ?>"></td>
-		<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Article']['created']); ?></td>
-		<td style="white-space: nowrap;"><?php echo $this->App->formatDateCreatedModifier($result['Article']['modified']); ?></td>
-		<td class="actions-table-img-3">
-			<?php 
+		
+		echo '< title="'.__('toolTipStato').'" class="stato_'.$this->App->traslateEnum($result['Article']['stato']).'</td>';
+		echo '< style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Article']['created']).'</td>';
+		echo '<style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Article']['modified']).'</td>';
+		echo '<class="actions-table-img-3">';
+		
 			/*
 			 *  ad admin_edit passo i parametri della ricerca, ordinamento e paginazione
 			 * 	cosi' quando ritorno ad admin_index mantengo i filtri
 			 */		
-			echo $this->Html->link(null, array('action' => 'context_order_edit', $result['Article']['id'],  
+			echo $this->Html->link(null, array('action' => 'context_order_edit', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 													'sort:'.$sort,'direction:'.$direction,'page:'.$page)
 													,array('class' => 'action actionEdit','title' => __('Edit'))); 
-			echo $this->Html->link(null, array('action' => 'context_order_copy', $result['Article']['id'],
+			echo $this->Html->link(null, array('action' => 'context_order_copy', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 													'sort:'.$sort,'direction:'.$direction,'page:'.$page)
 													,array('class' => 'action actionCopy','title' => __('Copy')));
-			echo $this->Html->link(null, array('action' => 'context_order_delete', $result['Article']['id'],
+			echo $this->Html->link(null, array('action' => 'context_order_delete', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
 													'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-													,array('class' => 'action actionDelete','title' => __('Delete'))); ?>
-		</td>
-	</tr>
-	<tr class="trView" id="trViewId-<?php echo $order_id;?>_<?php echo $result['Article']['organization_id'];?>_<?php echo $result['Article']['id'];?>">
-		<td colspan="2"></td>
-		<td colspan="<?php echo $colspan;?>" id="tdViewId-<?php echo $order_id;?>_<?php echo $result['Article']['organization_id'];?>_<?php echo $result['Article']['id'];?>"></td>
-	</tr>
-<?php 
-endforeach;
-echo '</table>';
+													,array('class' => 'action actionDelete','title' => __('Delete'))); 
+		echo '</td>';
+		echo '</tr>';
+		echo '<tr class="trView" id="trViewId-'.$order_id.'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
+		echo '	<td colspan="2"></td>';
+		echo '	<td colspan="'.$colspan.'" id="tdViewId-'.$order_id.'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></td>';
+		echo '</tr>';
+
+	}
+echo '</table></div>';
 
 	}
 	else {    
 		if($iniCallPage)
-			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFonud', 'msg' => __('msg_search_no_parameter')));
+			echo $this->element('boxMsg',array('class_msg' => 'success resultsNotFound', 'msg' => __('msg_search_no_parameter')));
 		else
-			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud'));
+			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	}
 echo '</div>';
 
@@ -167,32 +168,23 @@ $options = [];
 echo $this->MenuOrders->drawWrapper($order_id, $options);
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 		
-	jQuery(".actionNotaDetail").each(function () {
-		jQuery(this).click(function() {
+	$(".actionNotaDetail").each(function () {
+		$(this).click(function() {
 			
-			dataElement = jQuery(this).attr('id');
+			dataElement = $(this).attr('id');
 			dataElementArray = dataElement.split('-');
 			var label = dataElementArray[0];
 			var idElement = dataElementArray[1];
 			
-			jQuery('#articleNota-'+idElement).fadeIn();
-			jQuery('#articleNotaContinue-'+idElement).hide();
+			$('#articleNota-'+idElement).fadeIn();
+			$('#articleNotaContinue-'+idElement).hide();
 			
 		});
 	});	
 	
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});
-	
-	jQuery('.actionCopy').click(function() {
+	$('.actionCopy').click(function() {
 
 		if(!confirm("Sei sicuro di voler copiare l'articolo selezionato?")) {
 			return false;

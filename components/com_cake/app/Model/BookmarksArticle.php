@@ -107,32 +107,32 @@ class BookmarksArticle extends Model {
 	public $validate = array(
 		'organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'supplier_organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'article_organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'article_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 		'user_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),			
 		'qta' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
+				'rule' => ['numeric'],
 			),
 		),
 	);

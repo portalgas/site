@@ -104,61 +104,61 @@ function gestTypeDelivery(typeDelivery) {
 	/*console.log("gestTypeDelivery "+typeDelivery);*/
 	
 	if(typeDelivery=='select') {
-		jQuery('#delivery_id').removeAttr('disabled');
-		jQuery('#select_content').css('opacity','1');
-		jQuery('#mail_content').css('opacity','0.3');
-		jQuery('#content_link').hide();
-		jQuery('#content_link_only_text').show();
-		jQuery('#to_defined_content').css('opacity','0.3');
-		jQuery('#delivery_old_content').css('opacity','0.3');
-		jQuery('#action_delivery_old').hide();
-		jQuery('#label_delivery_old').show();
-		jQuery('#delivery_old_content').css('background-color','#fff');
+		$('#delivery_id').removeAttr('disabled');
+		$('#select_content').css('opacity','1');
+		$('#mail_content').css('opacity','0.3');
+		$('#content_link').hide();
+		$('#content_link_only_text').show();
+		$('#to_defined_content').css('opacity','0.3');
+		$('#delivery_old_content').css('opacity','0.3');
+		$('#action_delivery_old').hide();
+		$('#label_delivery_old').show();
+		$('#delivery_old_content').css('background-color','#fff');
 	}
 	else
 	if(typeDelivery=='mail') {
-		jQuery('#delivery_id').attr('disabled', 'disabled');
-		jQuery('#select_content').css('opacity','0.3');
-		jQuery('#mail_content').css('opacity','1');
-		jQuery('#content_link').show();
-		jQuery('#content_link_only_text').hide();
-		jQuery('#to_defined_content').css('opacity','0.3');
-		jQuery('#delivery_old_content').css('opacity','0.3');
-		jQuery('#action_delivery_old').hide();
-		jQuery('#label_delivery_old').show();
-		jQuery('#delivery_old_content').css('background-color','#fff');
+		$('#delivery_id').attr('disabled', 'disabled');
+		$('#select_content').css('opacity','0.3');
+		$('#mail_content').css('opacity','1');
+		$('#content_link').show();
+		$('#content_link_only_text').hide();
+		$('#to_defined_content').css('opacity','0.3');
+		$('#delivery_old_content').css('opacity','0.3');
+		$('#action_delivery_old').hide();
+		$('#label_delivery_old').show();
+		$('#delivery_old_content').css('background-color','#fff');
 	}
 	else
 	if(typeDelivery=='to_defined') {
-		jQuery('#delivery_id').attr('disabled', 'disabled');
-		jQuery('#select_content').css('opacity','0.3');
-		jQuery('#mail_content').css('opacity','0.3');
-		jQuery('#content_link').hide();
-		jQuery('#content_link_only_text').show();
-		jQuery('#to_defined_content').css('opacity','1');
-		jQuery('#delivery_old_content').css('opacity','0.3');
-		jQuery('#action_delivery_old').hide();
-		jQuery('#label_delivery_old').show();
-		jQuery('#delivery_old_content').css('background-color','#fff');
+		$('#delivery_id').attr('disabled', 'disabled');
+		$('#select_content').css('opacity','0.3');
+		$('#mail_content').css('opacity','0.3');
+		$('#content_link').hide();
+		$('#content_link_only_text').show();
+		$('#to_defined_content').css('opacity','1');
+		$('#delivery_old_content').css('opacity','0.3');
+		$('#action_delivery_old').hide();
+		$('#label_delivery_old').show();
+		$('#delivery_old_content').css('background-color','#fff');
 	}
 	else
 	if(typeDelivery=='delivery_old') {
-		jQuery('#delivery_id').attr('disabled', 'disabled');
-		jQuery('#select_content').css('opacity','0.3');
-		jQuery('#mail_content').css('opacity','0.3');
-		jQuery('#content_link').hide();
-		jQuery('#content_link_only_text').show();
-		jQuery('#to_defined_content').css('opacity','0.3');
-		jQuery('#delivery_old_content').css('opacity','1');
-		jQuery('#action_delivery_old').show();
-		jQuery('#label_delivery_old').hide();
-		jQuery('#delivery_old_content').css('background-color','#fff');
+		$('#delivery_id').attr('disabled', 'disabled');
+		$('#select_content').css('opacity','0.3');
+		$('#mail_content').css('opacity','0.3');
+		$('#content_link').hide();
+		$('#content_link_only_text').show();
+		$('#to_defined_content').css('opacity','0.3');
+		$('#delivery_old_content').css('opacity','1');
+		$('#action_delivery_old').show();
+		$('#label_delivery_old').hide();
+		$('#delivery_old_content').css('background-color','#fff');
 	}	
 }
 					
-jQuery(document).ready(function() { 
-	jQuery("input[name='typeDelivery']").change(function() {	
-		var typeDelivery = jQuery("input[name='typeDelivery']:checked").val();
+$(document).ready(function() { 
+	$("input[name='typeDelivery']").change(function() {	
+		var typeDelivery = $("input[name='typeDelivery']:checked").val();
 		gestTypeDelivery(typeDelivery);
 	});
 

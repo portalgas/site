@@ -54,7 +54,7 @@ class Cash extends AppModel {
 	public $validate = array(
 		'organization_id' => array(
 				'numeric' => array(
-						'rule' => array('numeric'),
+						'rule' => ['numeric'],
 				),
 		),
 	);

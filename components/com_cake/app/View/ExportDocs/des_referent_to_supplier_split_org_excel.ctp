@@ -2,7 +2,14 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
-$table = array();
+if(isset($desOrdersResults['Supplier'])) {
+	$rows = [];
+	$rows[] = '';
+	$rows[] = $desOrdersResults['Supplier']['name'];
+	$this->PhpExcel->addTableRow($rows);
+}
+
+$table = [];
 $table[] =	array('label' => __('N'), 'width' => 'auto');
 $table[] =	array('label' => __('Bio'), 'width' => 'auto', 'filter' => true);
 if($showCodice=='Y')
@@ -15,7 +22,6 @@ $table[] =	array('label' => __('Importo'), 'width' => 'auto', 'filter' => false)
 // heading
 $this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
 
-
 $qta_totale = 0;
 $importo_totale = 0;
 $html = '';
@@ -24,7 +30,7 @@ foreach($results as $numResult => $resultOrg) {
         /*
          * intestazione
          */
-        $rows = array();
+        $rows = [];
         $rows[] = '';
         $rows[] = '';
         if($showCodice=='Y')
@@ -40,21 +46,20 @@ foreach($results as $numResult => $resultOrg) {
 	$tot_importo = 0;
 	$article_organization_id_old=0;
 	$article_id_old = 0;
+	if(isset($resultOrg['Cart']))
 	foreach($resultOrg['Cart'] as $numResult => $result) {
 
 		if($article_id_old > 0 && // salto la prima volta
 		   ($article_organization_id_old != $result['ArticlesOrder']['article_organization_id'] ||
 			$article_id_old != $result['ArticlesOrder']['article_id'])) {
 		
-			$bio = $result['Article']['bio'];
-			
-                        $rows = array();
+			$rows = [];
 
-                        $rows[] = ($i+1);
-                        if($bio=='Y') 
-                            $rows[] = 'Bio';
+			$rows[] = ($i+1);
+			if($bio=='Y') 
+				$rows[] = 'Bio';
 			else 
-                            $rows[] = '';
+				$rows[] = '';
                       
 			if($showCodice=='Y') 
                             $rows[] = $codiceArticle;
@@ -121,7 +126,7 @@ foreach($results as $numResult => $resultOrg) {
  	
 
 
-        $rows = array();
+        $rows = [];
 
         $rows[] = ($i+1);
         if($bio=='Y') 
@@ -140,7 +145,7 @@ foreach($results as $numResult => $resultOrg) {
         $this->PhpExcel->addTableRow($rows);	
 
 
-        $rows = array();
+        $rows = [];
         $rows[] = '';
 	if($showCodice=='Y') 
             $rows[] = '';
@@ -169,7 +174,7 @@ foreach($results as $numResult => $resultOrg) {
 /* 
  * totali
  */
-$rows = array();
+$rows = [];
 $rows[] = '';
 if($showCodice=='Y') 
     $rows[] = '';

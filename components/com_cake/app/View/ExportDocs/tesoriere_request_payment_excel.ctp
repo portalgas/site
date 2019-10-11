@@ -7,7 +7,7 @@ $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
 
-$rows = array();
+$rows = [];
 $rows[] = '';
 $rows[] = "Rich. pagamento num.".$results['RequestPayment']['num'];
 $rows[] = $this->Time->i18nFormat($results['RequestPayment']['stato_elaborazione_date'],"%A %e %B %Y");
@@ -16,30 +16,34 @@ $this->PhpExcel->addTableRow($rows);
 
 if(count($results['Order'])>0) { 
 
-		$table = array();
-		$table[] =	array('label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false);
-		$table[] =	array('label' =>  __('Delivery'), 'width' => 'auto');
-		$table[] = array('label' => __('Supplier'), 'width' => 'auto', 'filter' => false);
+		$table = [];
+		$table[] =	['label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false];
+		$table[] =	['label' =>  __('Delivery'), 'width' => 'auto'];
+		$table[] = ['label' => __('Supplier'), 'width' => 'auto', 'filter' => false];
+		$table[] = ['label' => __('Importo totale ordine'), 'width' => 'auto', 'filter' => false];
+		$table[] = ['label' => __('Tesoriere fattura importo'), 'width' => 'auto', 'filter' => false];
 	
-		$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
+		$this->PhpExcel->addTableHeader($table, ['name' => 'Cambria', 'bold' => true]);
 
 		$delivery_id_old=0;
 		foreach($results['Order'] as $i => $result) {
 			
-			$rows = array();
+			$rows = [];
 			$rows[] = ($i+1);
 			if($result['Delivery']['id']!=$delivery_id_old)
 				$rows[] = $result['Delivery']['luogo'].', del '.$this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y");
 			else
 				$rows[] = '';
 			$rows[] = $result['SuppliersOrganization']['name'];
+			$rows[] = ''.$result['Order']['tot_importo'];
+			$rows[] = ''.$result['Order']['tesoriere_fattura_importo'];
 		
 			$this->PhpExcel->addTableRow($rows);
 		
 			$delivery_id_old = $result['Delivery']['id'];
 		} // end foreach($results['Order'] as $i => $result)
 		
-		$rows = array();
+		$rows = [];
 		$rows[] = '';
 		$this->PhpExcel->addTableRow($rows);		 
 } 
@@ -50,7 +54,7 @@ if(count($results['Order'])>0) {
 if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 	if(!empty($results['Storeroom'])) { 
 	
-		$table = array();
+		$table = [];
 		$table[] = array('label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false);
 		$table[] = array('label' =>  __('Delivery'), 'width' => 'auto');
 
@@ -58,7 +62,7 @@ if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organizati
 	
 		foreach($results['Storeroom'] as $i => $storeroom) {
 
-			$rows = array();
+			$rows = [];
 			$rows[] = ($i+1);
 			$rows[] = $storeroom['Delivery']['luogo'].', di '.$this->Time->i18nFormat($storeroom['Delivery']['data'],"%A %e %B %Y");
 			$rows[] = $this->App->formatDateCreatedModifier($storeroom['Delivery']['created']);
@@ -67,7 +71,7 @@ if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organizati
 		
 		} // end foreach($results['Order'] as $i => $result) 
 		
-		$rows = array();
+		$rows = [];
 		$rows[] = '';
 		$this->PhpExcel->addTableRow($rows);
 				
@@ -77,7 +81,7 @@ if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organizati
 
 if(!empty($results['PaymentsGeneric'])) { 
 
-	$table = array();
+	$table = [];
 	$table[] = array('label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false);
 	$table[] = array('label' =>  'Voce di spesa', 'width' => 'auto');
 	$table[] = array('label' =>  __('User'), 'width' => 'auto');
@@ -88,7 +92,7 @@ if(!empty($results['PaymentsGeneric'])) {
 
 	foreach($results['PaymentsGeneric'] as $i => $requestPaymentsGeneric) {
 	
-			$rows = array();
+			$rows = [];
 			$rows[] = ($i+1);
 			$rows[] = $requestPaymentsGeneric['RequestPaymentsGeneric']['name'];
 			$rows[] = $requestPaymentsGeneric['User']['name'];
@@ -98,23 +102,23 @@ if(!empty($results['PaymentsGeneric'])) {
 			$this->PhpExcel->addTableRow($rows);
 	} 
 	
-	$rows = array();
+	$rows = [];
 	$rows[] = '';
 	$this->PhpExcel->addTableRow($rows);
 			
 } // end if(!empty($results['PaymentsGeneric'])) 
 
 
-$table = array();
+$table = [];
 $table[] =	array('label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false);
 $table[] =	array('label' =>  'Utente', 'width' => 'auto');
 $table[] = array('label' => 'Mail', 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => 'Importo dovuto', 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => 'Importo richiesto', 'width' => 'auto', 'filter' => false);
-//$table[] = array('label' => 'Cassa', 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => 'Importo pagato', 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Importo_dovuto'), 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Importo_richiesto'), 'width' => 'auto', 'filter' => false);
+//$table[] = array('label' => __('Cash'), 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Importo_pagato'), 'width' => 'auto', 'filter' => false);
 $table[] = array('label' => 'Stato', 'width' => 'auto', 'filter' => false);
-$table[] = array('label' => 'Modalità', 'width' => 'auto', 'filter' => false);
+$table[] = array('label' => __('Modality'), 'width' => 'auto', 'filter' => false);
 	
 					
 // heading
@@ -126,7 +130,7 @@ $tot_importo_cash = 0;
 $tot_importo_pagato = 0;
 foreach($results['SummaryPayment'] as $num => $summaryPayment) {
 
-	$rows = array();
+	$rows = [];
 	$rows[] = ($num+1);
 	$rows[] = $summaryPayment['User']['name'];
 	$rows[] = $summaryPayment['User']['email'];
@@ -146,7 +150,7 @@ foreach($results['SummaryPayment'] as $num => $summaryPayment) {
 }
 
 
-$rows = array();
+$rows = [];
 $rows[] = '';
 $rows[] = '';
 $rows[] = '';

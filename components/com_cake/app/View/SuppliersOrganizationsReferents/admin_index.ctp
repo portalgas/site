@@ -21,11 +21,11 @@
 						?>
 					</td>
 					<td style="width:30%;">
-						<?php echo $this->Form->input('users',array('label' => false,'options' => $users, 'empty' => 'Tutti gli utenti','name'=>'FilterSuppliersOrganizationsReferentUserId','default'=>$FilterSuppliersOrganizationsReferentUserId,'escape' => false,
+						<?php echo $this->Form->input('users',array('label' => '&nbsp;','options' => $users, 'empty' => 'Tutti gli utenti','name'=>'FilterSuppliersOrganizationsReferentUserId','default'=>$FilterSuppliersOrganizationsReferentUserId,'escape' => false,
 														'class'=> 'selectpicker', 'data-live-search' => true)); ?>
 					</td>
 					<td style="width:30%;">
-						<?php echo $this->Form->input('supplier_organization_id',array('label' => false,'options' => $ACLsuppliersOrganization,'empty' => 'Tutti i produttori','name'=>'FilterSuppliersOrganizationsReferentId','default'=>$FilterSuppliersOrganizationsReferentId,'escape' => false,
+						<?php echo $this->Form->input('supplier_organization_id',array('label' => '&nbsp;','options' => $ACLsuppliersOrganization,'empty' => 'Tutti i produttori','name'=>'FilterSuppliersOrganizationsReferentId','default'=>$FilterSuppliersOrganizationsReferentId,'escape' => false,
 														'class'=> 'selectpicker', 'data-live-search' => true)); ?>
 					</td>
 					<td style="width:5%;">
@@ -42,7 +42,8 @@
 if(!empty($results)) {
 ?>
 	
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive">
+	<table class="table table-hover table-striped">
 	<tr>
 			<th><?php echo __('N');?></th>
 			<th colspan="2"><?php echo $this->Paginator->sort('supplier_organization_id');?></th>
@@ -60,7 +61,7 @@ if(!empty($results)) {
 		<td><?php echo $numRow; ?></td>
 		<td><?php 
 			if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-				echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';	
+				echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';	
 			?>
 		</td>		
 		<td>		
@@ -99,6 +100,7 @@ if(!empty($results)) {
 	</tr>
 <?php endforeach; ?>
 	</table>
+	</div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
@@ -115,10 +117,10 @@ if(!empty($results)) {
 	</div>
 	
 	<script type="text/javascript">
-	jQuery(document).ready(function() {
+	$(document).ready(function() {
 	
-		jQuery(".actionDelete").each(function () {
-			jQuery(this).click(function() {
+		$(".actionDelete").each(function () {
+			$(this).click(function() {
 				if(!confirm("Sei sicuro di voler eliminare il <?php echo $userGroups[$group_id]['name'];?> associato al produttore?"))
 					return false;
 				else
@@ -132,29 +134,21 @@ if(!empty($results)) {
 } // end if(!empty($results) 
 else 
 if($resultsFound=='N') 
-	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => __('msg_search_not_result')));
+	echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
 	
 ?>
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.reset').click(function() {
-		jQuery('#FilterSupplierOrganizationSupplierOrganizationId').prop('selectedIndex',0);
+$(document).ready(function() {
+	$('.reset').click(function() {
+		$('#FilterSupplierOrganizationSupplierOrganizationId').prop('selectedIndex',0);
 		
-        var element = jQuery('#FilterSupplierOrganizationUsers').find('option:selected').removeAttr('selected'); 
+        var element = $('#FilterSupplierOrganizationUsers').find('option:selected').removeAttr('selected'); 
         
-		jQuery('#FilterSupplierOrganizationUsers').prop('selectedIndex',0);
+		$('#FilterSupplierOrganizationUsers').prop('selectedIndex',0);
 
-		jQuery('#FilterSuppliersOrganizationsReferentUserName').val("");	
+		$('#FilterSuppliersOrganizationsReferentUserName').val("");	
 	});
-	<?php 
-	/*
-	 * devo ripulire il campo hidden che inizia per page perche' dopo la prima pagina sbaglia la ricerca con filtri
-	 */
-	?>
-	jQuery('.filter').click(function() {
-		jQuery("input[name^='page']").val('');
-	});	
 });
 </script>

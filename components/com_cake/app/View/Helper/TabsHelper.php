@@ -1,7 +1,7 @@
 <?php
 class TabsHelper extends AppHelper {
         
-	var $helpers = array('Html','Time');
+	var $helpers = ['Html','Time'];
 
 	/*
 	 * $delivery['nota_evidenza'] notice, alert, message
@@ -61,7 +61,7 @@ class TabsHelper extends AppHelper {
 		/*
 		 *  ico CALENDAR
 		 */	
-		if(count($delivery['Order'])>0) {		 
+		if(isset($delivery['Order']) && count($delivery['Order'])>0) {		 
 			$tmp .= '<a title="Visualizza il calendario" href="javascript:viewCalendar('.$delivery['id'].');">';
 			$tmp .= '<i class="fa fa-calendar fa-2x"></i>';
 			$tmp .= '</a>';
@@ -291,7 +291,7 @@ class TabsHelper extends AppHelper {
 
 		return $tmp;
 	}
-
+	
 	function setTableHeaderEcommSimpleFrontEnd($delivery_id) {
 
 		$str = "";
@@ -331,6 +331,27 @@ class TabsHelper extends AppHelper {
 		return $str;
 	}
 
+	
+	function setTableFooterEcommSimpleFrontEnd($order_id) {
+
+		$str = "";
+		$str .= '<tr>';
+		$str .= "\n";
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th></th>';
+		$str .= '<th><span class="totalePrezzoNew-'.$order_id.'"></span></th>';
+
+		return $str;
+	}
+	
 	/*
 	 * header table per gli acquisti da validate (ArticlesOrder.pezzi_confezione > 1)
 	 */
@@ -408,15 +429,13 @@ class TabsHelper extends AppHelper {
 		return $str;
 	}
 		
-	function setTableHeaderEcommStoreroomFrontEnd($delivery_id) {
+	function setTableHeaderStoreroomFrontEnd($delivery_id) {
 
 		$str = "";
 		$str .= '<div class="table"><table class="table table-hover" cellpadding="0" id="tableList_'.$delivery_id.'" >';
 		$str .= "\n";
 		$str .= '<thead>';
 		$str .= '<tr>';
-		$str .= "\n";
-		$str .= '<th></th>';
 		$str .= "\n";
 		$str .= '<th>N.</th>';
 		$str .= "\n";
@@ -434,6 +453,34 @@ class TabsHelper extends AppHelper {
 		$str .= "\n";
 		$str .= '<th>'.__('Importo').'</th>';
 		$str .= "\n";
+		$str .= '</tr></thead>';
+
+		return $str;
+	}
+
+	function setTableHeaderEcommStoreroomFrontEnd($delivery_id) {
+
+		$str = "";
+		$str .= '<div class="table"><table class="table table-hover" cellpadding="0" id="tableList_'.$delivery_id.'" >';
+		$str .= "\n";
+		$str .= '<thead>';
+		$str .= '<tr>';
+		$str .= "\n";
+		$str .= '<th>N.</th>';
+		$str .= "\n";
+		$str .= '<th class="hidden-xs">'.__('Bio').'</th>';
+		$str .= "\n";
+		$str .= '<th>'.__('Article').'</th>';
+		$str .= "\n";
+		$str .= '<th>'.__('Conf').'</th>';
+		$str .= "\n";
+		$str .= '<th class="hidden-xs">'.__('PrezzoUnita').'</th>';
+		$str .= "\n";
+		$str .= '<th class="hidden-xs">'.__('Prezzo/UM').'</th>';
+		$str .= "\n";
+		$str .= '<th>'.__('Acquistato').'</th>';		
+		$str .= "\n";
+		$str .= '<th>'.__('Importo').'</th>';
 		$str .= '<th></th>';
 		$str .= "\n";
 		$str .= '</tr></thead>';

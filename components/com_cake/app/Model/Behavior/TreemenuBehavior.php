@@ -42,7 +42,7 @@ class TreemenuBehavior extends TreeBehavior {
 		}
 		$order = $Model->alias . '.' . $left . ' asc';
 		$results = $Model->find('all', compact('conditions', 'fields', 'order', 'recursive'));
-		$stack = array();
+		$stack = [];
 
 		/* calcola depth */
 		foreach ($results as $i => $result) {
@@ -54,7 +54,7 @@ class TreemenuBehavior extends TreeBehavior {
 			$stack[] = $result[$Model->alias][$right];
 		}
 		if (empty($results)) {
-			return array();
+			return [];
 		}
 	
 		return $results; // Set::combine($results, $keyPath, $valuePath);

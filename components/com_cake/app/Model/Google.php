@@ -106,7 +106,7 @@ class Google extends AppModel {
 			return;
 		}
 					
-		$j_seo = $organization['Organization']['j_seo'];
+		$j_seo = $user->organization['Organization']['j_seo'];
 			
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
@@ -160,7 +160,7 @@ class Google extends AppModel {
 					$event->setSummary("Consegna Prodotti Gas Arcoiris");
 				else
 					$event->setSummary("Consegna di ".$this->timeHelper->i18nFormat($deliveryResult['Delivery']['data'],"%A %e %B %Y")." a ".$deliveryResult['Delivery']['luogo']);					
-				$event->setLocation($organization['Organization']['localita']);
+				$event->setLocation($user->organization['Organization']['localita']);
 				$start = new Google_Service_Calendar_EventDateTime();
 				$startDateTime = $deliveryResult['Delivery']['data'].'T'.$deliveryResult['Delivery']['orario_da'].$this->_getGTM(); 
 				echo "\nstartDateTime: ".$startDateTime;
@@ -179,13 +179,12 @@ class Google extends AppModel {
 				$createdEvent = $service->events->insert($gcalendar_id, $event);  // 'primary'
 
 				// echo "\neventId ".$createdEvent->getId();
-				$sql ="UPDATE
-							".Configure::read('DB.prefix')."deliveries as Delivery
+				$sql ="UPDATE ".Configure::read('DB.prefix')."deliveries as Delivery
 					   SET
 							gcalendar_event_id = '".$createdEvent->getId()."',
 							modified = '".date('Y-m-d H:i:s')."'
 					   WHERE
-							organization_id = ".(int)$organization_id."
+							organization_id = ".$user->organization['Organization']['id']."
 							and Delivery.id = ".$deliveryResult['Delivery']['id'];
 				echo "\n".$sql;
 				$Delivery->query($sql);
@@ -224,7 +223,7 @@ class Google extends AppModel {
 			return;
 		}
 			
-		$j_seo = $organization['Organization']['j_seo'];
+		$j_seo = $user->organization['Organization']['j_seo'];
 			
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
@@ -329,7 +328,7 @@ class Google extends AppModel {
 					$event->setSummary("Consegna Prodotti Gas Arcoiris");
 				else
 					$event->setSummary("Consegna di ".$this->timeHelper->i18nFormat($deliveryResult['Delivery']['data'],"%A %e %B %Y")." a ".$deliveryResult['Delivery']['luogo']);
-				$event->setLocation($organization['Organization']['localita']);
+				$event->setLocation($user->organization['Organization']['localita']);
 				
 				$start = new Google_Service_Calendar_EventDateTime();
 				$startDateTime = $deliveryResult['Delivery']['data'].'T'.$deliveryResult['Delivery']['orario_da'].$this->_getGTM();  
@@ -374,7 +373,7 @@ class Google extends AppModel {
          * PHP Fatal error:  Call to undefined function jimport()
          * jimport( 'joomla.user.helper' );
          * define('JPATH_PLATFORM', dirname(__FILE__));
-         * require($this->AppRoot.'/libraries/joomla/user/helper.php');
+         * require(Configure::read('App.root').'/libraries/joomla/user/helper.php');
          */
 
         App::import('Model', 'User');

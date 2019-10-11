@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('Des'),array('controller' => 'Des', 'action' => 'index'));
 $this->Html->addCrumb(__('List DesUserGroupMaps'),array('controller' => 'DesUserGroupMaps', 'action' => 'intro'));
 $this->Html->addCrumb(__('Gest').' '.$userGroups[$group_id]['name']);
@@ -28,13 +28,13 @@ echo $this->Form->end(__('Submit'));
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#formGas').submit(function() {
+$(document).ready(function() {
+	$('#formGas').submit(function() {
 			
-		var user_id = jQuery('#user_id').val();
+		var user_id = $('#user_id').val();
 		if(user_id=='' || user_id==undefined) {
 			alert("<?php echo __('jsAlertUserToRoleRequired');?> <?php echo $userGroups[$group_id]['name'];?>");
-			jQuery('#user_id').focus();
+			$('#user_id').focus();
 			return false;
 		}
 

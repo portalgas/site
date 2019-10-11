@@ -91,7 +91,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					 * totale per ogni articolo
 					*/
 					if($numArticlesOrder>0 && $totale_per_articolo=='Y')  {
-						$rows = array();
+						$rows = [];
 						$rows[] = '';
 						$rows[] = '';
 						if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -135,7 +135,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$name = '';
 				}
 				
-				$rows = array();
+				$rows = [];
 				$rows[] = $num;
 				$rows[] = $bio;
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -182,7 +182,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			 * totale per ogni articolo
 			*/
 			if($totale_per_articolo=='Y')  {
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -211,7 +211,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$importo_modificato = false;
 			}
 
-			$rows = array();
+			$rows = [];
 			$rows[] = '';
 			$rows[] = '';
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -231,7 +231,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			 */
 			if($hasTrasport=='Y' && $trasportAndCost=='Y') {
 				
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -252,7 +252,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			*/
 			if($hasCostMore=='Y' && $trasportAndCost=='Y') {
 					
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -273,7 +273,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			*/
 			if($hasCostLess=='Y' && $trasportAndCost=='Y') {
 			
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
@@ -284,7 +284,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$rows[] = '';
 				$rows[] = '';
 				$rows[] = __('CostLessShort');
-				$rows[] = number_format($importo_costless,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				$rows[] = number_format($importo_cost_less,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
 				$this->PhpExcel->addTableRow($rows);
 			}
@@ -304,7 +304,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				else
 					$importo_completo = ($tmp_importo + $importo_trasporto + $importo_cost_more + (-1 * $importo_cost_less));
 
-				$rows = array();
+				$rows = [];
 				$rows[] = '';
 				$rows[] = '';
 				if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')

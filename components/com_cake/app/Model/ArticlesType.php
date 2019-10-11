@@ -8,10 +8,15 @@ class ArticlesType extends AppModel {
 	 * estraggo tutti gli articleType
 	 */
 	public function getArticlesTypes() {
-		$results = [];		try {
+		$results = [];
+		try {
 			$results = $this->find('all', array('order_by' => 'sort',
 												'recursive' => -1));
-		}		catch (Exception $e) {			CakeLog::write('error',$sql);			CakeLog::write('error',$e);		}				
+		}
+		catch (Exception $e) {
+			CakeLog::write('error',$sql);
+			CakeLog::write('error',$e);
+		}				
 		return $results;
 	}
 	
@@ -35,9 +40,26 @@ class ArticlesType extends AppModel {
 		return $tmp;
 	}
 		
-	/*
-	 * simile codice in AppHelper	 * $results = $result['ArticlesType']	*/	
-	public function isArticlesTypeBio($results) {				$count = 0;		$isArticlesTypeBio = false;			if(!empty($results)) {			foreach($results['ArticlesType'] as $articleType) {								if($articleType['code']=='BIO' || $articleType['code']=='BIODINAMICO')					$count++;			}		}		 		if($count>0) $isArticlesTypeBio = true;		 		return $isArticlesTypeBio;	}
+	/*
+	 * simile codice in AppHelper
+	 * $results = $result['ArticlesType']
+	*/	
+	public function isArticlesTypeBio($results) {
+		
+		$count = 0;
+		$isArticlesTypeBio = false;
+	
+		if(!empty($results)) {
+			foreach($results['ArticlesType'] as $articleType) {				
+				if($articleType['code']=='BIO' || $articleType['code']=='BIODINAMICO')
+					$count++;
+			}
+		}
+		 
+		if($count>0) $isArticlesTypeBio = true;
+		 
+		return $isArticlesTypeBio;
+	}
 	
 /**
  * Validation rules
@@ -47,32 +69,17 @@ class ArticlesType extends AppModel {
 	public $validate = array(
 		'code' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'label' => array(
 			'notempty' => array(
-				'rule' => array('notempty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['notBlank']
 			),
 		),
 		'sort' => array(
 			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'rule' => ['numeric']
 			),
 		),
 	);

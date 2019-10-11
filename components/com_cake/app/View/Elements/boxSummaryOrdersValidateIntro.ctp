@@ -14,12 +14,12 @@ echo "PortAlGas aggrega gli importi degli acquisti dei gasisti <span class='tool
 		<tr>
 			<td rowspan="2">Rossi Mario</th>
 			<td>2 orate</th>
-			<td>10,00 &euro;</th>
-			<td rowspan="2">10,00 &euro; + 5,00 &euro; = <b>15,00</b> &euro;</td>
+			<td>10,00&nbsp;&euro;</th>
+			<td rowspan="2">10,00&nbsp;&euro; + 5,00&nbsp;&euro; = <b>15,00</b>&nbsp;&euro;</td>
 		</tr>
 		<tr>
 			<td>1 branzino</th>
-			<td>5,00 &euro;</th>
+			<td>5,00&nbsp;&euro;</th>
 		</tr>
 	</table>
 
@@ -34,9 +34,9 @@ echo '<li><div title="'.__('Management cost_less').'" class="bgLeft actionCostLe
 echo '</ul>';
 echo "<h3>Si passa l'ordine</h3>";
 echo '<ul class="menuLateraleItems">';
-if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 	echo '<li><div title="'.__('OrdersReferenteInProcessedOnDelivery').'" class="bgLeft actionFromRefToTes">'.__('OrdersReferenteInProcessedOnDelivery').'</div></li>';
-if($user->organization['Organization']['payToDelivery']=='POST' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
 	echo '<li><div title="'.__('OrdersReferenteInWaitProcessedTesoriere').'" class="bgLeft actionFromRefToTes">'.__('OrdersReferenteInWaitProcessedTesoriere').'</div></li>';
 echo '</ul>';
 echo '</div>';
@@ -44,12 +44,12 @@ echo '</div>';
 
 
 <script type="text/javascript">
-jQuery(document).ready(function() { 
-	jQuery('#active_example_aggregate').click(function() {
-		if(jQuery('#example_aggregate').css('display')=='none')
-			jQuery('#example_aggregate').show();
+$(document).ready(function() { 
+	$('#active_example_aggregate').click(function() {
+		if($('#example_aggregate').css('display')=='none')
+			$('#example_aggregate').show();
 		else
-			jQuery('#example_aggregate').hide();
+			$('#example_aggregate').hide();
 	});
 });
 </script>

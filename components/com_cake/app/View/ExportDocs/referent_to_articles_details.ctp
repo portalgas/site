@@ -159,28 +159,28 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'"></th>';
 							$html .= '			<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH10()).'"></th>';
 							$html .= '			<th width="'.$output->getCELLWIDTH100().'"></th>';
-							$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+							$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('qta_tot').'</th>';
 						}
 						else
 						if($acquistato_il=='Y' && $article_img=='N') {
 							$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 							$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-							$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+							$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 						}
 						else
 						if($acquistato_il=='N' && $article_img=='Y') {
 							$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 							$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-							$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+							$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 						}
 						else			
 						if($acquistato_il=='N' && $article_img=='N') {
 							$html .= '	<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH50()).'"></th>';
-							$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+							$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">'.__('qta_tot').'</th>';
 						}
 									
 						$html .= '  <th style="text-align:center;" width="'.$output->getCELLWIDTH50().'">&nbsp;'.$tot_qta_singolo_articolo.'</th>';
-						$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo_singolo_articolo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
+						$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo_singolo_articolo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
 			
 						$html .= '</tr>';
 						
@@ -198,7 +198,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 					$foto = '';
 					if(!empty($order['Article'][$numArticlesOrder]['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$order['Article'][$numArticlesOrder]['organization_id'].DS.$order['Article'][$numArticlesOrder]['img1'])) {
-						$foto = '<img width="40" class="userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$order['Article'][$numArticlesOrder]['organization_id'].'/'.$order['Article'][$numArticlesOrder]['img1'].'" />';	
+						$foto = '<img width="40" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$order['Article'][$numArticlesOrder]['organization_id'].'/'.$order['Article'][$numArticlesOrder]['img1'].'" />';	
 					}
 					
 					if($acquistato_il=='Y' && $article_img=='Y') {
@@ -293,28 +293,28 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'"></th>';
 					$html .= '			<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH10()).'"></th>';
 					$html .= '			<th width="'.$output->getCELLWIDTH100().'"></th>';
-					$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+					$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('qta_tot').'</th>';
 				}
 				else
 				if($acquistato_il=='Y' && $article_img=='N') {
 					$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 					$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-					$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+					$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 				}
 				else
 				if($acquistato_il=='N' && $article_img=='Y') {
 					$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 					$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-					$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+					$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 				}
 				else
 				if($acquistato_il=='N' && $article_img=='N') {
 					$html .= '	<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH50()).'"></th>';
-					$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+					$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">'.__('qta_tot').'</th>';
 				}
 					
 				$html .= '  <th style="text-align:center;" width="'.$output->getCELLWIDTH50().'">&nbsp;'.$tot_qta_singolo_articolo.'</th>';
-				$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tot_importo_singolo_articolo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
+				$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tot_importo_singolo_articolo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
 					
 				$html .= '</tr>';
 			}
@@ -342,28 +342,28 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'"></th>';
 				$html .= '			<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH10()).'"></th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH100().'"></th>';
-				$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '			<th style="white-space:nowrap;" width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('qta_tot').'</th>';
 			}
 			else
 			if($acquistato_il=='Y' && $article_img=='N') {
 				$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-				$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 			}
 			else
 			if($acquistato_il=='N' && $article_img=='Y') {
 				$html .= '	<th width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH50()).'"></th>';
 				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'"></th>';
-				$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '  <th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('qta_tot').'</th>';
 			}
 			else			
 			if($acquistato_il=='N' && $article_img=='N') {
 				$html .= '	<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH50()).'"></th>';
-				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">Quantit&agrave;&nbsp;totale&nbsp;</th>';
+				$html .= '	<th width="'.($output->getCELLWIDTH80()+$output->getCELLWIDTH60()).'" style="text-align:right;">'.__('qta_tot').'</th>';
 			}
 						
 			$html .= '  <th style="text-align:center;" width="'.$output->getCELLWIDTH50().'">&nbsp;'.$tot_qta.'</th>';
-			$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">Importo totale&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
+			$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';
 
 			$html .= '</tr>';
 
@@ -423,7 +423,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			if($hasCostLess=='Y' && $trasportAndCost=='Y') {
 				$html .= $htmlTmp;
 				$html .= '  <td style="text-align:center;" width="'.$output->getCELLWIDTH50().'"></td>';
-				$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('CostLessShort').'&nbsp;'.number_format($importo_costless,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
+				$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('CostLessShort').'&nbsp;'.number_format($importo_cost_less,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</th>';
 			}
 				
 			/*
@@ -476,4 +476,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

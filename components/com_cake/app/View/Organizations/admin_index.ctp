@@ -8,10 +8,11 @@
 		</div>
 	</h2>
 	
-	<table cellpadding="0" cellspacing="0">
+	<div class="table-responsive"><table class="table table-hover">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
 			<th><?php echo $this->Paginator->sort('type');?></th>
+			<th><?php echo $this->Paginator->sort('template');?></th>
 			<th colspan="2"><?php echo $this->Paginator->sort('Name');?></th>
 			<th>Localit&agrave;</th>
 			<th>Contatti</th>
@@ -27,13 +28,19 @@
 		echo '</td>';
 		echo '<td>';
 		echo $result['Organization']['type'];
+		/*
 		if($result['Organization']['type']=='GAS') echo ' (tmpl '.$result['Organization']['template_id'].')';
 		else 
+		*/
 		if($result['Organization']['type']=='PROD') echo ' ('.$result['Organization']['prodSupplierOrganizationId'].')';
 		echo '</td>';
 		
 		echo '<td>';
-		echo ' <img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
+		echo $result['Template']['name'].' ('.$result['Organization']['template_id'].')';
+		echo '</td>';
+						
+		echo '<td>';
+		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
 		echo '</td>';
 		
 		echo '<td>';
@@ -50,9 +57,9 @@
 		echo '<td>';
 			    if(!empty($result['Organization']['telefono'])) echo h($result['Organization']['telefono']).'<br />';
 			    if(!empty($result['Organization']['telefono2'])) echo  h($result['Organization']['telefono2']).'<br />';
-				if(!empty($result['Organization']['mail'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.h($result['Organization']['mail']).'" class="link_mailto"></a><br />';
-				if(!empty($result['Organization']['www'])) echo '<a title="link al sotto-sito di PortAlGas" href="'.$this->App->traslateWww($result['Organization']['www']).'" class="blank link_www"></a><br />';
-				if(!empty($result['Organization']['www2'])) echo '<a title="link esterno al sito dell\'organizzazione" href="'.$this->App->traslateWww($result['Organization']['www2']).'" class="blank link_www"></a><br />';
+				if(!empty($result['Organization']['mail'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.h($result['Organization']['mail']).'" class="fa fa-envelope-o fa-lg"></a><br />';
+				if(!empty($result['Organization']['www'])) echo '<a title="link al sotto-sito di PortAlGas" href="'.$this->App->traslateWww($result['Organization']['www']).'" class="blank fa fa-globe fa-lg"></a><br />';
+				if(!empty($result['Organization']['www2'])) echo '<a title="link esterno al sito dell\'organizzazione" href="'.$this->App->traslateWww($result['Organization']['www2']).'" class="blank fa fa-globe fa-lg"></a><br />';
 				
 				if(!empty($result['Organization']['sede_logistica_1'])) echo $result['Organization']['sede_logistica_1'].'<br />';
 				if(!empty($result['Organization']['sede_logistica_2'])) echo $result['Organization']['sede_logistica_2'].'<br />';
@@ -82,9 +89,9 @@
 	
 	<tr class="contentDetails" id="content-<?php echo $result['Organization']['id'];?>" style="display:none;">
 		<td></td>
-		<td colspan="8">
+		<td colspan="9">
 		
-			<table>
+			<div class="table-responsive"><table class="table table-hover">
 				<tr>
 					<th>Parametri Ruoli</th>
 					<th>Parametri configurazione</th>
@@ -109,9 +116,20 @@
 					echo '<div title="'.__('toolTipHasValidate').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasValidate']).'_int">'.__('HasValidate').'</div> <br />';
 					echo '<div title="'.__('toolTipHasStoreroom').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasStoreroom']).'_int">'.__('HasStoreroom').'</div> <br />';
 					echo '<div title="'.__('toolTipHasStoreroomFrontEnd').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasStoreroomFrontEnd']).'_int">'.__('HasStoreroomFrontEnd').'</div> <br />';
-					echo '<div title="'.__('toolTipPayToDelivery').'">'.__('PayToDelivery').' '.$result['Organization']['payToDelivery'].'</div> <br />';
+					// echo '<div title="'.__('toolTipPayToDelivery').'">'.__('PayToDelivery').' '.$result['Template']['payToDelivery'].'</div> <br />';
+					// echo '<div title="'.__('toolTipOrderLifeCycleEnd').'">'.__('OrderLifeCycleEnd').'<br /> '.$orderLifeCycleEnds[$result['Organization']['orderLifeCycleEnd']].'</div> <br />';
+					echo '<div title="'.__('toolTipCanOrdersClose').'">'.__('CanOrdersClose').' '.$result['Organization']['canOrdersClose'].'</div> <br />';
+					echo '<div title="'.__('toolTipCanOrdersDelete').'">'.__('CanOrdersDelete').' '.$result['Organization']['canOrdersDelete'].'</div> <br />';
+					echo '<div title="'.__('toolTipCashLimit').'">'.__('CashLimit').' '.__($result['Organization']['cashLimit']).' - '.$result['Organization']['limitCashAfter'].'</div> <br />';
 					echo '<div title="'.__('toolTipHasDes').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDes']).'_int">'.__('HasDes').'</div> <br />';
 					echo '<div title="'.__('toolTipHasDesReferentAllGas').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDesReferentAllGas']).'_int">'.__('HasDesReferentAllGas').'</div> <br />';
+					echo '<div title="'.__('toolTipHasDesUserManager').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDesUserManager']).'_int">'.__('HasDesUserManager').'</div> <br />';
+					echo '<div title="'.__('toolTipHasUsersRegistrationFE').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasUsersRegistrationFE']).'_int">'.__('HasUsersRegistrationFE').'</div> <br />';
+					
+					echo '<div title="'.__('toolTipUserFlagPrivacy').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasUserFlagPrivacy']).'_int">'.__('HasUserFlagPrivacy').'</div> <br />';
+					echo '<div title="'.__('toolTipUserRegistrationExpire').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasUserRegistrationExpire']).'_int">'.__('HasUserRegistrationExpire').'</div> <br />';
+                    if(!empty($result['Organization']['userRegistrationExpireDate']))
+                        echo __('UserRegistrationExpireDate').' '.$result['Organization']['userRegistrationExpireDate'];					
 					echo '</td>';
 					
 					echo '<td style="white-space: nowrap;">';
@@ -120,7 +138,7 @@
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldArticleAlertToQta']).'_int">'.__('HasFieldArticleAlertToQta').'</div> <br />';
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldPaymentPos']).'_int">'.__('HasFieldPaymentPos');
                     if($result['Organization']['hasFieldPaymentPos']=='Y')
-                        echo ' - '.$result['Organization']['paymentPos'].' &euro;';
+                        echo ' - '.$result['Organization']['paymentPos'].'&nbsp;&euro;';
                     echo '</div> <br />';
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldArticleCategoryId']).'_int">'.__('HasFieldArticleCategoryId').'</div> <br />';
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldSupplierCategoryId']).'_int">'.__('HasFieldSupplierCategoryId').'</div> <br />';
@@ -128,7 +146,7 @@
 					echo '</td>';
 					?>				
 				</tr>
-			</table>
+			</table></div>
 			
 			<h3>Pay</h3>
 			
@@ -147,7 +165,7 @@
 		</td>
 	</tr>
 <?php endforeach; ?>
-	</table>
+	</table></div>
 	<p>
 	<?php
 	echo $this->Paginator->counter(array(
@@ -166,22 +184,20 @@
 
 <?php 
 	echo $this->element('legendaTemplate');
-	
-	echo $this->element('legendaOrganization');
 ?>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery('.viewDetails').click(function() {	
-		var dataElement = jQuery(this).attr('id');
+	$('.viewDetails').click(function() {	
+		var dataElement = $(this).attr('id');
 		dataElementArray = dataElement.split('-');
 		var idElement = dataElementArray[1];
 
-		if(jQuery('#content-'+idElement).css('display')=='none')  
-			jQuery('#content-'+idElement).css('display', 'table-row');
+		if($('#content-'+idElement).css('display')=='none')  
+			$('#content-'+idElement).css('display', 'table-row');
 		else
-			jQuery('#content-'+idElement).css('display', 'none');
+			$('#content-'+idElement).css('display', 'none');
 
 		return false;
 	});

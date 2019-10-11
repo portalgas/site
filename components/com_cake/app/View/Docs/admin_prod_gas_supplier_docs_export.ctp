@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('ProdGasSupplier home'),array('controller' => 'ProdGasSuppliers', 'action' => 'index'));
 $this->Html->addCrumb(__('ProdGasOrders'),array('controller' => 'ProdGasOrders', 'action' => 'index', $organization_id));
 $this->Html->addCrumb(__('Export Docs to order'));

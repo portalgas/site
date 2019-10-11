@@ -2,7 +2,7 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);	
 
-$rowsExcel = array();
+$rowsExcel = [];
 
 $rowsExcel[] = __('Delivery');
 if($delivery['sys']=='N')
@@ -40,20 +40,20 @@ if (!empty($results)) {
 					$Storeroom_qta = $user['Storeroom']['qta'];
 					$Storeroom_prezzo = $user['Storeroom']['prezzo'];
 					$Storeroom_importo = $user['Storeroom']['importo'];
-				}
 					
-			$rowsExcel = array();
-			
-			$rowsExcel[] = ($numResult + 1);
-			$rowsExcel[] = $User_name;
-			$rowsExcel[] = $result['SuppliersOrganization']['name'];
-			$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['name']);
-			$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']));	
-			$rowsExcel[] = $this->ExportDocs->prepareCsv($Storeroom_qta);
-			$rowsExcel[] = number_format($Storeroom_prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-			$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleImporto($Storeroom_prezzo, $Storeroom_qta));
-			
-			$this->PhpExcel->addTableRow($rowsExcel);
+					$rowsExcel = [];
+					
+					$rowsExcel[] = ($numResult + 1);
+					$rowsExcel[] = $User_name;
+					$rowsExcel[] = $result['SuppliersOrganization']['name'];
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($result['Storeroom']['name']);
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']));	
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($Storeroom_qta);
+					$rowsExcel[] = number_format($Storeroom_prezzo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$rowsExcel[] = $this->ExportDocs->prepareCsv($this->App->getArticleImporto($Storeroom_prezzo, $Storeroom_qta));
+					
+					$this->PhpExcel->addTableRow($rowsExcel);
+				} // loop 
 		}		
 				
 }	

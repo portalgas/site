@@ -1,10 +1,16 @@
 <div class="legenda">
 
+<pre class="shell" rel="aggiornare paramsConfig">
+update  k_organizations set paramsConfig = CONCAT(SUBSTRING(paramsConfig, 1, LENGTH(paramsConfig)-1), ',"hasUsersRegistrationFE":"Y"}');
+</pre>
+
 <?php 
+if(isset($templates))
 foreach ($templates as $template) 
 	echo '<b>'.$template.'</b><br />';
+/*
 ?>
-<table cellpadding="0" cellspacing="0" >
+<div class="table-responsive"><table class="table">
 	<tr>
 		<td colspan="2"><h3>Template 1</h3></td>
 	</tr>	
@@ -67,7 +73,7 @@ foreach ($templates as $template)
 	
 
 	<tr>
-		<td colspan="2"><h3>Template 2 / Template 3</h3>
+		<td colspan="2"><h3>Template 3</h3>
 			allo stato <?php echo __('PROCESSED-BEFORE-DELIVERY-label');?> e <?php echo __('INCOMING_ORDER-label');?> il referente può modificare l'ordine<br />
 			allo stato <?php echo __('PROCESSED-ON-DELIVERY-label');?> il referente non può più modificare l'ordine<br />
 			dopo lo stato <?php echo __('PROCESSED-ON-DELIVERY-label');?> l'ordine passa a <?php echo __('CLOSE-label');?><br />
@@ -208,6 +214,8 @@ foreach ($templates as $template)
 			<?php echo '<div title="'.__('HasUserGroupsStoreroom').'" class="stato_no_int">'.__('Storeroom').'</div>';?>
 		</td>
 	</tr>		
-</table>
-
+</table></div>
+<?php
+*/
+?>
 </div>

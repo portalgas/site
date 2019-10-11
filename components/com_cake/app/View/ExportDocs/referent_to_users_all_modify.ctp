@@ -85,7 +85,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						case 'TRSUBTOT':
 							$html .= '<td colspan="3" style="text-align:right;">Totale&nbsp;dell\'utente&nbsp;</td>';
 							$html .= '<td>&nbsp;'.$cols['QTA'].'</td>';
-							$html .= '<td>'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td>'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							$html .= '<td style="background-color:#F5F5F5;" colspan="5">';
 							
 							if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
@@ -93,15 +93,15 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y') {
 
 								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00')
-									$html .= '+&nbsp;'.$cols['IMPORTO_TRASPORTO'].'&nbsp;di&nbsp;'.__('TrasportShort');
+									$html .= '+&nbsp;'.$cols['IMPORTO_TRASPORTO_E'].'&nbsp;di&nbsp;'.__('TrasportShort');
 
 								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00')
-									$html .= '+&nbsp;'.$cols['IMPORTO_COST_MORE'].'&nbsp;di&nbsp;'.__('CostMoreShort');
+									$html .= '+&nbsp;'.$cols['IMPORTO_COST_MORE_E'].'&nbsp;di&nbsp;'.__('CostMoreShort');
 								
 								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')
-									$html .= '&nbsp;'.$cols['IMPORTO_COST_LESS'].'&nbsp;di&nbsp;'.__('CostLessShort');
+									$html .= '&nbsp;'.$cols['IMPORTO_COST_LESS_E'].'&nbsp;di&nbsp;'.__('CostLessShort');
 								
-								$html .= '&nbsp;=&nbsp;'.$cols['IMPORTO_COMPLETO'];
+								$html .= '&nbsp;=&nbsp;'.$cols['IMPORTO_COMPLETO_E'];
 							}
 								
 							$html .= '</td>';
@@ -109,7 +109,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						case 'TRTOT':
 							$html .= '<td colspan="3" style="text-align:right;">Totale&nbsp;</td>';
 							$html .= '<td>&nbsp;'.$cols['QTA'].'</td>';
-							$html .= '<td>&nbsp;'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td>&nbsp;'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							$html .= '<td style="background-color:#F5F5F5;" colspan="5">';
 
 							if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
@@ -117,15 +117,15 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y') {
 
 								if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00')
-									$html .= '+&nbsp;'.$cols['IMPORTO_TRASPORTO'].'&nbsp;di&nbsp;'.__('TrasportShort');
+									$html .= '+&nbsp;'.$cols['IMPORTO_TRASPORTO_E'].'&nbsp;di&nbsp;'.__('TrasportShort');
 
 								if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00')
-									$html .= '+&nbsp;'.$cols['IMPORTO_COST_MORE'].'&nbsp;di&nbsp;'.__('CostMoreShort');
+									$html .= '+&nbsp;'.$cols['IMPORTO_COST_MORE_E'].'&nbsp;di&nbsp;'.__('CostMoreShort');
 								
 								if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')
-									$html .= '-&nbsp;'.$cols['IMPORTO_COST_LESS'].'&nbsp;di&nbsp;'.__('CostLessShort');
+									$html .= '-&nbsp;'.$cols['IMPORTO_COST_LESS_E'].'&nbsp;di&nbsp;'.__('CostLessShort');
 								
-								$html .= '&nbsp;=&nbsp;'.$cols['IMPORTO_COMPLETO'];
+								$html .= '&nbsp;=&nbsp;'.$cols['IMPORTO_COMPLETO_E'];
 							}
 							
 							$html .= '</td>';
@@ -143,13 +143,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							$html .= '<td width="'.$output->getCELLWIDTH40().'">'.$cols['PREZZO_E'].'</td>';
 							// $html .= '<td width="'.$output->getCELLWIDTH40().'">'.$cols['PREZZO_UMRIF'].'</td>';
 							$html .= '<td width="'.$output->getCELLWIDTH50().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
-							$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTO'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							
 							$html .= '<td style="background-color:#F5F5F5;'.$deleteToReferent.'" width="'.$output->getCELLWIDTH50().'">'.$cols['QTAUSER'].'</td>';
-							$html .= '<td style="background-color:#F5F5F5;'.$deleteToReferent.'"  width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTOUSER'].'</td>';
+							$html .= '<td style="background-color:#F5F5F5;'.$deleteToReferent.'"  width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTOUSER_E'].'</td>';
 							$html .= '<td style="background-color:#F5F5F5;" width="'.$output->getCELLWIDTH50().'">'.$cols['QTAREF'].'</td>';
 							$html .= '<td style="background-color:#F5F5F5;"  width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTOREF'].'</td>';
-							$html .= '<td style="background-color:#F5F5F5;text-align:right;" width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTOFORZATO'].'</td>';
+							$html .= '<td style="background-color:#F5F5F5;text-align:right;" width="'.$output->getCELLWIDTH70().'">'.$cols['IMPORTOFORZATO_E'].'</td>';
 						break;							
 						case 'TRDATABIS':
 							$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
@@ -192,4 +192,5 @@ $output->lastPage();
 if($this->layout=='pdf') 
 	ob_end_clean();
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>

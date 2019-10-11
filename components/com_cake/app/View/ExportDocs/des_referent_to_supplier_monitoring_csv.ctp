@@ -30,7 +30,7 @@ $tot_importo = 0;
 if(isset($results))
 foreach($results as $result) {
 
-        $name = $result['Article']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
+        $name = $result['ArticlesOrder']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
 
         $data[$i]['csv'] = array('N' => ($i+1));
 

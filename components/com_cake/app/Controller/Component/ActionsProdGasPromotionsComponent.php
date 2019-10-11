@@ -1,6 +1,15 @@
 <?php 
+App::uses('Component', 'Controller');
+
 class ActionsProdGasPromotionsComponent extends Component {
 
+    private $Controller = null;
+
+    public function initialize(Controller $controller) 
+    {
+		$this->Controller = $controller;
+    }
+	
 	/*
 	 * restituisce gli ProdGasPromotion.state_code (WORKING, TRASMISSION-TO_GAS ...) dato un 
 	* 		template_id ora fisso a 1
@@ -10,10 +19,12 @@ class ActionsProdGasPromotionsComponent extends Component {
 	*/
 	public function getProdGasPromotionStates($user, $group_id, $debug=false) {
 		
+		$controllerLog = $this->Controller;
+		
 		App::import('Model', 'TemplatesProdGasPromotionsState');
 		$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('TemplatesProdGasPromotionsState.template_id' => 1, // $user->organization['Organization']['template_id'],
 									   'TemplatesProdGasPromotionsState.group_id' => $group_id);
 		
@@ -21,11 +32,7 @@ class ActionsProdGasPromotionsComponent extends Component {
 		$options['recursive'] = 0;
 		$results = $TemplatesProdGasPromotionsState->find('all', $options);
 
-		if($debug) {
-			echo "<pre>ActionsPromotionsComponent->getProdGasPromotionStates";
-			print_r($results);
-			echo "</pre>";
-		}
+		$controllerLog::d($result, $debug);
 		
 		return $results;
 	}
@@ -35,10 +42,12 @@ class ActionsProdGasPromotionsComponent extends Component {
 	 */
 	public function getProdGasPromotionStatesToLegenda($user, $group_id, $debug=false) {
 		
+		$controllerLog = $this->Controller;
+		
 		App::import('Model', 'TemplatesProdGasPromotionsState');
 		$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;
 		
-		$options = array();
+		$options = [];
 		$options['conditions'] = array('TemplatesProdGasPromotionsState.template_id' => 1, // $user->organization['Organization']['template_id'],
 									   'TemplatesProdGasPromotionsState.group_id' => $group_id,
 									   'TemplatesProdGasPromotionsState.flag_menu' => 'Y'
@@ -47,13 +56,8 @@ class ActionsProdGasPromotionsComponent extends Component {
 		$options['order'] = array('TemplatesProdGasPromotionsState.sort');
 		$options['recursive'] = -1;
 		$prodGasPromotionStates = $TemplatesProdGasPromotionsState->find('all', $options);
-				
-		if($debug) {
-			echo "<pre>";
-			print_r($options);
-			print_r($prodGasPromotionStates);
-			echo "</pre>";
-		}
+		
+		$controllerLog::d([$options, $prodGasPromotionStates],$debug);
 
 		return $prodGasPromotionStates;
 	}

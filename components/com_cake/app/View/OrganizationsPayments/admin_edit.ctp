@@ -1,184 +1,200 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('View Organization'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="organizations">';
 
 echo $this->Form->create('OrganizationsPayment',array('id' => 'formGas'));
+
+echo '<fieldset>';
+echo '<legend>'.__('View Organization').'</legend>';
+ 
+echo '<div class="tabs">';
+echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
+echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Payment profile').'</a></li>';
+echo '<li><a href="#tabs-gas-config" data-toggle="tab">'.__('GasConfigure').'</a></li>';
+echo '<li><a href="#tabs-1" data-toggle="tab">'.__('User profile').'</a></li>';
+echo '<li><a href="#tabs-2" data-toggle="tab">'.__('PortAlGasBilancio').'</a></li>';
+echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Users').'</a></li>';
+echo '</ul>';
+
+echo '<div class="tab-content">';
+
+echo '<div class="tab-pane fade active in" id="tabs-0">';
+echo $this->Form->input('payContatto', array('id' => 'payContatto', 'label' => __('payContatto')));
+echo $this->Form->input('payMail', array('id' => 'payMail', 'label' => __('payMail')));
+echo $this->Form->input('payIntestatario', array('id' => 'payIntestatario', 'label' => __('payIntestatario')));
+echo $this->Form->input('payIndirizzo', array('id' => 'payIndirizzo', 'label' => __('payIndirizzo')));
+echo $this->Form->input('payCap', array('id' => 'payCap', 'label' => __('payCap')));
+echo $this->Form->input('payCitta', array('id' => 'payCitta', 'label' => __('payCitta')));
+echo $this->Form->input('payProv', array('id' => 'payProv', 'label' => __('payProv')));
+echo $this->Form->input('payCf', array('id' => 'payCf', 'label' => __('payCf')));
+echo $this->Form->input('payPiva', array('id' => 'payPiva', 'label' => __('payPiva')));
+echo '</div>'; 
+
+echo '<div class="tab-pane fade" id="tabs-gas-config">';
+echo '<div class="table-responsive"><table class="table table-hover">';
+echo '<tr>';
+echo '<th>'.__('PayToDelivery').'</th>';
+echo '<th>'.__('OrdersCycleLifeToCLOSE').'</th>';
+echo '</tr>';				
+foreach($templateResults as $templateResult) {
+
+	if($this->request->data['Template']['id']==$templateResult['Template']['id'])
+		$css = 'background-color:yellow';
+	else	
+		$css = '';
+		 
+	echo '<tr style="'.$css.'">';
+	echo '<td>'.__('PayToDelivery-'.$templateResult['Template']['payToDelivery']).'</td>';
+	echo '<td>'.$templateResult['Template']['descri_order_cycle_life'].'</td>';
+	echo '</tr>';	
+}
+echo '</table>';
+echo '</div>';
+echo '</div>';
+
+echo '<div class="tab-pane fade" id="tabs-1">';
+echo $this->Form->input('indirizzo', array('id' => __('indirizzo')));
+echo $this->Form->input('telefono');
+echo $this->Form->input('telefono2');
+echo $this->Form->input('mail', array('id' => __('mail')));
+echo $this->Form->input('www2', array('label' => 'Www'));
+
+echo '<hr />';
+
+echo $this->Form->input('cf');
+echo $this->Form->input('piva');
+echo $this->Form->input('banca');				
+echo $this->Form->input('banca_iban');
+echo '</div>'; 
+echo '<div class="tab-pane fade" id="tabs-2">';
+echo $table_plan->introtext;
+echo '</div>'; 
+echo '<div class="tab-pane fade" id="tabs-3">';
 ?>
-	<fieldset>
-		<legend><?php echo __('View Organization'); ?></legend>
+				
+		<div class="table-responsive"><table class="table table-hover">
+		<tr>
+				<th><?php echo __('N');?></th>
+				<th><?php echo __('Code');?></th>
+				<th></th>
+				<th><?php echo __('Nominative');?></th>
+				<th><?php echo __('Username');?></th>
+				<th><?php echo __('Mail');?></th>
+				<th><?php echo __('registerDate', __('registerDate'));?></th>
+				<th><?php echo __('lastvisitDate', __('LastvisitDateo'));?></th>								
+				<th><?php echo __('stato',__('Stato'));?></th>
+		<?php
+		echo '</tr>';
 		
-         <div class="tabs">
-             <ul>
-                 <li><a href="#tabs-0"><span><?php echo __('Dati per il pagamento'); ?></span></a></li>
-                 <li><a href="#tabs-1"><span><?php echo __('Dati anagrafici'); ?></span></a></li>
-                 <li><a href="#tabs-2"><span><?php echo __('Bilancio PortAlGas'); ?></span></a></li>
-                 <li><a href="#tabs-3"><span><?php echo __('Users'); ?></span></a></li>
-             </ul>
-			<div id="tabs-0">
-				<?php
-					echo $this->Form->input('payContatto', array('id' => 'payContatto', 'label' => __('payContatto')));
-					echo $this->Form->input('payMail', array('id' => 'payMail', 'label' => __('payMail')));
-					echo $this->Form->input('payIntestatario', array('id' => 'payIntestatario', 'label' => __('payIntestatario')));
-					echo $this->Form->input('payIndirizzo', array('id' => 'payIndirizzo', 'label' => __('payIndirizzo')));
-					echo $this->Form->input('payCap', array('id' => 'payCap', 'label' => __('payCap')));
-					echo $this->Form->input('payCitta', array('id' => 'payCitta', 'label' => __('payCitta')));
-					echo $this->Form->input('payProv', array('id' => 'payProv', 'label' => __('payProv')));
-					echo $this->Form->input('payCf', array('id' => 'payCf', 'label' => __('payCf')));
-					echo $this->Form->input('payPiva', array('id' => 'payPiva', 'label' => __('payPiva')));
-				?>		
-			</div>			 
-            <div id="tabs-1">		
-				<?php
-					echo $this->Form->input('indirizzo', array('id' => __('indirizzo')));
-					echo $this->Form->input('telefono');
-					echo $this->Form->input('telefono2');
-					echo $this->Form->input('mail', array('id' => __('mail')));
-					echo $this->Form->input('www2', array('label' => 'Www'));
+		foreach ($this->request->data['User'] as $numResult => $result) {
 
-					echo '<hr />';
-				
-					echo $this->Form->input('cf');
-					echo $this->Form->input('piva');
-					echo $this->Form->input('banca');				
-					echo $this->Form->input('banca_iban');
-				?>
-			</div>
-			<div id="tabs-2">
-				<?php
-				echo $table_plan->introtext;
-				?>
-			</div>
-			<div id="tabs-3">
-
-								
-						<table cellpadding="0" cellspacing="0">
-						<tr>
-								<th><?php echo __('N');?></th>
-								<th>Codice</th>
-								<th></th>
-								<th><?php echo __('Nominativo');?></th>
-								<th><?php echo __('Username');?></th>
-								<th><?php echo __('Mail');?></th>
-								<th><?php echo __('registerDate', __('Registrato il'));?></th>
-								<th><?php echo __('lastvisitDate', __('Ultima visita'));?></th>								
-								<th><?php echo __('stato',__('Stato'));?></th>
-						<?php
-						echo '</tr>';
-						
-						foreach ($this->request->data['User'] as $i => $result):
-				
-							if(!empty($result['lastvisitDate']) && $result['lastvisitDate']!='0000-00-00 00:00:00') 
-								$lastvisitDate = $this->Time->i18nFormat($result['lastvisitDate'],"%e %b %Y");
-							else 
-								$lastvisitDate = "";
-							?>
-						<tr class="view">
-							<td><?php echo ($i+1);?></td>
-							<td><?php echo $result['Profile']['codice']; ?></td>
-							<td><?php echo $this->App->drawUserAvatar($user, $result['id'], $result); ?></td>
-							<td><?php echo $result['name']; ?></td>
-							<td><?php echo $result['username']; ?></td>
-							<td><?php  	
-								if(!empty($result['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['email'].'">'.$result['email'].'</a><br />';
-							echo '</td>';
-							?>
-							<td><?php echo $this->Time->i18nFormat($result['registerDate'],"%e %b %Y");?></td>
-							<td><?php echo $lastvisitDate;?></td>
-							<td title="<?php echo __('toolTipStato');?>" class="stato_<?php echo $this->App->traslateEnum($result['block']); ?>"></td>		
-						</tr>
-					<?php endforeach; ?>
-						</table>			
-			
-			
-			</div>
-		</div>
-	</fieldset>
-<?php 
+			if(!empty($result['lastvisitDate']) && $result['lastvisitDate']!=Configure::read('DB.field.datetime.empty')) 
+				$lastvisitDate = $this->Time->i18nFormat($result['lastvisitDate'],"%e %b %Y");
+			else 
+				$lastvisitDate = "";
+			?>
+		<tr class="view">
+			<td><?php echo ($numResult+1);?></td>
+			<td><?php echo $result['Profile']['codice']; ?></td>
+			<td><?php echo $this->App->drawUserAvatar($user, $result['id'], $result); ?></td>
+			<td><?php echo $result['name']; ?></td>
+			<td><?php echo $result['username']; ?></td>
+			<td><?php  	
+				if(!empty($result['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['email'].'">'.$result['email'].'</a><br />';
+			echo '</td>';
+			?>
+			<td><?php echo $this->Time->i18nFormat($result['registerDate'],"%e %b %Y");?></td>
+			<td><?php echo $lastvisitDate;?></td>
+			<td title="<?php echo __('toolTipStato');?>" class="stato_<?php echo $this->App->traslateEnum($result['block']); ?>"></td>		
+		</tr>
+	<?php 
+	} // end loop
+echo '</table></div>';
+		
+echo '</div>'; 
+echo '</div>'; // tabs
+echo '</div>'; // tab-content
+echo '</fieldset>'; 
 echo $this->Form->end(__('Submit'));
+echo '</div>'; 
 ?>
-</div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery(function() {
-		jQuery( ".tabs" ).tabs({
-			event: "click"
-		});
-	});
+$(document).ready(function() {
 
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 		
-		var payContatto = jQuery('#payContatto').val();
+		var payContatto = $('#payContatto').val();
 		if(payContatto=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare il Nominativo per il pagamento");
-			jQuery('#payContatto').focus();
+			$('#payContatto').focus();
 			return false;
 		}		
-		var payMail = jQuery('#payMail').val();
+		var payMail = $('#payMail').val();
 		if(payMail=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la Mail al quale sarà inviato il documento di pagamento");
-			jQuery('#payMail').focus();
+			$('#payMail').focus();
 			return false;
 		}
-		var payIntestatario = jQuery('#payIntestatario').val();
+		var payIntestatario = $('#payIntestatario').val();
 		if(payIntestatario=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare l'Intestatario del documento di pagamento");
-			jQuery('#payIntestatario').focus();
+			$('#payIntestatario').focus();
 			return false;
 		}
-		var payIndirizzo = jQuery('#payIndirizzo').val();
+		var payIndirizzo = $('#payIndirizzo').val();
 		if(payIndirizzo=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare l'Indirizzo del documento di pagamento");
-			jQuery('#payIndirizzo').focus();
+			$('#payIndirizzo').focus();
 			return false;
 		}
-		var payCap = jQuery('#payCap').val();
+		var payCap = $('#payCap').val();
 		if(payCap=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare il CAP");
-			jQuery('#payCap').focus();
+			$('#payCap').focus();
 			return false;
 		}
-		var payCitta = jQuery('#payCitta').val();
+		var payCitta = $('#payCitta').val();
 		if(payCitta=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la città");
-			jQuery('#payCitta').focus();
+			$('#payCitta').focus();
 			return false;
 		}	
-		var payProv = jQuery('#payProv').val();
+		var payProv = $('#payProv').val();
 		if(payProv=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare la provincia");
-			jQuery('#payProv').focus();
+			$('#payProv').focus();
 			return false;
 		}	
-		var payCf = jQuery('#payCf').val();
+		var payCf = $('#payCf').val();
 		if(payCf=='') {
-			jQuery('.tabs').tabs('option', 'active',0);
+			$('.nav-tabs a[href="#tabs-0"]').tab('show');
 			alert("Devi indicare il Codice Fiscale");
-			jQuery('#payCf').focus();
+			$('#payCf').focus();
 			return false;
 		}	
-		var indirizzo = jQuery('#indirizzo').val();
+		var indirizzo = $('#indirizzo').val();
 		if(indirizzo=='') {
-			jQuery('.tabs').tabs('option', 'active',1);
+			$('.nav-tabs a[href="#tabs-1"]').tab('show');
 			alert("Devi indicare l'indirizzo del proprio G.A.S.");
-			jQuery('#indirizzo').focus();
+			$('#indirizzo').focus();
 			return false;
 		}	
-		var mail = jQuery('#mail').val();
+		var mail = $('#mail').val();
 		if(mail=='') {
-			jQuery('.tabs').tabs('option', 'active',1);
+			$('.nav-tabs a[href="#tabs-1"]').tab('show');
 			alert("Devi indicare la mail del proprio G.A.S.");
-			jQuery('#mail').focus();
+			$('#mail').focus();
 			return false;
 		}	
 			

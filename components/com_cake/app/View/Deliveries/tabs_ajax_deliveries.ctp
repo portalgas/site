@@ -25,7 +25,7 @@ else {
 		*/
 		$supplier_organization_id_old = 0;
 		if(!empty($storeroomResults))  {
-			echo '<h2>Dispensa</h2>';
+			echo '<h2>'.__('Storeroom').'</h2>';
 			echo $this->Tabs->setTableHeaderStoreroomFrontEnd($delivery_id);				
 			foreach ($storeroomResults as $numStoreroom => $storeroom) {
 				
@@ -166,9 +166,9 @@ else {
 			}
 				echo '</td>';
 
-				if($user->organization['Organization']['payToDelivery']=='POST')
+				if($user->organization['Template']['payToDelivery']=='POST')
 					$msg = sprintf(__('TotaleConfirmTesoriere'), number_format($tot_importo_delivery,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
-				if($user->organization['Organization']['payToDelivery']=='ON' || $user->organization['Organization']['payToDelivery']=='ON-POST')
+				if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
 					$msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo_delivery,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');
 				
 				echo "\n";
@@ -344,7 +344,7 @@ function draw_row($i, $delivery, $order, $user, $App, $Time) {
 					
 					echo "\n";
 					echo '<td class="'.$classRowColsA.' '.$classColsA.'" style="display:table-cell;">';
-					echo $App->drawListSuppliersOrganizationsReferents($user, $order['SuppliersOrganizationsReferent'], $options = array('view_coreferente' => 'N'));
+					echo $App->drawListSuppliersOrganizationsReferents($user, $order['SuppliersOrganizationsReferent'], ['BO_FE' => 'FE', 'view_coreferente' => 'N']);
 					echo '</td>';
 						
 					/* 

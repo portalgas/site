@@ -1,23 +1,12 @@
 <div class="related table">
 	<?php
-	echo '<table class="table">';
-
-	if(!empty($organizationOtherResults)) {
-		echo "\n\r";
-		echo '<tr>';
-		echo '<th>G.A.S.</th>';
-		echo '<td colspan="3">';
-		echo $organizationOtherResults['Organization']['name'];
-		echo '<span style="float:right;"><a target="_blank" title="link al sotto-sito di PortAlGas" href="'.$this->App->traslateWww($organizationOtherResults['Organization']['www']).'"><img width="50" class="userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organizationOtherResults['Organization']['img1'].'" alt="'.$organizationOtherResults['Organization']['name'].'" /></span>';
-		echo '</td>';
-		echo '</tr>';	
-	}
+	echo '<div class="table-responsive"><table class="table table-hover">';
 	
 	if(!empty($results['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$results['Article']['organization_id'].DS.$results['Article']['img1'])) {
 		echo "\n\r";
 		echo '<tr>';
 		echo '<td colspan="4">';
-		echo '<img src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';	
+		echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$results['Article']['organization_id'].'/'.$results['Article']['img1'].'" />';	
 		echo '</td>';
 		echo '</tr>';		
 	}
@@ -182,17 +171,31 @@
 	}
 
 	echo '</tr>';
+	
+	/*
+	 * dati owner_articles listino REFERENT / DES / SUPPLIER 
+	 */	
+	if(isset($organizationResults)) {
+		echo '<tr>';
+		echo '<th>'.__('organization_owner_articles').'</th>';
+		echo '<td colspan="3">';
+		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organizationResults['Organization']['img1'].'" alt="'.$organizationResults['Organization']['name'].'" /> ';	
+		echo $organizationResults['Organization']['name']; 
+		echo '</td>';
+		echo '</tr>';
+	
+	}	
 	?>
-	</table>			
+	</table></div>			
 </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function() {
+$(document).ready(function() {
 	<?php 
 	if(!empty($evidenzia)) 
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFAC2');";
 	else	
-		echo "jQuery('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
+		echo "$('.articleNota').css('background', 'none repeat scroll 0 0 #FFFFFF');";
 	?>	
 });
 </script>

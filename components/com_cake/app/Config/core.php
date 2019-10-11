@@ -350,13 +350,20 @@ Configure::write('SOC.descrizione', "Gestionale per Gruppi di Acquisto Solidale"
 Configure::write('SOC.site', 'www.portalgas.it');
 Configure::write('SOC.mail', 'info@portalgas.it');
 Configure::write('SOC.mail-assistenza', 'info@portalgas.it'); // utilizzato in default.po
+Configure::write('SOC.mail-privacy', 'info@portalgas.it'); 
+Configure::write('EmailExcludeDomains', ['portalgas.it']);
+Configure::write('SOC.hosting.url',"http://glesys.com");
+Configure::write('SOC.hosting.name',"Hosting (Cloud VPS (Virtual Private Server) presso GleSYS: http://glesys.com)");
+Configure::write('SOC.hosting.responsabile',"(GleSYS AB , Box 134 , 311 22 Falkenberg; Svezia email: support@glesys.com)");
 
 Configure::write('Filter.prefix', 'Filter');        // in database.php (cron per il dump delle tabelle)
 Configure::write('DB.prefix', 'k_');        // in database.php (cron per il dump delle tabelle)
 Configure::write('DB.portalPrefix', 'j_');  // (cron per il dump delle tabelle)
 Configure::write('DB.tableJoomlaWithPassword', 'jos_users'); // nome della tabella per la migrazione degli utenti, contiente la password
-Configure::write('DB.field.date.empty', '0000-00-00');
-Configure::write('DB.field.datetime.empty', '0000-00-00 00:00:00');
+Configure::write('DB.field.date.error', '0000-00-00');
+Configure::write('DB.field.date.empty', '1970-01-01');
+Configure::write('DB.field.double.empty', '0.00');
+Configure::write('DB.field.datetime.empty', '1970-01-01 00:00:00');
 
 /*
  * requests_payments.stato
@@ -368,7 +375,7 @@ Configure::write('SOSPESO', 'SOSPESO');
 Configure::write('PAGATO', 'PAGATO');
 
 Configure::write('Config.language', 'ita');
-Configure::write('traslateEnum',array('Y'=>'si',
+Configure::write('traslateEnum',['Y'=>'si',
 									  'N'=>'no',
 									  'NO'=>'No',
 									  'T'=>'temporaneo',
@@ -408,7 +415,7 @@ Configure::write('traslateEnum',array('Y'=>'si',
 									  'QTAMAXORDER'=>'Quantità massima raggiunta',
 									  'REQUEST_PAYMENT_STATO_ELABORAZIONE_WAIT'=>'In lavorazione',
 									  'REQUEST_PAYMENT_STATO_ELABORAZIONE_OPEN'=>'Aperta per richiedere il pagamento',
-									  'REQUEST_PAYMENT_STATO_ELABORAZIONE_CLOSE'=>'Chiuso',
+									  'REQUEST_PAYMENT_STATO_ELABORAZIONE_CLOSE'=>'Chiusa',
 									  'REFERENTE'=>'Referente',
 									  'COREFERENTE'=>'Co-referente',
 									  'TESORIERE'=>'Tesoriere',
@@ -434,13 +441,10 @@ Configure::write('traslateEnum',array('Y'=>'si',
 									  'ERROR_FORMAT_ARRAY' => 'Valore non permesso',
 									  'ERROR_FORMAT_EMAIL' => 'Email non corretta',
 									  'ProdGasSupplierSUPPLIER' => 'Il produttore',
-									  'ProdGasSupplierREFERENT' => 'Il referente del G.A.S.'));
+									  'ProdGasSupplierREFERENT' => 'Il referente del G.A.S.',
+									  'ProdGasSupplierREFERENT-TMP' => 'Temporaneamente il referente del G.A.S.',
+									  'ProdGasSupplierDES' => 'Il titolare D.E.S. del produttore']);
 												
-Configure::write('templates', array('1' => 'Template UNO: pagamento POST consegna - Tesoriere', 
-									'2' => 'Template DUE: pagamento ON consegna - Cassiere', 
-									'3' => 'Template TRE: pagamento ON consegna - Gestione arrivo merce - Cassiere', 
-									'4' => 'Template QUATTRO: pagamento ON consegna e POST consegna - Gestione arrivo merce - Cassiere e Tesoriere'));
-
 Configure::write('option.empty', '----------');
 Configure::write('separatoreDecimali', ',');
 Configure::write('separatoreMigliaia', '.');
@@ -466,6 +470,8 @@ Configure::write('group_id_super_referent_des',38);
 Configure::write('group_id_referent_des',37);
 Configure::write('group_id_titolare_des_supplier',39);
 Configure::write('group_id_des_supplier_all_gas', 51);
+Configure::write('group_id_user_manager_des', 77);
+Configure::write('group_id_user_flag_privacy', 78);
 
 /*
  * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
@@ -493,18 +499,23 @@ Configure::write('cart_msg_qtamax_order_stop',  "Per l'articolo %s si e' raggiun
 Configure::write('cart_msg_qtamax_order', "Per l'articolo %s si e' raggiunta la quantita' massima di %s pezzi! Hai potuto ordinarne solo %s pezzi.");
 Configure::write('cart_msg_qtamax', "Per l'articolo %s la quantita' massima per ogni gasista e' %s! Hai indicato %s");
 Configure::write('cart_msg_qtamin', "Per l'articolo %s la quantita' minima e' %s! Hai indicato %s");
+Configure::write('cart_msg_limit_cash', "Hai superato il credito di cassa!");
 Configure::write('label_payment_pos', "+ %s commissione POS");
 
 Configure::write('sys_function_not_implement', "Funzione non ancora implementata.");
 Configure::write('sys_report_not_implement', "Estrazione del file non ancora implementata.");
+Configure::write('sys_site_offline', 'N');
 Configure::write('sys_send_mail_error', 'N');
 
-Configure::write('routes_default',array('controller' => 'Pages', 'action' => 'home','admin' => true));
-Configure::write('routes_msg_stop',array('controller' => 'Pages', 'action' => 'msg_stop','admin' => false));
-Configure::write('routes_msg_question',array('controller' => 'Pages', 'action' => 'msg_question','admin' => false));
-Configure::write('routes_msg_exclamation',array('controller' => 'Pages', 'action' => 'msg_exclamation','admin' => false));
-Configure::write('routes_msg_frontend_cart_preview',array('controller' => 'Pages', 'action' => 'msg_frontend_cart_preview','admin' => false));
-Configure::write('routes_msg_frontend_prod_user_group_not',array('controller' => 'Pages', 'action' => 'msg_frontend_prod_user_group_not','admin' => false));
+Configure::write('routes_fe_default', ['controller' => 'Deliveries', 'action' => 'tabs','admin' => false]);
+Configure::write('routes_default', ['controller' => 'Pages', 'action' => 'home','admin' => true]);
+Configure::write('routes_msg_stop', ['controller' => 'Pages', 'action' => 'msg_stop','admin' => false]);
+Configure::write('routes_msg_question', ['controller' => 'Pages', 'action' => 'msg_question','admin' => false]);
+Configure::write('routes_msg_exclamation', ['controller' => 'Pages', 'action' => 'msg_exclamation','admin' => false]);
+Configure::write('routes_msg_frontend_cart_preview', ['controller' => 'Pages', 'action' => 'msg_frontend_cart_preview','admin' => false]);
+Configure::write('routes_msg_frontend_prod_user_group_not', ['controller' => 'Pages', 'action' => 'msg_frontend_prod_user_group_not','admin' => false]);
+Configure::write('routes_msg_user_flag_privacy', ['controller' => 'Pages', 'action' => 'msg_user_flag_privacy','admin' => false]);
+Configure::write('routes_msg_user_registration_expire', ['controller' => 'Pages', 'action' => 'msg_user_registration_expire','admin' => false]);
 
 Configure::write('doc_export_author', 'PortAlGas');
 Configure::write('doc_export_title', 'PortAlGas');
@@ -517,12 +528,31 @@ Configure::write('GoogleClient_id','317847689931-ltnq3244cit3mojunmtee3cqtacc4td
 Configure::write('GoogleClient_secret','DDXUm8LlWwZo-HOIlIS7BN-0'); // BudhMZHHol0HM9R4HGwMuoFH
 Configure::write('GoogleEmail', '317847689931-ltnq3244cit3mojunmtee3cqtacc4tdh@developer.gserviceaccount.com');  
 Configure::write('GoogleEmailGmail','portalgas.it@gmail.com');
-Configure::write('GoogleApi_key','AIzaSyAv17GOXb6FwIzeKXmzSVFJ32FYEgGMthI'); 
-Configure::write('GoogleService_client_id','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4.apps.googleusercontent.com');
+Configure::write('GoogleApi_key','AIzaSyAv17GOXb6FwIzeKXmzSVFJ32FYEgGMthI'); // non + utilizzata
+/*
+ * https://maps.google.com/maps/api/geocode 
+ * https://console.developers.google.com/apis/credentials?project=fractis-portalgas-2104
+ */
+Configure::write('GoogleApiKey','AIzaSyBAYuif5WmS-Fpv23_w5nmIajjGv5lD8tc');  // UtilsCrons::_gmap()
+/*
+ * Google::_createServiceCalendarGoogle()
+ * https://console.developers.google.com/apis/credentials?project=beaming-glyph-94409
+ */
+// Configure::write('GoogleService_client_id','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4.apps.googleusercontent.com');  // dominio
+Configure::write('GoogleService_client_id','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4@developer.gserviceaccount.com');  // Service Account 1
 Configure::write('GoogleService_email','317847689931-95cgtaogot4bnmt70audi0d30mq76fp4@developer.gserviceaccount.com');  // Service Account 1
 Configure::write('GooglePrivateKeyLocation','cert/portalgas-33593677e799.p12');  // portalgas-5b553a227069.p12
 
+Configure::write('UrlApiGpsCoordinate','https://www.coordinate-gps.it/');  // http://maps.google.com/maps/api/geocode/json?sensor=false&address=
+
+Configure::write('ivas', ['0' => '0', '4' => '4', '10' => '10', '22' => '22']);
+
 Configure::write('OrderNotaMaxLen', 50);
+Configure::write('SupplierDefaultCanViewOrders', 'Y');
+Configure::write('SupplierDefaultCanViewOrdersUsers', 'N');
+Configure::write('SupplierDefaultCanPromotions', 'N');
+Configure::write('SupplierDefaultMailOrderOpen', 'Y');
+Configure::write('SupplierDefaultMailOrderClose', 'Y');
 Configure::write('SupplierArticleMinLen', 250);
 Configure::write('SupplierArticleIntroMinLen', 251);
 
@@ -538,97 +568,104 @@ Configure::write('GGMailToAlertOrderOpen', 0);   // perche' eseguito dopo mezzan
 Configure::write('GGMailToAlertOrderClose', 2);  // perche' eseguito dopo mezzanotte: tra n+1 si chiuderanno
 Configure::write('GGMailToAlertDeliveryOn', 1);  // perche' eseguito dopo mezzanotte: tra n+1 c'e' la consegna
 Configure::write('GGEventGCalendarToAlertDeliveryOn', 2);  // perche' eseguito dopo mezzanotte: tra n+1 c'e' la consegna
-Configure::write('GGAlertCassiereDeliveriesToClose', 5);  // dopo quanti GG avvisare il Cassiere che ci sono consegne da chiudere
 Configure::write('GGOrderCloseNext', -3);        // giorni che mancano alla chiusura dell'ordine
 Configure::write('GGDeliveryCloseNext', -3);     // giorni che mancano alla chiusura della consegna (non utilizzato)
-Configure::write('GGDeliveryCassiereClose', 35);     // dopo quanti giorni il Cron::deliveriesCassiereClose() porta le consegne a CLOSE
 Configure::write('GGDesOrdersOld', 30);       // gg dopo la DesOrsers.data_fine_max per considerare un DesOrders vecchio
 Configure::write('GGArchiveStatics', 35);     // dopo quanti giorni il Cron::archiveStatistics() cancella le consegne / richieste di pagamento
-Configure::write('GGDeleteLogs', 6);          // dopo quanti giorni il Cron::filesystemLogDelete() cancella i log dei cron
-Configure::write('GGDeleteBackup', 5);        // dopo quanti giorni il Cron::filesystemLogDelete() cancella i backup del codice
-Configure::write('GGDeleteDump', 5);         // dopo quanti giorni il Cron::filesystemLogDelete() cancella i dump del DATABASE
+
+Configure::write('GGDeleteLogs', 6);          // dopo quanti giorni il Cron::filesystemLogDelete() cancella i log dei cron => ne aggiunge uno
+Configure::write('GGDeleteBackup', 1);        // dopo quanti giorni il Cron::filesystemLogDelete() cancella i backup del codice => ne aggiunge uno
+Configure::write('GGDeleteDump', 5);         // dopo quanti giorni il Cron::filesystemLogDelete() cancella i dump del DATABASE => ne aggiunge uno
 Configure::write('CartLimitPreview', 5);  // numero di ultimi articoli acquistati 
 Configure::write('ArticlesOrderToTypeDrawComplete', 100);  // numero articoli in un ordine per la modalita' COMPLETE
 Configure::write('ArticlesOrderWithImgToTypeDrawComplete', 80);  // % di articoli con IMG in un ordine per la modalita' COMPLETE: se - del 80% non ha img e' SIMPLE 
 Configure::write('DeliveryToDefinedDate', '2025-01-01');
 Configure::write('DeliveryToDefinedLabel', 'Da definire');
-
-Configure::write('urlFrontEndToRewriteCakeRequest',array(
-		array('controller'=>'Deliveries','action'=>'tabsAjaxEcommDeliveries','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabsAjaxEcommArticlesOrder','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabsAjaxEcommCartsValidation','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabsAjaxUserCartDeliveries','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabsAjaxDeliveries','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'calendar_view','admin'=>false),
-		array('controller'=>'Storerooms','action'=>'userToStoreroom','admin'=>false),  // chiamate da storerooms/index in ajax
-		array('controller'=>'Storerooms','action'=>'storeroomToUser','admin'=>false),  // chiamate da storerooms/index in ajax
-		array('controller'=>'Storerooms','action'=>'export','admin'=>false),  
-		array('controller'=>'Storerooms','action'=>'exportBooking','admin'=>false),  
-		array('controller'=>'PopUp','action'=>'delivery_info','admin'=>false),
-		array('controller'=>'PopUp','action'=>'order_mail_open_testo','admin'=>false),
-		array('controller'=>'Carts','action'=>'cart_to_user_preview','admin'=>false),
-		array('controller'=>'BookmarksArticles','action'=>'add','admin'=>false),  // chiamate da bookmarks_articles/index in ajax
-		array('controller'=>'BookmarksArticles','action'=>'index_articles','admin'=>false), 
-		array('controller'=>'BookmarksArticles','action'=>'managementCartSimple','admin'=>false), 
-		array('controller'=>'ProdCarts','action'=>'cart_to_user_preview','admin'=>false),
-		array('controller'=>'Ajax','action'=>'autoCompleteArticlesName','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_articles','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_articles_order','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_articles_order_no_img','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_prod_deliveries_articles','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_prod_deliveries_articles_no_img','admin'=>false),
-		array('controller'=>'Ajax','action'=>'modules_suppliers_organization_details','admin'=>false),
-		array('controller'=>'Ajax','action'=>'modules_supplier_details','admin'=>false),
-		array('controller'=>'Ajax','action'=>'modules_supplier_articles','admin'=>false),
-		array('controller'=>'Ajax','action'=>'view_cashes_histories','admin'=>false),
-		array('controller'=>'AjaxGasCarts','action'=>'managementCartSimple','admin'=>false),
-		array('controller'=>'AjaxGasCarts','action'=>'managementCartValidationSimple','admin'=>false),
-		array('controller'=>'AjaxGasCarts','action'=>'managementCartComplete','admin'=>false),
-		array('controller'=>'AjaxProdCarts','action'=>'managementCartSimple','admin'=>false),
-		array('controller'=>'AjaxProdCarts','action'=>'managementCartComplete','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'userCart','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'usersDelivery','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'articlesSupplierOrganization','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'articlesOrders','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'suppliersOrganizations','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'usersData','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'referentsData','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'userRequestPayment','admin'=>false),
-		array('controller'=>'ExportDocs','action'=>'articlesSupplierDes','admin'=>false),
-		array('controller'=>'WsExportDocs','action'=>'exportToReferent','admin'=>false),
-		array('controller'=>'Rests','action'=>'autentication','admin'=>false),
-		array('controller'=>'Rests','action'=>'organizations','admin'=>false),
-		array('controller'=>'Rests','action'=>'organization','admin'=>false),
-		array('controller'=>'Rests','action'=>'deliveries','admin'=>false),
-		array('controller'=>'Rests','action'=>'orders','admin'=>false),
-		array('controller'=>'Rests','action'=>'articles_orders','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_stop','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_question','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_exclamation','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_frontend_cart_preview','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_frontend_prod_user_group_not','admin'=>false),
-		array('controller'=>'Pages','action'=>'msg_frontend_prod_delivery_not','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabs','admin'=>false,'SEO'=>'consegne-gas-'),
-		array('controller'=>'Deliveries','action'=>'tabsUserCart','admin'=>false,'SEO'=>'carrello-gas-'),
-		array('controller'=>'Deliveries','action'=>'tabsUserCartPreview','admin'=>false,'SEO'=>'preview-carrello-gas-'),
-		array('controller'=>'Storerooms','action'=>'index','admin'=>false,'SEO'=>'dispensa-gas-'),
-        array('controller'=>'ProdDeliveries','action'=>'ecomm','admin'=>false,'SEO'=>'fai-la-spesa-prod-'),
-		array('controller'=>'Deliveries','action'=>'tabsEcomm','admin'=>false,'SEO'=>'fai-la-spesa-gas-'),
-		array('controller'=>'Deliveries','action'=>'tabsEcommTabOrdersDelivery','admin'=>false),
-		array('controller'=>'Deliveries','action'=>'tabsEcommTabAllOrders','admin'=>false),
-		array('controller'=>'Pages','action'=>'exportDocsUserIntro','admin'=>false,'SEO'=>'stampe-gas-'),
-		array('controller'=>'Users','action'=>'profile','admin'=>false,'SEO'=>'my-profile'),
-		array('controller'=>'Users','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps'),
-		array('controller'=>'Organizations','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps-gas'),
-		array('controller'=>'Suppliers','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps-produttori'),
-		array('controller'=>'Users','action'=>'bookmarks_mails','admin'=>false,'SEO'=>'bookmarks-mails'),
-		array('controller'=>'Users','action'=>'bookmarks_mails_update','admin'=>false),
-		array('controller'=>'BookmarksArticles','action'=>'index','admin'=>false,'SEO'=>'bookmarks-articles'),
-		array('controller'=>'Events','action'=>'index','admin'=>false,'SEO'=>'events'),	
-		array('controller'=>'PdfCarts','action'=>'index','admin'=>false,'SEO'=>'carts-history'),
-		array('controller'=>'DocsCreates','action'=>'pdf_create','admin'=>false)	
+							   
+Configure::write('urlFrontEndToRewriteCakeRequest',[
+		['controller'=>'Deliveries','action'=>'tabsAjaxEcommDeliveries','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsAjaxEcommArticlesOrder','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsAjaxEcommCartsValidation','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsAjaxUserCartDeliveries','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsAjaxDeliveries','admin'=>false],
+		['controller'=>'Deliveries','action'=>'calendar_view','admin'=>false],
+		['controller'=>'Storerooms','action'=>'userToStoreroom','admin'=>false],  // chiamate da storerooms/index in ajax
+		['controller'=>'Storerooms','action'=>'storeroomToUser','admin'=>false],  // chiamate da storerooms/index in ajax
+		['controller'=>'Storerooms','action'=>'export','admin'=>false],  
+		['controller'=>'Storerooms','action'=>'export_current_deliveries','admin'=>false],  
+		['controller'=>'Storerooms','action'=>'exportAll','admin'=>false],  
+		['controller'=>'Storerooms','action'=>'exportBooking','admin'=>false],  
+		['controller'=>'PopUp','action'=>'delivery_info','admin'=>false],
+		['controller'=>'PopUp','action'=>'order_mail_open_testo','admin'=>false],
+		['controller'=>'Carts','action'=>'cart_to_user_preview','admin'=>false],
+		['controller'=>'BookmarksArticles','action'=>'add','admin'=>false],  // chiamate da bookmarks_articles/index in ajax
+		['controller'=>'BookmarksArticles','action'=>'index_articles','admin'=>false], 
+		['controller'=>'BookmarksArticles','action'=>'managementCartSimple','admin'=>false], 
+		['controller'=>'ProdCarts','action'=>'cart_to_user_preview','admin'=>false],
+		['controller'=>'Ajax','action'=>'autoCompleteArticlesName','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_articles','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_articles_order','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_articles_order_no_img','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_prod_deliveries_articles','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_prod_deliveries_articles_no_img','admin'=>false],
+		['controller'=>'Ajax','action'=>'modules_suppliers_organization_details','admin'=>false],
+		['controller'=>'Ajax','action'=>'modules_supplier_details','admin'=>false],
+		['controller'=>'Ajax','action'=>'modules_supplier_articles','admin'=>false],
+		['controller'=>'Ajax','action'=>'view_cashes_histories','admin'=>false],
+		['controller'=>'AjaxGasCarts','action'=>'managementCartSimple','admin'=>false],
+		['controller'=>'AjaxGasCarts','action'=>'managementCartValidationSimple','admin'=>false],
+		['controller'=>'AjaxGasCarts','action'=>'managementCartComplete','admin'=>false],
+		['controller'=>'AjaxGasCarts','action'=>'managementCartPromotion','admin'=>false],
+		['controller'=>'AjaxProdCarts','action'=>'managementCartSimple','admin'=>false],
+		['controller'=>'AjaxProdCarts','action'=>'managementCartComplete','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'userCart','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'usersDelivery','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'articlesSupplierOrganization','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'articlesOrders','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'suppliersOrganizations','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'usersData','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'referentsData','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'userRequestPayment','admin'=>false],
+		['controller'=>'ExportDocs','action'=>'articlesSupplierDes','admin'=>false],
+		['controller'=>'WsExportDocs','action'=>'exportToReferent','admin'=>false],
+		['controller'=>'Rests','action'=>'autentication','admin'=>false],
+		['controller'=>'Rests','action'=>'organizations','admin'=>false],
+		['controller'=>'Rests','action'=>'organization','admin'=>false],
+		['controller'=>'Rests','action'=>'deliveries','admin'=>false],
+		['controller'=>'Rests','action'=>'orders','admin'=>false],
+		['controller'=>'Rests','action'=>'articles_orders','admin'=>false],
+		['controller'=>'Rests','action'=>'cash_ctrl_limit','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_stop','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_question','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_exclamation','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_frontend_cart_preview','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_frontend_prod_user_group_not','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_frontend_prod_delivery_not','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_user_flag_privacy','admin'=>false],
+		['controller'=>'Pages','action'=>'msg_user_registration_expire','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabs','admin'=>false,'SEO'=>'consegne-gas-'],
+		['controller'=>'Deliveries','action'=>'tabsUserCart','admin'=>false,'SEO'=>'carrello-gas-'],
+		['controller'=>'Deliveries','action'=>'tabsUserCartPreview','admin'=>false,'SEO'=>'preview-carrello-gas-'],
+		['controller'=>'Storerooms','action'=>'index','admin'=>false,'SEO'=>'dispensa-gas-'],
+        ['controller'=>'ProdDeliveries','action'=>'ecomm','admin'=>false,'SEO'=>'fai-la-spesa-prod-'],
+		['controller'=>'Deliveries','action'=>'tabsEcomm','admin'=>false,'SEO'=>'fai-la-spesa-gas-'],
+		['controller'=>'Deliveries','action'=>'tabsEcommTabOrdersDelivery','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsEcommTabAllOrders','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsEcommTabProdGasPromotions','admin'=>false],
+		['controller'=>'Deliveries','action'=>'tabsAjaxEcommProdGasPromotionsDeliveries','admin'=>false],
+		['controller'=>'Pages','action'=>'exportDocsUserIntro','admin'=>false,'SEO'=>'stampe-gas-'],
+		['controller'=>'Users','action'=>'profile','admin'=>false,'SEO'=>'my-profile'],
+		['controller'=>'Users','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps'],
+		['controller'=>'Organizations','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps-gas'],
+		['controller'=>'Suppliers','action'=>'gmaps','admin'=>false,'SEO'=>'gmaps-produttori'],
+		['controller'=>'Users','action'=>'bookmarks_mails','admin'=>false,'SEO'=>'bookmarks-mails'],
+		['controller'=>'Users','action'=>'bookmarks_mails_update','admin'=>false],
+		['controller'=>'BookmarksArticles','action'=>'index','admin'=>false,'SEO'=>'bookmarks-articles'],
+		['controller'=>'Events','action'=>'index','admin'=>false,'SEO'=>'events'],	
+		['controller'=>'PdfCarts','action'=>'index','admin'=>false,'SEO'=>'carts-history'],
+		['controller'=>'DocsCreates','action'=>'pdf_create','admin'=>false]	
 	//	ecommprod  
-		));
+		]);
 
 Configure::write('Mail.body_header', "Salve %s, <br />\n");
 Configure::write('Mail.body_footer_simple', "\nhttp://".Configure::read('SOC.site')." <br />\n%s");
@@ -651,7 +688,7 @@ Configure::write('App.log_joomla', DS.'logs');
 
 // path fisico per upload
 Configure::write('App.img.upload.article', DS.'images'.DS.'articles');
-Configure::write('App.img.upload.prod_gas_article', DS.'images'.DS.'prod_gas_articles');
+Configure::write('App.img.upload.prod_gas_article', DS.'images'.DS.'articles');
 Configure::write('App.img.upload.prod_gas_promotions', DS.'images'.DS.'prod_gas_promotions');
 Configure::write('App.img.upload.user', DS.'images'.DS.'users');
 Configure::write('App.img.upload.content', DS.'images'.DS.'organizations'.DS.'contents');  // articoli e produttori
@@ -664,7 +701,7 @@ Configure::write('App.prefix.upload.content', 'tmp-');  // quando creo un nuovo 
 Configure::write('App.web.img.upload.article', '/images/articles');
 Configure::write('App.web.img.upload.user', '/images/users');
 Configure::write('App.web.img.upload.content', '/images/organizations/contents');
-Configure::write('App.web.img.upload.prod_gas_article', '/images/prod_gas_articles');
+Configure::write('App.web.img.upload.prod_gas_article', '/images/articles');
 Configure::write('App.web.img.upload.prod_gas_promotions', '/images/prod_gas_promotions');
 Configure::write('App.web.doc.upload.tesoriere', '/images/tesoriere');
 Configure::write('App.web.doc.upload.organizations.pays', '/images/pays');
@@ -676,23 +713,25 @@ Configure::write('App.web.img.upload.width.prod_gas_promotion', '250');
 Configure::write('App.web.img.upload.width.userview', '50'); /* dimensione img in tag <img> */
 Configure::write('App.web.img.upload.width.user', '250');   /* resize dell'img dello user */
 Configure::write('App.web.img.upload.width.content', '225');
-Configure::write('App.web.img.upload.extension', array('jpg','jpeg','gif','png'));
-Configure::write('App.web.pdf.upload.extension', array('pdf'));
-Configure::write('App.web.csv.upload.extension', array('csv'));
-Configure::write('App.web.zip.upload.extension', array('zip'));
+Configure::write('App.web.img.upload.extension', ['jpg','jpeg','gif','png']);
+Configure::write('App.web.pdf.upload.extension', ['pdf']);
+Configure::write('App.web.csv.upload.extension', ['csv']);
+Configure::write('App.web.zip.upload.extension', ['zip']);
+Configure::write('App.web.upload.max.size', 10485760); // in byte => 10MB php.ni upload_max_filesize 16M 
 Configure::write('App.img.upload.tmp', DS.'tmp'); // utilizzato per gli allegati delle mail, CsvImport
 
 Configure::write('CsvImportDelimiterDefault', '|');
 Configure::write('CsvImportRowsMaxUsers', '80');
 Configure::write('CsvImportRowsMaxArticles', '80');
 
-Configure::write('ContentType.img', array('image/jpeg','image/jpg','image/png','image/gif'));
-Configure::write('ContentType.pdf', array('application/pdf'));
-Configure::write('ContentType.zip', array('application/x-zip-compressed','application/zip'));
-Configure::write('ContentType.csv', array('text/csv','text/plain','application/csv','text/comma-separated-values','application/excel','application/vnd.ms-excel','application/vnd.msexcel','text/anytext','application/octet-stream','application/txt'));
+Configure::write('ContentType.img', ['image/jpeg','image/jpg','image/png','image/gif']);
+Configure::write('ContentType.pdf', ['application/pdf']);
+Configure::write('ContentType.zip', ['application/x-zip-compressed','application/zip']);
+Configure::write('ContentType.csv', ['text/csv','text/plain','application/csv','text/comma-separated-values','application/excel','application/vnd.ms-excel','application/vnd.msexcel','text/anytext','application/octet-stream','application/txt']);
 
 Configure::write('OrganizationPayImportMax', 80); // massimo importo per il canone annuo
 Configure::write('costToUser', 1); // quanti euro costa ad utente
+Configure::write('OrganizationPayFasceYearStart', 2018); // anno da cui partono le fasce
 
 // path web
 Configure::write('App.img.cake', '/images/cake');
@@ -710,6 +749,11 @@ if(!isset($_SERVER['SERVER_NAME']) || empty($_SERVER['SERVER_NAME']))
 	$_SERVER['SERVER_NAME'] = 'www.portalgas.it';
 	
 Configure::write('App.server', 'http://'.$_SERVER['SERVER_NAME']);
+
+Configure::write('Cookies.user.registration.expire', 'hasUserRegistrationExpire');
+Configure::write('Cookies.expire', 'time + 86400');  // time + 86400*30 30 gg  var time = now.getTime();
+Configure::write('Cookies.path', Configure::read('App.server'));  
+
 /*
  * override developer.mode, App.root, App.cron.log, App.cron.dump, App.cron.backup
  */
@@ -717,6 +761,7 @@ if($_SERVER['SERVER_NAME']!='www.portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='next.portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='test.portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='portalgas.it' &&
+	$_SERVER['SERVER_NAME']!='pre.portalgas.it' &&
 	$_SERVER['SERVER_NAME']!='localhost'
 ) 
 	die("");

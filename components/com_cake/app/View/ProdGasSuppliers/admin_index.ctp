@@ -1,65 +1,62 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
-$this->Html->addCrumb(__('ProdGasSupplier home'));
+$this->App->d($results, false);
+
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+$this->Html->addCrumb(__('ProdGasSupplier home').' '.$user->name);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
-?>
-		
-<?php 	
+
 echo '<div class="organizations">';
 
-echo $this->Form->create('ProdGasSupplier',array('id' => 'formGas'));
-?>
-<fieldset>
+echo '<h3>'.__('GasOrganizations').'</h3>';
 
-			
-	<?php 
-	if(count($results)>0) {
-	?>
-		<table cellpadding="0" cellspacing="0">
-		<tr>
-				<th><?php echo __('N');?></th>
-				<th colspan="2"></th>
-				<th style="text-align:center;"><?php echo __('prod_gas_supplier_owner_articles');?></th>
-				<th style="text-align:center;"><?php echo __('prod_gas_supplier_can_view_orders');?></th>
-				<th style="text-align:center;"><?php echo __('prod_gas_supplier_can_view_orders_users');?></th>
-				<th class="actions"><?php echo __('Actions');?></th>		
-		</tr>
-		<?php
-		foreach ($results as $numResult => $result):
-						
-			echo '<tr class="view">';
-			
-			echo '<td>'.($numResult+1).'</td>';
+echo '<div class="table-responsive"><table class="table table-hover">';
+echo '<tr>';
+echo '<th colspan="2">'.__('GasOrganizations').'</th>';
+echo '<th style="text-align:center;">'.__('prod_gas_supplier_owner_articles').'</th>';
+echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders').'</th>';
+echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders_users').'</th>';
+echo '<th class="actions">'.__('Actions').'</th>';
+echo '</tr>';
 
-
-			echo '<td>';
-				echo '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'"  alt="'.$result['Organization']['name'].'" />';	
-			echo '</td>';
-			echo '<td>';
-			echo $result['Organization']['name'];
-			echo '</td>';
-			echo '<td style="text-align:center;">'.$this->App->traslateEnum('ProdGasSupplier'.$result['SuppliersOrganization']['owner_articles']).'</td>';
-			echo '<td title="'.__('toolTipProdGasSupplierCanViewOrders').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders']).'"></td>';
-			echo '<td title="'.__('toolTipProdGasSupplierCanViewOrdersUsers').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders_users']).'"></td>';
-
-			echo '<td class="actions-table-img">';
-			if($result['SuppliersOrganization']['can_view_orders']=='Y' || $result['SuppliersOrganization']['can_view_orders_users']=='Y')
-				echo $this->Html->link(null, array('controller' => 'ProdGasOrders','action' => 'index', null, 'organization_id='.$result['Organization']['id']),array('class' => 'action actionPrinter','title' => __('List Orders')));
-
-			if($result['SuppliersOrganization']['owner_articles']=='SUPPLIER')
-				echo $this->Html->link(null, array('controller' => 'ProdGasArticlesSyncronizes','action' => 'index', null, 'organization_id='.$result['Organization']['id']),array('class' => 'action actionBackup','title' => __('ProdGasArticlesSyncronizes')));
-			echo '</td>';
-		echo '</tr>';
+$this->App->d($results, false);
+	
+/*
+ * GAS associati
+ */
+if(!isset($results['Supplier']['Organization'])) {
+	echo '<tr>';
+	echo '<td></td>';
+	echo '<td colspan="5">';
+	echo $this->element('boxMsg',['class_msg' => 'notice','msg' => "Non associato ad un G.A.S."]);
+	echo '</td>';
+	echo '</tr>';		
+}
+else {
+	foreach($results['Supplier']['Organization'] as $result) {
+		echo '<tr>';
+		echo '<td>';
+			echo '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'"  alt="'.$result['Organization']['name'].'" />';	
+		echo '</td>';
+		echo '<td>';
+		echo $result['Organization']['name'];
+		echo '</td>';
+		echo '<td style="text-align:center;">';
+		if($result['SuppliersOrganization']['owner_articles']=='SUPPLIER') 
+			echo '<label class="btn btn-info">'.$this->App->traslateEnum('ProdGasSupplier'.$result['SuppliersOrganization']['owner_articles']).'</label>';
+		else
+			echo $this->App->traslateEnum('ProdGasSupplier'.$result['SuppliersOrganization']['owner_articles']);
+		echo '</td>';
+		echo '<td title="'.__('toolTipProdGasSupplierCanViewOrders').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders']).'"></td>';
+		echo '<td title="'.__('toolTipProdGasSupplierCanViewOrdersUsers').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders_users']).'"></td>';
 		
-		endforeach;
-		
-		echo '</table>';
-		
-	} 
-	else // if(count($results)>0)
-		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono ancora GAS associati."));
+		echo '<td class="actions-table-img">';
+		if($result['SuppliersOrganization']['can_view_orders']=='Y' || $result['SuppliersOrganization']['can_view_orders_users']=='Y')
+			echo $this->Html->link(null, array('controller' => 'ProdGasOrders','action' => 'index', null, 'organization_id='.$result['Organization']['id']),array('class' => 'action actionList','title' => __('List Orders')));	
+		echo '</td>';
+		echo '</tr>';		
+	}			
+} // end if(!isset($result['Supplier']['Organization']))	
+echo '</table></div>';
 
-echo '</fieldset>';
-echo $this->Form->end();
 echo '</div>';
 ?>

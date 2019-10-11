@@ -77,6 +77,6 @@
 	
 	} 
 	else  
-		echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFonud', 'msg' => "Non ci sono ancora attività registrate"));
+		echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora attività registrate"));
 	?>
 </div>

@@ -3,29 +3,22 @@ App::uses('AppModel', 'Model');
 
 class StatArticlesOrder extends AppModel {
 
-	public $belongsTo = array(
-			'Article' => array(
-					'className' => 'Article',
-					'foreignKey' => 'article_id',
-					'conditions' => 'Article.organization_id = StatArticlesOrder.organization_id',
-					'fields' => '',
-					'order' => ''
-			),
-			'StatOrder' => array(
-					'className' => 'Order',
+	public $belongsTo = [
+			'StatOrder' => [
+					'className' => 'StatOrder',
 					'foreignKey' => 'stat_order_id',
-					'conditions' => 'Order.organization_id = StatArticlesOrder.organization_id',
+					'conditions' => 'StatOrder.organization_id = StatArticlesOrder.organization_id',
 					'fields' => '',
 					'order' => ''
-			),
-			'StatCart' => array(
+			],
+			'StatCart' => [
 					'className' => 'Cart',
 					'foreignKey' => '',
 					'conditions' => 'StatCart.organization_id = StatArticlesOrder.organization_id AND StatCart.order_id = StatArticlesOrder.order_id AND StatCart.article_id = StatArticlesOrder.article_id',
 					'fields' => '',
 					'order' => '',
-			),
-	);
+			],
+	];
 	
 	public function afterFind($results, $primary = true) {
 	
@@ -46,6 +39,5 @@ class StatArticlesOrder extends AppModel {
 			}
 		}
 		return $results;
-	}
-		
+	}		
 }

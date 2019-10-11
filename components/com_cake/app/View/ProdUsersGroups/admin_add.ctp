@@ -1,5 +1,5 @@
 <?php
-$this->Html->addCrumb(__('Home'),array('controller' => 'Pages', 'action' => 'home'));
+$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List ProdGroups'), array('controller' => 'ProdGroups', 'action' => 'index'));
 $this->Html->addCrumb(__('List ProdUsersGroups'),array('controller'=>'ProdUsersGroups','action'=>'index', $prodGroup['ProdGroup']['id']));
 $this->Html->addCrumb(__('Add ProdUsersGroups'));
@@ -25,7 +25,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			echo $this->Form->end(__('Submit'));
 		}
 		else 
-			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFonud', 'msg' => "Non ci sono ancora utenti registrati"));
+			echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora utenti registrati"));
 	?>
 </div>
 <div class="actions">
@@ -37,31 +37,31 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 
 <script type="text/javascript">     
-jQuery(document).ready(function() {
-	jQuery('#ProdUsersGroupMasterUserId').click(function() {
-		jQuery("#ProdUsersGroupMasterUserId option:selected" ).each(function (){			
-			jQuery('#ProdUsersGroupUserId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+$(document).ready(function() {
+	$('#ProdUsersGroupMasterUserId').click(function() {
+		$("#ProdUsersGroupMasterUserId option:selected" ).each(function (){			
+			$('#ProdUsersGroupUserId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#ProdUsersGroupUserId').click(function() {
-		jQuery("#ProdUsersGroupUserId option:selected" ).each(function (){			
-			jQuery('#ProdUsersGroupMasterUserId').append(jQuery("<option></option>")
-	         .attr("value",jQuery(this).val())
-	         .text(jQuery(this).text()));
+	$('#ProdUsersGroupUserId').click(function() {
+		$("#ProdUsersGroupUserId option:selected" ).each(function (){			
+			$('#ProdUsersGroupMasterUserId').append($("<option></option>")
+	         .attr("value",$(this).val())
+	         .text($(this).text()));
 	         
-	         jQuery(this).remove();
+	         $(this).remove();
 		});
 	});
 	
-	jQuery('#formGas').submit(function() {
+	$('#formGas').submit(function() {
 		var user_ids = '';
-		jQuery("#ProdUsersGroupUserId option" ).each(function (){	
-			user_ids +=  jQuery(this).val()+',';
+		$("#ProdUsersGroupUserId option" ).each(function (){	
+			user_ids +=  $(this).val()+',';
 		});
 		user_ids = user_ids.substring(0,user_ids.length-1);
 		
@@ -70,7 +70,7 @@ jQuery(document).ready(function() {
 			return false;
 		}
 		
-		jQuery('#user_ids').val(user_ids);
+		$('#user_ids').val(user_ids);
 		
 		return true;
 	});

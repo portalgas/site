@@ -1,9 +1,12 @@
 <?php
-/*
-echo "<pre>";
-print_r($results);
-echo "</pre>";
-*/
+$this->App->d($results);
+
+if(isset($desOrdersResults['Supplier'])) {
+	$rows = [];
+	$rows[] = '';
+	$rows[] = $desOrdersResults['Supplier']['name'];
+	$this->PhpExcel->addTableRow($rows);
+}
 
 /*
  * aggrego i dati
@@ -50,7 +53,7 @@ echo "</pre>";
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);
 
-$table = array();
+$table = [];
 $table[] =	array('label' => __('N'), 'width' => 'auto');
 $table[] =	array('label' => __('Bio'), 'width' => 'auto', 'filter' => true);
 if($showCodice=='Y')
@@ -77,7 +80,7 @@ foreach($newResults as $resultOrg) {
         /*
          * intestazione
          */
-        $rows = array();
+        $rows = [];
         $rows[] = '';
         $rows[] = '';
         if($showCodice=='Y')
@@ -96,7 +99,7 @@ foreach($newResults as $resultOrg) {
 
     $name = $result['Article']['name'].' '.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']);
     
-    $rows = array();
+    $rows = [];
 
     $rows[] = ($i+1);
 
@@ -159,7 +162,7 @@ foreach($newResults as $resultOrg) {
 
 
 
-        $rows = array();
+        $rows = [];
         $rows[] = '';
 		if($showCodice=='Y') 
             $rows[] = '';
@@ -192,7 +195,7 @@ foreach($newResults as $resultOrg) {
 /* 
  * totali
  */
-$rows = array();
+$rows = [];
 $rows[] = '';
 if($showCodice=='Y') 
     $rows[] = '';

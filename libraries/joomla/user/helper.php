@@ -334,7 +334,7 @@ abstract class JUserHelper
 	 * @since   3.2.1
 	 */
 	public static function verifyPassword($password, $hash, $user_id = 0)
-	{ 
+	{
 		$rehash = false;
 		$match = false;
 
