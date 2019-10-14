@@ -130,7 +130,7 @@
     position: absolute;
 	top: 50%;
 	width: 28px;
-	height: 38px;
+	height: 35px;
 	margin-top: -19px;
 	display: none;
 	opacity: 0.8;
@@ -142,6 +142,7 @@
     -o-transition: opacity linear 0.3s;
     -ms-transition: opacity linear 0.3s;
     transition: opacity linear 0.3s;
+    background-color: #337ab7;
 }
 .sp-arrow:hover{
 	opacity: 1;
