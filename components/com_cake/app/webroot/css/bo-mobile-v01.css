@@ -1,0 +1,25 @@
+@media screen and (max-width: 480px) {
+    .nav-min.navbar,
+    .nav-min-disabled.navbar,  
+    #help,
+    .cakeContainer div.actions {
+        display: none !important;
+    }
+    .cakeContainer {
+    	margin: 0px;
+    }
+    .cakeContainer div.contentMenuLaterale {
+    	padding-left: 0px !important;
+    }
+	.cakeContainer h2.ico-orders {
+    	min-height: 60px;
+	}
+	.cakeContainer .legenda {
+	    word-wrap: break-word;
+	}	    
+	.cakeContainer div.form, 
+	.cakeContainer div.index, 
+	.cakeContainer div.view	{
+		width:100%;
+	}
+}
