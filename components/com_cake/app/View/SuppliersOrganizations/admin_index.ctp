@@ -1,4 +1,4 @@
-<?php
+r<?php
 $debug = false;
 ?>
 <div class="suppliers">
@@ -124,7 +124,7 @@ if(!empty($results)) {
 			echo 'Supplier.stato '.$result['SuppliersOrganization']['owner_articles'].'<br />';
 		}
 		
-		if($user->organization['Organization']['hasDes'] == 'Y') {
+		if($user->organization['Organization']['hasDes'] == 'Y' && $result['SuppliersOrganization']['owner_articles']=='DES') {
 			/*
 			 * dati owner_articles listino REFERENT / DES / SUPPLIER 
 			 */			

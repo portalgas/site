@@ -1,5 +1,6 @@
 # Custom #
 ##########################
+/configuration.php
 configuration.php
 /_sql/*
 /logs/*
