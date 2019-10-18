@@ -1,4 +1,4 @@
-r<?php
+<?php
 $debug = false;
 ?>
 <div class="suppliers">
