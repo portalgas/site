@@ -22,6 +22,14 @@ class ProdGasSuppliersImportsController extends AppController {
 
 		$debug = false;
 		
+		App::import('Model', 'Organization');
+		$Organization = new Organization;		
+	    $results = $Organization->find('all', ['fields' => ['MAX(Organization.id) AS max_id']]);
+	
+	    $max_id = $results[0][0]['max_id'];
+	    $max_id++;
+	    $this->set('max_id', $max_id);
+	   
 		/*
 		 * sql per settare la gestione del listino aricoli al produttore
 		 */

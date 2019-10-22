@@ -9,6 +9,8 @@ echo '<div class="organizations">';
 
 echo '<h3>'.__('Suppliers').'</h3>';
 
+echo $this->element('legendaOrganizationProdGas', ['max_id' => $max_id]);
+
 echo '<div class="btn-group">';
  echo ' <button type="button" class="btn btn-info btn-view" data-attr-view="view_all">Visualizzazione completa</button>';
 echo '  <button type="button" class="btn btn-primary btn-view" data-attr-view="only_prod">Visualizzazione sintesi</button>';
@@ -44,7 +46,7 @@ foreach($results as $numResult => $result) {
 		 * lo fa /var/portalgas/org_prodgas_new.sh
 		$msg .= "<li>INSERT INTO k_categories_articles (organization_id, parent_id, lft, rght, name) values (".$result['Organization']['id'].", null, 1, 2, 'Generale');</li>";
 		*/
-		$msg .= "<li>".$this->Html->link(__('Articles Gest Categories'), ['controller' => 'CategoriesArticles','action' => 'gest_categories'], ['target' => '_blank', 'title' => __('Articles Gest Categories')])." scegliendo il GAS con il <b>listino</b> del produttore,</li>";
+		$msg .= "<li>".$this->Html->link(__('Articles Gest Categories'), ['controller' => 'Articles','action' => 'gest_categories'], ['target' => '_blank', 'title' => __('Articles Gest Categories')])." scegliendo il GAS con il <b>listino</b> del produttore,</li>";
 		$msg .= "<li>Associa l'amministratore ai gruppi prodGasSupplierManager [".Configure::read('prod_gas_supplier_manager')."] / SuperReferent [".Configure::read('group_id_super_referent')."]</li></ul>";
 
 		echo '<td colspan="7">';
@@ -222,18 +224,6 @@ foreach($results as $numResult => $result) {
 	} // end if(!isset($result['Supplier']['Organization']))	
 }
 echo '</table></div>';			
-
-echo '<pre class="shell no_prod" rel="sql per inserire nuovo produttore">';
-echo "INSERT INTO ".Configure::read('DB.prefix')."organizations (name,type,paramsConfig,paramsFields,paramsPay,stato,created,modified) VALUES (%NOME-PRODUTTORE%,'PRODGAS','{\"hasBookmarsArticles\":\"N\",\"hasArticlesOrder\":\"Y\",\"hasVisibility\":\"N\",\"hasUsersRegistrationFE\":\"N\"}','{\"hasFieldArticleCodice\":\"Y\",\"hasFieldArticleIngredienti\":\"Y\",\"hasFieldArticleCategoryId\":\"Y\"}','{}','Y','".date("Y-m-d")." 00:00:00','".date("Y-m-d")." 00:00:00');";
-echo '</pre>';
-
-echo '<pre class="shell no_prod" rel="script per inserire le categorie e permessi cartelle">';
-echo '/var/portalgas/cron/config.conf settare la variabile {ORGANIZATION-ID}<br />';
-echo 'eseguire /var/portalgas/org_prodgas_new.sh {ORGANIZATION-ID}<br />';
-echo '<br />';
-echo 'Directory articles, users e permessi<br />';
-echo 'crea k_categories_articles.name = \'Generale\'<br />';
-echo '</pre>';
 
 echo '</div>';
 ?>
