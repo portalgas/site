@@ -6,7 +6,7 @@ echo $this->Form->create('Order', ['id' => 'formGas', 'enctype' => 'multipart/fo
 echo '<fieldset>';
 
 if(isset($msg) && !empty($msg))
-	echo $this->element('boxMsg', array('msg' => $msg));
+	echo $this->element('boxMsg', ['msg' => $msg]);
 
 $i=0;
 echo "\r\n";
@@ -19,11 +19,11 @@ else
 	echo __('Cassiere Doc1');	
 echo '</td>';
 echo '<td>';
-echo $this->Form->input('Order.tesoriere_doc1', array(
+echo $this->Form->input('Order.tesoriere_doc1', [
 		'between' => '<br />',
 		'type' => 'file',
 		'label' => false, 'tabindex'=>($i+1)
-));
+]);
 
 if(isset($file1)) {
 	echo '<div class="input">';
@@ -39,7 +39,7 @@ if(isset($file1)) {
 	 *
 	 * non la permetto mai perche' non e' gestita correttamente
 	 if($user->organization['Organization']['hasFieldFatturaRequired']=='N') {
-		echo $this->Form->checkbox('file1_delete', array('label' => 'Cancella documento', 'value' => 'Y'));
+		echo $this->Form->checkbox('file1_delete', ['label' => 'Cancella documento', 'value' => 'Y']);
 		echo $this->Form->label('Cancella documento');
 	 }
 	 */
@@ -53,14 +53,14 @@ echo '</tr>';
 echo '<tr>';
 echo '<td>'.__('Tesoriere fattura importo').'</td>';
 echo '<td style="white-space: nowrap;padding-right: 25px;">';
-echo $this->Form->input('tesoriere_fattura_importo',array('type' => 'text','label' => false, 'id' => 'tesoriere_fattura_importo', 'tabindex'=>($i+1), 'after'=>'&nbsp;&euro;','class'=>'double', 'style'=>'display:inline', 'value' => number_format($this->Form->value('Order.tesoriere_fattura_importo'),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))));
+echo $this->Form->input('tesoriere_fattura_importo', ['type' => 'text', 'label' => false, 'id' => 'tesoriere_fattura_importo', 'tabindex'=>($i+1), 'after'=>'&nbsp;&euro;','class'=>'double', 'style'=>'display:inline', 'value' => number_format($this->Form->value('Order.tesoriere_fattura_importo'),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))]);
 echo '</td>';
 echo '</tr>';
 echo '<tr>';
 echo '<td>'.__('Importo totale ordine').'</td>';
 echo '<td>';
 echo number_format($importo_totale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' '.'&euro;';
-echo $this->Form->input('importo_totale',array('type' => 'hidden', 'id' => 'importo_totale', 'value'=> $importo_totale));
+echo $this->Form->input('importo_totale', ['type' => 'hidden', 'id' => 'importo_totale', 'value'=> $importo_totale]);
 echo '</td>';
 echo '</tr>';
 echo '<td>'.__('Delta').'</td>';
@@ -73,12 +73,12 @@ if($type=='TESORIERE')
 else
 	$label = __('Cassiere Nota');
 
-echo $this->Form->input('tesoriere_nota',array('tabindex'=>($i+1), 'required' => 'false', 'label' => $label));
+echo $this->Form->input('tesoriere_nota', ['tabindex'=>($i+1), 'required' => 'false', 'label' => $label]);
 
 echo '</fieldset>';
 
-echo $this->Form->hidden('order_id', ['value' => $order_id]);
-echo $this->Form->submit(__('Submit'), array('type' => 'submit', 'class' => 'afterDisabled'));
+echo $this->Form->hidden('id', ['value' => $order_id]);
+echo $this->Form->submit(__('Submit'), ['type' => 'submit', 'class' => 'afterDisabled']);
 
 echo $this->Form->end();
 ?>
