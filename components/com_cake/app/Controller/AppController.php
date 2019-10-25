@@ -337,7 +337,7 @@ class AppController extends Controller {
                 $this->Session->setFlash(__('msg_not_order_state'));
                 if ($debug)
                     exit;
-                $this->myRedirect(Configure::read('routes_msg_exclamation'));
+                $this->myRedirect(Configure::read('routes_msg_not_order_state'));
             }
         }
         /*

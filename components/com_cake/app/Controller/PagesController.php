@@ -339,6 +339,20 @@ class PagesController extends AppController {
         $this->layout = 'default_front_end';
     }
 
+	public function msg_not_order_state() {
+		App::import('Model', 'Order');
+		$Order = new Order;		
+	
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
+		$options['recursive'] = 0;
+		$results = $Order->find('first', $options);
+		
+		$this->set(compact('results'));
+		
+		$this->layout = 'default_front_end';
+	}
+
     public function msg_question() {
         $this->layout = 'default_front_end';
     }
@@ -402,7 +416,21 @@ class PagesController extends AppController {
     public function admin_msg_stop() {
         $this->render('/Pages/msg_stop');
     }
-
+    
+	public function admin_msg_not_order_state() {
+		App::import('Model', 'Order');
+		$Order = new Order;		
+	
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
+		$options['recursive'] = 0;
+		$results = $Order->find('first', $options);
+		
+		$this->set(compact('results'));
+        
+		$this->render('/Pages/msg_not_order_state');
+    }
+	
     public function admin_msg_question() {
         $this->render('/Pages/msg_question');
     }
