@@ -78,12 +78,6 @@ class Rss extends AppModel {
         $rssItems3 = '';
         foreach ($results as $numResult => $result) {
 
-            /*
-             * data nel formato Wed, 02 Oct 2002 08:00:00 GMT
-             */
-            $d = date($result['Delivery']['data'], time());
-            $date = gmdate($formatDate, strtotime($d));
-
 
             $guid = 'http://www.portalgas.it/' . $j_seo . '-' . $result['Order']['id'];
 
@@ -92,11 +86,21 @@ class Rss extends AppModel {
              */
             $delivery = '';
             $title1 = '';
-            if ($result['Delivery']['sys'] == 'Y')
+            if ($result['Delivery']['sys'] == 'Y') {
                 $delivery .= "Consegna " . $result['Delivery']['luogo'];
-            else
+				$d = date('Y-m-d', time());
+            }
+			else {
                 $delivery .= $timeHelper->i18nFormat($result['Delivery']['data'], "%A %e %B");
-
+				$d = date($result['Delivery']['data'], time());
+			}
+			
+			/*
+			 * data nel formato Wed, 02 Oct 2002 08:00:00 GMT
+			 */
+			$date = gmdate($formatDate, strtotime($d));	
+			$order_data_fine = gmdate($formatDate, strtotime($result['Order']['data_fine']));
+			
             $title1 = $result['SuppliersOrganization']['name'] . ', ordine aperto fino a ' . $timeHelper->i18nFormat($result['Order']['data_fine'], "%A %e %B") . ' - Consegna ';
             if ($result['Delivery']['sys'] == 'Y')
                 $title1 .= $result['Delivery']['luogo'];
@@ -111,7 +115,8 @@ class Rss extends AppModel {
             $rssItems1 .= '<pubDate>' . $date . '</pubDate>' . "\n";
             if (!empty($result['Order']['nota']))
                 $rssItems1 .= '<description><![CDATA[' . $this->_pulisciStringaRss($result['Order']['nota']) . ']]></description>' . "\n";
-
+			
+			$rssItems1 .= '<orderDateFine><![CDATA[' . $order_data_fine . ']]></orderDateFine>' . "\n";
             $rssItems1 .= '</item>' . "\n";
 
 
@@ -140,6 +145,7 @@ class Rss extends AppModel {
             if (!empty($result['Order']['nota']))
                 $rssItems2 .= '<description><![CDATA[' . $this->_pulisciStringaRss($result['Order']['nota']) . ']]></description>' . "\n";
 
+			$rssItems2 .= '<orderDateFine><![CDATA[' . $order_data_fine . ']]></orderDateFine>' . "\n";
             $rssItems2 .= '</item>' . "\n";
 
 
@@ -180,6 +186,7 @@ class Rss extends AppModel {
             $rssItems3 .= '<link>' . $link . '</link>' . "\n";
             $rssItems3 .= '<pubDate>' . $data_inizio . '</pubDate>' . "\n";
             $rssItems3 .= '<description><![CDATA[Ordine aperto fino a ' . $timeHelper->i18nFormat($result['Order']['data_fine'], "%A %e %B") . ']]></description>' . "\n";
+			//$rssItems3 .= '<orderDateFine><![CDATA[' . $order_data_fine . ']]></orderDateFine>' . "\n";
             $rssItems3 .= '</item>' . "\n";
             /*
              * Order.data fine
