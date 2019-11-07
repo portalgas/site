@@ -118,9 +118,9 @@ else
 							echo '</td>';
 							echo '</tr>';							
 							echo '</table>';
-							
+
 							if($this->App->isUserPermissionArticlesOrder($user) && !empty($resultsAssociateArticlesOrder))  
-							   echo $this->element('legendaArticlesInArticlesOrder', array('results' => $resultsAssociateArticlesOrder));							
+							   echo $this->element('legendaArticlesInArticlesOrder', ['resultsAssociateArticlesOrder' => $resultsAssociateArticlesOrder, 'stateCodeNotUpdateArticle' => $stateCodeNotUpdateArticle]);							
 			
 			echo '</div>';	
 			echo '<div class="tab-pane fade" id="tabs-2">';

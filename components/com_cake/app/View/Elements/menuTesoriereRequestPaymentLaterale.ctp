@@ -1,5 +1,8 @@
 <?php
-if(!isset($delivery_id)) $delivery_id=0; 
+/*
+ * non + utilizzato, sostituito da MenuRequestPaymentHelper
+ */
+if(!isset($delivery_id) || empty($delivery_id)) $delivery_id=0; 
 
 if(isset($requestPaymentResults['RequestPayment']['id'])) {
 ?>
@@ -9,26 +12,26 @@ if(isset($requestPaymentResults['RequestPayment']['id'])) {
 	</div>
 	<script type="text/javascript">
 	var menuOrderLateraleOpen = false;
-	jQuery(document).ready(function() {
-		jQuery('.menuLaterale').mouseenter(function() {
+	$(document).ready(function() {
+		$('.menuLaterale').mouseenter(function() {
 			if(menuOrderLateraleOpen) return;
 
-			jQuery('.menuLaterale').animate({left: '+=270'});
-			jQuery('.menuLateraleClose').css('display','block');
+			$('.menuLaterale').animate({left: '+=230'});
+			$('.menuLateraleClose').css('display','block');
 			menuOrderLateraleOpen = true;
 		});	
 
-		jQuery('.menuLateraleClose').click(function() {
-			jQuery('.menuLateraleClose').css('display','none');
-			jQuery('.menuLaterale').animate({left: '-=270'}, 'fast');
+		$('.menuLateraleClose').click(function() {
+			$('.menuLateraleClose').css('display','none');
+			$('.menuLaterale').animate({left: '-=230'}, 'fast');
 		
 			menuOrderLateraleOpen = false;
 		});
 		
-		jQuery('.menuLaterale-disalbled').mouseleave(function() {
+		$('.menuLaterale-disalbled').mouseleave(function() {
 			if(!menuOrderLateraleOpen) return;
 			
-			jQuery('.menuLaterale').animate({left: '-=270'}, 'fast');
+			$('.menuLaterale').animate({left: '-=230'}, 'fast');
 			menuOrderLateraleOpen = false;
 		});	
 	});

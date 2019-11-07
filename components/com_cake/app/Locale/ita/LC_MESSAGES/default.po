@@ -4159,7 +4159,7 @@ msgid "article_msg_edit_values"
 msgstr "Modificando questi valori <b>non</b> si modificheranno i valori dell'articolo associato agli ordini."
 
 msgid "msg_article_edit_propagate_article_order"
-msgstr "La modifica dei dati ha effetto sugli articoli <strong>gi&agrave;</strong> associati agli ordini."
+msgstr "La modifica dei dati ha effetto sugli articoli <strong>gi&agrave;</strong> associati agli ordini che <b>non</b> sono nei seguenti stati"
 
 msgid "msg_article_edit_not_propagate_article_order"
 msgstr "La modifica dei dati <strong>non</strong> ha effetto sugli articoli <strong>gi&agrave; associati agli ordini</strong>."

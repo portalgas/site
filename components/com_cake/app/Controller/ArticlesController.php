@@ -895,7 +895,7 @@ class ArticlesController extends AppController {
 					$esito .= $SiteLifeCyle->changeArticle($this->user, $this->request->data, 'EDIT_AFTER_SAVE', $options);
 					if(isset($esito['CODE']) && $esito['CODE']==200)
 						$msg .= $esito['MSG'];
-					
+					exit;
 					/*
 					 * IMG1 delete
 					 */
@@ -1000,6 +1000,14 @@ class ArticlesController extends AppController {
 		$this->set('sort', $sort);
 		$this->set('direction', $direction);
 		$this->set('page', $page);
+		
+		/*
+		 * stati dell'ordine in cui non cambia l'importo agli ordini associati
+		 */ 		
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;		
+		$stateCodeNotUpdateArticle = $OrderLifeCycle->getStateCodeNotUpdateArticleToSql($this->user);
+		$this->set(compact('stateCodeNotUpdateArticle'));
 	}
 
 	/*
