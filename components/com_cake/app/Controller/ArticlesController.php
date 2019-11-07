@@ -895,7 +895,7 @@ class ArticlesController extends AppController {
 					$esito .= $SiteLifeCyle->changeArticle($this->user, $this->request->data, 'EDIT_AFTER_SAVE', $options);
 					if(isset($esito['CODE']) && $esito['CODE']==200)
 						$msg .= $esito['MSG'];
-					exit;
+					
 					/*
 					 * IMG1 delete
 					 */
