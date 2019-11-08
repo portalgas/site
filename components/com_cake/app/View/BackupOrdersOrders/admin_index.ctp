@@ -62,9 +62,9 @@ if(!empty($results)) {
 		echo '	<td>';
 		echo $result['SuppliersOrganization']['name'];
 		
-		if($user->organization['Organization']['hasDes']=='Y' && !empty($result['DesOrdersOrganization'])) {
-			if($result['DesOrdersOrganization']['des_id']==$user->des_id) {
-				echo '<a title="" href="/administrator/index.php?option=com_cake&amp;controller=DesOrdersOrganizations&amp;action=index&amp;des_order_id='.$result['DesOrdersOrganization']['des_order_id'].'">';
+		if($user->organization['Organization']['hasDes']=='Y' && !empty($result['BackupOrdersDesOrdersOrganization'])) {
+			if($result['BackupOrdersDesOrdersOrganization']['des_id']==$user->des_id) {
+				echo '<a title="" href="/administrator/index.php?option=com_cake&amp;controller=DesOrdersOrganizations&amp;action=index&amp;des_order_id='.$result['BackupOrdersDesOrdersOrganization']['des_order_id'].'">';
 				echo '<span class="ico-order-is-des" title="'.__('OrderIsDes').'"></span></a>';	
 			}
 			else

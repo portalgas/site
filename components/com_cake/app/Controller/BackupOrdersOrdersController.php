@@ -19,7 +19,7 @@ class BackupOrdersOrdersController extends AppController {
 		
 	   	App::import('Model', 'Supplier');
 	   	
-	   	App::import('Model', 'DesOrdersOrganization');
+	   	App::import('Model', 'BackupOrdersDesOrdersOrganization');
 
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
@@ -55,24 +55,26 @@ class BackupOrdersOrdersController extends AppController {
 			 */		
 			if($this->user->organization['Organization']['hasDes']=='Y') {		
 	
-				$DesOrdersOrganization = new DesOrdersOrganization();
+				$BackupOrdersDesOrdersOrganization = new BackupOrdersDesOrdersOrganization();
 				
 				$options = [];
-				$options['conditions'] = ['DesOrdersOrganization.order_id' => $result['Order']['id'],
-										'DesOrdersOrganization.organization_id' => $this->user->organization['Organization']['id']];
+				$options['conditions'] = ['BackupOrdersDesOrdersOrganization.order_id' => $result['BackupOrdersOrder']['id'],
+										'BackupOrdersDesOrdersOrganization.organization_id' => $this->user->organization['Organization']['id']];
 				$options['recursive'] = -1;
-				$desOrdersOrganization = $DesOrdersOrganization->find('first', $options);
-				$results[$numResult]['DesOrdersOrganization'] = $desOrdersOrganization['DesOrdersOrganization'];
+				$backupOrdersDesOrdersOrganizationResults = $BackupOrdersDesOrdersOrganization->find('first', $options);
+				$results[$numResult]['BackupOrdersDesOrdersOrganization'] = $backupOrdersDesOrdersOrganizationResults['BackupOrdersDesOrdersOrganization'];
+				// debug($options);
+				// debug($backupOrdersDesOrdersOrganizationResults);
 			} // DES
 			 			 
 			 /*
 			  * recupero richiesta di pagamento 
 			  */ 
-			$results[$numResult]['Order']['request_payment_num'] = '';
-			$results[$numResult]['Order']['request_payment_id'] = '';
+			$results[$numResult]['BackupOrdersOrder']['request_payment_num'] = '';
+			$results[$numResult]['BackupOrdersOrder']['request_payment_id'] = '';
 			if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
-				$results[$numResult]['Order']['request_payment_num'] = $RequestPayment->getRequestPaymentNumByOrderId($this->user, $result['Order']['id']);
-				$results[$numResult]['Order']['request_payment_id'] = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $result['Order']['id']);
+				$results[$numResult]['BackupOrdersOrder']['request_payment_num'] = $RequestPayment->getRequestPaymentNumByOrderId($this->user, $result['BackupOrdersOrder']['id']);
+				$results[$numResult]['BackupOrdersOrder']['request_payment_id'] = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $result['BackupOrdersOrder']['id']);
 			} 
 			  
 		} // loop Orders

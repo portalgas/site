@@ -36,6 +36,16 @@ class BackupOrder extends AppModel {
 						AND Cart.order_id = ".$order_id." )";	 	
 			self::d($sql, $debug);
 			$results = $this->query($sql);
+			
+			$sql = "INSERT INTO ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations
+					(SELECT * 
+					 FROM ".Configure::read('DB.prefix')."des_orders_organizations as DesOrdersOrganization  
+					 WHERE
+						DesOrdersOrganization.organization_id = ".(int)$user->organization['Organization']['id']." 
+						AND DesOrdersOrganization.order_id = ".$order_id." )";		 	
+			self::d($sql, $debug);
+			$results = $this->query($sql);
+			
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
@@ -61,6 +71,10 @@ class BackupOrder extends AppModel {
 			$sql = "DELETE from ".Configure::read('DB.prefix')."backup_orders_carts WHERE organization_id = ".(int)$user->organization['Organization']['id']." AND order_id = ".$order_id;	 	
 			self::d($sql, $debug);
 			$results = $this->query($sql);
+			
+			$sql = "DELETE from ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations WHERE organization_id = ".(int)$user->organization['Organization']['id']." AND DesOrdersOrganizations.order_id = ".$order_id;		 	
+			self::d($sql, $debug);
+			$results = $this->query($sql);			
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
@@ -125,6 +139,16 @@ class BackupOrder extends AppModel {
 						AND BackupOrdersCart.order_id = ".$order_id." )";	 	
 			self::d($sql, $debug);
 			$results = $this->query($sql);
+			
+			$sql = "INSERT INTO ".Configure::read('DB.prefix')."des_orders_organizations
+					(SELECT * 
+					 FROM ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations as BackupDesOrdersOrganization 
+					 WHERE
+						BackupDesOrdersOrganization.organization_id = ".(int)$user->organization['Organization']['id']." 
+						AND BackupDesOrdersOrganization.order_id = ".$order_id." )";		 	
+			self::d($sql, $debug);
+			$results = $this->query($sql);
+			
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
