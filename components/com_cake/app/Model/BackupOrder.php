@@ -72,7 +72,7 @@ class BackupOrder extends AppModel {
 			self::d($sql, $debug);
 			$results = $this->query($sql);
 			
-			$sql = "DELETE from ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations WHERE organization_id = ".(int)$user->organization['Organization']['id']." AND DesOrdersOrganizations.order_id = ".$order_id;		 	
+			$sql = "DELETE from ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations WHERE organization_id = ".(int)$user->organization['Organization']['id']." AND order_id = ".$order_id;		 	
 			self::d($sql, $debug);
 			$results = $this->query($sql);			
 		}

@@ -72,7 +72,7 @@ class DesOrdersController extends AppController {
 		$options = [];
 		$options['recursive'] = -1;
  		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id, 
-								// 'DATE(DesOrder.data_fine_max) >= CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY'
+								 'DATE(DesOrder.data_fine_max) >= CURDATE() - INTERVAL ' . Configure::read('GGDesOrdersOld') . ' DAY'
 		];
  		if(!$this->isSuperReferenteDes())
  			$options['conditions'] += ['DesOrder.des_supplier_id IN ('.$ACLsuppliersIdsDes.')'];
