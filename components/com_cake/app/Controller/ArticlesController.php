@@ -24,7 +24,7 @@ class ArticlesController extends AppController {
 			$this->article_organization_id = $this->user->organization['Organization']['id'];
 		
 		/* ctrl ACL */
-		if (in_array($this->action, ['admin_edit', 'admin_delete'])) {
+		if (in_array($this->action, ['admin_edit', 'admin_delete', 'admin_inverseValue'])) {
 
 			if($this->isSuperReferente()) {
 			
@@ -1709,4 +1709,60 @@ class ArticlesController extends AppController {
 		}
 		return $esito;
 	}
+	
+	/* 
+	 * passato un campo stato / flag_presente_articlesorders inverte il valore Y => N
+	 */
+    public function admin_inverseValue($article_organization_id, $article_id, $field, $format='notmpl') {
+
+		$debug = false;
+		
+        if (empty($article_organization_id) && empty($article_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        $options = [];
+        $options['conditions'] = ['Article.organization_id' => $article_organization_id,
+								  'Article.id' => $article_id];
+        $options['recursive'] = -1;
+        $articleResults = $this->Article->find('first', $options);
+		if(empty($articleResults)) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+		
+		self::d($field, $debug);
+		self::d($articleResults, $debug);
+
+		if(isset($articleResults['Article'][$field])) {
+
+			self::d($articleResults['Article'][$field], $debug);
+
+			switch ($articleResults['Article'][$field]) {
+				case 'Y':
+					$articleResults['Article'][$field] = 'N';
+				break;
+				case 'N':
+					$articleResults['Article'][$field] = 'Y';
+				break;
+				default:
+					$articleResults['Article'][$field] = 'N';
+				break;
+			}
+
+			self::d($articleResults['Article'][$field], $debug);
+			self::d($articleResults, $debug);
+			
+			$this->Article->create();
+			if (!$this->Article->save($articleResults)) {
+			}
+		
+		}
+
+        $this->set('content_for_layout', '');
+
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');
+   } 	
 }

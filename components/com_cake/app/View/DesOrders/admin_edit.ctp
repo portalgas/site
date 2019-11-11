@@ -25,7 +25,7 @@ echo '<legend>'.__('Edit DesOrder').'</legend>';
 		
 	echo $this->Form->input('luogo', array('label' => __('DesDelivery')));
 
-	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $this->Time->i18nFormat($this->Form->value('DesOrder.data_fine_max'),"%A, %e %B %Y"), 'required' => 'false'));	
+	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $this->Time->i18nFormat($this->Form->value('DesOrder.data_fine_max'),"%A, %e %B %Y"), 'required' => 'false', 'autocomplete' => 'off'));	
 	echo $this->Ajax->datepicker('DesOrderDataFineMax',array('dateFormat' => 'DD, d MM yy','altField' => '#DesOrderDataFineMaxDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="DesOrderDataFineMaxDb" name="data[DesOrder][data_fine_max_db]" value="'.$this->Form->value('DesOrder.data_fine_max').'" />';
 	

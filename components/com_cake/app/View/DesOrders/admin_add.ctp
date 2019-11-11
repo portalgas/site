@@ -30,7 +30,7 @@ if(!empty($ACLDesSuppliersResults)) {
 	
 	echo $this->Form->input('luogo', array('label' => __('DesDelivery')));
 
-	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $data_fine_max, 'required'=>'false'));
+	echo $this->Form->input('data_fine_max',array('type' => 'text','size'=>'30','label' => __('DataFineMax'), 'value' => $data_fine_max, 'required'=>'false', 'autocomplete' => 'off'));
 	echo $this->Ajax->datepicker('DesOrderDataFineMax',array('dateFormat' => 'DD, d MM yy','altField' => '#DesOrderDataFineMaxDb', 'altFormat' => 'yy-mm-dd'));
 	echo '<input type="hidden" id="DesOrderDataFineMaxDb" name="data[DesOrder][data_fine_max_db]" value="'.$data_fine_max_db.'" />';
 	
