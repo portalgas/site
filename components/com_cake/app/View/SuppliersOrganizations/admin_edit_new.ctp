@@ -15,7 +15,9 @@ echo '<li><a href="#tabs-1" data-toggle="tab">'.__('User profile').'</a></li>';
 echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Contacts').'</a></li>';	
 echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Others').'</a></li>';	
 echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Img').'</a></li>';	
-echo '<li><a href="#tabs-5" data-toggle="tab">'.__('SupplierForm').'</a></li>';		 
+if(isset($j_content_text) && $j_content_text!==false)	 
+	echo '<li><a href="#tabs-5" data-toggle="tab">'.__('SupplierForm').'</a></li>';		 
+echo '<li><a href="#tabs-6" data-toggle="tab">'.__('List Articles').'</a></li>';
 echo '</ul>';
 
 echo '<div class="tab-content">';
@@ -124,9 +126,15 @@ echo '<div class="tab-pane fade" id="tabs-4">';
                     else
                             echo 'Immagine non presente';
 echo '</div>';
-echo '<div class="tab-pane fade" id="tabs-5">';
+if(isset($j_content_text) && $j_content_text!==false) {
+	echo '<div class="tab-pane fade" id="tabs-5">';
+	echo $j_content_text->introtext;
+	echo '</div>';		
+}
+echo '<div class="tab-pane fade" id="tabs-6">';
             echo $this->Html->link(__('List Articles').' ('.$totArticlesAttivi.')', array('controller' => 'Articles', 'action' => 'context_articles_index', null,'FilterArticleSupplierId='.$results['SuppliersOrganization']['id']),array());
-echo '</div>';				
+echo '</div>';	
+		
 
 echo $this->element('legendaSuppliersOrganizationsStatoYEdit', array('organization_id' => $user->organization['Organization']['id'], 'supplier_id' => $results['SuppliersOrganization']['supplier_id']));
 

@@ -2494,6 +2494,9 @@ msgstr "Totale dispense"
 msgid "TotaleSuppliersOrganizationsReferents"
 msgstr "Totale referenti"
 
+msgid "TotaleDesSupplier"
+msgstr "Produttore associato ad D.E.S."
+
 msgid "TotaleRequestPaymentGenerics"
 msgstr "Totale voci generiche"
 
