@@ -12,7 +12,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->input('id');
 		echo $this->Form->input('luogo');
 		
-		echo $this->Form->input('data',array('type' => 'text','size'=>'30','value' => $this->Time->i18nFormat($this->Form->value('Delivery.data'),"%A, %e %B %Y")));
+		echo $this->Form->input('data', ['type' => 'text', 'size' => '30', 'autocomplete' => 'off', 'value' => $this->Time->i18nFormat($this->Form->value('Delivery.data'),"%A, %e %B %Y")]);
 		
 		echo '<table style="float: right;width: 90%;">';
 		echo '	<tr class="view">';

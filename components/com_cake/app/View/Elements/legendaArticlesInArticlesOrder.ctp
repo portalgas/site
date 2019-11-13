@@ -1,6 +1,17 @@
 <?php
 echo '<div class="legenda legenda-ico-info">';
 echo __('msg_article_edit_propagate_article_order');
+
+if(!empty($stateCodeNotUpdateArticle)) {
+	$stateCodeNotUpdateArticles = explode(',', $stateCodeNotUpdateArticle);
+	echo '<p><ul>';
+	foreach($stateCodeNotUpdateArticles as $stateCodeNotUpdateArticle) {
+		$stateCodeNotUpdateArticle = str_replace("'", '', $stateCodeNotUpdateArticle);
+		echo '<li>'.__($stateCodeNotUpdateArticle.'-label').'</li>';
+	}
+	echo '</ul></p>';
+}
+
 echo '</div>';
  
 /*

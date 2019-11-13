@@ -23,6 +23,11 @@ echo '<div class="input text"><label for="">'.__('TotaleOrders').'</label><span 
 
 (count($results['SuppliersOrganizationsReferent']) > 0 ? $class = 'qtaUno' : $class = 'qtaZero');
 echo '<div class="input text"><label for="">'.__('TotaleSuppliersOrganizationsReferents').'</label><span class="'.$class.'">'.count($results['SuppliersOrganizationsReferent']).'</span></div>';
+
+(!empty($results['DesSupplier']) ? $class = 'qtaUno' : $class = 'qtaZero');
+(!empty($results['DesSupplier']) ? $tot = 1 : $tot = 0);
+echo '<div class="input text"><label for="">'.__('TotaleDesSupplier').'</label><span class="'.$class.'">'.$tot.'</span></div>';
+
 echo '</fieldset>';
 
 echo $this->Form->hidden('id',array('value' => $results['SuppliersOrganization']['id']));

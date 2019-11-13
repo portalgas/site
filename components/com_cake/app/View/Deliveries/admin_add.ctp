@@ -13,7 +13,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 									  Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteDeliveries_luogo&format=notmpl',
 									  array('label' => 'Luogo Consegna','div' => 'required'));
 									  
-		echo $this->Form->input('data',array('type' => 'text','size'=>'30', 'value' => $data));
+		echo $this->Form->input('data', ['type' => 'text', 'size' => '30', 'value' => $data, 'autocomplete' => 'off']);
 		echo $this->Ajax->datepicker('DeliveryData',array('dateFormat' => 'DD, d MM yy','altField' => '#DeliveryDataDb', 'altFormat' => 'yy-mm-dd'));
 		echo '<input type="hidden" id="DeliveryDataDb" name="data[Delivery][data_db]" value="'.$data_db.'" />';
 		

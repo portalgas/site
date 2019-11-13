@@ -973,6 +973,15 @@ class SuppliersOrganizationsController extends AppController {
 		$results['SuppliersDeliveriesType'] = $suppliersDeliveriesTypesResults['SuppliersDeliveriesType'];
 		
 		/*
+		 * scheda articolo
+		 */
+		if(!empty($results['Supplier']['j_content_id'])) {			 
+			$j_content_text = JTable::getInstance('Content', 'JTable');
+			$table_plan_return  = $j_content_text->load(['id' => $results['Supplier']['j_content_id']]);
+			$this->set(compact('j_content_text'));
+		}
+		
+		/*
 		 * options owner_articles, 
 		 */
 		$prod_gas_supplier_owner_articles = $this->SuppliersOrganization->getOwnerArticles($this->user, $results, $debug);
@@ -1336,6 +1345,28 @@ class SuppliersOrganizationsController extends AppController {
 								  'SuppliersOrganization.id' => $id];
 		$options['recursive'] = 1;
 		$results = $this->SuppliersOrganization->find('first', $options);
+		
+		App::import('Model', 'DesSupplier');
+		$DesSupplier = new DesSupplier;	
+		
+		if($this->user->organization['Organization']['hasDes'] == 'Y') { 
+
+			/*
+			 * ctrl se produttote DES
+			 */			
+			$options = [];
+			$options['conditions'] = ['DesSupplier.supplier_id' => $results['SuppliersOrganization']['supplier_id']];
+			$options['recursive'] = -1;
+			$desSupplierResults = $DesSupplier->find('first', $options);
+			self::d($options, $debug);
+			self::d($desSupplierResults, $debug);
+
+			if(!empty($desSupplierResults)) 
+				$results['DesSupplier'] = $desSupplierResults['DesSupplier'];
+			else
+				$results['DesSupplier'] = [];
+
+		} // if($this->user->organization['Organization']['hasDes'] == 'Y')				
 		self::d($results, $debug);
 		
 		$this->set(compact('results'));
@@ -1345,8 +1376,9 @@ class SuppliersOrganizationsController extends AppController {
 				$this->Session->setFlash(__('Delete Supplier Organization'));
 			
 				/*
+				* non lo cancello mai
+				*
 				 * ctrl se il Supplier e' condiviso da altri GAS
-				*/
 				App::import('Model', 'Supplier');
 				$Supplier = new Supplier;
 						
@@ -1363,9 +1395,8 @@ class SuppliersOrganizationsController extends AppController {
 				
 					self::d("il Supplier NON e' condiviso da altri GAS => delete", $debug);
 				
-					/*
-					 * il Supplier NON e' condiviso da altri GAS => delete
-					 */
+					// il Supplier NON e' condiviso da altri GAS => delete
+					
 					App::import('Model', 'Supplier');
 					$Supplier = new Supplier;
 						
@@ -1374,6 +1405,7 @@ class SuppliersOrganizationsController extends AppController {
 					
 					} 					
 				} // end if($suppliersOrganizationCount==0)	
+				*/					
 			}	   
 			else
 				$this->Session->setFlash(__('Supplier was not deleted'));

@@ -74,9 +74,9 @@ Modal.prototype = {
 		html += '</div>';
 		html += '<div class="modal-footer">';
 		if (this.modalSubmitText!='') {
-			html += '<button type="button" class="btn btn-success" data-dismiss="modal" onClick="'+this.modalSubmitFunc+'">'+this.modalSubmitText+'</button>';
+			html += '<button type="button" class="btn btn-primary" data-dismiss="modal" onClick="'+this.modalSubmitFunc+'">'+this.modalSubmitText+'</button>';
 		}
-		html += '<button type="button" class="btn btn-warning" data-dismiss="modal">Chiudi</button>'; 
+		html += '<button type="button" class="btn btn-success" data-dismiss="modal">Chiudi</button>'; 
 		html += '</div>'; 
 		html += '</div>'; 
 		

@@ -3,7 +3,7 @@ App::uses('AppController', 'Controller');
 
 class ReferenteController extends AppController {
 
-    public $components = array('Documents');
+    public $components = ['Documents'];
 							   
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -60,11 +60,7 @@ class ReferenteController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 		
 		    $this->request->data['Order']['id'] = $this->order_id;
-			if($debug) {
-				echo "<pre>this->request->data \n";
-				print_r($this->request->data['Order']);
-				echo "</pre>";
-			}
+			self::d($this->request->data);
 			
 			App::import('Model', 'Tesoriere');
 			$Tesoriere = new Tesoriere;
@@ -142,8 +138,8 @@ class ReferenteController extends AppController {
 		} // if ($this->request->is('post') || $this->request->is('put'))
 			
 		$options = [];
-		$options['conditions'] = array('Order.id' => $this->order_id,
-									   'Order.organization_id' => $this->user->organization['Organization']['id']);
+		$options['conditions'] = ['Order.id' => $this->order_id,
+								  'Order.organization_id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$this->request->data = $Order->find('first', $options);
 		if (empty($this->request->data)) {
@@ -336,7 +332,7 @@ class ReferenteController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			$this->request->data['Order']['id'] = $this->order_id;
-			self::d($this->request->data['Order'], $debug);
+			self::dd($this->request->data, $debug);
 			
 			App::import('Model', 'Tesoriere');
 			$Tesoriere = new Tesoriere;
@@ -459,8 +455,8 @@ class ReferenteController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
-						App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',
-							'Delivery.sys' => 'N',							'Delivery.stato_elaborazione' => 'OPEN');					$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),'conditions'=>$conditions,'order'=>'data ASC','recursive'=>-1));		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
+						App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],						'Delivery.isVisibleBackOffice' => 'Y',
+						'Delivery.sys' => 'N',						'Delivery.stato_elaborazione' => 'OPEN'];					$deliveries = $Delivery->find('list', ['fields' => ['id', 'luogoData'], 'conditions' => $conditions, 'order' => 'data ASC', 'recursive' => -1]);		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
 		
 		/*
 		 * aggiorno stato ORDER

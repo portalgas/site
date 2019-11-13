@@ -69,16 +69,23 @@ class DeliveryLifeCycle extends AppModel {
 				self::d("NON CANCELLO la consegna ".$deliveryResult['Delivery']['id']." con ".$orderResults." ordini o eventualmente da pagate alla dispensa", $debug);	
 		} // end loops Delivery
     }				
-    
-    public function deliveriesToClose($user, $delivery_id=0, $debug) {
+	
+    public function deliveriesToClose($user, $delivery_id=0, $debug=false) {
 
         self::d(date("d/m/Y") . " - " . date("H:i:s") . " Porto le consegne a Delivery.stato_elaborazione = CLOSE con tutti gli ordini in stato_elaborazione = CLOSE", $debug);
 		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
 			self::d("e RequestPayment.stato_elaborazione = CLOSE", $debug);
 		if($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
 			self::d("e isToStoreroomPay = Y", $debug);
+		
+		$requestPaymentClose = false;
+		$isToStoreroomPay = true;
+		
+        try {	
 
-        try {			
+			App::import('Model', 'Delivery');
+			App::import('Model', 'Storeroom');
+		
             /*
              * estraggo tutte le consegne aperte e quanti ordini ha associati
              */
@@ -94,9 +101,12 @@ class DeliveryLifeCycle extends AppModel {
 						AND Delivery.sys = 'N' 
 						AND `Order`.delivery_id = Delivery.id 
 						and `Order`.isVisibleFrontEnd = 'Y'  and Delivery.isVisibleFrontEnd = 'Y' ";
-            if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
-                $sql .= " AND (Delivery.isToStoreroom = 'Y' && Delivery.isToStoreroomPay = 'Y' || Delivery.isToStoreroom = 'N') ";
-            if (!empty($delivery_id))
+            /*
+			 faccio il ctrl dopo se no mi rimangono Consegne da pagare (isToStoreroomPay=Y) ma non associate articoli in dispensa 
+			 if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
+                $sql .= " AND ((Delivery.isToStoreroom = 'Y' && Delivery.isToStoreroomPay = 'Y') || Delivery.isToStoreroom = 'N') ";
+            */
+			if (!empty($delivery_id))
                 $sql .= " AND Delivery.id = " . (int) $delivery_id;
             $sql .= " GROUP BY Delivery.id 
 					  ORDER BY Delivery.id ";
@@ -159,12 +169,50 @@ class DeliveryLifeCycle extends AppModel {
 				else
 					$requestPaymentClose=true;
 				
-				
+				if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
+					
+					$Delivery = new Delivery;	
+					
+					$options = [];
+					$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+											  'Delivery.id' => $result['Delivery']['id'] ];
+					$options['recursive'] = -1;
+					$deliveryResults = $Delivery->find('first', $options);
+
+					/*
+					 * faccio il ctrl dopo se no mi rimangono Consegne da pagare (isToStoreroomPay=Y) ma non associate articoli in dispensa
+					 */
+					 if($deliveryResults['Delivery']['isToStoreroom']=='N')
+						 $isToStoreroomPay = true;
+					 else
+					 if($deliveryResults['Delivery']['isToStoreroom']=='Y' && $deliveryResults['Delivery']['isToStoreroomPay']=='Y')
+						 $isToStoreroomPay = true;
+					 else
+					 if($deliveryResults['Delivery']['isToStoreroom']=='Y' && $deliveryResults['Delivery']['isToStoreroomPay']=='N') {
+						
+						$Storeroom = new Storeroom;	
+
+						$options = [];
+						$options['conditions'] = ['Storeroom.organization_id' => (int)$user->organization['Organization']['id'],
+												  'Storeroom.delivery_id' => $result['Delivery']['id'],
+												 // 'Storeroom.stato' => 'Y'
+												 ];
+						$options['recursive'] = -1;
+						$storeroomResults = $Storeroom->find('first', $options);
+						
+						if(!empty($storeroomResults)) // la consegna ha articoli associati alla dispensa
+							$isToStoreroomPay = false;
+					}						 
+					 
+				}
+				else
+					$isToStoreroomPay = true;
+ 			
                 /*
                  * per una consegna
                  * 	il totale degli ordini e' = al totale degli ordini chiudi 
                  */
-                if ($ordersResults[0]['tot_order_close'] == $result[0]['tot_order'] && $requestPaymentClose) {
+                if ($ordersResults[0]['tot_order_close'] == $result[0]['tot_order'] && $requestPaymentClose && $isToStoreroomPay) {
                     $sql = "UPDATE `" . Configure::read('DB.prefix') . "deliveries`
 						   SET
 								stato_elaborazione = 'CLOSE',
@@ -178,7 +226,7 @@ class DeliveryLifeCycle extends AppModel {
                     self::d("	per la consegna " . $result['Delivery']['id'] . " aggiorno lo stato a CLOSE ", $debug);
                 }
                 else
-                self::d("	per la consegna " . $result['Delivery']['id'] . " NON aggiorno lo stato a CLOSE", $debug);
+					self::d("	per la consegna " . $result['Delivery']['id'] . " NON aggiorno lo stato a CLOSE", $debug);
             } // end foreach
 	
  

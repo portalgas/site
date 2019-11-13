@@ -100,7 +100,7 @@ echo '</h2>';
 				echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); 
 				echo '</div>';	
 				echo '<div class="col-md-2">';	
-				echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'div' => array('class' => 'submit filter', 'style' => 'display:none'))); 
+				echo $this->Form->end(['label' => __('Filter'), 'class' => 'filter', 'div' => ['class' => 'submit filter', 'style' => 'display:none']]); 
 				echo '</div>';		
 				echo '</div>';
 				
@@ -192,20 +192,22 @@ echo '</h2>';
 		/*
 	     * ctrl se l'articolo e' presente tra gli articoli da ordinare
 		 */
-		echo '<td class="stato_'.$this->App->traslateEnum($result['Article']['stato']).'" title="'.__('toolTipStato').'" ></td>';
+		echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="stato" class="articleUpdate stato_'.$this->App->traslateEnum($result['Article']['stato']).'" title="'.__('toolTipStato').'" ></td>';
 
+		echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="flag_presente_articlesorders" class="articleUpdate ';
 		if($result['Article']['flag_presente_articlesorders']=='Y') 
-			echo '<td class="orderStatoPROCESSED-POST-DELIVERY" title="'.__('si').'" >';		
+			echo 'orderStatoPROCESSED-POST-DELIVERY" title="'.__('si').'" >';		
 		else
-			echo '<td class="orderStatoCLOSE" title="'.__('no').'" >';		
+			echo 'orderStatoCLOSE" title="'.__('no').'" >';		
 
-		echo '<td title="Articolo non presente tra quelli da ordinare" ';
+		echo '<td id="'.$result['Article']['organization_id'].'-'.$result['Article']['id'].'" title="Articolo non presente tra quelli da ordinare" style="text-align:center;vertical-align: middle;';
 		if($result['Article']['flag_presente_articlesorders']=='N' || $result['Article']['stato']=='N') 
-			echo '" style="background-color:red;text-align:center;vertical-align: middle;"';
+			echo 'background-color:red;"';
 		else
-			echo 'style="text-align:center;vertical-align: middle;"';
+			echo 'background-color:white;"';
 		echo '>';
 		echo '</td>';
+		
 
 		/*
 		 * TODO 
@@ -224,20 +226,20 @@ echo '</h2>';
 			 * 	cosi' quando ritorno ad admin_index mantengo i filtri
 			 */
 			if($result['Article']['owner']) {
-				echo $this->Html->link(null, array('action' => 'context_articles_edit', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],  
-														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-														,array('class' => 'action actionEdit','title' => __('Edit'))); 
-				echo $this->Html->link(null, array('action' => 'context_articles_copy', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
-														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-														,array('class' => 'action actionCopy','title' => __('Copy')));
-				echo $this->Html->link(null, array('action' => 'context_articles_delete', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
-														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-														,array('class' => 'action actionDelete','title' => __('Delete'))); 
+				echo $this->Html->link(null, ['action' => 'context_articles_edit', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],  
+														'sort:'.$sort,'direction:'.$direction,'page:'.$page]
+														,['class' => 'action actionEdit','title' => __('Edit')]); 
+				echo $this->Html->link(null, ['action' => 'context_articles_copy', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
+														'sort:'.$sort,'direction:'.$direction,'page:'.$page]
+														,['class' => 'action actionCopy','title' => __('Copy')]);
+				echo $this->Html->link(null, ['action' => 'context_articles_delete', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
+														'sort:'.$sort,'direction:'.$direction,'page:'.$page]
+														,['class' => 'action actionDelete','title' => __('Delete')]); 
 			}
 			else {
-				echo $this->Html->link(null, array('action' => 'context_articles_view', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
-														'sort:'.$sort,'direction:'.$direction,'page:'.$page)
-														,array('class' => 'action actionView','title' => __('View'))); 
+				echo $this->Html->link(null, ['action' => 'context_articles_view', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],
+														'sort:'.$sort,'direction:'.$direction,'page:'.$page]
+														,['class' => 'action actionView','title' => __('View')]); 
 				
 				// owner echo $result['SuppliersOrganization']['name'];
 			}
@@ -308,11 +310,59 @@ $(document).ready(function() {
 	});
 	
 	$('.actionCopy').click(function() {
-
 		if(!confirm("Sei sicuro di voler copiare l'articolo selezionato?")) {
 			return false;
 		}		
 		return true;
-	});		
+	});
+	
+	$('.articleUpdate').click(function() {
+
+		var field = $(this).data('attr-field');
+		var article_id = $(this).data('attr-id');
+		var article_organization_id = $(this).data('attr-organization-id');
+
+		switch(field) {
+		  case 'stato':
+				if($(this).hasClass('stato_no')) {
+					$(this).removeClass('stato_no');
+					$(this).addClass('stato_si');
+				}
+				else {
+					$(this).removeClass('stato_si');
+					$(this).addClass('stato_no');
+				}
+		  break;
+		  case 'flag_presente_articlesorders':
+				if($(this).hasClass('orderStatoPROCESSED-POST-DELIVERY')) {
+					$(this).removeClass('orderStatoPROCESSED-POST-DELIVERY');
+					$(this).addClass('orderStatoCLOSE');
+					$(this).attr('title', 'No');
+					$('#'+article_organization_id+'-'+article_id).css('background-color', 'red');
+				}
+				else {
+					$(this).removeClass('orderStatoCLOSE');
+					$(this).addClass('orderStatoPROCESSED-POST-DELIVERY');
+					$(this).attr('title', 'Si');
+					$('#'+article_organization_id+'-'+article_id).css('background-color', 'white');
+				}
+			break;
+		}  
+		
+		var url = "/administrator/index.php?option=com_cake&controller=Articles&action=inverseValue&article_organization_id="+article_organization_id+"&article_id="+article_id+"&field="+field+"&format=notmpl";
+		/* console.log(url); */
+		
+		$.ajax({
+			type: "GET",
+			url: url,
+			success: function(response){
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$(this).html("Error!");
+			}
+		});
+		return false;		
+	});
+	
 });
 </script>

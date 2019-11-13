@@ -1,17 +1,16 @@
 <?php
 $debug = false;
-?>
-<div class="suppliers">
-	<h2 class="ico-suppliersOrganizations">
-		<?php echo __('SuppliersOrganizations');?>
-		<div class="actions-img">
-			<ul>
-				<li><?php echo $this->Html->link(__('New Supplier Organization'), ['action' => 'add_index'], ['class' => 'action actionAdd','title' => __('New Supplier Organization')]); ?></li>
-			</ul>
-		</div>
-	</h2>
 
-<?php 
+echo '<div class="suppliers">';
+echo '<h2 class="ico-suppliersOrganizations">';
+echo __('SuppliersOrganizations');
+echo '<div class="actions-img">';
+echo '<ul>';
+echo '<li>'.$this->Html->link(__('New Supplier Organization'), ['action' => 'add_index'], ['class' => 'action actionAdd','title' => __('New Supplier Organization')]).'</li>';
+echo '</ul>';
+echo '</div>';
+echo '</h2>';
+
 if($isSuperReferente) {
 
 	echo $this->Form->create('FilterSuppliersOrganization', ['id'=>'formGasFilter','type'=>'get']);
@@ -124,7 +123,7 @@ if(!empty($results)) {
 			echo 'Supplier.stato '.$result['SuppliersOrganization']['owner_articles'].'<br />';
 		}
 		
-		if($user->organization['Organization']['hasDes'] == 'Y') {
+		if($user->organization['Organization']['hasDes'] == 'Y' && $result['SuppliersOrganization']['owner_articles']=='DES') {
 			/*
 			 * dati owner_articles listino REFERENT / DES / SUPPLIER 
 			 */			
