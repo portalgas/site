@@ -25,6 +25,9 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
 
+		if(isset($opts['order']))
+			$options['order'] = $opts['order'];	
+		
 		$results = $this->getArticlesBySupplierOrganizationId($Model, $user, $orderResult['Order']['supplier_organization_id'], $options, $debug);
 
     	/*
@@ -134,6 +137,9 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 			   					  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
+		
+		if(isset($opts['order']))
+			$options['order'] = $opts['order'];
 		
 		$titolareUser->organization['Organization']['id'] = $owner_organization_id;
 		$results = $this->getArticlesBySupplierOrganizationId($Model, $titolareUser, $owner_supplier_organization_id, $options, $debug);
@@ -245,6 +251,9 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 			   					  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
+		
+		if(isset($opts['order']))
+			$options['order'] = $opts['order'];
 		
 		$results = $this->getArticlesBySupplierOrganizationId($Model, $user, $orderResult, $options, $debug);		
 

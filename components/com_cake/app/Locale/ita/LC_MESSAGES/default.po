@@ -37,6 +37,12 @@ msgstr "Novembre"
 msgid "December"
 msgstr "Dicembre"
 
+msgid "OrderAsc"
+msgstr "A-Z"
+
+msgid "OrderDesc"
+msgstr "Z-A"
+
 #
 # A C T I O N S
 #
@@ -2494,9 +2500,6 @@ msgstr "Totale dispense"
 msgid "TotaleSuppliersOrganizationsReferents"
 msgstr "Totale referenti"
 
-msgid "TotaleDesSupplier"
-msgstr "Produttore associato ad D.E.S."
-
 msgid "TotaleRequestPaymentGenerics"
 msgstr "Totale voci generiche"
 
@@ -4162,7 +4165,7 @@ msgid "article_msg_edit_values"
 msgstr "Modificando questi valori <b>non</b> si modificheranno i valori dell'articolo associato agli ordini."
 
 msgid "msg_article_edit_propagate_article_order"
-msgstr "La modifica dei dati ha effetto sugli articoli <strong>gi&agrave;</strong> associati agli ordini che <b>non</b> sono nei seguenti stati"
+msgstr "La modifica dei dati ha effetto sugli articoli <strong>gi&agrave;</strong> associati agli ordini."
 
 msgid "msg_article_edit_not_propagate_article_order"
 msgstr "La modifica dei dati <strong>non</strong> ha effetto sugli articoli <strong>gi&agrave; associati agli ordini</strong>."

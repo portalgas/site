@@ -35,9 +35,9 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 echo '<div class="contentMenuLaterale">';
 
 if(!empty($des_order_id))
-	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));
+	echo $this->element('boxDesOrder', ['results' => $desOrdersResults]);
 
-echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
+echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 
 	echo '<fieldset>';
 	echo '<legend>'.$labelSingle.'</legend>';
@@ -94,7 +94,7 @@ echo $this->Form->create('ArticlesOrder',array('id' => 'formGas'));
 	
 	echo '</fieldset>';
 	 
-	echo $this->Form->hidden('order_id', ['id' =>'order_id', 'value'=> $this->request->data['ArticlesOrder']['order_id']]);
+	echo $this->Form->hidden('order_id', ['name' => 'data[ArticlesOrder][order_id]', 'id' =>'order_id', 'value'=> $this->request->data['ArticlesOrder']['order_id']]);
 	echo $this->Form->hidden('article_organization_id', ['id' =>'article_organization_id', 'value'=> $this->request->data['ArticlesOrder']['article_organization_id']]);
 	echo $this->Form->hidden('article_id', ['id' =>'article_id', 'value'=> $this->request->data['ArticlesOrder']['article_id']]);
 	echo $this->Form->hidden('qta_cart', ['id' =>'qta_cart', 'value'=> $this->request->data['ArticlesOrder']['qta_cart']]);
