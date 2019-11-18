@@ -1,4 +1,6 @@
 <?php
+$this->App->d($results, false);
+
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', $order['Order']['id']));
@@ -21,33 +23,43 @@ echo '<div class="articles">';
 if(!empty($des_order_id))
 	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
 
-echo $this->Form->create('ArticlesOrder', array('id' => 'formGas'));
-echo $this->Form->hidden('article_id_selected',array('id' =>'article_id_selected', 'value'=>''));
-
-echo '<fieldset>';
-echo '<legend></legend>';
-
 echo $this->element('boxOrder', ['results' => $order]);
 
-	/*
-	 *  articoli dell'ordine precedente
-	 */
-	if($previousResults)
-		echo '<div class="submit" style="float:left;"><input type="submit" id="action_articles_orders_previuos" class="buttonBlu" value="Associa all\'ordine gli articoli dell\'ordine precedente" /></div>';
+
+echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
+echo $this->Form->hidden('article_id_selected', ['id' => 'article_id_selected', 'value' => '']);
+echo '<fieldset>';
+echo '<legend></legend>';
 	
-	echo '<h2 style="clear: both;">';
-	if(empty($des_order_id)) 
-		echo "Elenco degli articoli attivi da associare all'ordine";
-	else
-		echo "Elenco degli articoli attivi da associare all'ordine condiviso";
-	
-	if(count($results)>0) {
+/*
+ *  articoli dell'ordine precedente
+ */
+if($previousResults)
+	echo '<div class="submit" style="float:left;"><input type="submit" id="action_articles_orders_previuos" class="buttonBlu" value="Associa all\'ordine gli articoli dell\'ordine precedente" /></div>';
+
+echo '<h2 style="clear: both;">';
+if(empty($des_order_id)) 
+	echo "Elenco degli articoli attivi da associare all'ordine";
+else
+	echo "Elenco degli articoli attivi da associare all'ordine condiviso";
+if(count($results)>10) 		
+	echo '<div class="submit" style="float:right;"><input type="submit" id="action_articles_orders_current1" value="Associa all\'ordine gli articoli selezionati" /></div>';
+echo '</h2>';
+
+if(count($results)>0) {
 		
-		if(count($results)>10) 		
-			echo '<div class="submit" style="float:right;"><input type="submit" id="action_articles_orders_current1" value="Associa all\'ordine gli articoli selezionati" /></div>';
-	
-	echo '</h2>';
-	?>	
+/*
+ * filtro sort
+ */
+if(!empty($sorts)) {
+	echo '<div class="clearfix">';
+	echo $this->Form->input('sort', ['id' => 'sort', 'options' => $sorts, 'default' => $sort]);	 
+	echo $this->Form->hidden('delivery_id',['id' => 'delivery_id', 'value' => $delivery_id]);	 
+	echo $this->Form->hidden('order_id',['id' => 'order_id', 'value' => $order_id]);	 
+	echo $this->Form->hidden('des_order_id',['id' => 'des_order_id', 'value' => $des_order_id]);
+	echo '</div>';	
+} // if(!empty($sorts)) 
+?>	
 		
 	<div class="articlesOrders">
 	
@@ -181,23 +193,34 @@ echo $this->element('boxOrder', ['results' => $order]);
 		echo '</table></div>';
 		
 	echo '</div>';
-echo '</fieldset>';
+	echo '</fieldset>';
 
-	echo $this->Form->hidden('action_post',array('id' => 'action_post','value' => 'action_articles_orders_current'));
+	echo $this->Form->hidden('action_post', ['id' => 'action_post', 'value' => 'action_articles_orders_current']);
 	echo '<input type="hidden" name="data[ArticlesOrder][des_order_id]" value="'.$des_order_id.'" />';
+	echo '<input type="hidden" name="data[ArticlesOrder][order_id]" value="'.$order_id.'" />';
 
 	echo '<div class="submit" style="float:right;"><input type="submit" id="action_articles_orders_current2" value="Associa all\'ordine gli articoli selezionati" /></div>';
 
 	echo $this->Form->end();
 	
-	}
-	else  // if(count($results)>0)
-		echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Il produttore non ha articoli associati!"));
+}
+else  {// if(count($results)>0)
+	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Il produttore non ha articoli associati!"));
+}
 ?>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
+	$('#sort').change(function () {
+		var sort = $(this).val();
+		var delivery_id = $('#delivery_id').val();
+		var order_id = $('#order_id').val();
+		var des_order_id = $('#des_order_id').val();
+		var url = '/administrator/index.php?option=com_cake&controller=ArticlesOrders&action=add&delivery_id='+delivery_id+'&order_id='+order_id+'&des_order_id='+des_order_id+'&sort='+sort;
+		window.location.replace(url);
+	});
+	
 	$('#article_id_selected_all').click(function () {
 		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')

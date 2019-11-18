@@ -37,7 +37,8 @@ function choiceDocPrint() {
  * chiamata Ajax il formato del doc (csv, pdf)
  */
 function AjaxCallToDocOptions() {	
-	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_options_referente&format=notmpl";
+	var order_id    = $('#order_id').val();
+	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_options_referente&order_id="+order_id+"&format=notmpl";
 	var idDivTarget = 'doc-options';
 	ajaxCallBox(url, idDivTarget);
 }
@@ -46,8 +47,9 @@ function AjaxCallToDocOptions() {
  */
 function AjaxCallToDocPrint() {
 	var doc_options = $("input[name='doc_options']:checked").val();
+	var order_id    = $('#order_id').val();
 	
-	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_print_referente&doc_options="+doc_options+"&format=notmpl";
+	var url = "/administrator/index.php?option=com_cake&controller=AjaxGasCodes&action=box_doc_print_referente&doc_options="+doc_options+"&order_id="+order_id+"&format=notmpl";
 	var idDivTarget = 'doc-print';
 	ajaxCallBox(url, idDivTarget);
 }

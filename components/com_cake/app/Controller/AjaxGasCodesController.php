@@ -1102,7 +1102,7 @@ class AjaxGasCodesController extends AppController {
         $this->layout = 'ajax';
     }
 
-    public function admin_box_doc_options_referente() {
+    public function admin_box_doc_options_referente($order_id=0) {
         
         /*
          * ctrl se ci sono ordini da validate per avvisare l'utente
@@ -1339,7 +1339,7 @@ class AjaxGasCodesController extends AppController {
         $this->layout = 'ajax';
     }
 
-    public function admin_box_doc_print_referente($doc_options = null) {
+    public function admin_box_doc_print_referente($doc_options = null, $order_id=0) {
 
         if ($doc_options == 'to-users-all-modify')
             $options = array('PDF' => 'Pdf', 'CSV' => 'Csv');

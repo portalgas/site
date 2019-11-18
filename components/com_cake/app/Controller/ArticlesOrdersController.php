@@ -12,14 +12,20 @@ class ArticlesOrdersController extends AppController {
         App::import('Model', 'Order');
         $Order = new Order;
 
-        /* ctrl ACL */
+		if(isset($this->request->data['ArticlesOrder']['order_id']))
+			$order_id = $this->request->data['ArticlesOrder']['order_id'];
+		else				
+		if(isset($this->request->params['pass']['order_id']))
+			$order_id = $this->request->params['pass']['order_id'];
+		
+		/* ctrl ACL */
         $actionWithPermission = ['admin_add', 'admin_index'];
         if (in_array($this->action, $actionWithPermission)) {
 
             if ($this->isSuperReferente()) {
                 
             } else {
-                if (empty($this->order_id) || !$this->isReferentGeneric() || !$Order->aclReferenteSupplierOrganization($this->user, $this->order_id)) {
+                if (empty($order_id) || !$this->isReferentGeneric() || !$Order->aclReferenteSupplierOrganization($this->user, $order_id)) {
                     $this->Session->setFlash(__('msg_not_permission'));
                     $this->myRedirect(Configure::read('routes_msg_stop'));
                 }
@@ -32,9 +38,9 @@ class ArticlesOrdersController extends AppController {
          */
         if ($this->action != 'admin_order_choice') {
             $options = [];
-            $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
+            $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
             $options['recursive'] = 0;
-            $results = $Order->find('first', $options);
+            $results = $Order->find('first', $options);					
             if ($results['Delivery']['isVisibleBackOffice'] == 'N') {
                 $this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
                 $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -215,9 +221,15 @@ class ArticlesOrdersController extends AppController {
      * 	action_post = action_articles_orders_current gestione normale
      *  action_post = action_articles_orders_previuos associo articoli ordine precedente
 	 */
-    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0) {
+    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc') {
 
         $debug=false;
+		
+		if(isset($this->request->data['ArticlesOrder']['order_id']))
+			$order_id = $this->request->data['ArticlesOrder']['order_id'];
+		else	
+		if(isset($this->request->params['pass']['order_id']))
+			$order_id = $this->request->params['pass']['order_id'];
 		
 		App::import('Model', 'Article');
 		$Article = new Article;
@@ -227,7 +239,7 @@ class ArticlesOrdersController extends AppController {
 		
 		App::import('Model', 'ArticlesOrderLifeCycle');
 		$ArticlesOrderLifeCycle = new ArticlesOrderLifeCycle;
-					
+
         /*
          * D.E.S.
          */
@@ -258,7 +270,7 @@ class ArticlesOrdersController extends AppController {
             /*
              * cancello eventuali doppioni
              */
-            $this->ArticlesOrder->delete($this->user->organization['Organization']['id'], $this->order_id);
+            $this->ArticlesOrder->delete($this->user->organization['Organization']['id'], $order_id);
 
             $des_order_id = $this->request->data['ArticlesOrder']['des_order_id'];
             $action_post = $this->request->data['ArticlesOrder']['action_post'];
@@ -286,7 +298,7 @@ class ArticlesOrdersController extends AppController {
 					         			   'Article.id' => $article_id];
 					$articleResults = $this->ArticlesOrder->getArticlesBySupplierOrganizationId_Ordinabili($this->user, $this->order, $opts, $debug);
 					if(empty($articleResults)) {
-						self::dd($opts);
+						self::d($opts);
 						self::x('Non trovato il nome dell articolo');
 					}
 					
@@ -294,7 +306,7 @@ class ArticlesOrdersController extends AppController {
 					self::d($articleResults, $debug); 
 
                     $data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
-					$data['ArticlesOrder']['order_id'] = $this->order_id;
+					$data['ArticlesOrder']['order_id'] = $order_id;
 				
 					/*
 					 * dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
@@ -379,28 +391,28 @@ class ArticlesOrdersController extends AppController {
                  * 	da OPEN-NEXT o OPEN
                  * */
                 $utilsCrons = new UtilsCrons(new View(null));
-                $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $this->order_id);
+                $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $order_id);
 
                 /*
                  * setto la tipologia Draw (SIMPLE o COMPLETE)
                  */
                 App::import('Model', 'Order');
                 $Order = new Order;
-                $Order->updateTypeDraw($this->user, $this->order_id);
+                $Order->updateTypeDraw($this->user, $order_id);
 
                 if ($this->user->organization['Organization']['hasDes'] == 'Y' && !empty($des_order_id)) {
 					/*
 					 * non +, il GAS puo' scegliere quali articoli associare
                     App::import('Model', 'DesOrder');
                     $DesOrder = new DesOrder;
-                    $DesOrder->insertOrUpdateArticlesOrderAllOrganizations($this->user, $des_order_id, $this->order_id, null, $isTitolareDesSupplier, $debug);
+                    $DesOrder->insertOrUpdateArticlesOrderAllOrganizations($this->user, $des_order_id, $order_id, null, $isTitolareDesSupplier, $debug);
 					*/
 					
                     $this->Session->setFlash(__('The articles order has been saved'));
                     $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $this->order_id . '&des_order_id=' . $des_order_id;
                 } else {
                     $this->Session->setFlash(__('The articles order has been saved'));
-                    $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $this->order_id;
+                    $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $order_id;
                 }
 
                 if (!$debug)
@@ -410,11 +422,13 @@ class ArticlesOrdersController extends AppController {
         
 	    self::d('Order.owner_articles '.$this->order['Order']['owner_articles'], $debug); 
 		$results = [];		
+		$opt = []; 
+		$opt['order'] = [$sort];
 		switch ($this->order['Order']['owner_articles']) {
 			case 'DES':
 				if($isTitolareDesSupplier) {
 					self::d('Ordine DES - Sono isTitolareDesSupplier', $debug);
-					$results = $this->ArticlesOrder->getArticlesByOrderId_Ordinabili($this->user, $this->order, [], $debug); // articoli da associare
+					$results = $this->ArticlesOrder->getArticlesByOrderId_Ordinabili($this->user, $this->order, $opt, $debug); // articoli da associare
 				}
 				else { 
 					/*
@@ -422,24 +436,24 @@ class ArticlesOrdersController extends AppController {
 					 */
 					if(!empty($desResults['des_order_id'])) { 
 						$titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
-						$results = $this->ArticlesOrder->getArticlesDesTitolareByOrderId_Ordinabili($this->user, $this->order, $titolareOrderResult, [], $debug);	// articoli da associare		 
+						$results = $this->ArticlesOrder->getArticlesDesTitolareByOrderId_Ordinabili($this->user, $this->order, $titolareOrderResult, $opt, $debug);	// articoli da associare		 
 					}
 					else {
 						/*
 						 * non e' un ordine DES e prendo il listino del Totolare (non legato ad un ordine DES)
 						 */
-						$results = $this->ArticlesOrder->getArticlesDesTitolareBySupplierOrganizationId_Ordinabili($this->user, $this->order, [], $debug);
+						$results = $this->ArticlesOrder->getArticlesDesTitolareBySupplierOrganizationId_Ordinabili($this->user, $this->order, $opt, $debug);
 					}					
 				}			
 			break;
 			case 'REFERENT':
 				/*
 				 * prima volta ricerco partendo da SupplierOrganization, successivamente per Order 
-				 */
-				$results = $this->ArticlesOrder->getArticlesBySupplierOrganizationId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
+				 */ 
+				$results = $this->ArticlesOrder->getArticlesBySupplierOrganizationId_Ordinabili($this->user, $this->order, $opt, $debug);	// articoli da associare
 			break;
 			case 'SUPPLIER':	
-				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
+				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, $opt, $debug);	// articoli da associare
 			break;
 			default:
 				self::x(__('msg_error_supplier_organization_owner_articles'));
@@ -447,6 +461,17 @@ class ArticlesOrdersController extends AppController {
 		}
 		self::d($results, $debug);  
 		$this->set(compact('results'));
+		
+		$sorts = [];
+		if($this->user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+			$sorts['Article.codice asc'] = __('Code').' '.__('OrderAsc');
+			$sorts['Article.codice desc'] = __('Code').' '.__('OrderDesc');
+		}
+		$sorts['Article.name asc'] = __('Name').' '.__('OrderAsc');
+		$sorts['Article.name desc'] = __('Name').' '.__('OrderDesc');
+ 
+		$this->set(compact('sort'));
+		$this->set(compact('sorts'));
     }
 
     /*
@@ -910,10 +935,10 @@ class ArticlesOrdersController extends AppController {
                     if (!$debug) {
 				 		switch($user->organization['Organization']['type']) {
 							case 'PRODGAS':
-        		                $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'prodgas_index', $organization_id, $order_id]);
+        		                $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'prodgas_index', 'organization_id' => $organization_id, 'order_id' => $order_id]);
 							break;
-							case 'GAS':                   
-		                        $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'index']);
+							case 'GAS':      				
+		                        $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'index', 'order_id' => $order_id]);
 							break;
 							case 'PROD':
 							break;  

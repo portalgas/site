@@ -56,7 +56,7 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  
 		if(isset($opts['order']))
-			$options['order'] = array_merge($options['order'], $opts['order']);
+			$options['order'] = $opts['order'];
 		else
 			$options['order'] = ['Article.name'];	
 	   	$options['recursive'] = 0;
@@ -115,11 +115,11 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 								  'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
 								  'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
 								  'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id']];
-											  
+		$Model::d($opts, $debug);								  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  
 		if(isset($opts['order']))
-			$options['order'] = array_merge($options['order'], $opts['order']);
+			$options['order'] = $opts['order'];
 		else
 			$options['order'] = ['Article.name'];	
 	   	$options['recursive'] = 1;

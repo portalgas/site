@@ -335,6 +335,7 @@ echo $this->element('boxOrder', ['results' => $order]);
 <?php
 echo '</fieldset>';
 
+echo $this->Form->hidden('order_id',['name' => 'data[ArticlesOrder][order_id]', 'value' => $order_id]);
 echo $this->Form->end("Cancella/Associa all'ordine gli articoli selezionati");
 
 echo '</div>';
