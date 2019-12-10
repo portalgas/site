@@ -253,6 +253,16 @@ class AppController extends Controller {
 						$this->Session->write('order_id', $order_id);
 					} 
 					else
+					if (isset($this->request->data['ArticlesOrder']['order_id'])) {
+						$order_id = $this->request->data['ArticlesOrder']['order_id'];
+						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
+							$this->Session->setFlash(__('msg_error_params'));
+							$this->myRedirect(Configure::read('routes_msg_exclamation'));
+						}
+						setcookie('order_id', $order_id, time() + 86400 * 365 * 1, Configure::read('App.server'));
+						$this->Session->write('order_id', $order_id);
+					} 
+					else
 					if (isset($this->request->pass['order_id'])) {
 						$order_id = $this->request->pass['order_id'];
 						if ($order_id != '' && $order_id != null && !is_numeric($order_id)) {
@@ -265,7 +275,7 @@ class AppController extends Controller {
 					else
 					if (isset($_COOKIE['order_id']) && !empty($_COOKIE['order_id']))
 						$this->Session->write('order_id', $_COOKIE['order_id']);
-
+					//debug('order_id '.$order_id);
 					$this->delivery_id = $this->Session->read('delivery_id');
 					$this->order_id = $this->Session->read('order_id');
 					/*

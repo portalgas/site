@@ -40,7 +40,8 @@ class ArticlesOrdersController extends AppController {
             $options = [];
             $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
             $options['recursive'] = 0;
-            $results = $Order->find('first', $options);					
+            $results = $Order->find('first', $options);
+
             if ($results['Delivery']['isVisibleBackOffice'] == 'N') {
                 $this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
                 $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -167,7 +168,7 @@ class ArticlesOrdersController extends AppController {
             /*
              * richiamo la validazione
              */
-            $this->ArticlesOrder->set($data);
+            // $this->ArticlesOrder->set($data); il prezzo 1.00 non viene validato perche' si aspetta 1,00
             if (!$this->ArticlesOrder->validates()) {
                 $errors = $this->ArticlesOrder->validationErrors;
                 $tmp = '';
