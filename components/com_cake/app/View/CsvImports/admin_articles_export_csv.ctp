@@ -20,7 +20,16 @@ if(isset($results) && !empty($results)) {
 			if($numField==0)
 				$data[$numResult]['csv'] = [];
 			
-			$value = $result['Article'][$field['INPUT_NAME']];
+			/*
+			 * se esiste {prezzo}_ considero quello perche' ha il decimale 
+			 */
+			if(isset($result['Article'][$field['INPUT_NAME'].'_'])) {
+				$value = $result['Article'][$field['INPUT_NAME'].'_'];
+				$value = str_replace('.', '', $value);
+			}
+			else
+				$value = $result['Article'][$field['INPUT_NAME']];
+			
 			$value = str_replace('"', "'", $value);
 			$value = str_replace(array("\n","\r"), "", $value);
 			
