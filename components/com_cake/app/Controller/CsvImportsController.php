@@ -1184,22 +1184,20 @@ class CsvImportsController extends AppController {
 				 */
 				$pos = strpos($value, ',');
 				if ($pos !== false)
-					$value = str_replace(',','.',$value);
+					$valueTest = str_replace(',','.',$value);
 				else
-					$value = $value.'.00';
+					$valueTest = $value.'.00';
 				
-				$value = floatval($value);  // se string diventa 0
-				if($value==0) {
+				$valueTest = floatval($valueTest);  // se string diventa 0
+				if($valueTest==0) {
 					$this->esito_value = 'ERROR_FORMAT';
 					$this->esito_row = false;
 				}
 				else
 					$this->esito_row = true;
 					
-
 				/*
 				 * floatval() toglie i decimali = a 0, li ricreo (1.00)
-				 */
 				$pos = strpos($value, ',');
 				if ($pos !== false)
 					$value = str_replace(',','.',$value);
@@ -1213,7 +1211,20 @@ class CsvImportsController extends AppController {
 						$value = $value.'0';
 				}
 				else
-					$value = $value.'.00';				
+					$value = $value.'.00';
+				*/
+				
+				/*
+				 * aggiungo i 2 decimali x la validazione
+				 */
+				 $pos = strpos($value, ',');
+				 if ($pos === false)
+					 $value = $value.',00';
+				 else {
+					$ctrl = substr($value, $pos+1, strlen($value));
+					if(strlen($ctrl)==1)
+						$value = $value.'0';
+				 }
 			break;
 			case "array_um":
 				$continue=false;
