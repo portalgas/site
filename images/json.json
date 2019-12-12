@@ -1,0 +1,6 @@
+{"items": [
+    { "titolo":"titolo1", "autore": "autore1", "testo": "testo1", "numApprezzamenti1": 1},
+    { "titolo":"titolo2", "autore": "autore2", "testo": "testo2", "numApprezzamenti2": 2},
+    { "titolo":"titolo3", "autore": "autore3", "testo": "testo3", "numApprezzamenti3": 3}
+  ]
+} 
