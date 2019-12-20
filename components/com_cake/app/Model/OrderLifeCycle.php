@@ -1336,9 +1336,9 @@ class OrderLifeCycle extends AppModel {
 					App::import('Model', 'SummaryOrderAggregate');
 					$SummaryOrderAggregate = new SummaryOrderAggregate;
 
-					$summaryOrderAggregateorderResult = $SummaryOrderAggregate->select_to_order($user, $order_id);
+					$summaryOrderAggregateorderResult = $SummaryOrderAggregate->select_to_order($user, $orderResult['Order']['id']);
 					if (!empty($summaryOrderAggregateorderResult)) 
-						$results['alertModuleConflicts'] = 'summary_order_aggregate_just_populate';
+						$results['alertModuleConflicts'] = 'summary_order_just_populate';
 				}
 				else
 				if ($orderResult['Order']['typeGest'] == 'SPLIT') {

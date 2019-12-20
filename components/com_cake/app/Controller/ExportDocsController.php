@@ -1902,7 +1902,7 @@ class ExportDocsController extends AppController {
 				 * ridefinisco $this->user->organization['Organization']['id'] 
 				 * perche' se e' DES potrebbero essere articoli di un'altor GAS 
 				 */
-				$tmp_user = new stdClass();
+				$tmp_user = new \stdClass();
 				$tmp_user->organization['Organization']['id'] = $result['Article']['organization_id'];
                 $tmp_user->organization['Organization']['hasFieldArticleCategoryId'] = $this->user->organization['Organization']['hasFieldArticleCategoryId'];
                 $articlesResults = $Article->getArticlesDataAnagr($tmp_user, $options);
