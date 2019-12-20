@@ -2455,6 +2455,27 @@ msgstr "Costo aggiuntivo calcolato sull'importo"
 msgid "importo_calcolato_user_cost_less"
 msgstr "Sconto calcolato sull'importo"
 
+msgid "importo_originale"
+msgstr "Importo originale"
+
+msgid "importo_previous"
+msgstr "Importo precedente"
+
+msgid "importo_change"
+msgstr "Importo modificato"
+
+msgid "importo_scontato"
+msgstr "Importo scontato"
+
+msgid "importo_richiesto"
+msgstr "Importo richiesto"
+
+msgid "importo_dovuto"
+msgstr "Importo dovuto"
+
+msgid "importo_pagato"
+msgstr "Importo pagato"
+
 msgid "Importo_originale"
 msgstr "Importo originale"
 
