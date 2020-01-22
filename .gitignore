@@ -25,6 +25,8 @@
 /components/com_cake/app/Config/core.new.portalgas.com.php
 /components/com_cake/app/tmp/*
 
+/components/com_cake/app/View/Helps/box_account.ctp
+
 # CakePHP specific files #
 ##########################
 /config/app.php

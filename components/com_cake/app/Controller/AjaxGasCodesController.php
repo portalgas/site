@@ -1342,12 +1342,15 @@ class AjaxGasCodesController extends AppController {
     public function admin_box_doc_print_referente($doc_options = null, $order_id=0) {
 
         if ($doc_options == 'to-users-all-modify')
-            $options = array('PDF' => 'Pdf', 'CSV' => 'Csv');
+            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
         else
         if ($doc_options == 'to-users-label' || $doc_options == 'to-articles-weight')
-            $options = array('PDF' => 'Pdf', 'EXCEL' => 'Excel');
+            $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
         else
-            $options = array('PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel');
+        if ($doc_options == 'to-users-articles-label')
+            $options = ['PDF' => 'Pdf'];
+        else
+            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
 
         $this->set('options', $options);
 
@@ -1362,12 +1365,15 @@ class AjaxGasCodesController extends AppController {
         }
         
         if ($doc_options == 'to-users-all-modify')
-            $options = array('PDF' => 'Pdf', 'CSV' => 'Csv');
+            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
         else
         if ($doc_options == 'to-users-label' || $doc_options == 'to-articles-weight')
-            $options = array('PDF' => 'Pdf', 'EXCEL' => 'Excel');
+            $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
         else
-            $options = array('PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel');
+        if ($doc_options == 'to-users-articles-label')
+            $options = ['PDF' => 'Pdf'];		
+        else
+            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
 
         $this->set('options', $options);
 

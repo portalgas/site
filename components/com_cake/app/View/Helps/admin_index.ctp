@@ -123,6 +123,7 @@ ul.help  {
 	<li><a href="#database">Database</a></li>
 	<li><a href="#phpmyadmin">PhpMyadmin</a></li>
 	<li><a href="#compressione_css_js">Compressione .css .js</a></li>
+	<li><a href="#portalgas_com">portalgas.com (app)</a></li>
 	<li><a href="#migrazione">Migrazione / Allineamento</a></li>
 	<li><a href="#google">Google</a></li>
 	<li><a href="#gcalendar">Gcalendar</a></li>
@@ -325,6 +326,9 @@ ul.help  {
 		</li>
 		<li><a name="compressione_css_js"></a>
 			<?php include('box_compressione_css_js.ctp');?>
+		</li>
+		<li><a name="portalgas_com"></a>
+			<?php include('box_portalgas_com.ctp');?>
 		</li>
 		<li><a name="migrazione"></a>
 			<?php include('box_migrazione.ctp');?>

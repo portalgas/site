@@ -197,7 +197,7 @@ Le richieste vanno rivolte al Titolare del trattamento.
 <h2>Titolare del trattamento</h2>
 <p>
 Titolare del trattamento ai sensi delle leggi vigenti sono Francesco Actis e Marco Siviero proprietari del dominio <?php echo Configure::read('SOC.name');?>, 
-in collaborazione con il <?php echo __('UserGroupsUserFlagPrivacy');?> del Gas <b><?php echo $user->organization['Organization']['name'];?></b> <?php echo $userFlagPrivacy['name'];?> che ne condivide l’utilizzo per le loro associazioni.
+in collaborazione con il <?php echo __('UserGroupsUserFlagPrivacy');?> del G.A.S. <b><?php echo $user->organization['Organization']['name'];?></b> <b><?php echo $userFlagPrivacy['name'];?></b> che ne condivide l’utilizzo per le loro associazioni.
 </p>
 
 <h2>Responsabile del Trattamento</h2>
