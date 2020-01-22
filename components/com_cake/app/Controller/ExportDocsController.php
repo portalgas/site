@@ -111,11 +111,12 @@ class ExportDocsController extends AppController {
 	}
 		
     /*
-     * $doc_options = to-users, to-users-label, to-users-all-modify, to-articles, to-articles-monitoring, to-articles-details
+     * $doc_options = to-users, to-users-label, to-users-articles-label, to-users-all-modify, to-articles, to-articles-monitoring, to-articles-details
      * parametri di Setting
      * 		se  $doc_options=to-users-all-modify    $a = trasport
      * 		se  $doc_options=to-users            $a = user_phone, $b = user_email, $c = user_address, $d = totale_per_utente, $e = trasportAndCost, $f = user_avatar, $g = dettaglio_per_utente, $h = note, $i = delete_to_referent
      * 		se  $doc_options=to-users-label      $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
+	 *      se  $doc_options=to-users-articles-label   $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
      * 		se  $doc_options=to-articles         $a = trasportAndCost, $b = codice, $c = pezzi_confezione
      * 		se  $doc_options=to-articles-details $a = acquistato_il, $b = article_img, $c = trasportAndCost, $d = totale_per_articolo, $e = codice
      *      se  $doc_options=to-articles-monitoring
@@ -193,7 +194,7 @@ class ExportDocsController extends AppController {
         if ($doc_options == 'to-users-all-modify' && ($doc_formato == 'PREVIEW' || $doc_formato == 'PDF')) {
          
         }
-        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label') {
+        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label') {
            
            if ($doc_options == 'to-users') {
            		if($i=='N')
@@ -202,7 +203,7 @@ class ExportDocsController extends AppController {
 	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y']];
            }
 		   else
-           if ($doc_options == 'to-users-label') {
+           if ($doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label') {
            		if($f=='N')
 	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
  	            else
@@ -216,7 +217,7 @@ class ExportDocsController extends AppController {
 		/*
 		 * ORDER BY
 		 */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-all-modify')
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify')
             $orderBy = ['User' => Configure::read('orderUser') . ', Article.name, Article.id'];
         else
         if ($doc_options == 'to-articles' || $doc_options == 'to-articles-monitoring')
@@ -237,7 +238,7 @@ class ExportDocsController extends AppController {
          * 		- costi aggiuntivi  (SummaryOrderCostMore)
          * 		- sconti  (SummaryOrderCostLess)
          */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-all-modify') {
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify') {
 
             /*
              * dati dell'ordine
@@ -380,6 +381,7 @@ class ExportDocsController extends AppController {
                 $this->set('note', $h);
                 break;
             case 'to-users-label':
+            case 'to-users-articles-label':
                 $this->set('user_phone', $a);
                 $this->set('user_email', $b);
                 $this->set('user_address', $c);
@@ -414,6 +416,9 @@ class ExportDocsController extends AppController {
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label');
                 else
+                if ($doc_options == 'to-users-articles-label')
+                    $this->render('referent_to_users_articles_label');
+                else
                 if ($doc_options == 'to-users-all-modify')
                     $this->render('referent_to_users_all_modify');
                 else
@@ -437,6 +442,9 @@ class ExportDocsController extends AppController {
                 else
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label');
+                else
+                if ($doc_options == 'to-users-articles-label')
+                    $this->render('referent_to_users_articles_label');				
                 else
                 if ($doc_options == 'to-users-all-modify')
                     $this->render('referent_to_users_all_modify');

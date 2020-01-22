@@ -15,6 +15,9 @@ class ArticlesOrdersController extends AppController {
 		if(isset($this->request->data['ArticlesOrder']['order_id']))
 			$order_id = $this->request->data['ArticlesOrder']['order_id'];
 		else				
+		if(isset($this->request->data['order_id']))
+			$order_id = $this->request->data['order_id'];
+		else				
 		if(isset($this->request->params['pass']['order_id']))
 			$order_id = $this->request->params['pass']['order_id'];
 		

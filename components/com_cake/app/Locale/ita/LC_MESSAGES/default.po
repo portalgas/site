@@ -3469,6 +3469,9 @@ msgstr "Documento con elenco diviso per <b>utente</b> (per pagamento dell'utente
 msgid "to_users_label"
 msgstr "Documento con elenco diviso per utente in formato <b>etichetta</b> (per la consegna)"
 
+msgid "to_users_articles_label"
+msgstr "Documento con elenco diviso per utente e articolo in formato <b>etichetta</b> (per la consegna)"
+
 msgid "to_delivery_cassiere_users_compact_all"
 msgstr "Documento di tutti gli ordini della consegna diviso per utente <b>modalità compatta</b> (per pagamento dell'utente)"
 
