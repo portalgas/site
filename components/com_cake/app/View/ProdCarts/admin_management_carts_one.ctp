@@ -92,7 +92,8 @@ function choiceArticlesOptions() {
  * chiamata Ajax per opzioni dei reports (Solo utenti con acquisti / Tutti gli utenti / Articoli aggregati con il dettaglio degli utenti)
  */
 function AjaxCallToReportOptions() {
-	url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_report_options&format=notmpl';
+	var prod_delivery_id = $('#prod_delivery_id').val();
+	var url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_report_options&prod_delivery_id='+prod_delivery_id+'&format=notmpl';
 	var idDivTarget = 'report-options';
 	ajaxCallBox(url, idDivTarget);	
 }
@@ -110,7 +111,8 @@ function AjaxCallToUsers(reportOptions) {
  *  			se user_id == ALL disabilito l'opzione 
  */
 function AjaxCallToUserAnagrafica(user_id) {
-	url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_user_anagrafica&user_id='+user_id+'&format=notmpl';
+	var prod_delivery_id = $('#prod_delivery_id').val();
+	var url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_user_anagrafica&prod_delivery_id='+prod_delivery_id+'&user_id='+user_id+'&call=managementCartsOne&format=notmpl';	
 	var idDivTarget = 'user-anagrafica';
 	ajaxCallBox(url, idDivTarget);
 }
@@ -119,7 +121,8 @@ function AjaxCallToUserAnagrafica(user_id) {
  *  			se user_id == ALL disabilito l'opzione (Tutti gli articoli)
  */
 function AjaxCallToArticlesOptions(user_id) {
-	url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_articles_options&user_id='+user_id+'&format=notmpl';
+	var prod_delivery_id = $('#prod_delivery_id').val();
+	var url = '/administrator/index.php?option=com_cake&controller=AjaxProdCodes&action=box_articles_options&user_id='+user_id+'&format=notmpl';
 	var idDivTarget = 'articles-options';
 	ajaxCallBox(url, idDivTarget);
 }
