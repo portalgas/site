@@ -42,14 +42,16 @@ class DeliveryLifeCycle extends AppModel {
 		if (!empty($delivery_id))
 			$options['conditions'] += ['Delivery.id' => $delivery_id];
 		if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
-			$options['conditions'] +=  ['OR' => ['Delivery.isToStoreroom' => 'Y',
-													'Delivery.isToStoreroomPay' => 'Y'],
+			$options['conditions'] +=  ['OR' => [
+													['Delivery.isToStoreroom' => 'Y', 'Delivery.isToStoreroomPay' => 'Y'],
 													['Delivery.isToStoreroom' => 'N']
+												]
 										  ];
 		$options['fields'] = ['Delivery.id'];
 		$options['recursive'] = -1;
-		//self::d($options['conditions'], $debug);
+		self::d($options['conditions'], $debug);
 		$deliveryResults = $this->find('all', $options);
+		self::d($deliveryResults, $debug);
 		self::d("Estratte ".count($deliveryResults)." consegne SCADUTE ed eventualmente pagate alla dispensa => controllo se SENZA Ordini (passate in statistiche)", $debug);
 	
 		foreach ($deliveryResults as $deliveryResult) {

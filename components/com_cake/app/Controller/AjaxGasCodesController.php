@@ -431,7 +431,7 @@ class AjaxGasCodesController extends AppController {
      * 		page Doc::admin_cassiere_delivery_docs_export() => ajax admin_box_delivery() => call=cassiereDEliveryDocsExport
      */
 
-    public function admin_box_user_anagrafica($user_id, $call = 'managementCartsOne') {
+    public function admin_box_user_anagrafica($delivery_id, $order_id, $user_id, $call = 'managementCartsOne') {
 
         if (empty($user_id)) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -444,9 +444,9 @@ class AjaxGasCodesController extends AppController {
             App::import('Model', 'User');
             $User = new User;
 
-            $conditions = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-                'User.id' => $user_id);
-            $utente = $User->find('first', array('conditions' => $conditions));
+            $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+							'User.id' => $user_id];
+            $utente = $User->find('first', ['conditions' => $conditions]);
 
             /*
              * userprofile
@@ -647,7 +647,7 @@ class AjaxGasCodesController extends AppController {
      * 				report-articles-details				(Articoli aggregati con il dettaglio degli utenti)
      */
 
-    public function admin_box_report_options() {
+    public function admin_box_report_options($delivery_id, $order_id) {
 
         // di default l'opzione (Solo utenti con acquisti)
         $this->set('report_options', 'report-users-cart');
@@ -663,7 +663,7 @@ class AjaxGasCodesController extends AppController {
      * se user_id == ALL disabilito l'opzione (Tutti gli articoli)
      */
 
-    public function admin_box_articles_options($user_id) {
+    public function admin_box_articles_options($delivery_id, $order_id, $user_id) {
 
         // di default l'opzione (Solo articoli acquistati)
         $this->set('articles_options', 'options-articles-cart');

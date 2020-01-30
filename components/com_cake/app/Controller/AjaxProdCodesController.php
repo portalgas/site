@@ -9,7 +9,7 @@ class AjaxProdCodesController extends AppController {
     	parent::beforeFilter();
     }
 
-	public function admin_box_report_options() {
+	public function admin_box_report_options($prod_delivery_id) {
 	
 		// di default l'opzione (Solo utenti con acquisti)
 		$this->set('report_options','report-users-cart');
