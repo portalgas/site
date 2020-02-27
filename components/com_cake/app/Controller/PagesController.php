@@ -627,7 +627,7 @@ class PagesController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
             'Delivery.isVisibleBackOffice' => 'Y',
             'Delivery.sys' => 'N',
-            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY '];
+            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '];
         $options['order'] = ['Delivery.data' => 'asc'];
         $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
         $options['recursive'] = 1;
