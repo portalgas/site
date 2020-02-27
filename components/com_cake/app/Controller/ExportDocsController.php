@@ -2859,6 +2859,8 @@ class ExportDocsController extends AppController {
     }
 
     public function admin_users_delivery_sum_orders_excel($delivery_id = 0, $doc_options = null, $doc_formato = null) {
+$delivery_id=5655;
+// $order_id=18931;
 
         $debug = false;
 
@@ -2877,7 +2879,7 @@ class ExportDocsController extends AppController {
         $results = $User->getUserWithCartByDelivery($this->user, $conditions);
 
         /*
-         *  per ogni user estraggo la qta
+         *  per ogni user estraggo la qta di ogni singolo ordine
          */
 		$supplier_organizations = []; 
         foreach ($results as $numResults => $result) {
@@ -2911,14 +2913,14 @@ class ExportDocsController extends AppController {
 					    and Cart.deleteToReferent = 'N'
 					    and ArticlesOrder.stato != 'N' 
 						AND Cart.user_id = $user_id 
-						AND Delivery.id = $delivery_id 
-					 ORDER BY SuppliersOrganization.name ";
+						AND Delivery.id = $delivery_id						
+					 ORDER BY SuppliersOrganization.name, `Order`.id ";
             self::d($sql);
             $cartResults = $this->ExportDoc->query($sql);
+// fractis and `Order`.id = $order_id
 
             $tot_user_importo = 0;
-            $suppliersOrganization_id_old = 0;
-            $order_id_old = 0;
+			// debug($cartResults);			
             foreach ($cartResults as $cartResult) {
 			 	
 				/*
@@ -2934,131 +2936,93 @@ class ExportDocsController extends AppController {
 					$tot_user_importo = $cartResult['Cart']['importo_forzato'];
 				}
 				
-				$results[$numResults]['User'][$cartResult['SuppliersOrganization']['id']]['supplier_organization_id'] = $cartResult['SuppliersOrganization']['id'];
-				$results[$numResults]['User'][$cartResult['SuppliersOrganization']['id']]['supplier_organization_name'] = $cartResult['SuppliersOrganization']['name'];
-				$results[$numResults]['User'][$cartResult['SuppliersOrganization']['id']]['tot_user_importo'] += $tot_user_importo;
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['id'] = $cartResult['Order']['id'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['delivery_id'] = $cartResult['Order']['delivery_id'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasTrasport'] = $cartResult['Order']['hasTrasport'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostMore'] = $cartResult['Order']['hasCostMore'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostLess'] = $cartResult['Order']['hasCostLess'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['typeGest'] = $cartResult['Order']['typeGest'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_id'] = $cartResult['Order']['supplier_organization_id'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['name'] = $cartResult['Order']['typeGest'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_name'] = $cartResult['SuppliersOrganization']['name'];
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo_orig'] += $tot_user_importo;
+				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo'] += $tot_user_importo;
 				
 				$supplier_organizations[$cartResult['SuppliersOrganization']['id']] = $cartResult['SuppliersOrganization']['name'];
-
-				/*
-				 * ctrl eventuali
-				 * 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
-				 * 		- spese di trasporto  (SummaryOrderTrasport)
-				 * 		- costi aggiuntivi  (SummaryOrderCostMore)
-				 * 		- sconti  (SummaryOrderCostLess)
-				 */				
-				// debug($cartResult['Order']['id'].' - '.$order_id_old.' user_id '.$user_id);
-				if($order_id_old>0 && $cartResult['Order']['id']!=$order_id_old) {
-					
-					/*
-					 * dati dell'ordine
-					 */
-					$hasTrasport = $cartResult['Order']['hasTrasport']; /* trasporto */
-					$hasCostMore = $cartResult['Order']['hasCostMore']; /* spesa aggiuntiva */
-					$hasCostLess = $cartResult['Order']['hasCostLess'];  /* sconto */
-					$typeGest = $cartResult['Order']['typeGest'];   /* AGGREGATE / SPLIT */
-
-					$resultsSummaryOrder = [];
-					$resultsSummaryOrderTrasport = [];
-					$resultsSummaryOrderCostMore = [];
-					$resultsSummaryOrderCostLess = [];
-
-					if ($hasTrasport == 'Y') {
-						App::import('Model', 'SummaryOrderTrasport');
-						$SummaryOrderTrasport = new SummaryOrderTrasport;
-
-						$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id_old, $user_id);
-						if(!empty($resultsSummaryOrderTrasport)) {
-							// debug($resultsSummaryOrderTrasport);
-							// debug($results[$numResults]['User'][$suppliersOrganization_id_old]);
-							$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
-							// debug($results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo']);
-						}
-					}
-					if ($hasCostMore == 'Y') {
-						App::import('Model', 'SummaryOrderCostMore');
-						$SummaryOrderCostMore = new SummaryOrderCostMore;
-
-						$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id_old, $user_id);
-						if(!empty($resultsSummaryOrderCostMore))
-							$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
-					}
-					if ($hasCostLess == 'Y') {
-						App::import('Model', 'SummaryOrderCostLess');
-						$SummaryOrderCostLess = new SummaryOrderCostLess;
-
-						$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->user, $order_id_old, $user_id);
-						if(!empty($resultsSummaryOrderCostLess))
-							$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
-					}					
-				} // if($order_id_old>0 && $cartResult['Order']['id']!=$order_id_old)
-				
-				$order_id_old = $cartResult['Order']['id'];
-				$suppliersOrganization_id_old = $cartResult['SuppliersOrganization']['id'];
-            }
-			
-			/*
-			if($user_id==1037) {
-				self::dd($results[$numResults]); exit; 
-			}
-			*/
-        } // foreach $users	
+			} // foreach ($cartResults as $cartResult)
+		} // foreach $users	
 		
 		/*
-		 * ULTIMO RECORDS
-		 * ctrl eventuali
-		 * 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
-		 * 		- spese di trasporto  (SummaryOrderTrasport)
-		 * 		- costi aggiuntivi  (SummaryOrderCostMore)
-		 * 		- sconti  (SummaryOrderCostLess)
-		 */				
-		$hasTrasport = $cartResult['Order']['hasTrasport']; /* trasporto */
-		$hasCostMore = $cartResult['Order']['hasCostMore']; /* spesa aggiuntiva */
-		$hasCostLess = $cartResult['Order']['hasCostLess'];  /* sconto */
-		$typeGest = $cartResult['Order']['typeGest'];   /* AGGREGATE / SPLIT */
+		* ctrl eventuali
+		* 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
+		* 		- spese di trasporto  (SummaryOrderTrasport)
+		* 		- costi aggiuntivi  (SummaryOrderCostMore)
+		* 		- sconti  (SummaryOrderCostLess)
+		*/
+		foreach ($results as $numResults => $result) {
+	
+			// debug($result);
+			
+			if(isset($result['Order'])) {
+			
+				$order = current($result['Order']);
+		
+				$user_id = $result['User']['id'];
+				$delivery_id = $order['delivery_id'];
+				$order_id = $order['id'];
+				$supplier_organization_id = $order['supplier_organization_id'];
+				$hasTrasport = $order['hasTrasport']; /* trasporto */
+				$hasCostMore = $order['hasCostMore']; /* spesa aggiuntiva */
+				$hasCostLess = $order['hasCostLess'];  /* sconto */
+				$typeGest = $order['typeGest'];   /* AGGREGATE / SPLIT */
+				
+				$resultsSummaryOrder = [];
+				$resultsSummaryOrderTrasport = [];
+				$resultsSummaryOrderCostMore = [];
+				$resultsSummaryOrderCostLess = [];
 
-		$resultsSummaryOrder = [];
-		$resultsSummaryOrderTrasport = [];
-		$resultsSummaryOrderCostMore = [];
-		$resultsSummaryOrderCostLess = [];
+				if ($hasTrasport == 'Y') {
+					App::import('Model', 'SummaryOrderTrasport');
+					$SummaryOrderTrasport = new SummaryOrderTrasport;
 
-		if ($hasTrasport == 'Y') {
-			App::import('Model', 'SummaryOrderTrasport');
-			$SummaryOrderTrasport = new SummaryOrderTrasport;
+					$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id, $user_id);
+					if(!empty($resultsSummaryOrderTrasport)) {
+						// debug($resultsSummaryOrderTrasport);
+						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
+					}
+				}
+				if ($hasCostMore == 'Y') {
+					App::import('Model', 'SummaryOrderCostMore');
+					$SummaryOrderCostMore = new SummaryOrderCostMore;
 
-			$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id_old, $user_id);
-			if(!empty($resultsSummaryOrderTrasport)) {
-				// debug($resultsSummaryOrderTrasport);
-				// debug($results[$numResults]['User'][$suppliersOrganization_id_old]);
-				$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
-				// debug($results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo']);
-			}
+					$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id, $user_id);
+					if(!empty($resultsSummaryOrderCostMore))
+						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
+				}
+				if ($hasCostLess == 'Y') {
+					App::import('Model', 'SummaryOrderCostLess');
+					$SummaryOrderCostLess = new SummaryOrderCostLess;
+
+					$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->user, $order_id, $user_id);
+					if(!empty($resultsSummaryOrderCostLess)) {
+						// debug('BEFORE '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
+						// debug('importo_cost_less '.$resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less']);
+						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
+					    // debug('AFTER '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
+					}
+				}	
+			} // end if(isset($result['Order']))
+        } // foreach ($cartResults as $cartResult)
+	
+		/*
+		if($user_id==1037) {
+			self::dd($results[$numResults]); exit; 
 		}
-		if ($hasCostMore == 'Y') {
-			App::import('Model', 'SummaryOrderCostMore');
-			$SummaryOrderCostMore = new SummaryOrderCostMore;
-
-			$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id_old, $user_id);
-			if(!empty($resultsSummaryOrderCostMore))
-				$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
-		}
-		if ($hasCostLess == 'Y') {
-			App::import('Model', 'SummaryOrderCostLess');
-			$SummaryOrderCostLess = new SummaryOrderCostLess;
-
-			$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->user, $order_id_old, $user_id);
-			if(!empty($resultsSummaryOrderCostLess))
-				$results[$numResults]['User'][$suppliersOrganization_id_old]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
-		}					
-
-
-
-					
-		// debug($results);exit;
-        
+		*/
+	        
 		$this->set(compact('results', 'supplier_organizations'));
 		self::d($results);
-		
+	
         $params = ['delivery_id' => $delivery_id];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'users_data_delivery_sum_orders', $params, null));
         $this->set('organization', $this->user->organization);
