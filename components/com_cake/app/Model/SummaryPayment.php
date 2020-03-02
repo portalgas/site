@@ -7,16 +7,24 @@ class SummaryPayment extends AppModel {
 	 * condizione se un pagamento per un utente e' saldato
 	*/
 	public function isPaid($user, $results, $debug=false) {
+
+		$request_payment_id = '';
+		$user_label = '';
+		
+		if(isset($results['User']))
+			$request_payment_id = $results['RequestPayment']['id'];
+		if(isset($results['User'])) 		
+			$user_label = '['.$results['User']['id'].'] '.$results['User']['name'];
 		
 		if(!isset($results['SummaryPayment']) && !isset($results['SummaryPayment']['stato']))
 			return false;
 		
 		if($results['SummaryPayment']['stato'] != Configure::read('SOSPESO') && $results['SummaryPayment']['stato'] != Configure::read('PAGATO'))  {
-			self::d('SummaryPayment::isPaid - requestPayment.id '.$results['RequestPayment']['id'].' SummaryPayment.stato '.$results['SummaryPayment']['stato'].' => Non saldato da gasista', $debug);
+			self::d('SummaryPayment::isPaid - requestPayment.id '.$request_payment_id.' SummaryPayment.stato '.$results['SummaryPayment']['stato'].' => Non saldato da gasista '.$user_label, $debug);
 			return false;
 		}
 		else {
-			self::d('SummaryPayment::isPaid - requestPayment.id '.$results['RequestPayment']['id'].' SummaryPayment.stato '.$results['SummaryPayment']['stato'].' => Non saldato da gasista', $debug);
+			self::d('SummaryPayment::isPaid - requestPayment.id '.$request_payment_id.' SummaryPayment.stato '.$results['SummaryPayment']['stato'].' => Saldato da gasista '.$user_label, $debug);
 			return true;
 		}
 	}

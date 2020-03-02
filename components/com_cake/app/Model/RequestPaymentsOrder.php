@@ -44,7 +44,7 @@ class RequestPaymentsOrder extends AppModel {
 		if(empty($requestPaymentResults))
 			self::xx('RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId - request_payment_id ['.$request_payment_id.'] empty');
 			
-		self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - RequestPayment.stato_elaborazione  ".$requestPaymentResults['RequestPayment']['stato_elaborazione'], $debug);
+		self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - RequestPayment.stato_elaborazione  ".$requestPaymentResults['RequestPayment']['stato_elaborazione']." id [".$requestPaymentResults['RequestPayment']['id']."]", $debug);
 		
 		switch ($requestPaymentResults['RequestPayment']['stato_elaborazione']) {
 			case 'WAIT': // in lavorazione
