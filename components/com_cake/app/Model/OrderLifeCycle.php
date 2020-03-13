@@ -989,7 +989,7 @@ class OrderLifeCycle extends AppModel {
 		self::l('OrderLifeCycle::stateCodeAfter template_id '.$template_id, $debug);
 		self::l($user->organization['Template'], $debug);
 		self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' Order.state_code CURRENT '.$state_code, $debug);
-		
+			
 		switch ($state_code) {
 			
 			case 'PROCESSED-ON-DELIVERY':  // In carico al cassiere durante la consegna
@@ -1006,14 +1006,16 @@ class OrderLifeCycle extends AppModel {
 						/*
 						 * ctrl se il produttore e' pagato
 						 */ 
-						 $isPaidSupplier = $this->isPaidSupplier($user, $orderResult, $debug);
+						$isPaidSupplier = $this->isPaidSupplier($user, $orderResult, $debug);
 
-						 if($isPaidSupplier) 
+						if($isPaidSupplier) {
 							$state_code_next = 'CLOSE';
-						 else 
-							$state_code_next = 'SUPPLIER-PAID';
-						 
-						 self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
+							self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
+						}
+						else { 
+							$state_code_next = 'SUPPLIER-PAID'; 
+							self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore NON PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
+						}
 					}
 					else 
 						$state_code_next = 'CLOSE';
@@ -1049,6 +1051,7 @@ class OrderLifeCycle extends AppModel {
 			 *
 		     * Template.payToDelivery = ON => mai, ha gli stati (PROCESSED-ON-DELIVERY, SUPPLIER-PAID)
 			 */								
+			case 'WAIT-REQUEST-PAYMENT-CLOSE':     //  (solo per gestione con Tesoriere)
 			case 'WAIT-REQUEST-PAYMENT-CLOSE-ALL': //  (solo per gestione con Tesoriere)	
 			
 				self::l("OrderLifeCycle::stateCodeAfter - Order.id ".$orderResult['Order']['id']." saldato da parte di tutti i gasisti", $debug);
@@ -1064,7 +1067,7 @@ class OrderLifeCycle extends AppModel {
 				 		$state_code_next = 'CLOSE';
 					 else 
 				 		$state_code_next = 'SUPPLIER-PAID';
-					 
+				
 					 self::l('OrderLifeCycle::stateCodeAfter Order.id '.$orderResult['Order']['id'].' template_id '.$template_id." produttore PAGATO => estraggo lo stato $rule_sort_next di un Ordine in base al template", $debug);
 			    }
 				else 
@@ -1336,9 +1339,9 @@ class OrderLifeCycle extends AppModel {
 					App::import('Model', 'SummaryOrderAggregate');
 					$SummaryOrderAggregate = new SummaryOrderAggregate;
 
-					$summaryOrderAggregateorderResult = $SummaryOrderAggregate->select_to_order($user, $order_id);
+					$summaryOrderAggregateorderResult = $SummaryOrderAggregate->select_to_order($user, $orderResult['Order']['id']);
 					if (!empty($summaryOrderAggregateorderResult)) 
-						$results['alertModuleConflicts'] = 'summary_order_aggregate_just_populate';
+						$results['alertModuleConflicts'] = 'summary_order_just_populate';
 				}
 				else
 				if ($orderResult['Order']['typeGest'] == 'SPLIT') {

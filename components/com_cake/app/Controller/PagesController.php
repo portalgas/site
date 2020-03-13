@@ -104,7 +104,7 @@ class PagesController extends AppController {
                     $Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
                 $name = Configure::read('SOC.name');
-                $mail = Configure::read('SOC.mail');
+                $mail = Configure::read('SOC.mail-contatti');
 
                 $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
                 $Email->to($mail);
@@ -340,6 +340,9 @@ class PagesController extends AppController {
     }
 
 	public function msg_not_order_state() {
+		
+		$debug = false;
+		
 		App::import('Model', 'Order');
 		$Order = new Order;		
 	
@@ -349,7 +352,7 @@ class PagesController extends AppController {
 		$results = $Order->find('first', $options);
 		
 		$this->set(compact('results'));
-		
+						
 		$this->layout = 'default_front_end';
 	}
 
@@ -418,6 +421,9 @@ class PagesController extends AppController {
     }
     
 	public function admin_msg_not_order_state() {
+		
+		$debug = false;
+		
 		App::import('Model', 'Order');
 		$Order = new Order;		
 	
@@ -428,6 +434,53 @@ class PagesController extends AppController {
 		
 		$this->set(compact('results'));
         
+		/*
+		 * invio mail 
+		 */
+		$body_mail = '';
+		$body_mail .= '<h2>Utente ' . $this->user->name . ' (' . $this->user->id . ') - Organization ' . $this->user->organization['Organization']['name'] . ' (' . $this->user->organization['Organization']['id'] . ')</h2>';
+		$body_mail .= 'Username ' . $this->user->username . ' Email ' . $this->user->email;
+		$body_mail .= '<h2>Variabili del Server</h2>';
+		if (isset($_SERVER['HTTP_USER_AGENT']))
+			$body_mail .= '<br /><br />HTTP_USER_AGENT ' . $_SERVER['HTTP_USER_AGENT'];
+		else
+			$body_mail .= '<br /><br />HTTP_USER_AGENT non valorizzato';
+
+		if (isset($_SERVER['HTTP_COOKIE']))
+			$body_mail .= '<br /><br />HTTP_COOKIE ' . $_SERVER['HTTP_COOKIE'];
+		else
+			$body_mail .= '<br /><br />HTTP_COOKIE non valorizzato <span style="color:red">allowAdminAccess</span>';
+
+		if (isset($_SERVER['HTTP_REFERER']))
+			$body_mail .= '<br /><br />HTTP_REFERER ' . $_SERVER['HTTP_REFERER'];
+		else
+			$body_mail .= '<br /><br />HTTP_REFERER non valorizzato';
+
+		$body_mail .= '<h2>Order</h2>';
+		$body_mail .= 'order_id ' . $results['Order']['id'];
+		self::d($body_mail, $debug);
+		
+		App::import('Model', 'Mail');
+		$Mail = new Mail;
+
+		$Email = $Mail->getMailSystem($this->user);
+
+		$subject_mail = "Page " . $this->action;
+		$Email->subject($subject_mail);
+		if (!empty($this->user->organization['Organization']['www']))
+			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer'), $this->traslateWww($this->user->organization['Organization']['www']))]);
+		else
+			$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
+
+		$name = Configure::read('SOC.name');
+		$mail = 'francesco.actis@gmail.com'; // @portalgas.it e' tra EmailExcludeDomains
+		self::d('mail TO '.$mail, $debug);
+
+		$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+		$Email->to($mail);
+
+		$Mail->send($Email, $mail, $body_mail, false);
+		
 		$this->render('/Pages/msg_not_order_state');
     }
 	
@@ -574,7 +627,7 @@ class PagesController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
             'Delivery.isVisibleBackOffice' => 'Y',
             'Delivery.sys' => 'N',
-            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY '];
+            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '];
         $options['order'] = ['Delivery.data' => 'asc'];
         $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
         $options['recursive'] = 1;

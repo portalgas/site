@@ -738,7 +738,9 @@ class SuppliersController extends AppController {
     public function gmaps() {
         /*
          * setto organization_id preso dal template
-         */        
+         */
+		$tmp = new \stdClass();
+		$tmp->user = new \stdClass(); 
         $tmp->user->organization['Organization']['id'] = $this->user->get('org_id');
         
         App::import('Model', 'SuppliersOrganization');

@@ -69,7 +69,8 @@ class UserGroupMap extends AppModel {
 		$userFlagPrivacys = $this->getUserFlagPrivacys($user);
 		
 		if(!empty($userFlagPrivacys)) {
-        	$userFlagPrivacy = $userFlagPrivacys[0]['User'][0];
+        	$userFlagPrivacy = current($userFlagPrivacys);
+        	$userFlagPrivacy = $userFlagPrivacy['User'][0];
         }
         
         self::d($userFlagPrivacy, $debug);

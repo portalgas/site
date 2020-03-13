@@ -258,7 +258,7 @@ class StatoElaborazione extends AppModel {
 	public function requestPayment($user, $debug=false, $request_payment_id=0)  {
 
 		$debug=false;
-	
+
 		App::import('Model', 'RequestPaymentsOrder');
 		$RequestPaymentsOrder = new RequestPaymentsOrder;						
 	
@@ -303,9 +303,10 @@ class StatoElaborazione extends AppModel {
 					$options = [];
 					$options['conditions'] = ['SummaryPayment.organization_id' => (int)$user->organization['Organization']['id'],
 											  'SummaryPayment.request_payment_id' => $requestPaymentResult['RequestPayment']['id']];
-					$options['recursive'] = -1;	
+					$options['recursive'] = 0;	
 					$SummaryPaymentResults = $SummaryPayment->find('all', $options);
-					
+					// self::d($options, $debug);	
+					// self::d($SummaryPaymentResults, $debug);
 					if(!empty($SummaryPaymentResults)) 
 					foreach ($SummaryPaymentResults as $SummaryPaymentResult) {
 							

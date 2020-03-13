@@ -34,11 +34,11 @@ echo '<legend>'.__('Close Order').'</legend>';
 	echo '</div>';
 
 	echo '<div class="input text"><label for="">Decorrenza</label> '.$results['Order']['name'].'</div>';
- 
-	if(!$canOrdersClose) {
 
+	if(!$canOrdersClose) {
 		switch($user->organization['Organization']['canOrdersClose']) {
 			case 'ALL':
+				$msgCan = $msg;
 			break;
 			case 'SUPER-REFERENT':
 				$msgCan = "Solo il super-referente può chiudere l'ordine, contattalo";

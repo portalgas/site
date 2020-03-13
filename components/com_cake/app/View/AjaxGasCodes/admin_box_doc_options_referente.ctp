@@ -14,6 +14,9 @@ if(!empty($results))
 	<div class="radio">
 		<label><input type="radio" name="doc_options" id="to-users-label" value="to-users-label" /><?php echo __('to_users_label');?></label>
 	</div>
+	<div class="radio">
+		<label><input type="radio" name="doc_options" id="to-users-articles-label" value="to-users-articles-label" /><?php echo __('to_users_articles_label');?></label>
+	</div>
 	<?php
 	/*
 	 *  per report to-articles-monitoring 
@@ -164,6 +167,60 @@ if(!empty($results))
 		}
 		?>								
 	</div>
+
+	<div id="setting-to-users-articles-label" class="box-options">
+		<?php
+		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
+			$id = '3';
+				
+			echo '<div class="doc-options">';
+			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
+			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
+			if($trasport=='0.00' && $cost_more=='0.00' && $cost_less=='0.00') echo 'checked';
+			echo '/>No</label> ';
+			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_Y" value="Y" ';
+			if($trasport!='0.00' || $cost_more!='0.00' || $cost_less!='0.00') echo 'checked';
+			echo '/>Si</label> ';
+			echo '</div>';
+		}
+		?>
+		<div class="doc-options">
+			<label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
+			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_N" value="N" />No</label>
+			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_Y" value="Y" checked />Si</label>
+		</div>
+		<div class="doc-options">
+			<label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
+			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_Y" value="Y" />Si</label>
+		</div>
+		<div class="doc-options">
+			<label class="control-label">Visualizzo l'<b>indirizzo</b> degli utenti</label>
+			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_Y" value="Y" />Si</label>
+		</div>
+		<div class="doc-options">
+			<label class="control-label">Visualizzo la <b>foto</b> dell'utente</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_Y" value="Y" />Si</label>
+		</div>
+		<div class="doc-options">
+			<label class="control-label">Visualizzo gli articoli <b>cancellati</b></label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_N" value="N" checked/>No</label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_Y" value="Y" />Si</label>
+		</div>	
+		<?php
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+		?>
+			<div class="doc-options">
+				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>
+				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_N" value="N" checked />No</label>
+				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_Y" value="Y" />Si</label>
+			</div>
+		<?php
+		}
+		?>								
+	</div>	
 	
 	<div id="setting-to-articles" class="box-options">
 		<?php
@@ -261,6 +318,7 @@ $(document).ready(function() {
 		$('#setting-to-users-all-modify').hide();
 		$('#setting-to-users').hide();
 		$('#setting-to-users-label').hide();
+		$('#setting-to-users-articles-label').hide();
 		$('#setting-to-articles').hide();
 		$('#setting-to-articles-details').hide();
 	
@@ -274,6 +332,9 @@ $(document).ready(function() {
 		else
 		if(doc_options=='to-users-label')
 			$('#setting-to-users-label').show();
+		else
+		if(doc_options=='to-users-articles-label')
+			$('#setting-to-users-articles-label').show();
 		else
 		if(doc_options=='to-articles')
 			$('#setting-to-articles').show();

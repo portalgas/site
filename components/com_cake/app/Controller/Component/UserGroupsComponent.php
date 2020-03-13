@@ -187,24 +187,23 @@ class UserGroupsComponent extends Component {
 			$userGroups[Configure::read('group_id_referent_des')]['join'] = 'DesSupplier';
 			$userGroups[Configure::read('group_id_referent_des')]['type'] = 'DES';
 
-			if(isset($user->organization['Organization']) && $user->organization['Organization']['hasUserFlagPrivacy'] && $user->organization['Organization']['hasUserFlagPrivacy']=='Y') {
-				$userGroups[Configure::read('group_id_user_flag_privacy')]['id'] = Configure::read('group_id_user_flag_privacy');
-				$userGroups[Configure::read('group_id_user_flag_privacy')]['name'] = __('UserGroupsUserFlagPrivacy');
-				$userGroups[Configure::read('group_id_user_flag_privacy')]['descri'] = __('HasUserGroupsUserFlagPrivacy');
-				$userGroups[Configure::read('group_id_user_flag_privacy')]['join'] = '';
-				$userGroups[Configure::read('group_id_user_flag_privacy')]['type'] = 'GAS';				
-			}
-
 			if(isset($user->organization['Organization']) && $user->organization['Organization']['hasDesUserManager']=='Y') {
 				$userGroups[Configure::read('group_id_user_manager_des')]['id'] = Configure::read('group_id_user_manager_des');
 				$userGroups[Configure::read('group_id_user_manager_des')]['name'] = __('UserGroupsUserManagerDes');
 				$userGroups[Configure::read('group_id_user_manager_des')]['descri'] = __('HasUserGroupsUserManagerDes');
 				$userGroups[Configure::read('group_id_user_manager_des')]['join'] = '';
 				$userGroups[Configure::read('group_id_user_manager_des')]['type'] = 'DES';				
-			}
-			
-   		}		
+			}			
+   		} // end if(isset($user->organization['Organization']) && $user->organization['Organization']['hasDes']=='Y')
 
+		if(isset($user->organization['Organization']) && $user->organization['Organization']['hasUserFlagPrivacy'] && $user->organization['Organization']['hasUserFlagPrivacy']=='Y') {
+			$userGroups[Configure::read('group_id_user_flag_privacy')]['id'] = Configure::read('group_id_user_flag_privacy');
+			$userGroups[Configure::read('group_id_user_flag_privacy')]['name'] = __('UserGroupsUserFlagPrivacy');
+			$userGroups[Configure::read('group_id_user_flag_privacy')]['descri'] = __('HasUserGroupsUserFlagPrivacy');
+			$userGroups[Configure::read('group_id_user_flag_privacy')]['join'] = '';
+			$userGroups[Configure::read('group_id_user_flag_privacy')]['type'] = 'GAS';				
+		}
+		
 		$controllerLog::d($userGroups, $debug);
 		
 		return $userGroups;
