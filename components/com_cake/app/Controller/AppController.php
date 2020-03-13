@@ -948,6 +948,7 @@ class AppController extends Controller {
 			 
 			self::l([$esito, $_COOKIE], false);
 			 
+			$popUpDisabled = false;
 			if (isset($_COOKIE[$esito['ctrlModuleConflicts']['alertModuleConflicts']])) {
 				if ($_COOKIE[$esito['ctrlModuleConflicts']['alertModuleConflicts']] == $this->order_id) {
 					$popUpDisabled = true;

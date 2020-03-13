@@ -37,15 +37,25 @@ class BackupOrder extends AppModel {
 			self::d($sql, $debug);
 			$results = $this->query($sql);
 			
-			$sql = "INSERT INTO ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations
-					(SELECT * 
-					 FROM ".Configure::read('DB.prefix')."des_orders_organizations as DesOrdersOrganization  
-					 WHERE
-						DesOrdersOrganization.organization_id = ".(int)$user->organization['Organization']['id']." 
-						AND DesOrdersOrganization.order_id = ".$order_id." )";		 	
-			self::d($sql, $debug);
-			$results = $this->query($sql);
-			
+			App::import('Model', 'BackupOrdersDesOrdersOrganization');
+			$BackupOrdersDesOrdersOrganization = new BackupOrdersDesOrdersOrganization;
+		
+			$options = [];
+			$options['conditions'] = ['organization_id' => $user->organization['Organization']['id'],
+									  'order_id' => $order_id];
+			$options['recursive'] = -1;
+			$backupOrdersDesOrdersOrganizationResults = $BackupOrdersDesOrdersOrganization->find('first', $options);
+			if(empty($backupOrdersDesOrdersOrganizationResults)) {
+				$sql = "INSERT INTO ".Configure::read('DB.prefix')."backup_orders_des_orders_organizations
+						(SELECT * 
+						 FROM ".Configure::read('DB.prefix')."des_orders_organizations as DesOrdersOrganization  
+						 WHERE
+							DesOrdersOrganization.organization_id = ".(int)$user->organization['Organization']['id']." 
+							AND DesOrdersOrganization.order_id = ".$order_id." )";		 	
+				self::d($sql, $debug);
+				$results = $this->query($sql);
+				
+			}			
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);

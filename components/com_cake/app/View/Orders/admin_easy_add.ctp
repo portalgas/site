@@ -62,25 +62,28 @@ echo $this->Html->div('clearfix','');
 	echo $this->element('boxOrdersDelivery', array('modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery));
 	echo $this->Html->div('clearfix','');
 	
+	echo $this->Form->input('data_inizio', ['type' => 'text', 'label' => __('DataInizio'), 'value' => $data_inizio, 'required'=>'false', 'autocomplete' => 'off', 'class' => 'form-control']);
+	echo $this->Ajax->datepicker('OrderDataInizio',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataInizioDb', 'altFormat' => 'yy-mm-dd'));
+	echo '<input type="hidden" id="OrderDataInizioDb" name="data[Order][data_inizio_db]" value="'.$data_inizio_db.'" />';
 	
-	echo $this->App->drawDate('Order', 'data_inizio', __('DataInizio'), $data_inizio_db);
-	
-	echo $this->App->drawDate('Order', 'data_fine', __('DataFine'), $data_fine_db);
+	echo $this->Form->input('data_fine', ['type' => 'text', 'label' => __('DataFine'), 'value' => $data_fine, 'required'=>'false', 'autocomplete' => 'off', 'class' => 'form-control']);
+	echo $this->Ajax->datepicker('OrderDataFine',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineDb', 'altFormat' => 'yy-mm-dd'));
+	echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$data_fine_db.'" />';
 	
 	echo $this->Form->input('mail_open_testo', array('class' => 'form-control', 'after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));
 	
 
-	echo '<input type="hidden" name="data[Order][organization_id]" value="'.$this->Form->value('Order.organization_id').'" />'; // serve per ModelOrder::date_comparison_to_delivery
-	echo '<input type="hidden" name="data[Order][des_supplier_id]" value="0" />';
+echo '<input type="hidden" name="data[Order][organization_id]" value="'.$this->Form->value('Order.organization_id').'" />'; // serve per ModelOrder::date_comparison_to_delivery
+echo '<input type="hidden" name="data[Order][des_supplier_id]" value="0" />';
 
-	echo '<input type="hidden" name="data[Order][qta_massima_um]" value="" />';
-	echo '<input type="hidden" name="data[Order][qta_massima]" value="0" />';
-	echo '<input type="hidden" name="data[Order][importo_massimo]" value="0" />';
-	echo '<input type="hidden" name="data[Order][typeGest]" value="" />';
-	echo '<input type="hidden" name="data[Order][hasTrasport]" value="N" />';
-	echo '<input type="hidden" name="data[Order][hasCostMore]" value="N" />';
-	echo '<input type="hidden" name="data[Order][hasCostLess]" value="N" />';
-	echo '</fieldset>';
+echo '<input type="hidden" name="data[Order][qta_massima_um]" value="" />';
+echo '<input type="hidden" name="data[Order][qta_massima]" value="0" />';
+echo '<input type="hidden" name="data[Order][importo_massimo]" value="0" />';
+echo '<input type="hidden" name="data[Order][typeGest]" value="" />';
+echo '<input type="hidden" name="data[Order][hasTrasport]" value="N" />';
+echo '<input type="hidden" name="data[Order][hasCostMore]" value="N" />';
+echo '<input type="hidden" name="data[Order][hasCostLess]" value="N" />';
+echo '</fieldset>';
 
 echo $this->Form->end(__('Submit'));
 

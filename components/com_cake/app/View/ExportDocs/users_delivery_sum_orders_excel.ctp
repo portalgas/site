@@ -33,8 +33,8 @@ foreach($results as $numResult => $result) {
 	$data = [			($numResult+1),			$result['Profile']['codice'],			$result['User']['name'],			$telephone	];
 
 	foreach($supplier_organizations as $supplier_organization_id => $supplier_organization_name) {
-		if(isset($result['User'][$supplier_organization_id]))
-			array_push($data, $result['User'][$supplier_organization_id]['tot_user_importo']);
+		if(isset($result['Order'][$supplier_organization_id]))
+			array_push($data, $result['Order'][$supplier_organization_id]['tot_user_importo']);
 		else 
 			array_push($data, '');	
 	}

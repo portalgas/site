@@ -188,9 +188,9 @@ class CashsController extends AppController {
          * != 0 per escludere la voce di spesa generica
          */
         $options = [];
-        $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
-                                        'Cash.user_id != ' => 0);
-        $options['fields'] = array('user_id');
+        $options['conditions'] = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                  'Cash.user_id != ' => 0];
+        $options['fields'] = ['user_id'];
         $options['recursive'] = 1;
         $options['order'] = Configure::read('orderUser');
         $results = $this->Cash->find('all', $options);
@@ -203,15 +203,15 @@ class CashsController extends AppController {
         }
 
         $options = [];
-        $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 0);
+        $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+            'User.block' => 0];
 
         if (!empty($user_ids)) {
             $user_ids = substr($user_ids, 0, (strlen($user_ids) - 1));
-            $options['conditions'] += array('User.id NOT IN (' . $user_ids . ')');
+            $options['conditions'] += ['User.id NOT IN (' . $user_ids . ')'];
         }
 
-        $options['fields'] = array('id', 'name');
+        $options['fields'] = ['id', 'name'];
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
         $users = $this->Cash->User->find('list', $options);
@@ -232,9 +232,9 @@ class CashsController extends AppController {
         }
 
         $options = [];
-        $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
-            						   'Cash.user_id' => $user_id);
-        $options['fields'] = array('id');
+        $options['conditions'] = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+            						   'Cash.user_id' => $user_id];
+        $options['fields'] = ['id'];
         $options['recursive'] = -1;
         $cashResults = $this->Cash->find('first', $options);
         
@@ -288,9 +288,9 @@ class CashsController extends AppController {
         } // edn if ($this->request->is('post') || $this->request->is('put'))
 
         $options = [];
-        $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 0);
-        $options['fields'] = array('id', 'name');
+        $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+            'User.block' => 0];
+        $options['fields'] = ['id', 'name'];
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
         $users = $this->Cash->User->find('list', $options);
@@ -301,8 +301,8 @@ class CashsController extends AppController {
 		 * dati Cash
 		 */
         $options = [];
-        $options['conditions'] = array('Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
-							            'Cash.id' => $id);
+        $options['conditions'] = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+							            'Cash.id' => $id];
         $this->request->data = $this->Cash->find('first', $options);
 
         $results = $this->Cash->get_totale_cash($this->user);
@@ -316,8 +316,8 @@ class CashsController extends AppController {
         $User = new User;
 
         $options = [];
-        $options['conditions'] = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.id' => $this->request->data['Cash']['user_id']);
+        $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+            'User.id' => $this->request->data['Cash']['user_id']];
         $options['recursive'] = -1;
         $utente = $User->find('first', $options);
 

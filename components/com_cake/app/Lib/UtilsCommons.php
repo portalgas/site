@@ -289,6 +289,7 @@ class UtilsCommons {
              */
             case 'to-users':
             case 'to-users-label':
+            case 'to-users-articles-label':
             case 'to-users-all-modify':
             case 'to-supplier':
             case 'to-articles-monitoring':
@@ -340,6 +341,7 @@ class UtilsCommons {
                         $fileTitle .= ' diviso per utente ';
                         break;
                     case 'to-users-label':
+                    case 'to-users-articles-label':
                         $fileName .= '_per_la_consegna_';
                         $fileTitle .= ' per la consegna ';
                         break;
