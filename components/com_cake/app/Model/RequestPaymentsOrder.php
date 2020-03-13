@@ -66,7 +66,7 @@ class RequestPaymentsOrder extends AppModel {
 							      'RequestPaymentsOrder.request_payment_id' => $request_payment_id];
 		$options['recursive'] = 0;
 		$requestPaymentsOrderResults = $this->find('all', $options);
-		
+	
 		if(!empty($requestPaymentsOrderResults)) {
 			
 			$requestPaymentsOrderTot = count($requestPaymentsOrderResults);
@@ -74,7 +74,7 @@ class RequestPaymentsOrder extends AppModel {
 			foreach($requestPaymentsOrderResults as $numResult => $requestPaymentsOrderResult) {
 
 				self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - ".($numResult+1)."/".$requestPaymentsOrderTot." tratto Order.id ".$requestPaymentsOrderResult['Order']['id']." Order.state_code ".$requestPaymentsOrderResult['Order']['state_code'], $debug);
-				
+			
 				if(!empty($state_code_next)) {
 					$OrderLifeCycle->stateCodeUpdate($user, $requestPaymentsOrderResult, $state_code_next, null, $debug);					
 				}
@@ -92,7 +92,7 @@ class RequestPaymentsOrder extends AppModel {
 						case 'WAIT-REQUEST-PAYMENT-CLOSE':							
 							$state_code_next_single_order = $OrderLifeCycle->stateCodeAfter($user, $requestPaymentsOrderResult, 'WAIT-REQUEST-PAYMENT-CLOSE', $debug);
 							self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - tratto Order.id ".$requestPaymentsOrderResult['Order']['id']." Order.state_code_next_single_order ".$state_code_next_single_order, $debug);
-							
+									
 							$OrderLifeCycle->stateCodeUpdate($user, $requestPaymentsOrderResult, $state_code_next_single_order, null, $debug);	
 						break; 
 						case 'SUPPLIER-PAID':
@@ -106,7 +106,7 @@ class RequestPaymentsOrder extends AppModel {
 				} // end if(!empty($state_code_next)) 					
 			} // end loop
 		}
-		
+				
 		/*
 		 * ctrl se tutti gli Orders.state = WAIT-REQUEST-PAYMENT-CLOSE
 		 */
