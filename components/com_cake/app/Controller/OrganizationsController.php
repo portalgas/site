@@ -319,6 +319,7 @@ class OrganizationsController extends AppController {
             $paramsConfig += ['hasCostMore' => $this->request->data['Organization']['hasCostMore']];
             $paramsConfig += ['hasCostLess' => $this->request->data['Organization']['hasCostLess']];
             $paramsConfig += ['hasValidate' => $this->request->data['Organization']['hasValidate']];
+            $paramsConfig += ['hasCashFilterSupplier' => $this->request->data['Organization']['hasCashFilterSupplier']];
             $paramsConfig += ['hasStoreroom' => $this->request->data['Organization']['hasStoreroom']];
             $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
             $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
@@ -413,6 +414,7 @@ class OrganizationsController extends AppController {
         $hasCostMore = ['Y' => 'Si', 'N' => 'No'];
         $hasCostLess = ['Y' => 'Si', 'N' => 'No'];
         $hasValidate = ['Y' => 'Si', 'N' => 'No'];
+        $hasCashFilterSupplier = ['Y' => 'Si', 'N' => 'No'];
         $hasStoreroom = ['Y' => 'Si', 'N' => 'No'];
         $hasStoreroomFrontEnd = ['Y' => 'Si', 'N' => 'No'];
         $canOrdersClose = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
@@ -449,7 +451,7 @@ class OrganizationsController extends AppController {
         $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 		/*
 		 * template
@@ -482,6 +484,7 @@ class OrganizationsController extends AppController {
             $paramsConfig += ['hasCostMore' => $this->request->data['Organization']['hasCostMore']];
             $paramsConfig += ['hasCostLess' => $this->request->data['Organization']['hasCostLess']];
             $paramsConfig += ['hasValidate' => $this->request->data['Organization']['hasValidate']];
+            $paramsConfig += ['hasCashFilterSupplier' => $this->request->data['Organization']['hasCashFilterSupplier']];
             $paramsConfig += ['hasStoreroom' => $this->request->data['Organization']['hasStoreroom']];
             $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
             $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
@@ -591,6 +594,7 @@ class OrganizationsController extends AppController {
             $hasCostMore = ['Y' => 'Si', 'N' => 'No'];
             $hasCostLess = ['Y' => 'Si', 'N' => 'No'];
             $hasValidate = ['Y' => 'Si', 'N' => 'No'];
+            $hasCashFilterSupplier = ['Y' => 'Si', 'N' => 'No'];
             $hasStoreroom = ['Y' => 'Si', 'N' => 'No'];
             $hasStoreroomFrontEnd = ['Y' => 'Si', 'N' => 'No'];
             $canOrdersClose = ['ALL' => __('ALL'), 'SUPER-REFERENT' => __('gasSuperReferente'), 'REFERENT' => __('gasReferente')];
@@ -639,7 +643,7 @@ class OrganizationsController extends AppController {
             $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
-            $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+            $this->set(compact('hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 			/*
 			 * template

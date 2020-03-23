@@ -29,11 +29,15 @@ class Sql extends AppModel {
 		$results[$i]['sql'] = "SELECT count(*) totale from ".Configure::read('DB.prefix')."suppliers WHERE stato in ('Y', 'T');";
 		$results[$i]['params'] = [];
 		$i++;
-		$results[$i]['name'] = "Totale utenti";
+		$results[$i]['name'] = "Totale utenti attivi";
 		$results[$i]['sql'] = "SELECT count(*) totale from ".Configure::read('DB.portalPrefix')."users WHERE block = 0 and email not like '%portalgas.it';";
 		$results[$i]['params'] = [];
 		$i++;
-		$results[$i]['name'] = "Totale G.A.S.";
+		$results[$i]['name'] = "Totale utenti attivi per G.A.S.";
+		$results[$i]['sql'] = "SELECT count(u.id) as totale, o.name , o.id FROM ".Configure::read('DB.portalPrefix')."users u, ".Configure::read('DB.prefix')."organizations o WHERE u.block = 0 and u.email not like '%portalgas.it' and o.type = 'GAS' and o.stato = 'Y' and u.organization_id = o.id  GROUP BY o.name, o.id ORDER BY totale desc;";
+		$results[$i]['params'] = [];
+		$i++;
+		$results[$i]['name'] = "Totale G.A.S. attivi";
 		$results[$i]['sql'] = "SELECT count(*) totale FROM ".Configure::read('DB.prefix')."organizations WHERE type = 'GAS' and stato = 'Y';";
 		$results[$i]['params'] = [];
 		$i++;

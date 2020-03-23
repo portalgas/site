@@ -29,13 +29,18 @@ class ConnectsController extends AppController {
 		// $user = $this->CryptDecrypt->decrypt($user_salt);
 		// debug($user);
 	   	
-		$url = 'http://neo.portalgas.it/admin/api/token/login?u='.$user_salt;
-		debug($url);
+	   	/*
+	   	 * land page, controller / action
+	   	 */
+	   	$c_to = 'admin/cashs';  
+		$a_to = 'supplierOrganizationFilter'; 
+
+		$url = 'http://neo.portalgas.it/api/token/login?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+		// debug($url);
 	   	
 		// $this->redirect($url);
 				
-		// header("Location: $url");
-					
+		header("Location: $url");
 		exit;
 	}
 }
