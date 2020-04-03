@@ -6,6 +6,8 @@ Configure::write('gcalendar.add', false);
 
 Configure::write('App.root', '/var/www/portalgas');	
 
+Configure::write('App.server', 'http://'.$_SERVER['SERVER_NAME'].':81');
+
 /**
  * Configure the cache handlers that CakePHP will use for internal
  * metadata like class maps, and model schema.
