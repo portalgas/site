@@ -32,10 +32,11 @@ class ConnectsController extends AppController {
 	   	/*
 	   	 * land page, controller / action
 	   	 */
-	   	$c_to = 'admin/cashs';  
-		$a_to = 'supplierOrganizationFilter'; 
+	   	$c_to = Configure::read('Neo.portalgas.controller'); // 'admin/cashes'
+		$a_to = Configure::read('Neo.portalgas.action');     // 'supplierOrganizationFilter'; 
 
-		$url = 'http://neo.portalgas.it/api/token/login?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+		// http://neo.portalgas.it/api/token/login?u=
+		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
 		// debug($url);
 	   	
 		// $this->redirect($url);

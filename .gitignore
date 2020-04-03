@@ -27,7 +27,7 @@
 /components/com_cake/app/tmp/*
 
 /components/com_cake/app/View/Helps/box_account.ctp
-/components/com_cake/app\View/Helps/box_database.ctp
+/components/com_cake/app/View/Helps/box_database.ctp
 
 # CakePHP specific files #
 ##########################
