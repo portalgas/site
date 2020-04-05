@@ -16,10 +16,14 @@ class ConnectsController extends AppController {
 
    public function admin_index() {
    		
-		$username = $this->user->username;
-		$organization_id = $this->user->organization['Organization']['id'];
+   		if(!isset($this->user->id) || empty($this->user->id))
+   			return false;
+
+		$user_id = $this->user->id;
+		$user_organization_id =  $this->_getOrganizationById($this->user->id);
+		$organization_id = $this->user->organization['Organization']['id']; // gas scelto o gas dello user
 		
-		$user = ['username' => $username, 'organization_id' => $organization_id];
+		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];
 		// debug($user);
 		$user = serialize($user);
 		
@@ -44,4 +48,28 @@ class ConnectsController extends AppController {
 		header("Location: $url");
 		exit;
 	}
+
+   /*
+    * $this->user ha organization_id ma e' gestito a frontend
+    * $this->user->organization['Organization'] e' l'organizzazione corrente
+    */
+   private function _getOrganizationById($user_id) {
+		
+		$organization_id = 0;
+
+        App::import('Model', 'User');
+        $User = new User;
+
+		$options = [];
+		$options['conditions'] = ['User.id' => $user_id];
+		$options['fields'] = ['User.organization_id'];
+		$options['recursive'] = -1;
+		$usersResults = $User->find('first', $options);
+		// debug($options);
+		// debug($usersResults);
+		if(!empty($usersResults))
+			$organization_id = $usersResults['User']['organization_id'];
+
+		return $organization_id;
+   }	
 }
