@@ -157,7 +157,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'HG' && Article_um_riferimento == 'KG')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'KG' && Article_um_riferimento == 'GR')
                 prezzo_um_riferimento = (prezzo_um_riferimento / 1000);
@@ -166,7 +166,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'ML' && Article_um_riferimento == 'DL')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'ML' && Article_um_riferimento == 'LT')
                 prezzo_um_riferimento = (prezzo_um_riferimento * 1000);
@@ -175,7 +175,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'DL' && Article_um_riferimento == 'LT')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'LT' && Article_um_riferimento == 'ML')
                 prezzo_um_riferimento = (prezzo_um_riferimento / 1000);

@@ -201,7 +201,7 @@ class SummaryOrderLifeCycle extends AppModel {
 			return false;
 
 		/*
-		 * se tutti i gasisti hanno sladato aggiorno stato dlel'ordine
+		 * se tutti i gasisti hanno saldato aggiorno stato dell'ordine
 		 */
 		$state_code_next = $OrderLifeCycle->stateCodeAfter($user, $order_id, 'PROCESSED-ON-DELIVERY', $debug);
 		
@@ -211,7 +211,8 @@ class SummaryOrderLifeCycle extends AppModel {
 	} 
 	
 	/*
-	 * ctrl che tutti i gassiti abbiano saldato a cassiere / tesoriere => Order.stato successivo in base al template
+	 * ctrl che tutti i gasiti abbiano saldato a cassiere / tesoriere => Order.stato successivo in base al template
+	 * tutti i SummaryOrders di un ordine hanno saldato_a is NOT null	 
 	 */
 	public function isSummaryOrderAllSaldato($user, $orderResult, $debug=false) {
 	
@@ -231,7 +232,7 @@ class SummaryOrderLifeCycle extends AppModel {
 		self::l("SummaryOrderLifeCycle::isSummaryOrderAllSaldato order_id ".$orderResult['Order']['id'], $debug);
 
 		/*
-		 * prima ctrl che sia pololata
+		 * prima ctrl che sia popolata
 		 */
         App::import('Model', 'SummaryOrder');
         $SummaryOrder = new SummaryOrder;
@@ -245,6 +246,9 @@ class SummaryOrderLifeCycle extends AppModel {
 		
         $this->unbindModel(['belongsTo' => ['User', 'Delivery']]);
 
+        /*
+         * ctrl se ci sono gasisti che non hanno saldato
+         */
         $options = [];
         $options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
 								'Order.organization_id' => $user->organization['Organization']['id'],
