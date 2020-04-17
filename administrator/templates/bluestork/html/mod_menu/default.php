@@ -114,7 +114,8 @@ if($componentIsComCake) {
 		$hasUserFlagPrivacy = $paramsConfig['hasUserFlagPrivacy'];
 		$hasUserRegistrationExpire = $paramsConfig['hasUserRegistrationExpire'];
 		$hasFieldArticleCategoryId = $paramsFields['hasFieldArticleCategoryId'];
-	
+		$hasCashFilterSupplier = $paramsFields['hasCashFilterSupplier'];
+
 		// 'BEFORE', 'ON', 'POST', 'ON-POST' ora lo prendo da template
 		// $payToDelivery = $paramsConfig['payToDelivery'];
 		$payToDelivery = $results['payToDelivery'];
@@ -164,6 +165,7 @@ if($componentIsComCake) {
 		$hasRolesReferentTesoriere = 'N';
 		$hasRolesTesoriere = 'N';
 		$hasRolesStoreroom = 'N';
+		$hasCashFilterSupplier = 'N';
 	}
 	
 	$_menus = [];
