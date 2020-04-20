@@ -23,6 +23,9 @@
 /components/com_cake/app/View/Helps/box_account.ctp
 /components/com_cake/app/View/Helps/box_database.ctp
 
+# in locale lib di Cake, necessaria per bake console 
+/components/com_cake/lib/*
+
 # CakePHP specific files #
 ##########################
 /config/app.php

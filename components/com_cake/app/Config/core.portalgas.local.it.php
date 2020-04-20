@@ -10,7 +10,7 @@ Configure::write('App.root', '/var/www/portalgas');
  * ovverride
  */
 Configure::write('App.server', 'http://'.$_SERVER['SERVER_NAME'].':81');
-Configure::write('Neo.portalgas.url', 'http://neo.portalgas.it:81/');
+Configure::write('Neo.portalgas.url', 'http://neo.portalgas.local.it:81/');
 
 /**
  * Configure the cache handlers that CakePHP will use for internal
