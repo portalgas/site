@@ -150,10 +150,37 @@ class CashesUser extends AppModel {
 		return $results;
 	}
 
+	/*
+	 * ctrl se il produttore dell'ordine ha la gestione della cassa dell'utente
+	 */ 
+    private function _isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug=false) {
+
+        if($user->organization['Organization']['hasCashFilterSupplier']=='N')
+            return false;
+
+        App::import('Model', 'SupplierOrganizationCashExcluded');
+        $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;
+
+        $options = [];
+        $options['conditions'] = ['organization_id' => $organization_id,
+                                  'supplier_organization_id' => $supplier_organization_id];
+        self::d($options, $debug);
+        $supplierOrganizationCashExcludedResults = $SupplierOrganizationCashExcluded->find('first', $options);
+
+        self::d($supplierOrganizationCashExcludedResults, $debug);
+        if(empty($supplierOrganizationCashExcludedResults))
+        	return false;
+        else
+        	return true;
+    } 
+
 	/* 
 	 * dato un acquisto ctrl se lo user puo' acquistarlo
 	 */
-    public function ctrlLimitCart($user, $qta_prima_modifica, $qta, $prezzo, $debug=false) {
+    public function ctrlLimitCart($user, $supplier_organization_id, $qta_prima_modifica, $qta, $prezzo, $debug=false) {
+
+        if($this->_isSupplierOrganizationCashExcluded($user, $user->organization['Organization']['id'], $supplier_organization_id, $debug))
+        	return true;
 
 		$results = []; 	
 		$results = $this->getUserData($user);
