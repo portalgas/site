@@ -69,7 +69,7 @@ class UsersComponent extends Component {
 		App::import('Model', 'Cash');
 		$Cash = new Cash;
 		
-		$user_cash = $Cash->get_totale_cash_to_user($user, $user->id);
+		$user_cash = $Cash->getTotaleCashToUser($user, $user->id);
 		$user->set('user_cash', $user_cash);
 		$user->set('user_cash_', number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')));
 		$user->set('user_cash_e', number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;');

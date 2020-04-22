@@ -166,7 +166,7 @@ class OrganizationsCashsController extends AppController {
 						 /*
 						  * totale cassa per l'utente
 						  */
-						 $user_cash = $Cash->get_totale_cash_to_user($this->user, $user['id']);
+						 $user_cash = $Cash->getTotaleCashToUser($this->user, $user['id']);
 		
 						 $results['User'][$numResult]['user_cash'] = $user_cash;
 						 $results['User'][$numResult]['user_cash_'] = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
