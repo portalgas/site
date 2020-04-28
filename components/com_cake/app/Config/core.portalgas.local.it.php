@@ -1,5 +1,5 @@
 <?php
-Configure::write('developer.mode', true); 
+Configure::write('developer.mode', false); 
 Configure::write('debug', true);
 Configure::write('mail.send', false);
 Configure::write('gcalendar.add', false); 
