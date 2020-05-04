@@ -45,6 +45,10 @@ class Sql extends AppModel {
 		$results[$i]['sql'] = "SELECT sum(importo) as totaleImportoOrdine FROM ".Configure::read('DB.prefix')."stat_orders WHERE DATE_FORMAT(data_inizio,'%Y') = %s;";
 		$results[$i]['params'] = ['year' => 'AnnoOrdini'];
 		$i++;
+		$results[$i]['name'] = "Totale Ordini eliminati";
+		$results[$i]['sql'] = "SELECT count(b.id) as totale, o.id, o.name FROM ".Configure::read('DB.prefix')."backup_orders_orders b, ".Configure::read('DB.prefix')."organizations o WHERE b.organization_id = o.id GROUP BY o.id, o.name ORDER BY totale;";
+		$results[$i]['params'] = [];
+		$i++;
 		$results[$i]['name'] = "Ultimi articoli modificati di un produttore";
 		$results[$i]['sql'] = "SELECT o.name, s.name, s.owner_articles, s.owner_organization_id, s.owner_organization_id, s.owner_supplier_organization_id, a.name, a.modified FROM `k_suppliers_organizations` s, `k_articles` a , k_organizations o WHERE supplier_id = %s and s.id = a.supplier_organization_id and s.organization_id = o.id order by a.modified DESC;";
 		$results[$i]['params'] = ['supplier_id' => 'ProduttoreId'];
