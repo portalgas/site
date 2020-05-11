@@ -77,7 +77,11 @@ echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 
 	if($order['Order']['state_code'] != 'CREATE-INCOMPLETE' && $order['Order']['state_code'] != 'OPEN-NEXT' && $order['Order']['state_code'] != 'OPEN') {
 		echo '<div class="clearfix"></div>';
-		echo $this->element('legendaArticlesOrderQtaMassima',  ['results' => $this->request->data]);
+
+		if(empty($des_order_id))
+			$desOrdersResults = [];
+		
+		echo $this->element('legendaArticlesOrderQtaMassima',  ['results' => $this->request->data, 'desOrdersResults' => $desOrdersResults]);
 	}
 	
 	if($this->request->data['ArticlesOrder']['stato']=='QTAMAXORDER') {

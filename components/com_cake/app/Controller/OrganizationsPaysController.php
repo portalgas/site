@@ -198,7 +198,11 @@ class OrganizationsPaysController extends AppController {
 			echo "<pre>";
 			*/
 			$fileData['fileTitle'] = $organizationResults['Organization']['name'];
+			/*
+			 * prendo solo l'id perche' lo gestisco con i msgText 
 			$fileData['fileName'] = strtolower(str_replace(" ","_",$organizationResults['Organization']['id'].'_'.$organizationResults['Organization']['name']));
+			*/
+			$fileData['fileName'] = $organizationResults['Organization']['id'];
 			$this->set('fileData', $fileData);
 			
 			/*

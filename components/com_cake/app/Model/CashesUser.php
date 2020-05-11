@@ -8,6 +8,8 @@ class CashesUser extends AppModel {
      * somma di quanto un gasista ha acquistato e non ancora saldato
 	 * - tutti gli acquisti di ordini non associati a summary_orders (ordini aperti, prima della consegna etc)
 	 * - tutti gli acquisti di ordini associati a summary_orders con saldato_a IS NULL (non ancora saldato)
+	 *
+	 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
      */
     public function getTotImportoAcquistato($user, $user_id, $debug=false) {
 
@@ -20,6 +22,25 @@ class CashesUser extends AppModel {
     	$tot_importo = '0.00';
 		$zero = floatval(0);
 		
+		/*
+		 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
+	     */		
+		App::import('Model', 'CashesUser');
+		$CashesUser = new CashesUser;
+
+        $supplierOrganizationCashExcludedResults = $CashesUser->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
+        $sql_supplier_organization_cash_excluded = '';
+		if(!empty($supplierOrganizationCashExcludedResults)) {
+			foreach($supplierOrganizationCashExcludedResults as $supplierOrganizationCashExcludedResult) {
+				$sql_supplier_organization_cash_excluded .= $supplierOrganizationCashExcludedResult.',';
+			}
+			if(!empty($sql_supplier_organization_cash_excluded))
+				$sql_supplier_organization_cash_excluded = substr($sql_supplier_organization_cash_excluded, 0, (strlen($sql_supplier_organization_cash_excluded)-1));
+
+				$sql_supplier_organization_cash_excluded = ' AND `Order`.supplier_organization_id NOT IN ('.$sql_supplier_organization_cash_excluded.')';
+		} // end if(!empty($supplierOrganizationCashExcludedResults))
+		self::d($sql_supplier_organization_cash_excluded, $debug);
+
 		$sql = "SELECT
 					ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
 				FROM
@@ -39,6 +60,8 @@ class CashesUser extends AppModel {
 				    and Cart.deleteToReferent = 'N' 
 				    and `Order`.isVisibleBackOffice = 'Y'
 					and `Order`.state_code not in ($stateCodeUsersCash)";
+		if(!empty($sql_supplier_organization_cash_excluded))
+			$sql .= $sql_supplier_organization_cash_excluded;
 		self::d($sql, $debug); 
 		$results = $this->query($sql);
 
@@ -78,10 +101,31 @@ class CashesUser extends AppModel {
 
 	/*
 	 * dettaglio degli ordini con acquisti 
+	 *
+	 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
 	 */ 
     public function getTotImportoAcquistatoDetails($user, $user_id, $debug=false) {
 
 		self::d('CashesUser::getTotImportoAcquistatoDeatils', $debug);
+
+		/*
+		 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
+	     */		
+		App::import('Model', 'CashesUser');
+		$CashesUser = new CashesUser;
+
+        $supplierOrganizationCashExcludedResults = $CashesUser->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
+        $sql_supplier_organization_cash_excluded = '';
+		if(!empty($supplierOrganizationCashExcludedResults)) {
+			foreach($supplierOrganizationCashExcludedResults as $supplierOrganizationCashExcludedResult) {
+				$sql_supplier_organization_cash_excluded .= $supplierOrganizationCashExcludedResult.',';
+			}
+			if(!empty($sql_supplier_organization_cash_excluded))
+				$sql_supplier_organization_cash_excluded = substr($sql_supplier_organization_cash_excluded, 0, (strlen($sql_supplier_organization_cash_excluded)-1));
+
+				$sql_supplier_organization_cash_excluded = ' AND `Order`.supplier_organization_id NOT IN ('.$sql_supplier_organization_cash_excluded.')';
+		} // end if(!empty($supplierOrganizationCashExcludedResults))
+		self::d($sql_supplier_organization_cash_excluded, $debug);
 
 		$sql = "SELECT
 					`Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.state_code, 
@@ -103,8 +147,10 @@ class CashesUser extends AppModel {
 				    and Cart.deleteToReferent = 'N' 
 				    and `Order`.isVisibleBackOffice = 'Y'  
 				    and Delivery.id = `Order`.delivery_id   
-				    and SuppliersOrganization.id = `Order`.supplier_organization_id
-					GROUP BY `Order`.id 
+				    and SuppliersOrganization.id = `Order`.supplier_organization_id ";
+		if(!empty($sql_supplier_organization_cash_excluded))
+			$sql .= $sql_supplier_organization_cash_excluded;				    
+		$sql .= " GROUP BY `Order`.id 
 				    ORDER BY Delivery.data asc, SuppliersOrganization.name";
 		self::d($sql, $debug); 
 		$results = $this->query($sql);
@@ -150,10 +196,72 @@ class CashesUser extends AppModel {
 		return $results;
 	}
 
+	/*
+	 * elenco ids produttori esclusi dalla gestione della cassa dell'utente
+	 */ 
+    public function getSupplierOrganizationCashExcludedIds($user, $organization_id, $debug=false) {
+
+    	$results = [];
+
+        if($user->organization['Organization']['hasCashFilterSupplier']=='N')
+            $results;
+
+        App::import('Model', 'SupplierOrganizationCashExcluded');
+        $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;
+
+        $options = [];
+        $options['conditions'] = ['organization_id' => $organization_id];
+        self::d($options, $debug);
+        /*
+         * recurvice 1 da errore!!!
+         */
+        $results = $SupplierOrganizationCashExcluded->find('all', $options);
+        if(!empty($results)) {
+        	$newResults = [];
+        	foreach($results as $result) {
+        		$newResults[] = $result['SupplierOrganizationCashExcluded']['supplier_organization_id'];
+        	}
+
+        	$results = $newResults;
+        }
+        self::d($results, $debug);
+        return $results;
+    } 
+
+	/*
+	 * ctrl se il produttore dell'ordine ha la gestione della cassa dell'utente
+	 */ 
+    public function isSupplierOrganizationCashExcluded($user, $organization_id, $supplier_organization_id, $debug=false) {
+
+        if($user->organization['Organization']['hasCashFilterSupplier']=='N')
+            return false;
+
+        App::import('Model', 'SupplierOrganizationCashExcluded');
+        $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;
+
+        $options = [];
+        $options['conditions'] = ['organization_id' => $organization_id,
+                                  'supplier_organization_id' => $supplier_organization_id];
+        self::d($options, $debug);
+        /*
+         * recurvice 1 da errore!!!
+         */        
+        $supplierOrganizationCashExcludedResults = $SupplierOrganizationCashExcluded->find('first', $options);
+
+        self::d($supplierOrganizationCashExcludedResults, $debug);
+        if(empty($supplierOrganizationCashExcludedResults))
+        	return false;
+        else
+        	return true;
+    } 
+
 	/* 
 	 * dato un acquisto ctrl se lo user puo' acquistarlo
 	 */
-    public function ctrlLimitCart($user, $qta_prima_modifica, $qta, $prezzo, $debug=false) {
+    public function ctrlLimitCart($user, $supplier_organization_id, $qta_prima_modifica, $qta, $prezzo, $debug=false) {
+
+        if($this->isSupplierOrganizationCashExcluded($user, $user->organization['Organization']['id'], $supplier_organization_id, $debug))
+        	return true;
 
 		$results = []; 	
 		$results = $this->getUserData($user);

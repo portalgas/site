@@ -284,12 +284,25 @@ class Dispatcher implements CakeEventListener {
 	
 	public function dispatch(CakeRequest $request, CakeResponse $response, $additionalParams = array()) {
 
-		$debug=false;		
+		$debug=false;
+		
 		/*
 		 * codice originale prima parte
 		 */
-		$beforeEvent = new CakeEvent('Dispatcher.beforeDispatch', $this, compact('request', 'response', 'additionalParams'));		$this->getEventManager()->dispatch($beforeEvent);				$request = $beforeEvent->data['request'];		if ($beforeEvent->result instanceof CakeResponse) {			if (isset($request->params['return'])) {				return $beforeEvent->result->body();			}			$beforeEvent->result->send();			return;		}
-		/*		 * codice originale prima parte		*/		
+		$beforeEvent = new CakeEvent('Dispatcher.beforeDispatch', $this, compact('request', 'response', 'additionalParams'));
+		$this->getEventManager()->dispatch($beforeEvent);
+		
+		$request = $beforeEvent->data['request'];
+		if ($beforeEvent->result instanceof CakeResponse) {
+			if (isset($request->params['return'])) {
+				return $beforeEvent->result->body();
+			}
+			$beforeEvent->result->send();
+			return;
+		}
+		/*
+		 * codice originale prima parte
+		*/		
 		
 		
 		if($debug) $requestBefore = clone $request; 
@@ -309,7 +322,8 @@ class Dispatcher implements CakeEventListener {
 			
 			// C O N T R O L L E R
 			$request->params['controller'] = ucfirst($request->query['controller']);
-			unset($request->query['controller']);				
+			unset($request->query['controller']);
+				
 			// AC T I O N con eventuale P R E F I X  (admin)
 			if(!empty($this->prefix)) {
 				$request->params['prefix'] = $this->prefix;
@@ -317,7 +331,8 @@ class Dispatcher implements CakeEventListener {
 			}	
 			else
 				$request->params['action'] = $request->query['action'];
-			unset($request->query['action']);				
+			unset($request->query['action']);
+				
 			/*
 			 * PASS   FilterArticleSupplierId=99&_method=_POST
 			 * NAMED  page:1&limit100=&sort:name&direction=asc
@@ -333,7 +348,8 @@ class Dispatcher implements CakeEventListener {
 				 * NAMED, [sort:name] =>  
 				*/
 				if(strpos($key,':') !== false) {
-					list($keyNamed,$valueNamed) = explode(':',$key);					$arrNamed[$keyNamed] = $valueNamed;
+					list($keyNamed,$valueNamed) = explode(':',$key);
+					$arrNamed[$keyNamed] = $valueNamed;
 				}
 				/*
 				 * PASS, [FilterArticleBio] => ALL
@@ -345,25 +361,79 @@ class Dispatcher implements CakeEventListener {
 			}
 			unset($request->query);
 			if(!empty($arrNamed)) $request->params['named'] = $arrNamed;
-			if(!empty($arrPass))  $request->params['pass'] = $arrPass;		}
+			if(!empty($arrPass))  $request->params['pass'] = $arrPass;
+		}
 		else
 		if(strpos($_SERVER['PHP_SELF'],'/admin/') !== false) {
 			die("Dispatcher - Not direct access to cake!!");
 		} 
 
 		if($debug) {
-			echo '<table style="width:100%;font-size:12px;">';			echo '<tr>';			echo '<td colspan="2">PHP_SELF: '.$_SERVER['PHP_SELF'].'</td>';			echo '</tr>';							echo '<tr>';			echo '<td colspan="2">REQUEST_URI: '.$_SERVER['REQUEST_URI'].'</td>';			echo '</tr>';
-			echo '<tr>';			echo '<th style="width:50%;font-weight:bold;">Before</th>';			echo '<th style="font-weight:bold;">Post</th>';			echo '</tr>';							echo '<tr>';			echo '<td style="vertical-align:top;">';			echo '<pre style="background: none repeat scroll 0 0 #1D1F21;color: white;overflow: auto;font-size:13px;padding:5px;height:100%;">';
-			echo '[params]';			print_r($requestBefore->params);			echo '[data]';			print_r($requestBefore->data);			echo '[query]';			print_r($requestBefore->query);
-			echo '</pre>';			echo '</td>';
-						echo '<td style="vertical-align:top;">';			echo '<pre style="background: none repeat scroll 0 0 #1D1F21;color: white;overflow: auto;font-size:13px;padding:5px;height:100%;">';			echo '[params]';			print_r($request->params);			echo '[data]';			print_r($request->data);			echo '[query]';			print_r($request->query);			echo '</pre>';			echo '</td>';			echo '</tr>';			echo '</table>';
+			echo '<table style="width:100%;font-size:12px;">';
+			echo '<tr>';
+			echo '<td colspan="2">PHP_SELF: '.$_SERVER['PHP_SELF'].'</td>';
+			echo '</tr>';
+				
+			echo '<tr>';
+			echo '<td colspan="2">REQUEST_URI: '.$_SERVER['REQUEST_URI'].'</td>';
+			echo '</tr>';
+			echo '<tr>';
+			echo '<th style="width:50%;font-weight:bold;">Before</th>';
+			echo '<th style="font-weight:bold;">Post</th>';
+			echo '</tr>';
+				
+			echo '<tr>';
+			echo '<td style="vertical-align:top;">';
+			echo '<pre style="background: none repeat scroll 0 0 #1D1F21;color: white;overflow: auto;font-size:13px;padding:5px;height:100%;">';
+			echo '[params]';
+			print_r($requestBefore->params);
+			echo '[data]';
+			print_r($requestBefore->data);
+			echo '[query]';
+			print_r($requestBefore->query);
+			echo '</pre>';
+			echo '</td>';
+			
+			echo '<td style="vertical-align:top;">';
+			echo '<pre style="background: none repeat scroll 0 0 #1D1F21;color: white;overflow: auto;font-size:13px;padding:5px;height:100%;">';
+			echo '[params]';
+			print_r($request->params);
+			echo '[data]';
+			print_r($request->data);
+			echo '[query]';
+			print_r($request->query);
+			echo '</pre>';
+			echo '</td>';
+			echo '</tr>';
+			echo '</table>';
 		}
 		
 		
 		//exit;
 	
-		/*		 * codice originale seconda parte		*/				$controller = $this->_getController($request, $response);				if (!($controller instanceof Controller)) {			throw new MissingControllerException(array(					'class' => Inflector::camelize($request->params['controller']) . 'Controller',					'plugin' => empty($request->params['plugin']) ? null : Inflector::camelize($request->params['plugin'])			));		}				$response = $this->_invoke($controller, $request);		if (isset($request->params['return'])) {			return $response->body();		}				$afterEvent = new CakeEvent('Dispatcher.afterDispatch', $this, compact('request', 'response'));		$this->getEventManager()->dispatch($afterEvent);		$afterEvent->data['response']->send();
-		/*		 * codice originale seconda parte		*/		
+		/*
+		 * codice originale seconda parte
+		*/		
+		$controller = $this->_getController($request, $response);
+		
+		if (!($controller instanceof Controller)) {
+			throw new MissingControllerException(array(
+					'class' => Inflector::camelize($request->params['controller']) . 'Controller',
+					'plugin' => empty($request->params['plugin']) ? null : Inflector::camelize($request->params['plugin'])
+			));
+		}
+		
+		$response = $this->_invoke($controller, $request);
+		if (isset($request->params['return'])) {
+			return $response->body();
+		}
+		
+		$afterEvent = new CakeEvent('Dispatcher.afterDispatch', $this, compact('request', 'response'));
+		$this->getEventManager()->dispatch($afterEvent);
+		$afterEvent->data['response']->send();
+		/*
+		 * codice originale seconda parte
+		*/		
 	}
 
 	/*
@@ -499,5 +569,7 @@ class Dispatcher implements CakeEventListener {
 		return $isValide;
 	}
 	
-	/*	 * fractis custom END	 */	
+	/*
+	 * fractis custom END
+	 */	
 }

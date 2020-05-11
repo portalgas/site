@@ -329,6 +329,31 @@ class UsersModelRegistration extends JModelForm
 		$useractivation = $params->get('useractivation');
 		$sendpassword = $params->get('sendpassword', 1);
 
+		/*
+		 * ctrl se mail valida, solo .com / .it
+		 */
+		$is_valid_mail = false;
+		$mail_domain_valids = array('it', 'com');
+		// echo "<pre>"; print_r($data); echo "</pre>"; 
+		// if(filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+		if(!empty($data['email'])) {
+		    // split on @ and return last value of array (the domain)
+		    $domain_complete = array_pop(explode('@', $data['email']));
+		    $domain = array_pop(explode('.', $domain_complete));
+			// echo "<pre>domain \n "; print_r($domain); echo "</pre>";
+
+		    if(in_array($domain, $mail_domain_valids))
+			    $is_valid_mail = true;
+			else
+				$is_valid_mail = false;
+		}
+
+		if(!$is_valid_mail) {
+			JLog::add("  mail ".$data['email']." non valida, esco", JLog::DEBUG);
+			// non gli do alcun msg $this->setError("Mail non valida!");
+			return false;
+		}
+
 		JLog::add("  parametro di configurazione: useractivation (se < 2 invio mail ad admin) ".$useractivation, JLog::DEBUG);
 		JLog::add("  parametro di configurazione: mail_to_admin  (se 1 invio mail ad admin) ".$params->get('mail_to_admin'), JLog::DEBUG);
 				
@@ -357,7 +382,35 @@ class UsersModelRegistration extends JModelForm
 			return false;
 		}		
 		
-		
+		/* 
+		 * ctrl se l'organization ha abilitato la registrazione lato front-end
+		 */
+		$query = "SELECT paramsConfig FROM k_organizations Organization WHERE id = ".$data['organization_id'];
+		//echo '<br />'.$query;
+		JLog::add("  Query per ctrl se l'organization ha abilitato la registrazione lato front-end ", JLog::DEBUG);
+		JLog::add("     ".$query, JLog::DEBUG);
+		$db->setQuery( $query );
+		$rows = $db->loadObject();
+		if(!empty($rows)) {
+			$paramsConfig = $rows->paramsConfig;
+		    $paramsConfig = json_decode($paramsConfig, true);
+  			// echo "<pre>"; print_r($paramsConfig); echo "</pre>";
+
+  			$hasUsersRegistrationFE = 'N';
+  			if(isset($paramsConfig['hasUsersRegistrationFE']))
+			    $hasUsersRegistrationFE = $paramsConfig['hasUsersRegistrationFE'];
+
+			if($hasUsersRegistrationFE == 'N') {
+				JLog::add("  Organization.hasUsersRegistrationFE ".$hasUsersRegistrationFE, JLog::DEBUG);
+				return false;
+			}
+		}
+		else {
+			JLog::add("  Organization.id ".$data['organization_id']." non trovato!", JLog::DEBUG);
+			return false;
+		}
+
+
 		
 		// Store the data.
 		if (!$user->save()) {
@@ -365,8 +418,7 @@ class UsersModelRegistration extends JModelForm
 			return false;
 		}
 
-		
-		
+		  
 		/*
 		 * fractis DatabaseDateModel::__user_set_j_group_registred($user, $user_id)
 		 * aggiungo l'utente nel gruppo Registration->GasPage.. per il front-end (profilazione menu, ex "acquista", "stampe")

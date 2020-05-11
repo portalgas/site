@@ -7,8 +7,8 @@ class Cash extends AppModel {
 	/*
 	 *  calcolare il totale in cassa
 	*/
-	public function get_totale_cash($user) {
-		
+	public function getTotaleCash($user, $debug=false) {
+
 		$options = [];
 		$options['fields'] = array('SUM(Cash.importo) AS totale_importo');
 		$options['conditions'] = array('Cash.organization_id' => $user->organization['Organization']['id']);
@@ -17,6 +17,9 @@ class Cash extends AppModel {
 
 		if(empty($results['totale_importo'])) $results['totale_importo'] = 0;
 		
+		self::d($options, $debug);
+		self::d($results, $debug);
+
 		return $results;
 	}
 	
@@ -25,25 +28,21 @@ class Cash extends AppModel {
 	 *  	le voci di cassa generiche (user_id=0) possono avere + occorrenze
 	 *  	le voci di cassa degli utenti hanno una sola occorrenza
 	*/
-	public function get_totale_cash_to_user($user, $user_id, $debug = false) {
+	public function getTotaleCashToUser($user, $user_id, $debug = false) {
 	
 		$options = [];
 		if($user_id==0)
-			$options['fields'] = array('SUM(Cash.importo) AS totale_importo');
+			$options['fields'] = ['SUM(Cash.importo) AS totale_importo'];
 		else 
-			$options['fields'] = array('Cash.importo AS totale_importo');
-		$options['conditions'] = array('Cash.organization_id' => $user->organization['Organization']['id'],
-										'Cash.user_id' => $user_id
-		);
+			$options['fields'] = ['Cash.importo AS totale_importo'];
+		$options['conditions'] = ['Cash.organization_id' => $user->organization['Organization']['id'],
+								'Cash.user_id' => $user_id
+		];
 		$options['recursive'] = -1;
 		$results = current($this->find('first', $options));
 
-		if($debug) {
-			echo "<pre>";
-			print_r($options);
-			print_r($results);
-			echo "</pre>";
-		}
+		self::d($options, $debug);
+		self::d($results, $debug);
 
 		if(empty($results['totale_importo'])) $results = 0;
 		else $results = $results['totale_importo'];

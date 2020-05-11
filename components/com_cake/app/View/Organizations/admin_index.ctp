@@ -114,6 +114,7 @@
 					echo '<div title="'.__('toolTipHasCostMore').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasCostMore']).'_int">'.__('HasCostMore').'</div> <br />';
 					echo '<div title="'.__('toolTipHasCostLess').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasCostLess']).'_int">'.__('HasCostLess').'</div> <br />';
 					echo '<div title="'.__('toolTipHasValidate').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasValidate']).'_int">'.__('HasValidate').'</div> <br />';
+					echo '<div title="'.__('toolTipHasCashFilterSupplier').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasCashFilterSupplier']).'_int">'.__('HasCashFilterSupplier').'</div> <br />';
 					echo '<div title="'.__('toolTipHasStoreroom').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasStoreroom']).'_int">'.__('HasStoreroom').'</div> <br />';
 					echo '<div title="'.__('toolTipHasStoreroomFrontEnd').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasStoreroomFrontEnd']).'_int">'.__('HasStoreroomFrontEnd').'</div> <br />';
 					// echo '<div title="'.__('toolTipPayToDelivery').'">'.__('PayToDelivery').' '.$result['Template']['payToDelivery'].'</div> <br />';

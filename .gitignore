@@ -17,17 +17,14 @@
 /components/com_cake/app/Config/database.php
 /components/com_cake/app/Config/email.php
 /components/com_cake/app/Config/core.php
-/components/com_cake/app/Config/core.portalgas.it.php
-/components/com_cake/app/Config/core.www.portalgas.it.php
-/components/com_cake/app/Config/core.test.portalgas.it.php
-/components/com_cake/app/Config/core.next.portalgas.it.php
-/components/com_cake/app/Config/core.new.portalgas.it.php
-/components/com_cake/app/Config/core.new.www.portalgas.com.php
-/components/com_cake/app/Config/core.new.portalgas.com.php
+/components/com_cake/app/Config/core.*
 /components/com_cake/app/tmp/*
 
 /components/com_cake/app/View/Helps/box_account.ctp
-/components/com_cake/app\View/Helps/box_database.ctp
+/components/com_cake/app/View/Helps/box_database.ctp
+
+# in locale lib di Cake, necessaria per bake console 
+/components/com_cake/lib/*
 
 # CakePHP specific files #
 ##########################

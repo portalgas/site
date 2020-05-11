@@ -127,27 +127,27 @@ angular.module('portalgas', [
 .filter('getArticlePrezzoUM', function ($filter) {
     return function (ArticleOrder_prezzo, Article_qta, Article_um, Article_um_riferimento) {
 
-		var debug = false;
-		
-		if(debug) {
-			console.log("ArticleOrder_prezzo "+ArticleOrder_prezzo);
-			console.log("Article_qta "+Article_qta);
-			console.log("Article_um "+Article_um);
-			console.log("Article_um_riferimento "+Article_um_riferimento);
-		}
-		
-		var tmp = "";
-		var prezzo_um_riferimento = '';
-		
-		if(ArticleOrder_prezzo=='' || Article_qta=='' || Article_qta == '0,00' || Article_qta == '0.00')
+    var debug = false;
+    
+    if(debug) {
+      console.log("ArticleOrder_prezzo "+ArticleOrder_prezzo);
+      console.log("Article_qta "+Article_qta);
+      console.log("Article_um "+Article_um);
+      console.log("Article_um_riferimento "+Article_um_riferimento);
+    }
+    
+    var tmp = "";
+    var prezzo_um_riferimento = '';
+    
+    if(ArticleOrder_prezzo=='' || Article_qta=='' || Article_qta == '0,00' || Article_qta == '0.00')
             prezzo_um_riferimento = '0,00';
-		else {
-			prezzo_um_riferimento = (ArticleOrder_prezzo / Article_qta);
-		
-			if(debug) 
-				console.log("prezzo_um_riferimento "+prezzo_um_riferimento);
+    else {
+      prezzo_um_riferimento = (ArticleOrder_prezzo / Article_qta);
+    
+      if(debug) 
+        console.log("prezzo_um_riferimento "+prezzo_um_riferimento);
 
-			if (Article_um == 'GR' && Article_um_riferimento == 'HG')
+      if (Article_um == 'GR' && Article_um_riferimento == 'HG')
                 prezzo_um_riferimento = (prezzo_um_riferimento * 100);
             else
             if (Article_um == 'GR' && Article_um_riferimento == 'KG')
@@ -157,7 +157,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'HG' && Article_um_riferimento == 'KG')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'KG' && Article_um_riferimento == 'GR')
                 prezzo_um_riferimento = (prezzo_um_riferimento / 1000);
@@ -166,7 +166,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'ML' && Article_um_riferimento == 'DL')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'ML' && Article_um_riferimento == 'LT')
                 prezzo_um_riferimento = (prezzo_um_riferimento * 1000);
@@ -175,7 +175,7 @@ angular.module('portalgas', [
                 prezzo_um_riferimento = (prezzo_um_riferimento / 100);
             else
             if (Article_um == 'DL' && Article_um_riferimento == 'LT')
-                prezzo_um_riferimento = (prezzo_um_riferimento * 100);
+                prezzo_um_riferimento = (prezzo_um_riferimento * 10);
             else
             if (Article_um == 'LT' && Article_um_riferimento == 'ML')
                 prezzo_um_riferimento = (prezzo_um_riferimento / 1000);
@@ -196,7 +196,7 @@ angular.module('portalgas', [
             tmp += prezzo_um_riferimento;
         }
 
-        return tmp;		
+        return tmp;   
     };
 })
 

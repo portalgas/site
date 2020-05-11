@@ -56,12 +56,9 @@
  *
  * Leaving this constant undefined will result in it being defined in Cake/bootstrap.php
  */
- 	//define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
-if(strncmp(__FILE__, 'C:', strlen('C:')) == 0) 
-	define('CAKE_CORE_INCLUDE_PATH',  'C:\xampp\htdocs\cakephp');
-else
-	define('CAKE_CORE_INCLUDE_PATH',  DS .'var' . DS .'cakephp');
-	
+// define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
+define('CAKE_CORE_INCLUDE_PATH',  DS .'var' . DS .'cakephp');
+
 /**
  * Editing below this line should NOT be necessary.
  * Change at your own risk.
@@ -74,19 +71,30 @@ else
 		define('WWW_ROOT', dirname(__FILE__) . DS);
 	}
 
+	$failed = false; 
 	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 		if (function_exists('ini_set')) {
 			ini_set('include_path', ROOT . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 		}
-		if (!include('Cake' . DS . 'bootstrap.php')) {
+		if (!file_exists('Cake' . DS . 'bootstrap.php')) {
+		// if (!include('Cake' . DS . 'bootstrap.php')) {
 			$failed = true;
 		}
+		else
+			include('Cake' . DS . 'bootstrap.php');
+
 	} else {
-		if (!include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
+		if (!file_exists(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
+		// if (!include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
 			$failed = true;
+		}
+		else {
+			include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php');
 		}
 	}
-	if (!empty($failed)) {
+
+	// if (!empty($failed)) {
+	if ($failed) {
 		trigger_error("CakePHP core could not be found.  Check the value of CAKE_CORE_INCLUDE_PATH in APP/webroot/index.php.  It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
 	}
 
@@ -95,6 +103,7 @@ else
 	}
 
 	App::uses('Dispatcher', 'Routing');
-	
+	// require_once(WWW_ROOT.'../Lib/Routing/Dispatcher.php');
+
 	$Dispatcher = new Dispatcher();
 	$Dispatcher->dispatch(new CakeRequest(), new CakeResponse(array('charset' => Configure::read('App.encoding'))));

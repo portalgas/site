@@ -24,7 +24,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-if(strncmp(__FILE__, 'C:', strlen('C:')) == 0) 
-	require_once 'C:\xampp\htdocs\portalgas\components\com_cake\app\webroot\index.php'; 
-else
-	require_once dirname(dirname(dirname(dirname(__FILE__)))).'/components/com_cake/app/webroot/index.php'; 
+require_once dirname(dirname(dirname(dirname(__FILE__)))).'/components/com_cake/app/webroot/index.php'; 

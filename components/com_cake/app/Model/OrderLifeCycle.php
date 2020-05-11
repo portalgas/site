@@ -618,7 +618,7 @@ class OrderLifeCycle extends AppModel {
 		else 
 			$results = false;
 	
-		self::l("OrderLifeCycle::isPaidSupplier order_id [".$orderResult['Order']['id']."] ".$orderResult['Order']['state_code']." esito ".$results, $debug);
+		self::l("OrderLifeCycle::isPaidSupplier order_id [".$orderResult['Order']['id']."] ".$orderResult['Order']['state_code']." - Order.tesoriere_stato_pay ".$orderResult['Order']['tesoriere_stato_pay']." => esito ".$results, $debug);
 
 		return $results;    
 	}

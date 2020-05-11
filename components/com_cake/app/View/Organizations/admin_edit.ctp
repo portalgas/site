@@ -110,14 +110,16 @@ $OrganizationHasDesReferentAllGas = 'N';
 			
 			echo $this->App->drawFormRadio('Organization','orderLifeCycleEnd',array('options' => $orderLifeCycleEnd, 'value'=> $this->request->data['Organization']['orderLifeCycleEnd'], 'label'=>__('OrderLifeCycleEnd'), 'required'=>'required'));
 			*/
-			echo '</hr>';					
+			echo '<hr>';					
 			echo $this->App->drawFormRadio('Organization','canOrdersClose', ['options' => $canOrdersClose, 'value'=> $this->request->data['Organization']['canOrdersClose'], 'label'=>__('CanOrdersClose'), 'required'=>'required']);
 			echo $this->App->drawFormRadio('Organization','canOrdersDelete', ['options' => $canOrdersDelete, 'value'=> $this->request->data['Organization']['canOrdersDelete'], 'label'=>__('CanOrdersDelete'), 'required'=>'required']);
 			
-			echo '</hr>';
+			echo '<h3>'.__('OrganizationsCash').'</h3>';
 			echo $this->App->drawFormRadio('Organization','cashLimit',array('options' => $cashLimit, 'value'=> $this->request->data['Organization']['cashLimit'], 'label'=>__('CashLimit'), 'required'=>'required'));
 			echo $this->Form->input('limitCashAfter',array('label' => __('LimitCashAfter'),'value' => $this->request->data['Organization']['limitCashAfter'],'required' => 'required', 'after' => $this->App->drawTooltip(null,__('tooLimitCashAfter'),$type='HELP')));
-			
+			echo $this->App->drawFormRadio('Organization','hasCashFilterSupplier',array('options' => $hasCashFilterSupplier, 'value'=>  $this->request->data['Organization']['hasCashFilterSupplier'], 'label'=>__('HasCashFilterSupplier'), 'required'=>'required'));
+
+			echo '<hr>';			
 			echo $this->App->drawFormRadio('Organization','hasUsersRegistrationFE',array('options' => $hasUsersRegistrationFE, 'value' => $this->request->data['Organization']['hasUsersRegistrationFE'], 'label'=>__('HasUsersRegistrationFE'), 'required'=>'required'));
 						
 			echo '<h3>D.E.S.</h3>';
