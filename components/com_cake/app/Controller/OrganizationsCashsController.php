@@ -28,9 +28,6 @@ class OrganizationsCashsController extends AppController {
 	public function admin_index() {
 
 		$debug = false;
-
-		App::import('Model', 'CashesUser');
-		$CashesUser = new CashesUser;
 				
 		$esito = true;
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -54,35 +51,8 @@ class OrganizationsCashsController extends AppController {
 				
 				foreach($this->request->data['OrganizationsCash']['limit_type'] as $user_id => $limit_type) {
 					
-					$data = [];
-					
-					$options = [];
-					$options['conditions'] = ['CashesUser.organization_id' => $this->user->organization['Organization']['id'],
-											'CashesUser.user_id' => $user_id];
-					$options['recursive'] = -1;
-					$cashesUserResults = $CashesUser->find('first', $options);
-					if(!empty($cashesUserResults))
-						$data['CashesUser']['id'] = $cashesUserResults['CashesUser']['id'];
-						
-					$data['CashesUser']['organization_id'] = $this->user->organization['Organization']['id'];
-					$data['CashesUser']['user_id'] = $user_id;
-					$data['CashesUser']['limit_type'] = $limit_type;
-					$data['CashesUser']['limit_after'] = $this->request->data['OrganizationsCash']['limit_after'][$user_id];
-					
-					self::d("OrganizationsCashsController", $debug);
-					self::d($data, $debug);
-					
-					$CashesUser->create();
-					if ($CashesUser->save($data)) {
-						$esito = true;
-					}
-					else {
-						$esito = false;
-					}
+					$esito = $this->OrganizationsCash->popolaCashesUser($this->user, $user_id, $this->request->data['OrganizationsCash']['limit_after'][$user_id], $limit_type, $debug); 
 				}
-				
-				
-				
 			} else {
 				$esito = false;
 			}
@@ -134,6 +104,52 @@ class OrganizationsCashsController extends AppController {
 		$this->set('cashLimits', $cashLimits);	
 	}
 	
+	/*
+	 * ctrl se tutti gli user sono in CashesUser per gestire quelli inseriti dopo configurazione
+	 */
+	private function _ctrlCashesUser($user, $organization_id, $debug=false) {		
+
+		App::import('Model', 'CashesUser');
+		$CashesUser = new CashesUser;
+		
+		App::import('Model', 'Cash');
+		$Cash = new Cash;
+							
+		$options = [];
+		$options['conditions'] = ['OrganizationsCash.id' => $organization_id];
+		$options['recursive'] = 1;
+		$results = $this->OrganizationsCash->find('first', $options);
+		
+		$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig']);
+		$limit_after = $paramsConfig->limitCashAfter;
+		$limit_type = $paramsConfig->cashLimit;
+
+		if(!empty($results['CashesUser'])) {
+			
+			foreach($results['User'] as $utente) {
+
+				/*
+				 * se non lo trovo e' uno user creato dopo e inserisco in CashesUser
+				 */ 
+				$found_user = false;
+
+				foreach($results['CashesUser'] as $numResult2 => $cashesUser) {
+					if($utente['id']==$cashesUser['user_id']) {
+					 	$found_user = true;
+					 	unset($results['CashesUser'][$numResult2]);
+					} // end if($user['id']==$cashesUser['user_id']) 
+				 } // loop CashsUser
+
+				 if(!$found_user) {
+				 	// debug($utente['id']);
+				 	$esito = $this->OrganizationsCash->popolaCashesUser($user, $utente['id'], $limit_after, $limit_type, $debug); 
+				 } // end if(!$found_user)
+			 } // loop User
+		}
+
+		return $esito;
+ 	}
+
 	public function admin_ctrl() {
 
 		$debug = false;
@@ -144,6 +160,11 @@ class OrganizationsCashsController extends AppController {
 		App::import('Model', 'Cash');
 		$Cash = new Cash;
 				
+		/*
+		 * gestione user nuovi e onn ancora inseriti in CashesUser
+		 */
+		$this->_ctrlCashesUser($this->user, $this->user->organization['Organization']['id'], $debug);
+			
 		$options = [];
 		$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
@@ -155,36 +176,50 @@ class OrganizationsCashsController extends AppController {
 	     * merge CashesUser e User
 		 */
 		 if(!empty($results['CashesUser'])) {
-			 foreach($results['User'] as $numResult => $user) {
-				 foreach($results['CashesUser'] as $numResult2 => $cashesUser) {
-					 if($user['id']==$cashesUser['user_id']) {
-						 $results['User'][$numResult]['limit_after'] = $cashesUser['limit_after'];
-						 $results['User'][$numResult]['limit_after_'] = number_format($cashesUser['limit_after'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-						 $results['User'][$numResult]['limit_after_e'] = $results['User'][$numResult]['limit_after_'].'&nbsp;&euro;';
-						 $results['User'][$numResult]['limit_type'] = $cashesUser['limit_type'];
-						 
-						 /*
-						  * totale cassa per l'utente
-						  */
-						 $user_cash = $Cash->getTotaleCashToUser($this->user, $user['id']);
-		
-						 $results['User'][$numResult]['user_cash'] = $user_cash;
-						 $results['User'][$numResult]['user_cash_'] = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-						 $results['User'][$numResult]['user_cash_e'] = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			
+			foreach($results['User'] as $numResult => $user) {
 
-						 /*
-						  * totale importo acquisti
-						  */
-						 $user_tot_importo_acquistato = $CashesUser->getTotImportoAcquistato($this->user, $user['id']);
-					     $results['User'][$numResult]['user_tot_importo_acquistato'] = $user_tot_importo_acquistato;
-						 $results['User'][$numResult]['user_tot_importo_acquistato_'] = number_format($user_tot_importo_acquistato,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-						 $results['User'][$numResult]['user_tot_importo_acquistato_e'] = $results['User'][$numResult]['user_tot_importo_acquistato_'].'&nbsp;&euro;'; 
+				/*
+				 * se non lo trovo e' uno user creato dopo e inserisco in CashesUser
+				 */ 
+				$found_user = false;
+
+				foreach($results['CashesUser'] as $numResult2 => $cashesUser) {
+					if($user['id']==$cashesUser['user_id']) {
+
+					 	$found_user = true;
+
+						$results['User'][$numResult]['limit_after'] = $cashesUser['limit_after'];
+						$results['User'][$numResult]['limit_after_'] = number_format($cashesUser['limit_after'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['User'][$numResult]['limit_after_e'] = $results['User'][$numResult]['limit_after_'].'&nbsp;&euro;';
+						$results['User'][$numResult]['limit_type'] = $cashesUser['limit_type'];
 						 
-						 $results['User'][$numResult]['ctrl_limit'] = $CashesUser->ctrlLimit($this->user, $results['OrganizationsCash']['cashLimit'], $results['OrganizationsCash']['limitCashAfter'], $cashesUser, $user_cash, $user_tot_importo_acquistato, $debug);
+						/*
+						 * totale cassa per l'utente
+						 */
+						$user_cash = $Cash->getTotaleCashToUser($this->user, $user['id']);
+		
+						$results['User'][$numResult]['user_cash'] = $user_cash;
+					    $results['User'][$numResult]['user_cash_'] = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['User'][$numResult]['user_cash_e'] = number_format($user_cash ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+
+						/*
+						 * totale importo acquisti
+						 */
+						$user_tot_importo_acquistato = $CashesUser->getTotImportoAcquistato($this->user, $user['id']);
+					    $results['User'][$numResult]['user_tot_importo_acquistato'] = $user_tot_importo_acquistato;
+						$results['User'][$numResult]['user_tot_importo_acquistato_'] = number_format($user_tot_importo_acquistato,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['User'][$numResult]['user_tot_importo_acquistato_e'] = $results['User'][$numResult]['user_tot_importo_acquistato_'].'&nbsp;&euro;'; 
+						 
+						$results['User'][$numResult]['ctrl_limit'] = $CashesUser->ctrlLimit($this->user, $results['OrganizationsCash']['cashLimit'], $results['OrganizationsCash']['limitCashAfter'], $cashesUser, $user_cash, $user_tot_importo_acquistato, $debug);
 						  
-						 unset($results['CashesUser'][$numResult2]);
-					 } 
+						unset($results['CashesUser'][$numResult2]);
+					} // end if($user['id']==$cashesUser['user_id']) 
 				 } // loop CashsUser
+
+				 if(!$found_user) {
+				 	// debug($user['id']);
+				 } // end if(!$found_user)
 			 } // loop User
 		 }
 		 else {
