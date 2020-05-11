@@ -219,7 +219,7 @@ class CashsController extends AppController {
         $this->set('users', $users);
         $this->set('user_id', $user_id);
 
-        $results = $this->Cash->get_totale_cash($this->user);
+        $results = $this->Cash->getTotaleCash($this->user);
         $totale_importo = $results['totale_importo'];
         $this->set('totale_importo', $totale_importo);
     }
@@ -305,7 +305,7 @@ class CashsController extends AppController {
 							            'Cash.id' => $id];
         $this->request->data = $this->Cash->find('first', $options);
 
-        $results = $this->Cash->get_totale_cash($this->user);
+        $results = $this->Cash->getTotaleCash($this->user);
         $totale_importo = $results['totale_importo'];
         $this->set('totale_importo', $totale_importo);
 

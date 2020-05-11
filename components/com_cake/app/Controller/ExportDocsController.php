@@ -2859,8 +2859,6 @@ class ExportDocsController extends AppController {
     }
 
     public function admin_users_delivery_sum_orders_excel($delivery_id = 0, $doc_options = null, $doc_formato = null) {
-$delivery_id=5655;
-// $order_id=18931;
 
         $debug = false;
 

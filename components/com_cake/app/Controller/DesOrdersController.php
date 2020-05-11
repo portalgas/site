@@ -815,11 +815,6 @@ class DesOrdersController extends AppController {
 			break;
 			case "admin_prepare_articles_orders_index":
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-				$url .= '&controller=Orders&action=edit';
-				$url .= '&order_id='.$order_id.'&des_order_id='.$des_order_id;
-			break;
-			case "admin_prepare_articles_orders_index":
-				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
 				$url .= '&controller=ArticlesOrders&action=index';
 				$url .= '&order_id='.$order_id;
 			break;

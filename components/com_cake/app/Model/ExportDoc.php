@@ -180,9 +180,18 @@ class ExportDoc extends AppModel {
 							 */
 							if(isset($order['User'][$numArticlesOrder]['Profile']['phone'])) $user_phone = $order['User'][$numArticlesOrder]['Profile']['phone'];
 							else $user_phone = '';
+							
 							if(isset($order['User'][$numArticlesOrder]['email'])) $user_email = $order['User'][$numArticlesOrder]['email'];
 							else $user_email = '';
-							if(isset($order['User'][$numArticlesOrder]['Profile']['address'])) $user_address = $order['User'][$numArticlesOrder]['Profile']['address'];
+
+							if(isset($order['User'][$numArticlesOrder]['Profile']['address'])) {
+								$user_address = '';
+								$user_address = $order['User'][$numArticlesOrder]['Profile']['address'].' ';
+								if(isset($order['User'][$numArticlesOrder]['Profile']['city']) && !empty($order['User'][$numArticlesOrder]['Profile']['city'])) 
+									$user_address .= $order['User'][$numArticlesOrder]['Profile']['city'].' ';
+								if(isset($order['User'][$numArticlesOrder]['Profile']['postal_code']) && !empty($order['User'][$numArticlesOrder]['Profile']['postal_code'])) 
+									$user_address .= $order['User'][$numArticlesOrder]['Profile']['postal_code'].' ';
+							}
 							else $user_address = '';
 							
 							$this->exportRowsNum++;

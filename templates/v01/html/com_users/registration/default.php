@@ -214,7 +214,7 @@ JHtml::_('behavior.formvalidation');
 					<a title="">
 					<label for="jform_profile_email" class="col-xs-3">Altro indirizzo mail:</label>
 					<div class="col-xs-9">
-						<input type="text" size="30" class="invalid form-control" value="" id="jform_profile_email" name="jform[profile][email]" aria-required="true" required="required" aria-invalid="true">					
+						<input type="text" size="30" class="invalid form-control" value="" id="jform_profile_email" name="jform[profile][email]" aria-invalid="true">					
 					</div>
 					</a>
 				</div>	
@@ -334,7 +334,7 @@ $(document).ready(function() {
 		var select = $("#jform_organization_id option:selected");
 		var data_attr_active = $(select).attr('data-attr-active');
 		
-		console.log(data_attr_active); 
+		/* console.log(data_attr_active); */
 		
 		if(data_attr_active=='') {
 			$('#form_data').hide();

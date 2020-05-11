@@ -46,23 +46,23 @@
 			if($year_old>0 && ($year_old != $result['OrganizationsPay']['year'])) {
 				echo '<tr class="trGroup" valign="top">';
 				echo '<th style="text-align:center;" colspan="10"><h1>'.$result['OrganizationsPay']['year'].'</h1></th>';		
-				echo '<th style="text-align:center;';
+				echo '<th title="Produttori" style="text-align:center;';
 				if($tot_suppliers_organizations==0) echo 'background-color:red;color:#fff;';
 				echo '">';
 				echo number_format($tot_suppliers_organizations,0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</th>';
 
-				echo '<th style="text-align:center;';
+				echo '<th title="Articoli" style="text-align:center;';
 				if($tot_articles==0) echo 'background-color:red;color:#fff;';
 				echo '">';
 				echo number_format($tot_articles,0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</th>';	
 
-				echo '<th style="text-align:center;';
+				echo '<th title="Ordini effettuati" style="text-align:center;';
 				if($tot_orders==0) echo 'background-color:red;color:#fff;';
 				echo '">';
 				echo number_format($tot_orders,0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 				echo '</th>';
 
-				echo '<th style="text-align:center;';
+				echo '<th title="Utenti attivi" style="text-align:center;';
 				if($tot_users==0) echo 'background-color:red;color:#fff;';
 				echo '">';
 				echo number_format($tot_users,0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'</th>';	
@@ -132,25 +132,25 @@
 			echo $result['OrganizationsPay']['year']; 
 			echo '</td>';
 			
-			echo '<td style="text-align:center;';
+			echo '<td title="Produttori" style="text-align:center;';
 			if($result['OrganizationsPay']['tot_suppliers_organizations']==0) echo 'background-color:red;color:#fff;';
 			echo '">';
 			echo number_format($result['OrganizationsPay']['tot_suppliers_organizations'],0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')); 
 			echo '</td>';	
 			
-			echo '<td style="text-align:center;';
+			echo '<td title="Articoli" style="text-align:center;';
 			if($result['OrganizationsPay']['tot_articles']==0) echo 'background-color:red;color:#fff;';
 			echo '">';
 			echo number_format($result['OrganizationsPay']['tot_articles'],0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')); 
 			echo '</td>';	
 						
-			echo '<td style="text-align:center;';
+			echo '<td title="Ordini effettuati" style="text-align:center;';
 			if($result['OrganizationsPay']['tot_orders']==0) echo 'background-color:red;color:#fff;';
 			echo '">';
 			echo number_format($result['OrganizationsPay']['tot_orders'],0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')); 
 			echo '</td>';	
 			
-			echo '<td style="text-align:center;';
+			echo '<td title="Utenti attivi" style="text-align:center;';
 			if($result['OrganizationsPay']['tot_users']==0) echo 'background-color:red;color:#fff;';
 			echo '">';
 			echo number_format($result['OrganizationsPay']['tot_users'],0,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));

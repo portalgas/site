@@ -3010,6 +3010,9 @@ msgstr "Gestisco uno sconto"
 msgid "HasValidate"
 msgstr "Ha la gestione degli articoli con i colli"
 
+msgid "HasCashFilterSupplier"
+msgstr "Ha la gestione del prepagato solo per alcuni produttori"
+
 msgid "HasBookmarsArticles"
 msgstr "Ha la gestione degli articoli preferiti"
 
@@ -3324,6 +3327,9 @@ msgstr "Sconto"
 
 msgid "HasValidateShort"
 msgstr "Colli"
+
+msgid "HasCashFilterSupplierShort"
+msgstr "Prepagato per alcuni produttori"
 
 msgid "HasVisibilityShort"
 msgstr "Visibilità"
@@ -4409,6 +4415,9 @@ msgstr "Se è valorizzato a 'Si' sarà comunicato ai G.A.S. associati"
 
 msgid "toolTipHasValidate"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli con i colli"
+
+msgid "toolTipHasCashFilterSupplier"
+msgstr "Se è valorizzato a 'Si' si potrà gestire il prepagato solo per alcuni produttori"
 
 msgid "toolTipHasBookmarsArticles"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"

@@ -72,7 +72,7 @@ class OrganizationsPay extends AppModel {
         $SuppliersOrganization = new SuppliersOrganization;
 		
 		$options = [];
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $organization_id);
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $organization_id];
 		$options['recursive'] = -1;
 	
         $totale = $SuppliersOrganization->find('count', $options);
@@ -89,7 +89,7 @@ class OrganizationsPay extends AppModel {
         $Article = new Article;
 		
 		$options = [];
-		$options['conditions'] = array('Article.organization_id' => $organization_id);
+		$options['conditions'] =  ['Article.organization_id' => $organization_id];
 		$options['recursive'] = -1;
 	
         $totale = $Article->find('count', $options);
@@ -105,19 +105,19 @@ class OrganizationsPay extends AppModel {
 		App::import('Model', 'Order');
         $Order = new Order;
 		
-		$Order->unbindModel(array('belongsTo' => array('SuppliersOrganization')));
+		$Order->unbindModel(['belongsTo' => ['SuppliersOrganization']]);
 		
 		$options = [];
-		$options['conditions'] = array('Order.organization_id' => $organization_id,
-									   'Delivery.organization_id' => $organization_id);
+		$options['conditions'] = ['Order.organization_id' => $organization_id,
+								   'Delivery.organization_id' => $organization_id];
 		if(!empty($year)) {
 			/*
 			 * Se e' l'anno corrente prendo anche le consegne "da definire" 
 			 */
 			if($year==date('Y'))
-				$options['conditions'] += array("(substr(Delivery.data,1,4) = ".$year." OR Delivery.sys = 'Y')");
+				$options['conditions'] += ["(substr(Delivery.data,1,4) = ".$year." OR Delivery.sys = 'Y')"];
 			else
-				$options['conditions'] += array('substr(Delivery.data,1,4)' => $year);
+				$options['conditions'] += ['substr(Delivery.data,1,4)' => $year];
 		}
 		
 		$options['recursive'] = 1;
@@ -130,31 +130,43 @@ class OrganizationsPay extends AppModel {
 		App::import('Model', 'StatOrder');
         $StatOrder = new StatOrder;
 		
-		$StatOrder->unbindModel(array('belongsTo' => array('SuppliersOrganization')));
+		$StatOrder->unbindModel(['belongsTo' => ['SuppliersOrganization']]);
 		
 		$options = [];
-		$options['conditions'] = array('StatOrder.organization_id' => $organization_id,
-									   'StatDelivery.organization_id' => $organization_id);
+		$options['conditions'] = ['StatOrder.organization_id' => $organization_id,
+								   'StatDelivery.organization_id' => $organization_id];
 		if(!empty($year)) 
-			$options['conditions'] += array('substr(StatDelivery.data,1,4)' => $year);
+			$options['conditions'] += ['substr(StatDelivery.data,1,4)' => $year];
 		
 		$options['recursive'] = 1;
 	
         $totaleStatOrders = $StatOrder->find('count', $options);
 
+		/* 
+		 * Backup
+		 */
+		App::import('Model', 'BackupOrdersOrder');
+        $BackupOrdersOrder = new BackupOrdersOrder;
+				
+		$options = [];
+		$options['conditions'] = ['BackupOrdersOrder.organization_id' => $organization_id,
+								 'substr(BackupOrdersOrder.data_inizio,1,4)' => $year];
+		$options['recursive'] = -1;
+	
+        $totaleBackupOrdersOrders = $BackupOrdersOrder->find('count', $options);
 
-		return ($totaleOrders + $totaleStatOrders);
+		return ($totaleOrders + $totaleStatOrders + $totaleBackupOrdersOrder);
 	}
 	
-	public $belongsTo = array(
-		'Organization' => array(
+	public $belongsTo = [
+		'Organization' => [
 			'className' => 'Organization',
 			'foreignKey' => 'organization_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)	
-	);
+	    ]
+	];
 		
 	public function afterFind($results, $primary = false) {
 
