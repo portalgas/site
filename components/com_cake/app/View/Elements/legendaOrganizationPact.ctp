@@ -9,9 +9,9 @@ www2,sede_logistica_1,banca_iban,lat,lng,
 sede_logistica_2,sede_logistica_3,sede_logistica_4,
 template_id,j_group_registred,j_seo,
 img1,paramsConfig,paramsFields,paramsPay,stato,created,modified) VALUES 
-(<?php echo $max_id;?>,%NOME-PRODUTTORE%,'PRODGAS',
+(<?php echo $max_id;?>,%NOME-PRODUTTORE%,'PACT',
 '','','','','','','','','','','','','',0,0,'',
-'prodgas-<?php echo $max_id;?>.jpg',
+'pact-<?php echo $max_id;?>.jpg',
  '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N"}','{"hasFieldArticleCodice":"Y","hasFieldArticleIngredienti":"Y","hasFieldArticleCategoryId":"Y"}','{}',
  'Y','<?php echo date("Y-m-d");?> 00:00:00','<?php echo date("Y-m-d");?> 00:00:00');
 </pre>
@@ -19,7 +19,7 @@ img1,paramsConfig,paramsFields,paramsPay,stato,created,modified) VALUES
 <?php
 echo '<pre class="shell no_prod" rel="script per inserire le categorie e permessi cartelle">';
 echo '/var/portalgas/cron/config.conf settare la variabile '.$max_id.'<br />';
-echo 'eseguire /var/portalgas/org_prodgas_new.sh '.$max_id.'<br />';
+echo 'eseguire /var/portalgas/org_pact_new.sh '.$max_id.'<br />';
 echo '<br />';
 echo 'Directory articles, users e permessi<br />';
 echo 'crea k_categories_articles.name = \'Generale\'<br />';

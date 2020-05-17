@@ -1,11 +1,14 @@
-<table>	
-	<tr>
-		<th></th>
-		<th>Ruolo</th>
-		<th>Descrizione</th>
-		<th>Abilitazione del modulo</th>
-		<th>Gruppo Joomla</th>
-	</tr>			
+<div class="table-responsive"><table class="table table-hover">
+<thead>
+<tr>
+	<th></th>
+	<th>Ruolo</th>
+	<th>Descrizione</th>
+	<th>Abilitazione del modulo</th>
+	<th>Gruppo Joomla</th>
+</tr>			
+</thead>
+<tbody>
 	<tr id="tr_group_id_manager">
 		<td><input type="radio" name="group_id_manager" value="Y" checked="checked" /><label for="" style="width:80px !important;margin-left:10px;">Si</label></td>
 		<td>Manager</td>
@@ -94,4 +97,5 @@
 		<td>Lato Front-end</td>
 		<td>Registered (<?php echo Configure::read('group_id_user');?>)</td>
 	</tr>
+</tbody>	
 </table>

@@ -45,8 +45,11 @@ define('group_id_tesoriere',11);
 define('group_id_storeroom',9);
 define('group_id_user',2); 
 
-// prodGasSupplier
-define('prod_gas_supplier_manager',62);
+/*
+ * altre tipologie di organization GAS PRODGAS PACT
+ */
+define('prod_gas_supplier_manager',62); // prodGasSupplier
+define('group_pact_supplier_manager',84);        // manager pact 
 
 // calendar events gasEvents
 define('group_id_events',65);

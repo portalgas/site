@@ -40,6 +40,11 @@ class OrganizationsController extends AppController {
             $options['order'] = ['Organization.name'];
             $prodgasResults = $this->Organization->find('all', $options);
 
+            $options = [];
+            $options['conditions'] = ['Organization.type' => 'PACT'];
+            $options['order'] = ['Organization.name'];
+            $pactResults = $this->Organization->find('all', $options);
+
             $gasTmp = [];
             foreach ($gasResults as $result) {
 				
@@ -66,10 +71,21 @@ class OrganizationsController extends AppController {
                     $label .= " - NON ATTIVA";
                 $prodgasTmp[$result['Organization']['id']] = $label;
             }
+
+            $pactTmp = [];
+            foreach ($pactResults as $result) {
+				
+                $label = $result['Organization']['name'];
+				
+                if ($result['Organization']['stato'] == 'N')
+                    $label .= " - NON ATTIVA";
+                $pactTmp[$result['Organization']['id']] = $label;
+            }
 			
             $organizations = [0 => 'Nessuna organizzazione',
 							  'GAS' => $gasTmp,
-							  'PRODGAS' => $prodgasTmp];
+							  'PRODGAS' => $prodgasTmp,
+							  'PACT' => $pactTmp];
 
             $this->set(compact('organizations'));
         }

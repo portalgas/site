@@ -1225,7 +1225,8 @@ class AppController extends Controller {
             unset($results['Organization']['paramsConfig']);
             unset($results['Organization']['paramsFields']);
 			
-			if($results['Organization']['type']=='PRODGAS') {
+			if($results['Organization']['type']=='PRODGAS' ||
+			   $results['Organization']['type']=='PACT') {
 				
 				/*
 				 * estraggo i produttori legati al PRODGAS, posso essere + di 1 ma per ora ne gestisco uno

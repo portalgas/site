@@ -119,9 +119,12 @@ class PagesController extends AppController {
 		switch ($this->user->organization['Organization']['type']) {
 			case 'GAS':
 				$this->_admin_home_gas();
-			break;
-			case 'PRODGAS':
-				$this->_admin_home_prod_gas();
+            break;
+            case 'PRODGAS':
+                $this->_admin_home_prod_gas();
+            break;
+            case 'PACT':
+                $this->_admin_home_pact();
 			break;
 			case 'PROD':
 				$this->_admin_home_prod();  // per ora non utilizzato: sono i produttori che avrebbero un loro ecommerce
@@ -324,6 +327,10 @@ class PagesController extends AppController {
 
     private function _admin_home_prod_gas() {
         $this->render('admin_home_prod_gas');
+    }
+
+    private function _admin_home_pact() {
+        $this->render('admin_home_pact');
     }
 	
     private function _admin_home_prod() {
