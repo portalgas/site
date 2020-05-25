@@ -5,7 +5,7 @@ App::import('Model', 'Cart');
 
 class AjaxGasCart extends AppModel {
 
-	private $debug = false;     // per debug locale 
+	private $debug = true;     // per debug locale 
 	
 	public $useTable = 'carts';
 
