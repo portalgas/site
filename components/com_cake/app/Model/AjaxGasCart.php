@@ -5,7 +5,7 @@ App::import('Model', 'Cart');
 
 class AjaxGasCart extends AppModel {
 
-	private $debug = true;     // per debug locale 
+	private $debug = false;     // per debug locale 
 	
 	public $useTable = 'carts';
 
@@ -51,12 +51,14 @@ class AjaxGasCart extends AppModel {
 			$action = 'UPDATE-DELETE';
 		$this->log .= "\r\n action $action";
 		
-		if($action=='INSERT')
+		if($action=='INSERT') {
 			$results = $this->_getArticlesOrder($user, $order_id, $article_organization_id, $article_id);
-		else
+			$this->qta_prima_modifica = 0;
+		}
+		else {
 			$results = $this->_getCartArticlesOrder($user, $order_id, $article_organization_id, $article_id, $user_id);
-		
-		$this->qta_prima_modifica = $this->getQtaPrimaModifica($user,$results);
+			$this->qta_prima_modifica = $this->getQtaPrimaModifica($user,$results);
+		}
 		
 		if($forzare_validazione)
 			$esito = true;
@@ -201,14 +203,14 @@ class AjaxGasCart extends AppModel {
 	
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder();
-		
-		$options['conditions'] = array('ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
+
+		$this->unbindModel(['belongsTo' => ['Cart']]);
+		$options['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
 										'ArticlesOrder.order_id' => $order_id,
 										'ArticlesOrder.article_organization_id' => $article_organization_id,
 										'ArticlesOrder.article_id' => $article_id
-									);
+									];							
 		$options['recursive'] = 0;
-		$ArticlesOrder->unbindModel(['belongsTo' => ['Order']]);
 		$results = $ArticlesOrder->find('first', $options);
 		
 		$this->log .= "\r\n Result dei dati ".print_r($results, true);
