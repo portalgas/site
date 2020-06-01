@@ -392,45 +392,55 @@ class CashesUser extends AppModel {
 			print_r($cashesUser);
 			echo "</pre>";			
 		}
+
 		// 
      	switch($organization_cashLimit) {
     		case "LIMIT-NO":
     			$results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+		    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
     			$results['stato'] = 'GREEN';
     			$results['fe_msg'] = 'Nessun limite per gli acquisti';
     		break;
     		case "LIMIT-CASH":
     			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+		    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
     			if($results['importo']<0) {
 	    			$results['stato'] = 'RED';
-					$results['fe_msg'] = 'Hai esaurito il credito di cassa!';
+					$results['fe_msg'] = 'Hai esaurito il credito di cassa! ('.$results['importo_e'].')';
 	    		}
 				else
 	    		if($results['importo']>0) {
 	    			$results['stato'] = 'GREEN';
-					$results['fe_msg'] = 'Puoi fare acquisti per '.number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'; 
+					$results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
 	    		}
 				else
 	    		if($results['importo']==0) {
 	    			$results['stato'] = 'YELLOW';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
+					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')'; 
 				}
     		break;
     		case "LIMIT-CASH-AFTER":
     			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($organization_limitCashAfter));
+		    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
     			if($results['importo']<0) {
 	    			$results['stato'] = 'RED';
-					$results['fe_msg'] = 'Hai esaurito il credito di cassa!';
+					$results['fe_msg'] = 'Hai esaurito il credito di cassa! ('.$results['importo_e'].')';
 	    		}
 				else
 	    		if($results['importo']>0) {
 	    			$results['stato'] = 'GREEN';
-					$results['fe_msg'] = 'Puoi fare acquisti per '.number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'; 
+					$results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
 	    		}
 				else
 	    		if($results['importo']==0) {
 	    			$results['stato'] = 'YELLOW';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
+					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
 				}	
     		break;
     		case "LIMIT-CASH-USER":
@@ -447,55 +457,57 @@ class CashesUser extends AppModel {
 		    	switch($cashesUser['limit_type']) {
 		    		case "LIMIT-NO":
 		    			$results['importo'] = 0; // (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+				    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
 		    			$results['stato'] = 'GREEN';
 						$results['fe_msg'] = 'Nessun limite per gli acquisti';
 		    		break;
 		    		case "LIMIT-CASH":
 		    			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
+				    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
 		    			if($results['importo']<0) {
 			    			$results['stato'] = 'RED';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
+						$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
 			    		}
 						else
 			    		if($results['importo']>0) {
 			    			$results['stato'] = 'GREEN';
-							$results['fe_msg'] = 'Puoi fare acquisti per '.number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'; 
+							$results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
 			    		}
 						else
 			    		if($results['importo']==0) {
 			    			$results['stato'] = 'YELLOW';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
+							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
 						}
 		    		break;
 		    		case "LIMIT-CASH-AFTER":
 		    			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato) + floatval($cashesUser['limit_after']));
+				    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+						$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
+
 		    			if($results['importo']<0) {
 			    			$results['stato'] = 'RED';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
+							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
 			    		}
 			    		else
 			    		if($results['importo']>0) {
 			    			$results['stato'] = 'GREEN';
-							$results['fe_msg'] = 'Puoi fare acquisti per '.number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'; 
+							$results['fe_msg'] = 'Puoi fare acquisti per '.$results['importo_e']; 
 			    		}
 			    		else
 			    		if($results['importo']==0) {
 			    			$results['stato'] = 'YELLOW'; 
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
+							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')'; 
 			    		}  		
 		    		break;
 		    	}				 
     		break;
     	}
-    	
-    	$results['importo_'] = number_format($results['importo'] ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-		$results['importo_e']  = $results['importo_'] .'&nbsp;&euro;'; 
 
-		if($debug) {
-			echo "<pre>\n ";
-			print_r($results);
-			echo "</pre>";			
-		}
+		if($debug) debug($results);
 				
     	return $results;
     } 
