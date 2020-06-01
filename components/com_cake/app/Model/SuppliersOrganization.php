@@ -71,7 +71,7 @@ class SuppliersOrganization extends AppModel {
 
 		        App::import('Model', 'SupplierOrganizationCashExcluded');
 		        $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;		
-		        $results[0]['SuppliersOrganization']['isSupplierOrganizationCashExcluded'] = $SupplierOrganizationCashExcluded->isSupplierOrganizationCashExcluded($user, $results['SuppliersOrganization']['id']);	
+		        $results[0]['SuppliersOrganization']['isSupplierOrganizationCashExcluded'] = $SupplierOrganizationCashExcluded->isSupplierOrganizationCashExcluded($user, $results[0]['SuppliersOrganization']['id']);	
 				 
 			}
 		}

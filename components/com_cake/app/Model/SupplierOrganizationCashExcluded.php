@@ -14,11 +14,12 @@ class SupplierOrganizationCashExcluded extends AppModel {
 	public function isSupplierOrganizationCashExcluded($user, $supplier_organization_id, $debug=false) {
 
 		$options = [];
-		$options['conditions'] = ['SupplierOrganizationCashExcluded.organization_id' => $user->organization['Organization'],
+		$options['conditions'] = ['SupplierOrganizationCashExcluded.organization_id' => $user->organization['Organization']['id'],
 								'SupplierOrganizationCashExcluded.supplier_organization_id' => $supplier_organization_id];
 		$options['recursive'] = -1;
 		$results = $this->find('count', $options);
-
+		// debug($options);
+		// debug($results);
 		if($results==0)
 			return false;
 		else
