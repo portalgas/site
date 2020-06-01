@@ -31,6 +31,11 @@ class SuppliersOrganization extends AppModel {
 		return $results;
     }
 	
+	/*
+	 * se $user->organization['Organization']['hasCashFilterSupplier'] = 'Y' 
+	 *		Ha la gestione del prepagato solo per alcuni produttori 
+	 *	ctrl in supplier_organization_cash_excludeds se e' un produttore escluso dal prepagato
+	 */	
 	public function getSuppliersOrganization($user, $conditions, $orderBy=null) {
 	
 		if(isset($orderBy['SuppliersOrganization'])) $order = $orderBy['SuppliersOrganization'];
@@ -58,6 +63,17 @@ class SuppliersOrganization extends AppModel {
 		self::d($sql, false);
 		try {
 			$results = $this->query($sql);
+		
+			/*
+			 * ctrl in supplier_organization_cash_excludeds se e' un produttore escluso dal prepagato 
+			 */
+			if(isset($user->organization['Organization']['hasCashFilterSupplier']) && $user->organization['Organization']['hasCashFilterSupplier']=='Y') {
+
+		        App::import('Model', 'SupplierOrganizationCashExcluded');
+		        $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;		
+		        $results[0]['isSupplierOrganizationCashExcluded'] = $SupplierOrganizationCashExcluded->isSupplierOrganizationCashExcluded($user, $results['SuppliersOrganization']['id']);	
+				 
+			}
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);

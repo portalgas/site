@@ -47,6 +47,22 @@ class ExportDocsHelper extends AppHelper {
 		return $tmp;
 	}
 
+	public function suppliersOrganizationPrepaidShort($suppliersOrganization) {
+	
+		$tmp  = '';
+		$tmp .= '<div class="h2Pdf">';	
+		$tmp .= __('Supplier').' '.$suppliersOrganization['name'].', '.$suppliersOrganization['descrizione'];
+
+    	if($suppliersOrganization['isSupplierOrganizationCashExcluded'])
+            $tmp .= ' - Escluso dal prepagato';       
+		else
+		    $tmp .= ' - Gestito con il prepagato';           
+        
+		$tmp .= '</div>';
+	
+		return $tmp;
+	}
+
 	public function suppliersOrganization($suppliersOrganization) {
 	
 		$tmp  = '';

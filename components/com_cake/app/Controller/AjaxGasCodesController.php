@@ -1469,10 +1469,11 @@ class AjaxGasCodesController extends AppController {
      * 		'options-users-all'  Tutti gli articoli
      *
      *  $order_by 
-     *		da options radio (Articoli e gasista / Gasista e articoli / Acquistato il)
+     *		da options radio (Articoli e gasista / Gasista e articoli / Articoli e data di acquisto / Acquistato il)
      *			articles_users
      *			users_articles
      *			cart_date 
+     *          article_cart_date
      *		da header colonna (Articolo / Utente)
      *  		users_asc     (tutti gli utenti con acquisti)
      *  		articles_asc  (Articoli aggregati con il dettaglio degli utenti)
@@ -1498,32 +1499,35 @@ class AjaxGasCodesController extends AppController {
 		 */
 		switch ($order_by) {
 		    case "articles_asc":
-		        $orderBy = array('Article' => 'Article.name asc, Article.id, Cart.created');
+		        $orderBy = ['Article' => 'Article.name asc, Article.id, Cart.created'];
 		        break;
 		    case "articles_desc":
-		        $orderBy = array('Article' => 'Article.name desc, Article.id, Cart.created');
+		        $orderBy = ['Article' => 'Article.name desc, Article.id, Cart.created'];
 		        break;
 		    case "users_asc":
-		        $orderBy = array('User' => Configure::read('orderUser') . ' asc, Cart.created');
+		        $orderBy = ['User' => Configure::read('orderUser').' asc, Cart.created'];
 		        break;
 		    case "users_desc":
-		        $orderBy = array('User' => Configure::read('orderUser') . ' desc, Cart.created');
+		        $orderBy = ['User' => Configure::read('orderUser').' desc, Cart.created'];
 		        break;
 		    case "articles_users":
-		        $orderBy = array('ArticleUser' => 'Article.name asc, Article.id,'. Configure::read('orderUser') . ' asc');
+		        $orderBy = ['ArticleUser' => 'Article.name asc, Article.id,'.Configure::read('orderUser').' asc'];
 		        break;
 		    case "users_articles":
-		        $orderBy = array('UserArticle' => Configure::read('orderUser') . ' asc, Article.name asc, Article.id');
-		        break;
+                $orderBy = ['UserArticle' => Configure::read('orderUser').' asc, Article.name asc, Article.id'];
+                break;
+            case "article_cart_date":
+                $orderBy = ['CartDate' => 'Article.name asc, Article.id, Cart.created'];
+                break;
 		    default: // "cart_date"
-		        $orderBy = array('CartDate' => 'Cart.created, Article.name asc, Article.id');
+		        $orderBy = ['CartDate' => 'Cart.created, Article.name asc, Article.id'];
 		        break;
 		}
    
 
-        $options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => true,
+        $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => true,
 						'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
-						'suppliers' => true, 'referents' => true);
+						'suppliers' => true, 'referents' => true];
 
         $results = $Delivery->getDataWithoutTabs($this->user, $conditions, $options, $orderBy);
 		self::d($results, false);
@@ -1531,8 +1535,8 @@ class AjaxGasCodesController extends AppController {
         /*
          * permission per abilitazione modifica del carrello
          */
-        $permissions = array('isReferentGeneric' => $this->isReferentGeneric(),
-            'isTesoriereGeneric' => $this->isTesoriereGeneric());
+        $permissions = ['isReferentGeneric' => $this->isReferentGeneric(),
+                        'isTesoriereGeneric' => $this->isTesoriereGeneric()];
         $this->set('permissions', $permissions);
 
         $this->layout = 'ajax';

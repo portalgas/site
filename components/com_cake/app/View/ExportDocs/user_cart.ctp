@@ -125,7 +125,12 @@ if (isset($results['Delivery']))
             foreach ($result['Delivery']['Order'] as $numOrder => $order) {
 
                 if (isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti
-                    $html = $this->ExportDocs->suppliersOrganizationShort($order['SuppliersOrganization']);
+                    
+                    if(isset($user->organization['Organization']['hasCashFilterSupplier']) && $user->organization['Organization']['hasCashFilterSupplier']=='Y') 
+                        $html = $this->ExportDocs->suppliersOrganizationPrepaidShort($order['SuppliersOrganization']);
+                    else
+                        $html = $this->ExportDocs->suppliersOrganizationShort($order['SuppliersOrganization']);
+
                     $output->writeHTML($css . $html, $ln = false, $fill = false, $reseth = true, $cell = true, $align = '');
 
                     $html = '';
