@@ -155,7 +155,14 @@ else {
 										
 										echo __('Supplier').': '.$order['SuppliersOrganization']['name'];
 										if(!empty($order['SuppliersOrganization']['descrizione'])) echo '/'.$order['SuppliersOrganization']['descrizione'];
-									
+														
+					                    if(isset($user->organization['Organization']['hasCashFilterSupplier']) && $user->organization['Organization']['hasCashFilterSupplier']=='Y') {
+									    	if($suppliersOrganization['isSupplierOrganizationCashExcluded'])
+									            echo ' - Escluso dal prepagato';       
+											else
+											    echo ' - Gestito con il prepagato'; 
+					                    }
+
 										echo '<span style="float:right">'.__('StateOrder').': '.__($order['Order']['state_code'].'-label').'&nbsp;';
 										
 										echo $this->App->utilsCommons->getOrderTime($order['Order']);

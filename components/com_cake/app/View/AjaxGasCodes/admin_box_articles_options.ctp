@@ -16,7 +16,7 @@
 			<input <?php if($user_id!='ALL') echo 'disabled=disabled';?> <?php if($articles_sort=='cart_date') echo 'checked=checked';?> type="radio" name="articles-sort" id="sort-cart_date" value="date">Acquistato il
 		</label>
 		<label class="radio-inline">
-			<input <?php if($user_id!='ALL') echo 'disabled=disabled';?> <?php if($articles_sort=='article_cart_date') echo 'checked=checked';?> type="radio" name="articles-sort" id="sort-article_cart_date" value="date">Articoli e data di acquisto
+			<input <?php if($user_id!='ALL') echo 'disabled=disabled';?> <?php if($articles_sort=='article_cart_date') echo 'checked=checked';?> type="radio" name="articles-sort" id="sort-article_cart_date" value="article_cart_date">Articoli e data di acquisto
 		</label>
 </p>
 
