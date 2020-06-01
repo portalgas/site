@@ -53,7 +53,7 @@ class ExportDocsHelper extends AppHelper {
 		$tmp .= '<div class="h2Pdf">';	
 		$tmp .= __('Supplier').' '.$suppliersOrganization['name'].', '.$suppliersOrganization['descrizione'];
 
-    	if(!$suppliersOrganization['isSupplierOrganizationCashExcluded'])
+    	if($suppliersOrganization['isSupplierOrganizationCashExcluded'])
             $tmp .= ' - Escluso dal prepagato';       
 		else
 		    $tmp .= ' - Gestito con il prepagato';           

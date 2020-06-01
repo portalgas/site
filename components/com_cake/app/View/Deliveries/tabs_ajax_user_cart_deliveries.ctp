@@ -157,7 +157,7 @@ else {
 										if(!empty($order['SuppliersOrganization']['descrizione'])) echo '/'.$order['SuppliersOrganization']['descrizione'];
 												
 					                    if(isset($user->organization['Organization']['hasCashFilterSupplier']) && $user->organization['Organization']['hasCashFilterSupplier']=='Y') {
-									    	if(!$order['SuppliersOrganization']['isSupplierOrganizationCashExcluded'])
+									    	if($order['SuppliersOrganization']['isSupplierOrganizationCashExcluded'])
 									            echo ' - Escluso dal prepagato';       
 											else
 											    echo ' - Gestito con il prepagato'; 
