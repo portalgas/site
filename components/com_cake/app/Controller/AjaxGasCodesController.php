@@ -5,7 +5,7 @@ App::uses('AppController', 'Controller');
 class AjaxGasCodesController extends AppController {
 
     public $components = array('ActionsDesOrder');
-	public $helpers = array('SummaryOrderPlus');
+    public $helpers = array('SummaryOrderPlus');
         
     public function beforeFilter() {
         $this->ctrlHttpReferer();
@@ -143,13 +143,13 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * call_action: valore di $this->action
-     * 		admin_managementCartsOne           se chiamato da controller=Carts&action=managementCartsOne
-     * 		admin_managementCartsGroupByUsers  se chiamato da controller=Carts&action=managementCartsGroupByUsers
-     * 		admin_referentDocsExport           se chiamato da controller=Docs&action=referentDocsExport
-     * 		admin_referentDocsExportHistory    se chiamato da controller=Docs&action=referentDocsExportHistory
-     * 		admin_cassiere_docs_export         se chiamato da controller=Docs&action=cassiere_docs_export
-     * 		admin_validationCarts              se chiamato da controller=Carts&action=validationCarts
-     * 		admin_summary_orders              se chiamato da controller=Referente&action=summary_orders
+     *      admin_managementCartsOne           se chiamato da controller=Carts&action=managementCartsOne
+     *      admin_managementCartsGroupByUsers  se chiamato da controller=Carts&action=managementCartsGroupByUsers
+     *      admin_referentDocsExport           se chiamato da controller=Docs&action=referentDocsExport
+     *      admin_referentDocsExportHistory    se chiamato da controller=Docs&action=referentDocsExportHistory
+     *      admin_cassiere_docs_export         se chiamato da controller=Docs&action=cassiere_docs_export
+     *      admin_validationCarts              se chiamato da controller=Carts&action=validationCarts
+     *      admin_summary_orders              se chiamato da controller=Referente&action=summary_orders
      */
 
     public function admin_box_order_permission($order_id = 0, $call_action) {
@@ -221,7 +221,7 @@ class AjaxGasCodesController extends AppController {
     /*
      * call Cassiere::home
      * 
-     * 	$delivery_id e $user_id sono valorizzati se ho Submit, li passo cosi' ricarico i dati dell'utente
+     *  $delivery_id e $user_id sono valorizzati se ho Submit, li passo cosi' ricarico i dati dell'utente
      */
 
     public function admin_box_users_delivery_list($delivery_id = 0, $user_id = 0) {
@@ -240,27 +240,27 @@ class AjaxGasCodesController extends AppController {
         if ($this->isReferentCassiere())
             $results = $this->__users_delivery_acl_referent($delivery_id, $debug);
 
-		/*
-		 * dispensa
-		*/
-		if($this->user->organization['Organization']['hasStoreroom']=='Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
+        /*
+         * dispensa
+        */
+        if($this->user->organization['Organization']['hasStoreroom']=='Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd']=='Y') {
 
-			App::import('Model', 'Storeroom');
-			$Storeroom = new Storeroom;
-		
-			$storeroomUser = $Storeroom->getStoreroomUser($this->user);
-			if(!empty($storeroomUser)) {
-		
-				$storeroomUsers = $Storeroom->getUsersDeliveryBuy($this->user, $storeroomUser, $delivery_id, $debug);
-				
-				self::d($storeroomUsers, $debug);
-				
-				if(!empty($storeroomUsers) && !empty($results)) {
-					$results = array_merge($storeroomUsers, $results);
-				}
-				 
-			} // end if(!empty($storeroomUser)) 
-		}
+            App::import('Model', 'Storeroom');
+            $Storeroom = new Storeroom;
+        
+            $storeroomUser = $Storeroom->getStoreroomUser($this->user);
+            if(!empty($storeroomUser)) {
+        
+                $storeroomUsers = $Storeroom->getUsersDeliveryBuy($this->user, $storeroomUser, $delivery_id, $debug);
+                
+                self::d($storeroomUsers, $debug);
+                
+                if(!empty($storeroomUsers) && !empty($results)) {
+                    $results = array_merge($storeroomUsers, $results);
+                }
+                 
+            } // end if(!empty($storeroomUser)) 
+        }
 
 
         $users = [];
@@ -295,7 +295,7 @@ class AjaxGasCodesController extends AppController {
     /*
      * list users che hanno effettuato acquisti in una consegna
      *  filtrando per gli ordini di cui lo user e' referente $this->user->get('ACLsuppliersIdsOrganization')
-     * 		(per ex group_id_referent_cassiere)
+     *      (per ex group_id_referent_cassiere)
      */
 
     public function __users_delivery_acl_referent($delivery_id, $debug = false) {
@@ -389,7 +389,7 @@ class AjaxGasCodesController extends AppController {
     /*
      * list users 
      * $reportOptions = 'report-users-all', tutti
-     * 					'report-users-cart', che hanno effettuato acquisti in un ordine
+     *                  'report-users-cart', che hanno effettuato acquisti in un ordine
      */
 
     public function admin_box_users($order_id = 0, $reportOptions) {
@@ -427,8 +427,8 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * richamato da 
-     * 		page Cart::admin_managementCartsOne()           => ajax admin_box_users()    => call=managementCartsOne
-     * 		page Doc::admin_cassiere_delivery_docs_export() => ajax admin_box_delivery() => call=cassiereDEliveryDocsExport
+     *      page Cart::admin_managementCartsOne()           => ajax admin_box_users()    => call=managementCartsOne
+     *      page Doc::admin_cassiere_delivery_docs_export() => ajax admin_box_delivery() => call=cassiereDEliveryDocsExport
      */
 
     public function admin_box_user_anagrafica($delivery_id, $order_id, $user_id, $call = 'managementCartsOne') {
@@ -445,7 +445,7 @@ class AjaxGasCodesController extends AppController {
             $User = new User;
 
             $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-							'User.id' => $user_id];
+                            'User.id' => $user_id];
             $utente = $User->find('first', ['conditions' => $conditions]);
 
             /*
@@ -454,15 +454,15 @@ class AjaxGasCodesController extends AppController {
             $utente_profile = JUserHelper::getProfile($user_id);
             $utente['Profile'] = $utente_profile->profile;
 
-			self::d($utente, false);
+            self::d($utente, false);
         }
 
         $this->set(compact('utente'));
 
         /*
          * call
-         * 		managementCartsOne 			nella View richiama choiceUserAnagrafica()
-         * 	    cassiereDEliveryDocsExport  nella View richiama choiceUserCash()
+         *      managementCartsOne          nella View richiama choiceUserAnagrafica()
+         *      cassiereDEliveryDocsExport  nella View richiama choiceUserCash()
          */
         $this->set('call', $call);
 
@@ -471,7 +471,7 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * gestisco la cassa dell'utente per tutti gli ordini della consegna 
-     * 	con Order.state_code = PROCESSED-ON-DELIVERY validati dal referente
+     *  con Order.state_code = PROCESSED-ON-DELIVERY validati dal referente
      */
 
     public function admin_box_user_cash($delivery_id, $user_id) {
@@ -558,8 +558,8 @@ class AjaxGasCodesController extends AppController {
                 $options['recursive'] = 1;
                 $SummaryOrderResults = $SummaryOrder->find('first', $options);
 
-				self::d($options, $debug);
-				
+                self::d($options, $debug);
+                
                 if (!empty($SummaryOrderResults)) {
                     $results[$i]['SummaryOrder'] = $SummaryOrderResults['SummaryOrder'];
                 }
@@ -591,28 +591,28 @@ class AjaxGasCodesController extends AppController {
         $storeroomResults = [];
         if ($this->user->organization['Organization']['hasStoreroom'] == 'Y' && $this->user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
 
-			App::import('Model', 'Delivery');
-			$Delivery = new Delivery;
-		
-			$storeroomOptions = []; 
+            App::import('Model', 'Delivery');
+            $Delivery = new Delivery;
+        
+            $storeroomOptions = []; 
             $storeroomOptions = array('orders' => false, 'storerooms' => true, 'summaryOrders' => false,
                 'suppliers' => true, 'referents' => false);
 
-			$conditions = []; 
+            $conditions = []; 
             $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
-													'Delivery.stato_elaborazione' => 'OPEN',
-													'Delivery.id' => $delivery_id),
+                                                    'Delivery.stato_elaborazione' => 'OPEN',
+                                                    'Delivery.id' => $delivery_id),
                 'Storeroom' => array('Storeroom.user_id' => (int) $user_id,
-                					 'Storeroom.delivery_id' => (int) $delivery_id));
+                                     'Storeroom.delivery_id' => (int) $delivery_id));
             $orderBy = null;
 
             $storeroomResults = $Delivery->getDataWithoutTabs($this->user, $conditions, $storeroomOptions, $orderBy);
-			           
+                       
         }
         $this->set('storeroomResults', $storeroomResults);
-		
-		self::d([$storeroomResults, $results], $debug);  
-		
+        
+        self::d([$storeroomResults, $results], $debug);  
+        
         $this->set('results', $results);
 
         /*
@@ -627,7 +627,7 @@ class AjaxGasCodesController extends AppController {
         $options['recursive'] = -1;
         $cashResults = $Cash->find('first', $options);
         
-		self::d($cashResults, $debug);  
+        self::d($cashResults, $debug);  
 
         $this->set('cashResults', $cashResults);
 
@@ -642,9 +642,9 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * $report_options
-     * 				report-users-cart 					(Solo utenti con acquisti)
-     * 				report-users-all 					(Tutti gli utenti)
-     * 				report-articles-details				(Articoli aggregati con il dettaglio degli utenti)
+     *              report-users-cart                   (Solo utenti con acquisti)
+     *              report-users-all                    (Tutti gli utenti)
+     *              report-articles-details             (Articoli aggregati con il dettaglio degli utenti)
      */
 
     public function admin_box_report_options($delivery_id, $order_id) {
@@ -657,8 +657,8 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * $articles-options
-     * 				options-articles-cart 		(Solo articoli acquistati)
-     * 				options-users-all  			(Tutti gli articoli)
+     *              options-articles-cart       (Solo articoli acquistati)
+     *              options-users-all           (Tutti gli articoli)
      * 
      * se user_id == ALL disabilito l'opzione (Tutti gli articoli)
      */
@@ -668,9 +668,9 @@ class AjaxGasCodesController extends AppController {
         // di default l'opzione (Solo articoli acquistati)
         $this->set('articles_options', 'options-articles-cart');
         if($user_id=='ALL')
-	        $this->set('articles_sort', 'cart_date');
+            $this->set('articles_sort', 'cart_date');
         else
-        	$this->set('articles_sort', 'articles_users');
+            $this->set('articles_sort', 'articles_users');
         $this->set('user_id', $user_id);
 
         $this->layout = 'ajax';
@@ -678,8 +678,8 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * $articles-options
-     * 				options-articles-cart 		(Solo articoli acquistati)
-     * 				options-users-all  			(Tutti gli articoli)
+     *              options-articles-cart       (Solo articoli acquistati)
+     *              options-users-all           (Tutti gli articoli)
      * 
      * se user_id == ALL disabilito l'opzione (Tutti gli articoli)
      */
@@ -731,14 +731,14 @@ class AjaxGasCodesController extends AppController {
         /*
          * D.E.S.
          */
-		$desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
-		$des_order_id = $desResults['des_order_id'];
-		$isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
-		$this->set('des_order_id',$des_order_id);
-		$this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
-		$this->set('desOrdersResults', $desResults['desOrdersResults']);
-		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
-		
+        $desResults = $this->ActionsDesOrder->getDesOrderData($this->user, $this->order_id, $debug);
+        $des_order_id = $desResults['des_order_id'];
+        $isTitolareDesSupplier = $desResults['isTitolareDesSupplier'];
+        $this->set('des_order_id',$des_order_id);
+        $this->set('isTitolareDesSupplier', $isTitolareDesSupplier);
+        $this->set('desOrdersResults', $desResults['desOrdersResults']);
+        $this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
+        
         if (!$isTitolareDesSupplier) {
             $this->Session->setFlash(__('msg_not_permission'));
             $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -794,8 +794,8 @@ class AjaxGasCodesController extends AppController {
 
     public function _box_carts_splits_read_only($delivery_id, $order_id, $cartsSplitsOptions) {
     
-    	$debug=false;
-    	
+        $debug=false;
+        
         if (empty($this->delivery_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -828,8 +828,8 @@ class AjaxGasCodesController extends AppController {
         $options['recursive'] = 1;
         $options['order'] = array(Configure::read('orderUser') . ',CartsSplit.user_id, CartsSplit.article_organization_id, CartsSplit.article_id, CartsSplit.num_split');
         $results = $CartsSplit->find('all', $options);
-		self::d($results, $debug);
-		
+        self::d($results, $debug);
+        
         $this->set('results', $results);
     }
 
@@ -941,12 +941,12 @@ class AjaxGasCodesController extends AppController {
          * se e' 0 (perche' un UM e' diverso da GR, HG, KG) l'opzione del trasporto a peseo "options-weight" non la faccio vedere
          */
         $sql = "SELECT
-					sum(peso) as totaleOrdine
-				FROM
-					".Configure::read('DB.prefix')."summary_order_trasports as SummaryOrderTrasport
-				WHERE
-					SummaryOrderTrasport.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
-					and SummaryOrderTrasport.order_id = " . (int) $this->order_id;
+                    sum(peso) as totaleOrdine
+                FROM
+                    ".Configure::read('DB.prefix')."summary_order_trasports as SummaryOrderTrasport
+                WHERE
+                    SummaryOrderTrasport.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+                    and SummaryOrderTrasport.order_id = " . (int) $this->order_id;
         if ($debug)
             echo '<br />' . $sql;
         $result = $Order->query($sql);
@@ -973,7 +973,7 @@ class AjaxGasCodesController extends AppController {
     public function admin_box_cost_more_options() {
 
         $debug = false;
-		
+        
         self::d('<h2>admin_box_cost_more_options()</h2>',$debug);
 
         App::import('Model', 'Order');
@@ -1008,12 +1008,12 @@ class AjaxGasCodesController extends AppController {
          * se e' 0 (perche' un UM e' diverso da GR, HG, KG) l'opzione del cost_moreo a peseo "options-weight" non la faccio vedere
          */
         $sql = "SELECT
-					sum(peso) as totaleOrdine
-				FROM
-					".Configure::read('DB.prefix')."summary_order_cost_mores as SummaryOrderCostMore
-				WHERE
-					SummaryOrderCostMore.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
-					and SummaryOrderCostMore.order_id = " . (int) $this->order_id;
+                    sum(peso) as totaleOrdine
+                FROM
+                    ".Configure::read('DB.prefix')."summary_order_cost_mores as SummaryOrderCostMore
+                WHERE
+                    SummaryOrderCostMore.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+                    and SummaryOrderCostMore.order_id = " . (int) $this->order_id;
         self::d($sql,$debug);
         $result = $Order->query($sql);
         $totaleOrdine = 0;
@@ -1077,12 +1077,12 @@ class AjaxGasCodesController extends AppController {
          * se e' 0 (perche' un UM e' diverso da GR, HG, KG) l'opzione del cost_moreo a peseo "options-weight" non la faccio vedere
          */
         $sql = "SELECT
-					sum(peso) as totaleOrdine
-				FROM
-					".Configure::read('DB.prefix')."summary_order_cost_lesses as SummaryOrderCostLess
-				WHERE
-					SummaryOrderCostLess.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
-					and SummaryOrderCostLess.order_id = " . (int) $this->order_id;
+                    sum(peso) as totaleOrdine
+                FROM
+                    ".Configure::read('DB.prefix')."summary_order_cost_lesses as SummaryOrderCostLess
+                WHERE
+                    SummaryOrderCostLess.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+                    and SummaryOrderCostLess.order_id = " . (int) $this->order_id;
         if ($debug)
             echo '<br />' . $sql;
         $result = $Order->query($sql);
@@ -1151,7 +1151,7 @@ class AjaxGasCodesController extends AppController {
         
         $this->layout = 'ajax';
     }
-	
+    
     public function admin_box_doc_options_prod_gas_supplier($organization_id, $delivery_id, $order_id) {
 
         if (empty($organization_id) || empty($delivery_id) || empty($order_id)) {
@@ -1159,45 +1159,45 @@ class AjaxGasCodesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
         
-		// ACL 
-		
-		/*
-		 * estraggo il filtersOwnerArticles SUPPLIER / REFERENT / DES
-		 */		
-		App::import('Model', 'Order');
-		$Order = new Order;
+        // ACL 
+        
+        /*
+         * estraggo il filtersOwnerArticles SUPPLIER / REFERENT / DES
+         */     
+        App::import('Model', 'Order');
+        $Order = new Order;
 
-		$options = [];
-		$options['conditions'] = ['Order.organization_id' => $organization_id,
-								  'Order.delivery_id' => $delivery_id,
-								  'Order.id' => $order_id];
-		$options['fields'] = ['SuppliersOrganization.owner_articles'];
-		$options['recursive'] = 1;
-		$Order->unbindModel(['belongsTo' => ['Delivery']]);
-		$orderResults = $Order->find('first', $options);
-		$owner_articles = $orderResults['SuppliersOrganization']['owner_articles'];
-		self::d($orderResults, $debug);
-		
-		App::import('Model', 'ProdGasSuppliersImport');
-		$ProdGasSuppliersImport = new ProdGasSuppliersImport;
+        $options = [];
+        $options['conditions'] = ['Order.organization_id' => $organization_id,
+                                  'Order.delivery_id' => $delivery_id,
+                                  'Order.id' => $order_id];
+        $options['fields'] = ['SuppliersOrganization.owner_articles'];
+        $options['recursive'] = 1;
+        $Order->unbindModel(['belongsTo' => ['Delivery']]);
+        $orderResults = $Order->find('first', $options);
+        $owner_articles = $orderResults['SuppliersOrganization']['owner_articles'];
+        self::d($orderResults, $debug);
+        
+        App::import('Model', 'ProdGasSuppliersImport');
+        $ProdGasSuppliersImport = new ProdGasSuppliersImport;
 
-		// precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
-		$filters['ownerArticles'] = $owner_articles;
-		$organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, $filters, $debug);
-		
-		$currentOrganization = $organizationResults['Supplier']['Organization'];
-		$currentOrganization = current($currentOrganization);
-		self::d($currentOrganization, $debug);
-		
-		if($currentOrganization['SuppliersOrganization']['can_view_orders']!='Y' && $currentOrganization['SuppliersOrganization']['can_view_orders_users']!='Y') {
-			$this->Session->setFlash(__('msg_not_permission'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));			
-		}
-		// ACL
+        // precedente versione $organizationResults = $ProdGasSupplier->getOrganizationAssociate($this->user, $organization_id, 0, $debug);
+        $filters['ownerArticles'] = $owner_articles;
+        $organizationResults = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], $organization_id, $filters, $debug);
+        
+        $currentOrganization = $organizationResults['Supplier']['Organization'];
+        $currentOrganization = current($currentOrganization);
+        self::d($currentOrganization, $debug);
+        
+        if($currentOrganization['SuppliersOrganization']['can_view_orders']!='Y' && $currentOrganization['SuppliersOrganization']['can_view_orders_users']!='Y') {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));          
+        }
+        // ACL
 
         $this->set('can_view_orders', $currentOrganization['SuppliersOrganization']['can_view_orders']);
         $this->set('can_view_orders_users', $currentOrganization['SuppliersOrganization']['can_view_orders_users']);
-		
+        
         /*
          * ctrl se ci sono ordini da validate per avvisare l'utente
          */
@@ -1216,9 +1216,9 @@ class AjaxGasCodesController extends AppController {
         $this->_box_doc_options_referente($results);
         
         $this->set('organization_id', $organization_id);
- 		$this->set('delivery_id', $delivery_id);
+        $this->set('delivery_id', $delivery_id);
         $this->set('order_id', $order_id);
-		
+        
         $this->layout = 'ajax';
     }
     
@@ -1256,12 +1256,12 @@ class AjaxGasCodesController extends AppController {
          * ctrl se l'ordine dev'essere validato (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
          * (come in PageController::index per ExportDocs/referent_to_articles_monitoring.ctp)
          */ 
-       	if ($Order->isOrderToValidate($tmp_user, $orderResults['Order']['id']))
+        if ($Order->isOrderToValidate($tmp_user, $orderResults['Order']['id']))
             $isToValidate = true;
         else
             $isToValidate = false;
 
-		$results = [];
+        $results = [];
         if ($isToValidate) {
             if ($debug)
                 echo '<br />Order toValidate (ArticlesOrder.pezzi_confezione > 1) = Y ';
@@ -1285,9 +1285,9 @@ class AjaxGasCodesController extends AppController {
                                         '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')');
         $options['recursive'] = -1;
         $order = $Order->find('first', $options);
-		
-		self::d([$options,$order], false);
-		
+        
+        self::d([$options,$order], false);
+        
         if (!empty($order)) {
             /*
              * ctrl se l'ordine ha settato delle quantita' massime > 0
@@ -1371,7 +1371,7 @@ class AjaxGasCodesController extends AppController {
             $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
         else
         if ($doc_options == 'to-users-articles-label')
-            $options = ['PDF' => 'Pdf'];		
+            $options = ['PDF' => 'Pdf'];        
         else
             $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
 
@@ -1415,8 +1415,8 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * $articlesOptions
-     * 		'options-users-cart' Solo articoli acquisti
-     * 		'options-users-all'  Tutti gli articoli
+     *      'options-users-cart' Solo articoli acquisti
+     *      'options-users-all'  Tutti gli articoli
      */
 
     public function admin_box_management_carts_users($delivery_id, $order_id, $user_id, $articlesOptions, $order_by) {
@@ -1430,18 +1430,18 @@ class AjaxGasCodesController extends AppController {
         $Delivery = new Delivery;
 
         $conditions = ['Delivery' => ['Delivery.isVisibleBackOffice' => 'Y', 'Delivery.id' => (int) $this->delivery_id],
-						'Order' => ['Order.isVisibleBackOffice' => 'Y', 'Order.id' => (int) $this->order_id],
-						'Cart' => ['Cart.user_id' => (int) $user_id, 'Cart.order_id' => (int) $this->order_id]];
+                        'Order' => ['Order.isVisibleBackOffice' => 'Y', 'Order.id' => (int) $this->order_id],
+                        'Cart' => ['Cart.user_id' => (int) $user_id, 'Cart.order_id' => (int) $this->order_id]];
 
         if ($order_by == 'articles_asc')
             $orderBy = ['Article' => 'Article.name asc'];
         else
         if ($order_by == 'articles_desc')
             $orderBy = ['Article' => 'Article.name desc'];
-		else
-		if ($order_by == 'articles_users')
+        else
+        if ($order_by == 'articles_users')
             $orderBy = ['Article' => 'Article.name asc, Article.id'];
-		
+        
         $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => true, 'suppliers' => true, 'referents' => false];
 
         if ($articlesOptions == 'options-users-cart')    // estraggo solo gli articoli acquistati
@@ -1457,7 +1457,7 @@ class AjaxGasCodesController extends AppController {
          * permission per abilitazione modifica del carrello
          */
         $permissions = ['isReferentGeneric' => $this->isReferentGeneric(),
-            		    'isTesoriereGeneric' => $this->isTesoriereGeneric()];
+                        'isTesoriereGeneric' => $this->isTesoriereGeneric()];
         $this->set('permissions', $permissions);
 
         $this->layout = 'ajax';
@@ -1465,18 +1465,18 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * $articlesOptions
-     * 		'options-users-cart' Solo articoli acquisti
-     * 		'options-users-all'  Tutti gli articoli
+     *      'options-users-cart' Solo articoli acquisti
+     *      'options-users-all'  Tutti gli articoli
      *
      *  $order_by 
-     *		da options radio (Articoli e gasista / Gasista e articoli / Articoli e data di acquisto / Acquistato il)
-     *			articles_users
-     *			users_articles
-     *			cart_date 
+     *      da options radio (Articoli e gasista / Gasista e articoli / Articoli e data di acquisto / Acquistato il)
+     *          articles_users
+     *          users_articles
+     *          cart_date 
      *          article_cart_date
-     *		da header colonna (Articolo / Utente)
-     *  		users_asc     (tutti gli utenti con acquisti)
-     *  		articles_asc  (Articoli aggregati con il dettaglio degli utenti)
+     *      da header colonna (Articolo / Utente)
+     *          users_asc     (tutti gli utenti con acquisti)
+     *          articles_asc  (Articoli aggregati con il dettaglio degli utenti)
      */
 
     public function admin_box_management_carts_articles_details($delivery_id, $order_id, $order_by) {
@@ -1490,47 +1490,47 @@ class AjaxGasCodesController extends AppController {
         $Delivery = new Delivery;
 
         $conditions = ['Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
-		                			  'Delivery.id' => (int) $this->delivery_id],
-		            	'Order' => ['Order.isVisibleBackOffice' => 'Y',
-		                			'Order.id' => (int) $this->order_id]];
-		
-		/*
-		 * S O R T
-		 */
-		switch ($order_by) {
-		    case "articles_asc":
-		        $orderBy = ['Article' => 'Article.name asc, Article.id, Cart.created'];
-		        break;
-		    case "articles_desc":
-		        $orderBy = ['Article' => 'Article.name desc, Article.id, Cart.created'];
-		        break;
-		    case "users_asc":
-		        $orderBy = ['User' => Configure::read('orderUser').' asc, Cart.created'];
-		        break;
-		    case "users_desc":
-		        $orderBy = ['User' => Configure::read('orderUser').' desc, Cart.created'];
-		        break;
-		    case "articles_users":
-		        $orderBy = ['ArticleUser' => 'Article.name asc, Article.id,'.Configure::read('orderUser').' asc'];
-		        break;
-		    case "users_articles":
+                                      'Delivery.id' => (int) $this->delivery_id],
+                        'Order' => ['Order.isVisibleBackOffice' => 'Y',
+                                    'Order.id' => (int) $this->order_id]];
+        
+        /*
+         * S O R T
+         */
+        switch ($order_by) {
+            case "articles_asc":
+                $orderBy = ['Article' => 'Article.name asc, Article.id, Cart.date'];
+                break;
+            case "articles_desc":
+                $orderBy = ['Article' => 'Article.name desc, Article.id, Cart.date'];
+                break;
+            case "users_asc":
+                $orderBy = ['User' => Configure::read('orderUser').' asc, Cart.date'];
+                break;
+            case "users_desc":
+                $orderBy = ['User' => Configure::read('orderUser').' desc, Cart.date'];
+                break;
+            case "articles_users":
+                $orderBy = ['ArticleUser' => 'Article.name asc, Article.id,'.Configure::read('orderUser').' asc'];
+                break;
+            case "users_articles":
                 $orderBy = ['UserArticle' => Configure::read('orderUser').' asc, Article.name asc, Article.id'];
                 break;
             case "article_cart_date":
-                $orderBy = ['CartDate' => 'Article.name asc, Article.id, Cart.created'];
+                $orderBy = ['CartDate' => 'Article.name asc, Article.id, Cart.date'];
                 break;
-		    default: // "cart_date"
-		        $orderBy = ['CartDate' => 'Cart.created, Article.name asc, Article.id'];
-		        break;
-		}
+            default: // "cart_date"
+                $orderBy = ['CartDate' => 'Cart.date, Article.name asc, Article.id'];
+                break;
+        }
    
 
         $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => true,
-						'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
-						'suppliers' => true, 'referents' => true];
+                        'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
+                        'suppliers' => true, 'referents' => true];
 
         $results = $Delivery->getDataWithoutTabs($this->user, $conditions, $options, $orderBy);
-		self::d($results, false);
+        self::d($results, false);
         $this->set(compact('results', 'user_id'));
         /*
          * permission per abilitazione modifica del carrello
@@ -1574,8 +1574,8 @@ class AjaxGasCodesController extends AppController {
         
         $options = [];
         $options['conditions'] = ['Order.organization_id' => (int) $this->user->organization['Organization']['id'],
-									'Order.isVisibleBackOffice' => 'Y',
-									'Order.id' => $this->order_id];
+                                    'Order.isVisibleBackOffice' => 'Y',
+                                    'Order.id' => $this->order_id];
         $options['recursive'] = -1;
         $order = $Order->find('first', $options);
         $this->set('order', $order);
@@ -1586,16 +1586,16 @@ class AjaxGasCodesController extends AppController {
         App::import('Model', 'Cart');
         $Cart = new Cart;
         $results = $Cart->getCartToValidate($this->user, $this->delivery_id, $this->order_id);
-		
-		self::d($results, false);
-		
+        
+        self::d($results, false);
+        
         $this->set('results', $results);
 
-		$this->disableCache();
-		
+        $this->disableCache();
+        
         $this->layout = 'ajax';
     }
-	
+    
     /*
      * richiamata da
      * Tesoriere::admin_orders_in_processing_summary_orders dove gli posso passare + order_id
@@ -1603,8 +1603,8 @@ class AjaxGasCodesController extends AppController {
 
     public function admin_box_summary_orders($delivery_id, $order_id_selected, $summaryOrdersOptions = 'options-delete-no') {
 
-		$debug = false;
-		
+        $debug = false;
+        
         if (empty($this->delivery_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -1668,29 +1668,29 @@ class AjaxGasCodesController extends AppController {
          * ctrl se ha gia' saldato al cassiere / tesoriere SummaryOrder.saldato_a
          */
         foreach($results as $numResult => $result) {
-			if($results['Delivery']['totOrders'] > 0) {
-				foreach($results['Delivery'][0]['Order'] as $numOrder => $order) {
-					foreach($order['SummaryOrder'] as $numResult2 => $summaryOrder) {
-						
-						$conditions = []; 
-						$conditions['Cart.user_id'] = $summaryOrder['User']['id'];
-						$conditions['Order.id'] = $summaryOrder['SummaryOrder']['order_id'];
-						$totImporto = $Cart->getTotImporto($this->user, $conditions, $debug);
-						
-						$summaryOrderResults = $SummaryOrder->select_to_order($this->user, $summaryOrder['SummaryOrder']['order_id'], $summaryOrder['User']['id']);
-						if(!empty($summaryOrderResults) && $summaryOrderResults['SummaryOrder']['saldato_a']!=null)
-							$results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult]['SummaryOrder']['saldato_a'] = $summaryOrderResults['SummaryOrder']['saldato_a'];
-						else
-							$results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult]['SummaryOrder']['saldato_a'] = null;
-											
-						$results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult2]['User']['totImporto'] = $totImporto;
-						$results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult2]['User']['totImporto_e'] = number_format($totImporto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
-			
-						self::d($summaryOrder, $debug);
-						 
-					} // end foreach 						
-				} // end foreach 
-			}					        
+            if($results['Delivery']['totOrders'] > 0) {
+                foreach($results['Delivery'][0]['Order'] as $numOrder => $order) {
+                    foreach($order['SummaryOrder'] as $numResult2 => $summaryOrder) {
+                        
+                        $conditions = []; 
+                        $conditions['Cart.user_id'] = $summaryOrder['User']['id'];
+                        $conditions['Order.id'] = $summaryOrder['SummaryOrder']['order_id'];
+                        $totImporto = $Cart->getTotImporto($this->user, $conditions, $debug);
+                        
+                        $summaryOrderResults = $SummaryOrder->select_to_order($this->user, $summaryOrder['SummaryOrder']['order_id'], $summaryOrder['User']['id']);
+                        if(!empty($summaryOrderResults) && $summaryOrderResults['SummaryOrder']['saldato_a']!=null)
+                            $results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult]['SummaryOrder']['saldato_a'] = $summaryOrderResults['SummaryOrder']['saldato_a'];
+                        else
+                            $results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult]['SummaryOrder']['saldato_a'] = null;
+                                            
+                        $results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult2]['User']['totImporto'] = $totImporto;
+                        $results['Delivery'][0]['Order'][$numOrder]['SummaryOrder'][$numResult2]['User']['totImporto_e'] = number_format($totImporto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+            
+                        self::d($summaryOrder, $debug);
+                         
+                    } // end foreach                        
+                } // end foreach 
+            }                           
         } // end foreach 
         
         $this->set('results', $results);
@@ -1799,16 +1799,16 @@ class AjaxGasCodesController extends AppController {
         
         $this->set('results', $results);
 
-		self::d($results, $debug);
-		
+        self::d($results, $debug);
+        
         $this->layout = 'ajax';
     }
 
     /*
      * $userOptions 
-     * 		options-qta     Divido il trasporto in base al quantitativo acquistato
-     * 		options-weight  Divido il trasporto in base al peso di ogni acquisto
-     * 		options-users   Divido il trasporto per ogni utente
+     *      options-qta     Divido il trasporto in base al quantitativo acquistato
+     *      options-weight  Divido il trasporto in base al peso di ogni acquisto
+     *      options-users   Divido il trasporto per ogni utente
      * 
      * visualizzo i dettaglio dell'importo del trasporto per ogni utente in base all'algoritmo scelto
      */
@@ -1829,7 +1829,7 @@ class AjaxGasCodesController extends AppController {
          */
         App::import('Model', 'Order');
         $Order = new Order;
-		
+        
         $Order->id = $this->order_id;
         if (!$Order->exists($Order->id, $this->user->organization['Organization']['id'])) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -1851,26 +1851,26 @@ class AjaxGasCodesController extends AppController {
         else {
             self::d('da SummaryOrderTrasport->select_to_order() VALORIZZATO => NON eseguo SummaryOrderTrasport->populate_to_order', $debug);
         }
-		
+        
         self::d('Calcolo trasporto', $debug);
         
         $esito = $this->AjaxGasCode->getData($this->user, 'SummaryOrderTrasport', $this->order_id, $userOptions, $debug);
-		 
+         
         $this->set('userOptions', $userOptions);  // options-qta options-weight options-users
         $this->set('trasport', $esito['importo']);  // importo del trasporto 
         $this->set('totaleOrdineGiaSaldati', $esito['totaleOrdineGiaSaldati']);  // importo del trasporto gia' saldato
         $this->set('results', $esito['results']);
-		
-		self::d($results, false);
+        
+        self::d($results, false);
 
         $this->layout = 'ajax';
     }
 
     /*
      * $userOptions
-     * 		options-qta     Divido il cost_more in base al quantitativo acquistato
-     * 		options-weight  Divido il cost_more in base al peso di ogni acquisto
-     * 		options-users   Divido il cost_more per ogni utente
+     *      options-qta     Divido il cost_more in base al quantitativo acquistato
+     *      options-weight  Divido il cost_more in base al peso di ogni acquisto
+     *      options-users   Divido il cost_more per ogni utente
      *
      * visualizzo i dettaglio dell'importo del cost_more per ogni utente in base all'algoritmo scelto
      */
@@ -1917,22 +1917,22 @@ class AjaxGasCodesController extends AppController {
         self::d('<h2>Calcolo cost_more</h2>', $debug);
         
         $esito = $this->AjaxGasCode->getData($this->user, 'SummaryOrderCostMore', $this->order_id, $userOptions, $debug);
-		 
+         
         $this->set('userOptions', $userOptions);  // options-qta options-weight options-users
         $this->set('cost_more', $esito['importo']);  // importo del trasporto 
         $this->set('totaleOrdineGiaSaldati', $esito['totaleOrdineGiaSaldati']);  // importo del cost more gia' saldato
         $this->set('results', $esito['results']);
-		
-		self::d($results, false);
+        
+        self::d($results, false);
 
         $this->layout = 'ajax';
     }
 
     /*
      * $userOptions
-     * 		options-qta     Applica il cost_less in base al quantitativo acquistato
-     * 		options-weight  Applica il cost_less in base al peso di ogni acquisto
-     * 		options-users   Applica il cost_less per ogni utente
+     *      options-qta     Applica il cost_less in base al quantitativo acquistato
+     *      options-weight  Applica il cost_less in base al peso di ogni acquisto
+     *      options-users   Applica il cost_less per ogni utente
      *
      * visualizzo i dettaglio dell'importo del cost_less per ogni utente in base all'algoritmo scelto
      */
@@ -1981,13 +1981,13 @@ class AjaxGasCodesController extends AppController {
          self::d('<h2>Calcolo cost_less</h2>', $debug);
         
         $esito = $this->AjaxGasCode->getData($this->user, 'SummaryOrderCostLess', $this->order_id, $userOptions, $debug);
-		 
+         
         $this->set('userOptions', $userOptions);  // options-qta options-weight options-users
         $this->set('cost_less', $esito['importo']);  // importo del trasporto 
         $this->set('totaleOrdineGiaSaldati', $esito['totaleOrdineGiaSaldati']);  // importo del cost more gia' saldato
         $this->set('results', $esito['results']);
-		
-		self::d($results, false);
+        
+        self::d($results, false);
 
         $this->layout = 'ajax';
     }
@@ -2037,15 +2037,15 @@ class AjaxGasCodesController extends AppController {
         }
 
         $sql = "UPDATE
-					".Configure::read('DB.prefix')."carts
-				SET 
-					importo_forzato = " . $this->importoToDatabase($importo_forzato) . " 
-				WHERE
-					organization_id = " . $this->user->organization['Organization']['id'] . "
-					AND order_id = " . $order_id . "
-					AND article_organization_id = " . $article_organization_id . "
-					AND article_id = " . $article_id . "
-					AND user_id = " . $user_id;
+                    ".Configure::read('DB.prefix')."carts
+                SET 
+                    importo_forzato = " . $this->importoToDatabase($importo_forzato) . " 
+                WHERE
+                    organization_id = " . $this->user->organization['Organization']['id'] . "
+                    AND order_id = " . $order_id . "
+                    AND article_organization_id = " . $article_organization_id . "
+                    AND article_id = " . $article_id . "
+                    AND user_id = " . $user_id;
         //echo '<br/>'.$sql;
         try {
             $Cart->query($sql);
@@ -2056,13 +2056,13 @@ class AjaxGasCodesController extends AppController {
             $esito = false;
         }
 
-		/*
-		 * ricalcolo SummaryOrders se esiste, NON + utilizzato, function vuota
-		 */
-		App::import('Model', 'SummaryOrder'); 
-		$SummaryOrder = new SummaryOrder;
-		$SummaryOrder->ricalcolaPerSingoloUtente($this->user, $order_id, $user_id);
-		
+        /*
+         * ricalcolo SummaryOrders se esiste, NON + utilizzato, function vuota
+         */
+        App::import('Model', 'SummaryOrder'); 
+        $SummaryOrder = new SummaryOrder;
+        $SummaryOrder->ricalcolaPerSingoloUtente($this->user, $order_id, $user_id);
+        
         if ($esito)
             $content_for_layout = '<script type="text/javascript">managementCart(\'' . $row_id . '\',\'OKIMPORTO\',null);</script>';
         else
@@ -2096,15 +2096,15 @@ class AjaxGasCodesController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
 
             $sql = "UPDATE
-					".Configure::read('DB.prefix')."carts
-				SET
-					nota = '" . addslashes($this->request->data['notaTextEcomm']) . "' 
-				WHERE
-					organization_id = " . $this->user->organization['Organization']['id'] . "
-					AND order_id = " . $order_id . "
-					AND article_organization_id = " . $article_organization_id . "
-					AND article_id = " . $article_id . "
-					AND user_id = " . $user_id;
+                    ".Configure::read('DB.prefix')."carts
+                SET
+                    nota = '" . addslashes($this->request->data['notaTextEcomm']) . "' 
+                WHERE
+                    organization_id = " . $this->user->organization['Organization']['id'] . "
+                    AND order_id = " . $order_id . "
+                    AND article_organization_id = " . $article_organization_id . "
+                    AND article_id = " . $article_id . "
+                    AND user_id = " . $user_id;
             try {
                 $Cart->query($sql);
             } catch (Exception $e) {
@@ -2122,9 +2122,9 @@ class AjaxGasCodesController extends AppController {
 
     /*
      * Event ('#dialogmodal')open()
-     * 	View/Docs/admin_management_cart.ctp
-     * 		/Layouts/ajax.ctp 
-     * 		modal in View/Docs/admin_management_cart.ctp
+     *  View/Docs/admin_management_cart.ctp
+     *      /Layouts/ajax.ctp 
+     *      modal in View/Docs/admin_management_cart.ctp
      *
      *  key = $order_id_$article_organization_id_$article_id_$user_id
      */
@@ -2167,25 +2167,25 @@ class AjaxGasCodesController extends AppController {
 
     function admin_setNotaUser($organization_id, $user_id) {
 
-		$debug=false;
-	
+        $debug=false;
+    
         if (empty($organization_id) || empty($user_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-		App::import('Model', 'UserProfile');
+        App::import('Model', 'UserProfile');
         $UserProfile = new UserProfile;
-		
+        
         if(!$this->aclOrganizationIdinUso($organization_id)) {
             $this->Session->setFlash(__('msg_not_permission'));
-            $this->myRedirect(Configure::read('routes_msg_stop'));			
-		}
-		
+            $this->myRedirect(Configure::read('routes_msg_stop'));          
+        }
+        
         if ($this->request->is('post') || $this->request->is('put')) {
-			$notaUser = addslashes($this->request->data['notaUser']);
+            $notaUser = addslashes($this->request->data['notaUser']);
 
-			$UserProfile->setValue($this->user, $user_id, 'nota', $notaUser, $debug);
+            $UserProfile->setValue($this->user, $user_id, 'nota', $notaUser, $debug);
         }
 
         $content_for_layout = '';
@@ -2197,23 +2197,23 @@ class AjaxGasCodesController extends AppController {
 
     function admin_getNotaUser($organization_id, $user_id) {
 
-		$debug=false;
-	
+        $debug=false;
+    
         if (empty($organization_id) || empty($user_id)) {
             $this->Session->setFlash(__('msg_error_params'));
          //   $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-		
-		App::import('Model', 'UserProfile');
+        
+        App::import('Model', 'UserProfile');
         $UserProfile = new UserProfile;
-		
+        
         if(!$this->aclOrganizationIdinUso($organization_id)) {
             $this->Session->setFlash(__('msg_not_permission'));
-            $this->myRedirect(Configure::read('routes_msg_stop'));			
-		}
+            $this->myRedirect(Configure::read('routes_msg_stop'));          
+        }
 
-		$nota = $UserProfile->getValue($this->user, $user_id, 'nota', '', $debug);
-		
+        $nota = $UserProfile->getValue($this->user, $user_id, 'nota', '', $debug);
+        
         if (!empty($nota))
             $this->set('content_for_layout', $nota);
         else
@@ -2221,5 +2221,5 @@ class AjaxGasCodesController extends AppController {
 
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
-    }	
+    }   
 }

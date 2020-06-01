@@ -123,7 +123,6 @@ if (isset($results['Delivery']))
             $tot_importo_cost_more = 0;
 
             foreach ($result['Delivery']['Order'] as $numOrder => $order) {
-
                 if (isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti
                     
                     if(isset($user->organization['Organization']['hasCashFilterSupplier']) && $user->organization['Organization']['hasCashFilterSupplier']=='Y') 

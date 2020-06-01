@@ -176,7 +176,9 @@ class DataBehavior extends ModelBehavior {
 				/*
 				 * ottienti dati Article, ArticlesOrder, Cart, ArticleType
 				* */
-				App::import('Model', 'ArticlesArticlesType');				$ArticlesArticlesType = new ArticlesArticlesType;				
+				App::import('Model', 'ArticlesArticlesType');
+				$ArticlesArticlesType = new ArticlesArticlesType;
+				
 				App::import('Model', 'ArticlesOrder');
 				$ArticlesOrder = new ArticlesOrder;
 				
@@ -186,7 +188,8 @@ class DataBehavior extends ModelBehavior {
 				if(isset($conditions['Article']))       $conditionsLocal += $conditions['Article'];
 				if(isset($conditions['FilterArticleName'])) $conditionsLocal += $conditions['FilterArticleName'];
 				if(isset($conditions['FilterArticleArticleTypeIds'])) $conditionsLocal += $conditions['FilterArticleArticleTypeIds'];
-								if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder'])  // Ajax::admin_box_validation_carts, Ajax::admin_box_summary_orders
+				
+				if(isset($options['articlesOrdersInOrder']) && $options['articlesOrdersInOrder'])  // Ajax::admin_box_validation_carts, Ajax::admin_box_summary_orders
 					$articlesOrders = $ArticlesOrder->getArticlesOrdersInOrder($user, $conditionsLocal, $orderBy);
 				else
 				if(isset($options['articoliEventualiAcquistiNoFilterInOrdine']) && $options['articoliEventualiAcquistiNoFilterInOrdine'])  { // Deliveries::tabsEcomm(), Deliveries::tabs() se loggati
@@ -327,14 +330,26 @@ class DataBehavior extends ModelBehavior {
 							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
 							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;
 							
-							/*							 * userprofile							*/							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);							$userProfile = JUserHelper::getProfile($userTmp->id);							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;
+							/*
+							 * userprofile
+							*/
+							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);
+							$userProfile = JUserHelper::getProfile($userTmp->id);
+							$this->result['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;
 						}
 						else {
 							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Article'][$numArticlesOrder] = $articlesOrder['Article'];
 							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder] = $articlesOrder['ArticlesOrder'];
 							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['Cart'][$numArticlesOrder] = $articlesOrder['Cart'];
 							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder] = $articlesOrder['User'];
-							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;														/*							 * userprofile							*/							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);							$userProfile = JUserHelper::getProfile($userTmp->id);							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;						
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['SummaryOrder'][$numArticlesOrder] = $totSummaryOrderSaldato;
+							
+							/*
+							 * userprofile
+							*/
+							$userTmp = JFactory::getUser($articlesOrder['Cart']['user_id']);
+							$userProfile = JUserHelper::getProfile($userTmp->id);
+							$this->result['Tab'][$numTab]['Delivery'][$numDelivery]['Order'][$numOrder]['User'][$numArticlesOrder]['Profile'] = $userProfile->profile;						
 						}
 					
 					} // loop foreach($articlesOrders as $numArticlesOrder => $articlesOrder)
@@ -874,6 +889,7 @@ class DataBehavior extends ModelBehavior {
 		$SuppliersOrganization = new SuppliersOrganization;
 
 		$results = $SuppliersOrganization->getSuppliersOrganization($user, $conditions, $orderBy);
+
 		if(count($results)==1) {
 			$newResults = [];
 			$results = current($results);
@@ -885,6 +901,7 @@ class DataBehavior extends ModelBehavior {
 			$newResults['supplier_id'] = $results['Supplier']['id'];
 			$newResults['j_content_id'] = $results['Supplier']['j_content_id'];
 			$newResults['j_catid'] = $results['Content']['catid'];
+			$newResults['isSupplierOrganizationCashExcluded'] = $results['SuppliersOrganization']['isSupplierOrganizationCashExcluded'];
 
 			$results = $newResults;
 		}

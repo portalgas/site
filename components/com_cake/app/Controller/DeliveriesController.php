@@ -1110,19 +1110,19 @@ class DeliveriesController extends AppController {
          * carrello
          */
 		$conditions = []; 
-        $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
-                //  'Delivery.stato_elaborazione'=> 'OPEN',
+        $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
+                //  'Delivery.stato_elaborzione'=> 'OPEN',
                 'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
-                'Delivery.data' => $deliveryData),
-            'Cart' => array('Cart.user_id' => (int) $this->user->id,
-                'Cart.deleteToReferent' => 'N'),
-            'Order' => array('Order.state_code != ' => 'CREATE-INCOMPLETE'),
-            'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+                'Delivery.data' => $deliveryData],
+            'Cart' => ['Cart.user_id' => (int) $this->user->id,
+                'Cart.deleteToReferent' => 'N'],
+            'Order' => ['Order.state_code != ' => 'CREATE-INCOMPLETE'],
+            'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
 	
 	    $options = []; 
-        $options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+        $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
             'articoliDellUtenteInOrdine' => true, // estraggo SOLO gli articoli acquistati da un utente in base all'ordine
-            'suppliers' => true, 'referents' => false);
+            'suppliers' => true, 'referents' => false];
 
         $results = $this->Delivery->getDataTabs($this->user, $conditions, $options);
         $this->set(compact('results'));
