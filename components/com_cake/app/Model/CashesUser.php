@@ -393,6 +393,16 @@ class CashesUser extends AppModel {
 			echo "</pre>";			
 		}
 
+		 /*
+		  * totale importo acquisti
+		  */
+		$user_tot_importo_acquistato = $this->getTotImportoAcquistato($user, $user->id);
+		$user_tot_importo_acquistato_ = number_format($user_tot_importo_acquistato ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+		if($user_tot_importo_acquistato==0)
+			$results['fe_msg_tot_acquisti'] = 'Non hai ancora effettuato acquisti';
+		else
+			$results['fe_msg_tot_acquisti'] = 'Hai acquistato per '.$user_tot_importo_acquistato_.'&nbsp;&euro;';
+
 		// 
      	switch($organization_cashLimit) {
     		case "LIMIT-NO":
@@ -420,7 +430,7 @@ class CashesUser extends AppModel {
 				else
 	    		if($results['importo']==0) {
 	    			$results['stato'] = 'YELLOW';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')'; 
+					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
 				}
     		break;
     		case "LIMIT-CASH-AFTER":
@@ -440,7 +450,7 @@ class CashesUser extends AppModel {
 				else
 	    		if($results['importo']==0) {
 	    			$results['stato'] = 'YELLOW';
-					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
+					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
 				}	
     		break;
     		case "LIMIT-CASH-USER":
@@ -480,7 +490,7 @@ class CashesUser extends AppModel {
 						else
 			    		if($results['importo']==0) {
 			    			$results['stato'] = 'YELLOW';
-							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')';
+							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
 						}
 		    		break;
 		    		case "LIMIT-CASH-AFTER":
@@ -500,7 +510,7 @@ class CashesUser extends AppModel {
 			    		else
 			    		if($results['importo']==0) {
 			    			$results['stato'] = 'YELLOW'; 
-							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa! ('.$results['importo_e'].')'; 
+							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
 			    		}  		
 		    		break;
 		    	}				 

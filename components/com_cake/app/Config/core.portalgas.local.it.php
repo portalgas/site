@@ -6,11 +6,11 @@ Configure::write('gcalendar.add', false);
 
 Configure::write('App.root', '/var/www/portalgas');	
 
+Configure::write('Neo.portalgas.url', 'http://neo.portalgas.local.it:81/');
 /*
  * ovverride
  */
 Configure::write('App.server', 'http://'.$_SERVER['SERVER_NAME'].':81');
-Configure::write('Neo.portalgas.url', 'http://neo.portalgas.local.it:81/');
 
 /**
  * Configure the cache handlers that CakePHP will use for internal
