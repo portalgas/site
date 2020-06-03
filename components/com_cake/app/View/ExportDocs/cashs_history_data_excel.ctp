@@ -2,77 +2,55 @@
 $this->PhpExcel->createWorksheet();
 $this->PhpExcel->setDefaultFont('Calibri', 12);	
 
-
-
 if (!empty($results)) {
 
 		// define table cells
-		$table[] = array('label' => __('N.'), 'width' => 'auto');
 		$table[] = array('label' => __('Name'), 'width' => 'auto', 'filter' => true);
 		$table[] = array('label' => __('Mail'), 'width' => 'auto', 'filter' => true);
-		$table[] = array('label' => __('Importo'), 'width' => 'auto', 'filter' => false);
-		$table[] = array('label' => __('Movimenti'), 'width' => 'auto', 'filter' => false);
-		$table[] = array('label' => __('Nota'), 'width' => 'auto', 'filter' => false);
-		$table[] = array('label' => __('Data'), 'width' => 'auto', 'filter' => true);
+		$table[] = array('label' => __('CashSaldo'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => __('CashOperazione'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => __('nota'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => __('Created'), 'width' => 'auto', 'filter' => true);
 		
 		// heading
 		$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
 
-			
-		$i=0;
 		$tot_importo=0;
-		foreach ($results as $numResult => $result) {
+		foreach ($results as $numResult => $user) {
 			
-			$rowsExcel = [];
+			foreach ($user['Cash'] as $numResult2 => $result) {
 			
-			$rowsExcel[] = ($numResult + 1);
-			$rowsExcel[] = $result['User']['name'];
-			$rowsExcel[] = $result['User']['email'];
-			$rowsExcel[] = $result['Cash']['importo'];
-			$rowsExcel[] = '';	
-			$rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($result['Cash']['nota']));	
-			$rowsExcel[] = CakeTime::format($result['Cash']['created'], "%A %e %B %Y");
-			
-			$this->PhpExcel->addTableRow($rowsExcel);
-			
-			$tot_importo += $result['Cash']['importo'];
-			$i++;
-                        
-                        /*
-                         * storico cassa
-                         */
-                        if(isset($result['CashesHistory'])) {
-                            $importo_history_old = 0;
-                            foreach ($result['CashesHistory'] as $numResult2 => $historyResult) {
-			
-                                if($numResult2==0) 
-                                    $movimento = ($result['Cash']['importo'] - ($historyResult['CashesHistory']['importo']));
-                                else 
-                                    $movimento = ($importo_history_old - ($historyResult['CashesHistory']['importo']));
-                                
-                                $rowsExcel = [];
+				$rowsExcel = [];
 
-                                $rowsExcel[] = '';
-                                $rowsExcel[] = '';
-                                $rowsExcel[] = '';
-                                $rowsExcel[] = $historyResult['CashesHistory']['importo'];
-                                $rowsExcel[] = $movimento;	
-                                $rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($historyResult['CashesHistory']['nota']));	
-                                $rowsExcel[] = CakeTime::format($historyResult['CashesHistory']['created'], "%A %e %B %Y");
+				if($numResult2==0) {
+					$rowsExcel[] = $user['User']['name'];
+					$rowsExcel[] = $user['User']['email'];
+				}
+				else {
+					$rowsExcel[] = '';
+					$rowsExcel[] = '';
+				}
 
-                                $this->PhpExcel->addTableRow($rowsExcel);  
-                                
-                                $importo_history_old = $historyResult['CashesHistory']['importo'];
-                            }
-                        }
-		}		
+				$rowsExcel[] = $result['CashesHistory']['importo'];
+				if($result['CashesHistory']['operazione']>0)
+					$rowsExcel[] = '+';		
+				$rowsExcel[] = $result['CashesHistory']['operazione_e'];	
+				$rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($result['Cash']['nota']));	
+				$rowsExcel[] = CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y");
+				
+				$this->PhpExcel->addTableRow($rowsExcel);
+				
+				// $tot_importo += $result['CashesHistory']['importo'];
+				
+			} // loop Cashs
+
+		} // loop Users	
 		
 		/*
 		 * totale cassa
-		 */
+
 		$tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 
-			
 		$rowsExcel = [];
 		
 		$rowsExcel[] = '';
@@ -80,7 +58,8 @@ if (!empty($results)) {
 		$rowsExcel[] = '';
 		$rowsExcel[] = $tot_importo;	
 		
-		$this->PhpExcel->addTableRow($rowsExcel);				
+		$this->PhpExcel->addTableRow($rowsExcel);	
+		 */					
 }	
 
 $this->PhpExcel->addTableFooter();

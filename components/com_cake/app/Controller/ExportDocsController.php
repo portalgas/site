@@ -3110,6 +3110,7 @@ class ExportDocsController extends AppController {
     public function admin_cashsHistoryData($doc_formato) {
 
         $debug = false;
+        // $debug_user = '922'; 
 
         $user_id = $this->user->get('id');
         if ($user_id == 0) {
@@ -3128,26 +3129,19 @@ class ExportDocsController extends AppController {
         $options = [];
         $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
                                   'User.block' => 0];
+        if(isset($debug_user))
+            $options['conditions'] = ['User.id' => $debug_user];
 
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
-        $results = $User->find('all', $options);
+        $userResults = $User->find('all', $options);
+        if($debug) debug($userResults);
 
-        foreach ($results as $numResult => $result) {
+        $newResults = [];
+        foreach ($userResults as $numResult => $userResult) {
 
-            $options = [];
-            $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
-									   'Cash.user_id' => $result['User']['id']];
-            $userResults = $Cash->find('first', $options);
-            if (!empty($userResults))
-                $results[$numResult]['Cash'] = $userResults['Cash'];
-            else {
-                $results[$numResult]['Cash']['importo'] = '0.00';
-                $results[$numResult]['Cash']['importo_'] = '0,00';
-                $results[$numResult]['Cash']['importo_e'] = '0,00 &euro;';
-                $results[$numResult]['Cash']['nota'] = '';
-            }
-            
+            $results = [];
+
             /*
              * storico di cassa
              */
@@ -3156,17 +3150,37 @@ class ExportDocsController extends AppController {
         
             $options = [];
             $options['conditions'] = ['CashesHistory.organization_id' => $this->user->organization['Organization']['id'],
-                                      'CashesHistory.user_id' => $result['User']['id']];
+                                      'CashesHistory.user_id' => $userResult['User']['id']];
 
             $options['recursive'] = -1;
-            $options['order'] = ['CashesHistory.created asc'];
+            $options['order'] = ['CashesHistory.id asc']; // per created no perche' e' sempre = 
             $cashesHistoryResults = $CashesHistory->find('all', $options);
-
+            if($debug) debug($options);
+            if($debug) debug($cashesHistoryResults);
             if(!empty($cashesHistoryResults))
-                $results[$numResult]['CashesHistory'] = $cashesHistoryResults;
-        }
+                $results = $cashesHistoryResults;
 
-        $this->set(compact('results'));
+            /*
+             * aggiungo ultimo movimento
+             */
+            $options = [];
+            $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+									   'Cash.user_id' => $userResult['User']['id']];
+            $options['recursive'] = -1;
+            $cashResults = $Cash->find('first', $options);
+            if(!empty($cashResults))    
+                $results[(count($results))]['CashesHistory'] = $cashResults['Cash'];    
+
+            if(!empty($results))
+                $results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
+
+            $newResults[$numResult] = $userResult;
+            $newResults[$numResult]['Cash'] = $results;
+            
+        } // foreach users
+
+        //  debug($newResults);
+        $this->set('results', $newResults);
 
         $fileData['fileTitle'] = "Cassa con storico";
         $fileData['fileName'] = "cassa_con_storico";

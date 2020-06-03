@@ -27,76 +27,55 @@ if (!empty($results)) {
 		$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 		$html .= '		<tr>';
 		
-		$html .= '<th width="'.$output->getCELLWIDTH30().'">'.__('N.').'</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('Importo').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('Movimenti').'</th>';
-                $html .= '<th width="'.$output->getCELLWIDTH200().'" style="text-align:right;">'.__('Nota').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('Data').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('CashSaldo').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('CashOperazione').'</th>';
+                $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.__('nota').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('Created').'</th>';
 
 		$html .= '		</tr>';
 		$html .= '	</thead><tbody>';
-                
-		$i=0;
-		$tot_importo=0;
-		foreach ($results as $numResult => $result) {
-			
-			$html .= '<tr>';
-			$html .= '<td width="'.$output->getCELLWIDTH30().'">'.($numResult + 1).'</td>';
-			$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
-			$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$result['Cash']['importo_e'].'</td>';
-			$html .= '<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
-			$html .= 'background-color:';
-			if($result['Cash']['importo']=='0.00') $html .= '#fff';
-			else
-			if($result['Cash']['importo']<0) $html .= 'red';
-			else
-			if($result['Cash']['importo']>0) $html .= 'green';
-			$html .= '">';
-                        $html .= '</td>';
-                        $html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';
-			$html .= '<td width="'.$output->getCELLWIDTH200().'" style="text-align:right;">'.$result['Cash']['nota'].'</td>';
-			$html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.CakeTime::format($result['Cash']['created'], "%e %B %Y").'</td>';
-			$html .= '</tr>';
-			
-			$tot_importo += $result['Cash']['importo'];
-			$i++;
-                        
-                        /*
-                         * storico cassa
-                         */
-                        if(isset($result['CashesHistory'])) {
-                            $importo_history_old = 0;
-                            foreach ($result['CashesHistory'] as $numResult2 => $historyResult) {
-			
-                                if($numResult2==0) 
-                                    $movimento = ($result['Cash']['importo'] - ($historyResult['CashesHistory']['importo']));
-                                else 
-                                    $movimento = ($importo_history_old - ($historyResult['CashesHistory']['importo']));
-                                
-                                $rowsExcel = [];
 
-                                $html .= '<tr>';
-                                $html .= '<td width="'.$output->getCELLWIDTH30().'"></td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">';
-                                $html .= $historyResult['CashesHistory']['importo_e'];
-                                $html .= '</td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH10().'"></td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">';
-                                $html .= number_format($movimento,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH200().'" style="text-align:right;">'.$historyResult['CashesHistory']['nota'].'</td>';
-                                $html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.CakeTime::format($historyResult['CashesHistory']['created'], "%e %B %Y").'</td>';
-                                $html .= '</tr>';
-                                
-                                $importo_history_old = $historyResult['CashesHistory']['importo'];
-                            }
-                        }                        
-		}		
+		$tot_importo=0;
+		foreach ($results as $numResult => $user) {
+			
+			foreach ($user['Cash'] as $numResult2 => $result) {
+				$html .= '<tr>';
+
+				if($numResult2==0) {
+					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$user['User']['name'].'</td>';
+				}
+				else {
+					$html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';
+				}
+
+				$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$result['CashesHistory']['importo_e'].'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
+				$html .= 'background-color:';
+				if($result['CashesHistory']['importo']=='0.00') $html .= '#fff';
+				else
+				if($result['CashesHistory']['importo']<0) $html .= 'red';
+				else
+				if($result['CashesHistory']['importo']>0) $html .= 'green';
+				$html .= '">';
+	            $html .= '</td>';
+	            $html .= '<td width="'.$output->getCELLWIDTH100().'">';
+				if($result['CashesHistory']['operazione']>0)
+					$html .=  '+';		
+				$html .=  $result['CashesHistory']['operazione_e'];
+	            $html .= '</td>';
+				$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.$result['CashesHistory']['nota'].'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y").'</td>'; 
+				$html .= '</tr>';
+				
+				$tot_importo += $result['CashesHistory']['importo'];
+  
+			} // loop Cashs
+
+		} // loop Users
 		
 		/*
 		 * totale cassa
-		 */
 		$tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 		
 		$html .= '<tr>';
@@ -107,6 +86,7 @@ if (!empty($results)) {
 		$html .= '<th width="'.$output->getCELLWIDTH200().'"></th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'"></th>';
 		$html .= '</tr>';
+		*/
 		$html .= '</tbody></table>';
                 
 }	
