@@ -412,6 +412,7 @@ class CashesUser extends AppModel {
 
     			$results['stato'] = 'GREEN';
     			$results['fe_msg'] = 'Nessun limite per gli acquisti';
+    			$results['fe_msg_tot_acquisti'] = '';
     		break;
     		case "LIMIT-CASH":
     			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));
@@ -472,6 +473,7 @@ class CashesUser extends AppModel {
 
 		    			$results['stato'] = 'GREEN';
 						$results['fe_msg'] = 'Nessun limite per gli acquisti';
+    					$results['fe_msg_tot_acquisti'] = '';
 		    		break;
 		    		case "LIMIT-CASH":
 		    			$results['importo'] = (floatval($tot_importo_cash) - floatval($tot_importo_acquistato));

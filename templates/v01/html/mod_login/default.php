@@ -72,9 +72,11 @@ if ($type == 'logout') {
                         <p>
                             <div class="alert alert-warning">{{{data.ctrl_limit.fe_msg}}}</div>
                         </p>
+                        {{#data.ctrl_limit.fe_msg_tot_acquisti}}
                         <p>
                             <div class="alert alert-warning">{{{data.ctrl_limit.fe_msg_tot_acquisti}}}</div>
                         </p>
+                        {{/data.ctrl_limit.fe_msg_tot_acquisti}}
 					</script>
                     <?php	
 						/*
