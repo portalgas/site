@@ -30,7 +30,7 @@ if (!empty($results)) {
 		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('CashSaldo').'</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('CashOperazione').'</th>';
-                $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.__('nota').'</th>';
+        $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.__('nota').'</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('Created').'</th>';
 
 		$html .= '		</tr>';

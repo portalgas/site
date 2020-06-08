@@ -8,6 +8,7 @@ if (!empty($results)) {
 		$table[] = array('label' => __('Name'), 'width' => 'auto', 'filter' => true);
 		$table[] = array('label' => __('Mail'), 'width' => 'auto', 'filter' => true);
 		$table[] = array('label' => __('CashSaldo'), 'width' => 'auto', 'filter' => false);
+		$table[] = array('label' => '', 'width' => 'auto', 'filter' => false);		
 		$table[] = array('label' => __('CashOperazione'), 'width' => 'auto', 'filter' => false);
 		$table[] = array('label' => __('nota'), 'width' => 'auto', 'filter' => false);
 		$table[] = array('label' => __('Created'), 'width' => 'auto', 'filter' => true);
@@ -34,8 +35,10 @@ if (!empty($results)) {
 				$rowsExcel[] = $result['CashesHistory']['importo'];
 				if($result['CashesHistory']['operazione']>0)
 					$rowsExcel[] = '+';		
-				$rowsExcel[] = $result['CashesHistory']['operazione_e'];	
-				$rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($result['Cash']['nota']));	
+				else
+					$rowsExcel[] = '-';	
+				$rowsExcel[] = $result['CashesHistory']['operazione'];	
+				$rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($result['CashesHistory']['nota']));	
 				$rowsExcel[] = CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y");
 				
 				$this->PhpExcel->addTableRow($rowsExcel);
