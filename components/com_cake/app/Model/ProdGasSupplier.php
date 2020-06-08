@@ -30,7 +30,7 @@ class ProdGasSupplier extends AppModel {
 			$SuppliersOrganization = new SuppliersOrganization;
 			
 			$options = [];
-			$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'], 
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $supplierResults['Organization']['id'], 
 									  'SuppliersOrganization.supplier_id' => $supplierResults['Supplier']['id']];
 			$options['recursive'] = -1;
 			self::d($options, $debug);

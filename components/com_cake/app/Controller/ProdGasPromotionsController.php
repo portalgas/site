@@ -140,7 +140,7 @@ class ProdGasPromotionsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 
 			self::d($this->request->data, $debug); 
-			
+		
 			/*
 			 * dati promozione
  			 */
@@ -166,6 +166,7 @@ class ProdGasPromotionsController extends AppController {
 				self::d($errors, $debug);
 			}
 			else {
+				// debug($this->request->data);
 				$this->ProdGasPromotion->create();
 				if($this->ProdGasPromotion->save($this->request->data)) {
 					$continue = true;
@@ -315,6 +316,7 @@ class ProdGasPromotionsController extends AppController {
 					list($organization_id, $delivery_id) = explode('-', $organization_delivery_id);
 					
 					$data = [];
+					$data['ProdGasPromotionsOrganizationsDelivery']['supplier_id'] = $this->user->organization['Supplier']['Supplier']['id'];
 					$data['ProdGasPromotionsOrganizationsDelivery']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
 					$data['ProdGasPromotionsOrganizationsDelivery']['organization_id'] = $organization_id;	
 					$data['ProdGasPromotionsOrganizationsDelivery']['delivery_id'] = $delivery_id;	

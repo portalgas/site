@@ -23,7 +23,7 @@ class plgSystemRedirect extends JPlugin
 	 * @return	void
 	 * @since	1.0
 	 */
-	function __construct(&$subject, $config)
+	function __construct($subject, $config)
 	{
 		parent::__construct($subject, $config);
 
@@ -31,7 +31,7 @@ class plgSystemRedirect extends JPlugin
 		JError::setErrorHandling(E_ERROR, 'callback', array('plgSystemRedirect', 'handleError'));
 	}
 
-	static function handleError(&$error)
+	static function handleError($error)
 	{
 		// Get the application object.
 		$app = JFactory::getApplication();

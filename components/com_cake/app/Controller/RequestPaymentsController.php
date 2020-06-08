@@ -197,7 +197,9 @@ class RequestPaymentsController extends AppController {
  		 */		 
 		if(isset($this->request->params['pass']['id']))
 			$id = $this->request->params['pass']['id'];
-	
+		else
+			$id = $this->request->data['RequestPayment']['request_payment_id'];
+
 		$this->RequestPayment->id = $id;
 		if (!$this->RequestPayment->exists($this->RequestPayment->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -205,7 +207,7 @@ class RequestPaymentsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		$msg = "";
-		
+	
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			if($this->request->data['RequestPayment']['stato_elaborazione']=='WAIT')

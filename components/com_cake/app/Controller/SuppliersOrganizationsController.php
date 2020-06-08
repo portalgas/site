@@ -983,7 +983,7 @@ class SuppliersOrganizationsController extends AppController {
 		
 		/*
 		 * options owner_articles, 
-		 */
+		 */ 
 		$prod_gas_supplier_owner_articles = $this->SuppliersOrganization->getOwnerArticles($this->user, $results, $debug);
 		$this->set(compact('prod_gas_supplier_owner_articles'));		
 		$this->set(compact('results'));
@@ -1145,9 +1145,9 @@ class SuppliersOrganizationsController extends AppController {
 						}
 					} 
 					else {
-						// non dovrebbe capirare, nel caso mantiene quello su $results['SuppliersOrganization']['owner_articles']
+						// non dovrebbe capitare, nel caso mantiene quello su $results['SuppliersOrganization']['owner_articles']
 					}
-					
+
 					$data['SuppliersOrganization']['can_view_orders'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders'];
 					$data['SuppliersOrganization']['can_view_orders_users'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_view_orders_users'];				
 					$data['SuppliersOrganization']['can_promotions'] = $this->request->data['SuppliersOrganization']['prod_gas_supplier_can_promotions'];
