@@ -65,7 +65,10 @@ if (!empty($results)) {
 				$html .=  $result['CashesHistory']['operazione_e'];
 	            $html .= '</td>';
 				$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.$result['CashesHistory']['nota'].'</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y").'</td>'; 
+				$html .= '<td width="'.$output->getCELLWIDTH100().'" style="text-align:right;">';
+				if((count($user['Cash'])-1) > $numResult2)
+					$html .= CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y");
+				$html .= '</td>'; 
 				$html .= '</tr>';
 				
 				$tot_importo += $result['CashesHistory']['importo'];

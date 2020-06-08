@@ -38,7 +38,8 @@ foreach ($results as $numResult => $result):
 		echo $result['CashesHistory']['nota'];
 		echo '</td>';			
 		echo '<td style="white-space: nowrap;">';
-		echo $this->Time->i18nFormat($result['CashesHistory']['modified'],"%A, %e %B %Y");
+		if((count($results)-1) > $numResult)
+			echo $this->Time->i18nFormat($result['CashesHistory']['modified'],"%A, %e %B %Y");
 		echo '</td>';
 		echo '</tr>';
 	
