@@ -51,7 +51,8 @@ class Storeroom extends AppModel {
 	public function getArticlesToStoreroom($user, $conditions, $orderBy=null, $debug=false) {
 
 		$results = [];
-		if($user->organization['Organization']['hasStoreroom']=='Y') {			
+		if($user->organization['Organization']['hasStoreroom']=='Y') {
+			
 			$this->virtualFields = [
 				'prezzo_db' => 0,
 				'importo' => 0,
@@ -109,7 +110,11 @@ class Storeroom extends AppModel {
 			self::d($sql, $debug);
 			try {
 				$results = $this->query($sql);
-			}			catch (Exception $e) {				CakeLog::write('error',$sql);				CakeLog::write('error',$e);			}
+			}
+			catch (Exception $e) {
+				CakeLog::write('error',$sql);
+				CakeLog::write('error',$e);
+			}
 		}
 			
 		self::d($results, $debug);
@@ -121,7 +126,7 @@ class Storeroom extends AppModel {
 	 * estre gli articoli in dispensa gia' prenotati Storeroom.user_id != storeroomUser
 	 * se valorizzo user_id ctrl per quel determinato user
 	 */
-	public function getArticlesJustBooked($user, $storeroomUser, $article_organization_id, $article_id, $user_id=0, $orderBy=null) {
+	public function getArticlesJustBooked($user, $storeroomUser, $article_organization_id, $article_id, $user_id=0, $delivery_id=0, $orderBy=null) {
 
 		$results = [];
 		if($user->organization['Organization']['hasStoreroom']=='Y') {
@@ -155,7 +160,8 @@ class Storeroom extends AppModel {
 						and User.id != ".$storeroomUser['User']['id'];	
 			if(!empty($user_id))
 				$sql .= " and User.id = ".$user_id;
-				
+			if(!empty($delivery_id))
+				$sql .= " and Delivery.id = ".$delivery_id;				
 			$sql .= " ORDER BY ".$order;
 			self::d($sql, false);
 			try {
@@ -169,13 +175,14 @@ class Storeroom extends AppModel {
 			
 		return $results;
 	}
-	/*
+	/*
 	 * ottieni lo user che gestisce la dispensa
 	 * dev'essere solo 1
 	 * */
 	public function getStoreroomUser($user) {
 
-		$storeroomUser = [];		
+		$storeroomUser = [];
+		
 		if($user->organization['Organization']['hasStoreroom']=='Y') {
 			
 			$sql = "SELECT User.organization_id, User.id, User.name, User.username, User.email 
@@ -190,7 +197,13 @@ class Storeroom extends AppModel {
 						and User.block = 0
 						and User.organization_id = ".(int)$user->organization['Organization']['id']." LIMIT 0,1";
 			self::d($sql, false);
-			try {				$storeroomUser = $this->query($sql);			}			catch (Exception $e) {				CakeLog::write('error',$sql);				CakeLog::write('error',$e);			}			
+			try {
+				$storeroomUser = $this->query($sql);
+			}
+			catch (Exception $e) {
+				CakeLog::write('error',$sql);
+				CakeLog::write('error',$e);
+			}			
 		
 			if(!empty($storeroomUser)) $storeroomUser = current($storeroomUser);
 		}
@@ -258,8 +271,16 @@ class Storeroom extends AppModel {
 	public function riportaArticoliAcquistatiInDispensa($user, $delivery_id) {
 		
 		$storeroomUser = $this->getStoreroomUser($user);
-		$sql = "UPDATE					".Configure::read('DB.prefix')."storerooms				SET					delivery_id = 0,					user_id = ".$storeroomUser['User']['id']."				WHERE					delivery_id = ".(int)$delivery_id."					and organization_id = ".(int)$user->organization['Organization']['id'];
-			self::d($sql, false);			try {
+		$sql = "UPDATE
+					".Configure::read('DB.prefix')."storerooms
+				SET
+					delivery_id = 0,
+					user_id = ".$storeroomUser['User']['id']."
+				WHERE
+					delivery_id = ".(int)$delivery_id."
+					and organization_id = ".(int)$user->organization['Organization']['id'];
+			self::d($sql, false);
+			try {
 				$results = $this->query($sql);
 			}
 			catch (Exception $e) {

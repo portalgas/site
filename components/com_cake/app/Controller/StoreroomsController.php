@@ -1202,7 +1202,10 @@ class StoreroomsController extends AppController {
 		}
 	}
 
-	private function _exportBooking($delivery_id, $doc_formato) {
+	/*
+	 * per debug decommentare $conditions += ['User.id' => ];
+	 */
+	private function _exportBooking($delivery_id, $doc_formato, $debug=false) {
 		
         if ($doc_formato == null || empty($delivery_id)) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -1218,6 +1221,7 @@ class StoreroomsController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 									'Delivery.isVisibleBackOffice' => 'Y',
 									'Delivery.id' => $delivery_id];
+		if($debug) debug($options['conditions']);
         $delivery = $Delivery->find('first', $options);
 		$this->set('delivery', $delivery);
 		
@@ -1227,6 +1231,7 @@ class StoreroomsController extends AppController {
 		$conditions = ['Delivery.id' => $delivery_id,  // articoli in dispensa non ancora acquistati
 		                // 'SuppliersOrganization.id' => $FilterStoreroomSupplierId
 						];
+		// per debug $conditions += ['User.id' => 2045];
 		$orderBy = ['SuppliersOrganization' => 'SuppliersOrganization.name, Article.name'];
 		$results = $this->Storeroom->getArticlesToStoreroom($this->user, $conditions, $orderBy);
 		
@@ -1235,7 +1240,7 @@ class StoreroomsController extends AppController {
 			/*
 			 * per ogni articolo in dispensa, ctrl cos'e' stato gia' acquistato
 			*/ 
-			$results[$numResult]['Storeroom']['articlesJustBookeds'] = $this->Storeroom->getArticlesJustBooked($this->user, $this->storeroomUser, $result['Article']['organization_id'], $result['Article']['id'], $result['User']['id']);
+			$results[$numResult]['Storeroom']['articlesJustBookeds'] = $this->Storeroom->getArticlesJustBooked($this->user, $this->storeroomUser, $result['Article']['organization_id'], $result['Article']['id'], $result['User']['id'], $delivery_id);
 				
 			// articoli in dispensa da prenotare
 			$results[$numResult]['Storeroom']['qtaToBooked'] = $result['Storeroom']['qta'];
@@ -1251,7 +1256,7 @@ class StoreroomsController extends AppController {
 			//articoli totali
 			$results[$numResult]['Storeroom']['qtaTot'] = ($result['Storeroom']['qta'] + $qtaJustBooked);
 		}
-		
+		if($debug) debug($results);
 		$this->set(compact('results',$results));
 		
 		$fileData['fileTitle'] = "Dispensa, articoli prenotati";
