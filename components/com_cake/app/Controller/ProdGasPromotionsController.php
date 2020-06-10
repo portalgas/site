@@ -676,6 +676,7 @@ class ProdGasPromotionsController extends AppController {
 						if(empty($prodGasPromotionsOrganizationsDeliveryResults)) {
 
 							$data = [];
+							$data['ProdGasPromotionsOrganizationsDelivery']['supplier_id'] = $this->user->organization['Supplier']['Supplier']['id'];
 							$data['ProdGasPromotionsOrganizationsDelivery']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
 							$data['ProdGasPromotionsOrganizationsDelivery']['organization_id'] = $organization_id;	 // e' quello del GAS
 							$data['ProdGasPromotionsOrganizationsDelivery']['delivery_id'] = $delivery_id;	

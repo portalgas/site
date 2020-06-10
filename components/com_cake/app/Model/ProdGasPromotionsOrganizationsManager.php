@@ -349,7 +349,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 			$data['ArticlesOrder']['article_id'] = $prodGasArticlesPromotionResult['Article']['id'];
 			$data['ArticlesOrder']['name'] = $prodGasArticlesPromotionResult['Article']['name'];
 			$data['ArticlesOrder']['order_id'] = $order_id;
-			$data['ArticlesOrder']['prezzo'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['prezzo_unita']; // prezzo originalre Article.prezzo;
+			$data['ArticlesOrder']['prezzo'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['prezzo_unita_']; // prezzo originalre Article.prezzo;
 			$data['ArticlesOrder']['qta_cart'] = 0;
 			$data['ArticlesOrder']['pezzi_confezione'] = $prodGasArticlesPromotionResult['Article']['pezzi_confezione'];
 			$data['ArticlesOrder']['qta_minima'] = $prodGasArticlesPromotionResult['Article']['qta_minima'];
@@ -376,6 +376,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 						$tmp .= $value . ' - ';
 				}
 				self::d('Articolo non associato all\'ordine: dati non validi, '.$tmp, $debug);
+				debug('Articolo non associato all\'ordine: dati non validi, '.$tmp);
 				$continua = false;
 			} else {
 				$ArticlesOrder->create();

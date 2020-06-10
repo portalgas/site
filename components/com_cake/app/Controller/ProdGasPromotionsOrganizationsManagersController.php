@@ -42,7 +42,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 	public function admin_add($prod_gas_promotion_id=0) { 
 
 		$debug = false;
-		$continua=true;
+		$continua = true;
 		$msg_errors = "";
 		
 		self::d($this->request->data, $debug);		
@@ -85,14 +85,16 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 	
 		
 				/*
-				 * richiamo la validazione 
+				 * richiamo la validazione per $useTable = 'prod_gas_promotions_organizations';
 				 */
+				if($debug) debug($this->request->data);	
 				$msg_errors = $this->ProdGasPromotionsOrganizationsManager->getMessageErrorsToValidate($this->ProdGasPromotionsOrganizationsManager, $this->request->data);
 				if(!empty($msg_errors)) {
+					if($debug) debug($msg_errors);
 					$continua=false;
 				}
 			}
-				
+
 			/*
 			 * creo l'ordine per il GAS
 			 */			
@@ -100,41 +102,59 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 				$order_id = $this->_add_order($this->user, $prod_gas_promotion_id, $supplier_organization_id, $this->request->data, $debug);
 				if(!is_numeric($order_id)) {
 					$msg_errors .= $order_id;
+					if($debug) debug($msg_errors);
 					$continua=false;
 				}
 			}
 			
 			/*
-			 * Associo l'ordine per il GAS con la promozione (ProdGasPromotionsOrganization)
-			 */			
+			 * Associo gli articoli della promozione a ArticlesOrders
+			 */					
 			if($continua) {	
-				$this->ProdGasPromotionsOrganizationsManager->importProdGasArticlesPromotions($this->user, $prod_gas_promotion_id, $order_id, $debug); 
-				
+				if(!$this->ProdGasPromotionsOrganizationsManager->importProdGasArticlesPromotions($this->user, $prod_gas_promotion_id, $order_id, $debug)) {
+					$continua=false;
+				}
+			}
+		
+			/*
+			 * Associo l'ordine per il GAS con la promozione (ProdGasPromotionsOrganization)
+			 */	
+			if($continua) {
 				App::import('Model', 'ProdGasPromotionsOrganization');
 				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
 				
 				$options = [];
-				$options['conditions'] = ['ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
-										   'ProdGasPromotionsOrganization.organization_id' => $this->user->organization['Organization']['id'] // e' quello del gas
+				$options['conditions'] = [
+					'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
+					'ProdGasPromotionsOrganization.organization_id' => $this->user->organization['Organization']['id'] // e' quello del gas
 										   ];
 				$options['recursive'] = -1;
-				$data = [];
+				// debug($options);
+				
+				$data = []; 
 				$data = $ProdGasPromotionsOrganization->find('first', $options);
-				$data['ProdGasPromotionsOrganization']['order_id'] = $order_id;
-				$data['ProdGasPromotionsOrganization']['state_code'] = 'OPEN';
-				$data['ProdGasPromotionsOrganization']['nota_user'] = '';
-				if(!empty($data['ProdGasPromotionsOrganization']['nota_user']))
-					$data['ProdGasPromotionsOrganization']['user_id'] = $this->user->get('id');
-				else
-					$data['ProdGasPromotionsOrganization']['user_id'] = 0;
-				$ProdGasPromotionsOrganization->create();
-				if(!$ProdGasPromotionsOrganization->save($data)) {
-					$msg_errors .= "Error ProdGasPromotionsOrganization SAVE";
-					$continua=false;
-				} 
+				// debug($data);
+				if(empty($data)) {
+					debug($options);
+					$msg_errors .= "Error ProdGasPromotionsOrganization not found!";
+					$continua=false;					
+				}
+				else {
+					$data['ProdGasPromotionsOrganization']['order_id'] = $order_id;
+					$data['ProdGasPromotionsOrganization']['state_code'] = 'OPEN';
+					$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+					if(!empty($data['ProdGasPromotionsOrganization']['nota_user']))
+						$data['ProdGasPromotionsOrganization']['user_id'] = $this->user->get('id');
+					else
+						$data['ProdGasPromotionsOrganization']['user_id'] = 0;
+					$ProdGasPromotionsOrganization->create();
+					if(!$ProdGasPromotionsOrganization->save($data)) {
+						$msg_errors .= "Error ProdGasPromotionsOrganization SAVE";
+						$continua=false;
+					} 
+				} // end if(empty($data))
 			}
-			
-			
+	
 			if($continua) {			
 				/*
 				 * aggiorno lo stato dell'ordine
@@ -147,7 +167,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 			} 
 				
 			$this->Session->setFlash($msg_errors);
-			
+		
 			if($continua) {	
 				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotionsOrganizationsManagers&action=index';  // redirect Elenco promozioni associate ad un ordine 
 				if(!$debug) $this->myRedirect($url);
@@ -315,8 +335,10 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		
 		$data = []; // array con i dati dell'ordine
 		$data['Order']['organization_id'] = $user->organization['Organization']['id'];
-		$data['Order']['prod_gas_promotion_id'] = $prod_gas_promotion_id;
 		$data['Order']['supplier_organization_id'] = $supplier_organization_id;
+		$data['Order']['owner_organization_id'] = $user->organization['Organization']['id'];
+		$data['Order']['owner_supplier_organization_id'] = $supplier_organization_id;
+		$data['Order']['prod_gas_promotion_id'] = $prod_gas_promotion_id;
 		$data['Order']['delivery_id'] = $requestData['ProdGasPromotionsOrganizationsManager']['delivery_id'];
 		
 		$data['Order']['data_inizio_db'] = $requestData['ProdGasPromotionsOrganizationsManager']['data_inizio_db'];
