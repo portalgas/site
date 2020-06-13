@@ -103,79 +103,78 @@ foreach($results as $numResult => $result) {
 	}
 	echo '</tr>';			
 
+
+	/*
+	 * Users associati al gruppo Configure::read('group_pact_supplier_manager');  // 84
+	 */
+	if(!isset($result['User']) || empty($result['User'])) {
 	
-		/*
-		 * Users associati al gruppo Configure::read('prod_gas_supplier_manager');  // 62
-		 */
-		if(!isset($result['User']) || empty($result['User'])) {
-		
-			$msg = "No users dell'Organization associati ai gruppi PactManager [".Configure::read('prod_gas_supplier_manager')."] / SuperReferent [".Configure::read('group_id_super_referent')."]<br />".$result['Users']['sql_update_user']; 
-			echo '<tr class="no_prod">';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td colspan="7">'; 
-			echo $this->element('boxMsg',['class_msg' => 'notice','msg' => $msg]);	
-			echo '</td>';
-			echo '</tr>';		
-		}
-		else {
-			echo '<tr class="no_prod">';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<th colspan="8">';
-			echo "Users del Organization associati ai gruppi PactManager [".Configure::read('prod_gas_supplier_manager')."] / SuperReferent [".Configure::read('group_id_super_referent')."]";
-			echo '</th>';
-			echo '</tr>';
+		$msg = "No users dell'Organization associati ai gruppi PactManager [".Configure::read('group_pact_supplier_manager')."] / SuperReferent [".Configure::read('group_id_super_referent')."]<br />".$result['Users']['sql_update_user']; 
+		echo '<tr class="no_prod">';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td colspan="7">'; 
+		echo $this->element('boxMsg',['class_msg' => 'notice','msg' => $msg]);	
+		echo '</td>';
+		echo '</tr>';		
+	}
+	else {
+		echo '<tr class="no_prod">';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<th colspan="8">';
+		echo "Users del Organization associati ai gruppi PactManager [".Configure::read('group_pact_supplier_manager')."] / SuperReferent [".Configure::read('group_id_super_referent')."]";
+		echo '</th>';
+		echo '</tr>';
 
-			echo '<tr class="no_prod">';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td colspan="4">';
-			echo "INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES (, 62);";
-			echo '</td>';
-			echo '<td colspan="4">';
-			echo "INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES (, 19);";			
-			echo '</td>';
-			echo '</tr>';
-					
-			$user_id_old = 0;
-			foreach($result['User'] as $numResult => $user) {
+		echo '<tr class="no_prod">';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td colspan="4">';
+		echo "INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES (, 62);";
+		echo '</td>';
+		echo '<td colspan="4">';
+		echo "INSERT INTO j_user_usergroup_map (user_id, group_id) VALUES (, 19);";			
+		echo '</td>';
+		echo '</tr>';
 				
-				if($user_id_old != $user['User']['id']) {
-					echo '<tr class="no_prod">';
-					echo '<td></td>';
-					echo '<td></td>';
-					echo '<td>';
-					echo $this->App->drawUserAvatar($user, $user['User']['id'], $user['User']);	
-					echo '</td>';
-					echo '<td colspan="3">';
-					echo $user['User']['name'].' ['.$user['User']['id'].']';
-					echo '</td>';
-					echo '<td></td>';
-					echo '<td colspan="3">';
-					echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
-					echo '</td>';
-					echo '</tr>';	
-				}
-				else {
-					echo '<tr class="no_prod">';
-					echo '<td></td>';
-					echo '<td></td>';
-					echo '<td></td>';
-					echo '<td colspan="3"></td>';
-					echo '<td></td>';
-					echo '<td colspan="3">';
-					echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
-					echo '</td>';
-					echo '</tr>';					
-				}
-
-				$user_id_old = $user['User']['id'];
-			}
-		} // end if(!isset($result['Users']))			
+		$user_id_old = 0;
+		foreach($result['User'] as $numResult => $user) {
 			
-	} // end if(!isset($result['Supplier']['Organization']))	
+			if($user_id_old != $user['User']['id']) {
+				echo '<tr class="no_prod">';
+				echo '<td></td>';
+				echo '<td></td>';
+				echo '<td>';
+				echo $this->App->drawUserAvatar($user, $user['User']['id'], $user['User']);	
+				echo '</td>';
+				echo '<td colspan="3">';
+				echo $user['User']['name'].' ['.$user['User']['id'].']';
+				echo '</td>';
+				echo '<td></td>';
+				echo '<td colspan="3">';
+				echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
+				echo '</td>';
+				echo '</tr>';	
+			}
+			else {
+				echo '<tr class="no_prod">';
+				echo '<td></td>';
+				echo '<td></td>';
+				echo '<td></td>';
+				echo '<td colspan="3"></td>';
+				echo '<td></td>';
+				echo '<td colspan="3">';
+				echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
+				echo '</td>';
+				echo '</tr>';					
+			}
+
+			$user_id_old = $user['User']['id'];
+		} // end if(!isset($result['User']) || empty($result['User']))
+	} // end if(!isset($result['Users']))			
+	
 }
 echo '</table></div>';			
 

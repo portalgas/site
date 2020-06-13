@@ -53,7 +53,7 @@ class PactSupplierImportsController extends AppController {
 		 */
 		foreach($results as $numResult => $result) {
 
-			debug($result);
+			// debug($result);
 
 			/* 
 			 * ctrl dati Organization
