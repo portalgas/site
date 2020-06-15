@@ -151,7 +151,8 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->App->drawFormRadio('Organization','stato',array('options' => $stato, 'value'=>'Y', 'label'=>__('Stato'), 'required'=>'required',
 				'after'=>$this->App->drawTooltip(null,__('toolTipStato'),$type='HELP')));
 
-	echo '</div>';
+	echo '</div>'; // end class=typeGAS
+
 	echo '<div class="typePROD">';
 	echo $this->Form->input('prodSupplierOrganizationId', [
 				'after'=> $this->App->drawTooltip(null,__('toolTipProdSupplierOrganizationId'),$type='HELP')]);
