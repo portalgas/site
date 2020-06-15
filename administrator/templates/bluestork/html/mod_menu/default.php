@@ -108,6 +108,7 @@ if($componentIsComCake) {
 		print_r($paramsConfig);
 		echo "</pre>";
 		*/
+		$hasArticlesGdxp = $paramsConfig['hasArticlesGdxp'];
 		$hasBookmarsArticles = $paramsConfig['hasBookmarsArticles'];
 		$hasArticlesOrder = $paramsConfig['hasArticlesOrder'];
 		$hasDes = $paramsConfig['hasDes'];

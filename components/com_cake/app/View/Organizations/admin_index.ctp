@@ -107,6 +107,7 @@
 					echo '</td>';
 					
 					echo '<td style="white-space: nowrap;">';
+					echo '<div title="'.__('toolTipHasArticlesGdxp').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesGdxp']).'_int">'.__('HasArticlesGdxp').'</div> <br />';
 					echo '<div title="'.__('toolTipHasBookmarsArticles').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasBookmarsArticles']).'_int">'.__('HasBookmarsArticles').'</div> <br />';
 					echo '<div title="'.__('toolTipHasArticlesOrder').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesOrder']).'_int">'.__('HasArticlesOrder').'</div> <br />';
 					echo '<div title="'.__('toolTipHasVisibility').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasVisibility']).'_int">'.__('HasVisibility').'</div> <br />';

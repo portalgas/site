@@ -3013,6 +3013,9 @@ msgstr "Ha la gestione degli articoli con i colli"
 msgid "HasCashFilterSupplier"
 msgstr "Ha la gestione del prepagato solo per alcuni produttori"
 
+msgid "HasArticlesGdxp"
+msgstr "Ha la gestione del GDXP degli articoli"
+
 msgid "HasBookmarsArticles"
 msgstr "Ha la gestione degli articoli preferiti"
 
@@ -4418,6 +4421,9 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli con i colli"
 
 msgid "toolTipHasCashFilterSupplier"
 msgstr "Se è valorizzato a 'Si' si potrà gestire il prepagato solo per alcuni produttori"
+
+msgid "toolTipHasArticlesGdxp"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli GDXP"
 
 msgid "toolTipHasBookmarsArticles"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"

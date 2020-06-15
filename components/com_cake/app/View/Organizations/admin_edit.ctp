@@ -1,3 +1,9 @@
+<style type="text/css">
+.cakeContainer h3 {
+    border-bottom: 1px solid #0a659e;
+    font-weight: bold;
+}		
+</style>
 <?php
 echo $this->Html->script('organizations');
 
@@ -95,48 +101,65 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	$OrganizationHasDesReferentAllGas = $this->Form->value('Organization.hasDesReferentAllGas');
 	if(empty($OrganizationHasDesReferentAllGas))
 	$OrganizationHasDesReferentAllGas = 'N';
-						
+			
+	echo '<h3>'.__('Articles').'</h3>';		
 	echo $this->App->drawFormRadio('Organization','hasBookmarsArticles',array('options' => $hasBookmarsArticles, 'value'=>$this->Form->value('Organization.hasBookmarsArticles'), 'label'=>__('HasBookmarsArticles'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasArticlesOrder',array('options' => $hasArticlesOrder, 'value'=>$this->Form->value('Organization.hasArticlesOrder'), 'label'=>__('HasArticlesOrder'), 'required'=>'required'));
+	echo $this->App->drawFormRadio('Organization','hasValidate',array('options' => $hasValidate, 'value'=>$this->Form->value('Organization.hasValidate'), 'label'=>__('HasValidate'), 'required'=>'required',
+		'after'=>$this->App->drawTooltip(null,"Se è abilitata la dispensa si potranno mettere gli articoli eccedenti in dispensa se no si dovranno sottrarre agli utenti",$type='WARNING')));
+
+
+	echo '<h3>'.__('Orders').'</h3>';
 	echo $this->App->drawFormRadio('Organization','hasVisibility',array('options' => $hasVisibility, 'value'=>$this->Form->value('Organization.hasVisibility'), 'label'=>__('HasVisibility'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasTrasport',array('options' => $hasTrasport, 'value'=>$this->Form->value('Organization.hasTrasport'), 'label'=>__('HasTrasport'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasCostMore',array('options' => $hasCostMore, 'value'=>$this->Form->value('Organization.hasCostMore'), 'label'=>__('HasCostMore'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasCostLess',array('options' => $hasCostLess, 'value'=>$this->Form->value('Organization.hasCostLess'), 'label'=>__('HasCostLess'), 'required'=>'required'));
-	echo $this->App->drawFormRadio('Organization','hasValidate',array('options' => $hasValidate, 'value'=>$this->Form->value('Organization.hasValidate'), 'label'=>__('HasValidate'), 'required'=>'required',
-																'after'=>$this->App->drawTooltip(null,"Se è abilitata la dispensa si potranno mettere gli articoli eccedenti in dispensa se no si dovranno sottrarre agli utenti",$type='WARNING')));
+
+
+	echo '<h3>'.__('Storeroom').'</h3>';
 	echo $this->App->drawFormRadio('Organization','hasStoreroom',array('options' => $hasStoreroom, 'value'=>$this->Form->value('Organization.hasStoreroom'), 'label'=>__('HasStoreroom'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasStoreroomFrontEnd',array('options' => $hasStoreroomFrontEnd, 'value'=>$this->Form->value('Organization.hasStoreroomFrontEnd'), 'label'=>__('HasStoreroomFrontEnd'), 'required'=>'required',
-																'after'=>$this->App->drawTooltip(null,__('toolTipHasStoreroomFrontEnd'),$type='HELP')));
+				'after'=>$this->App->drawTooltip(null,__('toolTipHasStoreroomFrontEnd'),$type='HELP')));
 	/*
 	echo $this->App->drawFormRadio('Organization','payToDelivery',array('options' => $payToDelivery, 'value'=> $this->request->data['Template']['payToDelivery'], 'label'=>__('PayToDelivery'), 'required'=>'required'));
 	
 	echo $this->App->drawFormRadio('Organization','orderLifeCycleEnd',array('options' => $orderLifeCycleEnd, 'value'=> $this->request->data['Organization']['orderLifeCycleEnd'], 'label'=>__('OrderLifeCycleEnd'), 'required'=>'required'));
 	*/
-	echo '<hr>';					
-	echo $this->App->drawFormRadio('Organization','canOrdersClose', ['options' => $canOrdersClose, 'value'=> $this->request->data['Organization']['canOrdersClose'], 'label'=>__('CanOrdersClose'), 'required'=>'required']);
-	echo $this->App->drawFormRadio('Organization','canOrdersDelete', ['options' => $canOrdersDelete, 'value'=> $this->request->data['Organization']['canOrdersDelete'], 'label'=>__('CanOrdersDelete'), 'required'=>'required']);
 	
 	echo '<h3>'.__('OrganizationsCash').'</h3>';
 	echo $this->App->drawFormRadio('Organization','cashLimit',array('options' => $cashLimit, 'value'=> $this->request->data['Organization']['cashLimit'], 'label'=>__('CashLimit'), 'required'=>'required'));
 	echo $this->Form->input('limitCashAfter',array('label' => __('LimitCashAfter'),'value' => $this->request->data['Organization']['limitCashAfter'],'required' => 'required', 'after' => $this->App->drawTooltip(null,__('tooLimitCashAfter'),$type='HELP')));
 	echo $this->App->drawFormRadio('Organization','hasCashFilterSupplier',array('options' => $hasCashFilterSupplier, 'value'=>  $this->request->data['Organization']['hasCashFilterSupplier'], 'label'=>__('HasCashFilterSupplier'), 'required'=>'required'));
 
-	echo '<hr>';			
+
+	echo '<h3>'.__('OrderLifeCycle').'</h3>';					
+	echo $this->App->drawFormRadio('Organization','canOrdersClose', ['options' => $canOrdersClose, 'value'=> $this->request->data['Organization']['canOrdersClose'], 'label'=>__('CanOrdersClose'), 'required'=>'required']);
+	echo $this->App->drawFormRadio('Organization','canOrdersDelete', ['options' => $canOrdersDelete, 'value'=> $this->request->data['Organization']['canOrdersDelete'], 'label'=>__('CanOrdersDelete'), 'required'=>'required']);
+	
+
+	echo '<h3>'.__('Users').'</h3>';
 	echo $this->App->drawFormRadio('Organization','hasUsersRegistrationFE',array('options' => $hasUsersRegistrationFE, 'value' => $this->request->data['Organization']['hasUsersRegistrationFE'], 'label'=>__('HasUsersRegistrationFE'), 'required'=>'required'));
-				
+	echo $this->App->drawFormRadio('Organization','hasUserFlagPrivacy', ['options' => $hasUserFlagPrivacy, 'value'=>$this->Form->value('Organization.hasUserFlagPrivacy'), 'label'=>__('HasUserFlagPrivacy'), 'required'=>'required',
+		'after' => $this->App->drawTooltip(null,__('toolTipUserFlagPrivacy'), $type='HELP')]);
+	echo $this->App->drawFormRadio('Organization','hasUserRegistrationExpire', ['options' => $hasUserRegistrationExpire, 'value'=>$this->Form->value('Organization.hasUserRegistrationExpire'), 'label'=>__('HasUserRegistrationExpire'), 'required'=>'required',
+		'after' => $this->App->drawTooltip(null,__('toolTipUserRegistrationExpire'), $type='HELP')]);																				
+	echo $this->Form->input('userRegistrationExpireDate', ['label' => __('UserRegistrationExpireDate')]);			
+
+
 	echo '<h3>D.E.S.</h3>';
 	echo $this->App->drawFormRadio('Organization','hasDes',array('options' => $hasDes, 'value'=>$this->Form->value('Organization.hasDes'), 'label'=>__('HasDes'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasDesReferentAllGas',array('options' => $hasDesReferentAllGas, 'value'=> $this->Form->value('Organization.hasDesReferentAllGas'), 'label'=>__('HasDesReferentAllGas'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasDesUserManager',array('options' => $hasDesUserManager, 'value'=> $this->Form->value('Organization.hasDesUserManager'), 'label'=>__('HasDesUserManager'), 'required'=>'required'));
 	
-	echo $this->App->drawFormRadio('Organization','stato',array('options' => $stato, 'value'=>$this->Form->value('Organization.stato'), 'label'=>__('Stato'), 'required'=>'required',
-																'after'=>$this->App->drawTooltip(null,__('toolTipStato'),$type='HELP')));
 
-	echo $this->App->drawFormRadio('Organization','hasUserFlagPrivacy', ['options' => $hasUserFlagPrivacy, 'value'=>$this->Form->value('Organization.hasUserFlagPrivacy'), 'label'=>__('HasUserFlagPrivacy'), 'required'=>'required',
-																'after' => $this->App->drawTooltip(null,__('toolTipUserFlagPrivacy'), $type='HELP')]);
-	echo $this->App->drawFormRadio('Organization','hasUserRegistrationExpire', ['options' => $hasUserRegistrationExpire, 'value'=>$this->Form->value('Organization.hasUserRegistrationExpire'), 'label'=>__('HasUserRegistrationExpire'), 'required'=>'required',
-																'after' => $this->App->drawTooltip(null,__('toolTipUserRegistrationExpire'), $type='HELP')]);																					
-	echo $this->Form->input('userRegistrationExpireDate', ['label' => __('UserRegistrationExpireDate')]);
+	echo '<h3>GDXP</h3>';
+	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=>'N', 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
+
+
+	echo '<h3>Organization</h3>';
+	echo $this->App->drawFormRadio('Organization','stato',array('options' => $stato, 'value'=>$this->Form->value('Organization.stato'), 'label'=>__('Stato'), 'required'=>'required',
+			'after'=>$this->App->drawTooltip(null,__('toolTipStato'),$type='HELP')));
+
 	echo '</div>';
 	
 	echo '<div class="typePROD">';
