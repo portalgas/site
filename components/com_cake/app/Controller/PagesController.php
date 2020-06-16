@@ -145,7 +145,7 @@ class PagesController extends AppController {
         /*
          * ctrl i dati del pagamento del GAS
          */
-        if ($this->isManager()) {
+        if ($this->isManager() || $this->isTesoriere()) {
             if(!$OrganizationsPayment->isPaymentComplete($this->user)) {
                 $this->Session->setFlash(__('msg_organization_payment_incomplete'));
                 $this->myRedirect(['controller' => 'OrganizationsPayments', 'action' => 'edit', 'admin' => true]);
