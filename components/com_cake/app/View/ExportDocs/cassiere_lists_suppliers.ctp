@@ -71,7 +71,8 @@ if(!empty($results)) {
 			
 	$html .= '</tbody></table>';
 }
-
+else 
+	$html .= '<div class="h3Pdf">Non ci sono ordini nello stato '.__('PROCESSED-ON-DELIVERY-label').'</div>';
 
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 

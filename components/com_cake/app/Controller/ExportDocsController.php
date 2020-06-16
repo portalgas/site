@@ -695,6 +695,8 @@ class ExportDocsController extends AppController {
 
     public function admin_exportToCassiereListOrders($delivery_id = 0, $doc_options = null, $doc_formato = null) {
 
+        $debug = false;
+
         if ($delivery_id == 0 || $doc_options == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -702,16 +704,17 @@ class ExportDocsController extends AppController {
 
         $this->ctrlHttpReferer();
 
-        Configure::write('debug', 0);
+        if(!$debug) Configure::write('debug', 0);
 
         App::import('Model', 'Cassiere');
         $Cassiere = new Cassiere;
 
-        $results = $Cassiere->lists_orders_processed_on_delivery($this->user, $delivery_id);
+        $results = $Cassiere->lists_orders_processed_on_delivery($this->user, $delivery_id, $debug);
 
         /*
          * calcolo totali
          */
+        debug($doc_options);
         if ($doc_options == 'to-lists-suppliers-cassiere') {
 
             /*
@@ -726,7 +729,7 @@ class ExportDocsController extends AppController {
             $options['recursive'] = -1;
             $resultDelivery = $Delivery->find('first', $options);
             $this->set('resultDelivery', $resultDelivery);
-
+            debug($results);
             $newResults = [];
             if (!empty($results['Order'])) {
 
