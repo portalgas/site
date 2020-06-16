@@ -756,7 +756,9 @@ body {
 }
 .cakeContainer .message a,
 .cakeContainer .success a {
-    color: #fff
+    color: #fff;
+    text-decoration: underline;
+
 }
 .cakeContainer .crumbs {
     border: none;
