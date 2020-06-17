@@ -82,10 +82,15 @@
 	<tr id="tr_group_id_storeroom">
 		<td>
 			<?php 
-			echo $this->App->drawFormRadio('Organization','hasUserGroupsStoreroom',array('options' => $hasUserGroupsStoreroom, 'value' => $this->request->data['Organization']['hasUserGroupsStoreroom'], 'label' => false, 'required' => false, 'label_style' => 'width:20px !important;margin-left:1px;'));
+			echo $this->App->drawFormRadio('Organization','hasUserGroupsStoreroom', ['options' => $hasUserGroupsStoreroom, 
+			'value' => $this->request->data['Organization']['hasUserGroupsStoreroom'], 
+			'label' => false, 'required' => false, 
+			'label_style' => 'width:20px !important;margin-left:1px;']);
 			?>	
 		</td>		
-		<td>Dispensa</td>
+		<td>Dispensa
+			<span class="label label-info">Sempre a N così non compare lo user nella gestione dei ruoli ma può, se abilitato, gestire la dispensa</span>
+		</td>
 		<td>Gestore della <b>dispensa</b></td>
 		<td>Dispensa</td>
 		<td>gasDispensa (<?php echo Configure::read('group_id_storeroom');?>9)</td>

@@ -637,7 +637,7 @@ class Order extends AppModel {
 				'message'    => 'La data di apertura non può essere posteriore della data di chiusura',
 			),
 			'dateToDelivery' => array(
-				'rule'       =>  array('date_comparison_to_delivery','>'),
+				'rule'       =>  array('date_comparison_to_delivery', '>'),
 				'message'    => 'La data di apertura non può essere posteriore della data della consegna',
 			),
 		),

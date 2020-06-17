@@ -415,7 +415,7 @@ class OrganizationsController extends AppController {
         $this->request->data['Organization']['hasUserGroupsCassiere'] = 'Y';
         $this->request->data['Organization']['hasUserGroupsReferentTesoriere'] = 'N';
         $this->request->data['Organization']['hasUserGroupsTesoriere'] = 'Y';
-        $this->request->data['Organization']['hasUserGroupsStoreroom'] = 'Y';
+        $this->request->data['Organization']['hasUserGroupsStoreroom'] = 'N';
         $this->request->data['Organization']['canOrdersClose'] = 'ALL';
         $this->request->data['Organization']['canOrdersDelete'] = 'ALL';
         $this->request->data['Organization']['cashLimit'] = 'LIMIT-NO';
