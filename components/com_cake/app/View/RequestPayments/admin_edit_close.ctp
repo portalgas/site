@@ -47,7 +47,10 @@ echo '<div class="contentMenuLaterale">';
 			echo '<td style="text-align:center;">'.$summaryPayment['SummaryPayment']['importo_dovuto_e'].'</td>';
 		
 			echo '<td  style="text-align:center;color:#fff;';
-			if($summaryPayment['SummaryPayment']['importo_dovuto']==$summaryPayment['SummaryPayment']['importo_pagato']) 
+			/*
+			 * posso pagare + di quello che devo se ho un debito di cassa
+			 */
+			if($summaryPayment['SummaryPayment']['importo_dovuto']<=$summaryPayment['SummaryPayment']['importo_pagato']) 
 				echo 'background-color:green;"';
 			else
 				echo 'background-color:red;"';

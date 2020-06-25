@@ -137,28 +137,28 @@ echo '<div class="submit" style="float:right;"><input type="submit" value="'.__(
 				 *  l'importo lo gestisco solo se DAPAGARE
 				 */
 				echo $this->Form->input('importo_pagato',['type' => 'text', 'label'=>false,'name' => 'data[RequestPayment][importo_pagato]['.$summaryPayment['SummaryPayment']['id'].']',
-																								'id' => 'importo_pagato-'.$summaryPayment['SummaryPayment']['id'],
-																								'value' => $summaryPayment['SummaryPayment']['importo_pagato_'],
-																								'style' => 'display:inline' ,'tabindex'=>($tabindex+1),'after'=>'&nbsp;&euro;','class'=>'double importo_pagato']);
+					'id' => 'importo_pagato-'.$summaryPayment['SummaryPayment']['id'],
+					'value' => $summaryPayment['SummaryPayment']['importo_pagato_'],
+					'style' => 'display:inline' ,'tabindex'=>($tabindex+1),'after'=>'&nbsp;&euro;','class'=>'double importo_pagato']);
 																									 
 				echo $this->Form->hidden('user_id',['type' => 'text', 'label'=>false,'name' => 'data[RequestPayment][user_id]['.$summaryPayment['SummaryPayment']['id'].']',
-																								 'id' => 'user_id-'.$summaryPayment['SummaryPayment']['id'],
-																								 'value' => $summaryPayment['SummaryPayment']['user_id']]);
+					'id' => 'user_id-'.$summaryPayment['SummaryPayment']['id'],
+					'value' => $summaryPayment['SummaryPayment']['user_id']]);
 																								 
 				echo $this->Form->hidden('importo_richiesto',['type' => 'text', 'label'=>false,'name' => 'data[RequestPayment][importo_richiesto]['.$summaryPayment['SummaryPayment']['id'].']',
-																								 'id' => 'importo_richiesto-'.$summaryPayment['SummaryPayment']['id'],
-																								 'value' => $summaryPayment['SummaryPayment']['importo_richiesto_']]);
+					'id' => 'importo_richiesto-'.$summaryPayment['SummaryPayment']['id'],
+					'value' => $summaryPayment['SummaryPayment']['importo_richiesto_']]);
 	
 				echo $this->Form->hidden('importo_dovuto',['type' => 'text', 'label'=>false,'name' => 'data[RequestPayment][importo_dovuto]['.$summaryPayment['SummaryPayment']['id'].']',
-																								 'id' => 'importo_dovuto-'.$summaryPayment['SummaryPayment']['id'],
-																								 'value' => $summaryPayment['SummaryPayment']['importo_dovuto_']]);
+					'id' => 'importo_dovuto-'.$summaryPayment['SummaryPayment']['id'],
+					'value' => $summaryPayment['SummaryPayment']['importo_dovuto_']]);
 						
 				/*
 				 *  se != rispetto al nuovo aggiorno il DB
 				 */
 				echo $this->Form->hidden('stato_orig',['type' => 'text', 'label'=>false,'name' => 'data[RequestPayment][stato_orig]['.$summaryPayment['SummaryPayment']['id'].']',
-																								 'id' => 'stato_orig-'.$summaryPayment['SummaryPayment']['id'],
-																								 'value' => $summaryPayment['SummaryPayment']['stato']]);
+					'id' => 'stato_orig-'.$summaryPayment['SummaryPayment']['id'],
+					'value' => $summaryPayment['SummaryPayment']['stato']]);
 			}
 			echo '</td>';
 

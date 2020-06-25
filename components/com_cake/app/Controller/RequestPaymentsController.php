@@ -1597,7 +1597,7 @@ class RequestPaymentsController extends AppController {
 	 */			
 	private function _edit_open($data, $debug) {
 	
-		$debug=false;
+		$debug = false;
 	
 		$msg = '';
 
@@ -1656,7 +1656,7 @@ class RequestPaymentsController extends AppController {
 		$importo_richiesto = $data['RequestPayment']['importo_richiesto'][$summary_payment_id];
 		$importo_pagato = $data['RequestPayment']['importo_pagato'][$summary_payment_id];
 		$stato = $data['RequestPayment']['stato'][$summary_payment_id];
-		
+
 		App::import('Model', 'SummaryPayment');
 		$SummaryPayment = new SummaryPayment;
 		

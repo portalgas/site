@@ -28,8 +28,11 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	}
 	.navbar-barra {
 		background: none repeat scroll 0 0 #0A659E;
-		height: 30px;
+		height: 35px;
 	} 	
+	.navbar-barra .container {
+		padding-top: 5px;
+	}
 	.main-center {
 	    margin: 0 auto;
 	    margin-top: 100px;
@@ -45,7 +48,9 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 	    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 	}
-
+	h2 {
+	    font-size: 26px;
+	}
 	.footer a {
 		color:#bbb;
 	}
@@ -58,7 +63,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 		width:100%;
 		color: #bbb;
 		background: none repeat scroll 0 0 #222222;
-		padding:5px;
+		padding: 10px;
 	}
 
 	/* System Messages */
@@ -185,7 +190,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
       	</div>
 	    <div class="navbar-barra">
 	    	<div class="container visible-lg visible-md visible-sm">
-	    		<div style="font-size: 14px; color: #fff;">Gestionale web per Gruppi d'acquisto solidale e D.E.S.</div>
+	    		<div style="font-size: 19px; color: #fff;">Gestionale web per Gruppi d'acquisto solidale e D.E.S.</div>
 	    	</div>	
 	    </div>
     </nav>
