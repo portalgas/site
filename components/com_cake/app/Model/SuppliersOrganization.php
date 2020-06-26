@@ -162,15 +162,22 @@ class SuppliersOrganization extends AppModel {
 		switch ($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']) {
 			case 'SUPPLIER':
 				if(empty($desSupplierResults))
-					unset($supplier_owner_articles['DES']);			
+					unset($supplier_owner_articles['DES']);
+				unset($supplier_owner_articles['PACT']);
+			break;
+			case 'PACT':
+				if(empty($desSupplierResults))
+					unset($supplier_owner_articles['DES']);
 			break;
 			case 'REFERENT':
 				if(empty($supplierResults))
-					unset($supplier_owner_articles['SUPPLIER']);	
+					unset($supplier_owner_articles['SUPPLIER']);
+				unset($supplier_owner_articles['PACT']);	
 			break;
 			case 'DES':
 				if(empty($supplierResults))
 					unset($supplier_owner_articles['SUPPLIER']);
+				unset($supplier_owner_articles['PACT']);
 			break;
 		}
 		

@@ -654,6 +654,7 @@ class SuppliersOrganizationsController extends AppController {
 			$data['Supplier']['j_content_id'] = 0;
 			$data['Supplier']['lat'] ='';
 			$data['Supplier']['lng'] = '';
+			$data['Supplier']['img1'] = '';
 
 			/*
 			 * il produttore creato, se il GAS lo crea e abilita can_promotions, il Supplier erederdita 
