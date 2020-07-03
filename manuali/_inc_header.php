@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PortAlGas - manuali</title>
 
-	<link rel="stylesheet" href="http://www.portalgas.it/components/com_cake/app/webroot/css/styleBackoffice-v08-min.css">
+	<link rel="stylesheet" href="http://www.portalgas.it/components/com_cake/app/webroot/css/styleBackoffice-v11-min.css">
 
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<!-- link rel="stylesheet" href="css/bootstrap-theme.min.css" -->
@@ -54,6 +54,11 @@ body {
 }
 .navbar-default .navbar-brand {
     color: #fff;
+}
+.navbar .logo {
+    height: 50px;
+    background-color: #fff;
+    padding: 0 25px;
 }
 
 /*
@@ -195,7 +200,7 @@ ul.nav-contenitore > .active > a, ul.nav-contenitore > .active:hover > a, ul.nav
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand hidden-xs" href="index.php" style="padding: 0px; margin: 0px;">
-				<img src="http://www.portalgas.it/images/cake/loghi/0/150h50.png" alt="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" class="img-responsive"></a>
+				<img src="http://www.portalgas.it/images/cake/loghi/0/150h50.png" alt="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" class="img-responsive logo"></a>
         </div>
         <div id="navbarCollapse" class="collapse navbar-collapse">
 

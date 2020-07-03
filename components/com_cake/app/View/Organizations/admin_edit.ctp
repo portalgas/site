@@ -153,7 +153,7 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	
 
 	echo '<h3>GDXP</h3>';
-	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=>'N', 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
+	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=> $this->Form->value('Organization.hasArticlesGdxp'), 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
 
 
 	echo '<h3>Organization</h3>';
