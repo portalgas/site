@@ -39,8 +39,8 @@ class ContactControllerContact extends JControllerForm
 
 		$userIP = $_SERVER["REMOTE_ADDR"];
 		$recaptchaResponse = $_POST['g-recaptcha-response'];
-		$secretKey = "6LfGvQsUAAAAACJJ4a0tQNgz3Esc2MaD96zoV9nS";
-		$url = "https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}&remoteip={$userIP}";
+		$g_recaptcha_server =$app->getCfg('g_recaptcha_server');
+		$url = "https://www.google.com/recaptcha/api/siteverify?secret={$g_recaptcha_server}&response={$recaptchaResponse}&remoteip={$userIP}";
 		if($debug) {
 			echo '<br />url '.$url;
 			echo "<pre>";

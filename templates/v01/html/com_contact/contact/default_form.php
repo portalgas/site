@@ -265,12 +265,15 @@ if (isset($this->error)) :
                         </div>
                     </div>  
           
-          
+          <?php
+          $app = JFactory::getApplication();
+          $g_recaptcha_client =$app->getCfg('g_recaptcha_client');
+          ?>
           <div class="row control-group">
-                        <div class="form-group col-xs-12 floating-label-form-group controls">                    
+              <div class="form-group col-xs-12 floating-label-form-group controls">                    
               <!-- https://www.google.com/recaptcha/admin -->
               <script src='https://www.google.com/recaptcha/api.js'></script>
-              <div class="g-recaptcha" data-sitekey="6LfGvQsUAAAAAJLXgcGb8MUueMTlXz6FtxkACxIx"></div>
+              <div class="g-recaptcha" data-sitekey="<?php echo $g_recaptcha_client;?>"></div>
             </div>
                     </div>
                     
