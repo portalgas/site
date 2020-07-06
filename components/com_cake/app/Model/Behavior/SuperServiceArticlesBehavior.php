@@ -111,10 +111,11 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganization']['id']."] SuppliersOrganization.owner_supplier_organization_id ".$suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id'], $debug);
 			
 		$options = [];
-		$options['conditions'] = ['SuppliersOrganization.id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id'],
-								  'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
-								  'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
-								  'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id']];
+		$options['conditions'] = [
+			'SuppliersOrganization.id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id'],
+			'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
+			'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
+			'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id']];
 		$Model::d($opts, $debug);								  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  

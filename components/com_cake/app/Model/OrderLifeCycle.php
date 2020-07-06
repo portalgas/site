@@ -25,6 +25,16 @@ class OrderLifeCycle extends AppModel {
 		]		
 	];
 	
+	public function getType($user, $orderResult, $debug=false) {
+
+		$type = Configure::read('Order.type.gas');
+
+		if(isset($orderResult['Order']['des_order_id']) && !empty($orderResult['Order']['des_order_id']))
+			$type = Configure::read('Order.type.des');
+
+		return $type;
+	}
+
 	/*
 	 * richiamato a cambiamento dei dati di un ordine, ex
 	 * 	CHANGE_DELIVERY quando l'ordine cambia di consegna

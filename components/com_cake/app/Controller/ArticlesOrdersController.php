@@ -139,6 +139,9 @@ class ArticlesOrdersController extends AppController {
 			case 'SUPPLIER':	
 				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
 			break;
+			case 'PACT':	
+				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
+			break;
 			default:
 				self::x(__('msg_error_supplier_organization_owner_articles'));
 			break;				
@@ -459,6 +462,9 @@ class ArticlesOrdersController extends AppController {
 			case 'SUPPLIER':	
 				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, $opt, $debug);	// articoli da associare
 			break;
+			case 'PACT':	
+				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, $opt, $debug);	// articoli da associare
+			break;
 			default:
 				self::x(__('msg_error_supplier_organization_owner_articles'));
 			break;				
@@ -773,6 +779,12 @@ class ArticlesOrdersController extends AppController {
 				$articles = $this->ArticlesOrder->getArticlesBySupplierOrganizationId_Ordinabili($user, $this->order, [], $debug);	// articoli da associare			
 			break;
 			case 'SUPPLIER':
+				self::d('Ordine NON DES', $debug);
+				$results = $this->ArticlesOrder->getArticlesByOrderId_ConAcquisti($user, $this->order, [], $debug);  // articoli gia associati
+				
+				$articles = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($user, $this->order, [], $debug);	// articoli da associare
+			break;
+			case 'PACT':
 				self::d('Ordine NON DES', $debug);
 				$results = $this->ArticlesOrder->getArticlesByOrderId_ConAcquisti($user, $this->order, [], $debug);  // articoli gia associati
 				

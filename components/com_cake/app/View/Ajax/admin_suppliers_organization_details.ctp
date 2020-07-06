@@ -9,6 +9,9 @@ if(!empty($results)) {
 			echo '<div class="input text ">';
 			echo '<label>'.__('organization_owner_articles').'</label> ';						
 			switch ($results['SuppliersOrganization']['owner_articles']) {
+				case 'PACT':
+					echo $this->App->traslateEnum('ProdGasSupplier'.$results['SuppliersOrganization']['owner_articles']);
+				break;
 				case 'SUPPLIER':
 					echo $this->App->traslateEnum('ProdGasSupplier'.$results['SuppliersOrganization']['owner_articles']);
 				break;

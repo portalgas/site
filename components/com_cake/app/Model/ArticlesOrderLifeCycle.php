@@ -58,6 +58,12 @@ class ArticlesOrderLifeCycle extends AppModel {
 		$owner_articles = $orderResult['SuppliersOrganization']['owner_articles'];
 	
 		switch($user->organization['Organization']['type']) {
+			case 'PACT':
+				if($owner_articles=='PACT') 
+					$results = true;
+				else 
+					$results = false;
+			break;
 			case 'PRODGAS':
 				if($owner_articles=='SUPPLIER') 
 					$results = true;

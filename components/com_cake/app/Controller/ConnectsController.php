@@ -43,10 +43,25 @@ class ConnectsController extends AppController {
 	   	if(empty($a_to))
 			$a_to = Configure::read('Neo.portalgas.action');     // 'supplierOrganizationFilter'; 
 
+		/*
+		 * parametri aggiuntivi
+		 */
+		$q = '';
+		unset($this->request->pass['c_to']);
+		unset($this->request->pass['a_to']);
+		if(!empty($this->request->pass)) {
+			foreach ($this->request->pass as $key => $value) {
+				$q = $key.'='.$value;
+			}
+		}
+
 		// http://neo.portalgas.it/api/token/login?u=
 		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
-		// debug($url);
-	   	
+
+		if(!empty($q))
+			$url .= '&'.$q;
+
+	 	// debug($url); 	
 		// $this->redirect($url);
 				
 		header("Location: $url");

@@ -52,10 +52,23 @@ echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 	$i=0;
 	echo $this->Form->label(__('Prezzo'));
 	echo '<div style="white-space: nowrap;">';
-	echo $this->Form->input('prezzo', ['label' => false, 'value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1), 'class'=>'double', 'style' => 'display:inline', 'required'=>'required', $disabledOpts]);
+	if(!$canEdit) {
+		echo $this->Form->input('prezzo_label', ['label' => false, 'value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1), 'class'=>'double', 'style' => 'display:inline', 'required'=>'required', $disabledOpts]);
+		echo $this->Form->input('prezzo', ['type' => 'hidden', 'value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'tabindex'=>-1]);
+	}
+	else {
+		echo $this->Form->input('prezzo', ['label' => false, 'value'=> $this->request->data['ArticlesOrder']['prezzo_'], 'type' => 'text', 'after' => '&nbsp;&euro;','tabindex'=>($i+1), 'class'=>'double', 'style' => 'display:inline', 'required'=>'required', $disabledOpts]);		
+	}
 	echo '</div>';
-	echo $this->Form->input('pezzi_confezione', ['label' => __('pezzi_confezione'),'type' => 'text', 'tabindex'=>($i+1), 'after' => $this->App->drawTooltip(__('pezzi_confezione'),__('toolTipPezziConfezione'),$type='INFO'), $disabledOpts]);
-	
+
+	if(!$canEdit) {
+		echo $this->Form->input('pezzi_confezione_label', ['label' => __('pezzi_confezione'), 'value'=> $this->request->data['ArticlesOrder']['pezzi_confezione'], 'type' => 'text', 'tabindex'=>($i+1), 'after' => $this->App->drawTooltip(__('pezzi_confezione'),__('toolTipPezziConfezione'),$type='INFO'), $disabledOpts]);
+		echo $this->Form->input('pezzi_confezione', ['type' => 'hidden', 'value'=> $this->request->data['ArticlesOrder']['pezzi_confezione'], 'tabindex'=>-1]);		
+	}
+	else {
+		echo $this->Form->input('pezzi_confezione', ['label' => __('pezzi_confezione'), 'value'=> $this->request->data['ArticlesOrder']['pezzi_confezione'], 'type' => 'text', 'tabindex'=>($i+1), 'after' => $this->App->drawTooltip(__('pezzi_confezione'),__('toolTipPezziConfezione'),$type='INFO'), $disabledOpts]);
+	}
+
 	/*
 	 * campi gestiti anche da chi non e' proprietario dell'articolo
 	 */		

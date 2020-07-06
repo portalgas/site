@@ -67,6 +67,7 @@ class ArticlesController extends AppController {
 				$this->Session->write(Configure::read('Filter.prefix').$this->modelClass.'SupplierId', $supplier_organization_id);
 			break;
 			case 'PRODGAS':
+			case 'PACT':
 				$supplier_organization_id = $this->user->organization['Supplier']['SuppliersOrganization']['id'];
 				$this->Session->write(Configure::read('Filter.prefix').$this->modelClass.'SupplierId', $supplier_organization_id);
 			break;

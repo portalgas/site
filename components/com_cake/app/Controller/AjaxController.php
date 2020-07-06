@@ -1938,7 +1938,7 @@ class AjaxController extends AppController {
             self::d($results, false);
 	
 			/*
-			 * owner_articles				  SUPPLIER / REFERENT / DES 
+			 * owner_articles				  SUPPLIER / REFERENT / DES / PACT
 		     * owner_organization_id          organization_id di chi gestisce il listino
 		     * owner_supplier_organization_id supplier_organization_id di chi gestisce il listino
 		     */
@@ -2082,7 +2082,7 @@ class AjaxController extends AppController {
 							self::d('Il produttore NON fa parte dei produttori DES', $debug);
 						}
 						
-						$owner_articles = $results['SuppliersOrganization']['owner_articles']; // SUPPLIER / REFERENT / REFERENT-TMP / DES
+						$owner_articles = $results['SuppliersOrganization']['owner_articles']; // SUPPLIER / REFERENT / REFERENT-TMP / DES / PACT
 						self::d($owner_articles, false);
 	
 						$msgOrderDesLink = '<p>Se desideri gestire l\'<b>ordine condiviso</b> (D.E.S.) <a class="btn btn-sm btn-info" href="?option=com_cake&controller=DesOrders&action=index">clicca qui</a></p>';

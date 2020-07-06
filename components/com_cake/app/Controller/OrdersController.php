@@ -676,12 +676,17 @@ class OrdersController extends AppController {
 	
 	private function _add($user, $requestData, $debug) {
 	
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+
 		$requestData['Order']['organization_id'] = $user->organization['Organization']['id'];
-		if(!empty($requestData['Order']['des_order_id']))
+		if(!empty($requestData['Order']['des_order_id'])) 
 			$des_order_id = $requestData['Order']['des_order_id'];
 		else
 			$requestData['Order']['des_order_id'] = 0;
 		
+		$requestData['Order']['order_type_id'] = $OrderLifeCycle->getType($user, $requestData);
+
 		/*
 		 * rimane allo stato CREATE-INCOMPLETE finche' non crea qualche associazione con gli articoli
 		 */
@@ -908,7 +913,7 @@ class OrdersController extends AppController {
 			$this->set('promotionResults', $promotionResults);
 		}
 	}
-	
+
 	public function admin_edit() {
 	
 		$debug=false;
@@ -1140,6 +1145,18 @@ class OrdersController extends AppController {
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 1;
 		$this->request->data = $this->Order->find('first', $options);
+
+		/*
+		 * REDIRECT PACT
+		 */
+		switch ($this->request->data['Order']['order_type_id']) {
+			case Configure::read('Order.type.pact'):
+				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
+				$url .= '&controller=Connects&action=index&c_to=admin/orders&a_to=edit&order_id='.$this->order_id;
+				$this->myRedirect($url);
+			break;
+		}
+
 		if (empty($this->request->data)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
