@@ -18,8 +18,11 @@ if(!empty($j_content_id)) {
 		$indirizzo = str_replace("'", "", $supplier['indirizzo']);
 		$localita = str_replace("'", "", $supplier['localita']);
 		$indirizzo = $indirizzo.' '.$localita;
-?>
-			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAYuif5WmS-Fpv23_w5nmIajjGv5lD8tc&sensor=false&v=3.exp"></script>
+
+		$app = JFactory::getApplication();
+		$GoogleApiKey =$app->getCfg('GoogleApiKey');
+		?>		
+			<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $GoogleApiKey;?>&sensor=false&v=3.exp"></script>
 
 			<script type="text/javascript">
 			var geocoder = new google.maps.Geocoder();
