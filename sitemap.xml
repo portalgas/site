@@ -2848,4 +2848,14 @@
 		<lastmod>2017-02-15</lastmod>
 		<changefreq>yearly</changefreq>
 	</url>
+  <url>
+    <loc>http://www.portalgas.it/home-gas-gasquinzano</loc>
+    <lastmod>2020-07-08</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>http://www.portalgas.it/home-gas-gasquinzano/consegne-gas-gasquinzano</loc>
+    <lastmod>2020-07-08</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>	
 </urlset>

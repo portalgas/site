@@ -353,7 +353,7 @@ else
 			<ul>
 				<li>Nome: Assistente PortAlGas</li>
 				<li>Nome utente Login: info@<span class="gasAlias"></span>.portalgas.it</li>
-				<li>p0rtA1gax</li>
+				<li><?php echo Configure::read('pwd');?></li>
 				<li>Mail info@<span class="gasAlias"></span>.portalgas.it</li>
 				<li>Gruppo 	gasCassiere / gasManagerConsegne / gasSuperReferente / gasSystem / gasTesoriere / gasManager</li>
 			</ul>  			
@@ -369,7 +369,7 @@ else
 			<ul>
 				<li>Nome: Dispensa PortAlGas</li>
 				<li>Nome utente Login: dispensa@<span class="gasAlias"></span>.portalgas.it</li>
-				<li>p0rtA1gax</li>
+				<li><?php echo Configure::read('pwd');?></li>
 				<li>Mail dispensa@<span class="gasAlias"></span>.portalgas.it</li>
 				<li>Gruppo 	gasDispensa</li>
 			</ul>  			

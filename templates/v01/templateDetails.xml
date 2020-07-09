@@ -81,8 +81,10 @@
 					<option value="8">gasbuttigliera (id 8)</option>
 					<option value="22">gasgarfagnana (id 22)</option>
 					<option value="15">gasivrea (id 15)</option>
+					<option value="68">gaslacittachecresce (id 68)</option>
 					<option value="40">gaslys (id 40)</option> 
 					<option value="38">gasoltremercatosalento (id 38)</option>
+					<option value="73">gasquinzano (id 73)</option>
 					<option value="37">gassansalvario (id 37)</option>
 					<option value="65">gassassiena (id 65)</option>
 					<option value="17">gasmarti (id 17)</option>
@@ -134,8 +136,10 @@
 					<option value="gasbuttigliera">gasbuttigliera</option>
 					<option value="gasgarfagnana">gasgarfagnana</option>
 					<option value="gasivrea">gasivrea</option>
+					<option value="gaslacittachecresce">gaslacittachecresce</option>
 					<option value="gaslys">gaslys</option>
 					<option value="gasoltremercatosalento">gasoltremercatosalento</option>
+					<option value="gasquinzano">gasquinzano</option>
 					<option value="gassansalvario">gassansalvario</option>
 					<option value="gassassiena">gassassiena</option> 
 					<option value="gasmarti">gasmarti</option>
