@@ -78,6 +78,7 @@ ul.help  {
 	<li><a href="#tcpdf">tcpdf</a></li>
 	<li><a href="#upgrade_joomla">Joomla Upgrade</a></li>
 	<li><a href="#cakephp">Cakephp</a></li>
+	<li><a href="#validation_cakephp">Cakephp Validation</a></li>
 	<li><a href="#upgrade_cakephp">Cakephp Upgrade</a></li>
 	<li><a href="#integration_cake_joomla">Integration Cake/Joomla</a>
 		<ul>
@@ -231,6 +232,9 @@ ul.help  {
 		</li>	
 		<li><a name="cakephp"></a>
 			<?php include('box_cakephp.ctp');?>
+		</li>	
+		<li><a name="validation_cakephp"></a>
+			<?php include('box_validation_cakephp.ctp');?>
 		</li>	
 		<li><a name="upgrade_cakephp"></a>
 			<?php include('box_upgrade_cakephp.ctp');?>

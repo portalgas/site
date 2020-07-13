@@ -156,7 +156,7 @@ In particolare il presente sito utilizza cookies delle seguenti terze parti:
 
 <h2>Trasferimento di dati in paesi extra UE</h2>
 <p>
-Il presente sito potrebbe condividere alcuni dei dati raccolti con servizi localizzati al di fuori dell’area dell’Unione Europea. In particolare con Google, Facebook e GLESys (Server) e tramite il servizio di Google Analytics. Il trasferimento è autorizzato in base a specifiche decisioni dell’Unione Europea e del Garante per la tutela dei dati personali, in particolare la decisione 1250/2016 (Privacy Shield – qui la pagina informativa del Garante italiano), per cui non occorre ulteriore consenso. Le aziende sopra menzionate garantiscono la propria adesione al Privacy Shield.
+Il presente sito potrebbe condividere alcuni dei dati raccolti con servizi localizzati al di fuori dell’area dell’Unione Europea. In particolare con Google, Facebook e tramite il servizio di Google Analytics. Il trasferimento è autorizzato in base a specifiche decisioni dell’Unione Europea e del Garante per la tutela dei dati personali, in particolare la decisione 1250/2016 (Privacy Shield – qui la pagina informativa del Garante italiano), per cui non occorre ulteriore consenso. Le aziende sopra menzionate garantiscono la propria adesione al Privacy Shield.
 </p>	
 
 
@@ -202,7 +202,7 @@ in collaborazione con il <?php echo __('UserGroupsUserFlagPrivacy');?> del G.A.S
 
 <h2>Responsabile del Trattamento</h2>
 <p>
-Il web hosting <a href="<?php echo Configure::read('SOC.hosting.url');?>" target="_blank"><?php echo Configure::read('SOC.hosting.responsabile');?></a> è nominato responsabile del trattamento, elaborando i dati per conto del titolare. GleSYS si trova nello Spazio Economico Europeo e agisce in conformità delle norme europee (policy privacy di GleSYS).
+Il web hosting <a href="<?php echo Configure::read('SOC.hosting.url');?>" target="_blank"><?php echo Configure::read('SOC.hosting.responsabile');?></a> è nominato responsabile del trattamento, elaborando i dati per conto del titolare. Hetzner si trova nello Spazio Economico Europeo e agisce in conformità delle norme europee (policy privacy di <a target="_blank" href="https://www.hetzner.com/rechtliches/datenschutz">https://www.hetzner.com/rechtliches/datenschutz</a>).
 </p>
 <p>Google è nominato responsabile del trattamento, elaborando dati per conto del titolare (Google Analytics).
 </p> 

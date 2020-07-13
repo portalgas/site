@@ -300,6 +300,12 @@
 
 		</td>
 	</tr>
+	<tr>
+		<th>Voce di menù <b>Dispensa</b>:</th>
+		<td class="border-bottom" colspan="2">
+			se il G.A.S. ha la dispensa a Front-end, abilitare la voce
+		</td>
+	</tr>
 </table>	
 	
 	

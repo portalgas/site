@@ -50,9 +50,13 @@ class Sql extends AppModel {
 		$results[$i]['params'] = [];
 		$i++;
 		$results[$i]['name'] = "Ultimi articoli modificati di un produttore";
-		$results[$i]['sql'] = "SELECT o.name, s.name, s.owner_articles, s.owner_organization_id, s.owner_organization_id, s.owner_supplier_organization_id, a.name, a.modified FROM `k_suppliers_organizations` s, `k_articles` a , k_organizations o WHERE supplier_id = %s and s.id = a.supplier_organization_id and s.organization_id = o.id order by a.modified DESC;";
+		$results[$i]['sql'] = "SELECT o.name, s.name, s.owner_articles, s.owner_organization_id, s.owner_organization_id, s.owner_supplier_organization_id, a.name, a.modified FROM `k_suppliers_organizations` s, k_articles a , k_organizations o WHERE supplier_id = %s and s.id = a.supplier_organization_id and s.organization_id = o.id order by a.modified DESC;";
 		$results[$i]['params'] = ['supplier_id' => 'ProduttoreId'];
-	
+		$i++;
+		$results[$i]['name'] = "Invio mail a tutti con totali utenti";
+		$results[$i]['sql'] = "SELECT o.name, o.id, count(u.id) as tot_users, dest_options, m.created FROM k_mails m, k_organizations o, j_users u where m.organization_id = o.id and o.type = 'GAS' and o.stato = 'Y' and o.id = u.organization_id and u.block = 0 and dest_options_qta = 'ALL' and year(m.created) = %s group by  m.created, o.id, o.name, dest_options, dest_options_qta order by m.created desc;";
+		$results[$i]['params'] = ['year' => 'AnnoMailSend'];
+
 		return $results;
 	}
 }

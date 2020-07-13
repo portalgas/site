@@ -299,8 +299,8 @@ class MailsSend extends AppModel {
                                 and SupplierOrganization.mail_order_close = 'Y'
                                 and `Order`.data_fine = CURDATE() + INTERVAL ".Configure::read('GGMailToAlertOrderClose')." DAY 
                                 and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
-                                and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
-                                and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
+                                and `Order`.isVisibleFrontEnd = 'Y' 
+                                and Delivery.isVisibleFrontEnd = 'Y' 
                                 order by Delivery.data, Supplier.name ";
                     // self::d($sql, $debug);
                     $orderCtrlResults = $Order->query($sql);
