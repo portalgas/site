@@ -110,6 +110,7 @@ if($componentIsComCake) {
 		*/
 		$hasArticlesGdxp = $paramsConfig['hasArticlesGdxp'];
 		$hasBookmarsArticles = $paramsConfig['hasBookmarsArticles'];
+		$hasDocuments = $paramsConfig['hasDocuments'];
 		$hasArticlesOrder = $paramsConfig['hasArticlesOrder'];
 		$hasDes = $paramsConfig['hasDes'];
 		$hasDesUserManager = $paramsConfig['hasDesUserManager'];

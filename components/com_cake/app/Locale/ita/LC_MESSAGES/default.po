@@ -3019,6 +3019,9 @@ msgstr "Ha la gestione del GDXP degli articoli"
 msgid "HasBookmarsArticles"
 msgstr "Ha la gestione degli articoli preferiti"
 
+msgid "HasDocuments"
+msgstr "Ha la gestione dei documenti"
+
 msgid "HasUsersRegistrationFE"
 msgstr "Permette agli utenti di registrarsi a FE"
 
@@ -4427,6 +4430,9 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli GDXP"
 
 msgid "toolTipHasBookmarsArticles"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"
+
+msgid "toolTipHasDocuments"
+msgstr "Se è valorizzato a 'Si' si potrà gestire i documenti a front-end"
 
 msgid "toolTipHasArticlesOrder"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli associati agli ordini"

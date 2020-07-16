@@ -91,12 +91,22 @@ class OrganizationsController extends AppController {
         }
     }
 
-    public function admin_index($type='GAS') {
+    public function admin_index() {
+
+        // GAS
+    	if(isset($this->request->params['pass']['type']))
+	        $type = $this->request->params['pass']['type']; 
+	    if(isset($this->request->data['Organization']['type']))
+	    	$type = $this->request->data['Organization']['type'];
+        else 
+        	$type='GAS';
+        $this->set(compact('type'));
 
         $this->paginate = ['recursive' => 0,
         					'conditions' => ['Organization.type' => $type],
 				            'order' => 'Organization.id desc',
 				            'limit' => 100];
+
         $results = $this->paginate('Organization');
         foreach ($results as $numResult => $result) {
 
@@ -121,7 +131,7 @@ class OrganizationsController extends AppController {
                 $paramsPay = [];
         }
 
-        $this->set('results', $results);
+        $this->set(compact('results', 'type'));
 
         /*
          * ricarico i dati dello user (organization, ACL, ..)
@@ -323,6 +333,15 @@ class OrganizationsController extends AppController {
 
         $debug = false;
 
+        // GAS
+    	if(isset($this->request->params['pass']['type']))
+	        $type = $this->request->params['pass']['type']; 
+	    if(isset($this->request->data['Organization']['type']))
+	    	$type = $this->request->data['Organization']['type'];
+        else 
+        	$type='GAS';
+        $this->set(compact('type'));
+
         if ($this->request->is('post') || $this->request->is('put')) {
 
             $this->request->data = $this->Organization->validateData($this->request->data, $debug);
@@ -330,6 +349,7 @@ class OrganizationsController extends AppController {
             $paramsConfig = [];
             $paramsConfig += ['hasArticlesGdxp' => $this->request->data['Organization']['hasArticlesGdxp']];
             $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
+            $paramsConfig += ['hasDocuments' => $this->request->data['Organization']['hasDocuments']];
             $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
             $paramsConfig += ['hasVisibility' => $this->request->data['Organization']['hasVisibility']];
             $paramsConfig += ['hasTrasport' => $this->request->data['Organization']['hasTrasport']];
@@ -426,6 +446,7 @@ class OrganizationsController extends AppController {
          */
         $hasArticlesGdxp = ['Y' => 'Si', 'N' => 'No'];
         $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
+        $hasDocuments = ['Y' => 'Si', 'N' => 'No'];
         $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
         $hasVisibility = ['Y' => 'Si', 'N' => 'No'];
         $hasTrasport = ['Y' => 'Si', 'N' => 'No'];
@@ -469,7 +490,7 @@ class OrganizationsController extends AppController {
         $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 		/*
 		 * template
@@ -490,6 +511,15 @@ class OrganizationsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
+        // GAS
+    	if(isset($this->request->params['pass']['type']))
+	        $type = $this->request->params['pass']['type']; 
+	    if(isset($this->request->data['Organization']['type']))
+	    	$type = $this->request->data['Organization']['type'];
+        else 
+        	$type='GAS';
+        $this->set(compact('type'));
+
         if ($this->request->is('post') || $this->request->is('put')) {
 
             $this->request->data = $this->Organization->validateData($this->request->data, $debug);
@@ -497,6 +527,7 @@ class OrganizationsController extends AppController {
             $paramsConfig = [];
             $paramsConfig += ['hasArticlesGdxp' => $this->request->data['Organization']['hasArticlesGdxp']];
             $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
+            $paramsConfig += ['hasDocuments' => $this->request->data['Organization']['hasDocuments']];
             $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
             $paramsConfig += ['hasVisibility' => $this->request->data['Organization']['hasVisibility']];
             $paramsConfig += ['hasTrasport' => $this->request->data['Organization']['hasTrasport']];
@@ -608,6 +639,7 @@ class OrganizationsController extends AppController {
              */
             $hasArticlesGdxp = ['Y' => 'Si', 'N' => 'No'];
             $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
+            $hasDocuments = ['Y' => 'Si', 'N' => 'No'];
             $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
             $hasVisibility = ['Y' => 'Si', 'N' => 'No'];
             $hasTrasport = ['Y' => 'Si', 'N' => 'No'];
@@ -663,7 +695,7 @@ class OrganizationsController extends AppController {
             $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
-            $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+            $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 			/*
 			 * template

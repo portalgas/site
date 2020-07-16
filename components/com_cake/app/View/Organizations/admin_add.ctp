@@ -14,6 +14,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="organizations form">';
 echo $this->Form->create('Organization');
+echo $this->Form->input('type', ['type'=> 'hidden']);
 echo '<fieldset>';
 echo '<legend>'.__('Add Organization').'</legend>';
 		
@@ -145,6 +146,10 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 
 	echo '<h3>GDXP</h3>';
 	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=>'N', 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
+
+
+	echo '<h3>Documents</h3>';
+	echo $this->App->drawFormRadio('Organization','hasDocuments', ['options' => $hasDocuments, 'value'=> 'N', 'label'=>__('HasDocuments'), 'required'=>'required']);
 
 
 	echo '<h3>Organization</h3>';

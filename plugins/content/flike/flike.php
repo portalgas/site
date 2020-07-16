@@ -160,10 +160,12 @@ class plgContentflike extends JPlugin
 			if ($og_url=="1")
 			{
 				if (!$skip_og_image) if (!$j15)
-				{			
-					$images=json_decode($row->images);
-					if (isset($images->image_fulltext) && !empty($images->image_fulltext)) $og_image=$uri->base().$images->image_fulltext;
-					if (isset($images->image_intro) && !empty($images->image_intro)) $og_image=$uri->base().$images->image_intro;
+				{		
+					if(isset($row->images))	{	
+						$images=json_decode($row->images);
+						if (isset($images->image_fulltext) && !empty($images->image_fulltext)) $og_image=$uri->base().$images->image_fulltext;
+						if (isset($images->image_intro) && !empty($images->image_intro)) $og_image=$uri->base().$images->image_intro;
+					}
 				}
 
 				$doc->addCustomTag('<meta property="og:type" content="'.$og_type.'"/>');

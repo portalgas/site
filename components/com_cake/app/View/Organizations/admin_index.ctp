@@ -82,8 +82,10 @@
 		*/
 		?>
 		<td class="actions-table-img">
-			<?php echo $this->Html->link(null, array('action' => 'edit', $result['Organization']['id']),array('class' => 'action actionEdit','title' => __('Edit'))); ?>
-			<?php echo $this->Html->link(null, array('action' => 'delete', $result['Organization']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); ?>			
+			<?php 
+			echo $this->Html->link(null, ['action' => 'edit', $result['Organization']['id'], 'type' => $type], ['class' => 'action actionEdit','title' => __('Edit')]);
+			echo $this->Html->link(null, ['action' => 'delete', $result['Organization']['id'], '?' => ['type' => $type]], ['class' => 'action actionDelete','title' => __('Delete')]); 
+			?>
 		</td>
 	</tr>
 	
@@ -109,6 +111,7 @@
 					echo '<td style="white-space: nowrap;">';
 					echo '<div title="'.__('toolTipHasArticlesGdxp').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesGdxp']).'_int">'.__('HasArticlesGdxp').'</div> <br />';
 					echo '<div title="'.__('toolTipHasBookmarsArticles').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasBookmarsArticles']).'_int">'.__('HasBookmarsArticles').'</div> <br />';
+					echo '<div title="'.__('toolTipHasDocuments').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasHasDocuments']).'_int">'.__('HasDocuments').'</div> <br />';
 					echo '<div title="'.__('toolTipHasArticlesOrder').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesOrder']).'_int">'.__('HasArticlesOrder').'</div> <br />';
 					echo '<div title="'.__('toolTipHasVisibility').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasVisibility']).'_int">'.__('HasVisibility').'</div> <br />';
 					echo '<div title="'.__('toolTipHasTrasport').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasTrasport']).'_int">'.__('HasTrasport').'</div> <br />';

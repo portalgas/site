@@ -170,14 +170,14 @@ if($this->countModules('position-cols-right')==0) {
 }
 else {
 ?>		<div class="row">
-			<div class="col-xs-9  col-md-9">
+			<div class="col-xs-12 col-md-9">
 				<jdoc:include type="modules" name="position-0" />
 				
 				<jdoc:include type="component" />
 				
 				<jdoc:include type="modules" name="position-content-bottom" />
 			</div>
-			<div class="col-xs-3  col-md-3 hidden-xs hidden-sm">
+			<div class="col-md-3 hidden-xs hidden-sm">
 				    <jdoc:include type="modules" name="position-cols-right" />
 			</div>
 		</div>
