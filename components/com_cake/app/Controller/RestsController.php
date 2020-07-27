@@ -1,8 +1,14 @@
 <?php
 App::uses('UtilsCommons', 'Lib');
 
+/*
+ * aggiungere action in  core.php
+ * Configure::write('urlFrontEndToRewriteCakeRequest', ...)
+ */
 class RestsController extends AppController {
 	
+	public $components = ['CryptDecrypt'];
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 
@@ -14,6 +20,78 @@ class RestsController extends AppController {
 		echo "</pre>";
 		*/
 	}
+
+    /*
+     * da cakephp a joomla25
+	 *
+	 *  /api/connect?u={salt}&c_to={c_to}&a_to={a_to}
+	 */
+    public function connect() {
+
+   		$continua = true;
+   		$debug = false;
+
+   		self::d($this->request->params, $debug);
+ 
+   		if(!isset($this->request->params['pass']['u']) || empty($this->request->params['pass']['u'])) 
+   			$continua = false;
+
+   		if($continua) {
+   			if(isset($this->request->params['pass']['c_to']))
+	   			$c_to = $this->request->params['pass']['c_to'];
+	   		else
+	   			$c_to = 'Pages';
+   			if(isset($this->request->params['pass']['a_to']))
+	   			$a_to = $this->request->params['pass']['a_to'];
+	   		else
+	   			$a_to = 'home';
+   			if(isset($this->request->params['pass']['u']))
+	   			$user_salt = $this->request->params['pass']['u'];
+	   		else
+	   			$continua = false;
+   		}
+
+		if($continua) {
+			$user = $this->CryptDecrypt->decrypt($user_salt);
+			$user = unserialize($user);
+			self::d($user, $debug); 
+
+		    $db = JFactory::getDbo();
+		    $app = JFactory::getApplication();
+			$jUser = JFactory::getUser($user['user_id']);
+			self::d($jUser, $debug);	
+
+            $instance = $jUser;     
+            $instance->set('guest', 0);
+
+            $session = JFactory::getSession();
+            $session->set('user', $jUser);
+
+            // Check to see the the session already exists.                        
+            $app->checkSession();
+            $app->setUserState('users.login.form.data', array());
+            
+            // Update the user related fields for the Joomla sessions table.
+            $sql = 'UPDATE '.$db->quoteName('#__session') .
+                    ' SET '.$db->quoteName('guest').' = '.$db->quote($instance->get('guest')).',' .
+                    '   '.$db->quoteName('username').' = '.$db->quote($instance->get('username')).',' .
+                    '   '.$db->quoteName('userid').' = '.(int) $instance->get('id') .
+                    ' WHERE '.$db->quoteName('session_id').' = '.$db->quote($session->getId());
+            self::d($sql, $debug);    
+            $db->setQuery($sql);
+            $db->query();
+            $instance->setLastVisit();  
+
+            $url = '/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
+            self::d($url, $debug);
+
+            if(!$debug)
+            	$app->redirect($url);
+
+   		} // end if($continua) 
+
+   		exit;
+    }
 
 	/*
 	 *  i valori arrivano in GET per RewriteRule in api/.htaccess 
@@ -94,8 +172,8 @@ class RestsController extends AppController {
 		$this->render('/Rests/index');	   
 	}
 	
-	 /*
-	 *  next.portalgas.it/api/organizations?format=notmpl
+	/*
+	 *  /api/organizations?format=notmpl
 	 */
 	public function organizations() {
 	
@@ -118,8 +196,8 @@ class RestsController extends AppController {
 	}
 			
 	 /*
-	 *  next.portalgas.it/api/organization?id=1&format=notmpl
-	 */
+	  *  /api/organization?id=1&format=notmpl
+	  */
 	public function organization($organization_id) {
 	
 		App::import('Model', 'Organization');
@@ -142,7 +220,7 @@ class RestsController extends AppController {
 	}
 	
 	/*
-	 *  http://next.portalgas.it/api/deliveries?id=1&format=notmpl
+	 *  /api/deliveries?id=1&format=notmpl
 	 */
 	public function deliveries($organization_id) {
 
@@ -210,7 +288,7 @@ class RestsController extends AppController {
 	}
 
 	/*
-	 *  next.portalgas.it/api/orders?id=1&delivery_id=71&format=notmpl
+	 *  /api/orders?id=1&delivery_id=71&format=notmpl
 	 */
 	public function orders($organization_id, $delivery_id) {
 
@@ -275,7 +353,7 @@ class RestsController extends AppController {
 	}
 	
 	 /*
-	 *  next.portalgas.it/api/articles_orders?id=1&order_id=192&format=notmpl
+	 *  /api/articles_orders?id=1&order_id=192&format=notmpl
 	 */
 	public function articles_orders($organization_id, $order_id) {
 	
@@ -316,7 +394,7 @@ class RestsController extends AppController {
 	}
 	
 	 /*
-	  *  next.portalgas.it/api/cash_ctrl_limit?format=notmpl
+	  *  /api/cash_ctrl_limit?format=notmpl
 	 */
 	public function cash_ctrl_limit() {
 	

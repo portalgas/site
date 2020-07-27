@@ -14,6 +14,13 @@ class ConnectsController extends AppController {
 		}
    }
 
+   /*
+    * da joomla25 a cakephp
+    *
+    * da cakephp a joomla25 
+    * chiamando /api/connect?u={salt}&format=notmpl .htaccess
+    * Rests::connect()
+    */
    public function admin_index() {
    		
    		if(!isset($this->user->id) || empty($this->user->id))
