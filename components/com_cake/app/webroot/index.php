@@ -1,109 +1,55 @@
-<?php
-/**
- * Index
- *
- * The Front Controller for handling every request
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.webroot
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-/**
- * Use the DS to separate the directories in other defines
- */
-	if (!defined('DS')) {
-		define('DS', DIRECTORY_SEPARATOR);
-	}
-/**
- * These defines should only be edited if you have cake installed in
- * a directory layout other than the way it is distributed.
- * When using custom settings be sure to use the DS and do not add a trailing DS.
- */
+<style>
+.main-center {
+	margin: 0 auto;
+	margin-top: 25px;
+	width: 80%;
+	padding: 25px 25px 25px 25px;
+}
+.main-login {
+	background-color: #fff;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
 
-/**
- * The full path to the directory which holds "app", WITHOUT a trailing DS.
- *
- */
-	if (!defined('ROOT')) {
-		define('ROOT', dirname(dirname(dirname(__FILE__))));
-	}
-/**
- * The actual directory name for the "app".
- *
- */
-	if (!defined('APP_DIR')) {
-		define('APP_DIR', basename(dirname(dirname(__FILE__))));
-	}
+.footer a {
+	color:#bbb;
+}
+.footer a:hover {
+	color:#fff;
+}	
+.footer {
+	position: fixed;
+	bottom: 0;
+	width:100%;
+	color: #bbb;
+	background: none repeat scroll 0 0 #222222;
+	padding:5px;
+}
+h2 {
+}
+h3 {
+	text-align: justify;
+	line-height: 50px;
+	color: #3d3d3d;
+}
+</style>
 
-/**
- * The absolute path to the "cake" directory, WITHOUT a trailing DS.
- *
- * Un-comment this line to specify a fixed path to CakePHP.
- * This should point at the directory containing `Cake`.
- *
- * For ease of development CakePHP uses PHP's include_path.  If you
- * cannot modify your include_path set this value.
- *
- * Leaving this constant undefined will result in it being defined in Cake/bootstrap.php
- */
-// define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
-define('CAKE_CORE_INCLUDE_PATH',  DS .'var' . DS .'cakephp');
+<div class="container">
+	<div class="main-login main-center">
+		
+			<div id="section-box">
+				<div class="m">
+					<h2 class="form-signin-heading visible-lg visible-md visible-sm">Sito in aggiornamento</h2>
+					<h3 class="form-signin-heading visible-lg visible-md visible-sm">Stiamo effettuando l'aggiornamento del server e dei servizi relativi<br>L'operazione necessiterà di circa 15 giorni di intervento e il sito non sar&agrave; disponibile.<br />Ci scusiamo per il disagio</h2>
 
-/**
- * Editing below this line should NOT be necessary.
- * Change at your own risk.
- *
- */
-	if (!defined('WEBROOT_DIR')) {
-		define('WEBROOT_DIR', basename(dirname(__FILE__)));
-	}
-	if (!defined('WWW_ROOT')) {
-		define('WWW_ROOT', dirname(__FILE__) . DS);
-	}
+					<div class="clr"></div>
+				</div>
+			</div>
+	
+	</div>
+</div>
 
-	$failed = false; 
-	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-		if (function_exists('ini_set')) {
-			ini_set('include_path', ROOT . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
-		}
-		if (!file_exists('Cake' . DS . 'bootstrap.php')) {
-		// if (!include('Cake' . DS . 'bootstrap.php')) {
-			$failed = true;
-		}
-		else
-			include('Cake' . DS . 'bootstrap.php');
-
-	} else {
-		if (!file_exists(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
-		// if (!include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
-			$failed = true;
-		}
-		else {
-			include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php');
-		}
-	}
-
-	// if (!empty($failed)) {
-	if ($failed) {
-		trigger_error("CakePHP core could not be found.  Check the value of CAKE_CORE_INCLUDE_PATH in APP/webroot/index.php.  It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
-	}
-
-	if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] == '/favicon.ico') {
-		return;
-	}
-
-	App::uses('Dispatcher', 'Routing');
-	// require_once(WWW_ROOT.'../Lib/Routing/Dispatcher.php');
-
-	$Dispatcher = new Dispatcher();
-	$Dispatcher->dispatch(new CakeRequest(), new CakeResponse(array('charset' => Configure::read('App.encoding'))));
