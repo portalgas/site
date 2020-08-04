@@ -62,7 +62,7 @@ class ConnectsController extends AppController {
 			}
 		}
 
-		// http://neo.portalgas.it/api/token/login?u=
+		// https://neo.portalgas.it/api/token/login?u=
 		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
 
 		if(!empty($q))

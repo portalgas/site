@@ -347,10 +347,10 @@ class DocsCreatesController extends AppController {
 		
 		$body_mail = '';	
 		$body_mail .= 'Da oggi potrai trovare un documento denominato <b>'.$results['DocsCreate']['name'].'</b><br /><br />';
-		$body_mail .= 'Dopo esseri <b>autenticato</b> su <a target="_blank" href="http://www.portalgas.it">portalgas.it</a><br />';
+		$body_mail .= 'Dopo esseri <b>autenticato</b> su <a target="_blank" href="https://www.portalgas.it">portalgas.it</a><br />';
 
 		$j_seo = $this->user->organization['Organization']['j_seo'];
-		$url = 'http://www.portalgas.it/home-' . $j_seo . '/stampe-' . $j_seo . '#user-docs';
+		$url = 'https://www.portalgas.it/home-' . $j_seo . '/stampe-' . $j_seo . '#user-docs';
 		$body_mail .= ' clicca su <a target="_blank" href="' . $url . '">'.$url.'</a> per scaricare il documento';
 							
 		$this->set('body_mail',$body_mail);			

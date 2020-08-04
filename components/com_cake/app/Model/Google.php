@@ -150,7 +150,7 @@ class Google extends AppModel {
 				}
 										
 				$body_mail .= "\n\r";
-				$body_mail .= 'http://www.portalgas.it/home-'.$j_seo;
+				$body_mail .= 'https://www.portalgas.it/home-'.$j_seo;
 				$body_mail .= "\n\r";
 				
 				$event = new Google_Service_Calendar_Event();
@@ -318,7 +318,7 @@ class Google extends AppModel {
 				$body_mail .= $tmpProduttori;
 										
 				$body_mail .= "\n\r";
-				$body_mail .= 'http://www.portalgas.it/home-'.$j_seo;
+				$body_mail .= 'https://www.portalgas.it/home-'.$j_seo;
 
 				
 				$event = new Google_Service_Calendar_Event();

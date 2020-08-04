@@ -111,9 +111,9 @@ class UtilsCrons {
                     $tmpProduttori .= '<br />' . ($numResult + 1) . ') ';
 
                     if (!empty($SupplierResults['Supplier']['img1']) && file_exists($this->AppRoot . Configure::read('App.img.upload.content') . DS . $SupplierResults['Supplier']['img1']))
-                        $tmpProduttori .= ' <img width="50" src="http://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/' . $SupplierResults['Supplier']['img1'] . '" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
+                        $tmpProduttori .= ' <img width="50" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/' . $SupplierResults['Supplier']['img1'] . '" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
 					else
-						$tmpProduttori .= ' <img width="50" src="http://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/empty.png" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
+						$tmpProduttori .= ' <img width="50" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/empty.png" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
 
                     $tmpProduttori .= $orderResult['SuppliersOrganization']['name'];
                     if (!empty($SupplierResults['Supplier']['descrizione']))
@@ -146,10 +146,10 @@ class UtilsCrons {
                                 $body_mail .= '</div>';
                             }
 
-                            $url = 'http://www.portalgas.it/home-' . $j_seo . '/preview-carrello-' . $j_seo . '?' . $User->getUrlCartPreviewNoUsername($user, $deliveryResult['Delivery']['id']);
+                            $url = 'https://www.portalgas.it/home-' . $j_seo . '/preview-carrello-' . $j_seo . '?' . $User->getUrlCartPreviewNoUsername($user, $deliveryResult['Delivery']['id']);
 
                             $body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">';
-                            $body_mail .= '<img src="http://www.portalgas.it' . Configure::read('App.img.cake') . '/cesta-piena.png" title="" border="0" />';
+                            $body_mail .= '<img src="https://www.portalgas.it' . Configure::read('App.img.cake') . '/cesta-piena.png" title="" border="0" />';
                             $body_mail .= ' <a target="_blank" href="' . $url . '">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
                             $body_mail .= '</div>';
 
@@ -435,7 +435,7 @@ class UtilsCrons {
         $body_mail_final = "";
         $body_mail_final .= "<br />";
         if (!empty($articlesOrderResult['Article']['img1']) && file_exists($this->AppRoot . Configure::read('App.img.upload.article') . DS . $articlesOrderResult['Article']['organization_id'] . DS . $articlesOrderResult['Article']['img1'])) {
-            $body_mail_final .= '<img width="50" class="userAvatar" src="http://www.portalgas.it' . Configure::read('App.web.img.upload.article') . '/' . $articlesOrderResult['Article']['organization_id'] . '/' . $articlesOrderResult['Article']['img1'] . '" /> ';
+            $body_mail_final .= '<img width="50" class="userAvatar" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.article') . '/' . $articlesOrderResult['Article']['organization_id'] . '/' . $articlesOrderResult['Article']['img1'] . '" /> ';
         }
         $body_mail_final .= "L'articolo ";
         $body_mail_final .= "<b>" . $articlesOrderResult['ArticlesOrder']['name'] . '</b> ';

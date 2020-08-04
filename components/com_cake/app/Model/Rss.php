@@ -25,7 +25,7 @@ class Rss extends AppModel {
         $fileName1 = $j_seo . '.rss';
         $fileName2 = $j_seo . '2.rss';
         $fileName3 = $j_seo . '-gcalendar.rss';
-        $link = 'http://www.portalgas.it/home-' . $j_seo . '/consegne-' . $j_seo;
+        $link = 'https://www.portalgas.it/home-' . $j_seo . '/consegne-' . $j_seo;
 
         /*
          * data nel formato Wed, 02 Oct 2002 08:00:00 EST
@@ -37,9 +37,9 @@ class Rss extends AppModel {
         $rssHeader .= '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
         $rssHeader .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";
         $rssHeader .= '<channel>' . "\n";
-        $rssHeader .= '<atom:link href="http://www.portalgas.it/rss/' . $j_seo . '.rss" type="application/rss+xml" />' . "\n";
+        $rssHeader .= '<atom:link href="https://www.portalgas.it/rss/' . $j_seo . '.rss" type="application/rss+xml" />' . "\n";
         $rssHeader .= '<title>Ordini del G.A.S. ' . $this->_organizationNameError($user->organization) . '</title>' . "\n";
-        $rssHeader .= '<link>http://www.portalgas.it</link>' . "\n";
+        $rssHeader .= '<link>https://www.portalgas.it</link>' . "\n";
         $rssHeader .= '<description>Gestionale web per G.A.S. (GAS gruppo d\'acquisto solidale)</description>' . "\n";
         $rssHeader .= '<pubDate>' . $date . '</pubDate>' . "\n";
         $rssHeader .= '<lastBuildDate>' . $date . '</lastBuildDate>' . "\n";
@@ -47,8 +47,8 @@ class Rss extends AppModel {
 
         if (!empty($user->organization['Organization']['img1'])) {
             $rssHeader .= '<image>' . "\n";
-            $rssHeader .= '<url>http://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/' . $user->organization['Organization']['img1'] . '</url>' . "\n";
-            $rssHeader .= '<link>http://www.portalgas.it</link>' . "\n";
+            $rssHeader .= '<url>https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/' . $user->organization['Organization']['img1'] . '</url>' . "\n";
+            $rssHeader .= '<link>https://www.portalgas.it</link>' . "\n";
             $rssHeader .= '<title>Ordini del G.A.S. ' . $this->_organizationNameError($user->organization) . '</title>' . "\n";
             $rssHeader .= '</image>' . "\n";
         }
@@ -79,7 +79,7 @@ class Rss extends AppModel {
         foreach ($results as $numResult => $result) {
 
 
-            $guid = 'http://www.portalgas.it/' . $j_seo . '-' . $result['Order']['id'];
+            $guid = 'https://www.portalgas.it/' . $j_seo . '-' . $result['Order']['id'];
 
             /*
              * titolo uno: Il Girasole - Ordine aperto dal 1 febbraio al 7 febbraio - Consegna 10 febbraio

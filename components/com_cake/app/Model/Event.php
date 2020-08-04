@@ -98,7 +98,7 @@ class Event extends AppModel {
 								$body_mail .= '</div>';							
 							}
 
-							$url = 'http://www.portalgas.it/home-'.$j_seo.'/events';
+							$url = 'https://www.portalgas.it/home-'.$j_seo.'/events';
 								
 						    $body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">'; 
 							$body_mail .= 'Autenticati e <a target="_blank" href="'.$url.'">clicca qui per maggior dettaglio</a>';

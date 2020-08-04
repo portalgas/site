@@ -339,35 +339,35 @@ echo '<div class="cpanel">';
 	
 /*
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-articoli.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione degli articoli</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-articoli.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione degli articoli</span></a></div>';
 	echo '</div>';
 
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-ordini.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione degli ordini</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-ordini.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione degli ordini</span></a></div>';
 	echo '</div>';
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-produttori.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione dei produttori</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-manuale-gestione-produttori.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>La gestione dei produttori</span></a></div>';
 	echo '</div>';
 
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-manuale-moduli.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>I moduli su PortAlGas</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-manuale-moduli.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>I moduli su PortAlGas</span></a></div>';
 	echo '</div>';
 	
 	if($isManager) {
 		echo '<div class="icon-wrapper">';
-		echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-manuale-manager.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Manuale manager</span></a></div>';
+		echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-manuale-manager.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Manuale manager</span></a></div>';
 		echo '</div>';
 	}
 	
 	echo '<div class="icon-wrapper">';
-	echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas-tesoriere.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Manuale per il tesoriere</span></a></div>';
+	echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas-tesoriere.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Manuale per il tesoriere</span></a></div>';
 	echo '</div>';
 */
 	
 	if($user->organization['Organization']['id']==1) {		
 		echo '<div class="icon-wrapper">';
-		echo '<div class="icon"><a target="_blank" href="http://www.portalgas.it/images/manuali/PortAlGas_Fatture_Regole.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Regole per le fatture</span></a></div>';
+		echo '<div class="icon"><a target="_blank" href="https://www.portalgas.it/images/manuali/PortAlGas_Fatture_Regole.pdf"><img alt="" src="/administrator/templates/bluestork/images/header/cake/pdf.png"><span>Regole per le fatture</span></a></div>';
 		echo '</div>';
 	}
 	

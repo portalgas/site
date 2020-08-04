@@ -147,10 +147,10 @@ class MailsSend extends AppModel {
 														/*
 														 * manca lo username crittografato, lo faccio al ciclo degli utenti
 														*/
-														$url = 'http://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
+														$url = 'https://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
 
 														$body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">'; 
-														$body_mail .= '<img src="http://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
+														$body_mail .= '<img src="https://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
 														$body_mail .= ' <a target="_blank" href="'.$url.'">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
 														$body_mail .= '</div>'; 
 												}
@@ -184,9 +184,9 @@ class MailsSend extends AppModel {
 									$body_mail .= " fino a ".CakeTime::format($result['Order']['data_fine'], "%A %e %B %Y");
 
 									if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+											$body_mail .= ' <img width="50" src="https://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 									else
-										$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';										
+										$body_mail .= ' <img width="50" src="https://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';										
 
 									$body_mail .= "<br />\n";
 
@@ -206,10 +206,10 @@ class MailsSend extends AppModel {
 								/*
 								 * manca lo username crittografato, lo faccio al ciclo degli utenti
 								 */
-								$url = 'http://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
+								$url = 'https://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
 
 								$body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">'; 
-								$body_mail .= '<img src="http://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
+								$body_mail .= '<img src="https://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
 								$body_mail .= ' <a target="_blank" href="'.$url.'">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
 								$body_mail .= '</div>'; 
 								 
@@ -386,10 +386,10 @@ class MailsSend extends AppModel {
 														/*
 														 * manca lo username crittografato, lo faccio al ciclo degli utenti
 														*/
-														$url = 'http://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
+														$url = 'https://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
 
 														$body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">'; 
-														$body_mail .= '<img src="http://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
+														$body_mail .= '<img src="https://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
 														$body_mail .= ' <a target="_blank" href="'.$url.'">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
 														$body_mail .= '</div>'; 
 												}
@@ -419,9 +419,9 @@ class MailsSend extends AppModel {
 										if(!empty($result['SupplierOrganization']['frequenza'])) $body_mail .= " (frequenza ".$result['SupplierOrganization']['frequenza'].')';
 
 										if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
-												$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+												$body_mail .= ' <img width="50" src="https://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 										else
-											$body_mail .= ' <img width="50" src="http://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';
+											$body_mail .= ' <img width="50" src="https://www.portalgas.it'.Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$result['SupplierOrganization']['name'].'" /> ';
 
 										$body_mail .= "<br />\n";
 
@@ -432,10 +432,10 @@ class MailsSend extends AppModel {
 								/*
 								 * manca lo username crittografato, lo faccio al ciclo degli utenti
 								 */
-								$url = 'http://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
+								$url = 'https://www.portalgas.it/home-'.$j_seo.'/preview-carrello-'.$j_seo.'?'.$User->getUrlCartPreviewNoUsername($user, $delivery_id_old);
 
 								$body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">'; 
-								$body_mail .= '<img src="http://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
+								$body_mail .= '<img src="https://www.portalgas.it'.Configure::read('App.img.cake').'/cesta-piena.png" title="" border="0" />';
 								$body_mail .= ' <a target="_blank" href="'.$url.'">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
 								$body_mail .= '</div>'; 
 								 

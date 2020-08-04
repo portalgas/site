@@ -107,11 +107,11 @@ class Mail extends AppModel {
 	public function drawLogo($organization=null) {
 	
 		if(isset($organization))
-			$logo_url = 'http://'.Configure::read('SOC.site').Configure::read('App.img.loghi').'/'.$organization['Organization']['id'].'/'.Configure::read('Mail.logo');
+			$logo_url = 'https://'.Configure::read('SOC.site').Configure::read('App.img.loghi').'/'.$organization['Organization']['id'].'/'.Configure::read('Mail.logo');
 		else
-			$logo_url = 'http://'.Configure::read('SOC.site').Configure::read('App.img.loghi').'/0/'.Configure::read('Mail.logo');
+			$logo_url = 'https://'.Configure::read('SOC.site').Configure::read('App.img.loghi').'/0/'.Configure::read('Mail.logo');
 	
-		$str = '<a href="http://'.Configure::read('SOC.site').'" target="_blank"><img border="0" src="'.$logo_url.'" /></a>';
+		$str = '<a href="https://'.Configure::read('SOC.site').'" target="_blank"><img border="0" src="'.$logo_url.'" /></a>';
 		return $str;
 	}
 	

@@ -1478,7 +1478,7 @@ class OrdersController extends AppController {
 			$testo_mail .= '<li>'.$cartToValidateResult['ArticlesOrder']['name'].' prezzo '.$cartToValidateResult['ArticlesOrder']['prezzo_e'].' ancora da ordinarne '.$differenza_da_ordinare.' per completare il collo da '.$cartToValidateResult['ArticlesOrder']['pezzi_confezione']."</li>";
 		} // foreach($newResults['ArticlesOrder'] as $numResult => $cartToValidateResult) 	
 		$testo_mail .= '</ul>';
-		$testo_mail .= "Vai su http://".Configure::read('SOC.site')." e completa l'ordine ";
+		$testo_mail .= "Vai su https://".Configure::read('SOC.site')." e completa l'ordine ";
 		
 		if ($result['Delivery']['sys'] == 'Y')
         	$delivery = $result['Delivery']['luogo'];

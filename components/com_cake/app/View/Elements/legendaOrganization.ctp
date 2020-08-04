@@ -60,7 +60,7 @@
 	        ServerAdmin info@portalgas.it
 	        ServerName <span class="gasAlias"></span>.portalgas.it
 	        ServerAlias <span class="gasAlias"></span>.portalgas.it
-	        Redirect / http://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>
+	        Redirect / https://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>
 	
 	        # ${APACHE_LOG_DIR} /var/log/apache2/
 	        ErrorLog ${APACHE_LOG_DIR}/error-<span class="gasAlias"></span>.portalgas.it.log
@@ -435,12 +435,12 @@ else
 
 <pre class="shell">
   &lt;url&gt;
-    &lt;loc&gt;http://www.portalgas.it/home-<span class="gasAliasSEO"></span>&lt;/loc&gt;
+    &lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>&lt;/loc&gt;
     &lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
     &lt;changefreq&gt;yearly&lt;/changefreq&gt;
   &lt;/url&gt;
   &lt;url&gt;
-    &lt;loc&gt;http://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>&lt;/loc&gt;
+    &lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>&lt;/loc&gt;
     &lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
     &lt;changefreq&gt;yearly&lt;/changefreq&gt;
   &lt;/url&gt;

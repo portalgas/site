@@ -420,7 +420,7 @@ class AppController extends Controller {
         if (empty($this->utilsCommons))
             $this->utilsCommons = new UtilsCommons();
 
-        $HTTP_REFERERS = Configure::read('App.server'); // http://'.$_SERVER['HTTP_HOST']
+        $HTTP_REFERERS = Configure::read('App.server'); // https://'.$_SERVER['HTTP_HOST']
 
         $continua = false;
         if (isset($_SERVER['HTTP_REFERER'])) {
