@@ -771,8 +771,8 @@ class UtilsCommons {
     public function createObjUser($args = []) {
         
         $user = new \stdClass();
-        $user->organization = new \stdClass();
-
+        $user->organization = [];
+        
         if(!empty($args))
         foreach ($args as $key => $value) {
             switch ($key) {
@@ -792,6 +792,6 @@ class UtilsCommons {
         }
 
         return $user;
-    }    
+    }   
 }
 ?>

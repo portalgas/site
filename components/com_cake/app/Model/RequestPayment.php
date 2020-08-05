@@ -272,7 +272,7 @@ class RequestPayment extends AppModel {
 						// self::dd($storeroomResult['Article'], $debug);
 							$conditionsLocal = ['SuppliersOrganization.id' => $storeroomResult['Article']['supplier_organization_id']];
 
-							$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $storeroomResult['Article']['organization_id']]]);
+							$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $storeroomResult['Article']['organization_id']]);
 
 							$suppliersOrganization = $SuppliersOrganization->getSuppliersOrganization($tmp_user, $conditionsLocal);
 							$storeroomResults[$numResult2]['SuppliersOrganization'] = current($suppliersOrganization);

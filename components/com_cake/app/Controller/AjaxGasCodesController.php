@@ -1112,8 +1112,8 @@ class AjaxGasCodesController extends AppController {
         App::import('Model', 'Order');
         $Order = new Order;
         $options = [];
-        $options['conditions'] = array('Order.organization_id' => $this->user->organization['Organization']['id'],
-                                       'Order.id' => $this->order_id);
+        $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+                                'Order.id' => $this->order_id];
         $options['recursive'] = -1;
         $results = $Order->find('first', $options);
         
@@ -1138,9 +1138,9 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
         
         $options = [];
-        $options['conditions'] = array('Order.organization_id' => $organization_id,
-                                       'Order.delivery_id' => $delivery_id,
-                                       'Order.id' => $order_id,);
+        $options['conditions'] = ['Order.organization_id' => $organization_id,
+                                 'Order.delivery_id' => $delivery_id,
+                                 'Order.id' => $order_id];
         $options['recursive'] = -1;
         $results = $Order->find('first', $options);
         
