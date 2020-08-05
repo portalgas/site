@@ -73,7 +73,8 @@ class Article extends ArticleMultiKey {
         if(!empty($article_id_da_escludere))
 			$opts += ["NOT" => [ "Article.id" => explode(',', $article_id_da_escludere)]];			   
 		
-		$tmp_user->organization['Organization']['id'] = $owner_organization_id;
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $owner_organization_id]);
+
 		$results = $this->getByOrder($tmp_user, $owner_supplier_organization_id, $opts, $debug);
 	   	
 	   	return $results;

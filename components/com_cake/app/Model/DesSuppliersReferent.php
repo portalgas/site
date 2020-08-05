@@ -12,7 +12,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 			
 			// $debug=true;
 
-			$tmp_user->organization['Organization']['id'] = $organization_id;
+	 		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 			
 			self::d("DesSuppliersReferent::getUsersRoles()", $debug);
 			self::d($roles, $debug);

@@ -83,7 +83,8 @@ class ExportDocsController extends AppController {
 
             if (!$is_order_des) {
                 if ($this->isSuperReferente() || $this->isCassiereGeneric() || $this->isTesoriere()) {
-                    $this->tmp_user->organization['Organization']['id'] = $this->user->organization['Organization']['id'];
+        
+                    $this->tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->user->organization['Organization']['id']]);
                 } else {
                     App::import('Model', 'Order');
                     $Order = new Order;
@@ -93,7 +94,7 @@ class ExportDocsController extends AppController {
                         $this->myRedirect(Configure::read('routes_msg_stop'));
                     }
 
-                    $this->tmp_user->organization['Organization']['id'] = $this->user->organization['Organization']['id'];
+                    $this->tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->user->organization['Organization']['id']]);
                 }
             }
 

@@ -641,7 +641,9 @@ class SuppliersController extends AppController {
 			$SuppliersOrganization = new SuppliersOrganization;
 			
 			foreach($results['SuppliersOrganization'] as $numResult => $suppliersOrganization) {
-				$tmp_user->organization['Organization']['id'] = $suppliersOrganization['organization_id'];
+
+                $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $suppliersOrganization['organization_id']]);
+
 				$totArticlesResults[$numResult]['Articles'] = $SuppliersOrganization->getTotArticlesAttivi($tmp_user, $suppliersOrganization['id']);
 				
 				$options = [];

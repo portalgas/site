@@ -412,7 +412,8 @@ class DesSupplier extends AppModel {
    		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
-		$tmp_user->organization['Organization']['id'] = $organization_id;
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 		$conditions = array('SuppliersOrganization.supplier_id' => $results['DesSupplier']['supplier_id']);
 		$results = $SuppliersOrganization->getSuppliersOrganization($tmp_user, $conditions);
 		

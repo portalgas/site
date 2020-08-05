@@ -60,7 +60,8 @@ class SummaryDesOrder extends AppModel {
 			/*
 			 * per ogni ordine calcolo il totale importo
 			 */
-			$tmp_user->organization['Organization']['id'] = $organization_id;
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 			$importo_totale = $Order->getTotImporto($tmp_user, $order_id, $debug);
 			
 			try {

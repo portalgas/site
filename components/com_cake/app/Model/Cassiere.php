@@ -170,8 +170,8 @@ class Cassiere extends AppModel {
 			 *  se tutti i SummaryOrder sono stati pagati lo escludo, non e' da passare al Tesoriere
 			 * forzo Organization.orderUserPaid
 			 */
-			$tmp_user->organization['Organization']['orderUserPaid'] = 'Y';
-			$tmp_user->organization['Organization']['id'] = $user->organization['Organization']['id'];
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $user->organization['Organization']['id'], 'orderUserPaid' => 'Y']);
+
 			$newResults['Order'][$numOrderNewResults]['PaidUsers'] = $OrderLifeCycle->getPaidUsers($tmp_user, $order['id'], $debug);
 			
 			/*

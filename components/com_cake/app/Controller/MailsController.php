@@ -1537,7 +1537,7 @@ class MailsController extends AppController {
 				
 				foreach($organizations as $organization_id) {
 
-					$tmp_user->organization['Organization']['id'] =  $organization_id;
+					$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 					
 					$dest_options = explode(',', $this->request->data['Mail']['dest_options_hidden']);
 					

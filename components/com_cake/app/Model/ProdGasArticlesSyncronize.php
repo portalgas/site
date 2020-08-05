@@ -329,8 +329,8 @@ class ProdGasArticlesSyncronize extends AppModel {
              return __('msg_error_params');
         }
 
-		$tmp_user->organization['Organization']['id'] =  $organization_id; 
-		
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 		App::import('Model', 'Article');
 		$Article = new Article;
 		
@@ -422,8 +422,8 @@ class ProdGasArticlesSyncronize extends AppModel {
             return __('msg_error_params');
         }
 
-		$tmp_user->organization['Organization']['id'] =  $organization_id; 
-		
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+        
 		App::import('Model', 'Article');
 		$Article = new Article;
 					
@@ -541,8 +541,14 @@ class ProdGasArticlesSyncronize extends AppModel {
 					$results[$key]['ProdGasArticlesSyncronize']['prezzo_e'] = $results[$key]['ProdGasArticlesSyncronize']['prezzo_'].' &euro;';
 				}
 				else
-					/*					 * se il find() arriva da $hasAndBelongsToMany					*/
-				 if(isset($val['prezzo'])) {					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';				}				
+					/*
+					 * se il find() arriva da $hasAndBelongsToMany
+					*/
+				 if(isset($val['prezzo'])) {
+					$results[$key]['prezzo_'] = number_format($val['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['prezzo_e'] = $results[$key]['prezzo_'].' &euro;';
+				}
+				
 				/*
 				 * qta, da 1.00 a 1
 				 * 		da 0.75 a 0,75  
@@ -554,8 +560,15 @@ class ProdGasArticlesSyncronize extends AppModel {
 					$results[$key]['ProdGasArticlesSyncronize']['qta_'] = $qta;
 				}
 				else
-				/*				 * se il find() arriva da $hasAndBelongsToMany				*/	
-				if(isset($val['qta'])) {					$qta = str_replace(".", ",", $val['qta']);					$arrCtrlTwoZero = explode(",",$qta);					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];					$results[$key]['qta_'] = $qta;				}
+				/*
+				 * se il find() arriva da $hasAndBelongsToMany
+				*/	
+				if(isset($val['qta'])) {
+					$qta = str_replace(".", ",", $val['qta']);
+					$arrCtrlTwoZero = explode(",",$qta);
+					if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];
+					$results[$key]['qta_'] = $qta;
+				}
 			}
 		}
 		

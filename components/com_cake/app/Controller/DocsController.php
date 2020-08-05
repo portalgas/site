@@ -95,7 +95,8 @@ class DocsController extends AppController {
         $options = [];
         $options['conditions'] = ['Delivery.stato_elaborazione' => 'OPEN'];
 
-        $tmp_user->organization['Organization']['id'] = $organization_id;
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
         $this->_boxOrder($tmp_user, $delivery_id, $order_id, $options);
 
         $this->set('des_order_id', $des_order_id);
@@ -157,7 +158,8 @@ class DocsController extends AppController {
         $options = [];
         $options['conditions'] = ['Delivery.stato_elaborazione' => 'OPEN'];
 
-        $tmp_user->organization['Organization']['id'] = $organization_id;
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
         $this->_boxOrder($tmp_user, $delivery_id, $order_id, $options);
 
         $this->set('can_view_orders', $currentOrganization['SuppliersOrganization']['can_view_orders']);

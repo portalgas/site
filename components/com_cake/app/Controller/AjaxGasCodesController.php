@@ -1229,7 +1229,7 @@ class AjaxGasCodesController extends AppController {
         App::import('Model', 'Order');
         $Order = new Order;
         
-        $tmp_user->organization['Organization']['id'] = $orderResults['Order']['organization_id'];
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $orderResults['Order']['organization_id']]);
         
         /*
          * opzione: Visualizzo le spese aggiuntive o gli sconti

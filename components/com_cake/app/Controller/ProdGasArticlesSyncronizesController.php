@@ -112,7 +112,9 @@ class ProdGasArticlesSyncronizesController extends AppController {
 			echo "</pre>";
 			*/			
 			$prod_gas_article_ids = '';
-			$tmp_user->organization['Organization']['id'] =  $organization_id;
+
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 			foreach($articlesResults as $numResult => $articlesResult) {
 				
 				$options = [];
@@ -315,8 +317,8 @@ class ProdGasArticlesSyncronizesController extends AppController {
 		
 			if(!empty($organization_id) && !empty($order_id)) {
 			
-				$tmp_user->organization['Organization']['id'] =  $organization_id;
-			
+				$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 				/*
 				 * get elenco Article del GAS ed eventuali ArticlesOrder: se c'e' non posso cancellarlo
 				 */	

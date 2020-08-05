@@ -93,7 +93,8 @@ class SiteLifeCyle extends AppModel {
 						$options['recursive'] = -1;
 						$organizationResults = $Organization->find('first', $options);
 						if(!empty($organizationResult)) {							
-							$tmp_user->organization = $organizationResults;
+							$tmp_user = $this->utilsCommons->createObjUser(['Organization' => $organizationResults['Organization']]);
+
 							self::d($tmp_user);
 						}
 					}

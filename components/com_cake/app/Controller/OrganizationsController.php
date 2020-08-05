@@ -167,8 +167,7 @@ class OrganizationsController extends AppController {
 
         foreach ($results as $numResult => $result) {
 
-			$tmp_user = new \stdClass(); 
-			$tmp_user->organization['Organization']['id'] = $result['Organization']['id'];
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['Organization']['id']]);
 			
             $paramsConfig = json_decode($result['Organization']['paramsConfig'], true);
             $paramsFields = json_decode($result['Organization']['paramsFields'], true);
@@ -938,7 +937,7 @@ class OrganizationsController extends AppController {
 			/*
 			 * maganer del GAS
 			 */
-			$tmp_user->organization['Organization'] = $result['Organization']; 
+			$tmp_user = $this->utilsCommons->createObjUser(['Organization' => $result['Organization']]); 
 			$conditions = ['UserGroup.id' => Configure::read('group_id_manager')];
 			$results[$numResult]['Organization']['Manager'] = $User->getUsers($tmp_user, $conditions);
 		}

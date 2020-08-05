@@ -78,7 +78,8 @@ class PactSupplierImport extends AppModel {
 			/*
 			 * estraggo account e gruppi del produttore
 			 */
-			$tmp_user->organization['Organization']['id'] = $organization_id;
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
 			$conditions['UserGroupMap.group_id IN'] = "(".Configure::read('group_id_super_referent').",".Configure::read('group_pact_supplier_manager').")"; 
 			$userResults = $User->getUsers($tmp_user, $conditions);
 			if(!empty($userResults))

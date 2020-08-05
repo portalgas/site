@@ -527,8 +527,8 @@ class ArticlesOrdersController extends AppController {
         $this->order = $results;
         $this->set('order', $this->order);
 
-		$tmp_user->organization['Organization']['id'] = $organization_id; 
-		$tmp_user->organization['Organization']['type'] = 'PRODGAS'; 
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id, 'type' => 'PRODGAS']);
+
         $this->_index($tmp_user, $organization_id, $delivery_id, $order_id, $debug);	
         
         $this->set('organization_id', $organization_id);	
@@ -839,8 +839,7 @@ class ArticlesOrdersController extends AppController {
         $this->order = $results;
         $this->set('order', $this->order);
 
-		$tmp_user->organization['Organization']['id'] = $organization_id; 
-		$tmp_user->organization['Organization']['type'] = 'PRODGAS'; 
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id, 'type' => 'PRODGAS']);
 		
 		$this->set(compact('organization_id'));
 		

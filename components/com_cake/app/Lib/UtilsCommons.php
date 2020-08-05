@@ -762,5 +762,36 @@ class UtilsCommons {
 
         return $dateIT;
     }
+
+    /*
+     * args 
+     * ['organization_id' => $this->user->organization['Organization']['id']]
+     * ['Organization' => $results['Organization']]
+     */
+    public function createObjUser($args = []) {
+        
+        $user = new \stdClass();
+        $user->organization = new \stdClass();
+
+        if(!empty($args))
+        foreach ($args as $key => $value) {
+            switch ($key) {
+                case 'Organization':
+                    $user->organization['Organization'] = $value;
+                break;
+                case 'organization_id':
+                    $user->organization['Organization']['id'] = $value;
+                break;
+                case 'type':
+                    $user->organization['Organization']['type'] = $value;
+                break;
+                case 'orderUserPaid':
+                    $user->organization['Organization']['orderUserPaid'] = $value;
+                break;
+            }
+        }
+
+        return $user;
+    }    
 }
 ?>
