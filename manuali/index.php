@@ -90,7 +90,7 @@ h3 {
 <div class="container">
 	
 	<div class="header">
-	    <img class="img-responsive" alt="Gestionale per G.A.S. (gruppo d'acquisto solidale) e D.E.S. (distretto economia solidale)" src="http://www.portalgas.it/images/cake/loghi/0/150h50.png" />
+	    <img class="img-responsive" alt="Gestionale per G.A.S. (gruppo d'acquisto solidale) e D.E.S. (distretto economia solidale)" src="https://www.portalgas.it/images/cake/loghi/0/150h50.png" />
 	    <p class="lead">Manuali di riferimento per l'utilizzo del gestionale PortAlGas per<br />i <b>G</b>ruppi d'<b>a</b>cquisto <b>s</b>olidali (G.A.S.) e i <b>D</b>istretti di <b>e</b>conomia <b>s</b>olidale (D.E.S.)</p>
 		<hr class="half-rule">
 	</div>
