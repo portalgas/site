@@ -11,7 +11,7 @@
 			<h1 id="introduzione" class="page-header">Introduzione</h1>
 
 				<p>Il produttore dev'essere associato ad uno o più G.A.S. che aderiscono al progetto PortAlGas</p>
-				<p>Il produttore ha un proprio account con il quale potrà accedere al back-office <a href="http://www.portalgas.it/my" target="_blank">http://www.portalgas.it/my</a></p>
+				<p>Il produttore ha un proprio account con il quale potrà accedere al back-office <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a></p>
 				<p>Una volta autenticato, si troverà le seguenti voci di menù.</p>
 					<ul>
 						<li>Gestione articoli</li>
@@ -83,22 +83,22 @@
 
 <h3 id="il-tab-dei-dati-dell-articolo">Il Tab dei dati dell’articolo</h3>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-form.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-form.png" /></a>
 
 <h3 id="il-tab-del-prezzo">Il Tab del prezzo</h3>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-tab-prezzo.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-tab-prezzo.png" /></a>
 
 <p>
 <strong>Nota</strong>: Nel caso in cui le confezioni siano minori di 1 Kg (ad Es. 500 Grammi o 5 Hg meglio usare 0.5 Kg)  è meglio inserirle come frazioni dello stesso 
 ovvero 0,50 Kg Unità di Misura Kg con il prezzo relativo agli stessi, in questo caso il prezzo al Kg verrà calcolato automaticamente, vedasi l'esempio in figura 
 </p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-tab-prezzo-um.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-tab-prezzo-um.png" /></a>
 
 <h3 id="il-tab-delle-condizioni-d-acquisto">Il Tab delle condizioni d’acquisto</h3>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-tab-condizioni-aquisto.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-tab-condizioni-aquisto.png" /></a>
 
 <p>I valori del tab "Condizioni d’acquisto" saranno i valori di default presentati quando si assocerà l’articolo ad un ordine.
 Questi potranno essere modificati per quel determinato ordine senza modificarli nella sua anagrafica</p>
@@ -132,19 +132,19 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 
 <h3 id="il-tab-dell-immagine">Il Tab dell’immagine</h3>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-tab-immagine.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-tab-immagine.png" /></a>
 
 <p>Nel "Tab Immagine" si può uplodare un immagine con estensione .jpg, .jpeg, .gif, .png da associare all'articolo</p>
 
 <h1 id="modifica-rapida-degli-articoli" class="page-header">Modifica rapida degli articoli</h1>
 
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-modifica-rapida-link.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-modifica-rapida-link.png" /></a>
 
 
 <p>Cliccando su questa voce di menù si accede al modulo per modificare rapidamente alcuni valori degli articoli.</p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-modifica-rapida.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-modifica-rapida.png" /></a>
 
 <p>Si potranno modificare i seguenti campi:</p>
 
@@ -219,12 +219,12 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 <p>Di seguito, come si presenta la maschera iniziale</p>
 
 <p>
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="http://www.portalgas.it/manuali/images/articoli-importa.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="https://www.portalgas.it/manuali/images/articoli-importa.png" class="img-responsive"></a>
 </p>
 
 <p>Il file dev'essere formattato nel modo che segue</p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articoli-importazione-formato.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articoli-importazione-formato.png" /></a>
 
 <p>I valori consentiti per i campi
 
@@ -252,7 +252,7 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 
 <p>Il campo "<b>Presente tra gli articoli da ordinare</b>" gestisce la visibilità degli articoli da associare ad un ordine: quando il G.A.S. crearà un ordine si presenterà un elenco con i possibili articoli da associare</p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="http://www.portalgas.it/manuali/images/articles-orders-associa.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/articles-orders-associa.png" /></a>
 
 <p>Può essere utile per il produttore settare il valore del campo "Presente tra gli articoli da ordinare" per alcuni articoli, magari stagionali, che non si desidera avere nell'elenco tra quelli da associare ad un ordine.</p>
 

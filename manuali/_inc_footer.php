@@ -8,21 +8,21 @@
 	<div class="container">
 		<div class="col-sm-2 box-intro">
 			<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
-        	<img title="vai allo store di Itunes" src="http://www.portalgas.it/images/appstore.png" border="0"></a>
+        	<img title="vai allo store di Itunes" src="https://www.portalgas.it/images/appstore.png" border="0"></a>
 		</div>
 		<div class="col-sm-2 box-intro">
 			<a href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
-        	<img border="0" title="vai allo store di Google" src="http://www.portalgas.it/images/googleplay.png"></a>
+        	<img border="0" title="vai allo store di Google" src="https://www.portalgas.it/images/googleplay.png"></a>
 		</div>
 
 		<div class="col-sm-2 box-intro">
-			<a target="_blank" href="https://facebook.com/portalgas.it"><img src="http://www.portalgas.it/images/cake/ico-social-fb.png" alt="PortAlGas su facebook" title="PortAlGas su facebook" border="0"> Facebook</a>
+			<a target="_blank" href="https://facebook.com/portalgas.it"><img src="https://www.portalgas.it/images/cake/ico-social-fb.png" alt="PortAlGas su facebook" title="PortAlGas su facebook" border="0"> Facebook</a>
 		</div>
 		<div class="col-sm-2 box-intro">
-							<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="http://www.portalgas.it/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube" border="0"> YouTube</a>
+							<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="https://www.portalgas.it/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube" border="0"> YouTube</a>
 		</div>
 		<div class="col-sm-2 box-intro">
-							<a target="_blank" href="http://www.portalgas.it/mobile"><img src="http://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
+							<a target="_blank" href="https://www.portalgas.it/mobile"><img src="https://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
 		</div>
     </div>
 	

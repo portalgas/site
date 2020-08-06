@@ -11,7 +11,7 @@
 			<h1 id="introduzione" class="page-header">Introduzione</h1>
 
 				<p>Il produttore dev'essere associato ad uno o più GAS che aderiscono al progetto PortAlGas</p>
-				<p>Il produttore ha un proprio account con il quale potrà accedere al back-office <a href="http://www.portalgas.it/my" target="_blank">http://www.portalgas.it/my</a></p>
+				<p>Il produttore ha un proprio account con il quale potrà accedere al back-office <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a></p>
 				<p>Una volta autenticato, si troverà le seguenti voci di menù.</p>
 					<ul>
 						<li>Gestione articoli</li>

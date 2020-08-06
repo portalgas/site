@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PortAlGas - manuale produttori</title>
 
-	<link rel="stylesheet" href="http://www.portalgas.it/components/com_cake/app/webroot/css/styleBackoffice-v11-min.css">
+	<link rel="stylesheet" href="https://www.portalgas.it/components/com_cake/app/webroot/css/styleBackoffice-v11-min.css">
 
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<!-- link rel="stylesheet" href="css/bootstrap-theme.min.css" -->
@@ -104,27 +104,27 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	border: 0;
 }
 .cakeContainer .actionTrView {
-    background: url("http://www.portalgas.it/images/cake/actions/32x32/viewmag+.png") no-repeat scroll 0 0 transparent;
+    background: url("https://www.portalgas.it/images/cake/actions/32x32/viewmag+.png") no-repeat scroll 0 0 transparent;
 }
 .cakeContainer .actionTrConfig {
-    background: url("http://www.portalgas.it/images/cake/actions/32x32/configure.png") no-repeat scroll 0 0 transparent;
+    background: url("https://www.portalgas.it/images/cake/actions/32x32/configure.png") no-repeat scroll 0 0 transparent;
 }
 .cakeContainer .actionOpen {
-    background: url("http://www.portalgas.it/images/cake/actions/32x32/open_store.png") no-repeat scroll 0 0 transparent !important;
+    background: url("https://www.portalgas.it/images/cake/actions/32x32/open_store.png") no-repeat scroll 0 0 transparent !important;
     cursor: pointer;
 }
 .cakeContainer .stato_si, .cakeContainer .stato_0, .cakeContainer .stato_y, .cakeContainer .stato_open {
-    background: url("http://www.portalgas.it/images/cake/icons/16x16/tick.png") no-repeat scroll center center transparent;
+    background: url("https://www.portalgas.it/images/cake/icons/16x16/tick.png") no-repeat scroll center center transparent;
     height: 16px;
     padding-left: 8px;
 }
 .cakeContainer .stato_no, .cakeContainer .stato_1, .cakeContainer .stato_n, .cakeContainer .stato_close {
-    background: url("http://www.portalgas.it/images/cake/icons/16x16/cross.png") no-repeat scroll center center transparent;
+    background: url("https://www.portalgas.it/images/cake/icons/16x16/cross.png") no-repeat scroll center center transparent;
     height: 16px;
     padding-left: 8px;
 }
 .cakeContainer .stato_t, .cakeContainer .stato_temporaneo {
-    background: url("http://www.portalgas.it/images/cake/icons/16x16/eye.png") no-repeat scroll center center transparent;
+    background: url("https://www.portalgas.it/images/cake/icons/16x16/eye.png") no-repeat scroll center center transparent;
     height: 16px;
     padding-left: 8px;
 }
@@ -200,7 +200,7 @@ ul.nav-contenitore > .active > a, ul.nav-contenitore > .active:hover > a, ul.nav
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand hidden-xs" href="index.php" style="padding: 0px; margin: 0px;">
-				<img src="http://www.portalgas.it/images/cake/loghi/0/150h50.png" alt="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" class="img-responsive logo"></a>
+				<img src="https://www.portalgas.it/images/cake/loghi/0/150h50.png" alt="Gestionale web per G.A.S. (GAS gruppo d'acquisto solidale) e D.E.S. (DES distretto economia solidale)" class="img-responsive logo"></a>
         </div>
         <div id="navbarCollapse" class="collapse navbar-collapse">
 
@@ -214,8 +214,8 @@ ul.nav-contenitore > .active > a, ul.nav-contenitore > .active:hover > a, ul.nav
 				<li class="dropdown">
 					<a aria-expanded="true" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">Link <span class="caret"></span></a>
 					<ul class="dropdown-menu">           
-						<li><a target="_blank" href="http://www.portalgas.it/">Version desktop</a></li>
-						<li><a target="_blank" href="http://www.portalgas.it/mobile/#/app/home">Version mobile</a></li> 
+						<li><a target="_blank" href="https://www.portalgas.it/">Version desktop</a></li>
+						<li><a target="_blank" href="https://www.portalgas.it/mobile/#/app/home">Version mobile</a></li> 
 						<li><a target="_blank" href="https://www.facebook.com/portalgas.it">Facebook</a></li> 
 						<li><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">YouTube</a></li> 
 						<li><a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">GoogleStore</a></li>	
