@@ -150,17 +150,17 @@ if (isset($this->error)) :
 
               <div id="produttore" class="collapse well">
                 Se desideri farti conoscere ai GAS che aderiscono a PortAlGas, consulta l'elenco dei GAS e contattali direttamente:<br />
-                <a href="http://www.portalgas.it/gmaps-gas" title="elenco dei GAS che aderiscono a PortAlGas">vai all'elenco dei GAS</a>, buona ricerca.
+                <a href="https://www.portalgas.it/gmaps-gas" title="elenco dei GAS che aderiscono a PortAlGas">vai all'elenco dei GAS</a>, buona ricerca.
               </div>
               <div id="account" class="collapse well">
-                Se hai problemi a registrari a PortAlGas <a href="http://manuali.portalgas.it/problemi.php#problemi-registrazione-portalgas" title="Problemi registrazione PortAlGas">consulta il manuale</a>.
+                Se hai problemi a registrari a PortAlGas <a href="https://manuali.portalgas.it/problemi.php#problemi-registrazione-portalgas" title="Problemi registrazione PortAlGas">consulta il manuale</a>.
               </div>
               <div id="login" class="collapse well">
-                Se hai problemi ad accere a PortAlGas o hai dimenticato le credenziali <a href="http://manuali.portalgas.it/problemi.php#problemi-ad-accedere-al-front-end" title="Problemi ad accedere al front-end">consulta il manuale</a>.
+                Se hai problemi ad accere a PortAlGas o hai dimenticato le credenziali <a href="https://manuali.portalgas.it/problemi.php#problemi-ad-accedere-al-front-end" title="Problemi ad accedere al front-end">consulta il manuale</a>.
               </div>
               <div id="gas" class="collapse well">
                 PortAlGas <b>non</b> &egrave; un GAS ma un gestionale software per i GAS.<br />
-                <a href="http://www.portalgas.it/gmaps-gas" title="elenco dei GAS che aderiscono a PortAlGas">Qui trovi l'elenco dei GAS che aderiscono a PortAlGas</a>, buona ricerca.
+                <a href="https://www.portalgas.it/gmaps-gas" title="elenco dei GAS che aderiscono a PortAlGas">Qui trovi l'elenco dei GAS che aderiscono a PortAlGas</a>, buona ricerca.
               </div>
               
                         </div>

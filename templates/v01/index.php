@@ -202,7 +202,7 @@ else {
 							<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img border="0" src="/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube"> YouTube</a>
 						</li>
 						<li>
-							<a href="http://manuali.portalgas.it" target="_blank"><img border="0" title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="/images/cake/ico-manual.png"> Manuali</a>
+							<a href="https://manuali.portalgas.it" target="_blank"><img border="0" title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="/images/cake/ico-manual.png"> Manuali</a>
 						</li>						
 						<li>
 							<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a>
@@ -288,7 +288,7 @@ jQuery(document).ready(function () {
 	jQuery('.blog * img').css('padding','15px').addClass('img-responsive');
 	
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {  
-	  jQuery('body').append('<div style="position:absolute;top:0;left:0;opacity: 0.8;background-color:#2c3e50;padding:10px;width:45%"><a style="color:#fff" href="http://www.portalgas.it/mobile">Vai alla versione mobile</a></div>');
+	  jQuery('body').append('<div style="position:absolute;top:0;left:0;opacity: 0.8;background-color:#2c3e50;padding:10px;width:45%"><a style="color:#fff" href="https://www.portalgas.it/mobile">Vai alla versione mobile</a></div>');
 	}	
 });
 </script>

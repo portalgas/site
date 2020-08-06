@@ -149,7 +149,7 @@ else {
                     <div class="content-btn">
 
                         <div style="float: left; clear: both; margin: 0px; ">
-                            <img width="100" height="39" src="http://www.google.com/intl/it/images/logos/mail_logo.png" title="fai login con il tuo account GMail" />
+                            <img width="100" height="39" src="https://www.google.com/intl/it/images/logos/mail_logo.png" title="fai login con il tuo account GMail" />
                         </div>
 
 
