@@ -627,7 +627,7 @@ class ArticlesOrdersController extends AppController {
                         if(isset($article['ArticlesOrderPrezzo']))	
 							$data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
 						else
-							$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo'];
+							$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo_'];
 							
                         if(isset($article['ArticlesOrderPezziConfezione']))	
 							$data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
