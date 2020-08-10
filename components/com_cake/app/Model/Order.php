@@ -707,11 +707,12 @@ class Order extends AppModel {
 				
 		foreach( $field as $key => $value) {
 			$supplier_organization_id = $value;
-			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];
-		
+
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->data[$this->alias]['organization_id']]);
+	
 			App::import('Model', 'SuppliersOrganization');
 			$SuppliersOrganization = new SuppliersOrganization;
-			$articleCount = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($user, $supplier_organization_id);			
+			$articleCount = $SuppliersOrganization->getTotArticlesPresentiInArticlesOrder($tmp_user, $supplier_organization_id);			
 		}
 		
 		if($articleCount==0)
@@ -724,7 +725,7 @@ class Order extends AppModel {
 		foreach( $field as $key => $value) {
 
 			$supplier_organization_id = $value;
-			$user->organization['Organization']['id'] = $this->data[$this->alias]['organization_id'];
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->data[$this->alias]['organization_id']]);
 			$delivery_id = $this->data[$this->alias]['delivery_id'];
 
 			/*
@@ -739,7 +740,7 @@ class Order extends AppModel {
 			$Order = new Order;
 			
 			$options = [];
-			$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
+			$options['conditions'] = ['Order.organization_id' => $tmp_user->organization['Organization']['id'],
 									'Order.delivery_id' => $delivery_id,
 									'Order.supplier_organization_id' => $supplier_organization_id,
 									'Order.isVisibleBackOffice' => 'Y',
