@@ -320,11 +320,11 @@ class ArticlesOrdersController extends AppController {
 					 */
 					$data['ArticlesOrder']['article_organization_id'] = $article['article_organization_id'];
 					$data['ArticlesOrder']['article_id'] = $article_id;
-				
+		
 					if(isset($article['ArticlesOrderPrezzo']))	
 						$data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
 					else
-						$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo'];
+						$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo_'];
 						
 					if(isset($article['ArticlesOrderPezziConfezione']))	
 						$data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
