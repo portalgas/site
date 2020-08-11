@@ -70,7 +70,7 @@ echo $this->Form->input('banca');
 echo $this->Form->input('banca_iban');
 echo '</div>'; 
 echo '<div class="tab-pane fade" id="tabs-2">';
-echo $table_plan->introtext;
+echo $table_plan->intro_text;
 echo '</div>'; 
 echo '<div class="tab-pane fade" id="tabs-3">';
 ?>

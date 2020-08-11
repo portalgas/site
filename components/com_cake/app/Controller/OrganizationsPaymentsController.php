@@ -75,8 +75,8 @@ class OrganizationsPaymentsController extends AppController {
 		$table_plan = & JTable::getInstance('Content', 'JTable');
 		$table_plan_return  = $table_plan->load(array('id'=>103));
 		$this->set('table_plan', $table_plan);
-	//	echo $table_plan->introtext;
-	//	echo $table_plan->fulltext;		
+	//	echo $table_plan->intro_text;
+	//	echo $table_plan->full_text;		
 	}
 	
 	/*
@@ -89,8 +89,8 @@ class OrganizationsPaymentsController extends AppController {
 		$data = array(
 				'catid' => $results['CategoriesSupplier']['j_category_id'],
 				'title' => $results['Supplier']['name'],
-				'introtext' => $data['SuppliersOrganizationsJcontent']['introtext'],
-				'fulltext' => $data['SuppliersOrganizationsJcontent']['fulltext'],
+				'intro_text' => $data['SuppliersOrganizationsJcontent']['intro_text'],
+				'full_text' => $data['SuppliersOrganizationsJcontent']['full_text'],
 				'state' => 1,
 		);
 		

@@ -128,7 +128,7 @@ echo '<div class="tab-pane fade" id="tabs-4">';
 echo '</div>';
 if(isset($j_content_text) && $j_content_text!==false) {
 	echo '<div class="tab-pane fade" id="tabs-5">';
-	echo $j_content_text->introtext;
+	echo $j_content_text->intro_text;
 	echo '</div>';		
 }
 echo '<div class="tab-pane fade" id="tabs-6">';
