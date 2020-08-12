@@ -1,7 +1,7 @@
 var debug = false;
 // punta sempre a /var/www/portalgas.com ma non ha blocchi di cross origin!!!!
-var urlRest = "http://mobile.portalgas.com";
-//var urlRest = "http://www.portalgas.com";
+var urlRest = "https://mobile.portalgas.com";
+//var urlRest = "https://www.portalgas.com";
 //var urlRest = "http://localhost/portalgas.com";
 
 angular.module('portalgas.controllers', ['uiGmapgoogle-maps'])

@@ -1,6 +1,6 @@
 var debug = false;
-var urlRest = "http://test.portalgas.com";
-// var urlRest = "http://www.portalgas.com";
+var urlRest = "https://test.portalgas.com";
+// var urlRest = "https://www.portalgas.com";
 //var urlRest = "http://localhost/portalgas.com";
 
 angular.module('portalgas.controllers', ['uiGmapgoogle-maps'])
