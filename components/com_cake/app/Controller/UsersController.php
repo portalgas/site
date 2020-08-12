@@ -126,8 +126,10 @@ class UsersController extends AppController {
         $userResults = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
 		if(!empty($userResults)) {
 			foreach($userResults as $numResult => $userResult) {
-				$tmp->user->organization['Organization']['id'] = $userResult['User']['organization_id']; 
-				$cartResults = $Cart->getLastCartDateByUser($tmp->user, $userResult['User']['id'], $debug);
+				
+                $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $userResult['User']['organization_id']]);
+
+				$cartResults = $Cart->getLastCartDateByUser($tmp_user, $userResult['User']['id'], $debug);
 				$userResults[$numResult] += $cartResults; 
 			}
 		}
@@ -281,8 +283,9 @@ class UsersController extends AppController {
 			
 			foreach($results['User'] as $numResult2 => $result) {
 				
-				$tmp->user->organization['Organization']['id'] = $result['User']['organization_id']; 
-				$cartResults = $Cart->getLastCartDateByUser($tmp->user, $result['User']['id'], $debug);
+                $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $userResult['User']['organization_id']]);
+
+				$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
 				$results['User'][$numResult2] += $cartResults; 
 			}
 		}

@@ -68,16 +68,14 @@ class DeliveriesController extends AppController {
         /*
          * setto organization_id preso dal template
          */
-		$tmp = new \stdClass();
-		$tmp->user = new \stdClass(); 		 
-        $tmp->user->organization['Organization']['id'] = $this->user->get('org_id');
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->user->get('org_id')]);
 
         $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
 									'Delivery.stato_elaborazione' => 'OPEN',
 									'Delivery.sys' => 'N',
 									'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY']];
 
-        $results = $this->Delivery->getTabsToDeliveriesData($tmp->user, $conditions['Delivery']);
+        $results = $this->Delivery->getTabsToDeliveriesData($tmp_user, $conditions['Delivery']);
 
         /*
          * ctrl se ci sono ordini con la consegna ancora da definire (Delivery.sys = Y)
@@ -85,7 +83,7 @@ class DeliveriesController extends AppController {
         App::import('Model', 'Order');
         $Order = new Order;
 
-        $ordersResults = $Order->getOrdersDeliverySys($tmp->user);
+        $ordersResults = $Order->getOrdersDeliverySys($tmp_user);
 
         if (count($ordersResults) > 0) {
             $tmpDeliveryData['Delivery']['data'] = Configure::read('DeliveryToDefinedDate');
@@ -104,10 +102,8 @@ class DeliveriesController extends AppController {
 
         /*
          * setto organization_id preso dal template
-         */ 
-		$tmp = new \stdClass();
-		$tmp->user = new \stdClass(); 
-        $tmp->user->organization['Organization']['id'] = $this->user->get('org_id');
+         */
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->user->get('org_id')]);
 
         if (empty($deliveryData)) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -123,9 +119,9 @@ class DeliveriesController extends AppController {
             'suppliers' => true, 'referents' => true);
 
         if (!empty($this->user->id) && $this->user->get('org_id') == $this->user->organization['Organization']['id'])
-            $options += array('articoliEventualiAcquistiNoFilterInOrdine' => true);  // estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI Cart di un utente
+            $options += ['articoliEventualiAcquistiNoFilterInOrdine' => true];  // estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI Cart di un utente
         else
-            $options += array('articlesOrdersInOrder' => false);  // NON estraggo gli articoli dell'ordine
+            $options += ['articlesOrdersInOrder' => false];  // NON estraggo gli articoli dell'ordine
 
         $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN',
@@ -137,7 +133,7 @@ class DeliveriesController extends AppController {
                     'Cart.deleteToReferent' => 'N'));
 
         $orderBy = array('Order' => 'Order.data_fine');
-        $results = $this->Delivery->getDataTabs($tmp->user, $conditions, $options, $orderBy);
+        $results = $this->Delivery->getDataTabs($tmp_user, $conditions, $options, $orderBy);
 
         /*
          * ctrl configurazione Organization  
@@ -149,7 +145,7 @@ class DeliveriesController extends AppController {
              * Consegne per la dispensa
 			$conditions = []; 
             $conditions = array('Delivery.data' => $deliveryData,
-                'Delivery.organization_id = ' . (int) $tmp->user->organization['Organization']['id'],
+                'Delivery.organization_id = ' . (int) $tmp_user->organization['Organization']['id'],
                 'Delivery.isToStoreroom' => 'Y',
                 'Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN');

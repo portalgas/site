@@ -156,21 +156,21 @@ class DesUsersController extends AppController {
 		        $desOrganizationsResults[$numResult]['Organization'] += $paramsConfig;
 		        $desOrganizationsResults[$numResult]['Organization'] += $paramsFields;
 		        
-		        $tmp->user->organization['Organization'] = $desOrganizationsResults[$numResult]['Organization'];
-     			self::d($tmp->user->organization);
+		        $tmp_user = $this->utilsCommons->createObjUser(['Organization' => $desOrganizationsResults[$numResult]['Organization']]);
+     			self::d($tmp_user->user->organization);
      			
-				$userResults = $User->getUsersComplete($tmp->user, $conditions, $FilterUserSort, false);
+				$userResults = $User->getUsersComplete($tmp_user, $conditions, $FilterUserSort, false);
 				$desOrganizationsResults[$numResult]['User'] = $userResults;
 
-			    if(isset($tmp->user->organization['Organization']['hasUserFlagPrivacy']) && $tmp->user->organization['Organization']['hasUserFlagPrivacy'] == 'Y') {
+			    if(isset($tmp_user->organization['Organization']['hasUserFlagPrivacy']) && $tmp_user->organization['Organization']['hasUserFlagPrivacy'] == 'Y') {
 		        	
-				  	$ctrlUserFlagPrivacys = $UserGroupMap->getUserFlagPrivacys($tmp->user);
+				  	$ctrlUserFlagPrivacys = $UserGroupMap->getUserFlagPrivacys($tmp_user);
 			        $desOrganizationsResults[$numResult]['UserFlagPrivacy'] = $ctrlUserFlagPrivacys;
 		        } 
 		        
 				foreach($userResults as $numResult2 => $result) {
 					
-					$cartResults = $Cart->getLastCartDateByUser($tmp->user, $result['User']['id'], $debug);
+					$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
 					$desOrganizationsResults[$numResult]['User'][$numResult2] += $cartResults;
 				}
 			}

@@ -844,9 +844,10 @@ class MailsController extends AppController {
 							$conditions += ['UserGroup.group_id' => Configure::read('group_id_manager')];
 						else 
 							$conditions += ['UserGroup.group_id' => Configure::read('group_id_user')];
-											
-						$tmp->user->organization['Organization']['id'] = $organizationResult['Organization']['id'];
-						$usersResults = $User->getUsersComplete($tmp->user, $conditions);
+							
+						$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organizationResult['Organization']['id']]);
+
+						$usersResults = $User->getUsersComplete($tmp_user, $conditions);
 								
 						foreach($usersResults as $usersResult) {
 							$results[$i]['User'] = $usersResult['User'];

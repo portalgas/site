@@ -2145,8 +2145,9 @@ class ExportDocsController extends AppController {
         $results = $User->getUsersComplete($user, $conditions);
 		foreach($results as $numResult2 => $result) {
 			
-			$tmp->user->organization['Organization']['id'] = $result['User']['organization_id'];
-			$cartResults = $Cart->getLastCartDateByUser($tmp->user, $result['User']['id'], $debug);
+            $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['User']['organization_id']]);
+
+			$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
 			$results[$numResult2] += $cartResults; 
 		}       
         $this->set(compact('results'));
@@ -2213,7 +2214,7 @@ class ExportDocsController extends AppController {
         $this->set(compact('results'));
  
         $this->set('fileData', $this->utilsCommons->getFileData($user, $doc_options = 'users_data', null, null));
-        $this->set('organization', $tmp->user->organization);        
+        $this->set('organization', $tmp_user->organization);        
         
         switch ($doc_formato) {
             case 'PREVIEW':

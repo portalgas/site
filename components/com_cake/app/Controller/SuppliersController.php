@@ -741,9 +741,7 @@ class SuppliersController extends AppController {
         /*
          * setto organization_id preso dal template
          */
-		$tmp = new \stdClass();
-		$tmp->user = new \stdClass(); 
-        $tmp->user->organization['Organization']['id'] = $this->user->get('org_id');
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->user->get('org_id')]);
         
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
@@ -754,7 +752,7 @@ class SuppliersController extends AppController {
         $SuppliersOrganization->unbindModel(['belongsTo' => ['Organization']]);
 
         $options = [];
-        $options['conditions'] = ['SuppliersOrganization.organization_id' => $tmp->user->organization['Organization']['id'],
+        $options['conditions'] = ['SuppliersOrganization.organization_id' => $tmp_user->organization['Organization']['id'],
                                   'SuppliersOrganization.stato' => 'Y',
                                   'Supplier.stato' => 'Y'];
         $options['order'] = ['Supplier.name'];
