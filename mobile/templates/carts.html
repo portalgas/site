@@ -50,7 +50,7 @@
 							
 						<div class="item item-avatar item-divider">
 
-								<img ng-src="http://www.portalgas.it/images/organizations/contents/{{order.Supplier_img1}}" ng-if="order.Supplier_img1 != null && order.Supplier_img1 != ''" />
+								<img ng-src="https://www.portalgas.it/images/organizations/contents/{{order.Supplier_img1}}" ng-if="order.Supplier_img1 != null && order.Supplier_img1 != ''" />
 								<h2>{{order.Supplier_name}}</h2> 
 								<p>da <span ng-bind="order.Order_data_inizio | date:'EEEE d MMMM yyyy'"></span><br />
 								a <span ng-bind="order.Order_data_fine | date:'EEEE d MMMM yyyy'"></span></p>
@@ -127,7 +127,7 @@
 									<div class="item cart-{{checkboxModel.value}} item-text-wrap">
 									
 										<div class="item-thumbnail-left animate-show" ng-if="result.Article_img1 != null && result.Article_img1 != ''" ng-show="isVisibleComplete">
-											<img ng-src="http://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" />
+											<img ng-src="https://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" />
 										</div>
 
 										<h2>{{result.ArticlesOrder_name}}</h2> 

@@ -5,7 +5,7 @@
 	<span ng-if="result.msg != null && result.msg != ''" class="badge badge-positive">Se ne possono acquistare<br />{{result.msg}}</span>
 	<span ng-if="result.msgCartSave != null && result.msgCartSave != ''" class="badge button-large badge-assertive">{{result.msgCartSave}}</span>
 
-	<img class="item-avatar-right" ng-src="http://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" ng-if="result.Article_img1 != null && result.Article_img1 != ''" />
+	<img class="item-avatar-right" ng-src="https://www.portalgas.it/images/articles/{{result.Article_organization_id}}/{{result.Article_img1}}" ng-if="result.Article_img1 != null && result.Article_img1 != ''" />
 	<div>
 		<h2>{{result.ArticlesOrder_name}}</h2> <span ng-if="result.Article_bio == 'Y'" class="bio" title="Biologico o biodinamico"></span>
 	</div>

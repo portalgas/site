@@ -8,7 +8,7 @@
   <div class="list card item-text-wrap">
   
 		<div class="item item-thumbnail-left">
-			<img ng-src="http://www.portalgas.it/images/organizations/contents/{{supplier.img1}}" ng-if="supplier.img1 != ''" />
+			<img ng-src="https://www.portalgas.it/images/organizations/contents/{{supplier.img1}}" ng-if="supplier.img1 != ''" />
 			<h2>{{supplier.name}}</h2> 
 			<p>{{supplier.descrizione}}</p>
 		</div>
@@ -40,35 +40,35 @@
 		   <ion-item class="item-content" ng-repeat="suppliersOrganization in supplier.suppliersOrganizations" type="item-text-wrap"">
 				
 					<div class="item-avatar">
-						<img ng-src="http://www.portalgas.it/images/organizations/contents/{{suppliersOrganization.img1}}" ng-if="suppliersOrganization.img1 != null && suppliersOrganization.img1 != ''" />
+						<img ng-src="https://www.portalgas.it/images/organizations/contents/{{suppliersOrganization.img1}}" ng-if="suppliersOrganization.img1 != null && suppliersOrganization.img1 != ''" />
 						<h2>{{suppliersOrganization.name}}</h2>
 						<p> {{suppliersOrganization.localita}} ({{suppliersOrganization.provincia}})</p>
 						
 						<p ng-show="suppliersOrganization.suppliersVotes.voto.length > 0">
 							<div ng-if="suppliersOrganization.suppliersVotes.voto==0">
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Pessimo
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Pessimo
 							</div>
 							<div ng-if="suppliersOrganization.suppliersVotes.voto==1">
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Scarso
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Scarso
 							</div>
 							<div ng-if="suppliersOrganization.suppliersVotes.voto==2">
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Normale
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Normale
 							</div>
 							<div ng-if="suppliersOrganization.suppliersVotes.voto==3">
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Buono
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Buono
 							</div>
 							<div ng-if="suppliersOrganization.suppliersVotes.voto==4">
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
-								<span style="background:#fff url(http://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Ottimo
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span>
+								<span style="background:#fff url(https://www.portalgas.it/images/cake/actions/16x16/bookmark.png) no-repeat scroll 0px 0px;padding-left:16px;margin-right:2px;"></span> Ottimo
 							</div>
 							
 							<p ng-show="suppliersOrganization.suppliersVotes.nota.length > 0"> {{suppliersOrganization.suppliersVotes.nota| htmlToPlaintext }}</p>

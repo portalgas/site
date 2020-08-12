@@ -21,7 +21,7 @@ $(function() {
 		   <ion-item class="item-content" ng-repeat="organization in organizations" type="item-text-wrap" ng-click="selectModalOrganizations('{{organization.id}}')">
 								
 				<div class="item-avatar">
-					<img ng-src="http://www.portalgas.it/images/organizations/contents/{{organization.img1}}" ng-if="organization.img1 != null && organization.img1 != ''" />
+					<img ng-src="https://www.portalgas.it/images/organizations/contents/{{organization.img1}}" ng-if="organization.img1 != null && organization.img1 != ''" />
 					<h2>{{organization.name}}</h2>
 					<p> {{organization.localita}} ({{organization.provincia}})</p>
 				</div>
