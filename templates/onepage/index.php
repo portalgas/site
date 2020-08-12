@@ -548,7 +548,7 @@ $arrayServices[$i]['text'] = "Un manuale approfondito e sempre in aggiornamento 
                     <p>Scrivici e presenta il tuo GAS, raccontaci quanti siete, che modalità di pagamento utilizzate, quali sono le vostre esigenze e saremo contenti di allargare la rete di PortAlGas</p>
                 </div>
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <a title="scarica la presentazione del gestionale per gruppi d'acquisto solidate PortAlGas" href="http://www.portalgas.it/images/manuali/presentazione-slide.pdf" target="_blank" class="btn btn-lg btn-outline">
+                    <a title="scarica la presentazione del gestionale per gruppi d'acquisto solidate PortAlGas" href="https://www.portalgas.it/images/manuali/presentazione-slide.pdf" target="_blank" class="btn btn-lg btn-outline">
                         <i class="fa fa-globe"></i> scarica il pdf
                     </a>
                 </div>
