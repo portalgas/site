@@ -643,8 +643,9 @@ class ActionsDesOrderComponent extends Component {
 			$controllerLog::l($results, $debug);
 
 			$results = $DesOrder->find('first', $options);
+			$controllerLog::d($results, $debug);
 		}
-		
+	
 		/*
 		 * ctrl se lo user e' nel gruppo Configure::read('group_id_titolare_des_supplier')
 		 */
@@ -655,19 +656,20 @@ class ActionsDesOrderComponent extends Component {
 			App::import('Model', 'DesSuppliersReferent');
 			$DesSuppliersReferent = new DesSuppliersReferent;
 
-			$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'User')));
+			$DesSuppliersReferent->unbindModel(['belongsTo' => ['De', 'User']]);
 			
 			$options = [];
 			$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
-										   'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
-										   'DesSuppliersReferent.user_id' => $user->get('id'),
-										   'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier'),
-										   'DesSupplier.des_id' => $user->des_id,
-										   'DesSupplier.own_organization_id' => $user->organization['Organization']['id'],
-										   'DesSupplier.id' => $results['DesOrder']['des_supplier_id']];
+					'DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
+					'DesSuppliersReferent.user_id' => $user->get('id'),
+					'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier'),
+					'DesSupplier.des_id' => $user->des_id,
+					'DesSupplier.own_organization_id' => $user->organization['Organization']['id'],
+					'DesSupplier.id' => $results['DesOrder']['des_supplier_id']];
 			$options['recursive'] = 1;
 			$totali = $DesSuppliersReferent->find('count', $options);
 
+			$controllerLog::d($options, $debug);
 			$controllerLog::l([$options, $totali], $debug);
 			   		
 			if($totali==0)
@@ -677,11 +679,11 @@ class ActionsDesOrderComponent extends Component {
 		}
 		
 		if($esitoIsTitolareDesSupplier==$value_da_verificare) {
-			if($debug) echo '<br />esito SI ';
+			$controllerLog::d('isTitolareDesSupplier() esito SI - totali '.$totali, $debug);
 			return true;
 		}	
 		else {
-			if($debug) echo '<br />esito NO ';
+			$controllerLog::d('isTitolareDesSupplier() esito NO - totali '.$totali, $debug);
 			return false;
 		}	
 	}	

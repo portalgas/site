@@ -116,9 +116,9 @@ class DesOrdersOrganizationsController extends AppController {
 		/*
 		 * non e' stato creato alcun ordine, solo il titolare puo'
 		 */
-		$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);		
+		$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);	
+		self::dd($suppliersOrganizationResults, $debug);	
 		$this->set(compact('isTitolareDesSupplier'));
-		
 
 	   /*
 	    *  ctrl se il produttore ha il owner_articles DES o REFERENT + Titolare
@@ -132,6 +132,7 @@ class DesOrdersOrganizationsController extends AppController {
 		$options['fields'] = ['id', 'owner_articles', 'owner_organization_id', 'owner_supplier_organization_id'];
 		$options['recursive'] = -1;
 		$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
+		self::d($suppliersOrganizationResults, $debug);
 		if(!empty($suppliersOrganizationResults)) {
 			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='DES' && !$isTitolareDesSupplier)
 				$acl_owner_articles = true;

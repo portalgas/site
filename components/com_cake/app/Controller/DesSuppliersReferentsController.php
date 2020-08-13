@@ -115,13 +115,15 @@ class DesSuppliersReferentsController extends AppController {
 				if(!$debug) $this->myRedirect(Configure::read('routes_msg_stop'));
 			}					
 							
-			$conditions += ['DesSuppliersReferent.des_supplier_id' => $FilterDesSuppliersReferentId];		}	
+			$conditions += ['DesSuppliersReferent.des_supplier_id' => $FilterDesSuppliersReferentId];
+		}	
 
 		$options = [];
 		$options['conditions'] = $conditions;
 		$options['recursive'] = 1;
 		$results = $this->DesSuppliersReferent->find('all', $options);
-
+		self::d($results);
+		
 		if(empty($results))
 			$resultsFound = 'N';
 		else {
@@ -200,7 +202,8 @@ class DesSuppliersReferentsController extends AppController {
 		$desSuppliersReferentOrganizationId['ALL'] = "Tutti i GAS";
 		$desSuppliersReferentOrganizationId['OWN'] = "Solo il mio GAS";
 		$this->set('FilterDesSuppliersReferentId', $FilterDesSuppliersReferentId);
-		$this->set('desSuppliersReferentOrganizationId', $desSuppliersReferentOrganizationId);		
+		$this->set('desSuppliersReferentOrganizationId', $desSuppliersReferentOrganizationId);
+		
 		$this->set('resultsFound', $resultsFound);
 		$this->set('group_id', $group_id);
 	}
@@ -465,7 +468,9 @@ class DesSuppliersReferentsController extends AppController {
 		$this->layout = 'ajax';
 	}
 	
-	/*	 * key = $_organization_id, $user_id, $des_supplier_id	*/
+	/*
+	 * key = $_organization_id, $user_id, $des_supplier_id
+	*/
 	public function admin_delete($user_id=0, $des_supplier_id=0, $group_id=0) {
 		
 		$debug = false;
@@ -476,7 +481,8 @@ class DesSuppliersReferentsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		$msg .= __('Delete Supplier organization referent');		
+		$msg .= __('Delete Supplier organization referent');
+		
 		/*
 		 *  ctrl se e' gia' referent,
 		*  se NO lo e' associo lo joomla.users al gruppo referenti in joomla.user_usergroup_map

@@ -3682,6 +3682,9 @@ msgstr "Il G.A.S. deve ancora creare l'ordine"
 msgid "DesOrderOrganizationNotSupplier"
 msgstr "Il G.A.S. non ha il produttore associato"
 
+msgid "DesOrderOrganizationNotIsTitolareDesSupplier"
+msgstr "Non sei titolare dell'ordine per poterlo gestire"
+
 msgid "DesOrderOrganizationSupplierOwnerArticlesError"
 msgstr "La configurazione del produttore è errata"
 

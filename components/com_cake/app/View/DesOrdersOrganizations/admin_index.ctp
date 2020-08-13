@@ -221,12 +221,11 @@ echo '<div class="orders">';
 			if($isTitolareDesSupplier)
 				$this->App->d('isTitolareDesSupplier Y', $debug);
 			else
-				$this->App->d('isTitolareDesSupplier Y', $debug);
+				$this->App->d('isTitolareDesSupplier N', $debug);
 			if($desOrganizationsResult['Organization']['id']==$user->organization['Organization']['id']) {
 				if($acl_owner_articles!==true) {
 					switch ($acl_owner_articles['owner_articles']) {
 						case 'REFERENT':
-						case 'SUPPLIER':
 							if($results['DesOrder']['state_code']=='OPEN') {
 								$label = __('DesOrderOrganizationSupplierOwnerArticlesError');
 								echo $this->Html->link('<span class="btn btn-danger">'.$label.'</span>', ['controller' => 'SuppliersOrganizations', 'action' => 'edit', $acl_owner_articles['supplier_organization_id']], ['escape' => false, 'title' => __($label)]);
@@ -234,6 +233,12 @@ echo '<div class="orders">';
 							}
 						break;
 						case '':
+							// Il G.A.S. non ha il produttore associato
+							echo '<span class="label label-info">'.__('DesOrderOrganizationNotSupplier').'</span>';
+						break;
+						case 'DES':
+						case 'SUPPLIER':
+							// e' corretto ma se lo user non e' titolare non puo' far nulla
 							echo '<span class="label label-info">'.__('DesOrderOrganizationNotSupplier').'</span>';
 						break;
 					}

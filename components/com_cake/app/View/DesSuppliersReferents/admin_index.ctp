@@ -55,7 +55,7 @@ if(!empty($results)) {
 			<th><?php echo __('N');?></th>
 			<th colspan="2"><?php echo __('DesSuppliers');?></th>
 			<th colspan="2"><?php echo __('Organization');?></th>
-			<th colspan="3"><?php echo __('user_id');?></th>
+			<th colspan="3"><?php echo __('User');?></th>
 			<th><?php echo __('Created');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
