@@ -21,10 +21,17 @@ class ConfigurationsController extends AppController {
 	
 	public function admin_apc_clean() {
 
-		apcu_clear_cache();
-		apcu_clear_cache('user');
-		apcu_clear_cache('opcode');
-		echo json_encode(array('success' => true));
+		$results = [];
+		if (function_exists('apcu_clear_cache')) {
+			apcu_clear_cache('user');
+			apcu_clear_cache('opcode');
+			$results = ['success' => true];
+		}
+		else {
+			$results = ['success' => false, 'msg' => '!function_exists(apcu_clear_cache'];
+		}
+
+		echo json_encode($results);
 
   	    $this->layout = 'ajax';
 		$this->render('admin_apc_info');
