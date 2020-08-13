@@ -239,7 +239,7 @@ echo '<div class="orders">';
 						case 'DES':
 						case 'SUPPLIER':
 							// e' corretto ma se lo user non e' titolare non puo' far nulla
-							echo '<span class="label label-info">'.__('DesOrderOrganizationNotSupplier').'</span>';
+							echo '<span class="label label-info">'.__('DesOrderOrganizationNotIsTitolareDesSupplier').'</span>';
 						break;
 					}
 				}
