@@ -11,8 +11,9 @@ class ConfigurationsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
 	}
-	public function admin_php_info() {
-		$this->layout = 'ajax';	}
+	public function admin_php_info() {
+		$this->layout = 'ajax';
+	}
 
 	public function admin_apc_info() {
 		$this->layout = 'ajax';
@@ -20,9 +21,9 @@ class ConfigurationsController extends AppController {
 	
 	public function admin_apc_clean() {
 
-		apc_clear_cache();
-		apc_clear_cache('user');
-		apc_clear_cache('opcode');
+		apcu_clear_cache();
+		apcu_clear_cache('user');
+		apcu_clear_cache('opcode');
 		echo json_encode(array('success' => true));
 
   	    $this->layout = 'ajax';
