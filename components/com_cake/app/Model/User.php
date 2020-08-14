@@ -792,12 +792,14 @@ class User extends AppModel {
 	 	
 	 	/*
 	 	 * crea stringa cifrata ma non leggibile
-	 	*/
-	 	$encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $username, MCRYPT_MODE_ECB);
-	 	/*
+		 * php 7.4 non supportato
+ 	 	$encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $username, MCRYPT_MODE_ECB);
+ 	 	 *
 	 	 * converte stringa cifrata in modo leggibile (MGCP+iQL/0qPiL2H62c+WXrnY856xfided9FJhjarEU=)
-	 	*/
 	 	$encrypted_base64 = base64_encode($encrypted);	
+	 	*/
+
+	 	$encrypted = $this->_encoding($username);
 
 	 	return $encrypted_base64;
 	 }
@@ -806,9 +808,14 @@ class User extends AppModel {
 	 	 
 		$salt = Configure::read('Security.salt');
 			
-		//To Decrypt:
-		$username = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($usernameCrypted), MCRYPT_MODE_ECB));
-	 
+		/* 
+		 * To Decrypt:
+		 * php 7.4 non supportato
+		 * $username = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($usernameCrypted), MCRYPT_MODE_ECB));
+	 	*/
+	 	
+	 	$username = $this->_decoding($usernameCrypted);
+
 	 	return $username;
 	 }
 	 

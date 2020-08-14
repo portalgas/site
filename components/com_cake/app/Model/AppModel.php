@@ -338,5 +338,27 @@ class AppModel extends Model {
             return true;
         else
             return false;
-    }    
+    } 
+
+	protected function _decoding($value) {
+
+		$results = '';
+
+		if(!empty($value)) 
+			$results = openssl_decrypt(base64_decode($value), Configure::read('crypt_method'), Configure::read('crypt_key'), 0, Configure::read('crypt_iv'));
+
+		return $results;
+	}
+
+	protected function _encoding($value) {
+		
+		$results = '';
+
+		if(!empty($value)) {
+			$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, Configure::read('crypt_iv'));
+			$results = base64_encode($results);
+		}
+
+		return $results;
+	}	       
 }
