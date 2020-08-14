@@ -6,7 +6,7 @@ class MailsSend extends AppModel {
 	public $useTable = 'deliveries';
 	public $actsAs = ['Data'];
 	public $virtualFields = ['luogoData' => "CONCAT_WS(' - ',Doc.luogo,DATE_FORMAT(Doc.data, '%W, %e %M %Y'))"];
-			
+		
 	/*
 	 * invio mail 
 	 * 		ordini che si aprono oggi

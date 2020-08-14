@@ -355,7 +355,8 @@ class AppModel extends Model {
 		$results = '';
 
 		if(!empty($value)) {
-			$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, Configure::read('crypt_iv'));
+			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
+			$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
 			$results = base64_encode($results);
 		}
 

@@ -8,6 +8,7 @@ App::uses('AppModel', 'Model');
  */
 class SupplierOrganizationCashExcluded extends AppModel {
 
+	public $useTable = 'supplier_organization_cash_excludeds';
 	public $displayField = 'id';
 	public $tablePrefix = '';  
 
