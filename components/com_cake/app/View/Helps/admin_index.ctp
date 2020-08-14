@@ -96,7 +96,8 @@ ul.help  {
 	</li>
 	<li><a href="#php_setting">PHP setting</a>
 		<ul>
-			<li><a href="#php_setting_fastcgi">FastCgi</a></li>
+			<!-- li><a href="#php_setting_fastcgi">FastCgi</a></li -->
+			<li><a href="#php_setting_memcached">Memcached</a></li>
 			<li><a href="#php_setting_apc">APC (Alternative PHP Cache)</a></li>
 		</ul>	
 	</li>
@@ -120,10 +121,10 @@ ul.help  {
 	<li><a href="#apache">Apache</a></li>
 	<li><a href="#php">PHP</a></li>
 	<li><a href="#smtp">Smtp e posta</a></li>
-	<li><a href="#postfix">Postfix</a></li>
+	<!-- li><a href="#postfix">Postfix</a></li -->
 	<li><a href="#database">Database</a></li>
 	<li><a href="#phpmyadmin">PhpMyadmin</a></li>
-	<li><a href="#compressione_css_js">Compressione .css .js</a></li>
+	<!-- li><a href="#compressione_css_js">Compressione .css .js</a></li -->
 	<li><a href="#portalgas_com">portalgas.com (app)</a></li>
 	<li><a href="#migrazione">Migrazione / Allineamento</a></li>
 	<li><a href="#google">Google</a></li>
@@ -224,9 +225,6 @@ ul.help  {
 		<li><a name="tcpdf"></a>
 			<?php include('box_tcpdf.ctp');?>
 		</li>	
-		<li><a name="tcpdf"></a>
-			<?php include('box_tcpdf.ctp');?>
-		</li>	
 		<li><a name="upgrade_joomla"></a>
 			<?php include('box_upgrade_joomla.ctp');?>
 		</li>	
@@ -319,18 +317,18 @@ ul.help  {
 		<li><a name="smtp"></a>
 			<?php include('box_smtp.ctp');?>
 		</li>
-		<li><a name="postfix"></a>
+		<!-- li><a name="postfix"></a>
 			<?php include('box_postfix.ctp');?>
-		</li>
+		</li -->
 		<li><a name="database"></a>
 			<?php include('box_database.ctp');?>
 		</li>
 		<li><a name="phpmyadmin"></a>
 			<?php include('box_phpmyadmin.ctp');?>
 		</li>
-		<li><a name="compressione_css_js"></a>
+		<!-- li><a name="compressione_css_js"></a>
 			<?php include('box_compressione_css_js.ctp');?>
-		</li>
+		</li -->
 		<li><a name="portalgas_com"></a>
 			<?php include('box_portalgas_com.ctp');?>
 		</li>
