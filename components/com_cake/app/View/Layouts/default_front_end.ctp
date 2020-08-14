@@ -2,7 +2,7 @@
 echo $this->Html->script('generic-v04.min');
 	
 if($user->organization['Organization']['type']=='GAS') {
-	echo $this->Html->script('genericEcomm-v02.min');
+	echo $this->Html->script('genericEcomm-v03.min');
 	echo $this->Html->script('genericFrontEnd-v01.min');
 }
 else 

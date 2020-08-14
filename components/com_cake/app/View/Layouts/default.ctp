@@ -13,7 +13,7 @@ else {
 	/*
 	 * vale per tutti i GAs e i ProdGasSuppliers
 	 */
-	echo $this->Html->script('genericEcomm-v02.min');
+	echo $this->Html->script('genericEcomm-v03.min');
 	echo $this->Html->script('genericBackOfficeGas-v02.min'); 	
 }
 

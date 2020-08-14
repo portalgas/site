@@ -556,8 +556,9 @@ $arrayServices[$i]['text'] = "Un manuale approfondito e sempre in aggiornamento 
         </div>
     </section>
 
-	<section id="contact">
-		<jdoc:include type="component" />
+	<section id="contact" style="text-align:center">
+		<!-- jdoc:include type="component" / -->
+          <a class="btn btn-lg btn-outline" href="mailto:contatti@portalgas.it"><i class="fa fa-envelope"></i> scrivi a contatti[@]portalgas.it</a>
 	</section>
 	
 <footer>
