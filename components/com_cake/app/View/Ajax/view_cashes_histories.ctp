@@ -15,7 +15,7 @@ foreach ($results as $numResult => $result):
 	 
 		echo '<tr>';
 	
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td style="width:10px;background-color:';
 		if($result['CashesHistory']['importo']=='0.00') echo '#fff';

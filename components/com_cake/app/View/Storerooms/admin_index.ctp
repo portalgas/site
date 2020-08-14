@@ -93,7 +93,7 @@ if(!empty($results)) {
 		}
 	
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		if($user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
 		    echo '<td>';
 			echo '<a action="storeroom_just_booked-'.$result['Storeroom']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';

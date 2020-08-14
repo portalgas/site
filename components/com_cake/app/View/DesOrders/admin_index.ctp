@@ -37,7 +37,7 @@ if(!empty($results)) {
 	foreach ($results as $numResult => $result) {
 
 		echo '<tr class="view-2">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))

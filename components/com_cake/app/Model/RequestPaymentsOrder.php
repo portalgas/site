@@ -73,7 +73,7 @@ class RequestPaymentsOrder extends AppModel {
 			
 			foreach($requestPaymentsOrderResults as $numResult => $requestPaymentsOrderResult) {
 
-				self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - ".($numResult+1)."/".$requestPaymentsOrderTot." tratto Order.id ".$requestPaymentsOrderResult['Order']['id']." Order.state_code ".$requestPaymentsOrderResult['Order']['state_code'], $debug);
+				self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - ".((int)$numResult+1)."/".$requestPaymentsOrderTot." tratto Order.id ".$requestPaymentsOrderResult['Order']['id']." Order.state_code ".$requestPaymentsOrderResult['Order']['state_code'], $debug);
 			
 				if(!empty($state_code_next)) {
 					$OrderLifeCycle->stateCodeUpdate($user, $requestPaymentsOrderResult, $state_code_next, null, $debug);					

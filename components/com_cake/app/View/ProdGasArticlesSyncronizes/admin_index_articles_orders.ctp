@@ -123,7 +123,7 @@ else {
 			
 			echo '<tr class="view">';
 			
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 
 			echo '<td>';
 			if(!empty($result['ProdGasArticle']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$result['ProdGasArticle']['organization_id'].DS.$result['ProdGasArticle']['img1'])) {
@@ -254,7 +254,7 @@ else {
 								
 				echo '<tr class="view">';
 				
-				echo '<td>'.($numResult+1).'</td>';
+				echo '<td>'.((int)$numResult+1).'</td>';
 
 				echo '<td>';
 				if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {

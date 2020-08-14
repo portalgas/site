@@ -175,7 +175,7 @@ class MailsSend extends AppModel {
 
 
 
-									//$body_mail .= ($numResult+1).") ".$result['SupplierOrganization']['name'];
+									//$body_mail .= ((int)$numResult+1).") ".$result['SupplierOrganization']['name'];
 									$body_mail .= "<div style='clear:both;float:none;margin-top:5px;'>";	
 									$body_mail .= "- ";						
 									$body_mail .= $result['SupplierOrganization']['name'];
@@ -412,7 +412,7 @@ class MailsSend extends AppModel {
 												$Email->subject($subject_mail);												
 										}
 										
-										//$body_mail .= ($numResult+1).") ".$result['SupplierOrganization']['name'];
+										//$body_mail .= ((int)$numResult+1).") ".$result['SupplierOrganization']['name'];
 										$body_mail .= "- ";
 										$body_mail .= $result['SupplierOrganization']['name'];
 										if(!empty($result['Supplier']['descrizione'])) $body_mail .= "/".$result['Supplier']['descrizione'];

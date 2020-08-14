@@ -78,7 +78,7 @@ echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 				?>
 				<tr class="view">
 					<td><a action="articles-<?php echo $result['Article']['organization_id']; ?>_<?php echo $result['Article']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-					<td><?php echo ($numResult+1);?></td>		
+					<td><?php echo ((int)$numResult+1);?></td>		
 					<td><?php echo '<input type="checkbox" id="'.$result['Article']['id'].'[article_id_selected]" name="article_id_selected" value="'.$result['Article']['id'].'" />';?></td>		
 					<td>
 						<img alt="" src="<?php echo Configure::read('App.img.cake');?>/blank32x32.png" id="submitEcomm-<?php echo $result['Article']['id'];?>" class="buttonCarrello submitEcomm" />
@@ -110,7 +110,7 @@ echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 			?>
 				<tr class="view">
 					<td><a action="articles-<?php echo $result['Article']['organization_id']; ?>_<?php echo $result['Article']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-					<td><?php echo ($numResult+1);?></td>		
+					<td><?php echo ((int)$numResult+1);?></td>		
 					<td></td>		
 					<td></td>
 					<?php

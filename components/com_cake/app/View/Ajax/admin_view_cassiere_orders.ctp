@@ -22,7 +22,7 @@ if(!empty($results)) {
 		
 		$tmp .= "\r\n";
 		$tmp .= '<tr>';
-		$tmp .= '	<td>'.($numResult+1).'</td>';
+		$tmp .= '	<td>'.((int)$numResult+1).'</td>';
 		$tmp .= '	<td>'.$this->App->drawUserAvatar($user, $result['User']['id'], $result['User']).'</td>';
 		$tmp .= '	<td>'.$result['User']['name'];
 		if(!empty($result['User']['email']))

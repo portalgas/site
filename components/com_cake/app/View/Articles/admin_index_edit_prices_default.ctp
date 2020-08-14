@@ -70,7 +70,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		
 			echo '<tr class="view">';
 			echo '<td><a action="articles-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 			echo '<td>'.$result['SuppliersOrganization']['name'].'</td>';
 			
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y')

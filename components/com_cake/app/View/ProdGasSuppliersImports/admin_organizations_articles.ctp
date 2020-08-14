@@ -29,7 +29,7 @@ foreach($results as $numResult => $result) {
 	$numRow = $result['Article']['supplier_id'].'-'.$result['Organization']['id'].'-'.$result['Article']['id']; 
 	
 	echo '<tr>';
-	echo '<td>'.($numResult+1).'</td>';
+	echo '<td>'.((int)$numResult+1).'</td>';
 	echo '<td>';
 	if(!empty($result['Organization']['id']))	
 		echo ' <img width="50" class="img-responsive userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	

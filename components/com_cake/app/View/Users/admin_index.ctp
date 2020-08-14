@@ -107,7 +107,7 @@ if(!empty($results)) {
 		?>
 		<tr class="view">
 		<td><a action="suppliers_organizations_referents-<?php echo $result['User']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo ($numResult+1);?></td>
+		<td><?php echo ((int)$numResult+1);?></td>
 		<td><?php echo $result['Profile']['codice']; ?></td>
 		<td><?php echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User']); ?></td>
 		<td><?php echo $result['User']['name']; ?></td>

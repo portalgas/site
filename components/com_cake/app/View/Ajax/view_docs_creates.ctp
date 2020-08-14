@@ -19,7 +19,7 @@ $this->App->d($results);
 	foreach ($results as $numResult => $result):		
 	?>
 		<tr>
-			<td><?php echo ($numResult+1);?></td>
+			<td><?php echo ((int)$numResult+1);?></td>
 			<td><?php echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User']); ?></td>
 			<td><?php echo $result['User']['name']; ?></td>
 			<td><?php echo $result['User']['username']; ?></td>

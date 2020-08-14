@@ -61,7 +61,7 @@ if(!empty($results)) {
 		
 		echo '<tr class="view">';
 		echo '	<td>';
-		echo ($numResult+1);
+		echo ((int)$numResult+1);
 		if($result['Order']['prod_gas_promotion_id']>0)
 			echo ' <span class="ico-order-is-prod_gas_promotion" title="'.__('OrderIsProdGasPromotion').'"></span>';
 		echo '</td>';					

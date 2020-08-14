@@ -78,7 +78,7 @@ if(!empty($sqlResults))	{
 	
 	foreach($sqlResults as $numResult => $values) {
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		foreach($values as $key => $value) {
 			echo '<td>'.$value.'</td>';
 		}

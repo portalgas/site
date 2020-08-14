@@ -30,7 +30,12 @@ foreach($results as $numResult => $result) {
 	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';
 	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];
 	
-	$data = [			($numResult+1),			$result['Profile']['codice'],			$result['User']['name'],			$telephone	];
+	$data = [
+			((int)$numResult+1),
+			$result['Profile']['codice'],
+			$result['User']['name'],
+			$telephone
+	];
 
 	foreach($supplier_organizations as $supplier_organization_id => $supplier_organization_name) {
 		if(isset($result['Order'][$supplier_organization_id]))

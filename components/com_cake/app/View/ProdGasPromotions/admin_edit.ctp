@@ -94,7 +94,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 			$importo_originale_ = number_format($importo_originale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
 			echo '<tr class="view" id="row-'.$result['Article']['id'].'">';
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 			
 			echo '<td>'.$result['Article']['codice'].'</td>';
 			
@@ -150,7 +150,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 		$importo_originale_ = number_format($importo_originale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 		
 		echo '<tr class="view" id="row-'.$result['Article']['id'].'">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td>'.$result['Article']['codice'].'</td>';
 		

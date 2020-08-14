@@ -293,7 +293,7 @@ class Google extends AppModel {
 					$SupplierResults = $Supplier->find('first', $options);
 					
 					$tmpProduttori .= "\n\r";
-					$tmpProduttori .= ($numResult+1).') ';
+					$tmpProduttori .= ((int)$numResult+1).') ';
 
 					$tmpProduttori .= $orderResult['SuppliersOrganization']['name'];
 					if(!empty($SupplierResults['Supplier']['descrizione'])) $tmpProduttori .= ' ('.$SupplierResults['Supplier']['descrizione'].')';

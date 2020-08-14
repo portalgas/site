@@ -77,7 +77,7 @@ echo $this->Form->create('ProdGasArticlesOrder', array('id' => 'formGas'));
 					echo '<a action="prodgas_articles_order_carts-'.$organization_id.'_'.$orderResults['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 					echo '</td>';
 					
-					echo '<td>'.($numResult+1).'</td>';
+					echo '<td>'.((int)$numResult+1).'</td>';
 					echo '<td ';
 					if($articleJustInCart) echo 'style="background-color:red;" title="Articolo già acquistato"';
 					echo '>';
@@ -131,7 +131,7 @@ echo $this->Form->create('ProdGasArticlesOrder', array('id' => 'formGas'));
 			if(!$canEdit) $opts += ['disabled' => 'disabled'];
 			
 			echo '<tr class="view">';
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 			echo '<td><a action="articles-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';		
 			echo '</td>';
 			
@@ -146,13 +146,13 @@ echo $this->Form->create('ProdGasArticlesOrder', array('id' => 'formGas'));
 				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 			}
 			echo '</td>';
-			echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $result['Article']['prezzo_'], 'tabindex'=>($numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $result['Article']['pezzi_confezione'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $result['Article']['qta_minima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $result['Article']['qta_massima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $result['Article']['qta_multipli'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $result['Article']['qta_minima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-			echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $result['Article']['qta_massima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+			echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $result['Article']['prezzo_'], 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $result['Article']['pezzi_confezione'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $result['Article']['qta_minima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $result['Article']['qta_massima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $result['Article']['qta_multipli'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $result['Article']['qta_minima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+			echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $result['Article']['qta_massima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
 			echo '<td class="actions-table-img">';
 			echo $this->Html->link(null, ['action' => 'edit', null, 'order_id='.$result['ArticlesOrder']['order_id'], 'article_organization_id='.$result['ArticlesOrder']['article_organization_id'], 'article_id='.$result['ArticlesOrder']['article_id']], ['class' => 'action actionEdit','title' => __('Edit')]);
 			echo '</td>';

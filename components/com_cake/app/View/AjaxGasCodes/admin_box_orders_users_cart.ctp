@@ -15,7 +15,7 @@ if(!empty($results)) {
 			
 		if($drawListAllOrders=='Y') {		
 				echo '<tr id="'.$result['Order']['id'].'_'.$user_id.'">';
-				echo '	<th>'.($numResult+1).'</th>';
+				echo '	<th>'.((int)$numResult+1).'</th>';
 				echo '	<th>'.__('Order').' '.$result['SuppliersOrganization']['name'].'</th>';
 				echo '  <th>';
 				echo $this->App->utilsCommons->getOrderTime($result['Order']);

@@ -56,7 +56,7 @@ if (!empty($results)) {
 	foreach ($results as $numResult => $result) {
 
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>'.$result['User']['name'].' ('.$result['User']['id'].')</td>';
 
 		if($orderResults['Order']['hasTrasport']=='Y') {
@@ -141,7 +141,7 @@ if (!empty($results)) {
 	
 		foreach($result['SummaryPaymentNotSummaryOrderResults'] as $summaryPaymentNotSummaryOrderResult) {
 			echo '<tr>';
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 			echo '<td>'.$summaryPaymentNotSummaryOrderResult['User']['name'].' ('.$summaryPaymentNotSummaryOrderResult['User']['id'].')</td>';
 			
 			if($orderResults['Order']['hasTrasport']=='Y')

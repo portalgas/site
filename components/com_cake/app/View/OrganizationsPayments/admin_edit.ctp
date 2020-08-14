@@ -97,7 +97,7 @@ echo '<div class="tab-pane fade" id="tabs-3">';
 				$lastvisitDate = "";
 			?>
 		<tr class="view">
-			<td><?php echo ($numResult+1);?></td>
+			<td><?php echo ((int)$numResult+1);?></td>
 			<td><?php echo $result['Profile']['codice']; ?></td>
 			<td><?php echo $this->App->drawUserAvatar($user, $result['id'], $result); ?></td>
 			<td><?php echo $result['name']; ?></td>

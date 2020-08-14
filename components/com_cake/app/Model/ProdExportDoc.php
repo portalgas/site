@@ -143,7 +143,7 @@ class ProdExportDoc extends AppModel {
 				$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['DELETE_TO_REFERENT'] = 'Y';
 			else
 				$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['DELETE_TO_REFERENT'] = 'N';
-			$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['NUM'] = ($numResult+1);
+			$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['NUM'] = ((int)$numResult+1);
 			$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['NAME'] = $result['Article']['name'];
 			$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['PREZZO'] = $result['ProdDeliveriesArticle']['prezzo'];
 			$this->exportRows[$this->exportRowsNum][$result['User']['id']]['TRDATA']['PREZZO_'] = $result['ProdDeliveriesArticle']['prezzo_'];

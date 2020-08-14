@@ -49,7 +49,12 @@ class DatabaseDate extends AppModel {
 			if(!empty($results)) {
 				$db = JFactory::getDbo();
 				
-				/*				 * ctrl se il campo tmp_migration_codice esiste				*/				$sql = "SHOW COLUMNS FROM ".Configure::read('DB.portalPrefix')."users LIKE 'tmp_migration_codice'";				$resultsCtrl = $this->query($sql);				if(empty($resultsCtrl)) {
+				/*
+				 * ctrl se il campo tmp_migration_codice esiste
+				*/
+				$sql = "SHOW COLUMNS FROM ".Configure::read('DB.portalPrefix')."users LIKE 'tmp_migration_codice'";
+				$resultsCtrl = $this->query($sql);
+				if(empty($resultsCtrl)) {
 					/* 
 					 * creo campo tmp_migration_codice per registrare lacavagnetta_anagrafiche.codice, servira' per la migrazione dei referenti
 					 */
@@ -77,7 +82,7 @@ class DatabaseDate extends AppModel {
 					
 					$result = $result['lacavagnetta_anagrafiche'];
 					
-					echo '<br />'.($numResult+1).'  utente '.$result['cognome'].' '.$result['nome'].' '.$result['email'];
+					echo '<br />'.((int)$numResult+1).'  utente '.$result['cognome'].' '.$result['nome'].' '.$result['email'];
 					
 					/*
 					 * field add custom
@@ -139,11 +144,15 @@ class DatabaseDate extends AppModel {
 						$user_id = $userTable->get('id');
 						echo '	- USERID '.$user_id;
 			
-						/*						 * aggiungo gruppo joomla __user_usergroup_map GasPages[nome organizazione]						*/
-						$continue = $this->_user_set_j_group_registred($user, $user_id);					}
+						/*
+						 * aggiungo gruppo joomla __user_usergroup_map GasPages[nome organizazione]
+						*/
+						$continue = $this->_user_set_j_group_registred($user, $user_id);
+					}
 					
 										
-					if($continue) {								
+					if($continue) {
+								
 						/*
 						 * users.tmp_migration_codice = lacavagnetta_anagrafiche.codice, servira' per la migrazione dei referenti
 						 */
@@ -154,7 +163,9 @@ class DatabaseDate extends AppModel {
 						$db->setQuery($sql);
 						if (!$db->query())  echo 'error UPDATE users.codice<br />';
 	
-						/*						 * user_profiles						*/
+						/*
+						 * user_profiles
+						*/
 						$this->_user_set_profile($user, $user_id, $result, $parameters);	
 					} 
 					
@@ -163,7 +174,8 @@ class DatabaseDate extends AppModel {
 		}	// end if $continue
 	}
 
-	public function executeMigrationEg3UsersPwd($user, $group_id_root, $group_id_user) {		echo '<h1>Eseguo executeMigrationEg3UsersPwd, organization '.$user->organization['Organization']['id'].'</h1>';
+	public function executeMigrationEg3UsersPwd($user, $group_id_root, $group_id_user) {
+		echo '<h1>Eseguo executeMigrationEg3UsersPwd, organization '.$user->organization['Organization']['id'].'</h1>';
 		
 		$sql = "SELECT
 					Slave.name, Slave.password, User.* 
@@ -172,8 +184,9 @@ class DatabaseDate extends AppModel {
 				    User.organization_id = ".(int)$user->organization['Organization']['id']." 
 					and User.email = Slave.email
 				ORDER BY User.id";
-		$results = $this->query($sql);		foreach ($results as $numResult => $result) {
-			echo '<h3>'.($numResult+1).') tratto l\'utente '.$result['User']['email'].'</h3>';
+		$results = $this->query($sql);
+		foreach ($results as $numResult => $result) {
+			echo '<h3>'.((int)$numResult+1).') tratto l\'utente '.$result['User']['email'].'</h3>';
 			
 			$sql = "UPDATE  
 						".Configure::read('DB.portalPrefix')."users
@@ -183,13 +196,19 @@ class DatabaseDate extends AppModel {
 						and id = ".$result['User']['id'];
 			self::d($sql, false);		
 			$resultsUpdate = $this->query($sql);
-		}		}
+		}	
+	}
 	
 	/* campo supplier.tmp_migration_codice contiente lacavagnetta_anagrafiche.codice, servira' per la migrazione dei referenti */
 	public function executeMigrationEg3Suppliers() {	
 		echo '<h1>Eseguo executeMigrationEg3Suppliers</h1>';
 		
-		/*		 * ctrl se il campo tmp_migration_codice esiste		*/		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."suppliers LIKE 'tmp_migration_codice'";		$resultsCtrl = $this->query($sql);		if(empty($resultsCtrl)) {
+		/*
+		 * ctrl se il campo tmp_migration_codice esiste
+		*/
+		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."suppliers LIKE 'tmp_migration_codice'";
+		$resultsCtrl = $this->query($sql);
+		if(empty($resultsCtrl)) {
 			/* 
 			 * creo campo tmp_migration_codice per registrare lacavagnetta_anagrafiche.codice, servira' per la migrazione dei referenti
 			 */
@@ -216,7 +235,7 @@ class DatabaseDate extends AppModel {
 		$results = $this->query($sql);
 		if(!empty($results)) {
 			foreach ($results as $numResult => $result) {
-				echo ($numResult+1).') supplier: '.$result['Supplier']['name'].'<br/>';
+				echo ((int)$numResult+1).') supplier: '.$result['Supplier']['name'].'<br/>';
 				$sql = "INSERT INTO ".Configure::read('DB.prefix')."suppliers_organizations 
 						(organization_id,supplier_id,name,category_supplier_id,frequenza,stato)
 						values (".$user->organization['Organization']['id'].",".$result['Supplier']['id'].",
@@ -237,7 +256,7 @@ class DatabaseDate extends AppModel {
 		$results = $this->query($sql);	
 		if(!empty($results)) {
 			foreach ($results as $numResult => $result) {
-				echo '<br />'.($numResult+1).') user: '.$result['lacavagnetta_referenti']['codanag'].' - supplier: '.$result['lacavagnetta_referenti']['codfornitore'];
+				echo '<br />'.((int)$numResult+1).') user: '.$result['lacavagnetta_referenti']['codanag'].' - supplier: '.$result['lacavagnetta_referenti']['codfornitore'];
 
 				/* get joomla users */
 				$db = JFactory::getDbo();
@@ -301,7 +320,7 @@ class DatabaseDate extends AppModel {
 		$results = $this->query($sql);
 		if(!empty($results)) {
 			foreach ($results as $numResult => $result) {
-				echo '<h3>'.($numResult+1).') Articolo: '.$result['lacavagnetta_articoli']['descrizione'].'</h3>';
+				echo '<h3>'.((int)$numResult+1).') Articolo: '.$result['lacavagnetta_articoli']['descrizione'].'</h3>';
 
 				/* getSuppliersOrganizations */
 				$sql = "SELECT SuppliersOrganization.id 
@@ -317,14 +336,22 @@ class DatabaseDate extends AppModel {
 						$supplier_organization_id = $resultId[0]['SuppliersOrganization']['id'];
 						echo '&nbsp;&nbsp;&nbsp;&nbsp;getSuppliersOrganizations '.$result['lacavagnetta_articoli']['centrale'].' Eseguo '.$sql.' : supplier_organization_id <b>'.$supplier_organization_id.'</b><br/>';
 
-						/* getCategory */						$sql = "SELECT 
+						/* getCategory */
+						$sql = "SELECT 
 									id 
 								FROM ".Configure::read('DB.prefix')."categories_articles CategoriesArticle
 								WHERE 
 									organization_id = ".(int)$user->organization['Organization']['id']."
 									and tmp_migration_codice = '".$result['lacavagnetta_articoli']['catmerce']."'";
-						$resultId = $this->query($sql);						if(!isset($resultId[0])) {							echo '<h3 style="color:red;">Attenzione: l\'articolo ha un codice categoria (catmerce = '.$result['lacavagnetta_articoli']['catmerce'].') che non estiste in '.Configure::read('DB.prefix').'categories_articles: aggiornare le tabelle lacavagnetta_catmerceologica e lacavagnetta_tipiarticoli</h3>';						}						else {						
-							$category_article_id = $resultId[0]['CategoriesArticle']['id'];							echo '&nbsp;&nbsp;&nbsp;&nbsp;getCategoryArticle '.$result['lacavagnetta_articoli']['catmerce'].' Eseguo '.$sql.' : id <b>'.$category_article_id.'</b><br/>';								
+						$resultId = $this->query($sql);
+						if(!isset($resultId[0])) {
+							echo '<h3 style="color:red;">Attenzione: l\'articolo ha un codice categoria (catmerce = '.$result['lacavagnetta_articoli']['catmerce'].') che non estiste in '.Configure::read('DB.prefix').'categories_articles: aggiornare le tabelle lacavagnetta_catmerceologica e lacavagnetta_tipiarticoli</h3>';
+						}
+						else {
+						
+							$category_article_id = $resultId[0]['CategoriesArticle']['id'];
+							echo '&nbsp;&nbsp;&nbsp;&nbsp;getCategoryArticle '.$result['lacavagnetta_articoli']['catmerce'].' Eseguo '.$sql.' : id <b>'.$category_article_id.'</b><br/>';
+								
 							/* setStato */
 							if($result['lacavagnetta_articoli']['stato']==1) $stato = 'Y';
 							else	$stato = 'N';
@@ -336,7 +363,10 @@ class DatabaseDate extends AppModel {
 								$pezzi_confezione = $result['lacavagnetta_articoli']['qtaminordine'];
 							
 							/* setQtaMinima, sono invertiti in Eg3 qtaminordine e pzperconf */
-							if(empty($result['lacavagnetta_articoli']['pzperconf']))								$qta_minima = 1;							else								$qta_minima = $result['lacavagnetta_articoli']['pzperconf'];
+							if(empty($result['lacavagnetta_articoli']['pzperconf']))
+								$qta_minima = 1;
+							else
+								$qta_minima = $result['lacavagnetta_articoli']['pzperconf'];
 							
 							/* setQtaMultipli */
 							if(empty($result['lacavagnetta_articoli']['qtaminperfamiglia']))
@@ -344,7 +374,13 @@ class DatabaseDate extends AppModel {
 							else
 								$qta_multipli = $result['lacavagnetta_articoli']['qtaminperfamiglia'];
 								
-							/* setBio */							if(empty($result['lacavagnetta_articoli']['bio']) || $result['lacavagnetta_articoli']['bio']==0)								$bio = 'N';							else								$bio = 'Y';														$article_id = $Article->getMaxIdOrganizationId($user->organization['Organization']['id']);
+							/* setBio */
+							if(empty($result['lacavagnetta_articoli']['bio']) || $result['lacavagnetta_articoli']['bio']==0)
+								$bio = 'N';
+							else
+								$bio = 'Y';
+							
+							$article_id = $Article->getMaxIdOrganizationId($user->organization['Organization']['id']);
 							$sql = "INSERT INTO ".Configure::read('DB.prefix')."articles 
 									(id,organization_id,
 									supplier_organization_id,category_article_id,
@@ -417,7 +453,8 @@ class DatabaseDate extends AppModel {
 			/*
 			 * ctrl se il campo tmp_migration_codice esiste
 			 */
-			$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."categories_articles LIKE 'tmp_migration_codice'";			$resultsCtrl = $this->query($sql);
+			$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."categories_articles LIKE 'tmp_migration_codice'";
+			$resultsCtrl = $this->query($sql);
 			if(empty($resultsCtrl)) {
 				/*
 				 * creo campo tmp_migration_codice per registrare lacavagnetta_catmerceologica.codice o lacavagnetta_catmerceologica.codice
@@ -430,14 +467,16 @@ class DatabaseDate extends AppModel {
 			foreach ($results as $numResult => $result) {
 					$data = [];
 
-					echo '  '.($numResult+1).') codice '.$result['lacavagnetta_tipiarticoli']['codice'].' - descrizione '.$result['lacavagnetta_tipiarticoli']['descrizione'].'<br/>';
+					echo '  '.((int)$numResult+1).') codice '.$result['lacavagnetta_tipiarticoli']['codice'].' - descrizione '.$result['lacavagnetta_tipiarticoli']['descrizione'].'<br/>';
 
 					$data['CategoriesArticle']['organization_id'] = $user->organization['Organization']['id'];
 					$data['CategoriesArticle']['name'] = $result['lacavagnetta_tipiarticoli']['descrizione'];
 					$data['CategoriesArticle']['tmp_migration_codice'] = $result['lacavagnetta_tipiarticoli']['codice'];
 					$parent_id = $this->_categoryArticlesAdd($data);
 
-					/*					 * estraggo le categorie FIGLI					*/
+					/*
+					 * estraggo le categorie FIGLI
+					*/
 					$sql = "SELECT 
 								codice, descrizione, tipo 
 							FROM 
@@ -451,7 +490,7 @@ class DatabaseDate extends AppModel {
 					if(!empty($subResults)) {
 						foreach ($subResults as $numResult2 => $subResult) {
 								echo '   '. ($numResult2+1).') codice '.$subResult['lacavagnetta_catmerceologica']['codice'].' - descrizione '.$subResult['lacavagnetta_catmerceologica']['descrizione'].'<br/>';
-								$data['CategoriesArticle']['organization_id'] = $user->organization['Organization']['id'];
+								$data['CategoriesArticle']['organization_id'] = $user->organization['Organization']['id'];
 								$data['CategoriesArticle']['parent_id'] = $parent_id;
 								$data['CategoriesArticle']['name'] = $subResult['lacavagnetta_catmerceologica']['descrizione'];
 								$data['CategoriesArticle']['tmp_migration_codice'] = $subResult['lacavagnetta_catmerceologica']['codice'];
@@ -464,19 +503,34 @@ class DatabaseDate extends AppModel {
 
 	public function executeMigrationEg3DropField() {
 		
-		/*		 * ctrl se il campo tmp_migration_codice esiste		*/		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.portalPrefix')."users LIKE 'tmp_migration_codice'";		$resultsCtrl = $this->query($sql);		if(!empty($resultsCtrl)) {
+		/*
+		 * ctrl se il campo tmp_migration_codice esiste
+		*/
+		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.portalPrefix')."users LIKE 'tmp_migration_codice'";
+		$resultsCtrl = $this->query($sql);
+		if(!empty($resultsCtrl)) {
 			$sql = "ALTER TABLE ".Configure::read('DB.portalPrefix')."users DROP tmp_migration_codice";
 			echo '<h3>'.$sql.'</h3>';
 			$resultAlter = $this->query($sql);
 		}
 
-		/*		 * ctrl se il campo tmp_migration_codice esiste		*/		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."suppliers LIKE 'tmp_migration_codice'";		$resultsCtrl = $this->query($sql);		if(!empty($resultsCtrl)) {
+		/*
+		 * ctrl se il campo tmp_migration_codice esiste
+		*/
+		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."suppliers LIKE 'tmp_migration_codice'";
+		$resultsCtrl = $this->query($sql);
+		if(!empty($resultsCtrl)) {
 			$sql = "ALTER TABLE ".Configure::read('DB.prefix')."suppliers DROP tmp_migration_codice";
 			echo '<h3>'.$sql.'</h3>';
 			$resultAlter = $this->query($sql);
 		}
 
-		/*		 * ctrl se il campo tmp_migration_codice esiste		*/		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."categories_articles LIKE 'tmp_migration_codice'";		$resultsCtrl = $this->query($sql);		if(!empty($resultsCtrl)) {
+		/*
+		 * ctrl se il campo tmp_migration_codice esiste
+		*/
+		$sql = "SHOW COLUMNS FROM ".Configure::read('DB.prefix')."categories_articles LIKE 'tmp_migration_codice'";
+		$resultsCtrl = $this->query($sql);
+		if(!empty($resultsCtrl)) {
 			$sql = "ALTER TABLE ".Configure::read('DB.prefix')."categories_articles DROP tmp_migration_codice";
 			echo '<h3>'.$sql.'</h3>';
 			$resultAlter = $this->query($sql);
@@ -496,7 +550,8 @@ class DatabaseDate extends AppModel {
 	
 	private function _setUserName($user,$result) {
 		$name = "";
-				switch ($user->organization['Organization']['id']) {
+		
+		switch ($user->organization['Organization']['id']) {
 			case 1:
 				$name = $result['descrizione']; //  057 Actis Grosso Francesco
 				break;
@@ -527,15 +582,101 @@ class DatabaseDate extends AppModel {
 	/*
 	 * preso da libraries/joomla/database/table/user.php
 	 */
-	private function _check($db, $userTable, $user)	{		// Validate user information		if (trim($userTable->name) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));			return false;		}			if (trim($userTable->username) == '')		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));			return false;		}			if (preg_match("#[<>\"'%;()&]#i", $userTable->username) || strlen(utf8_decode($userTable->username)) < 2)		{			$userTable->setError(JText::sprintf('JLIB_DATABASE_ERROR_VALID_AZ09', 2));			return false;		}			if ((trim($userTable->email) == "") || !JMailHelper::isEmailAddress($userTable->email))		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));			return false;		}			// Set the registration timestamp		if ($userTable->registerDate == null || $userTable->registerDate == $db->getNullDate())		{			$userTable->registerDate = JFactory::getDate()->toSql();		}			// check for existing username		$query = $db->getQuery(true);		$query->select($db->quoteName('id'));		$query->from($db->quoteName('#__users'));		$query->where($db->quoteName('username') . ' = ' . $db->quote($userTable->username));		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
+	private function _check($db, $userTable, $user)
+	{
+		// Validate user information
+		if (trim($userTable->name) == '')
+		{
+			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
+			return false;
+		}
+	
+		if (trim($userTable->username) == '')
+		{
+			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_A_USER_NAME'));
+			return false;
+		}
+	
+		if (preg_match("#[<>\"'%;()&]#i", $userTable->username) || strlen(utf8_decode($userTable->username)) < 2)
+		{
+			$userTable->setError(JText::sprintf('JLIB_DATABASE_ERROR_VALID_AZ09', 2));
+			return false;
+		}
+	
+		if ((trim($userTable->email) == "") || !JMailHelper::isEmailAddress($userTable->email))
+		{
+			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
+			return false;
+		}
+	
+		// Set the registration timestamp
+		if ($userTable->registerDate == null || $userTable->registerDate == $db->getNullDate())
+		{
+			$userTable->registerDate = JFactory::getDate()->toSql();
+		}
+	
+		// check for existing username
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName('id'));
+		$query->from($db->quoteName('#__users'));
+		$query->where($db->quoteName('username') . ' = ' . $db->quote($userTable->username));
+		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
 		
 		// fractis
 		$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);
-				$db->setQuery($query);			$xid = intval($db->loadResult());		if ($xid && $xid != intval($userTable->id))		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));			return false;		}			// check for existing email		$query->clear();		$query->select($db->quoteName('id'));		$query->from($db->quoteName('#__users'));		$query->where($db->quoteName('email') . ' = ' . $db->quote($userTable->email));		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
 		
-		// fractis		$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);				$db->setQuery($query);		$xid = intval($db->loadResult());		if ($xid && $xid != intval($userTable->id))		{			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));			return false;		}			// check for root_user != username		$config = JFactory::getConfig();		$rootUser = $config->get('root_user');		if (!is_numeric($rootUser))		{			$query->clear();			$query->select($db->quoteName('id'));			$query->from($db->quoteName('#__users'));			$query->where($db->quoteName('username') . ' = ' . $db->quote($rootUser));
+		$db->setQuery($query);
+	
+		$xid = intval($db->loadResult());
+		if ($xid && $xid != intval($userTable->id))
+		{
+			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_USERNAME_INUSE'));
+			return false;
+		}
+	
+		// check for existing email
+		$query->clear();
+		$query->select($db->quoteName('id'));
+		$query->from($db->quoteName('#__users'));
+		$query->where($db->quoteName('email') . ' = ' . $db->quote($userTable->email));
+		$query->where($db->quoteName('id') . ' != ' . (int) $userTable->id);
+		
+		// fractis
+		$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);
+		
+		$db->setQuery($query);
+		$xid = intval($db->loadResult());
+		if ($xid && $xid != intval($userTable->id))
+		{
+			$userTable->setError(JText::_('JLIB_DATABASE_ERROR_EMAIL_INUSE'));
+			return false;
+		}
+	
+		// check for root_user != username
+		$config = JFactory::getConfig();
+		$rootUser = $config->get('root_user');
+		if (!is_numeric($rootUser))
+		{
+			$query->clear();
+			$query->select($db->quoteName('id'));
+			$query->from($db->quoteName('#__users'));
+			$query->where($db->quoteName('username') . ' = ' . $db->quote($rootUser));
 			
-			// fractis			$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);						$db->setQuery($query);			$xid = intval($db->loadResult());			if ($rootUser == $userTable->username && (!$xid || $xid && $xid != intval($userTable->id))					|| $xid && $xid == intval($userTable->id) && $rootUser != $userTable->username)			{				$userTable->setError(JText::_('JLIB_DATABASE_ERROR_USERNAME_CANNOT_CHANGE'));				return false;			}		}			return true;	}	
+			// fractis
+			$query->where($db->quoteName('organization_id') . ' = ' . $user->organization['Organization']['id']);
+			
+			$db->setQuery($query);
+			$xid = intval($db->loadResult());
+			if ($rootUser == $userTable->username && (!$xid || $xid && $xid != intval($userTable->id))
+					|| $xid && $xid == intval($userTable->id) && $rootUser != $userTable->username)
+			{
+				$userTable->setError(JText::_('JLIB_DATABASE_ERROR_USERNAME_CANNOT_CHANGE'));
+				return false;
+			}
+		}
+	
+		return true;
+	}	
 	
 	/*
 	 * aggiungo l'utente nel gruppo Registration->GasPage.. per il front-end (profilazione menu, ex "acquista", "stampe")
@@ -634,9 +775,14 @@ class DatabaseDate extends AppModel {
 			 * */ 
 			$data['profile']['hasArticlesOrder'] = $parameters['hasArticlesOrder'];
 			
-			/*			 * codice, 054 Rossi Mario			* */
+			/*
+			 * codice, 054 Rossi Mario
+			* */
 			$codice = $result['descrizione'];
-			if(!empty($codice))				$codice = substr($codice, 0, strpos($codice, " "));							$data['profile']['codice'] = $codice;				
+			if(!empty($codice))
+				$codice = substr($codice, 0, strpos($codice, " "));				
+			$data['profile']['codice'] = $codice;
+				
 			$db->setQuery('DELETE FROM #__user_profiles WHERE user_id = '.$data['id'] .
 						  " AND profile_key LIKE 'profile.%'");
 			if (!$db->query())  echo 'error DELETE __user_profiles<br />';

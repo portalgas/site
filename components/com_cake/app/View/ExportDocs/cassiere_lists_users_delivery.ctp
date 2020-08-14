@@ -61,7 +61,7 @@ if (!empty($results)) {
 				$importo_cash = '0,00';
 								
 			$html .= '<tr>';
-			$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.($numResult+1).'</td>';
+			$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.((int)$numResult+1).'</td>';
 			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
 			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo.'&nbsp;&euro;</td>';
 			$html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$tot_importo_pagato.'&nbsp;&euro;</td>';

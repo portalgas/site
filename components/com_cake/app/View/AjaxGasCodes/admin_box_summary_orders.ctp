@@ -71,7 +71,7 @@ if($results['Delivery']['totOrders'] > 0) {
 								
 				$tmp .= "\r\n";
 				$tmp .= '<tr>';
-				$tmp .= '	<td>'.($numResult+1).'</td>';
+				$tmp .= '	<td>'.((int)$numResult+1).'</td>';
 				$tmp .= '	<td>'.$summaryOrder['User']['name'];
 				if(!empty($summaryOrder['User']['email']))
 				$tmp .= ' <a title="'.__('Email send').'" target="_blank" href="mailto:'.$summaryOrder['User']['email'].'">'.$summaryOrder['User']['email'].'</a>';

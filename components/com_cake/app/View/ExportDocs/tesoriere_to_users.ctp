@@ -39,7 +39,7 @@ $tot_importo = 0;
 foreach($results as $numResult => $result) {
 	
 	$html .= '<tr>';
-	$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.($numResult+1).'</td>';
+	$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.((int)$numResult+1).'</td>';
 	$html .= '	<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH200()).'">'.$result['User']['name'].'</td>';
 	$html .= '	<td width="'.$output->getCELLWIDTH200().'" style="text-align:right;">'.number_format($result['SummaryOrder']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</td>';
 	$html .= '</tr>';

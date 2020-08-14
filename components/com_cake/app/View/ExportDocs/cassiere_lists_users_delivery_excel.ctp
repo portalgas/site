@@ -38,7 +38,7 @@ if (!empty($results)) {
 				$importo_cash = '0,00';
 				
 			$rowsExcel = [];
-			$rowsExcel[] = ($numResult+1);
+			$rowsExcel[] = ((int)$numResult+1);
 			$rowsExcel[] = $result['User']['name'];
 			$rowsExcel[] = $tot_importo;
 			$rowsExcel[] = $tot_importo_pagato;

@@ -21,7 +21,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			foreach ($prodUsersGroups as $numResult => $prodUsersGroup) { 
 				
 				echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
-				echo '	<div class="cbp_tmicon" id="'.$prodUsersGroup['User']['id'].'">'.($numResult+1).'</div>';
+				echo '	<div class="cbp_tmicon" id="'.$prodUsersGroup['User']['id'].'">'.((int)$numResult+1).'</div>';
 				echo 		$prodUsersGroup['User']['label'].' ('.$prodUsersGroup['ProdUsersGroup']['sort'].')';
 		
 				echo $this->Html->link(null, array('action' => 'delete', $prodUsersGroup['ProdUsersGroup']['id']),array('class' => 'action actionDelete','title' => __('Delete')));

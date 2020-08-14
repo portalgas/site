@@ -30,7 +30,7 @@ foreach($results as $numResult => $result) {
 					
 	$tmp .= "\r\n";
 	$tmp .= '<tr>';
-	$tmp .= '	<td>'.($numResult+1).'</td>';
+	$tmp .= '	<td>'.((int)$numResult+1).'</td>';
 	$tmp .= '<td>';
 	$tmp .= '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" />';
 	$tmp .= '</td>';

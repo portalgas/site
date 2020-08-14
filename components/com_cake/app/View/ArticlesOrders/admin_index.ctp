@@ -158,7 +158,7 @@ echo $this->element('boxOrder', ['results' => $order]);
 					}
 					echo '</td>';
 					
-					echo '<td>'.($numResult+1).'</td>';
+					echo '<td>'.((int)$numResult+1).'</td>';
 					echo '<td ';
 					if($articleJustInCart) echo 'style="background-color:red;" title="Articolo già acquistato"';
 					echo '>';
@@ -300,20 +300,20 @@ echo $this->element('boxOrder', ['results' => $order]);
 					/*
 					 * campi bloccati se non si e' proprietari dell'articolo
 					 */							
-					echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $article['Article']['prezzo_'], 'tabindex'=>($numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts)).'</td>';
-					echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $article['Article']['pezzi_confezione'], 'tabindex'=>($numResult+1)], $noOwnerOpts)).'</td>';
+					echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $article['Article']['prezzo_'], 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts)).'</td>';
+					echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $article['Article']['pezzi_confezione'], 'tabindex'=>((int)$numResult+1)], $noOwnerOpts)).'</td>';
 					
 					/*
 					 * campi gestiti anche da chi non e' proprietario dell'articolo
 					 */					
-					echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $article['Article']['qta_minima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $article['Article']['qta_massima'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $article['Article']['qta_multipli'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $article['Article']['qta_minima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $article['Article']['qta_massima_order'], 'tabindex'=>($numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $article['Article']['qta_minima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $article['Article']['qta_massima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $article['Article']['qta_multipli'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $article['Article']['qta_minima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $article['Article']['qta_massima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
 					
 					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-						echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $article['Article']['alert_to_qta'],'tabindex'=>($numResult+1)], $opts)).'</td>';
+						echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $article['Article']['alert_to_qta'],'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
 				
 					echo $this->Form->hidden('organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][article_organization_id]', 'value' => $article['Article']['organization_id']]);
 					echo $this->Form->hidden('supplier_organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][supplier_organization_id]', 'value' => $article['Article']['supplier_organization_id']]);

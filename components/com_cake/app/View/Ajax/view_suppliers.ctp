@@ -54,7 +54,7 @@ if(isset($results['SuppliersOrganization']) && !empty($results['SuppliersOrganiz
 	foreach ($results['SuppliersOrganization'] as $numResult => $result) {
 		
 		echo '<tr>';
-		// echo '<td>'.($numResult+1).'</td>';
+		// echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>';
 		echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
 		echo '</td>';

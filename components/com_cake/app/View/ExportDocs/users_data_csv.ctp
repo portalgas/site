@@ -104,7 +104,7 @@ foreach($results as $numResult => $result) {
 	if(!empty($result['Profile']['postal_code'])) $postal_code = $result['Profile']['postal_code'];
         
 	$dataTmp = [
-			'N' => ($numResult+1),
+			'N' => ((int)$numResult+1),
 			'code' => $result['Profile']['codice'],
 			'username' => $result['User']['username'],
 			'cf' => $result['Profile']['cf'],

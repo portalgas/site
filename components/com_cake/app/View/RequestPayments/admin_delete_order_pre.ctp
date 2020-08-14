@@ -32,7 +32,7 @@ if (!empty($user_ids_just_saldato_summary_payments)) {
 	foreach ($user_ids_just_saldato_summary_payments as $numResult => $user_ids_just_saldato_summary_payment) {
 
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>'.$this->App->drawUserAvatar($user, $user_ids_just_saldato_summary_payment['User']['id'], $user_ids_just_saldato_summary_payment['User']).'</td>';
 		echo '<td>'.$user_ids_just_saldato_summary_payment['User']['name'].'</td>';
 		echo '<td>';  	
@@ -72,7 +72,7 @@ if (!empty($user_ids_just_saldato_summary_orders)) {
 	foreach ($user_ids_just_saldato_summary_orders as $numResult => $user_ids_just_saldato_summary_order) {
 
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>'.$this->App->drawUserAvatar($user, $user_ids_just_saldato_summary_order['User']['id'], $user_ids_just_saldato_summary_order['User']).'</td>';
 		echo '<td>'.$user_ids_just_saldato_summary_order['User']['name'].'</td>';
 		echo '<td>';  	

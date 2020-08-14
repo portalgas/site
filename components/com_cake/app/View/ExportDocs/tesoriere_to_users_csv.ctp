@@ -21,7 +21,7 @@ foreach($results as $numResult => $result) {
 	$tot_importo_user = $result[0]['totImporto'];
 	
 	$data[]['csv'] = array(
-			'N' => ($numResult+1),
+			'N' => ((int)$numResult+1),
 			'utente' => $result['User']['name'],
 			'importo' => number_format($result['SummaryOrder']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))
 	);

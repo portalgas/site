@@ -88,7 +88,7 @@ if(!empty($summaryOrderNotPaid)) {
 	foreach($summaryOrderNotPaid as $numResult => $result) {
 	
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>';
 		echo $result['User']['name'];
 		echo '</td>';
@@ -159,7 +159,7 @@ if(!empty($summaryOrderPaid)) {
 			
 		echo '<tr>';
 		
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>';
 		echo $result['User']['name'];
 		echo '</td>';

@@ -10,7 +10,7 @@ if(!empty($results) {
 								
 				$tmp .= "\r\n";
 				$tmp .= '<tr>';
-				$tmp .= '	<td>'.($numResult+1).'</td>';
+				$tmp .= '	<td>'.((int)$numResult+1).'</td>';
 				$tmp .= '	<td>'.$result['User']['name'];
 				if(!empty($result['User']['email']))
 				$tmp .= ' <a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';

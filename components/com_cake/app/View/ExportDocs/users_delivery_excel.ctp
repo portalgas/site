@@ -14,7 +14,8 @@ $table = array(
 		array('label' => __('Telephone'), 'width' => 'auto', 'wrap' => true, 'filter' => false),
 		array('label' => __('Address'), 'width' => 'auto', 'wrap' => true, 'filter' => false),
 		array('label' => 'Qta totale', 'width' => 'auto', 'wrap' => true, 'filter' => true),
-		array('label' => __('Suppliers Organizations Referents'), 'width' => 100, 'filter' => false),		
+		array('label' => __('Suppliers Organizations Referents'), 'width' => 100, 'filter' => false),
+		
 );
 
 // heading
@@ -31,10 +32,19 @@ foreach($results as $numResult => $result) {
 	$address = "";
 	if(!empty($result['Profile']['address'])) $address = $result['Profile']['address'];	
 	
-	$data = array(			($numResult+1),			$result['Profile']['codice'],			$result['User']['name'],			$result['User']['email'],			$telephone,			$address,
-			$result['User']['cart_qta_tot']	);
+	$data = array(
+			((int)$numResult+1),
+			$result['Profile']['codice'],
+			$result['User']['name'],
+			$result['User']['email'],
+			$telephone,
+			$address,
+			$result['User']['cart_qta_tot']
+	);
 	
-	if(isset($result['SuppliersOrganization'])) 		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) 			$data[] = $suppliersOrganization['name'].' '.$result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];
+	if(isset($result['SuppliersOrganization'])) 
+		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) 
+			$data[] = $suppliersOrganization['name'].' '.$result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];
 	
 	$this->PhpExcel->addTableRow($data);
 }

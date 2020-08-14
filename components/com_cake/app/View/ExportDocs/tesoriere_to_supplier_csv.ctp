@@ -33,7 +33,7 @@ foreach($results as $numResult => $result) {
 		$data_fine = $this->Time->i18nFormat($result['Order']['data_fine_validation'],"%A %e %B %Y");
 	
 	$data[]['csv'] = array(
-		'N' => ($numResult+1),
+		'N' => ((int)$numResult+1),
 		'supplier' => $result['SupplierOrganization']['name'],
 		'data_inizio' => $data_inizio,
 		'data_fine' => $data_fine,

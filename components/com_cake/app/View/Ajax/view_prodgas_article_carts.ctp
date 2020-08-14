@@ -1,7 +1,9 @@
 <?php 
 echo '<div class="related">';
 
-/* * ctrl che lo Article.stato = Y, se no non posso avere acquisti*/
+/*
+ * ctrl che lo Article.stato = Y, se no non posso avere acquisti
+*/
 if($article_stato=='N') 
 	echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "L'articolo ha il campo Stato settato a <b>No</b> e non può essere acquistato"));
 else {
@@ -23,7 +25,7 @@ else {
 	
 			echo "\r\n";
 			echo '<tr>';
-			echo '<td>'.($numResult+1).'</td>';
+			echo '<td>'.((int)$numResult+1).'</td>';
 			echo '<td>';
 			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';	
 			echo '</td>';			

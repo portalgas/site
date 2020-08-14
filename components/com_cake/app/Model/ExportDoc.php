@@ -567,7 +567,7 @@ class ExportDoc extends AppModel {
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['DELETE_TO_REFERENT'] = 'Y';
 				else
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['DELETE_TO_REFERENT'] = 'N';
-				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['NUM'] = ($numResult+1);
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['NUM'] = ((int)$numResult+1);
 				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['CODICE'] = $user['Article']['codice'];
 				/*
 				 * per gli articoli DES che prendono gli articoli da un'altro GAS il pregresso potrebbe non avere ArticlesOrder.name

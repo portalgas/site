@@ -79,7 +79,7 @@ class UsersFlagPrivacyHelper extends AppHelper {
 				$img_nota = Configure::read('App.img.cake').'/actions/32x32/filenew.png';
 			
 			$str .= '<tr class="view">';
-			$str .= '<td>'.($numResult+1).'</td>';
+			$str .= '<td>'.((int)$numResult+1).'</td>';
 			$str .= '<td>'.$this->drawUserAvatar($user, $result['User']['id'], $result['User']).'</td>';
 			$str .= '<td>';
 			if(!empty($result['Profile']['codice']))

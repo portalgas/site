@@ -45,7 +45,7 @@ if(!empty($results) || !empty($storeroomResults)) {
 		
 		echo '<tr>';
 
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>'.$this->App->drawOrdersStateDiv($result).'&nbsp;'.__($result['Order']['state_code'].'-label').'</td>';
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))

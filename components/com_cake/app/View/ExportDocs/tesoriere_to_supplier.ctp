@@ -53,7 +53,7 @@ foreach($results as $numResult => $result) {
 		$data_fine = $this->Time->i18nFormat($result['Order']['data_fine_validation'],"%A %e %B %Y");
 	
 	$html .= '<tr>';
-	$html .= '	<td>'.($numResult+1).'</td>';
+	$html .= '	<td>'.((int)$numResult+1).'</td>';
 	$html .= '	<td>'.$result['SupplierOrganization']['name'].'</td>';
 	$html .= '	<td>'.$data_inizio.'</td>';
 	$html .= '	<td>'.$data_fine.'</td>';

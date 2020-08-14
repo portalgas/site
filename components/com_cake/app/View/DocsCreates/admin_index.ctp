@@ -36,7 +36,7 @@ $this->App->d($results);
 				echo '<tr valign="top">';
 				echo '<td><a action="docs_creates-'.$result['DocsCreate']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 				echo '<td>';
-				echo ($numResult+1); 
+				echo ((int)$numResult+1); 
 				echo '</td>';
 
 				echo '<td>';

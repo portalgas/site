@@ -23,7 +23,7 @@ if(!empty($results)) {
 		<td><a action="orders-<?php echo $result['Order']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
 		<?php 
 		echo '<td>';
-		echo ($numResult+1);
+		echo ((int)$numResult+1);
 		echo '</td>';
 		
 		echo '<td>';

@@ -35,7 +35,7 @@ foreach($results as $numResult => $result) {
 		$data_fine = $this->Time->i18nFormat($result['Order']['data_fine_validation'],"%A %e %B %Y");
 	
 	$rows = [];
-	$rows[] = ($numResult+1);
+	$rows[] = ((int)$numResult+1);
 	$rows[] = $result['SupplierOrganization']['name'];
 	$rows[] = $data_inizio;
 	$rows[] = $data_fine;

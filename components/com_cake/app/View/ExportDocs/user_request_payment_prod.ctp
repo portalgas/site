@@ -64,8 +64,14 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 				$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 				$html .= '		<tr>';
 				if($order['Order']['hasTrasport']=='Y') {
-					$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';					$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';					$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';					$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Prezzo/UM').'</th>';					$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('qta').'</th>';					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';
-					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">Trasporto</th>';					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">Totale</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Prezzo/UM').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('qta').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">Trasporto</th>';
+					$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">Totale</th>';
 				}
 				else {
 					$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -81,14 +87,20 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 	
 				foreach ($order['ExportRows'] as $rows) {
 				
-					$user_id = current(array_keys($rows));					$rows = current(array_values($rows));						
+					$user_id = current(array_keys($rows));
+					$rows = current(array_values($rows));
+						
 					$html .= '<tr>';
 				
 					foreach ($rows as $typeRow => $cols) {
 				
 						switch ($typeRow) {
 							case 'TRGROUP':
-								if($order['Order']['hasTrasport']=='Y')									$colspan = '8';								else									$colspan = '6';								$html .= '<td colspan="'.$colspan.'" >'.$cols['LABEL'].'</td>';
+								if($order['Order']['hasTrasport']=='Y')
+									$colspan = '8';
+								else
+									$colspan = '6';
+								$html .= '<td colspan="'.$colspan.'" >'.$cols['LABEL'].'</td>';
 							break;
 							case 'TRSUBTOT':
 								$html .= '<td colspan="4" style="text-align:right;">Totale&nbsp;dell\'utente&nbsp;</td>';
@@ -106,7 +118,8 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 										
 									$html .= '<td style="text-align:right;">';
 									$html .= $cols['IMPORTO_COMPLETO_E'];
-									$html .= '</td>';								}								
+									$html .= '</td>';
+								}								
 							break;
 							case 'TRTOT':
 							/*
@@ -116,7 +129,8 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 								if(($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
 									($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 									($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) {
-																		$html .= '<td style="text-align:right;">';
+									
+									$html .= '<td style="text-align:right;">';
 									if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('TrasportShort').' '.$cols['IMPORTO_TRASPORTO_E'].'<br />';
 									if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE_E'].'<br />';
 									if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLessShort').' '.$cols['IMPORTO_COST_LESS_E'];
@@ -124,15 +138,22 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 										
 									$html .= '<td style="text-align:right;">';
 									$html .= $cols['IMPORTO_COMPLETO_E'];
-									$html .= '</td>';								}
-							*/							break;								
+									$html .= '</td>';
+								}
+							*/
+							break;								
 							case 'TRDATA':
 							
 								$name = $cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
 							
 								if($order['Order']['hasTrasport']=='Y') {
-									$html .= '<td width="'.$output->getCELLWIDTH20().'">'.$cols['NUM'].'</td>';									$html .= '<td width="'.$output->getCELLWIDTH200().'">'.$name.'</td>';									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_E'].'</td>';
-									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_UMRIF'].'</td>';									$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH50().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';									$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH20().'">'.$cols['NUM'].'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH200().'">'.$name.'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_E'].'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_UMRIF'].'</td>';
+									$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH50().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+									$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';
 								}
 								else {
 									$html .= '<td width="'.$output->getCELLWIDTH20().'">'.$cols['NUM'].'</td>';
@@ -144,7 +165,10 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 								}
 							break;
 							case 'TRDATABIS':
-								if($order['Order']['hasTrasport']=='Y')									$colspan = '7';								else									$colspan = '5';
+								if($order['Order']['hasTrasport']=='Y')
+									$colspan = '7';
+								else
+									$colspan = '5';
 																
 								$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
 								$html .= '<td colspan="'.$colspan.'">NOTA: '.$cols['NOTA'].'</td>';
@@ -210,7 +234,7 @@ if(!empty($results['RequestPaymentsStoreroom'])) {
 
 		$html .= '<tr>';
 		
-		$html .= '<td width="'.$output->getCELLWIDTH20().'">'.($numResult+1).'</td>';
+		$html .= '<td width="'.$output->getCELLWIDTH20().'">'.((int)$numResult+1).'</td>';
 		$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH50()).'">'.$result['Storeroom']['name'].'</td>';
 		$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$this->App->getArticleConf($result['Article']['qta'], $result['Article']['um']).'</td>';
 		$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$result['Article']['prezzo_e'].'</td>';
@@ -253,7 +277,7 @@ if(!empty($results['RequestPaymentsGeneric'])) {
 	
 		$html .= '<tr>';
 		
-		$html .= '<td width="'.$output->getCELLWIDTH20().'">'.($numResult+1).'</td>';
+		$html .= '<td width="'.$output->getCELLWIDTH20().'">'.((int)$numResult+1).'</td>';
 		$html .= '<td width="'.$output->getCELLWIDTH300().'">'.$result['RequestPaymentsGeneric']['name'].'</td>';
 		$html .= '<td width="'.$output->getCELLWIDTH300().'">'.$importo.'&nbsp;&euro;</td>';
 		

@@ -40,7 +40,7 @@ if(!empty($results)) {
 		
 		echo '<tr class="view">';
 		echo '<td><a action="suppliers_organizations-'.$result['SuppliersOrganization']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
-		echo '<td>'.($numResult+1).'</td>';	
+		echo '<td>'.((int)$numResult+1).'</td>';	
 		echo '	<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 			echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" alt="'.$result['SupplierOrganization']['name'].'" /> ';

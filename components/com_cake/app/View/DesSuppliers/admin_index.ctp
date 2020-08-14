@@ -47,7 +47,7 @@ if(!empty($results)) {
 			
 		echo '<tr>';
 		echo '<td></td>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 			
 		echo '<td>';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))

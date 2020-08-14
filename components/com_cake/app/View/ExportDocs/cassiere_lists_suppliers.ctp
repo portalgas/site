@@ -43,7 +43,7 @@ if(!empty($results)) {
 		
 		$html .= '<tr>';
 		
-		$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.($numResult+1).'</td>';
+		$html .= '	<td width="'.$output->getCELLWIDTH30().'">'.((int)$numResult+1).'</td>';
 		$html .= '	<td width="'.($output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'">'.$result['SuppliersOrganization']['name'].'</td>';
 		// $html .= '	<td width="'.$output->getCELLWIDTH100().'">'.$this->Time->i18nFormat($result['Order']['data_inizio'], "%e %b %Y").' a '.$this->Time->i18nFormat($result['Order']['data_fine'], "%e %b %Y").'	</td>';
 		$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['Order']['tot_importo'].'&nbsp;&euro;</td>';

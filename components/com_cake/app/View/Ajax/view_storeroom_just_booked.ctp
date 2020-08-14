@@ -20,7 +20,7 @@ if(!empty($results)) {
 	foreach($results as $numResult => $result) {
 	
 		echo '<tr>';
-		echo '<td>'._($numResult+1).'</td>';
+		echo '<td>'._((int)$numResult+1).'</td>';
 		echo '<td>'.$result['User']['name'].'</td>';
 		echo '<td style="text-align:center">'.$result['Storeroom']['qta'].'</td>';
 		echo '<td>';

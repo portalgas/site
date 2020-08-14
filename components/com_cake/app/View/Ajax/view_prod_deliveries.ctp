@@ -23,7 +23,7 @@ if (isset($results)):?>
 
 	?>
 	<tr>
-		<td><?php echo ($numResult+1);?></td>
+		<td><?php echo ((int)$numResult+1);?></td>
 		<td><?php if($result['Article']['bio']=='Y') echo '<span class="bio" title="'.Configure::read('bio').'"></span>';?></td>
 		
 		<?php

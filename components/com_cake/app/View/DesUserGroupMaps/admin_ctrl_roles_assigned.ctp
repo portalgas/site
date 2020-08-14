@@ -27,7 +27,7 @@ if(!empty($results)) {
 	foreach ($results as $numResult => $result) {
 
 		echo '<tr class="view-2">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td><input type="radio" name="data[DesSupplier][id]" value="'.$result['DesSupplier']['id'].'" /></td>';
 		
 		echo '<td>';

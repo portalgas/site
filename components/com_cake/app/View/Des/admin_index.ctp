@@ -22,7 +22,7 @@ if(!empty($desOrganizationsResults)) {
 	foreach ($desOrganizationsResults as $numResult => $result):
 
 		echo '<tr class="view-2">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td>';
 		echo '<img width="50" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" />';

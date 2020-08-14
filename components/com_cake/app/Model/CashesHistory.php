@@ -94,14 +94,14 @@ class CashesHistory extends AppModel {
 			$newResults[0]['CashesHistory']['operazione_e'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' &euro;';
 		
 			foreach($results as $numResult => $result) {
-				$newResults[$numResult+1] = $result;
+				$newResults[((int)$numResult+1)] = $result;
 				
-				if(isset($results[$numResult+1])) {
-					$newResults[$numResult+1]['CashesHistory']['nota'] = $results[$numResult+1]['CashesHistory']['nota'];
-					$newResults[$numResult+1]['CashesHistory']['modified'] = $results[$numResult+1]['CashesHistory']['modified'];
+				if(isset($results[((int)$numResult+1)])) {
+					$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = $results[((int)$numResult+1)]['CashesHistory']['nota'];
+					$newResults[((int)$numResult+1)]['CashesHistory']['modified'] = $results[((int)$numResult+1)]['CashesHistory']['modified'];
 				}
 				else {
-					$newResults[$numResult+1]['CashesHistory']['nota'] = "";					
+					$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = "";					
 				}
 			}
 		}

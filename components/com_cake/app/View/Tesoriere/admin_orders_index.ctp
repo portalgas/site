@@ -79,7 +79,7 @@ if (!empty($results['Order'])):
 			echo '<td rowspan="2">';
 			echo '<a action="tesoriere_export_docs-'.$order['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 			echo '</td>';
-			// echo '<td rowspan="2">'.($numResult+1).'</td>';
+			// echo '<td rowspan="2">'.((int)$numResult+1).'</td>';
 			echo '<td rowspan="2">';
 			if($order['state_code']==$order_state_code_checked) {
 				$tot_order_checked++;

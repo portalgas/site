@@ -437,7 +437,7 @@ class CsvImportsController extends AppController {
 					$continue = false;
 					$data = [];
 					
-					if($debug) echo '<br />'.($numResult+1).'  utente '.$result['name'].' '.$result['username'].' '.$result['email'];
+					if($debug) echo '<br />'.((int)$numResult+1).'  utente '.$result['name'].' '.$result['username'].' '.$result['email'];
 					
 					$userTable->set('id',0);
 					

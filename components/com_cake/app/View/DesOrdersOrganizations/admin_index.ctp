@@ -41,7 +41,7 @@ echo '<div class="orders">';
 
 		echo '<tr class="view-2">';
 		echo '<td><a action="details_users-'.$results['DesSupplier']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td>';
 		if(!empty($results['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$results['Supplier']['img1']))

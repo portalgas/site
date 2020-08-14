@@ -17,13 +17,17 @@ $headers = array('csv' => array(
 $data = [];
 foreach($results as $numResult => $result) {
 
-	$dataTmp = [];	
+	$dataTmp = [];
+	
 	$telephone = "";
-	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];	
-	$address = "";	if(!empty($result['Profile']['address'])) $address = $result['Profile']['address'];
+	if(!empty($result['Profile']['phone'])) $telephone .= $result['Profile']['phone'].' ';
+	if(!empty($result['Profile']['phone2'])) $telephone .= $result['Profile']['phone2'];
+	
+	$address = "";
+	if(!empty($result['Profile']['address'])) $address = $result['Profile']['address'];
 	
 	$dataTmp = array(
-			'N' => ($numResult+1),
+			'N' => ((int)$numResult+1),
 			'code' => $result['Profile']['codice'],
 			'name' => $result['User']['name'],
 			'mail' => $result['User']['email'],
@@ -32,7 +36,10 @@ foreach($results as $numResult => $result) {
 			'qta_tot' => $result['User']['cart_qta_tot']
 			);
 	
-	if(isset($result['SuppliersOrganization'])) 		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) 			$dataTmp['suppliers_organizations_referent_'.$numSuppliersOrganization] = $suppliersOrganization['name'].' '.$result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];	
+	if(isset($result['SuppliersOrganization'])) 
+		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) 
+			$dataTmp['suppliers_organizations_referent_'.$numSuppliersOrganization] = $suppliersOrganization['name'].' '.$result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];
+	
 	$data[]['csv'] = $dataTmp;
 }
 

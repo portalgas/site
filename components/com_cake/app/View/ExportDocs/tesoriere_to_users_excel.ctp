@@ -22,7 +22,7 @@ $tot_importo = 0;
 foreach($results as $numResult => $result) {
 
 	$rows = [];
-	$rows[] = ($numResult+1);
+	$rows[] = ((int)$numResult+1);
 	$rows[] = $result['User']['name'];
 	$rows[] = number_format($result['SummaryOrder']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 	

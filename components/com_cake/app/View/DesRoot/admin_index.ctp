@@ -23,7 +23,7 @@ if(!empty($results)) {
 	foreach ($results as $numResult => $des):
 
 		echo '<tr class="view-2">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td colspan="5">'.$des['DesRoot']['name'].'</td>';
 		echo '</tr>';
 		

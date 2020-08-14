@@ -75,7 +75,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	foreach ($articleResults as $numResult => $result) {
 	
 		echo '<tr class="view" id="row-'.$result['Article']['id'].'">';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		
 		echo '<td>'.$result['Article']['codice'].'</td>';
 		

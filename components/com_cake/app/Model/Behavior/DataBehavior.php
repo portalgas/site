@@ -445,7 +445,7 @@ class DataBehavior extends ModelBehavior {
 		} // ciclo orders
 	
 		$this->result['Delivery']['totOrders'] = $numOrder+1;
-		$this->result['Delivery']['totSummaryOrderAggregate'] = $numResult+1;
+		$this->result['Delivery']['totSummaryOrderAggregate'] = ((int)$numResult+1);
 	}	
 	
 	/* 

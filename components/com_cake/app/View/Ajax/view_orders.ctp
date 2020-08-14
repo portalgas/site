@@ -8,7 +8,10 @@ if(!empty($actionToEditOrder) && empty($des_supplier_id)) {
 	echo '<div class="actions-img">';
 	echo '<ul>';
 	echo '<li>';
-	echo $this->Html->link($actionToEditOrder['title'], array('controller' => $actionToEditOrder['controller'],														'action' => $actionToEditOrder['action'],null,														'delivery_id='.$results['Order']['delivery_id'], 'order_id='.$results['Order']['id']) ,array('class' => 'action actionEdit','title' => $actionToEditOrder['title']));	echo '</li>';
+	echo $this->Html->link($actionToEditOrder['title'], array('controller' => $actionToEditOrder['controller'],
+														'action' => $actionToEditOrder['action'],null,
+														'delivery_id='.$results['Order']['delivery_id'], 'order_id='.$results['Order']['id']) ,array('class' => 'action actionEdit','title' => $actionToEditOrder['title']));
+	echo '</li>';
 	echo '</ul>';
 	echo '</div>';
 }
@@ -38,7 +41,7 @@ if(isset($results['Article'])):
 	foreach ($results['Article'] as $numResult => $result): 
 
 		echo '<tr>';
-		echo '<td>'.($numResult+1).'</td>';
+		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>';
 		if($result['bio']=='Y') echo '<span class="bio" title="'.Configure::read('bio').'"></span>';
 		echo '</td>';
@@ -81,7 +84,8 @@ if(isset($results['Article'])):
 		 */ 
 		if(!empty($actionToEditArticle) &&
 		  $user->organization['Organization']['id']==$result['organization_id']) { 
-			echo '<td>';			echo $this->Html->link(null, array('controller' => $actionToEditArticle['controller'],
+			echo '<td>';
+			echo $this->Html->link(null, array('controller' => $actionToEditArticle['controller'],
 											   'action' => $actionToEditArticle['action'], null,
 												'order_id='.$result['ArticlesOrder']['order_id'],'article_organization_id='.$result['ArticlesOrder']['article_organization_id'],'article_id='.$result['ArticlesOrder']['article_id']) ,array('class' => 'action actionEdit','title' => $actionToEditArticle['title'])); 
 			echo '</td>';

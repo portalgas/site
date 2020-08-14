@@ -27,7 +27,7 @@ if(!empty($results)) {
 	foreach ($results as $numResult => $result) {
 
 		$rowsExcel = [];
-		$rowsExcel[] = ($numResult+1);
+		$rowsExcel[] = ((int)$numResult+1);
 		$rowsExcel[] = $result['SuppliersOrganization']['name'];
 		$rowsExcel[] = $result['Order']['tot_importo'];
 		$rowsExcel[] = $result['Order']['tot_importo_pagato'];

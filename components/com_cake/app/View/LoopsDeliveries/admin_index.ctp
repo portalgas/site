@@ -29,7 +29,7 @@
 	<?php foreach ($results as $numResult => $result) {
 		
 		echo '<tr class="view">';
-		echo '<td><?php echo ($numResult+1);?></td>';
+		echo '<td><?php echo ((int)$numResult+1);?></td>';
 		echo '<td style="white-space:nowrap;">';
 		echo $this->Time->i18nFormat($result['LoopsDelivery']['data_master_reale'],"%A %e %B %Y"); 
 		echo '</td>';

@@ -91,7 +91,7 @@ class SummaryOrderPlusHelper extends AppHelper {
 							
 						$tmp .= "\r\n";
 						$tmp .= '<tr>';
-						$tmp .= '	<td>'.($numResult+1).'</td>';
+						$tmp .= '	<td>'.((int)$numResult+1).'</td>';
 						$tmp .= '	<td>'.$result['User']['name'].'</td>';
 						$tmp .= '	<td style="text-align:center;">'.$result['User']['totImporto_e'].'</td>';
 						$tmp .= '	<td style="';
