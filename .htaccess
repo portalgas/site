@@ -18,6 +18,9 @@
 ## Can be commented out if causes errors, see notes above.
 # Options +FollowSymLinks  fractis : per attivarlo su aruba
 
+# [negotiation:error] AH00687: Negotiation: discovered file(s) matching request: /var/www/portalgas/index.html (None could be negotiated).
+Options -MultiViews 
+
 ## Mod_rewrite in use.
 
 RewriteEngine On
@@ -97,5 +100,3 @@ Redirect 301 /home-gas-bioce/my-profile /home-gas-forimercato/my-profile
 Redirect 301 /home-gas-bioce/gmaps /home-gas-forimercato/gmaps
 Redirect 301 /home-gas-bioce/bookmarks-mails /home-gas-forimercato/bookmarks-mails
 Redirect 301 /home-gas-bioce/carts-history /home-gas-forimercato/carts-history
-
-
