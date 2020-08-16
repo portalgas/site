@@ -6,11 +6,21 @@ $app				= JFactory::getApplication();
 $doc				= JFactory::getDocument();
 $templateparams		= $app->getTemplate(true)->params;
 $organizationSEO    = $templateparams->get('organizationSEO');
+$sitename           = JFactory::getConfig()->get('sitename');
+/*
+ * gestione ricerca motori di ricerca, escludo portalGasTest / PortAlGasNext
+ */
+$noindex = false;
+if(strtolower($sitename)!='portalgas')
+	$noindex = true;
 ?>		
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->language; ?>" lang="<?php echo $this->language; ?>" dir="<?php echo $this->direction; ?>" >
 <head>
-
+<?php
+if($noindex)
+	echo '<meta name="robots" content="noindex">';
+?>
 <jdoc:include type="head" />
 
 	<meta name="norton-safeweb-site-verification" content="26g7jy0laennobqc9502goi6qmcnayf2lgd00pw5o8-psvut8bnp4ouijcjorctqimliu2bsd01d9zxlhff7nwdrpb6sj7hl09qw0snol3mtlxz8jv-87f1ik52g45ds" />

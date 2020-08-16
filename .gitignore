@@ -1,6 +1,8 @@
 # Custom #
 ##########################
 /configuration.php
+/BingSiteAuth.xml
+/googleeaef348e23b089bb.html
 /_sql/*
 /logs/*
 /tmp/*
