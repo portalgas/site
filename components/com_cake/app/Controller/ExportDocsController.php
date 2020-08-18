@@ -76,7 +76,8 @@ class ExportDocsController extends AppController {
                         $this->myRedirect(Configure::read('routes_msg_stop'));
                     }
 
-                    $this->tmp_user->organization['Organization']['id'] = $organization_id;
+                    $this->tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
                     $is_order_des = true;
                 }
             }
@@ -107,7 +108,7 @@ class ExportDocsController extends AppController {
 	 */
 	public function admin_exportProdGasSupplierToReferent($organization_id=0, $delivery_id = 0, $order_id = 0, $doc_options = null, $doc_formato = null, $a = null, $b = null, $c = null, $d = null, $e = null, $f = null, $g = null, $h = null, $i = null) {
 
-		$this->tmp_user->organization['Organization']['id'] = $organization_id;
+        $this->tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 		$this->admin_exportToReferent($delivery_id, $order_id, $doc_options, $doc_formato, $a, $b, $c, $d, $e, $f, $g, $h, $i);
 	}
 		
@@ -1799,7 +1800,9 @@ class ExportDocsController extends AppController {
         $desSuppliersResults = $DesSupplier->find('first', $options);
         
         $own_organization_id = $desSuppliersResults['OwnOrganization']['id'];
-        $tmp_user->organization['Organization']['id'] = $own_organization_id;
+
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $own_organization_id]);
+        
         $supplier_id = $desSuppliersResults['DesSupplier']['supplier_id'];
                         
         App::import('Model', 'SuppliersOrganization');
@@ -1914,9 +1917,11 @@ class ExportDocsController extends AppController {
 				 * ridefinisco $this->user->organization['Organization']['id'] 
 				 * perche' se e' DES potrebbero essere articoli di un'altor GAS 
 				 */
-				$tmp_user = new stdClass();
-				$tmp_user->organization['Organization']['id'] = $result['Article']['organization_id'];
-                $tmp_user->organization['Organization']['hasFieldArticleCategoryId'] = $this->user->organization['Organization']['hasFieldArticleCategoryId'];
+                $tmp_user = $this->utilsCommons->createObjUser([
+                    'organization_id' => $result['Article']['organization_id'],
+                    'hasFieldArticleCategoryId' => $this->user->organization['Organization']['hasFieldArticleCategoryId']
+                ]);
+
                 $articlesResults = $Article->getArticlesDataAnagr($tmp_user, $options);
 
                 $newResults[$numResults] = $articlesResults;

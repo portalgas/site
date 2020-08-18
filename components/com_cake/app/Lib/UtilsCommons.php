@@ -788,6 +788,9 @@ class UtilsCommons {
                 case 'orderUserPaid':
                     $user->organization['Organization']['orderUserPaid'] = $value;
                 break;
+                case 'hasFieldArticleCategoryId':
+                    $user->organization['Organization']['hasFieldArticleCategoryId'] = $value;
+                break;
             }
         }
 
