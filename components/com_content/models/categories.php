@@ -90,7 +90,7 @@ class ContentModelCategories extends JModelList
 	 */
 	public function getItems($recursive = false)
 	{
-		if (!count($this->_items)) {
+		if (isset($this->_items) && !count($this->_items)) {
 			$app = JFactory::getApplication();
 			$menu = $app->getMenu();
 			$active = $menu->getActive();
