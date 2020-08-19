@@ -268,7 +268,7 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 </p>
 
 <div class="alert alert-info" role="alert">
-	<strong>Nota: </strong> per evitare problemi di carico su PortAlGas, sono consentiti file con un massimo di <strong>80</strong> righe.
+	<strong>Nota: </strong> per evitare problemi di carico su PortAlGas, sono consentiti file con un massimo di <strong>100</strong> righe.
 </div>
 
 
