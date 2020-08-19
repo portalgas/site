@@ -207,7 +207,7 @@ class ContentViewCategory extends JViewLegacy
 
 		$id = (int) @$menu->query['id'];
 
-		if ($menu && ($menu->query['option'] != 'com_content' || $menu->query['view'] == 'article' || $id != $this->category->id)) {
+		if ($menu && isset($menu->query['option']) && ($menu->query['option'] != 'com_content' || $menu->query['view'] == 'article' || $id != $this->category->id)) {
 			$path = array(array('title' => $this->category->title, 'link' => ''));
 			$category = $this->category->getParent();
 

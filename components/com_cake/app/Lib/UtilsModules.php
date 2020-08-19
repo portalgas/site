@@ -19,6 +19,9 @@ function getJContentId() {
 	if($menuActive==null)
 		return $content_id;
 	
+	if(!isset($menuActive->query['view']))
+		$content_id = 0;
+	else
 	if( $menuActive->query['view']=='featured') {  // in primo piano
 		$content_id=1;
 	}
@@ -34,7 +37,8 @@ function getJContentId() {
 		 * quindi l'id lo prendo dall'url
 		 * /produttori/{ID-CATEGORY}-pesce/{ID-CONTENT}-fishbox
 		 */
-		if(isset($_SERVER['REQUEST_URI'])) {			$url = explode('/', $_SERVER['REQUEST_URI']);
+		if(isset($_SERVER['REQUEST_URI'])) {
+			$url = explode('/', $_SERVER['REQUEST_URI']);
 			
 			/*
 			 * ctrl di essere in un articolo di un produttore 
@@ -48,13 +52,15 @@ function getJContentId() {
 			
 			//echo '<br />urlPenultimo '.$urlPenultimo;
 			//echo '<br />urlUltimo '.$urlUltimo;
-			$content_idPenultimo = "";			$content_idUltimo = "";
+			$content_idPenultimo = "";
+			$content_idUltimo = "";
 			
 			if(strpos($urlPenultimo,'-')!=false)
 				list($content_idPenultimo, $seoPenultimo) = explode('-', $urlPenultimo);
 				
 			if(strpos($urlUltimo,'-')!=false)
-				list($content_idUltimo, $seoUltimo) = explode('-', $urlUltimo);				
+				list($content_idUltimo, $seoUltimo) = explode('-', $urlUltimo);
+				
 			if(is_numeric($content_idPenultimo)) // sono nell'articolo del produttore (/home-gas-cavagnetta/produttori/31-pesce/12-bio-e-mare)
 				$content_id = $content_idUltimo;
 			else // sono in una categoria (/home-gas-cavagnetta/produttori/31-pesce)
