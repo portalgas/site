@@ -662,7 +662,7 @@ class JApplication extends JObject
 	 * @since   11.1
 	 */
 	public function login($credentials, $options = array())
-	{
+	{		
 		// Get the global JAuthentication object.
 		jimport('joomla.user.authentication');
 
@@ -745,8 +745,10 @@ class JApplication extends JObject
 		}
 
 		// Trigger onUserLoginFailure Event.
-		$this->triggerEvent('onUserLoginFailure', array((array) $response));
-
+		/* 
+		 * file plugins\system\log\log.php scrive sui log
+		 * $this->triggerEvent('onUserLoginFailure', array((array) $response));
+		 */
 		// If silent is set, just return false.
 		if (isset($options['silent']) && $options['silent'])
 		{
@@ -812,7 +814,7 @@ class JApplication extends JObject
 			return true;
 		}
 
-		// Trigger onUserLoginFailure Event.
+		// Trigger onUserLogoutFailure Event.
 		$this->triggerEvent('onUserLogoutFailure', array($parameters));
 
 		return false;
