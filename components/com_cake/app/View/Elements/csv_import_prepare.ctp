@@ -54,14 +54,14 @@ if($tot_error==0 && !empty($results)) {
 
 	echo '<br />';
 	$msg = "Il dati del file sono corretti: procedere con l'inserimento";
-	echo $this->element('boxMsg', array('class_msg' => 'success', 'msg' => $msg));
+	echo $this->element('boxMsg', ['class_msg' => 'success', 'msg' => $msg]);
 	
-	echo $this->Form->submit(__('Invia'),array('id' => 'esito_ok'));
+	echo $this->Form->submit(__('Invia'), ['id' => 'esito_ok', 'style' => 'clear: both;']);
 }
 else {
 	if($totRows > $totRowsConsentiti) {
 		$msg = sprintf(__('cvs_import_error_rows_max'), $totRows, $totRowsConsentiti);
-		echo $this->element('boxMsg', array('class_msg' => 'notice nomargin', 'msg' => $msg));
+		echo $this->element('boxMsg', ['class_msg' => 'notice nomargin', 'msg' => $msg]);
 	}	
 	else {
 		if($tot_error==1)
@@ -69,10 +69,10 @@ else {
 		else
 			$msg = sprintf(__('cvs_import_error_n'), $tot_error);
 		
-		echo $this->element('legendaCsvImport', array('msg' => $msg, 'array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles')));
+		echo $this->element('legendaCsvImport', ['msg' => $msg, 'array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles')]);
 	}
 	
-	echo $this->Form->submit(__('Back'),array('id' => 'esito_ko'));
+	echo $this->Form->submit(__('Back'), ['id' => 'esito_ko', 'style' => 'clear: both;']);
 }
 echo $this->Form->end();
 ?>
