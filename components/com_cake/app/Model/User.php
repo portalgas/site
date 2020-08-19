@@ -801,7 +801,7 @@ class User extends AppModel {
 
 	 	$encrypted = $this->_encoding($username);
 
-	 	return $encrypted_base64;
+	 	return $encrypted;
 	 }
 	 
 	 public function getUsernameToUsernameCrypted($usernameCrypted) {
