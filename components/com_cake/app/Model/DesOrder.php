@@ -501,7 +501,8 @@ class DesOrder extends AppModel {
     }
 
     /*
-     * richiamato anche da Cron::desOrdersDelete()
+     * richiamato
+     * da DesOrdersController::admin_index() => Cron::desOrdersDelete()
 	 *  cancella DesOrder con 
 	 *  	data_fine_max scaduta / DesOrder.state_code = 'CLOSE'
 	 *		ordini non + associati perche' portati in Statistiche
@@ -518,24 +519,24 @@ class DesOrder extends AppModel {
 
         App::import('Model', 'DesOrder');
         $DesOrder = new DesOrder;
-        $DesOrder->unbindModel(array('belongsTo' => array('DesOrganization', 'De', 'Organization')));
+        $DesOrder->unbindModel(['belongsTo' => ['DesOrganization', 'De', 'Organization']]);
 
         $options = [];
-        $options['conditions'] = array('DesOrder.des_id' => $des_id,
-                                        'DesOrder.state_code' => 'CLOSE',
-                                        '0' => 'DesOrder.data_fine_max < CURDATE()');
+        $options['conditions'] = ['DesOrder.des_id' => $des_id,
+                                   'DesOrder.state_code' => 'CLOSE',
+                                   'DesOrder.data_fine_max < CURDATE()'];
         if (!empty($des_order_id))
             $options['conditions'] += array('DesOrder.id' => $des_order_id);
-        $options['fields'] = array('DesOrder.id', 'DesOrder.data_fine_max');
-        $options['order'] = array('DesOrder.id');
+        $options['fields'] = ['DesOrder.id', 'DesOrder.data_fine_max'];
+        $options['order'] = ['DesOrder.id'];
         $options['recursive'] = -1;
         $results = $DesOrder->find('all', $options);
         /*
-          echo "<pre>";
-          print_r($options);
-          print_r($results);
-          echo "</pre>";
-         */
+        echo "<pre>"; 
+        print_r($options);
+        print_r($results);
+        echo "<pre>";
+        */
         if (empty($results)) {
             if ($debug)
                 echo " nessun DesOrder trovato con data_fine_max scaduta e state_code' = 'CLOSE' \n";
@@ -556,33 +557,33 @@ class DesOrder extends AppModel {
 		        $DesOrdersOrganization->unbindModel(array('belongsTo' => array('Organization', 'De', 'DesOrder')));
 		
 		        $options = [];
-		        $options['conditions'] = array('DesOrdersOrganization.des_id' => $des_id,
-		                                        'DesOrdersOrganization.des_order_id' => $result['DesOrder']['id']);
-        		$options['fields'] = array('Order.id');
-		        $options['recursive'] = 1;
+		        $options['conditions'] = ['DesOrdersOrganization.des_id' => $des_id,
+		                  'DesOrdersOrganization.des_order_id' => $result['DesOrder']['id']];
+        		$options['fields'] = ['Order.id'];
+		        $options['recursive'] = 1;              
 		        $desOrdersOrganizationResults = $DesOrdersOrganization->find('all', $options);
 		        
-		        if ($debug) {
-		          echo "<pre>";
-		          // print_r($options);
-		          print_r($desOrdersOrganizationResults);
-		          echo "</pre>";
-		        }
-		         
+		        if ($debug) debug($desOrdersOrganizationResults);
+    		         
 		        if (!empty($desOrdersOrganizationResults)) {
 	                if ($debug)
 	                    echo '<br />Per DesOrder.id '.$result['DesOrder']['id']." ctrl se TUTTI gli ordini non + associati perche' portati in Statistiche \n";
 	                
 	                $empty_order_id = 0;
 	                foreach ($desOrdersOrganizationResults as $desOrdersOrganizationResult) {
-	                	if(empty($desOrdersOrganizationResult['Order']['id']))
+	                	if(empty($desOrdersOrganizationResult['Order']['id'])) {
+                            /*
+                             * quindi e' stato cancellato perche' in statistiche
+                             */
 	                		$empty_order_id ++;
+                        }
 	                }    // loop $desOrdersOrganizationResults
 
 	                if ($debug)
 	                    echo "<br />Per DesOrder.id ".$result['DesOrder']['id']." trovati ".$empty_order_id."  su ".(count($desOrdersOrganizationResult)+1)." \n";
 		
-					if($empty_order_id == (count($desOrdersOrganizationResult)+1)) {
+                    $tot_orders = count($desOrdersOrganizationResults);
+					if($empty_order_id == $tot_orders) {
 		                
 		                try {
 		                    $sql = "DELETE from " . Configure::read('DB.prefix') . "des_orders
@@ -593,7 +594,7 @@ class DesOrder extends AppModel {
 		                        echo '<br />' . $sql . "\n";
 		                    $this->query($sql);
 		                } catch (Exception $e) {
-		                    echo '<br />DesOrder::statoElaborazione()<br />' . $e;
+		                    echo '<br />DesOrder::deleteScaduti()<br />' . $e;
 		                }
 					}
 					else {
@@ -601,6 +602,24 @@ class DesOrder extends AppModel {
 		                    echo "<br />NON cancello DesOrder.id ".$result['DesOrder']['id']." \n";
 					}
 				}
+                else {
+                    /*
+                     * non ho piu' ordini associati all'ordine DES
+                     */
+                    if ($debug)
+                        echo "<br />non ho piu' ordini associati all'ordine DES => cancello DesOrder.id ".$result['DesOrder']['id']." \n";                    
+                    try {
+                        $sql = "DELETE from " . Configure::read('DB.prefix') . "des_orders
+                                WHERE
+                                    des_id = " . (int) $des_id . "
+                                    and id = " . $result['DesOrder']['id'];
+                        if ($debug)
+                            echo '<br />' . $sql . "\n";
+                        $this->query($sql);
+                    } catch (Exception $e) {
+                        echo '<br />DesOrder::deleteScaduti()<br />' . $e;
+                    }
+                }
 
             } // loop DesOrder 
         } // end (empty($results)) 

@@ -63,6 +63,7 @@ class DesOrdersController extends AppController {
 
 		/*
 		 * cancello desOrders vecchio
+		 * non schedulato nei cron
 		 */
 		if(Configure::read('developer.mode')) echo "<pre>";
 		$utilsCrons->desOrdersDelete($this->user->des_id, 0, (Configure::read('developer.mode')) ? true : false);
