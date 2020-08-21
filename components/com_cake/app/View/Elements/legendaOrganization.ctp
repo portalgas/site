@@ -328,6 +328,11 @@
 		<td>Assegnarlo alla voce di menù della home	
 		</td>
 	</tr>	
+	<tr>
+		<th class="border-bottom">Modulo: Gas Documenti<i>position-cols-right</i></th>
+		<td>Assegnarlo alla voce di menù della home	
+		</td>
+	</tr>	
 		
 </table>
 </div>

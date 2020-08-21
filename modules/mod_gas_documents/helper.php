@@ -22,15 +22,15 @@ class modGasDocumentsHelper
 		switch (JPATH_BASE) {
 			case '/var/www/portalgas':
 				$path_base = '/var/www/neo.portalgas/webroot';
-				$url_base = 'https:/neo.portalgas.it';
+				$url_base = 'https://neo.portalgas.it';
 				break;
 			case '/var/www/test.portalgas':
 				$path_base = '/var/www/neotest.portalgas/webroot';
-				$url_base = 'https:/neotest.portalgas.it';
+				$url_base = 'https://neotest.portalgas.it';
 				break;
 			case '/var/www/next.portalgas':
 				$path_base = '/var/www/neonext.portalgas/webroot';
-				$url_base = 'https:/neonext.portalgas.it';
+				$url_base = 'https://neonext.portalgas.it';
 				break;
 			default:
 				# code...

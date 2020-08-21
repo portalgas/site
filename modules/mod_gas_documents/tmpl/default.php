@@ -9,6 +9,8 @@
 // no direct access
 defined('_JEXEC') or die;
 
+// echo "<pre>"; print_r($documents); echo "</pre>";  
+
 if (!empty($documents)) {
 
 	echo '<h2>Documenti</h2>';

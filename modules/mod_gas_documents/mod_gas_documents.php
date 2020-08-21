@@ -13,14 +13,22 @@ defined('_JEXEC') or die;
 require_once dirname(__FILE__).'/helper.php';
 
 $user = JFactory::getUser();
-// print_r($user->organization['Organization']);
-if(isset($user->organization)) {
+// echo "<pre>"; print_r($user); echo "</pre>";
+if(isset($user->organization) && !empty($user->organization)) {
 
-	$organization_id = $user->organization['Organization']['id'];
-	$db_documents	 = modGasDocumentsHelper::getDataBaseDocuments($organization_id);
-	// echo "<pre>"; print_r($db_documents); echo "</pre>"; 
+	$app = JFactory::getApplication();
+	$params = $app->getTemplate(true)->params;
+	$organization_id = $params->get('organizationId');  // ottengo organization_id come parametro del template
+	// echo "<pre>getTemplate(organizationId) \n"; print_r($organization_id); echo "</pre>";
+	
+	if($user->organization['Organization']['id']==$organization_id) {  // utente sul proprio GAS
+   
+		$organization_id = $user->organization['Organization']['id'];
+		$db_documents	 = modGasDocumentsHelper::getDataBaseDocuments($organization_id);
+		// echo "<pre>"; print_r($db_documents); echo "</pre>"; 
 
-	$documents	     = modGasDocumentsHelper::getDocuments($db_documents);
+		$documents	     = modGasDocumentsHelper::getDocuments($db_documents);
 
-	require JModuleHelper::getLayoutPath('mod_gas_documents', $params->get('layout', 'default'));	
+		require JModuleHelper::getLayoutPath('mod_gas_documents', $params->get('layout', 'default'));
+	}
 }
