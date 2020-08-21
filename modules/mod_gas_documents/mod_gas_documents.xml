@@ -4,29 +4,31 @@
 	version="2.5"
 	client="site"
 	method="upgrade">
-	<name>mod_gas_organization_choice</name>
+	<name>mod_gas_documents</name>
 	<author>PortAlGas</author>
-	<creationDate> Dicember 2012</creationDate>
+	<creationDate>October 2020</creationDate>
 	<copyright></copyright>
 	<license></license>
 	<authorEmail>info@portalgas.it</authorEmail>
 	<authorUrl>https://www.portalgas.it</authorUrl>
-	<version>1.0.0</version>
-	<description>Scelta dell'organizzazione</description>
+	<version>2.0.0</version>
+	<description>Elenco documenti di un GAS</description>
 	<files>
-		<filename module="mod_gas_organization_choice">mod_gas_organization_choice.php</filename>
+		<filename module="mod_gas_documents">mod_gas_documents.php</filename>
 		<folder>tmpl</folder>
+		<filename>helper.php</filename>
 		<filename>index.html</filename>		
-		<filename>mod_gas_organization_choice.xml</filename>
+		<filename>mod_gas_documents.xml</filename>
 	</files>
 	<languages>
-		<language tag="it-IT">it-IT.mod_gas_organization_choice.ini</language>
-		<language tag="it-IT">it-IT.mod_gas_organization_choice.sys.ini</language>
+		<language tag="it-IT">it-IT.mod_gas_documents.ini</language>
+		<language tag="it-IT">it-IT.mod_gas_documents.sys.ini</language>
 	</languages>
-	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_FOOTER" />
+	<help key="JHELP_EXTENSIONS_MODULE_MANAGER_GAS_DOCUMENTS" />
 	<config>
-		<fields name="params">
-			<fieldset name="advanced">
+		<fields name="params">	
+			<fieldset
+				name="advanced">
 				<field
 					name="layout"
 					type="modulelayout"
@@ -44,24 +46,9 @@
 					label="COM_MODULES_FIELD_CACHING_LABEL"
 					description="COM_MODULES_FIELD_CACHING_DESC">
 					<option
-						value="1">JGLOBAL_USE_GLOBAL</option>
-					<option
 						value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
-				</field>
-				<field
-					name="cache_time"
-					type="text"
-					default="900"
-					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
-					description="COM_MODULES_FIELD_CACHE_TIME_DESC" />
-				<field
-					name="cachemode"
-					type="hidden"
-					default="static">
-					<option
-						value="static"></option>
 				</field>
 			</fieldset>
 		</fields>
-	</config>
+	</config>	
 </extension>
