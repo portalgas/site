@@ -1885,15 +1885,15 @@ class DeliveriesController extends AppController {
     private function _getUserPreview($E, $O, $R, $D, $debug = false) {
 
         if ($debug) {
-            echo '<br />E => ' . $E;
-            echo '<br />O => organization_id (tolgo i primi 2 numeri e poi organization_id) ' . $O;
-            echo '<br />R => username ' . $R;
-            echo '<br />D => delivery_id (tolgo i primi 2 numeri e poi delivery_id) ' . $D;
+            debug('E => ' . $E);
+            debug('O => organization_id (tolgo i primi 2 numeri e poi organization_id) ' . $O);
+            debug('R => username ' . $R);
+            debug('D => delivery_id (tolgo i primi 2 numeri e poi delivery_id) ' . $D);
         }
 
         if (empty($E) || empty($O) || empty($R) || empty($D)) {
             if ($debug) {
-                echo '<br />ERROR empty(E) || empty(O) || empty(R) || empty($D) ';
+                debug('ERROR empty(E) || empty(O) || empty(R) || empty($D) ');
                 exit;
             } else
                 $this->myRedirect(Configure::read('routes_msg_frontend_cart_preview'));
@@ -1921,10 +1921,10 @@ class DeliveriesController extends AppController {
         }
 
         $options = [];
-        $options['conditions'] = array('User.organization_id' => $organization_id,
+        $options['conditions'] = ['User.organization_id' => $organization_id,
             'User.username' => $username,
-            'User.block' => 0);
-        $options['fields'] = array('id', 'organization_id');
+            'User.block' => 0];
+        $options['fields'] = ['id', 'organization_id'];
         $options['recursive'] = -1;
         $results = $User->find('first', $options);
 
@@ -1941,8 +1941,8 @@ class DeliveriesController extends AppController {
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
-        $conditions = array('Organization.id' => (int) $organization_id);
-        $organization = $Organization->find('first', array('conditions' => $conditions, 'recursive' => -1));
+        $conditions = ['Organization.id' => (int) $organization_id];
+        $organization = $Organization->find('first', ['conditions' => $conditions, 'recursive' => -1]);
 
         $userPreview = new UserPreview();
         $userPreview->user_id = $results['User']['id'];

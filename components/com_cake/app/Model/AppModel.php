@@ -344,8 +344,11 @@ class AppModel extends Model {
 
 		$results = '';
 
-		if(!empty($value)) 
-			$results = openssl_decrypt(base64_decode($value), Configure::read('crypt_method'), Configure::read('crypt_key'), 0, Configure::read('crypt_iv'));
+		if(!empty($value)) {
+			$encryption_key = base64_decode(Configure::read('crypt_key'));
+		    list($encrypted_data, $iv) = explode('::', base64_decode($value), 2);
+		    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
+		}
 
 		return $results;
 	}
@@ -357,7 +360,7 @@ class AppModel extends Model {
 		if(!empty($value)) {
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
 			$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
-			$results = base64_encode($results);
+			$results = base64_encode($results.'::'.$iv);
 		}
 
 		return $results;
