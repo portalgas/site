@@ -33,8 +33,8 @@ foreach ($results as $numResult => $result) {
 			if($referente['User']['id']!=$user->id) {		
 				echo '<tr>';
 				echo '<td>';
-				$tmpUser->organization['Organization']['id'] = $referente['User']['organization_id'];
-				echo $this->App->drawUserAvatar($tmpUser, $referente['User']['id'], $referente['User']);							
+				$tmp_user = $this->App->utilsCommons->createObjUser(['organization_id' => $referente['User']['organization_id']]);
+				echo $this->App->drawUserAvatar($tmp_user, $referente['User']['id'], $referente['User']);							
 				echo '</td>';			
 				echo '<td>'.$referente['User']['name'].'</td>';
 				echo '<td>';

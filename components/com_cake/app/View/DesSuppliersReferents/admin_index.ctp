@@ -82,8 +82,8 @@ if(!empty($results)) {
 		</td>		
 		<td>
 			<?php
-			$tmpUser->organization['Organization']['id'] = $result['User']['organization_id'];
-			echo $this->App->drawUserAvatar($tmpUser, $result['User']['id'], $result['User']); 
+			$tmp_user = $this->App->utilsCommons->createObjUser(['organization_id' => $result['User']['organization_id']]);
+			echo $this->App->drawUserAvatar($tmp_user, $result['User']['id'], $result['User']); 
 			?>
 		</td>
 		<td>
