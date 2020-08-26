@@ -1,10 +1,14 @@
 <?php 
 App::uses('SuperServiceArticlesBehavior', 'Model/Behavior');
+App::uses('UtilsCommons', 'Lib');
 
 class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 
+	private $utilsCommons;
+	
 	public function setup(Model $Model, $settings = []) {	
 		parent::setup($Model, $settings);
+		$this->utilsCommons = new UtilsCommons();
 	}
 
 	/*
@@ -141,8 +145,8 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 		if(isset($opts['order']))
 			$options['order'] = $opts['order'];
 		
-		$titolareUser->organization['Organization']['id'] = $owner_organization_id;
-		$results = $this->getArticlesBySupplierOrganizationId($Model, $titolareUser, $owner_supplier_organization_id, $options, $debug);
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $owner_organization_id]);
+		$results = $this->getArticlesBySupplierOrganizationId($Model, $tmp_user, $owner_supplier_organization_id, $options, $debug);
 		
     	/*
     	 * escludo gli articoli gia' associati all'ordine 

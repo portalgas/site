@@ -414,7 +414,7 @@ class DesSupplier extends AppModel {
 		
 		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 
-		$conditions = array('SuppliersOrganization.supplier_id' => $results['DesSupplier']['supplier_id']);
+		$conditions = ['SuppliersOrganization.supplier_id' => $results['DesSupplier']['supplier_id']];
 		$results = $SuppliersOrganization->getSuppliersOrganization($tmp_user, $conditions);
 		
 		if($debug) {
@@ -592,8 +592,8 @@ class DesSupplier extends AppModel {
 			 */
 			$conditions = []; 
 			$conditions['SuppliersOrganization.supplier_id'] = $supplier_id; 
-			$tmp->user->organization['Organization']['id'] = $own_organization_id; 
-			$suppliersOrganizationResults = $SuppliersOrganization->getSuppliersOrganization($tmp->user, $conditions);
+			$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $owner_organization_id]);
+			$suppliersOrganizationResults = $SuppliersOrganization->getSuppliersOrganization($tmp_user, $conditions);
 			if(empty($suppliersOrganizationResults))
 				return false;
 				
