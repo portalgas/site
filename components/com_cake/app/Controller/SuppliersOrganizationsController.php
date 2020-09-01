@@ -420,7 +420,8 @@ class SuppliersOrganizationsController extends AppController {
 						 * non gli passo organization_id dell'utente ma dell'organization da cui copio i prodotti 
 						 * cosi' estraggo l'articolo master
 						 */
-						$user->organization['Organization']['id'] = $suppliersOrganizationResults['SuppliersOrganization']['organization_id'];
+						$user = $this->utilsCommons->createObjUser(['organization_id' => $suppliersOrganizationResults['SuppliersOrganization']['organization_id']]);
+
 						$id = $article['id'];
 						
 						$Article = new Article;
@@ -1190,9 +1191,9 @@ class SuppliersOrganizationsController extends AppController {
 				*/		
 				$opts = [];
 				$opts['conditions'] = ['Article.stato' => 'Y'];
-				$owner_organization->organization['Organization']['id'] = $data['SuppliersOrganization']['owner_organization_id'];
-				$owner_supplier_orgaqnization_id = $data['SuppliersOrganization']['owner_supplier_organization_id'];
-				$totArticlesAttivi = $this->SuppliersOrganization->getTotArticlesAttivi($owner_organization, $owner_supplier_orgaqnization_id, $opts);
+				$owner_organization = $this->utilsCommons->createObjUser(['organization_id' => $data['SuppliersOrganization']['owner_organization_id']]);
+				$owner_supplier_organization_id = $data['SuppliersOrganization']['owner_supplier_organization_id'];
+				$totArticlesAttivi = $this->SuppliersOrganization->getTotArticlesAttivi($owner_organization, $owner_supplier_organization_id, $opts);
 				self::d($totArticlesAttivi, $debug);
 				
 				if($totArticlesAttivi==0)
