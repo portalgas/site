@@ -948,8 +948,8 @@ class RequestPaymentsController extends AppController {
 			if(!empty($results)) {
 				foreach ($results as $i => $result) {
 					$conditions = ['SuppliersOrganization.id' => $result['Article']['supplier_organization_id']];
-					$userTmp->organization['Organization']['id'] =  $result['Article']['organization_id'];
-					$suppliersOrganization = $SuppliersOrganization->getSuppliersOrganization($userTmp, $conditions);
+					$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['Article']['organization_id']]);
+					$suppliersOrganization = $SuppliersOrganization->getSuppliersOrganization($tmp_user, $conditions);
 					$results[$i]['SuppliersOrganization'] = current($suppliersOrganization);
 				}
 			}
