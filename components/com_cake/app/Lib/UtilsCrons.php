@@ -456,7 +456,7 @@ class UtilsCrons {
 
             $username = $result['User']['username'];
 
-            echo $numResult . ") tratto l'utente " . $name . ', username ' . $username;
+            echo "\n\n".$numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
 			$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
@@ -472,7 +472,7 @@ class UtilsCrons {
          * ho inviato la mail, update send_mail = 'Y' cosi' non invia + la mail 
          * 		a meno che ArticlesOrder.stato non torna a Y
          */
-        echo "Ho inviato la MAIL, porto send_mail = Y \n";
+        echo "\n\nHo inviato la MAIL, porto send_mail = Y \n";
         $sql = "UPDATE " . Configure::read('DB.prefix') . "articles_orders
                 SET
                     send_mail = 'Y',
