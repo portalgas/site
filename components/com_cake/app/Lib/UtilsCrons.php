@@ -36,11 +36,11 @@ class UtilsCrons {
     public function mailUsersDelivery($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;
+        if(empty($user)) 
+            return;
 
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail agli utenti con dettaglio consegna \n";
-		
+        
         App::import('Model', 'Delivery');
         $Delivery = new Delivery;
 
@@ -51,8 +51,8 @@ class UtilsCrons {
         App::import('Model', 'Mail');
         $Mail = new Mail;
 
-		$Email = $Mail->getMailSystem($user);
-		
+        $Email = $Mail->getMailSystem($user);
+        
         App::import('Model', 'User');
 
         $j_seo = $user->organization['Organization']['j_seo'];
@@ -62,9 +62,9 @@ class UtilsCrons {
          * estraggo le consegne che si apriranno domani
          */
         $options['conditions'] = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'],
-								'Delivery.isVisibleFrontEnd' => 'Y',
-								'Delivery.stato_elaborazione' => 'OPEN',
-								'DATE(Delivery.data) = CURDATE() + INTERVAL ' . Configure::read('GGMailToAlertDeliveryOn') . ' DAY '];
+                                'Delivery.isVisibleFrontEnd' => 'Y',
+                                'Delivery.stato_elaborazione' => 'OPEN',
+                                'DATE(Delivery.data) = CURDATE() + INTERVAL ' . Configure::read('GGMailToAlertDeliveryOn') . ' DAY '];
         $options['recursive'] = -1;
         $deliveryResults = $Delivery->find('all', $options);
 
@@ -72,7 +72,7 @@ class UtilsCrons {
             foreach ($deliveryResults as $deliveryResult) {
 
                 if($debug)
-					echo "Elaboro consegna di " . $this->timeHelper->i18nFormat($deliveryResult['Delivery']['data'], "%A %e %B %Y") . " a " . $deliveryResult['Delivery']['luogo'] . " \n";
+                    echo "Elaboro consegna di " . $this->timeHelper->i18nFormat($deliveryResult['Delivery']['data'], "%A %e %B %Y") . " a " . $deliveryResult['Delivery']['luogo'] . " \n";
 
                 /*
                  * estraggo gli ordini associati alla consegna
@@ -83,9 +83,9 @@ class UtilsCrons {
                 $Order->unbindModel(['belongsTo' => ['Delivery']]);
                 $options = [];
                 $options['conditions'] = ['Order.delivery_id' => $deliveryResult['Delivery']['id'],
-											'Order.organization_id' => (int) $user->organization['Organization']['id'],
-											'Order.isVisibleBackOffice' => 'Y',
-											'Order.state_code !=' => 'CREATE-INCOMPLETE'];
+                                            'Order.organization_id' => (int) $user->organization['Organization']['id'],
+                                            'Order.isVisibleBackOffice' => 'Y',
+                                            'Order.state_code !=' => 'CREATE-INCOMPLETE'];
                 $options['recursive'] = 0;
                 $options['fields'] = ['SuppliersOrganization.name', 'SuppliersOrganization.frequenza', 'SuppliersOrganization.supplier_id'];
                 $options['order'] = ['SuppliersOrganization.name'];
@@ -95,7 +95,7 @@ class UtilsCrons {
                 foreach ($orderResults as $numResult => $orderResult) {
 
                     if($debug)
-						echo "Elaboro ordine del produttore " . $orderResult['SuppliersOrganization']['name'] . " \n";
+                        echo "Elaboro ordine del produttore " . $orderResult['SuppliersOrganization']['name'] . " \n";
 
                     /*
                      * Suppliers per l'immagine
@@ -112,8 +112,8 @@ class UtilsCrons {
 
                     if (!empty($SupplierResults['Supplier']['img1']) && file_exists($this->AppRoot . Configure::read('App.img.upload.content') . DS . $SupplierResults['Supplier']['img1']))
                         $tmpProduttori .= ' <img width="50" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/' . $SupplierResults['Supplier']['img1'] . '" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
-					else
-						$tmpProduttori .= ' <img width="50" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/empty.png" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
+                    else
+                        $tmpProduttori .= ' <img width="50" src="https://www.portalgas.it' . Configure::read('App.web.img.upload.content') . '/empty.png" alt="' . $orderResult['SuppliersOrganization']['name'] . '" /> ';
 
                     $tmpProduttori .= $orderResult['SuppliersOrganization']['name'];
                     if (!empty($SupplierResults['Supplier']['descrizione']))
@@ -134,7 +134,7 @@ class UtilsCrons {
                         $username = $result['User']['username'];
 
                         if($debug)
-							echo '<br />' . $numResult . ") tratto l'utente " . $name . ', username ' . $username;
+                            echo '<br />' . $numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
                         if (!empty($mail)) {
                             $body_mail = "";
@@ -153,10 +153,10 @@ class UtilsCrons {
                             $body_mail .= ' <a target="_blank" href="' . $url . '">Clicca qui per visualizzare i tuoi <b>acquisti</b> che dovrai ritirare durante la consegna</a>';
                             $body_mail .= '</div>';
 
-							if(count($orderResults)==1)
-								$body_mail .= '<h3>Produttore presente alla consegna</h3>';
-							else
-								$body_mail .= '<h3>Elenco dei produttori presenti alla consegna</h3>';
+                            if(count($orderResults)==1)
+                                $body_mail .= '<h3>Produttore presente alla consegna</h3>';
+                            else
+                                $body_mail .= '<h3>Elenco dei produttori presenti alla consegna</h3>';
                             $body_mail .= $tmpProduttori;
 
                             /*
@@ -172,28 +172,28 @@ class UtilsCrons {
                             $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
                             $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
 
-							$mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
-							
+                            $mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+                            
                         } else {
                             if($debug) echo ": NON inviata, mail empty \n";
-						}
-                    } // end foreach ($results as $result)				
+                        }
+                    } // end foreach ($results as $result)              
                 }
             } // end foreach ($deliveryResults as $deliveryResult) 
         } else {
             if($debug) echo "non ci sono consegne che apriranno tra " . (Configure::read('GGMailToAlertDeliveryOn') + 1) . " giorni \n";
-		}
+        }
     }
 
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      */
     public function mailEvents($organization_id, $debug=true) {
-		
+        
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;
-		
+        if(empty($user)) 
+            return;
+        
         App::import('Model', 'Event');
         $Event = new Event;
 
@@ -209,9 +209,9 @@ class UtilsCrons {
     public function gcalendarUsersDeliveryInsert($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;
-			
+        if(empty($user)) 
+            return;
+            
         App::import('Model', 'Google');
         $Google = new Google;
 
@@ -226,10 +226,10 @@ class UtilsCrons {
 
     public function gcalendarUsersDeliveryUpdate($organization_id, $debug=true) {
 
-	    $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;
-		
+        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($user)) 
+            return;
+        
         App::import('Model', 'Google');
         $Google = new Google;
 
@@ -239,16 +239,16 @@ class UtilsCrons {
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      * invio mail 
-     * 		ordini che si aprono oggi
-     * 		ctrl data_inizio con data_oggi
-     * 		mail_open_send = Y (perche' in Order::add data_inizio = data_oggi)
+     *      ordini che si aprono oggi
+     *      ctrl data_inizio con data_oggi
+     *      mail_open_send = Y (perche' in Order::add data_inizio = data_oggi)
      */
 
     public function mailUsersOrdersOpen($organization_id, $debug = false) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
 
         App::import('Model', 'MailsSend');
         $MailsSend = new MailsSend;
@@ -259,9 +259,9 @@ class UtilsCrons {
     public function mailMonitoringSuppliersOrganizationsOrdersDataFine($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         App::import('Model', 'MonitoringSuppliersOrganization');
         $MonitoringSuppliersOrganization = new MonitoringSuppliersOrganization;
 
@@ -275,8 +275,8 @@ class UtilsCrons {
     public function mailUsersOrdersClose($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
 
         App::import('Model', 'MailsSend');
         $MailsSend = new MailsSend;
@@ -293,14 +293,16 @@ class UtilsCrons {
      *      prima porto tutti gli ArticleOrder.stato = Y con send_mail = Y a send_mail = N
      * se ordine DES
      *    faccio le medesime operazioni solo se il GAS e' il titolare dell'ordine, invio mail ai referenti (non ai titolari perche' loro non posso accedere all'ordine) 
+     *
+     * cron 10 8,13,20 * * * /var/portalgas/cron/mailReferentiQtaMax.sh
      */
     public function mailReferentiQtaMax($organization_id) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
-        echo date("d/m/Y") . " - " . date("H:i:s") . " Mail ai referenti per i prodotti che hanno raggiunto il limite \n";
+        if(empty($user)) 
+            return; 
+        
+        echo date("d/m/Y") . " - " . date("H:i:s") . " Mail ai referenti per i prodotti che hanno raggiunto il limite  (QTAMAXORDER) \n";
 
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
@@ -309,27 +311,27 @@ class UtilsCrons {
         
         /*
          * prima porto tutti gli ArticleOrder.stato = Y con send_mail = Y a send_mail = N
-         * 		perche' solo quelli con ArticleOrder.stato = QTAMAXORDER possono avere send_mail = Y 
-         *  	quindi era un QTAMAXORDER abbassata e totata a stato = Y 
+         *      perche' solo quelli con ArticleOrder.stato = QTAMAXORDER possono avere send_mail = Y 
+         *      quindi era un QTAMAXORDER abbassata e totata a stato = Y 
          */
-        echo "Estraggo gli articoli con ArticlesOrder.stato = Y e ArticlesOrder.send_mail = Y e li porto a send_mail = N perche solo con ArticlesOrder.QTAMAXORDER posso avere send_mail = Y \n";
+        echo "Estraggo gli articoli con ArticlesOrder.stato = Y e ArticlesOrder.send_mail = Y => li porto a send_mail = N perche solo con ArticlesOrder.QTAMAXORDER posso avere send_mail = Y \n";
         $ArticlesOrder->unbindModel(['belongsTo' => ['Cart']]);
 
         $options = [];
         $options['conditions'] = ['ArticlesOrder.organization_id' => (int) $user->organization['Organization']['id'],
-								'ArticlesOrder.stato' => 'Y',
-								'ArticlesOrder.send_mail' => 'Y',
-								'Article.stato' => 'Y',
-								'Order.state_code' => 'OPEN'];
+                                'ArticlesOrder.stato' => 'Y',
+                                'ArticlesOrder.send_mail' => 'Y',
+                                'Article.stato' => 'Y',
+                                'Order.state_code' => 'OPEN'];
         $options['recursive'] = 1;
         $articlesOrderResults = $ArticlesOrder->find('all', $options);
+        echo "trovati ".count($articlesOrderResults)." articoli da aggiornare \n";
 
         foreach ($articlesOrderResults as $articlesOrderResult) {
 
             $sql = "UPDATE " . Configure::read('DB.prefix') . "articles_orders 
                     SET
-                        send_mail = 'N',
-                        modified = '" . date('Y-m-d H:i:s') . "'
+                        send_mail = 'N', modified = '" . date('Y-m-d H:i:s') . "'
                     WHERE
                         organization_id = " . (int) $user->organization['Organization']['id'] . "
                         and order_id = " . $articlesOrderResult['ArticlesOrder']['order_id'] . " 
@@ -350,16 +352,16 @@ class UtilsCrons {
         echo "Estraggo gli articoli con ArticlesOrder.stato = QTAMAXORDER e ArticlesOrder.send_mail = N per inviare MAIL di notifica \n";
         $options = [];
         $options['conditions'] = ['ArticlesOrder.organization_id' => (int) $user->organization['Organization']['id'],
-									'ArticlesOrder.stato' => 'QTAMAXORDER',
-									'ArticlesOrder.send_mail' => 'N',
-									'Article.stato' => 'Y',
-									'Order.state_code' => 'OPEN'];
+                                    'ArticlesOrder.stato' => 'QTAMAXORDER',
+                                    'ArticlesOrder.send_mail' => 'N',
+                                    'Article.stato' => 'Y',
+                                    'Order.state_code' => 'OPEN'];
         $options['recursive'] = 1;
-
+        
         $ArticlesOrder->unbindModel(['belongsTo' => ['Cart']]);
 
         $articlesOrderResults = $ArticlesOrder->find('all', $options);
-
+        echo "trovati ".count($articlesOrderResults)." articoli da inviare mail notifica \n";
         foreach ($articlesOrderResults as $articlesOrderResult) {
          
             $send_mail = false;
@@ -430,8 +432,8 @@ class UtilsCrons {
         App::import('Model', 'Mail');
         $Mail = new Mail;
     
-		$Email = $Mail->getMailSystem($user);
-	
+        $Email = $Mail->getMailSystem($user);
+    
         $body_mail_final = "";
         $body_mail_final .= "<br />";
         if (!empty($articlesOrderResult['Article']['img1']) && file_exists($this->AppRoot . Configure::read('App.img.upload.article') . DS . $articlesOrderResult['Article']['organization_id'] . DS . $articlesOrderResult['Article']['img1'])) {
@@ -452,31 +454,30 @@ class UtilsCrons {
 
             $name = $result['User']['name'];
             $mail = $result['User']['email'];
-			$mail2 = $result['UserProfile']['email'];
+            $mail2 = $result['UserProfile']['email'];
 
             $username = $result['User']['username'];
 
             echo "\n\n".$numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
-			$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
-			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
+            $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+            $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
 
-			if ($numResult == 0)
-				echo $body_mail_final;
+            if ($numResult == 0)
+                echo $body_mail_final;
 
-			$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
-			
+            $mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
+            
         } // end loop users
 
         /*
          * ho inviato la mail, update send_mail = 'Y' cosi' non invia + la mail 
-         * 		a meno che ArticlesOrder.stato non torna a Y
+         *      a meno che ArticlesOrder.stato non torna a Y
          */
-        echo "\n\nHo inviato la MAIL, porto send_mail = Y \n";
+        echo "\n\nHo inviato la MAIL, porto send_mail = Y cosi' non invia + la mail a meno che ArticlesOrder.stato non torna a Y \n";
         $sql = "UPDATE " . Configure::read('DB.prefix') . "articles_orders
                 SET
-                    send_mail = 'Y',
-                    modified = '" . date('Y-m-d H:i:s') . "'
+                    send_mail = 'Y', modified = '" . date('Y-m-d H:i:s') . "'
                 WHERE
                     organization_id = " . (int) $user->organization['Organization']['id'] . "
                     and order_id = " . $articlesOrderResult['ArticlesOrder']['order_id'] . "
@@ -494,16 +495,16 @@ class UtilsCrons {
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      * se un Order.qta_massima di Order.qta_massima_um ha raggiunto la quantita' massimo
-     * 	=> invio mail e update send_mail_qta_massima = 'N'
-	 *
-	 * => chiudo l'ordine 
+     *  => invio mail e update send_mail_qta_massima = 'N'
+     *
+     * => chiudo l'ordine 
      */
     public function mailReferentiOrderQtaMax($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail ai referenti se la quantit&agrave; massima dell'ordine ha raggiunto il limite \n";
 
         App::import('Model', 'Order');
@@ -515,8 +516,8 @@ class UtilsCrons {
         App::import('Model', 'Mail');
         $Mail = new Mail;
 
-		$Email = $Mail->getMailSystem($user);
-		
+        $Email = $Mail->getMailSystem($user);
+        
         /*
          * estraggo gli ordini OPEN con un limite sull'importo
          */
@@ -527,15 +528,15 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Order.organization_id' => (int) $user->organization['Organization']['id'],
-								'Order.isVisibleBackOffice' => 'Y',
-								'Order.state_code' => 'OPEN',
-								'Order.qta_massima != ' => 0,
-								'Order.send_mail_qta_massima' => 'Y'];
+                                'Order.isVisibleBackOffice' => 'Y',
+                                'Order.state_code' => 'OPEN',
+                                'Order.qta_massima != ' => 0,
+                                'Order.send_mail_qta_massima' => 'Y'];
         $options['recursive'] = 0;
         $options['fields'] = ['Order.id', 'Order.qta_massima', 'Order.qta_massima_um', 'Order.supplier_organization_id', 'SuppliersOrganization.name'];
         $options['order'] = ['Order.id'];
         $orderResults = $Order->find('all', $options);
-		
+        
         foreach ($orderResults as $numResult => $orderResult) {
 
             $totQuantita = $Order->getTotQuantitaArticlesOrder($user, $orderResult, $debug);
@@ -562,7 +563,7 @@ class UtilsCrons {
 
                 $body_mail_final .= ' quando hai creato l\'ordine hai settato un limite di ' . $orderResult['Order']['qta_massima'] . $orderResult['Order']['qta_massima_um'];
                 $body_mail_final .= '<p>L\'ordine egrave; stato chiuso e i gasisti non possono piugrave; effettuare acquisti';
-				$body_mail_final .= '<br /><a target="_blank" href="http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine">http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine</a>';
+                $body_mail_final .= '<br /><a target="_blank" href="http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine">http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine</a>';
 
                 if($debug)
                     echo "\n" . '<h2>tratto L\'ordine ' . $orderResult['SuppliersOrganization']['name'] . '</h2>';
@@ -583,42 +584,42 @@ class UtilsCrons {
                 $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 
                 $conditions = ['User.block' => 0,
-							   'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']];
+                               'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']];
                 $results = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, $orderBy = null, $modalita = 'CRON');
 
                 foreach ($results as $numResult => $result) {
 
                     $name = $result['User']['name'];
-					$mail = $result['User']['email'];
+                    $mail = $result['User']['email'];
                     $mail2 = $result['UserProfile']['email'];
                     
                     $username = $result['User']['username'];
 
                     echo "\n" . $numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
-					$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
-					$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
+                    $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+                    $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
 
-					if ($numResult == 0)
-						echo $body_mail_final;
+                    if ($numResult == 0)
+                        echo $body_mail_final;
 
-					$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
+                    $mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
                 } // end loop users
 
                 /*
                  * ho inviato la mail, update send_mail_importo_massimo = 'N' cosi' non invia + la mail 
-				 * chiudo l'ordine
+                 * chiudo l'ordine
                  */
-				$ieri = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-1,date('Y')));
+                $ieri = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-1,date('Y')));
                 $sql = "UPDATE " . Configure::read('DB.prefix') . "orders
-					   SET
-						send_mail_qta_massima = 'N',
-						state_code = 'PROCESSED-BEFORE-DELIVERY',
-						data_fine = '" . $ieri . "',
-						modified = '" . date('Y-m-d H:i:s') . "'
-				   WHERE
-						organization_id = " . (int) $user->organization['Organization']['id'] . "
-						and id = " . $orderResult['Order']['id'];
+                       SET
+                        send_mail_qta_massima = 'N',
+                        state_code = 'PROCESSED-BEFORE-DELIVERY',
+                        data_fine = '" . $ieri . "',
+                        modified = '" . date('Y-m-d H:i:s') . "'
+                   WHERE
+                        organization_id = " . (int) $user->organization['Organization']['id'] . "
+                        and id = " . $orderResult['Order']['id'];
                 if($debug)
                     echo $sql . "\n";
                 try {
@@ -628,24 +629,24 @@ class UtilsCrons {
                     CakeLog::write('error', $e);
                 }
             } // end if($totImporto >= $orderResult['Order']['importo_massimo']) 
-				
-        } // loop foreach ($orderResults as $numResult => $orderResult)	
+                
+        } // loop foreach ($orderResults as $numResult => $orderResult) 
     }
 
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      * se un Order.importo_massimo l'importo massimo
-     * 	=> invio mail e update send_mail_importo_massimo = 'N'
-	 *
-	 * => chiudo l'ordine
+     *  => invio mail e update send_mail_importo_massimo = 'N'
+     *
+     * => chiudo l'ordine
      */
 
     public function mailReferentiOrderImportoMax($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail ai referenti se l'importo massimo dell'ordine ha raggiunto il limite \n";
 
         App::import('Model', 'Order');
@@ -657,8 +658,8 @@ class UtilsCrons {
         App::import('Model', 'Mail');
         $Mail = new Mail;
 
-		$Email = $Mail->getMailSystem($user);
-		
+        $Email = $Mail->getMailSystem($user);
+        
         /*
          * estraggo gli ordini OPEN con un limite sull'importo
          */
@@ -669,10 +670,10 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Order.organization_id' => (int) $user->organization['Organization']['id'],
-								'Order.isVisibleBackOffice' => 'Y',
-								'Order.state_code' => 'OPEN',
-								'Order.importo_massimo != ' => 0,
-								'Order.send_mail_importo_massimo' => 'Y'];
+                                'Order.isVisibleBackOffice' => 'Y',
+                                'Order.state_code' => 'OPEN',
+                                'Order.importo_massimo != ' => 0,
+                                'Order.send_mail_importo_massimo' => 'Y'];
         $options['recursive'] = 0;
         $options['fields'] = ['Order.id', 'Order.importo_massimo', 'Order.supplier_organization_id', 'SuppliersOrganization.name'];
         $options['order'] = ['Order.id'];
@@ -694,7 +695,7 @@ class UtilsCrons {
                 $body_mail_final .= 'ha raggiunto l\'importo ' . $totImporto . '&euro;:';
                 $body_mail_final .= ' quando hai creato l\'ordine hai settato un limite di ' . $orderResult['Order']['importo_massimo'] . '&euro;';
                 $body_mail_final .= '<p>L\'ordine egrave; stato chiuso e i gasisti non possono piugrave; effettuare acquisti';
-				$body_mail_final .= '<br /><a target="_blank" href="http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine">http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine</a>';
+                $body_mail_final .= '<br /><a target="_blank" href="http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine">http://manuali.portalgas.it/gestione_degli_ordini.php#il-tab-gestione-durante-l-ordine</a>';
 
                 if($debug)
                     echo "\n" . '<h2>tratto L\'ordine ' . $orderResult['SuppliersOrganization']['name'] . '</h2>';
@@ -710,43 +711,43 @@ class UtilsCrons {
                 $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 
                 $conditions = ['User.block' => 0,
-							   'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']];
+                               'SuppliersOrganization.id' => $orderResult['Order']['supplier_organization_id']];
                 $results = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, $orderBy = null, $modalita = 'CRON');
 
                 foreach ($results as $numResult => $result) {
 
                     $name = $result['User']['name'];
-					$mail = $result['User']['email'];
+                    $mail = $result['User']['email'];
                     $mail2 = $result['UserProfile']['email'];
                     
                     $username = $result['User']['username'];
 
                     echo "\n" . $numResult . ") tratto l'utente " . $name . ', username ' . $username;
 
-					$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
-					$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
+                    $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+                    $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
 
-					if ($numResult == 0)
-						echo $body_mail_final;
+                    if ($numResult == 0)
+                        echo $body_mail_final;
 
-					$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
-					
+                    $mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
+                    
                 } // end loop users
 
                 /*
                  * ho inviato la mail, update send_mail_importo_massimo = 'N' cosi' non invia + la mail 
-				 * chiudo l'ordine
+                 * chiudo l'ordine
                  */
-				$ieri = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-1,date('Y')));
+                $ieri = date('Y-m-d', mktime(0,0,0,date('m'),date('d')-1,date('Y')));
                 $sql = "UPDATE " . Configure::read('DB.prefix') . "orders
-					   SET
-						send_mail_importo_massimo = 'N',
-						state_code = 'PROCESSED-BEFORE-DELIVERY',
-						data_fine = '" . $ieri . "',						
-						modified = '" . date('Y-m-d H:i:s') . "'
-				   WHERE
-						organization_id = " . (int) $user->organization['Organization']['id'] . "
-						and id = " . $orderResult['Order']['id'];
+                       SET
+                        send_mail_importo_massimo = 'N',
+                        state_code = 'PROCESSED-BEFORE-DELIVERY',
+                        data_fine = '" . $ieri . "',                        
+                        modified = '" . date('Y-m-d H:i:s') . "'
+                   WHERE
+                        organization_id = " . (int) $user->organization['Organization']['id'] . "
+                        and id = " . $orderResult['Order']['id'];
                 if($debug)
                     echo $sql . "\n";
                 try {
@@ -756,28 +757,28 @@ class UtilsCrons {
                     CakeLog::write('error', $e);
                 }
             } // end if($totImporto >= $orderResult['Order']['importo_massimo']) 
-        } // loop foreach ($orderResults as $numResult => $orderResult)		
+        } // loop foreach ($orderResults as $numResult => $orderResult)     
     }
 
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      * estraggo le consegne ricorsive di oggi
-     * 		estraggo per data_master_reale 
-     * 		ricalcolo la ricorsione partendo da data_master 
-     * 			data_master 	  => data_copy
-     * 			data_master_reale => data_copy_reale
-     * 			data_copy 		  => calcolo nuova ricorsione
-     * 			data_copy_reale   => calcolo nuova ricorsione
-     * 			nuova consegna con data_copy_reale
+     *      estraggo per data_master_reale 
+     *      ricalcolo la ricorsione partendo da data_master 
+     *          data_master       => data_copy
+     *          data_master_reale => data_copy_reale
+     *          data_copy         => calcolo nuova ricorsione
+     *          data_copy_reale   => calcolo nuova ricorsione
+     *          nuova consegna con data_copy_reale
      */
 
     public function loopsDeliveries($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
-		echo date("d/m/Y") . " - " . date("H:i:s") . " Consegne: creo le consegne ricorsive \n";
+        if(empty($user)) 
+            return; 
+        
+        echo date("d/m/Y") . " - " . date("H:i:s") . " Consegne: creo le consegne ricorsive \n";
 
         App::import('Model', 'LoopsDelivery');
         $LoopsDelivery = new LoopsDelivery;
@@ -787,7 +788,7 @@ class UtilsCrons {
          */
         $options = [];
         $options['conditions'] = ['LoopsDelivery.organization_id' => (int) $user->organization['Organization']['id'],
-								  'DATE(LoopsDelivery.data_master_reale) = CURDATE() - INTERVAL 1 DAY'];
+                                  'DATE(LoopsDelivery.data_master_reale) = CURDATE() - INTERVAL 1 DAY'];
         $options['recursive'] = -1;
         $loopsDeliveryResults = $LoopsDelivery->find('all', $options);
 
@@ -800,42 +801,42 @@ class UtilsCrons {
 
         if (!empty($loopsDeliveryResults)) 
         foreach ($loopsDeliveryResults as $numResult => $loopsDeliveryResult) {
-				
-			$create = true; // in LoopsDeliveries::testing simulo
-			$LoopsDelivery->creating($user, $loopsDeliveryResult, $create);
-			
+                
+            $create = true; // in LoopsDeliveries::testing simulo
+            $LoopsDelivery->creating($user, $loopsDeliveryResult, $create);
+            
         } // end foreach ($loopsDeliveryResults as $loopsDeliveryResult)
     }
 
     public function loopsOrders($organization_id) {
 
-	$user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+    $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($user)) 
+            return; 
+        
         echo date("d/m/Y") . " - " . date("H:i:s") . " Ordini: duplica gli ordini ricorsivi \n";
     }
  
     public function archiveStatistics($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
 
         echo "\rTratto l'organization (" . $organization_id . ") con pagamento ".$user->organization['Template']['payToDelivery']." \r";
-		
+        
         App::import('Model', 'Statistic');
         $Statistic = new Statistic;
-		
-		$Statistic->archive($user, $debug);
-	}
-	
+        
+        $Statistic->archive($user, $debug);
+    }
+    
     public function createPdfSingleUser($organization_id, $delivery_id, $user_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         App::import('Model', 'Statistic');
         $Statistic = new Statistic;
 
@@ -853,9 +854,9 @@ class UtilsCrons {
     public function articlesFromCartToStoreroom($organization_id, $debug = true, $delivery_id = 0) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         try {
             if($debug)
                 echo "Gli articoli messi nel carrello per l'utente Dispensa (con il modulo gestione degli acquisti nel dettaglio o gestione colli) \n";
@@ -885,29 +886,29 @@ class UtilsCrons {
              * estraggo tutti gli ordini delle consegne
              */
             $sql = "SELECT Delivery.id, `Order`.id, Cart.*, Article.*, ArticlesOrder.*  
-				   FROM
-						 " . Configure::read('DB.prefix') . "deliveries Delivery,
-						 `" . Configure::read('DB.prefix') . "orders` `Order`,
-						 " . Configure::read('DB.prefix') . "articles_orders ArticlesOrder,
-						 " . Configure::read('DB.prefix') . "articles Article,
-						 " . Configure::read('DB.prefix') . "carts Cart 
-				   WHERE
-						Delivery.organization_id = " . (int) $organization_id . "
-						AND `Order`.organization_id = " . (int) $organization_id . "
-						AND ArticlesOrder.organization_id = " . (int) $organization_id . "
-						AND Cart.organization_id = " . (int) $organization_id . "
-						AND Delivery.stato_elaborazione = 'OPEN'
-						AND `Order`.delivery_id = Delivery.id
-						AND ArticlesOrder.order_id = `Order`.id 
-						AND ArticlesOrder.article_id = Article.id 
-						AND ArticlesOrder.article_organization_id = Article.organization_id 
-						AND Cart.order_id = ArticlesOrder.order_id 
-						AND Cart.article_id = ArticlesOrder.article_id 
-						AND Cart.article_organization_id = ArticlesOrder.article_organization_id 
-						AND Cart.inStoreroom = 'N' 
-						AND `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y'
-						AND Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
-						AND Cart.user_id = " . $storeroomUser['User']['id'];
+                   FROM
+                         " . Configure::read('DB.prefix') . "deliveries Delivery,
+                         `" . Configure::read('DB.prefix') . "orders` `Order`,
+                         " . Configure::read('DB.prefix') . "articles_orders ArticlesOrder,
+                         " . Configure::read('DB.prefix') . "articles Article,
+                         " . Configure::read('DB.prefix') . "carts Cart 
+                   WHERE
+                        Delivery.organization_id = " . (int) $organization_id . "
+                        AND `Order`.organization_id = " . (int) $organization_id . "
+                        AND ArticlesOrder.organization_id = " . (int) $organization_id . "
+                        AND Cart.organization_id = " . (int) $organization_id . "
+                        AND Delivery.stato_elaborazione = 'OPEN'
+                        AND `Order`.delivery_id = Delivery.id
+                        AND ArticlesOrder.order_id = `Order`.id 
+                        AND ArticlesOrder.article_id = Article.id 
+                        AND ArticlesOrder.article_organization_id = Article.organization_id 
+                        AND Cart.order_id = ArticlesOrder.order_id 
+                        AND Cart.article_id = ArticlesOrder.article_id 
+                        AND Cart.article_organization_id = ArticlesOrder.article_organization_id 
+                        AND Cart.inStoreroom = 'N' 
+                        AND `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y'
+                        AND Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
+                        AND Cart.user_id = " . $storeroomUser['User']['id'];
             if (!empty($delivery_id))
                 $sql .= " AND Delivery.id = " . (int) $delivery_id;
             else
@@ -930,16 +931,16 @@ class UtilsCrons {
                  * ctrl che non ci sia gia' un articolo in dispensa 
                  */
                 $conditions = ['User.id' => $storeroomUser['User']['id'],
-							'Storeroom.delivery_id' => 0,
-							'Article.id' => $result['Article']['id']];
+                            'Storeroom.delivery_id' => 0,
+                            'Article.id' => $result['Article']['id']];
                 $ctrlResults = $Storeroom->getArticlesToStoreroom($user, $conditions);
-				/*
-				if ($debug) {
-					echo "<pre>Articolo gia presente in Storeroom \n ";
-					print_r($ctrlResults);
-					echo "</pre>";
-				}
-				*/
+                /*
+                if ($debug) {
+                    echo "<pre>Articolo gia presente in Storeroom \n ";
+                    print_r($ctrlResults);
+                    echo "</pre>";
+                }
+                */
                 $storeroom = [];
                 if (!empty($ctrlResults)) {
                     $storeroom['Storeroom']['id'] = $ctrlResults[0]['Storeroom']['id'];
@@ -956,11 +957,11 @@ class UtilsCrons {
                 $storeroom['Storeroom']['prezzo'] = $result['ArticlesOrder']['prezzo'];
                 $storeroom['Storeroom']['stato'] = 'Y';
                 $Storeroom->create();
-				/*
-				if ($debug) {
-					print_r($storeroom);
-				}
-				*/
+                /*
+                if ($debug) {
+                    print_r($storeroom);
+                }
+                */
                 if ($Storeroom->save($storeroom))
                     if($debug)
                         echo "OK, Inserito l'articolo (" . $storeroom['Storeroom']['article_id'] . ") " . $storeroom['ArticlesOrder']['name'] . " in dispensa con qta " . $storeroom['Storeroom']['qta'] . "\n";
@@ -972,13 +973,13 @@ class UtilsCrons {
                  * setto Cart.inStoreroom a Y cosi' non lo elaboro +
                  */
                 $sql = "UPDATE " . Configure::read('DB.prefix') . "carts as Cart
-						 SET Cart.inStoreroom = 'Y'
-					   WHERE
-							Cart.organization_id = " . (int) $organization_id . "
-						   AND Cart.order_id = " . $result['Order']['id'] . " 
-							AND Cart.article_organization_id = " . $result['Article']['organization_id'] . " 
-							AND Cart.article_id = " . $result['Article']['id'] . " 
-							AND Cart.user_id = " . $storeroomUser['User']['id'];
+                         SET Cart.inStoreroom = 'Y'
+                       WHERE
+                            Cart.organization_id = " . (int) $organization_id . "
+                           AND Cart.order_id = " . $result['Order']['id'] . " 
+                            AND Cart.article_organization_id = " . $result['Article']['organization_id'] . " 
+                            AND Cart.article_id = " . $result['Article']['id'] . " 
+                            AND Cart.user_id = " . $storeroomUser['User']['id'];
                 //if($debug) echo $sql."\n";
                 $results = $Storeroom->query($sql);
 
@@ -994,8 +995,8 @@ class UtilsCrons {
     /*
      * DES
      *  cancella DesOrder con 
-     *  	data_fine_max scaduta / DesOrder.state_code = 'CLOSE'
-     * 		ordini non + associati perche' portati in Statistiche
+     *      data_fine_max scaduta / DesOrder.state_code = 'CLOSE'
+     *      ordini non + associati perche' portati in Statistiche
      */
     public function desOrdersDelete($des_id, $des_order_id = 0, $debug=true) {
 
@@ -1009,61 +1010,61 @@ class UtilsCrons {
         $DesOrder->deleteScaduti($des_id, $des_order_id, $debug);
     }
 
-	/*
-	 * per ogni GAS setto SupplierOrganization.owner_articles = DES o REFERENT
-	 *
-	 * cron disabilitato, metodo setSupplierOrganizationOwnerArticles richiamato solo quando cambia il titolare ordine DES
-	 */
+    /*
+     * per ogni GAS setto SupplierOrganization.owner_articles = DES o REFERENT
+     *
+     * cron disabilitato, metodo setSupplierOrganizationOwnerArticles richiamato solo quando cambia il titolare ordine DES
+     */
     public function desSetSupplierOrganizationOwnerArticles($organization_id, $debug=true) {
-		
+        
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
-		App::import('Model', 'DesSupplier');
-		$DesSupplier = new DesSupplier;
-		
-		$supplier_id=0;
-				
-		if($user->organization['Organization']['hasDes']=='Y') {
-			
-			if(empty($user->des_id)) {
-				App::import('Model', 'DesOrganization');
-				$DesOrganization = new DesOrganization;
-			
-				$options = [];
-				$options['conditions'] = ['DesOrganization.organization_id' => $user->organization['Organization']['id']];
-				$options['recursive'] = -1;
-				$desOrganizationsResults = $DesOrganization->find('all', $options);
-				foreach($desOrganizationsResults as $desOrganizationsResult) {
-					$user->des_id = $desOrganizationsResult['DesOrganization']['des_id'];
+        if(empty($user)) 
+            return; 
+        
+        App::import('Model', 'DesSupplier');
+        $DesSupplier = new DesSupplier;
+        
+        $supplier_id=0;
+                
+        if($user->organization['Organization']['hasDes']=='Y') {
+            
+            if(empty($user->des_id)) {
+                App::import('Model', 'DesOrganization');
+                $DesOrganization = new DesOrganization;
+            
+                $options = [];
+                $options['conditions'] = ['DesOrganization.organization_id' => $user->organization['Organization']['id']];
+                $options['recursive'] = -1;
+                $desOrganizationsResults = $DesOrganization->find('all', $options);
+                foreach($desOrganizationsResults as $desOrganizationsResult) {
+                    $user->des_id = $desOrganizationsResult['DesOrganization']['des_id'];
 
-					if ($debug) {
-						echo date("d/m/Y") . " - " . date("H:i:s") . " per il GAS [$organization_id] del DES [".$user->des_id."] setto SupplierOrganization.owner_articles = DES o REFERENT  \n";
-						if(!empty($supplier_id))
-							echo date("d/m/Y") . " - " . date("H:i:s") . " per il produttore [$supplier_id] \n";
-						else
-							echo date("d/m/Y") . " - " . date("H:i:s") . " per TUTTI i produttori \n";
-					}
-					
-					$DesSupplier->setSupplierOrganizationOwnerArticles($user, $supplier_id, $debug);
-					
-				} // foreach($desOrganizationsResults as $desOrganizationsResult)
-			} // if(empty($user->des_id)) 
-			else {
-				if ($debug) {
-					echo date("d/m/Y") . " - " . date("H:i:s") . " per il GAS [$organization_id] del DES [$des_id] setto SupplierOrganization.owner_articles = DES o REFERENT  \n";
-					if(!empty($supplier_id))
-						echo date("d/m/Y") . " - " . date("H:i:s") . " per il produttore [$supplier_id] \n";
-					else
-						echo date("d/m/Y") . " - " . date("H:i:s") . " per TUTTI i produttori \n";
-				}
+                    if ($debug) {
+                        echo date("d/m/Y") . " - " . date("H:i:s") . " per il GAS [$organization_id] del DES [".$user->des_id."] setto SupplierOrganization.owner_articles = DES o REFERENT  \n";
+                        if(!empty($supplier_id))
+                            echo date("d/m/Y") . " - " . date("H:i:s") . " per il produttore [$supplier_id] \n";
+                        else
+                            echo date("d/m/Y") . " - " . date("H:i:s") . " per TUTTI i produttori \n";
+                    }
+                    
+                    $DesSupplier->setSupplierOrganizationOwnerArticles($user, $supplier_id, $debug);
+                    
+                } // foreach($desOrganizationsResults as $desOrganizationsResult)
+            } // if(empty($user->des_id)) 
+            else {
+                if ($debug) {
+                    echo date("d/m/Y") . " - " . date("H:i:s") . " per il GAS [$organization_id] del DES [$des_id] setto SupplierOrganization.owner_articles = DES o REFERENT  \n";
+                    if(!empty($supplier_id))
+                        echo date("d/m/Y") . " - " . date("H:i:s") . " per il produttore [$supplier_id] \n";
+                    else
+                        echo date("d/m/Y") . " - " . date("H:i:s") . " per TUTTI i produttori \n";
+                }
 
-				$DesSupplier->setSupplierOrganizationOwnerArticles($user, $supplier_id, $debug);				
-			}
-		} // end if($user->organization['Organization']['hasDes']=='Y')
+                $DesSupplier->setSupplierOrganizationOwnerArticles($user, $supplier_id, $debug);                
+            }
+        } // end if($user->organization['Organization']['hasDes']=='Y')
     }
-	
+    
     /*
      * key ArticlesOrder $organization_id $order_id, $article_organization_id, $article_id
      */
@@ -1071,17 +1072,17 @@ class UtilsCrons {
     public function articlesOrdersQtaCart($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         /*
          * Aggiorna il totale della quantita' acquistata per ogni articolo
          */
         if($debug)
             echo date("d/m/Y") . " - " . date("H:i:s") . " Aggiorna il totale della quantita' acquistata per ogni articolo (ArticlesOrder.qta_cart) e se ArticlesOrder.qta_massima_order > 0 anche ArticlesOrder.stato \n";
 
-		$debug = false; // log troppo verbosi
-		
+        $debug = false; // log troppo verbosi
+        
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
 
@@ -1104,9 +1105,9 @@ class UtilsCrons {
     public function articlesBio($organization_id) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS', 'PRODGAS']);
-		if(empty($user)) 
-			return;	
-		
+        if(empty($user)) 
+            return; 
+        
         echo date("d/m/Y") . " - " . date("H:i:s") . " articlesBio() ";
 
         try {
@@ -1121,16 +1122,16 @@ class UtilsCrons {
 
     public function deleteCart($organization_id) {
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	        
+        if(empty($user)) 
+            return;         
     }
 
     public function usersGmaps($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	        
-		
+        if(empty($user)) 
+            return;         
+        
         echo date("d/m/Y") . " - " . date("H:i:s") . " Dall'indirizzo cerca lng e lat per organization_id $organization_id \n";
 
         /*
@@ -1244,47 +1245,47 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Supplier.stato' => ['Y','T'], 
-		                          'Supplier.lat' => '', 
-								  'Supplier.localita !=' => ''];
+                                  'Supplier.lat' => '', 
+                                  'Supplier.localita !=' => ''];
         $options['order'] = ['Supplier.id'];
         $options['limit'] = 10;
         $options['recursive'] = -1;
-	    $results = $Supplier->find('all', $options);
-		if($debug) {
-			echo "<pre>conditions \n";
-			print_r($options['conditions']);
-			echo "</pre>";
-			echo "<pre>founds \n";
-			print_r(count($results));
-			echo "</pre>";
-		}	
-		
+        $results = $Supplier->find('all', $options);
+        if($debug) {
+            echo "<pre>conditions \n";
+            print_r($options['conditions']);
+            echo "</pre>";
+            echo "<pre>founds \n";
+            print_r(count($results));
+            echo "</pre>";
+        }   
+        
         foreach ($results as $numResult => $result) {
 
-			if($debug) {
-				echo "<pre>";
-				print_r($result);
-				echo "</pre>";
-			}
+            if($debug) {
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";
+            }
 
-			$address = $result['Supplier']['gmaps'] = $result['Supplier']['indirizzo'] . ' ' . $result['Supplier']['localita'] . ' ' . $result['Supplier']['cap'];
+            $address = $result['Supplier']['gmaps'] = $result['Supplier']['indirizzo'] . ' ' . $result['Supplier']['localita'] . ' ' . $result['Supplier']['cap'];
 
-			$coordinate = $this->_gmap($address, $debug);
+            $coordinate = $this->_gmap($address, $debug);
 
-			if($debug) {
-				echo "<pre>";
-				print_r($coordinate);
-				echo "</pre>";
-			}
+            if($debug) {
+                echo "<pre>";
+                print_r($coordinate);
+                echo "</pre>";
+            }
 
-			if (!empty($coordinate)) {
-				$lat = str_replace(",", ".", $coordinate['lat']);
-				$lng = str_replace(",", ".", $coordinate['lng']);
+            if (!empty($coordinate)) {
+                $lat = str_replace(",", ".", $coordinate['lat']);
+                $lng = str_replace(",", ".", $coordinate['lng']);
 
-				$sql = 'UPDATE ' . Configure::read('DB.prefix') . 'suppliers set lat = "' . $lat . '", lng = "' . $lng . '" WHERE id = ' . $result['Supplier']['id'];
-				echo "\n " . $sql;
-				$executeUpdate = $Supplier->query($sql);
-			}
+                $sql = 'UPDATE ' . Configure::read('DB.prefix') . 'suppliers set lat = "' . $lat . '", lng = "' . $lng . '" WHERE id = ' . $result['Supplier']['id'];
+                echo "\n " . $sql;
+                $executeUpdate = $Supplier->query($sql);
+            }
 
         } // foreach ($results as $numResult => $result) 
     }
@@ -1335,7 +1336,7 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $organization_id,
-								  'User.block' => 0];
+                                  'User.block' => 0];
         $options['fields'] = ['User.id', 'User.name', 'User.email'];
         $options['recursive'] = -1;
 
@@ -1353,13 +1354,13 @@ class UtilsCrons {
             $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
             $options = [];
             $options['conditions'] = ['SuppliersOrganizationsReferent.organization_id' => $organization_id,
-									  'SuppliersOrganizationsReferent.user_id' => $user['User']['id']];
+                                      'SuppliersOrganizationsReferent.user_id' => $user['User']['id']];
             $totRows = $SuppliersOrganizationsReferent->find('count', $options);
             if ($totRows == 0) {
-                echo "	non ha produttori associati: lo <span style=color:red>cancello</span> dal gruppo referenti \n";
+                echo "  non ha produttori associati: lo <span style=color:red>cancello</span> dal gruppo referenti \n";
                 $User->joomlaBatchUser(Configure::read('group_id_referent'), $user['User']['id'], 'del', false);
             } else {
-                echo "	ha produttori associati ($totRows): lo <span style=color:green>inserisco</span> dal gruppo referenti \n";
+                echo "  ha produttori associati ($totRows): lo <span style=color:green>inserisco</span> dal gruppo referenti \n";
                 $User->joomlaBatchUser(Configure::read('group_id_referent'), $user['User']['id'], 'add', false);
             }
         }
@@ -1404,7 +1405,7 @@ class UtilsCrons {
                     $fl->close();
                 }
                 else
-                	echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_bk." => non lo cancello \n";
+                    echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_bk." => non lo cancello \n";
             }
         }
 
@@ -1427,7 +1428,7 @@ class UtilsCrons {
                     $fl->close();
                 }
                 else
-                	echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_db." => non lo cancello \n";
+                    echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_db." => non lo cancello \n";
             }
         }
 
@@ -1450,7 +1451,7 @@ class UtilsCrons {
                     $fl->close();
                 }
                // else
-               // 	echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_logs."\n";
+               //   echo 'file '.$file.' con data '.$fileNameDate.' maggiore di '.$data_oggi_diminuita_logs."\n";
             }
         }
     }
@@ -1461,8 +1462,8 @@ class UtilsCrons {
     public function rss($organization_id, $debug = false) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
         
         App::import('Model', 'Rss');
         $Rss = new Rss();
@@ -1470,17 +1471,17 @@ class UtilsCrons {
         $Rss->cronElabora($user, $this->timeHelper, $debug);
     }
 
-	/* 
-	 *  S T A T O - E L A B O R A Z I O N E
-	 *
+    /* 
+     *  S T A T O - E L A B O R A Z I O N E
+     *
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      * $order_id  se valorizzato setta lo stato_elaborazione di quell'ordine
      */
     public function ordersStatoElaborazione($organization_id, $debug = true, $order_id = 0) {
         
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
         
         App::import('Model', 'StatoElaborazione');
         $StatoElaborazione = new StatoElaborazione();
@@ -1498,14 +1499,14 @@ class UtilsCrons {
     public function deliveriesStatoElaborazione($organization_id, $debug = true, $delivery_id = 0) {
         
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
 
         App::import('Model', 'DeliveryLifeCycle');
         $DeliveryLifeCycle = new DeliveryLifeCycle;
 
-		$DeliveryLifeCycle->deleteExpiredWithoutAssociations($user, 0, $debug);
-		$DeliveryLifeCycle->deliveriesToClose($user, 0, $debug);
+        $DeliveryLifeCycle->deleteExpiredWithoutAssociations($user, 0, $debug);
+        $DeliveryLifeCycle->deliveriesToClose($user, 0, $debug);
     }
     
     /*
@@ -1516,8 +1517,8 @@ class UtilsCrons {
     public function requestPaymentStatoElaborazione($organization_id, $debug = true, $request_payment_id = 0) {
         
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
         
         App::import('Model', 'StatoElaborazione');
         $StatoElaborazione = new StatoElaborazione();
@@ -1541,28 +1542,28 @@ class UtilsCrons {
         
         $DesOrder->statoElaborazione($des_id, $des_order_id, $debug);
     }
-	 
+     
     public function prodDeliveriesStatoElaborazione($organization_id, $debug = true, $prod_delivery_id = 0) {
     
         $user = $this->_getObjUserLocal($organization_id, ['PRDD']);
-		if(empty($user)) 
-			return;	
+        if(empty($user)) 
+            return; 
         
         App::import('Model', 'StatoElaborazioneProd');
         $StatoElaborazioneProd = new StatoElaborazioneProd();
         
         $StatoElaborazioneProd->prodDeliveries($user, $debug, $prod_delivery_id); 
     }
-	 
-	 
+     
+     
     private function _getProfileUser($user_id = 0) {
 
         App::import('Model', 'User');
         $User = new User;
 
         $sql = "SELECT profile_key, profile_value 
-					FROM " . Configure::read('DB.portalPrefix') . "user_profiles 
-					WHERE user_id = " . $user_id;
+                    FROM " . Configure::read('DB.portalPrefix') . "user_profiles 
+                    WHERE user_id = " . $user_id;
         $userProfile = $User->query($sql);
 
         return $userProfile;
@@ -1570,8 +1571,8 @@ class UtilsCrons {
 
     /*
       [0] => [[j_user_profiles] => [
-	      [profile_key] => profile.region
-	      [profile_value] => "MI"  ]]
+          [profile_key] => profile.region
+          [profile_value] => "MI"  ]]
      */
     private function _getProfileUserValue($userProfile, $key) {
 
@@ -1622,34 +1623,34 @@ class UtilsCrons {
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
-		$Organization->unbindModel(['hasMany' => ['Delivery', 'User']]);
+        $Organization->unbindModel(['hasMany' => ['Delivery', 'User']]);
 
         $options = [];
         $options['conditions'] = ['Organization.id' => (int) $organization_id,
-								  'Organization.type' => $type];		
+                                  'Organization.type' => $type];        
         $options['recursive'] = 0;
 
         $results = $Organization->find('first', $options);
-		if(!empty($results)) {
-			$user = new UserLocal();
-			$user->organization = $results;
+        if(!empty($results)) {
+            $user = new UserLocal();
+            $user->organization = $results;
 
-			$paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
-			$paramsFields = json_decode($results['Organization']['paramsFields'], true);
+            $paramsConfig = json_decode($results['Organization']['paramsConfig'], true);
+            $paramsFields = json_decode($results['Organization']['paramsFields'], true);
 
-			/*
-			 * configurazione preso dal template
-			 */
-			$paramsConfig['payToDelivery'] = $results['Template']['payToDelivery'];
-			$paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
-			$paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
-			$paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
-			$paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
+            /*
+             * configurazione preso dal template
+             */
+            $paramsConfig['payToDelivery'] = $results['Template']['payToDelivery'];
+            $paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
+            $paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
+            $paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
+            $paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
 
-			$user->organization['Organization'] += $paramsConfig;
-			$user->organization['Organization'] += $paramsFields;
-		}
-		
+            $user->organization['Organization'] += $paramsConfig;
+            $user->organization['Organization'] += $paramsFields;
+        }
+        
         return $user;
     }    
 }
