@@ -287,8 +287,8 @@ class UtilsCrons {
     /*
      * se ordine NON DES
      *    se un ArticleOrder ha raggiunto la quantita' massimo (stato = QTAMAXORDER)
-     *      => se ArticleOrder.send_mail = 'N'  mail gia' inviata, salto
-     *      => se ArticleOrder.send_mail = 'Y'  invio mail e update send_mail = 'N'
+     *      => se ArticleOrder.send_mail = 'Y'  mail gia' inviata, salto
+     *      => se ArticleOrder.send_mail = 'N'  invio mail e update send_mail = 'Y'
      * 
      *      prima porto tutti gli ArticleOrder.stato = Y con send_mail = Y a send_mail = N
      * se ordine DES
@@ -1068,7 +1068,6 @@ class UtilsCrons {
     /*
      * key ArticlesOrder $organization_id $order_id, $article_organization_id, $article_id
      */
-
     public function articlesOrdersQtaCart($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
@@ -1087,9 +1086,14 @@ class UtilsCrons {
         $ArticlesOrder = new ArticlesOrder;
 
         $options = [];
-        $options['conditions'] = ['ArticlesOrder.organization_id' => $organization_id];
+        $options['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,
+                        // per debug    'ArticlesOrder.order_id' => 20563
+                        ];
         $options['recursive'] = -1;
         $results = $ArticlesOrder->find('all', $options);
+
+        if($debug)
+            echo "Trovati ".count($results)." ArticlesOrder \n";
 
         foreach ($results as $result) {
 
