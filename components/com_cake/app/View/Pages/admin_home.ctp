@@ -49,7 +49,7 @@ if($isReferentGeneric) {
     		<a href="/administrator/index.php?option=com_cake&amp;controller=Suppliers&amp;action=index_relations">
 	    		<div class="box">
     		  		<span class="fa fa-3x fa-search text-danger"></span>
-      				<h4>Rirerca nuovi produttori</h4>
+      				<h4>Ricerca nuovi produttori</h4>
       				<p>Tutti i produttori di PortAlGas da poter ricercare e confrontare</p>
     			</div>	
     		</a>
