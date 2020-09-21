@@ -229,6 +229,12 @@ class JLoggerFormattedText extends JLogger
 	 */
 	protected function initFile()
 	{
+		/*
+		 * fractis
+		 */
+		if($this->path=='/com_users.log')
+			$this->path = JPATH_BASE.'/tmp'.$this->path;
+		
 		// If the file doesn't already exist we need to create it and generate the file header.
 		if (!is_file($this->path))
 		{
