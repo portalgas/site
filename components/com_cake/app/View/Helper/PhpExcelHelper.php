@@ -152,7 +152,7 @@ class PhpExcelHelper extends AppHelper {
 				$this->xls->getActiveSheet()->getColumnDimensionByColumn($col)->setAutoSize(true);
 		}
 		// filter (has to be set for whole range)
-		if (count($this->tableParams['filter']))
+		if (isset($this->tableParams['filter']) && !empty($this->tableParams['filter']) && count($this->tableParams['filter']))
 			$this->xls->getActiveSheet()->setAutoFilter(PHPExcel_Cell::stringFromColumnIndex($this->tableParams['filter'][0]).($this->tableParams['header_row']).':'.PHPExcel_Cell::stringFromColumnIndex($this->tableParams['filter'][count($this->tableParams['filter']) - 1]).($this->tableParams['header_row'] + $this->tableParams['row_count']));
 		// wrap
 		if(isset($this->tableParams['auto_width'])) {		
@@ -193,12 +193,16 @@ class PhpExcelHelper extends AppHelper {
 		header("Pragma: public");
 		*/
 		
-		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');		header('Content-Disposition: attachment;filename="'.$filename.'"');		header('Cache-Control: max-age=0');		
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="'.$filename.'"');
+		header('Cache-Control: max-age=0');
+		
 		
 		// writer
 		$objWriter = PHPExcel_IOFactory::createWriter($this->xls, 'Excel2007');
 		$objWriter->save('php://output');  // Write file to the browser
-		//$objWriter->save(str_replace('.php', '.xlsx', __FILE__));		exit;
+		//$objWriter->save(str_replace('.php', '.xlsx', __FILE__));
+		exit;
 		// clear memory
 		//$this->xls->disconnectWorksheets();
 	}
