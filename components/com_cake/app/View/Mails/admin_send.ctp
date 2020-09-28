@@ -29,8 +29,10 @@ echo $this->App->drawFormRadio('Mail','dest_options_qta', ['options' => $dest_op
  * produttori
  */
 echo '<div id="suppliersorganization" style="display:none;">';
-$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
-echo $this->Form->input('supplier_organization', ['label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true]);
+if(!empty($ACLsuppliersOrganization)) {
+	$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
+	echo $this->Form->input('supplier_organization', ['label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true]);	
+}
 echo '</div>';
 				
 /*
