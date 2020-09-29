@@ -120,7 +120,7 @@ ul.help  {
 	<li><a href="#linux">Linux</a></li>
 	<li><a href="#apache">Apache</a></li>
 	<li><a href="#php">PHP</a></li>
-	<li><a href="#smtp">Smtp e posta</a></li>
+	<li><a href="#smtp">Smtp, posta, AWS</a></li>
 	<!-- li><a href="#postfix">Postfix</a></li -->
 	<li><a href="#database">Database</a></li>
 	<li><a href="#phpmyadmin">PhpMyadmin</a></li>
@@ -318,7 +318,7 @@ ul.help  {
 			<?php include('box_smtp.ctp');?>
 		</li>
 		<!-- li><a name="postfix"></a>
-			<?php include('box_postfix.ctp');?>
+			include('box_postfix.ctp');
 		</li -->
 		<li><a name="database"></a>
 			<?php include('box_database.ctp');?>
