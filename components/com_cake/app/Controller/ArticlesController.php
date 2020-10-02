@@ -130,9 +130,9 @@ class ArticlesController extends AppController {
 		$this->_admin_index_filter_object();
 		
 		if($context=='articles') 
-			$SqlLimit = 25;
+			$SqlLimit = 75;
 		else if($context=='order') 
-			$SqlLimit = 25;
+			$SqlLimit = 75;
 				
 		/*
 		 * parametri da passare eventualmente a admin_edit
