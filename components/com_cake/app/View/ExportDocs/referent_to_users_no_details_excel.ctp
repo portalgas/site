@@ -4,8 +4,10 @@
  *   Documento con elenco diviso per utente (per pagamento dell'utente) 
  */
 
-$this->PhpExcel->createWorksheet();$this->PhpExcel->setDefaultFont('Calibri', 12);
-// data
+$this->PhpExcel->createWorksheet();
+$this->PhpExcel->setDefaultFont('Calibri', 12);
+
+// data
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
@@ -13,24 +15,34 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		foreach($result['Delivery']['Order'] as $numOrder => $order) {
 
 
-			// define table cells			$table[] =	array('label' => __('Name'), 'width' => 'auto', 'wrap' => true, 'filter' => false);			$table[] =	array('label' => __('qta').' totale', 'width' => 'auto', 'filter' => true);
-			$table[] = array('label' => __('Importo').' totale', 'width' => 'auto', 'filter' => true);						if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')  				$table[] = array('label' => __('Trasport'), 'width' => auto, 'wrap' => true, 'filter' => false);
+			// define table cells
+			$table[] =	array('label' => __('Name'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
+			$table[] =	array('label' => __('qta').' totale', 'width' => 'auto', 'filter' => true);
+			$table[] = array('label' => __('Importo').' totale', 'width' => 'auto', 'filter' => true);
+			
+			if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y') 
+ 				$table[] = array('label' => __('Trasport'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 			
 			if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00' && $trasportAndCost=='Y') 
-				$table[] = array('label' => __('CostMore'), 'width' => auto, 'wrap' => true, 'filter' => false);
+				$table[] = array('label' => __('CostMore'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 		
 			if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00' && $trasportAndCost=='Y') 
-				$table[] = array('label' => __('CostLess'), 'width' => auto, 'wrap' => true, 'filter' => false);		
+				$table[] = array('label' => __('CostLess'), 'width' => 'auto', 'wrap' => true, 'filter' => false);		
 			
 			if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') || 
 				($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 				($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y') 
-				$table[] = array('label' => __('Totale'), 'width' => auto, 'wrap' => true, 'filter' => false);
+				$table[] = array('label' => __('Totale'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 			
-						// heading			$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));				
+			
+			// heading
+			$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
+				
 			foreach ($order['ExportRows'] as $rows) {		
 			
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));				
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
 				foreach ($rows as $typeRow => $cols) {
 			
 					switch ($typeRow) {
@@ -95,7 +107,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						case 'TRTOT':
 							$rows = [];
 							$rows[] = '';
-							$rows[] = (int)$cols['QTA'];							$rows[] = $cols['IMPORTO'];
+							$rows[] = (int)$cols['QTA'];
+							$rows[] = $cols['IMPORTO'];
 							
 
 							if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
@@ -111,12 +124,14 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 								($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y')
 								$rows[] = $cols['IMPORTO_COMPLETO'];
-						break;								
+						break;								
 						case 'TRDATA':
 
 						break;
 						case 'TRDATABIS':
-							case 'TRDATA':								$rows = [];								$rows[] = $cols['NOTA'];
+							case 'TRDATA':
+								$rows = [];
+								$rows[] = $cols['NOTA'];
 						break;
 					}
 					

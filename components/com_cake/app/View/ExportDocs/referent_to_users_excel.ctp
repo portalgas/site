@@ -4,8 +4,10 @@
  *   Documento con elenco diviso per utente (per pagamento dell'utente) 
  */
 
-$this->PhpExcel->createWorksheet();$this->PhpExcel->setDefaultFont('Calibri', 12);
-// data
+$this->PhpExcel->createWorksheet();
+$this->PhpExcel->setDefaultFont('Calibri', 12);
+
+// data
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
@@ -16,27 +18,35 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			// define table cells
 			$table[] =	array('label' => '', 'width' => 'auto');
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-				$table[] =	array('label' => __('Codice'), 'width' => 'auto', 'wrap' => true, 'filter' => false);			$table[] =	array('label' => __('Name'), 'width' => 'auto', 'wrap' => true, 'filter' => false);			$table[] = array('label' => __('PrezzoUnita'), 'width' => 'auto', 'filter' => true);
+				$table[] =	array('label' => __('Codice'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
+			$table[] =	array('label' => __('Name'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
+			$table[] = array('label' => __('PrezzoUnita'), 'width' => 'auto', 'filter' => true);
 			$table[] = array('label' => __('Prezzo/UM'), 'width' => 'auto', 'filter' => true);
 			$table[] =	array('label' => __('qta'), 'width' => 'auto', 'filter' => true);
-			$table[] = array('label' => __('Importo'), 'width' => 'auto', 'filter' => true);			
+			$table[] = array('label' => __('Importo'), 'width' => 'auto', 'filter' => true);
+			
 			if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
-				$table[] = array('label' => __('Trasport'), 'width' => auto, 'wrap' => true, 'filter' => false);
+				$table[] = array('label' => __('Trasport'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 				
 			if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00' && $trasportAndCost=='Y')
-				$table[] = array('label' => __('CostMore'), 'width' => auto, 'wrap' => true, 'filter' => false);
+				$table[] = array('label' => __('CostMore'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 			
 			if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_less']!='0.00' && $trasportAndCost=='Y')
-				$table[] = array('label' => __('CostLess'), 'width' => auto, 'wrap' => true, 'filter' => false);
+				$table[] = array('label' => __('CostLess'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
 				
 			if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
 				($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 				($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y')
-				$table[] = array('label' => __('Totale'), 'width' => auto, 'wrap' => true, 'filter' => false);
-						// heading			$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));				
+				$table[] = array('label' => __('Totale'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
+			
+			// heading
+			$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
+				
 			foreach ($order['ExportRows'] as $rows) {		
 			
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));				
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
 				foreach ($rows as $typeRow => $cols) {
 			
 					switch ($typeRow) {
@@ -57,7 +67,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							if($totale_per_utente=='Y') {
 								$rows = [];
 								$rows[] = '';
-								if($user->organization['Organization']['hasFieldArticleCodice']=='Y')									$rows[] = '';
+								if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
+									$rows[] = '';
 								$rows[] = "Totale dell'utente";
 								$rows[] = '';
 								$rows[] = '';
@@ -80,11 +91,15 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							}
 						break;
 						case 'TRTOT':
-							$rows = [];							$rows[] = "Totale";
+							$rows = [];
+							$rows[] = "Totale";
 							if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-								$rows[] = '';														$rows[] = '';							$rows[] = '';
+								$rows[] = '';							
 							$rows[] = '';
-							$rows[] = $cols['QTA'];							$rows[] = $cols['IMPORTO'];
+							$rows[] = '';
+							$rows[] = '';
+							$rows[] = $cols['QTA'];
+							$rows[] = $cols['IMPORTO'];
 							
 							if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
 								$rows[] = $cols['IMPORTO_TRASPORTO'];
@@ -98,18 +113,25 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							if((($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
 								($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
 								($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) && $trasportAndCost=='Y')
-								$rows[] = $cols['IMPORTO_COMPLETO'];						break;								
+								$rows[] = $cols['IMPORTO_COMPLETO'];
+						break;								
 						case 'TRDATA':
 							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UMRIF']));
 							if($cols['DELETE_TO_REFERENT']=='Y') $name .= " (CANCELLATO)";
 							$codice = $this->ExportDocs->prepareCsv($cols['CODICE']);
 									
 							$rows = [];
-							$rows[] = '';							if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-								$rows[] = $codice;							$rows[] = $name;							$rows[] = $cols['PREZZO'];							$rows[] = $this->ExportDocs->prepareCsv($cols['PREZZO_UMRIF']);							$rows[] = $cols['QTA']; // $this->App->traslateQtaImportoModificati($cols['ISQTAMOD'])
+							$rows[] = '';
+							if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
+								$rows[] = $codice;
+							$rows[] = $name;
+							$rows[] = $cols['PREZZO'];
+							$rows[] = $this->ExportDocs->prepareCsv($cols['PREZZO_UMRIF']);
+							$rows[] = $cols['QTA']; // $this->App->traslateQtaImportoModificati($cols['ISQTAMOD'])
 							if($cols['DELETE_TO_REFERENT']=='Y') 
 								$rows[] = '0,00';
-							else								$rows[] = $cols['IMPORTO']; // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+							else
+								$rows[] = $cols['IMPORTO']; // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
 							if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
 								$rows[] = '';
 								
@@ -125,7 +147,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$rows[] = '';		
 						break;
 						case 'TRDATABIS':
-							case 'TRDATA':								$rows = [];								$rows[] = $cols['NOTA'];
+							case 'TRDATA':
+								$rows = [];
+								$rows[] = $cols['NOTA'];
 						break;
 					}
 					
