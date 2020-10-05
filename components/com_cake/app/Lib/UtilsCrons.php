@@ -1296,7 +1296,7 @@ class UtilsCrons {
 
     private function _gmap($address, $debug = false) {
 
-        $esito = "";
+        $esito = [];
 
         $url = "https://maps.google.com/maps/api/geocode/json?sensor=false&key=".Configure::read('GoogleApiKey')."&address=";
 
