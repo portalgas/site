@@ -31,7 +31,8 @@ echo $this->Form->create('Article',array('id'=>'formGas'));
 					if(isset($organizationResults)) {
 						echo '<div class="input text ">';
 						echo '<label>'.__('organization_owner_articles').'</label> ';
-						echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organizationResults['Organization']['img1'].'" alt="'.$organizationResults['Organization']['name'].'" /> ';	
+						if(!empty($organizationResults['Organization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').DS.$organizationResults['Organization']['img1'].DS.$organizationResults['Organization']['img1'])) 
+							echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$organizationResults['Organization']['img1'].'" alt="'.$organizationResults['Organization']['name'].'" /> ';	
 						echo $organizationResults['Organization']['name']; 
 						echo '</div>';
 					}

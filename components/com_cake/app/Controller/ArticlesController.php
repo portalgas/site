@@ -126,7 +126,8 @@ class ArticlesController extends AppController {
         }
 			
 		$conditions = $this->_admin_index_sql_conditions($this->user->organization['Organization']['id'], $context, $FilterArticleSupplierId);
-		
+		// debug($conditions);
+
 		$this->_admin_index_filter_object();
 		
 		if($context=='articles') 
@@ -162,8 +163,8 @@ class ArticlesController extends AppController {
 					       'group' => 'Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name',
 						   'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'], 'recursive' => 1, 'limit' => $SqlLimit];
 		$results = $this->paginate('Article');
-	    // self::d($conditions, false); 
-		// self::d($results, false); 
+	    // debug($conditions);
+		// debug($results); 
 		
 	    /*
 	     * se empty ctrl se non e' un produttore DES e 

@@ -10,6 +10,8 @@ class ProdGasPromotionsController extends AppController {
    public function beforeFilter() {
    		parent::beforeFilter();
    		
+   		// debug($this->user->organization['Organization']);
+
 		/* ctrl ACL */
 		if($this->user->organization['Organization']['type']!='PRODGAS') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
