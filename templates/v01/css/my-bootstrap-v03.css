@@ -2,7 +2,7 @@ body {
     color: #777;
 }
 header {
-	height: 80px;
+    height: 80px;
 }
 .logo {
     background: url("https://www.portalgas.it/images/cake/loghi/0/150h50.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
@@ -29,8 +29,8 @@ footer .footer-below {
     padding: 25px 0;
 }
 footer ul.social > li {
-	list-style: outside none none;
-    margin: 0 0 10px;	
+    list-style: outside none none;
+    margin: 0 0 10px;   
 }
 
 /*
@@ -40,19 +40,19 @@ footer ul.social > li {
     background-color: #0a659e;
 }
 .navbar-default .navbar-nav > li > a  {
-	color: #fff;
+    color: #fff;
     font-weight: bold;
     text-decoration: none;
     text-transform: uppercase;
 }
 .navbar-default .navbar-nav > li > a:hover {
-	color: #fff;
-	background: none repeat scroll 0 0 rgba(255, 255, 255, 0.2);
-	text-decoration: none;
+    color: #fff;
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.2);
+    text-decoration: none;
 }
 .navbar-default .navbar-nav > li[class*="active"] > a {
     color: #fff;
-	background: none repeat scroll 0 0 rgba(255, 255, 255, 0.4);
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.4);
 }
 '.navbar-default .navbar-nav > li[class*="active"] > a:hover' {
     color: #fff;
@@ -65,17 +65,17 @@ footer ul.social > li {
  *  box account (login, logout)
  */
 .box-account {
-	padding: 15px 0;
+    padding: 15px 0;
     text-align: right;
 }
 .box-account-footer {
-	padding: 10px;
-	background: none repeat scroll 0 0 #f5f5f5;
-	overflow: hidden;
+    padding: 10px;
+    background: none repeat scroll 0 0 #f5f5f5;
+    overflow: hidden;
 }
 #box-account-dashboard {
-	padding-top:35px;
-	z-index:50;
+    padding-top:35px;
+    z-index:50;
 }
 #box-account-dashboard, #box-account-dashboard-forget {
     background-color: #fff;
@@ -268,11 +268,11 @@ h3 {
 
 /* riga con il dettaglio ajax */
 tr.trView { 
-	background: none repeat scroll 0 0 #FFFAC2;
-	display: none;
+    background: none repeat scroll 0 0 #FFFAC2;
+    display: none;
 }
 tr.trView > td:first-child {
-	background: #fff;
+    background: #fff;
 }
 tr td.trGroup {
     background-color: #e1e1e1;
@@ -311,7 +311,7 @@ th {
     z-index: 2147483647;
 }    
 .lastCart {
-	background-color:yellow;	
+    background-color:yellow;    
 }
 .valoreEvidenzia {
     background-color: #09D96B;
@@ -321,7 +321,7 @@ th {
 .dettaglioAcquisti {
     background-color:#FCF8E3; 
 }
-.qtaUno {	
+.qtaUno {   
     background-color: #09d96b;
     color: #000;
     float: left;
@@ -331,12 +331,12 @@ th {
     width: 30px;
 }
 .qtaZero {
-  	/* background-color: #FFFFFF; */
-  	float: left;
-  	width: 30px;
-	margin-right:5px;
-	padding:5px;
-	text-align:center;
+    /* background-color: #FFFFFF; */
+    float: left;
+    width: 30px;
+    margin-right:5px;
+    padding:5px;
+    text-align:center;
 }
 .qtaEvidenza {
     background-color: #ff0000;
@@ -353,25 +353,29 @@ th {
 /*
  * tabs consegne, acquisti
  */
+.nav.nav-tabs li a.btn-externel:hover {
+    background-color: #1e83c2;
+    color: #fff;
+} 
 .nav.nav-tabs.deliveries li {
     line-height: 24px;
     text-transform: capitalize;
 } 
-.nav.nav-tabs.deliveries li.active a {
-	background: none repeat scroll 0px 0px rgb(79, 180, 243);
+.nav.nav-tabs.deliveries li.active a:not(btn-externel) {
+    background: none repeat scroll 0px 0px rgb(79, 180, 243);
     color: #fff;
 } 
 .tab-content.deliveries {
-	padding-top: 15px;
+    padding-top: 15px;
 }
 .tab-pane.deliveries row {
-	padding: 0;
+    padding: 0;
 }
 .tab-pane.deliveries .container row {
-	padding: 0;
+    padding: 0;
 }
 .action-deliveries i {
-	margin-left: 5px;
+    margin-left: 5px;
 }
 .table > thead > tr > th {
     border-bottom: 2px solid #ccc;
@@ -389,11 +393,11 @@ th {
  * form
  */
 form.select-orders {
-	padding:0;
-	margin:0;
+    padding:0;
+    margin:0;
 }
 form.select-orders .bootstrap-select {
-	width:100%;
+    width:100%;
 }
 legend { display: none;}
 .selectpicker {}
@@ -407,40 +411,40 @@ legend { display: none;}
  *  carousel x filtri i acquisti
  */
 .container.slideshow {
-	margin:0;
+    margin:0;
 } 
 .carousel-inner .item {
-	background-color: #fff;
-	min-height:95px;
+    background-color: #fff;
+    min-height:95px;
 }
 .carousel-caption {
-	text-shadow: none;
-	color:#000;
-	position:static;
-}	
+    text-shadow: none;
+    color:#000;
+    position:static;
+}   
 .carousel-control {
-	opacity: 1;
+    opacity: 1;
     width: 5%;
     text-shadow: navy;
 }
 .carousel-control.left, 
 .carousel-control.right{
-	background: none repeat scroll 0 0 transparent;
+    background: none repeat scroll 0 0 transparent;
     color: orange;
 } 
 
 
 .text-align-left {
-	text-align: left;
+    text-align: left;
 }
 .text-align-right {
-	text-align: right;
+    text-align: right;
 }
 .text-align-center {
-	text-align: center;
+    text-align: center;
 }
 .text-align-justify {
-	text-align: justify;
+    text-align: justify;
 }
 .padding-none {
     padding: 0 !important;
@@ -593,7 +597,7 @@ legend { display: none;}
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .readmore a {
     color: #fff;
@@ -636,12 +640,12 @@ legend { display: none;}
 }
 .service-item:hover .description-wrap {
     opacity: 1;
-	display:block;
+    display:block;
     top: 150px;
 }
 .description-wrap {
     opacity: 0;
-	display:none;
+    display:none;
     position: absolute;
     top: 370px;
     transition: all 0.2s linear 0s;
@@ -653,14 +657,14 @@ legend { display: none;}
     padding: 20px;
     position: relative;
     width: 295px;
-	text-align:left;
+    text-align:left;
 }
 .service-description ul  {
-	padding-left:2px;
-	margin-left:2px;
+    padding-left:2px;
+    margin-left:2px;
 }
 .service-description ul li {
-	font-size: 15px;
+    font-size: 15px;
 }
 .m-arrow {
     border-color: transparent transparent #ffffff;
@@ -677,25 +681,25 @@ legend { display: none;}
     top: -10px;
 }
 .orders_select{
-	border:3px solid #84a7db;
-	border-radius:8px;
-	padding: 5px 0;
+    border:3px solid #84a7db;
+    border-radius:8px;
+    padding: 5px 0;
 }
 /*
  * quanti km fa 
  */
 .progressBar {
-	background-color: #ccc;
-	height: 15px;
-	margin: 10px 0;
-	width: 100%;
-	text-align: left;
+    background-color: #ccc;
+    height: 15px;
+    margin: 10px 0;
+    width: 100%;
+    text-align: left;
 }
 .progressBar span {
-	display: inline-block;
-	height: 15px;
-	width: 25%;
-	background: none repeat scroll 0 0 #0a659e;
+    display: inline-block;
+    height: 15px;
+    width: 25%;
+    background: none repeat scroll 0 0 #0a659e;
 }
 
 /*
@@ -703,7 +707,7 @@ legend { display: none;}
  * disattivo hasTip di joomla
  */
 .tip-wrap {
-	display: none !important;
+    display: none !important;
 }
 .bio {
    background: url('/images/cake/bio.gif') no-repeat scroll center center transparent;
@@ -713,8 +717,8 @@ legend { display: none;}
 ul.lat-menu {padding:5px}
 ul.lat-menu li {list-style: outside none none;}
 .lat-menu {
-	border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 5px solid #1e83c2 ;	
+    border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border: 5px solid #1e83c2 ; 
 }

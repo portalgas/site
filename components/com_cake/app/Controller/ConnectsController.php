@@ -5,14 +5,22 @@ class ConnectsController extends AppController {
    
     public $components = ['CryptDecrypt'];
 		
-   public function beforeFilter() {
+    public function beforeFilter() {
    		parent::beforeFilter();
-		
-		if(empty($this->user)) {
+
+		if(empty($this->user) || empty($this->user->id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-   }
+    }
+
+    public function index() {
+   		$this->_index();
+   	}
+
+    public function admin_index() {
+   		$this->_index();
+   	}
 
    /*
     * da joomla25 a cakephp
@@ -21,7 +29,7 @@ class ConnectsController extends AppController {
     * chiamando /api/connect?u={salt}&format=notmpl .htaccess
     * Rests::connect()
     */
-   public function admin_index() {
+   public function _index() {
    		
    		if(!isset($this->user->id) || empty($this->user->id))
    			return false;
@@ -45,10 +53,10 @@ class ConnectsController extends AppController {
 	   	 */
 	   	$c_to = $this->request->pass['c_to'];
 	   	if(empty($c_to))
-		   	$c_to = Configure::read('Neo.portalgas.controller'); // 'admin/cashes'
+		   	$c_to = Configure::read('Neo.portalgas.controller'); 
 	   	$a_to = $this->request->pass['a_to'];
 	   	if(empty($a_to))
-			$a_to = Configure::read('Neo.portalgas.action');     // 'supplierOrganizationFilter'; 
+			$a_to = Configure::read('Neo.portalgas.action'); 
 
 		/*
 		 * parametri aggiuntivi
@@ -75,11 +83,11 @@ class ConnectsController extends AppController {
 		exit;
 	}
 
-   /*
+    /*
     * $this->user ha organization_id ma e' gestito a frontend
     * $this->user->organization['Organization'] e' l'organizzazione corrente
     */
-   private function _getOrganizationById($user_id) {
+    private function _getOrganizationById($user_id) {
 		
 		$organization_id = 0;
 
@@ -97,5 +105,5 @@ class ConnectsController extends AppController {
 			$organization_id = $usersResults['User']['organization_id'];
 
 		return $organization_id;
-   }	
+    }	
 }

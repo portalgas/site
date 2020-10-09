@@ -335,6 +335,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		
 		$data = []; // array con i dati dell'ordine
 		$data['Order']['organization_id'] = $user->organization['Organization']['id'];
+		$data['Order']['order_type_id'] = Configure::read('Order.type.promotion');
 		$data['Order']['supplier_organization_id'] = $supplier_organization_id;
 		$data['Order']['owner_organization_id'] = $user->organization['Organization']['id'];
 		$data['Order']['owner_supplier_organization_id'] = $supplier_organization_id;
