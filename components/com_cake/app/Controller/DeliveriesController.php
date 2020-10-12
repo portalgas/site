@@ -286,7 +286,7 @@ class DeliveriesController extends AppController {
     }
 
     /*
-     * visualizzo il tab   ordini per consegna
+     * visualizzo il tab ordini per consegna
      */
     public function tabsEcommTabOrdersDelivery($delivery_date = null) {
 

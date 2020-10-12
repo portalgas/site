@@ -47,7 +47,7 @@ echo $this->Form->input('supplier_organization_id', $options);
 		
 <?php
 echo $this->element('legendaCsvExportImport');
-echo $this->element('legendaCsvImport', array('array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles')));
+echo $this->element('legendaCsvImport', ['array_um' => $array_um, 'rowsMax' => Configure::read('CsvImportRowsMaxArticles'), 'viewVersionSimple' => false]);
 
 echo '</fieldset>';
 
