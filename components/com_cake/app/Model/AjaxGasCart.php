@@ -165,7 +165,7 @@ class AjaxGasCart extends AppModel {
 		}
 		else	
 		/*
-		 * Q T A - M A X 
+		 * Q T A - M A X - O R D E R 
 		 * */
 		if($results['ArticlesOrder']['qta_massima_order'] > 0) {
 			
