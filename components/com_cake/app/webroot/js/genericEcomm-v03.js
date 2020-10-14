@@ -1,24 +1,24 @@
 function activeEcommButtonPiu(d) {
     var a = $(d).parent().attr("id");
     var c = a.substring(a.indexOf("-") + 1, a.lenght);
-    var e = $("#qta-" + c).html();
-    if (e == "") {
-        e = 0
+    var qta = $("#qta-" + c).html();
+    if (qta == "") {
+        qta = 0
     }
-    e = parseInt(e);
-    var g = parseInt($("#qta_multipli-" + c).val());
-    e = (e + (1 * g));
+    qta = parseInt(qta);
+    var qta_multipli = parseInt($("#qta_multipli-" + c).val());
+    qta = (qta + (1 * qta_multipli));
     var b = parseInt($("#qta_minima-" + c).val());
-    if (e < b) {
-        e = b
+    if (qta < b) {
+        qta = b
     }
-    if (!validitationQta(c, e)) {
+    if (!validitationQta(c, qta)) {
         return false
     }
     var f = $("#prezzo-" + c).val();
-    prezzoNew = number_format((f * e), 2, ",", ".");
+    prezzoNew = number_format((f * qta), 2, ",", ".");
     $("#prezzoNew-" + c).html(prezzoNew + "&nbsp;&euro;");
-    $("#qta-" + c).html(e);
+    $("#qta-" + c).html(qta);
     $("#qta-" + c).removeClass("qtaZero");
     $("#qta-" + c).addClass("qtaUno");
     $("#submitEcomm-" + c).attr("style", "opacity:1");
@@ -31,25 +31,25 @@ function activeEcommButtonPiu(d) {
 function activeEcommButtonMeno(d) {
     var a = $(d).parent().attr("id");
     var c = a.substring(a.indexOf("-") + 1, a.lenght);
-    var e = $("#qta-" + c).html();
-    if (e == 0) {
+    var qta = $("#qta-" + c).html();
+    if (qta == 0) {
         return false
     }
-    e = parseInt(e);
-    var g = parseInt($("#qta_multipli-" + c).val());
-    e = (e - (1 * g));
-    var b = parseInt($("#qta_minima-" + c).val());
-    if (e < b) {
-        e = 0
+    qta = parseInt(qta);
+    var qta_multipli = parseInt($("#qta_multipli-" + c).val());
+    qta = (qta - (1 * qta_multipli));
+    var qta_minima = parseInt($("#qta_minima-" + c).val());
+    if (qta < qta_minima) {
+        qta = 0
     }
-    if (!validitationQta(c, e)) {
+    if (!validitationQta(c, qta)) {
         return false
     }
     var f = $("#prezzo-" + c).val();
-    prezzoNew = number_format((f * e), 2, ",", ".");
+    prezzoNew = number_format((f * qta), 2, ",", ".");
     $("#prezzoNew-" + c).html(prezzoNew + "&nbsp;&euro;");
-    $("#qta-" + c).html(e);
-    if (e == 0) {
+    $("#qta-" + c).html(qta);
+    if (qta == 0) {
         $("#qta-" + c).removeClass("qtaUno");
         $("#qta-" + c).addClass("qtaZero")
     }
