@@ -996,6 +996,7 @@ class OrdersController extends AppController {
 			self::d($OrderOldresults, $debug);
 			$this->request->data['Order']['owner_organization_id'] = $OrderOldresults['Order']['owner_organization_id'];
 			$this->request->data['Order']['owner_supplier_organization_id'] = $OrderOldresults['Order']['owner_supplier_organization_id'];
+			$this->request->data['Order']['order_type_id'] = $OrderOldresults['Order']['order_type_id'];
 						
 			$this->request->data['Order']['data_inizio'] = $this->request->data['Order']['data_inizio_db'];
 			$this->request->data['Order']['data_fine'] = $this->request->data['Order']['data_fine_db'];
