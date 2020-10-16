@@ -33,8 +33,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-			
-			
+				
 		$this->set('supplier_organization_id', $supplier_organization_id);
 			
 		/*
@@ -53,29 +52,29 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			}
 
 			/*
-			 *  gestione intro_text / full_text
-			 *  text_intro_end indica dove si trova il punto nel testo per troncare intro_text
+			 *  gestione introtext / fulltext
+			 *  text_intro_end indica dove si trova il punto nel testo per troncare introtext
 			 */
 			$j_content_id = 0;
 			$text_intro_end = $this->request->data['SuppliersOrganizationsJcontent']['text_intro_end'];
-			$full_text = $this->request->data['SuppliersOrganizationsJcontent']['full_text'];
-			if(!empty($full_text)) {
+			$fulltext = $this->request->data['SuppliersOrganizationsJcontent']['fulltext'];
+
+			if(!empty($fulltext)) {
 				if($text_intro_end==0) {
-					$this->request->data['SuppliersOrganizationsJcontent']['intro_text'] = $full_text;
-					$this->request->data['SuppliersOrganizationsJcontent']['full_text'] = '';
+					$this->request->data['SuppliersOrganizationsJcontent']['introtext'] = $fulltext;
+					$this->request->data['SuppliersOrganizationsJcontent']['fulltext'] = '';
 				}
 				else {
-					$this->request->data['SuppliersOrganizationsJcontent']['intro_text'] = substr($full_text, 0, ($text_intro_end+2));
+					$this->request->data['SuppliersOrganizationsJcontent']['introtext'] = substr($fulltext, 0, ($text_intro_end+2));
 					
-					$full_text = substr($full_text, ($text_intro_end+2), strlen($full_text));
-					$full_text .= "<p>{flike}</p>";
+					$fulltext = substr($fulltext, ($text_intro_end+2), strlen($fulltext));
+					$fulltext .= "<p>{flike}</p>";
 					
-					$this->request->data['SuppliersOrganizationsJcontent']['full_text'] = $full_text;
+					$this->request->data['SuppliersOrganizationsJcontent']['fulltext'] = $fulltext;
 					
 					if($debug) {
-						echo '<br />'.$this->request->data['SuppliersOrganizationsJcontent']['intro_text'];
-						echo '<hr />';
-						echo '<br />'.$this->request->data['SuppliersOrganizationsJcontent']['full_text'];
+						debug($this->request->data['SuppliersOrganizationsJcontent']['introtext']);
+						echo($this->request->data['SuppliersOrganizationsJcontent']['fulltext']);
 					}
 				}	
 				
@@ -117,7 +116,7 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 			/*
 			 * creo occorrenza in SuppliersOrganizationsJcontent
 			 */
-			if(!empty($this->request->data['SuppliersOrganizationsJcontent']['intro_text'])) {
+			if(!empty($this->request->data['SuppliersOrganizationsJcontent']['introtext'])) {
 				$data = [];
 				if(!empty($results['SuppliersOrganizationsJcontent']['id']))
 					$data['SuppliersOrganizationsJcontent']['id'] = $results['SuppliersOrganizationsJcontent']['id'];
@@ -125,12 +124,10 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 				$data['SuppliersOrganizationsJcontent']['organization_id'] = $this->user->organization['Organization']['id'];
 				$data['SuppliersOrganizationsJcontent']['title'] = $results['Supplier']['name'];
 				$data['SuppliersOrganizationsJcontent']['supplier_organization_id'] = $supplier_organization_id;
-				$data['SuppliersOrganizationsJcontent']['intro_text'] = $this->request->data['SuppliersOrganizationsJcontent']['intro_text'];
-				$data['SuppliersOrganizationsJcontent']['full_text'] = $this->request->data['SuppliersOrganizationsJcontent']['full_text'];
+				$data['SuppliersOrganizationsJcontent']['introtext'] = $this->request->data['SuppliersOrganizationsJcontent']['introtext'];
+				$data['SuppliersOrganizationsJcontent']['fulltext'] = $this->request->data['SuppliersOrganizationsJcontent']['fulltext'];
 				if($debug) {
-					echo "<pre>";
-					print_r($data);
-					echo "</pre>";
+					debug($data);
 				}
 				$this->SuppliersOrganizationsJcontent->save($data);
 		
@@ -145,10 +142,10 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 				$this->Session->setFlash($msg);
 			
 			if($debug)
-				echo "<br />msg ".$msg;
+				debug ('msg '.$msg);
 			
 			if(!$debug) 
-				$this->myRedirect(array('controller' => 'SuppliersOrganizations', 'action' => 'index', $supplier_organization_id));
+				$this->myRedirect(['controller' => 'SuppliersOrganizations', 'action' => 'index', $supplier_organization_id]);
 			
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 	}
@@ -175,14 +172,14 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 		
 		if(!empty($resultsSuppliersOrganizationsJcontent)) {
 			$results['SuppliersOrganizationsJcontent'] = $resultsSuppliersOrganizationsJcontent['SuppliersOrganizationsJcontent'];
-			$results['SuppliersOrganizationsJcontent']['text'] = $resultsSuppliersOrganizationsJcontent['SuppliersOrganizationsJcontent']['intro_text'] . $resultsSuppliersOrganizationsJcontent['SuppliersOrganizationsJcontent']['full_text'];			
+			$results['SuppliersOrganizationsJcontent']['text'] = $resultsSuppliersOrganizationsJcontent['SuppliersOrganizationsJcontent']['introtext'] . $resultsSuppliersOrganizationsJcontent['SuppliersOrganizationsJcontent']['fulltext'];			
 		}
 		else {
 			$results['SuppliersOrganizationsJcontent']['id'] = 0;
 			$results['SuppliersOrganizationsJcontent']['organization_id'] = '';
 			$results['SuppliersOrganizationsJcontent']['supplier_organization_id'] = '';
 			$results['SuppliersOrganizationsJcontent']['title'] = '';
-			$results['SuppliersOrganizationsJcontent']['full_text'] = '';
+			$results['SuppliersOrganizationsJcontent']['fulltext'] = '';
 			$results['SuppliersOrganizationsJcontent']['text'] = '';
 		}
 
@@ -292,8 +289,8 @@ class SuppliersOrganizationsJcontentsController extends AppController {
 		$data = array(
 				'catid' => $results['CategoriesSupplier']['j_category_id'],
 				'title' => $results['Supplier']['name'],
-				'intro_text' => $data['SuppliersOrganizationsJcontent']['intro_text'],
-				'full_text' => $data['SuppliersOrganizationsJcontent']['full_text'],
+				'introtext' => $data['SuppliersOrganizationsJcontent']['introtext'],
+				'fulltext' => $data['SuppliersOrganizationsJcontent']['fulltext'],
 				'state' => 1,
 		);
 		
