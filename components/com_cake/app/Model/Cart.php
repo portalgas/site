@@ -322,7 +322,8 @@ class Cart extends CartMultiKey {
 									'Cart.order_id' => $order_id,
 									'Cart.article_organization_id' => $article_organization_id,
 									'Cart.article_id' => $article_id,
-									'Cart.deleteToReferent' => 'N'];
+									'Cart.deleteToReferent' => 'N',
+									'Cart.stato' => 'Y'];
 			$options['recursive'] = -1;
 			$options['fields'] = ['Cart.qta','Cart.qta_forzato'];
 			self::d($options, $debug);
