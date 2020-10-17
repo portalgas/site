@@ -49,9 +49,9 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 			
 		$options = [];
 		$options['conditions'] = ['Article.organization_id' => $orderResult['Order']['owner_organization_id'],
-								  'Article.supplier_organization_id' => $orderResult['Order']['owner_supplier_organization_id'],
-								  'ArticlesOrder.organization_id' => $orderResult['Order']['organization_id'],
-								  'ArticlesOrder.order_id' => $orderResult['Order']['id']];
+				  'Article.supplier_organization_id' => $orderResult['Order']['owner_supplier_organization_id'],
+				  'ArticlesOrder.organization_id' => $orderResult['Order']['organization_id'],
+				  'ArticlesOrder.order_id' => $orderResult['Order']['id']];
 											  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  

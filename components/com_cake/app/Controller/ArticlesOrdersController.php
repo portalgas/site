@@ -228,7 +228,7 @@ class ArticlesOrdersController extends AppController {
      * 	action_post = action_articles_orders_current gestione normale
      *  action_post = action_articles_orders_previuos associo articoli ordine precedente
 	 */
-    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc') {
+    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc', $filter_name='') {
 
         $debug=false;
 		
@@ -431,6 +431,9 @@ class ArticlesOrdersController extends AppController {
 		$results = [];		
 		$opt = []; 
 		$opt['order'] = [$sort];
+		if(!empty($filter_name))
+			$opt['conditions'] = ['Article.name LIKE ' => '%'.$filter_name.'%'];
+
 		switch ($this->order['Order']['owner_articles']) {
 			case 'DES':
 				if($isTitolareDesSupplier) {
@@ -480,8 +483,7 @@ class ArticlesOrdersController extends AppController {
 		$sorts['Article.name asc'] = __('Name').' '.__('OrderAsc');
 		$sorts['Article.name desc'] = __('Name').' '.__('OrderDesc');
  
-		$this->set(compact('sort'));
-		$this->set(compact('sorts'));
+		$this->set(compact('sort', 'sorts', 'filter_name'));
     }
 
     /*

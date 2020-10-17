@@ -223,6 +223,9 @@ msgstr "Filtra per regione"
 msgid "FilterToGeoProvinces"
 msgstr "Filtra per provincia"
 
+msgid "FilterArticlesOrdersName"
+msgstr "Cerca tutti gli articoli che <b>contengono</b> la parola"
+
 msgid "Cart of user"
 msgstr "Carrello dell'utente"
 
