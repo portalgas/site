@@ -1,4 +1,6 @@
 <?php
+echo $this->Html->script('moduleCtrlArticlesOrders.min');
+
 $debug = false;
 
 if(empty($des_order_id)) {
@@ -306,14 +308,50 @@ echo $this->element('boxOrder', ['results' => $order]);
 					/*
 					 * campi gestiti anche da chi non e' proprietario dell'articolo
 					 */					
-					echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $article['Article']['qta_minima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $article['Article']['qta_massima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $article['Article']['qta_multipli'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $article['Article']['qta_minima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $article['Article']['qta_massima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					
-					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-						echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $article['Article']['alert_to_qta'],'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					// echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $article['Article']['qta_minima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					$qta_minima = $article['Article']['qta_minima'];
+ 					echo '<td><div class="btn btn-value-edit" 
+					 		data-attr-model="Article"
+					 	    data-attr-id-name="ArticlesOrderQtaMinima"
+					 	    data-attr-id="'.$article['Article']['id'].'"
+					 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';						
+					// echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $article['Article']['qta_massima'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					$qta_massima = $article['Article']['qta_massima'];
+ 					echo '<td><div class="btn btn-value-edit" 
+					 		data-attr-model="Article"
+					 	    data-attr-id-name="ArticlesOrderQtaMassima"
+					 	    data-attr-id="'.$article['Article']['id'].'"
+					 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';					
+					// echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $article['Article']['qta_multipli'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					$qta_multipli = $article['Article']['qta_multipli'];
+ 					echo '<td><div class="btn btn-value-edit" 
+					 		data-attr-model="Article"
+					 	    data-attr-id-name="ArticlesOrderQtaMultipli"
+					 	    data-attr-id="'.$article['Article']['id'].'"
+					 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';					
+					// echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $article['Article']['qta_minima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					$qta_minima_order = $article['Article']['qta_minima_order'];
+ 					echo '<td><div class="btn btn-value-edit" 
+					 		data-attr-model="Article"
+					 	    data-attr-id-name="ArticlesOrderQtaMinimaOrder"
+					 	    data-attr-id="'.$article['Article']['id'].'"
+					 	    data-attr-value="'.$qta_minima_order.'">'.$qta_minima_order.'</div></td>';
+					// echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $article['Article']['qta_massima_order'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+					$qta_massima_order = $article['Article']['qta_massima_order'];
+ 					echo '<td><div class="btn btn-value-edit" 
+					 		data-attr-model="Article"
+					 	    data-attr-id-name="ArticlesOrderQtaMassimaOrder"
+					 	    data-attr-id="'.$article['Article']['id'].'"
+					 	    data-attr-value="'.$qta_massima_order.'">'.$qta_massima_order.'</div></td>';					
+					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
+						// echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $article['Article']['alert_to_qta'],'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+						$alert_to_qta = $article['Article']['alert_to_qta'];
+	 					echo '<td><div class="btn btn-value-edit" 
+						 		data-attr-model="Article"
+						 	    data-attr-id-name="ArticlesOrderAlertToQta"
+						 	    data-attr-id="'.$article['Article']['id'].'"
+						 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';							
+					}
 				
 					echo $this->Form->hidden('organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][article_organization_id]', 'value' => $article['Article']['organization_id']]);
 					echo $this->Form->hidden('supplier_organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][supplier_organization_id]', 'value' => $article['Article']['supplier_organization_id']]);
@@ -345,8 +383,9 @@ echo $this->MenuOrders->drawWrapper($order['Order']['id'], $options=[]);
 echo '<div class="clearfix"></div>';
 echo $this->element('legendaArticlesOrderStato');
 ?>
-		
 <script type="text/javascript">
+var OrganizationHasFieldArticleAlertToQta = "<?php echo $user->organization['Organization']['hasFieldArticleAlertToQta'];?>";
+
 $(document).ready(function() {
 
 	$('#article_order_key_selected_all').click(function () {
@@ -413,95 +452,9 @@ $(document).ready(function() {
 		/*
 		 * articoli ancora da associare
 		 */
-		var article_id_selected = '';
-		for(i = 0; i < $("input[name='article_id_selected']:checked").length; i++) {
-			article_id_selected += $("input[name='article_id_selected']:checked").eq(i).val()+',';
-			
-			article_id = $("input[name='article_id_selected']:checked").eq(i).val();
-			
-			prezzo = $("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
-			if(prezzo=='' || prezzo==null || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') {
-				alert("Devi indicare l'importo per gli articoli che desideri associare all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
-				return false;			
-			}
-			
-			pezzi_confezione = $("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
-			if(pezzi_confezione=='' || pezzi_confezione==null || !isFinite(pezzi_confezione)) {
-				alert("Devi indicare il numero di pezzi per confezione per gli articoli che desideri associare all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
-				return false;			
-			}
-			if(pezzi_confezione <= 0) {
-				alert("Il numero di pezzi per confezione per gli articoli che desideri associare all'ordine deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
-				return false;			
-			}
-						
-			qta_minima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
-			if(qta_minima=='' || qta_minima==null || !isFinite(qta_minima)) {
-				alert("Devi indicare la quantità minima per gli articoli associati all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
-				return false;			
-			}
-			qta_minima = parseInt(qta_minima);
-			if(qta_minima <= 0) {
-				alert("La quantità minima per gli articoli che desideri associare all'ordine deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
-				return false;			
-			}
+		if(!ctrlArticlesOrders())
+			return false;
 
-			qta_minima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
-			if(qta_minima_order=='' || qta_minima_order==null || !isFinite(qta_minima_order)) {
-				alert("Devi indicare la quantità minima rispetto a tutti gli acquisti per gli articoli associati all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
-				return false;			
-			}
-			
-			qta_massima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
-			if(qta_massima_order=='' || qta_massima_order==null || !isFinite(qta_massima_order)) {
-				alert("Devi indicare la quantità massima per gli articoli associati all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
-				return false;			
-			}
-			qta_massima_order = parseInt(qta_massima_order);
-			if(qta_massima_order > 0 && qta_massima_order < pezzi_confezione) {
-				alert("La quantità massima è inferiore al numero di pezzi in una confezione");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
-				return false;			
-			}
-			
-			qta_multipli = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
-			if(qta_multipli=='' || qta_multipli==null || !isFinite(qta_multipli)) {
-				alert("Devi indicare di che multiplo dev'essere la quantità per gli articoli associati all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
-				return false;			
-			}
-			qta_multipli = parseInt(qta_multipli);
-			if(qta_multipli <= 0) {
-				alert("Il multiplo per gli articoli che desideri associare all'ordine deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
-				return false;			
-			}
-			
-			<?php
-			if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
-			?>
-				alert_to_qta = $("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
-				if(alert_to_qta=='' || alert_to_qta==null || !isFinite(alert_to_qta)) {
-					alert("Devi indicare quando avvisare raggiunta una certa quantità per gli articoli associati all'ordine");
-					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
-					return false;			
-				}
-				if(alert_to_qta <= 0) {
-					alert("La quantità che indica quando avvisare per gli articoli che desideri associare all'ordine deve essere > di zero");
-					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
-					return false;			
-				}
-			<?php
-			}
-			?>			
-		}
 		if(article_id_selected!='') {
 			article_id_selected = article_id_selected.substring(0,article_id_selected.length-1);
 			$('#article_id_selected').val(article_id_selected);

@@ -1,6 +1,7 @@
 <?php
 $this->App->d($results, false);
 
+echo $this->Html->script('moduleCtrlArticlesOrders.min');
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', $order['Order']['id']));
@@ -124,27 +125,27 @@ if(count($results)>0) {
 		 if(!$canEdit && !empty($des_order_id)) { 
 		 	$prezzo_ = $result['ArticlesOrder']['prezzo_']; // lo prendo dall'articolo associato all'ordine del titolare DES
 			echo '<td style="white-space: nowrap;">';
-			echo $this->Form->input('prezzo_disabled', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzoDisabled]', 'style' => 'display:inline', 'value' => $prezzo_, 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts));
-			echo $this->Form->hidden('prezzo', ['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'value' => $prezzo_]);
+			echo $this->Form->input('prezzo_disabled', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzoDisabled]', 'style' => 'display:inline', 'value' => $prezzo_, 'tabindex'=>((int)$numResult+1), 'after'=>'&nbsp;&euro;', 'class'=>'double', 'id' => 'ArticlesOrderPrezzoDisabled-'.$result['Article']['id']], $noOwnerOpts));
+			echo $this->Form->hidden('prezzo', ['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'value' => $prezzo_, 'id' => 'ArticlesOrderPrezzo-'.$result['Article']['id']]);
 			echo '</td>';			 	
 		 }
 		 else {
 		 	$prezzo_ = $result['Article']['prezzo_'];
 			echo '<td style="white-space: nowrap;">';
-			echo $this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $prezzo_, 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts));
+			echo $this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $prezzo_, 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double', 'id' => 'ArticlesOrderPrezzo-'.$result['Article']['id']], $noOwnerOpts));
 			echo '</td>';
 		 }
 		 
 		 if(!$canEdit && !empty($des_order_id)) {
 		 	$pezzi_confezione = $result['ArticlesOrder']['pezzi_confezione']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 	echo '<td>';
-		 	echo $this->Form->input('pezzi_confezione_disabled', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezioneDisabled]','value' => $pezzi_confezione, 'tabindex'=>((int)$numResult+1)], $noOwnerOpts));
-		 	echo $this->Form->hidden('pezzi_confezione', ['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $pezzi_confezione]);
+		 	echo $this->Form->input('pezzi_confezione_disabled', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezioneDisabled]','value' => $pezzi_confezione, 'tabindex'=>((int)$numResult+1), 'id' => 'ArticlesOrderPezziConfezioneDisabled-'.$result['Article']['id']], $noOwnerOpts));
+		 	echo $this->Form->hidden('pezzi_confezione', ['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]', 'value' => $pezzi_confezione, 'id' => 'ArticlesOrderPezziConfezione-'.$result['Article']['id']]);
 		 	echo '</td>';
 		 }
 		 else {
 		 	$pezzi_confezione = $result['Article']['pezzi_confezione'];
-		 	echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $pezzi_confezione, 'tabindex'=>((int)$numResult+1)], $noOwnerOpts)).'</td>';
+		 	echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $pezzi_confezione, 'tabindex'=>((int)$numResult+1), 'id' => 'ArticlesOrderPezziConfezione-'.$result['Article']['id']], $noOwnerOpts)).'</td>';
 		 }
 		
 		/*
@@ -154,44 +155,75 @@ if(count($results)>0) {
 		 	$qta_minima = $result['ArticlesOrder']['qta_minima']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 else	
 		 	$qta_minima = $result['Article']['qta_minima'];
-		 echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-		 
+		// echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderQtaMinima"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';
+
 		 if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_massima = $result['ArticlesOrder']['qta_massima']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 else	
 		 	$qta_massima = $result['Article']['qta_massima'];			
-		 echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $qta_massima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-		 
+		// echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]' ,'value' => $qta_massima, 'id' => 'ArticlesOrderQtaMassima-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderQtaMassima"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';		 
+
 		 if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_multipli = $result['ArticlesOrder']['qta_multipli']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 else	
 		 	$qta_multipli = $result['Article']['qta_multipli'];
-		 echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-		 
+		// echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'id' => 'ArticlesOrderQtaMultipli-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderQtaMultipli"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';	
+
 		 if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_minima_order = $result['ArticlesOrder']['qta_minima_order']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 else	
 		 	$qta_minima_order = $result['Article']['qta_minima_order'];
- 		 echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
- 		 
+ 		// echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'id' => 'ArticlesOrderQtaMinimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderQtaMinimaOrder"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$qta_minima_order.'">'.$qta_minima_order.'</div></td>';	 		
+
 		 if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_massima_order = $result['ArticlesOrder']['qta_massima_order']; // lo prendo dall'articolo associato all'ordine del titolare DES
 		 else	
 		 	$qta_massima_order = $result['Article']['qta_massima_order'];	 		 
-		 echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-		
-		if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-			echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $result['Article']['alert_to_qta'],'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+		// echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'id' => 'ArticlesOrderQtaMassimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderQtaMassimaOrder"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$qta_massima_order.'">'.$qta_massima_order.'</div></td>';	
+
+		if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
+			// echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $result['Article']['alert_to_qta'], 'id' => 'ArticlesOrderAlertToQta-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 		echo '<td><div class="btn btn-value-edit" 
+				 		data-attr-model="Article"
+				 	    data-attr-id-name="ArticlesOrderAlertToQta"
+				 	    data-attr-id="'.$result['Article']['id'].'"
+				 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';				
+		}
 		echo '</tr>';
 		echo '<tr class="trView" id="trViewId-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
 			echo '<td colspan="2"></td>';
 			echo '<td colspan="'.$colspan.'" id="tdViewId-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'"></td>';
 		echo '</tr>';
 		
-		echo $this->Form->hidden('organization_id',['name'=>'data[Article]['.$result['Article']['id'].'][article_organization_id]', 'value' => $result['Article']['organization_id']]);
-		echo $this->Form->hidden('supplier_organization_id',['name'=>'data[Article]['.$result['Article']['id'].'][supplier_organization_id]', 'value' => $result['Article']['supplier_organization_id']]);
+		echo $this->Form->hidden('organization_id',['name'=>'data[Article]['.$result['Article']['id'].'][article_organization_id]', 'value' => $result['Article']['organization_id'], 'id' => 'article_organization_id-'.$result['Article']['id']]);
+		echo $this->Form->hidden('supplier_organization_id',['name'=>'data[Article]['.$result['Article']['id'].'][supplier_organization_id]', 'value' => $result['Article']['supplier_organization_id'],  'id' => 'supplier_organization_id-'.$result['Article']['id']]);
 		
-		} // end foreach ($results as $numResult => $result)
+	} // end foreach ($results as $numResult => $result)
 	echo '</table></div>';
 	
 	echo '</div>';
@@ -211,9 +243,11 @@ else  {// if(count($results)>0)
 }
 echo '</div>';
 ?>
-
 <script type="text/javascript">
+var OrganizationHasFieldArticleAlertToQta = "<?php echo $user->organization['Organization']['hasFieldArticleAlertToQta'];?>";
+
 $(document).ready(function() {
+
 	$('#sort').change(function () {
 		var sort = $("#sort").val();
 		var filter_name = $('#filter_name').val();
@@ -280,107 +314,8 @@ $(document).ready(function() {
 		if(action_post=='action_articles_orders_previuos') 
 			return true;
 		
-		var article_id_selected = '';
-		for(i = 0; i < $("input[name='article_id_selected']:checked").length; i++) {
-			article_id_selected += $("input[name='article_id_selected']:checked").eq(i).val()+',';
-			
-			article_id = $("input[name='article_id_selected']:checked").eq(i).val();
-			
-			prezzo = $("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").val(); 
-			if(prezzo=='' || prezzo==null || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') {
-				alert("Devi indicare l'importo per gli articoli che desideri associare all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPrezzo]']").focus();
-				return false;			
-			}
-			
-			pezzi_confezione = $("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").val(); 
-			if(pezzi_confezione=='' || pezzi_confezione==null || !isFinite(pezzi_confezione)) {
-				alert("Devi indicare il numero di pezzi per confezione per gli articoli che desideri associare all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
-				return false;			
-			}
-			pezzi_confezione = parseInt(pezzi_confezione);
-			if(pezzi_confezione <= 0) {
-				alert("Il numero di pezzi per confezione per gli articoli che desideri associare all'ordine deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderPezziConfezione]']").focus();
-				return false;			
-			}
-						
-			qta_minima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").val(); 
-			if(qta_minima=='' || qta_minima==null || !isFinite(qta_minima)) {
-				alert("Devi indicare la quantità minima che un gasista può acquistare");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
-				return false;			
-			}
-			if(qta_minima <= 0) {
-				alert("La quantità minima che un gasista può acquistare deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinima]']").focus();
-				return false;			
-			}
-			
-			qta_massima = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").val(); 
-			if(qta_massima=='' || qta_massima==null || !isFinite(qta_massima)) {
-				alert("Devi indicare la quantità massima che un gasista può acquistare: di default 0");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
-				return false;			
-			}
-			
-			qta_minima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").val(); 
-			if(qta_minima_order=='' || qta_minima_order==null || !isFinite(qta_minima_order)) {
-				alert("Devi indicare la quantità minima rispetto a tutti gli acquisti dell'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMinimaOrder]']").focus();
-				return false;			
-			}
-			
-			qta_massima_order = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").val(); 
-			if(qta_massima_order=='' || qta_massima_order==null || !isFinite(qta_massima_order)) {
-				alert("Devi indicare la quantità massima rispetto a tutti gli acquisti dell'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
-				return false;			
-			}
-			qta_massima_order = parseInt(qta_massima_order);
-			if(qta_massima_order > 0 && qta_massima_order < pezzi_confezione) {
-				alert("La quantità massima rispetto a tutti gli acquisti dell'ordine è inferiore al numero di pezzi in una confezione");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassimaOrder]']").focus();
-				return false;			
-			}
-			qta_multipli = $("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").val(); 
-			if(qta_multipli=='' || qta_multipli==null || !isFinite(qta_multipli)) {
-				alert("Devi indicare di che multiplo dev'essere la quantità per gli articoli associati all'ordine");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
-				return false;			
-			}
-			qta_multipli = parseInt(qta_multipli);
-			if(qta_multipli <= 0) {
-				alert("Il multiplo per gli articoli che desideri associare all'ordine deve essere > di zero");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMultipli]']").focus();
-				return false;			
-			}
-			
-			if((qta_massima) > 0 && (qta_massima < qta_multipli)) {
-				alert("La quantità massima che un gasista può acquistare non può essere inferiore della quantità multipla");
-				$("input[name='data[Article]["+article_id+"][ArticlesOrderQtaMassima]']").focus();
-				return false;
-			}
-		
-			<?php
-			if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
-			?>
-				alert_to_qta = $("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").val(); 
-				if(alert_to_qta=='' || alert_to_qta==null || !isFinite(alert_to_qta)) {
-					alert("Devi indicare quando avvisare raggiunta una certa quantità per gli articoli associati all'ordine");
-					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
-					return false;			
-				}
-				if(alert_to_qta <= 0) {
-					alert("La quantità che indica quando avvisare per gli articoli che desideri associare all'ordine deve essere > di zero");
-					$("input[name='data[Article]["+article_id+"][ArticlesOrderAlertToQta]']").focus();
-					return false;			
-				}
-			<?php
-			}
-			?>
-		}
+		if(!ctrlArticlesOrders())
+			return false;
 
 		if(article_id_selected=='') {
 			alert("Devi scegliere almeno un articolo da associare all'ordine");

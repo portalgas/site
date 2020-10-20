@@ -363,7 +363,7 @@ class ArticlesOrdersController extends AppController {
 					$data['ArticlesOrder']['stato'] = 'Y';
 
 					self::d('ArticlesOrder da salvare', $debug);
-					self::d($data, false);
+					self::d($data, $debug);
 
                     /*
                      * richiamo la validazione
@@ -667,8 +667,8 @@ class ArticlesOrdersController extends AppController {
 						$data['ArticlesOrder']['flag_bookmarks'] = 'N';
 						$data['ArticlesOrder']['stato'] = 'Y';
 
-						self::d($data, $debug);	
-						
+						if($debug) debug($data);	
+					
                         /*
                          * richiamo la validazione
                          */
