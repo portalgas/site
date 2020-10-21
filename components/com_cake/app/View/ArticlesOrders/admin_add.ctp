@@ -67,7 +67,8 @@ if(!empty($sorts)) {
 	echo '</div>';	
 } // if(!empty($sorts))
 
-if(count($results)>0) { 
+$tot_articles = count($results);
+if($tot_articles>0) { 
 		
 	echo '<div class="articlesOrders">';
 	
@@ -151,69 +152,95 @@ if(count($results)>0) {
 		/*
 		 * campi gestiti anche da chi non e' proprietario dell'articolo
 		 */
-		 if(!$canEdit && !empty($des_order_id)) 
+		if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_minima = $result['ArticlesOrder']['qta_minima']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		 else	
+		else	
 		 	$qta_minima = $result['Article']['qta_minima'];
-		// echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	echo '<td><div class="btn btn-value-edit" 
+		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+			echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+		}
+		else {
+	 		echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderQtaMinima"
 				 	    data-attr-id="'.$result['Article']['id'].'"
-				 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';
+				 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';			
+		}
 
-		 if(!$canEdit && !empty($des_order_id)) 
+
+		if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_massima = $result['ArticlesOrder']['qta_massima']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		 else	
+		else	
 		 	$qta_massima = $result['Article']['qta_massima'];			
-		// echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]' ,'value' => $qta_massima, 'id' => 'ArticlesOrderQtaMassima-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	echo '<td><div class="btn btn-value-edit" 
+		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+			echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassima]' ,'value' => $qta_massima, 'id' => 'ArticlesOrderQtaMassima-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+		}
+		else {
+			echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderQtaMassima"
 				 	    data-attr-id="'.$result['Article']['id'].'"
 				 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';		 
+		}
 
-		 if(!$canEdit && !empty($des_order_id)) 
+		if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_multipli = $result['ArticlesOrder']['qta_multipli']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		 else	
+		else	
 		 	$qta_multipli = $result['Article']['qta_multipli'];
-		// echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'id' => 'ArticlesOrderQtaMultipli-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	echo '<td><div class="btn btn-value-edit" 
+		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+			echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'id' => 'ArticlesOrderQtaMultipli-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	}
+	 	else {
+	 		echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderQtaMultipli"
 				 	    data-attr-id="'.$result['Article']['id'].'"
 				 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';	
+		}
 
-		 if(!$canEdit && !empty($des_order_id)) 
+		if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_minima_order = $result['ArticlesOrder']['qta_minima_order']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		 else	
+		else	
 		 	$qta_minima_order = $result['Article']['qta_minima_order'];
- 		// echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'id' => 'ArticlesOrderQtaMinimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	echo '<td><div class="btn btn-value-edit" 
+ 		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+ 			echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'id' => 'ArticlesOrderQtaMinimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	}
+	 	else {
+	 		echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderQtaMinimaOrder"
 				 	    data-attr-id="'.$result['Article']['id'].'"
 				 	    data-attr-value="'.$qta_minima_order.'">'.$qta_minima_order.'</div></td>';	 		
+		}
 
-		 if(!$canEdit && !empty($des_order_id)) 
+		if(!$canEdit && !empty($des_order_id)) 
 		 	$qta_massima_order = $result['ArticlesOrder']['qta_massima_order']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		 else	
-		 	$qta_massima_order = $result['Article']['qta_massima_order'];	 		 
-		// echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'id' => 'ArticlesOrderQtaMassimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	echo '<td><div class="btn btn-value-edit" 
+		else	
+		 	$qta_massima_order = $result['Article']['qta_massima_order'];
+		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+			echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'id' => 'ArticlesOrderQtaMassimaOrder-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 	}
+	 	else {
+	 		echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderQtaMassimaOrder"
 				 	    data-attr-id="'.$result['Article']['id'].'"
 				 	    data-attr-value="'.$qta_massima_order.'">'.$qta_massima_order.'</div></td>';	
+		}
 
 		if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
-			// echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $result['Article']['alert_to_qta'], 'id' => 'ArticlesOrderAlertToQta-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 		echo '<td><div class="btn btn-value-edit" 
+			if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
+				echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderAlertToQta]','value' => $result['Article']['alert_to_qta'], 'id' => 'ArticlesOrderAlertToQta-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 		}
+	 		else {
+	 			echo '<td><div class="btn btn-value-edit" 
 				 		data-attr-model="Article"
 				 	    data-attr-id-name="ArticlesOrderAlertToQta"
 				 	    data-attr-id="'.$result['Article']['id'].'"
-				 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';				
-		}
+				 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';
+			}			
+		} // end if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
+		
 		echo '</tr>';
 		echo '<tr class="trView" id="trViewId-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'">';
 			echo '<td colspan="2"></td>';
