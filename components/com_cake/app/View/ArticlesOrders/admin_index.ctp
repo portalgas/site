@@ -269,126 +269,135 @@ echo $this->element('boxOrder', ['results' => $order]);
 				$numResult=0;
 				foreach ($articles as $article) {
 					
-					$numResult++;
-					
-					$opts = ['label' => false, 'type' => 'text'];
-					if(!$canEdit) 
-						$noOwnerOpts = array_merge($opts, $disabledOpts);
-					else 
-						$noOwnerOpts = $opts;
-									
-					echo '<tr class="view">';
-					echo '<td>'.$numResult.'</td>';
-					echo '<td>';
-					echo '<input type="checkbox" id="'.$article['Article']['id'].'" name="article_id_selected" value="'.$article['Article']['id'].'" />';
-					if($debug) {
-						echo 'Article.organization_id '.$result['Article']['organization_id'].'<br />';
-						echo 'Article.id '.$result['Article']['id'].'<br />';
-						echo 'Article.supplier_organization_id '.$result['Article']['supplier_organization_id'];
-					}					
-					echo '</td>';
-					
-					if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-						echo '<td idArticleCheckbox="'.$article['Article']['id'].'" class="bindCheckbox">'.$article['Article']['codice'].'</td>';
-					echo '<td idArticleCheckbox="'.$article['Article']['id'].'" class="bindCheckbox">';
-					echo $article['Article']['name'].'&nbsp;';
-					if(!empty($article['Article']['nota'])) echo '<div class="small">'.strip_tags($article['Article']['nota']).'</div>';
-					echo '</td>';
-					echo '<td>';
-					if(!empty($article['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['Article']['organization_id'].DS.$article['Article']['img1'])) {
-						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
-					}
-					echo '</td>';
-					
 					/*
-					 * campi bloccati se non si e' proprietari dell'articolo
-					 */							
-					echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $article['Article']['prezzo_'], 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts)).'</td>';
-					echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $article['Article']['pezzi_confezione'], 'tabindex'=>((int)$numResult+1)], $noOwnerOpts)).'</td>';
-					
-					/*
-					 * campi gestiti anche da chi non e' proprietario dell'articolo
+					 * workaround
 					 */
-					$qta_minima = $article['Article']['qta_minima'];
-					if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
-						echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';					 	
-					}					
-					else {
-	 					echo '<td><div class="btn btn-value-edit" 
-						 		data-attr-model="Article"
-						 	    data-attr-id-name="ArticlesOrderQtaMinima"
-						 	    data-attr-id="'.$article['Article']['id'].'"
-						 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';
-					}
-					
-					$qta_massima = $article['Article']['qta_massima'];
-					if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {				
-						echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $qta_massima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					}
-					else {
- 						echo '<td><div class="btn btn-value-edit" 
-					 		data-attr-model="Article"
-					 	    data-attr-id-name="ArticlesOrderQtaMassima"
-					 	    data-attr-id="'.$article['Article']['id'].'"
-					 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';						
-					}
-									
-					$qta_multipli = $article['Article']['qta_multipli'];
-					if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {					
-						echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					}
-					else {
- 						echo '<td><div class="btn btn-value-edit" 
-					 		data-attr-model="Article"
-					 	    data-attr-id-name="ArticlesOrderQtaMultipli"
-					 	    data-attr-id="'.$article['Article']['id'].'"
-					 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';							
-					}
-				
-					$qta_minima_order = $article['Article']['qta_minima_order'];
-					if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
-						echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					}
-					else {
- 						echo '<td><div class="btn btn-value-edit" 
-					 		data-attr-model="Article"
-					 	    data-attr-id-name="ArticlesOrderQtaMinimaOrder"
-					 	    data-attr-id="'.$article['Article']['id'].'"
-					 	    data-attr-value="'.$qta_minima_order.'">'.$qta_minima_order.'</div></td>';						
-					}
+					if(isset($article['Article'])) {
 
-					$qta_massima_order = $article['Article']['qta_massima_order'];
-					if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
-						echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-					}
-					else{
- 						echo '<td><div class="btn btn-value-edit" 
-					 		data-attr-model="Article"
-					 	    data-attr-id-name="ArticlesOrderQtaMassimaOrder"
-					 	    data-attr-id="'.$article['Article']['id'].'"
-					 	    data-attr-value="'.$qta_massima_order.'">'.$qta_massima_order.'</div></td>';
-					}
-					
-					if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
-						$alert_to_qta = $article['Article']['alert_to_qta'];
-						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {						
-							echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]', 'value' => $alert_to_qta, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+	 					$numResult++;
+						
+						$opts = ['label' => false, 'type' => 'text'];
+						if(!$canEdit) 
+							$noOwnerOpts = array_merge($opts, $disabledOpts);
+						else 
+							$noOwnerOpts = $opts;
+										
+						echo '<tr class="view">';
+						echo '<td>'.$numResult.'</td>';
+						echo '<td>';
+						echo '<input type="checkbox" id="'.$article['Article']['id'].'" name="article_id_selected" value="'.$article['Article']['id'].'" />';
+						if($debug) {
+							echo 'Article.organization_id '.$result['Article']['organization_id'].'<br />';
+							echo 'Article.id '.$result['Article']['id'].'<br />';
+							echo 'Article.supplier_organization_id '.$result['Article']['supplier_organization_id'];
+						}					
+						echo '</td>';
+						
+						if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
+							echo '<td idArticleCheckbox="'.$article['Article']['id'].'" class="bindCheckbox">'.$article['Article']['codice'].'</td>';
+						echo '<td idArticleCheckbox="'.$article['Article']['id'].'" class="bindCheckbox">';
+						echo $article['Article']['name'].'&nbsp;';
+						if(!empty($article['Article']['nota'])) echo '<div class="small">'.strip_tags($article['Article']['nota']).'</div>';
+						echo '</td>';
+						echo '<td>';
+						if(!empty($article['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article['Article']['organization_id'].DS.$article['Article']['img1'])) {
+							echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$article['Article']['organization_id'].'/'.$article['Article']['img1'].'" />';	
+						}
+						echo '</td>';
+						
+						/*
+						 * campi bloccati se non si e' proprietari dell'articolo
+						 */							
+						echo '<td style="white-space: nowrap;">'.$this->Form->input('prezzo', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPrezzo]', 'style' => 'display:inline', 'value' => $article['Article']['prezzo_'], 'tabindex'=>((int)$numResult+1),'after'=>'&nbsp;&euro;', 'class'=>'double'], $noOwnerOpts)).'</td>';
+						echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $article['Article']['pezzi_confezione'], 'tabindex'=>((int)$numResult+1)], $noOwnerOpts)).'</td>';
+						
+						/*
+						 * campi gestiti anche da chi non e' proprietario dell'articolo
+						 */
+						$qta_minima = $article['Article']['qta_minima'];
+						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
+							echo '<td>'.$this->Form->input('qta_minima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinima]', 'value' => $qta_minima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';					 	
+						}					
+						else {
+		 					echo '<td><div class="btn btn-value-edit" 
+							 		data-attr-model="Article"
+							 	    data-attr-id-name="ArticlesOrderQtaMinima"
+							 	    data-attr-id="'.$article['Article']['id'].'"
+							 	    data-attr-value="'.$qta_minima.'">'.$qta_minima.'</div></td>';
+						}
+						
+						$qta_massima = $article['Article']['qta_massima'];
+						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {				
+							echo '<td>'.$this->Form->input('qta_massima', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassima]', 'value' => $qta_massima, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
 						}
 						else {
-	 					echo '<td><div class="btn btn-value-edit" 
+	 						echo '<td><div class="btn btn-value-edit" 
 						 		data-attr-model="Article"
-						 	    data-attr-id-name="ArticlesOrderAlertToQta"
+						 	    data-attr-id-name="ArticlesOrderQtaMassima"
 						 	    data-attr-id="'.$article['Article']['id'].'"
-						 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';	
+						 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';						
 						}
-					} // end if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
-				
-					echo $this->Form->hidden('organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][article_organization_id]', 'value' => $article['Article']['organization_id']]);
-					echo $this->Form->hidden('supplier_organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][supplier_organization_id]', 'value' => $article['Article']['supplier_organization_id']]);
+										
+						$qta_multipli = $article['Article']['qta_multipli'];
+						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {					
+							echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+						}
+						else {
+	 						echo '<td><div class="btn btn-value-edit" 
+						 		data-attr-model="Article"
+						 	    data-attr-id-name="ArticlesOrderQtaMultipli"
+						 	    data-attr-id="'.$article['Article']['id'].'"
+						 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';							
+						}
 					
-					echo '</tr>';
+						$qta_minima_order = $article['Article']['qta_minima_order'];
+						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
+							echo '<td>'.$this->Form->input('qta_minima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMinimaOrder]', 'value' => $qta_minima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+						}
+						else {
+	 						echo '<td><div class="btn btn-value-edit" 
+						 		data-attr-model="Article"
+						 	    data-attr-id-name="ArticlesOrderQtaMinimaOrder"
+						 	    data-attr-id="'.$article['Article']['id'].'"
+						 	    data-attr-value="'.$qta_minima_order.'">'.$qta_minima_order.'</div></td>';						
+						}
+
+						$qta_massima_order = $article['Article']['qta_massima_order'];
+						if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {
+							echo '<td>'.$this->Form->input('qta_massima_order', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderQtaMassimaOrder]', 'value' => $qta_massima_order, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+						}
+						else{
+	 						echo '<td><div class="btn btn-value-edit" 
+						 		data-attr-model="Article"
+						 	    data-attr-id-name="ArticlesOrderQtaMassimaOrder"
+						 	    data-attr-id="'.$article['Article']['id'].'"
+						 	    data-attr-value="'.$qta_massima_order.'">'.$qta_massima_order.'</div></td>';
+						}
+						
+						if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') {
+							$alert_to_qta = $article['Article']['alert_to_qta'];
+							if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) {						
+								echo '<td>'.$this->Form->input('alert_to_qta', array_merge(['name'=>'data[Article]['.$article['Article']['id'].'][ArticlesOrderAlertToQta]', 'value' => $alert_to_qta, 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+							}
+							else {
+		 					echo '<td><div class="btn btn-value-edit" 
+							 		data-attr-model="Article"
+							 	    data-attr-id-name="ArticlesOrderAlertToQta"
+							 	    data-attr-id="'.$article['Article']['id'].'"
+							 	    data-attr-value="'.$alert_to_qta.'">'.$alert_to_qta.'</div></td>';	
+							}
+						} // end if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y')
+					
+						echo $this->Form->hidden('organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][article_organization_id]', 'value' => $article['Article']['organization_id']]);
+						echo $this->Form->hidden('supplier_organization_id',['name' => 'data[Article]['.$article['Article']['id'].'][supplier_organization_id]', 'value' => $article['Article']['supplier_organization_id']]);
+						
+						echo '</tr>';
+					} // end if(isset($article['Article']))						
 				} // end loop 
 				echo '</table></div>';
+
+				if($numResult==0)
+					echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono articoli ancora da associare all'ordine."));
 			} 
 			else // if(count($articles)>0)
 				echo $this->element('boxMsg',array('class_msg' => 'message', 'msg' => "Non ci sono articoli ancora da associare all'ordine."));

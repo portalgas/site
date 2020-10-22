@@ -717,15 +717,23 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                     self::d("Per tutti i GAS dell'ordine DES aggiornero' ArticlesOrder.qta_cart con la somma di tutti gli acquisti dei GAS ".$qta_cart_new, $debug);
                                     
                     /* 
-                     * aggiorno tutti gli ordini del DES
+                     * aggiorno QtaCart e StatoQtaMax per tutti gli ordini del DES
                      */
                     foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
-                        
-                        $results['ArticlesOrder']['organization_id'] = $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'];
-                        $results['ArticlesOrder']['order_id'] = $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'];
-                        
-                        $results['ArticlesOrder']['qta_cart'] = $qta_cart_new;
-                        $this->_updateArticlesOrderQtaCart_StatoQtaMax($results, $debug);
+                   
+            /*
+             * estraggo l'articlesOrders del GAS
+             */           
+            $options = [];
+            $options['conditions'] = ['ArticlesOrder.organization_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'],
+                          'ArticlesOrder.order_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'],
+                          'ArticlesOrder.article_organization_id' => $article_organization_id,
+                          'ArticlesOrder.article_id' => $article_id];
+            $options['recursive'] = -1;
+            $ArticlesOrderResults = $this->find('first', $options);
+                              
+                        $ArticlesOrderResults['ArticlesOrder']['qta_cart'] = $qta_cart_new;
+                        $this->_updateArticlesOrderQtaCart_StatoQtaMax($ArticlesOrderResults, $debug);
                     }
                     self::d($desSupplierResults, $debug);
                   
