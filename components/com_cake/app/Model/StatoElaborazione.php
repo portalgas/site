@@ -54,6 +54,10 @@ class StatoElaborazione extends AppModel {
 			$sqls['from_OPEN_to_PROCESSED-BEFORE-DELIVERY_DELIVERY_CLOSE']['sql'] = "SELECT `Order`.* FROM ".$p."deliveries Delivery,".$p."orders `Order` WHERE Delivery.organization_id=%s and `Order`.organization_id=Delivery.organization_id and Delivery.stato_elaborazione = 'OPEN' and `Order`.delivery_id = Delivery.id and `Order`.state_code='OPEN' and DATE(Delivery.data) < CURDATE() and `Order`.data_fine < CURDATE() %s";
             $sqls['from_OPEN_to_PROCESSED-BEFORE-DELIVERY_DELIVERY_CLOSE']['state_code_next'] = 'PROCESSED-BEFORE-DELIVERY';
 			
+			$sqls['return_RI-OPEN-VALIDATE']['descri'] = "Porto gli ordini a RI-OPEN-VALIDATE se la data di riapertura è futura";
+			$sqls['return_RI-OPEN-VALIDATE']['sql'] = "SELECT `Order`.* FROM ".$p."deliveries Delivery,".$p."orders `Order` WHERE Delivery.organization_id=%s and `Order`.organization_id=Delivery.organization_id and Delivery.stato_elaborazione = 'OPEN' and `Order`.delivery_id = Delivery.id and `Order`.state_code != 'RI-OPEN-VALIDATE' and DATE(Delivery.data) >= CURDATE() and `Order`.data_fine_validation >= CURDATE() %s";
+            $sqls['return_RI-OPEN-VALIDATE']['state_code_next'] = 'RI-OPEN-VALIDATE';
+
 			$sqls['from_RI-OPEN-VALIDATE_to_PROCESSED-BEFORE-DELIVERY']['descri'] = "Porto gli ordini da RI-OPEN-VALIDATE a PROCESSED-BEFORE-DELIVERY: estraggo gli ordini chiusi con le consegne ancora aperte";
 			$sqls['from_RI-OPEN-VALIDATE_to_PROCESSED-BEFORE-DELIVERY']['sql'] = "SELECT `Order`.* FROM ".$p."deliveries Delivery,".$p."orders `Order` WHERE Delivery.organization_id=%s and `Order`.organization_id=Delivery.organization_id and Delivery.stato_elaborazione = 'OPEN' and `Order`.delivery_id = Delivery.id and `Order`.state_code = 'RI-OPEN-VALIDATE' and DATE(Delivery.data) >= CURDATE() and `Order`.data_fine_validation < CURDATE() %s";
             $sqls['from_RI-OPEN-VALIDATE_to_PROCESSED-BEFORE-DELIVERY']['state_code_next'] = 'PROCESSED-BEFORE-DELIVERY';

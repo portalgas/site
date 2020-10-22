@@ -1205,13 +1205,14 @@ class OrderLifeCycle extends AppModel {
     	
     	switch($state_code_next) {
 	 		case 'RI-OPEN-VALIDATE':
-	 			if(!isset($opts['data_fine_validation'])) {
+	 			if(!isset($opts['data_fine_validation']) && !isset($orderResult['Order']['data_fine_validation'])) {
 					$esito['CODE'] = "500";
 					$esito['MSG'] = "data_fine_validation non valorizzato";
 					return $esito; 
 				}	
 	 				
-	 			$orderResult['Order']['data_fine_validation'] = $opts['data_fine_validation'];	 			
+	 			if(!isset($orderResult['Order']['data_fine_validation']))
+	 				$orderResult['Order']['data_fine_validation'] = $opts['data_fine_validation'];	 			
 	 		break;
 	 		case 'WAIT-PROCESSED-TESORIERE':
 	 			if(isset($opts['tesoriere_doc1']))
