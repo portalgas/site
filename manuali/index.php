@@ -76,6 +76,7 @@ h3 {
     color: #fff;
     height: 60px;
     padding: 20px;
+    margin-top:5px;
 }
 .footer .copyright {
 	text-align: right;
@@ -209,6 +210,14 @@ h3 {
       	</div>
 	</a>
 	
+  <a href="statistiche.php">
+       <div class="col-sm-1 col-md-4 box-intro">
+           <span aria-hidden="true" class="glyphicon glyphicon-signal"></span>
+          <h3>Statistiche</h3>
+          <p>Visualizazione in diagrammi dai dati storici raggruppati per gasista, produttore, etc</p>
+        </div>
+  </a>
+
 	<a href="social-integration.php">
      	 <div class="col-sm-1 col-md-4 box-intro">
         	 <span aria-hidden="true" class="glyphicon glyphicon-link"></span>
@@ -239,7 +248,7 @@ h3 {
 
 <div class="container">
 	
-	<div class="col-sm-2 box-intro-ico">
+	<div class="col-sm-3 box-intro-ico">
 		<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
 		<img title="vai allo store di Itunes" src="https://www.portalgas.it/images/appstore.png" border="0"></a>
 	</div>
@@ -254,7 +263,7 @@ h3 {
 	<div class="col-sm-2 box-intro-ico">
 						<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img src="https://www.portalgas.it/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube" border="0"> YouTube</a>
 	</div>
-	<div class="col-sm-2 box-intro-ico">
+	<div class="col-sm-3 box-intro-ico">
 						<a target="_blank" href="https://www.portalgas.it/mobile"><img src="https://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
 	</div>
     

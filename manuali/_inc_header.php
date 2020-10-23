@@ -220,6 +220,7 @@ ul.nav-contenitore > .active > a, ul.nav-contenitore > .active:hover > a, ul.nav
 						<li><a href="dispensa.php">Dispensa</a></li>              
 						<li><a href="front-end.php">Sito</a></li>           
 						<li><a href="des.php">D.E.S.</a></li>
+                        <li><a href="statistiche.php">Statistiche</a></li>
 						<li><a href="social-integration.php">Social</a></li>
 						<li><a href="use-case.php">Casi d'uso</a></li>            
 					</ul>
