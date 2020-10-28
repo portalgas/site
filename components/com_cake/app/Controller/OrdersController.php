@@ -1000,7 +1000,15 @@ class OrdersController extends AppController {
 						
 			$this->request->data['Order']['data_inizio'] = $this->request->data['Order']['data_inizio_db'];
 			$this->request->data['Order']['data_fine'] = $this->request->data['Order']['data_fine_db'];
-			$this->request->data['Order']['data_fine_validation'] = $this->request->data['Order']['data_fine_validation_db'];
+			/*
+			 * ho ripulito il campo di riapertura, se non voglio piu' l'ordine riaperto
+			 */
+			if(!empty($this->request->data['Order']['data_fine_validation'])) {
+				$this->request->data['Order']['data_fine_validation'] = $this->request->data['Order']['data_fine_validation_db'];
+			}
+			else {
+				$this->request->data['Order']['data_fine_validation_db'] = '';
+			}
 			
 			if($this->request->data['Order']['qta_massima']==0) {
 				$this->request->data['Order']['qta_massima_um']='';
@@ -1074,7 +1082,7 @@ class OrdersController extends AppController {
 				self::d($msg_errors, $debug);
 				$continua=false;
 			}
-		
+			// debug($this->request->data); 
 			if($continua) {	
 				$this->Order->create();
 				if (!$this->Order->save($this->request->data))
