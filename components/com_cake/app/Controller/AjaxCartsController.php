@@ -224,7 +224,9 @@ class AjaxCartsController extends AppController {
     	/*
 	   	 * rileggo la riga dal database aggiornata ([Order] [Article] [ArticlesOrder] [Cart] [User])
 	   	*/
-    	App::import('Model', 'ArticlesOrder');    	$ArticlesOrder = new ArticlesOrder;    		
+    	App::import('Model', 'ArticlesOrder');
+    	$ArticlesOrder = new ArticlesOrder;
+    		
 	   	$conditions = ['Cart.user_id' => $user_id,
 						'Cart.order_id' => $order_id,
 						'Cart.article_organization_id' => $article_organization_id,

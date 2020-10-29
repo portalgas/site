@@ -280,9 +280,19 @@ else {
 	</div>
 </footer>
 						
-
-
 <script type="text/javascript">
+var csrfToken = '';
+function callPing() {
+	/* console.log("Script.callPing "+pingAjaxUrl); */
+	var url = '?option=com_cake&controller=Pages&action=ping&format=notmpl';
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.open('GET', url);
+	httpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	httpRequest.setRequestHeader("Content-type", "application/json");
+	httpRequest.setRequestHeader('X-CSRF-Token', csrfToken);
+	httpRequest.send(null);
+}
+
 jQuery(document).ready(function () {
 	jQuery('.selectpicker').selectpicker({
 		style: 'btn-default'
@@ -300,6 +310,8 @@ jQuery(document).ready(function () {
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {  
 	  jQuery('body').append('<div style="position:absolute;top:0;left:0;opacity: 0.8;background-color:#2c3e50;padding:10px;width:45%"><a style="color:#fff" href="https://www.portalgas.it/mobile">Vai alla versione mobile</a></div>');
 	}	
+
+	window.setInterval(callPing, 500000); // 1000 = 1 sec (0,14 h)
 });
 </script>
 <jdoc:include type="modules" name="debug" />

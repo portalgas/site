@@ -114,6 +114,23 @@ class PagesController extends AppController {
         } // if(Configure::read('sys_send_mail_error')=='Y') 
     }
 
+    /* 
+     * script per mantenere la session 
+    */
+    public function admin_ping() {
+        
+        // $this->layout = 'default_front_end';
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');     
+    }
+
+    public function ping() {
+        
+        // $this->layout = 'default_front_end';
+        $this->layout = 'ajax';
+        $this->render('/Layouts/ajax');     
+    }
+
     public function admin_home() {
 
 		switch ($this->user->organization['Organization']['type']) {

@@ -26,9 +26,11 @@ echo $this->Html->css('bo-mobile-v01.min');
 //<![CDATA[
 "use strict";
 var objMy;
+var csrfToken = '';
 var app_img = "<?php echo Configure::read('App.img.cake');?>";
 $(function() {			
 	objMy = new My();
+	objMy.ping('<?php echo Configure::read('pingAjaxUrl');?>', <?php echo Configure::read('pingTime');?>);
 });	
 
 var now = new Date();

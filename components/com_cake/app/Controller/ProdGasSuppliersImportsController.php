@@ -239,7 +239,6 @@ class ProdGasSuppliersImportsController extends AppController {
 
         $this->set('content_for_layout', $content_for_layout);
 
-
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');	
 	}
@@ -495,7 +494,8 @@ class ProdGasSuppliersImportsController extends AppController {
 		$options['recursive'] = -1;
 		$options['order'] = array('Supplier.name' => 'asc');
 		$suppliers = $Supplier->find('list', $options);	
-		$this->set(compact('suppliers'));	}
+		$this->set(compact('suppliers'));
+	}
 	
    /*
     * gestione immagine (inversa Article.copy_img_prod_gas_supplier)

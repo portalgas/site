@@ -239,8 +239,7 @@ class SummaryOrdersController extends AppController {
 		}
 	
     	$this->set('content_for_layout', $results['SummaryOrder']['importo_']);
-	
-	    				
+					
 		$this->layout = 'ajax';	
 		$this->render('/Layouts/ajax');			
 	}
