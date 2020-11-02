@@ -303,6 +303,10 @@ class CronsController extends AppController {
 	}
 	
 	private function _admin_dir_size($dirPath) {
+		
+		if(!is_dir($dirPath))
+			return 0;
+
 		$dir = new Folder($dirPath);
 		return $dir->dirsize();
 	}

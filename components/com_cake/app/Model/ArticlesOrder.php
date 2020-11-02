@@ -721,16 +721,16 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                      */
                     foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
                    
-            /*
-             * estraggo l'articlesOrders del GAS
-             */           
-            $options = [];
-            $options['conditions'] = ['ArticlesOrder.organization_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'],
-                          'ArticlesOrder.order_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'],
-                          'ArticlesOrder.article_organization_id' => $article_organization_id,
-                          'ArticlesOrder.article_id' => $article_id];
-            $options['recursive'] = -1;
-            $ArticlesOrderResults = $this->find('first', $options);
+                        /*
+                         * estraggo l'articlesOrders del GAS
+                         */           
+                        $options = [];
+                        $options['conditions'] = ['ArticlesOrder.organization_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['organization_id'],
+                                      'ArticlesOrder.order_id' => $desOrdersOrganizationsResult['DesOrdersOrganization']['order_id'],
+                                      'ArticlesOrder.article_organization_id' => $article_organization_id,
+                                      'ArticlesOrder.article_id' => $article_id];
+                        $options['recursive'] = -1;
+                        $ArticlesOrderResults = $this->find('first', $options);
                               
                         $ArticlesOrderResults['ArticlesOrder']['qta_cart'] = $qta_cart_new;
                         $this->_updateArticlesOrderQtaCart_StatoQtaMax($ArticlesOrderResults, $debug);
@@ -750,7 +750,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
            } // non e' ordine DES
             
         } catch (Exception $e) {
-            self::d('UtilsCrons::articlesOrdersQtaCart()'.$e, $debug);
+            self::d('ArticlesOrder::aggiornaQtaCart_StatoQtaMax()'.$e, $debug);
             CakeLog::write('error', $sql);
             CakeLog::write('error', $e);
         }
@@ -793,12 +793,18 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         unset($results['Order']);
         self::d($results, $debug);
         
-        if ($this->save($results)) 
-            if ($debug)
-                echo "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato'] . "  \n";
-            else
-            if ($debug)
-                echo "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato'] . "  \n";
+        try {
+          if ($this->save($results)) 
+              if ($debug)
+                  echo "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - OK aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato'] . "  \n";
+              else
+              if ($debug)
+                  echo "ArticleOrder::aggiornaQtaCart_StatoQtaMax() - NO aggiorno l'ArticlesOrder con order_id " . $results['ArticlesOrder']['order_id'] . " article_organization_id " . $results['ArticlesOrder']['article_organization_id'] . " article_id " . $results['ArticlesOrder']['article_id'] . " a qta_cart = " . $qta_cart . " stato " . $results['ArticlesOrder']['stato'] . "  \n";
+        } catch (Exception $e) {
+            CakeLog::write('error', $results);
+            CakeLog::write('error', $sql);
+            CakeLog::write('error', $e);
+        }            
     }
     
     private function _getSumCartQta($organization_id, $order_id, $article_organization_id, $article_id, $debug) {

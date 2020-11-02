@@ -1080,8 +1080,6 @@ class UtilsCrons {
         if($debug)
             echo date("d/m/Y") . " - " . date("H:i:s") . " Aggiorna il totale della quantita' acquistata per ogni articolo (ArticlesOrder.qta_cart) e se ArticlesOrder.qta_massima_order > 0 anche ArticlesOrder.stato \n";
 
-        $debug = false; // log troppo verbosi
-        
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
 
@@ -1094,6 +1092,8 @@ class UtilsCrons {
 
         if($debug)
             echo "Trovati ".count($results)." ArticlesOrder \n";
+
+        // $debug = false; // log troppo verbosi
 
         foreach ($results as $result) {
 
