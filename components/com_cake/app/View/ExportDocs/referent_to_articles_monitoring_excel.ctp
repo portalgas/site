@@ -65,21 +65,36 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						$rows[] = $qta_massima_order;
 					if($orderToValidate)  {
 							$tmp = "";
-							if($pezzi_confezione>1)  $tmp .= $colli_completi;
-							else $tmp .= '';
-							$rows[] = $tmp;
-							
-							$tmp = "";
-							if($pezzi_confezione>1) {
+
+							if($colli1=='N') {
+								if($pezzi_confezione>1)  $tmp .= $colli_completi;
+								else $tmp .= '';
+								$rows[] = $tmp;
+								
+								$tmp = "";
+								if($pezzi_confezione>1) {
+									if($differenza_da_ordinare!=$pezzi_confezione)  
+										$tmp .= $differenza_da_ordinare.' (collo da '.$pezzi_confezione.')';
+									else
+										$tmp .= '(collo da '.$pezzi_confezione.')';
+								}
+								else 
+									$tmp .= '';
+
+								$rows[] = $tmp;
+							}
+							else {
+								$tmp .= $colli_completi;
+								$rows[] = $tmp;
+								
+								$tmp = "";
 								if($differenza_da_ordinare!=$pezzi_confezione)  
 									$tmp .= $differenza_da_ordinare.' (collo da '.$pezzi_confezione.')';
 								else
 									$tmp .= '(collo da '.$pezzi_confezione.')';
-							}
-							else 
-								$tmp .= '';
-								
-							$rows[] = $tmp;	
+
+								$rows[] = $tmp;							
+							}	
 					}
 										
 					$rows[] = $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo));

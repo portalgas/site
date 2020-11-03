@@ -162,6 +162,14 @@ if(!empty($results))
 		</p>			
 	</div>
 	
+	<div id="setting-to-articles-monitoring" class="box-options">
+		<p>
+			<label for="codice2" style="width:auto !important;">Visualizzo il <b>codice</b> dell'articolo</label>&nbsp;&nbsp;
+			<input type="radio" name="codice2" id="codice2_N" value="N" checked /> No
+			<input type="radio" name="codice2" id="codice2_Y" value="Y" /> Si
+		</p>
+	</div>
+
 	<div id="setting-to-articles" class="box-options">
 		<?php
 		if($hasTrasport=='Y') {
@@ -239,6 +247,7 @@ $(document).ready(function() {
 		$('#setting-to-users-all-modify').hide();
 		$('#setting-to-users').hide();
 		$('#setting-to-users-label').hide();
+		$('#setting-to-articles-monitoring').hide();
 		$('#setting-to-articles').hide();
 		$('#setting-to-articles-details').hide();
 	
@@ -253,6 +262,9 @@ $(document).ready(function() {
 		if(doc_options=='to-users-label')
 			$('#setting-to-users-label').show();
 		else
+		if(doc_options=='to-articles-monitoring')
+			$('#setting-to-articles-monitoring').show();
+		else			
 		if(doc_options=='to-articles')
 			$('#setting-to-articles').show();
 		else

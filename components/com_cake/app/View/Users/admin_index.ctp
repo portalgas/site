@@ -81,7 +81,12 @@ if(!empty($results)) {
 			<?php
 			echo '<th>'.__('HasUserBlockQuestionShort');
 			echo '<span style="float:right;">'.$this->App->drawTooltip(__('User Block'), __('toolTipUserBlock'), $type='INFO',$pos='LEFT').'</span>';
-			echo '</th>';			
+			echo '</th>';	
+			/*
+			echo '<th>'.__('HasUserActivationQuestionShort');
+			echo '<span style="float:right;">'.$this->App->drawTooltip(__('User Activation'), __('toolTipUserActivation'), $type='INFO',$pos='LEFT').'</span>';
+			echo '</th>';
+			*/			
 			if($isManager) {
 				echo '<th>'.__('nota').'</th>';
 				echo '<th class="actions">'.__('Actions').'</th>';
@@ -90,6 +95,8 @@ if(!empty($results)) {
 	
 	foreach ($results as $numResult => $result):
 		
+		// debug($result);
+
 		if(!empty($result['User']['lastvisitDate']) && $result['User']['lastvisitDate']!=Configure::read('DB.field.datetime.empty')) 
 			$lastvisitDate = $this->Time->i18nFormat($result['User']['lastvisitDate'],"%e %b %Y");
 		else 
@@ -103,17 +110,33 @@ if(!empty($results)) {
 		if(!empty($result['Profile']['nota']))
 			$img_nota = Configure::read('App.img.cake').'/actions/32x32/playlist.png';
 		else
-			$img_nota = Configure::read('App.img.cake').'/actions/32x32/filenew.png';		
-		?>
-		<tr class="view">
-		<td><a action="suppliers_organizations_referents-<?php echo $result['User']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo ((int)$numResult+1);?></td>
-		<td><?php echo $result['Profile']['codice']; ?></td>
-		<td><?php echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User']); ?></td>
-		<td><?php echo $result['User']['name']; ?></td>
-		<td><?php echo $result['User']['username']; ?></td>
-		<td><?php  	
-			if(!empty($result['User']['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a><br />';
+			$img_nota = Configure::read('App.img.cake').'/actions/32x32/filenew.png';	
+
+		$activation = $result['User']['activation'];
+		if(empty($activation))
+			$flag_activation = 0;
+		else
+			$flag_activation = 1;
+		
+		echo '<tr class="view">';
+		echo '<td><a action="suppliers_organizations_referents-'.$result['User']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
+		echo '<td>';
+		echo ((int)$numResult+1);
+		echo '</td>';
+		echo '<td>';
+		echo $result['Profile']['codice'];
+		echo '</td>';
+		echo '<td>';
+		echo $this->App->drawUserAvatar($user, $result['User']['id'], $result['User']);
+		echo '</td>';
+		echo '<td>';
+		echo $result['User']['name']; 
+		echo '</td>';
+		echo '<td>';
+		echo $result['User']['username'];
+		echo '</td>';
+		echo '<td>';
+		if(!empty($result['User']['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a><br />';
 		echo '</td>';
 		echo '<td>';
 		if(!empty($result['Profile']['address'])) echo $result['Profile']['address'].'<br />';
@@ -128,7 +151,11 @@ if(!empty($results)) {
 			
 		if($isManager) {
 			echo '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-field="block" class="userUpdateNoDES stato_'.$this->App->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';
-			
+	
+			/*
+			echo '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-field="activation" class="userUpdateNoDES stato_'.$this->App->traslateEnum($flag_activation).'" title="'.__('HasUserActivationQuestion').'" ></td>';
+			*/
+
 			/*echo '<td>';
 			echo '<span style="white-space:nowrap;" title="Gestisci gli articoli associati all\'ordine">Associaz. ';
 			if($result['Profile']['hasArticlesOrder']=='Y')
@@ -146,8 +173,10 @@ if(!empty($results)) {
 			echo $this->Html->link(__('Edit'), Configure::read('App.server').'/administrator/index.php?option=com_users&task=user.edit&id='.$result['User']['id'],array('class' => 'btn btn-primary','title' => __('Edit')));
 			echo '</td>';			
 		}
-		else  // solo lettura
+		else { // solo lettura
 			echo '<td class="stato_'.$this->App->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';
+			// echo '<td class="stato_'.$this->App->traslateEnum($flag_activation).'" title="'.__('HasUserActivationQuestion').'" ></td>';
+		}
 		?>		
 	</tr>
 	<tr class="trView" id="trViewId-<?php echo $result['User']['id'];?>">

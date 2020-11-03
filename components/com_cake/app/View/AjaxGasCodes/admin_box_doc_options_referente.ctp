@@ -222,6 +222,14 @@ if(!empty($results))
 		?>								
 	</div>	
 	
+	<div id="setting-to-articles-monitoring" class="box-options">
+		<div class="doc-options">
+			<label for="codice2" style="width:auto !important;">Visualizzo i colli a 1</label>&nbsp;&nbsp;
+			<input type="radio" name="colli1" id="colli1_N" value="N" checked /> No
+			<input type="radio" name="colli1" id="colli1_Y" value="Y" /> Si
+		</p>
+	</div>
+		
 	<div id="setting-to-articles" class="box-options">
 		<?php
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
@@ -319,6 +327,7 @@ $(document).ready(function() {
 		$('#setting-to-users').hide();
 		$('#setting-to-users-label').hide();
 		$('#setting-to-users-articles-label').hide();
+		$('#setting-to-articles-monitoring').hide();
 		$('#setting-to-articles').hide();
 		$('#setting-to-articles-details').hide();
 	
@@ -335,6 +344,9 @@ $(document).ready(function() {
 		else
 		if(doc_options=='to-users-articles-label')
 			$('#setting-to-users-articles-label').show();
+		else	
+		if(doc_options=='to-articles-monitoring')
+			$('#setting-to-articles-monitoring').show();		
 		else
 		if(doc_options=='to-articles')
 			$('#setting-to-articles').show();
@@ -405,6 +417,9 @@ $(document).ready(function() {
 	$("input[name='totale_per_articolo']").change(function() {			
 		choiceDocOptions();
 	});
+	$("input[name='colli1']").change(function() {			
+		choiceDocOptions();
+	});		
 	$("input[name='codice1']").change(function() {			
 		choiceDocOptions();
 	});	

@@ -64,8 +64,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '			<th width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.__('qta_massima_order_short').'</th>';
 
 			if($orderToValidate) {
-				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">Colli<br />completati</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">Mancano<br />per il collo</th>';
+				$html .= '<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">Colli<br />completati</th>';
+				$html .= '<th width="'.$output->getCELLWIDTH80().'" style="text-align:center;">Mancano<br />per il collo</th>';
 			}
 						
 			$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('PrezzoUnita').'</th>';
@@ -122,18 +122,38 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					
 					if($orderToValidate) {
 						$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
-						if($pezzi_confezione>1)  $html .= $colli_completi;
-						else $html .= '';
+
+						if($colli1=='Y')
+							$html .= $colli_completi;
+						else {
+							if($pezzi_confezione>1)  $html .= $colli_completi;
+							else $html .= '';							
+						}
+
 						$html .= '</td>';
 						$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">';
-						if($pezzi_confezione>1) {
+
+						if($colli1=='Y') {
 							if($differenza_da_ordinare!=$pezzi_confezione)  
 								$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
-							else
-								$html .= '0 (collo da '.$pezzi_confezione.')';
+							else {
+								if($pezzi_confezione==1)
+									$html .= '(collo da '.$pezzi_confezione.')';
+								else
+									$html .= '0 (collo da '.$pezzi_confezione.')';
+							}
 						}
-						else 
-							$html .= '';
+						else {
+							if($pezzi_confezione>1) {
+								if($differenza_da_ordinare!=$pezzi_confezione)  
+									$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
+								else
+									$html .= '0 (collo da '.$pezzi_confezione.')';
+							}
+							else 
+								$html .= '';
+
+						}
 						$html .= '</td>';
 					}
 										

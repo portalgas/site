@@ -672,7 +672,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
     public function aggiornaQtaCart_StatoQtaMax($organization_id, $order_id, $article_organization_id, $article_id, $debug = false) {
 
         try {
-            self::d("Estraggo i totali sum(cart.qta) acquisti dall'UTENTE per ogni articolo associato ad un ordine", $debug);
+             self::d("Estraggo i totali sum(cart.qta) acquisti dall'UTENTE per ogni articolo associato ad un ordine", $debug);
 
             $options = [];
             $options['conditions'] = ['ArticlesOrder.organization_id' => $organization_id,

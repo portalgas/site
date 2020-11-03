@@ -66,6 +66,10 @@ function AjaxCallToDocPreview<?php echo $results['Order']['id'];?> (doc_options,
 		e = 'N';  /* $("input[name='user_avatar2']:checked").val(); */
 	}
 	else
+	if(doc_options=='to-articles-monitoring') {
+		a = 'N';  /* $("input[name='colli1']:checked").val(); */
+	}
+	else
 	if(doc_options=='to-articles') {
 		a = 'N';  /* $("input[name='trasportAndCost4']:checked").val(); */
 		b = 'Y';  /* $("input[name='codice2']:checked").val(); */ 

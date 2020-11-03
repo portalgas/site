@@ -119,7 +119,8 @@ class ExportDocsController extends AppController {
      * 		se  $doc_options=to-users            $a = user_phone, $b = user_email, $c = user_address, $d = totale_per_utente, $e = trasportAndCost, $f = user_avatar, $g = dettaglio_per_utente, $h = note, $i = delete_to_referent
      * 		se  $doc_options=to-users-label      $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
 	 *      se  $doc_options=to-users-articles-label   $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
-     * 		se  $doc_options=to-articles         $a = trasportAndCost, $b = codice, $c = pezzi_confezione
+     *      se  $doc_options=to-articles-monitoring    $a = colli1
+     *      se  $doc_options=to-articles         $a = trasportAndCost, $b = codice, $c = pezzi_confezione
      * 		se  $doc_options=to-articles-details $a = acquistato_il, $b = article_img, $c = trasportAndCost, $d = totale_per_articolo, $e = codice
      *      se  $doc_options=to-articles-monitoring
      *
@@ -390,6 +391,9 @@ class ExportDocsController extends AppController {
                 $this->set('trasportAndCost', $d);
                 $this->set('user_avatar', $e);
                 $this->set('codice', $g);
+                break;
+            case 'to-articles-monitoring':
+                $this->set('colli1', $a);
                 break;
             case 'to-articles':
                 $this->set('trasportAndCost', $a);
