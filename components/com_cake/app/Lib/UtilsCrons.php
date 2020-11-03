@@ -1093,7 +1093,7 @@ class UtilsCrons {
         if($debug)
             echo "Trovati ".count($results)." ArticlesOrder \n";
 
-        // $debug = false; // log troppo verbosi
+        $debug = false; // log troppo verbosi
 
         foreach ($results as $result) {
 
