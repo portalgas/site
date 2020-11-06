@@ -3,7 +3,7 @@ $url = Configure::read('App.server')."/home-".$user->organization['Organization'
 
 echo '<div class="storeroom">';
 
-echo $this->Form->create('Storeroom',array('id'=>'ajaxForm'));
+echo $this->Form->create('Storeroom', ['id'=>'ajaxForm']);
 echo '<fieldset>';
 echo '<legend>'.__('Add Storeroom to User').'</legend>';
 
@@ -11,7 +11,7 @@ echo '<legend>'.__('Add Storeroom to User').'</legend>';
 	
 	echo $this->Form->input('name',array('disabled' => 'true'));
 
-	echo $this->Form->input('delivery_id',array('empty' => Configure::read('option.empty')));
+	echo $this->Form->input('delivery_id', ['empty' => Configure::read('option.empty')]);
 	
 	echo '<div class="input select">';
 
@@ -47,22 +47,24 @@ echo '<legend>'.__('Add Storeroom to User').'</legend>';
 	
 	echo "\r\n";
 	echo '<td style="white-space: nowrap;">';
+	$options = []; 
 	$options['label'] = false; 
 	$options['disabled'] = true; 
 	$options['style'] = 'display:inline;'; 
 	$options['value'] = $this->data['Storeroom']['prezzo_']; 
 	$options['after'] = ' <span style="font-size:14px;">&euro;</span>'; 
-	echo $this->Form->input('prezzoNew',$options);
+	debug($options);
+	echo $this->Form->input('prezzoNew', $options);
 	echo '</td>';
 	
 	echo '<td style="padding-left:25px;">';
-	echo $this->Form->input('qta', array('empty' => Configure::read('option.empty'), 
-										 'label' => false,
-										 'id' => 'qta',
-										 'type' => 'select', 
-										 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
-										 'default'=> $this->data['Storeroom']['qta'],
-										 'onChange' => 'javascript:setImportoAndQtaRestore(this);'));	
+	echo $this->Form->input('qta', ['empty' => Configure::read('option.empty'), 
+									 'label' => false,
+									 'id' => 'qta',
+									 'type' => 'select', 
+									 'options' => array_combine(range(1, $this->data['Storeroom']['qta']),range(1, $this->data['Storeroom']['qta'])),
+									 'default'=> $this->data['Storeroom']['qta'],
+									 'onChange' => 'javascript:setImportoAndQtaRestore(this);']);	
 	echo '</td>';
 	echo '</tr>';
 	echo '</tbody>';
@@ -78,7 +80,7 @@ echo '<legend>'.__('Add Storeroom to User').'</legend>';
 
 	echo $this->Form->hidden('id');	 	
 	echo $this->Form->hidden('Prezzo');	
-	echo $this->Form->hidden('order_id',array('value'=>0));
+	echo $this->Form->hidden('order_id', ['value' => 0]);
 	
 	echo '</fieldset>';
 	
