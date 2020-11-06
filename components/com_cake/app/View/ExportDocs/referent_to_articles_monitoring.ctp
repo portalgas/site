@@ -80,6 +80,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$qta_minima_order = 0;
 			$qta_massima_order = 0;
 			$tot_qta = 0;
+			$tot_qta_colli = 0;
 			$tot_importo = 0;
 			$order_id_old = 0;
 			$article_organization_id_old=0;
@@ -122,6 +123,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					
 					if($orderToValidate) {
 						$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
+
+						$tot_qta_colli += $colli_completi;
 
 						if($colli1=='Y')
 							$html .= $colli_completi;
@@ -197,7 +200,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								
 				$tot_importo += $importo;
 				$tot_qta += $qta;
-								
+				
 				$bio = $order['Article'][$numArticlesOrder]['bio'];
 				$name = $order['ArticlesOrder'][$numArticlesOrder]['name'].' '.$this->App->getArticleConf($order['Article'][$numArticlesOrder]['qta'], $order['Article'][$numArticlesOrder]['um']);
 				
@@ -214,7 +217,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$differenza_da_ordinare = (($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] * ($colli_completi +1)) - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
 				else {
 					$differenza_da_ordinare = ($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
-					$colli_completi = '-';
+
+					if($colli1!='Y') 
+						$colli_completi = '-';
+					else 
+						$colli_completi = $order['ArticlesOrder'][$numArticlesOrder]['qta_cart'];
 				}
 				
 				$pezzi_confezione = $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'];
@@ -256,18 +263,40 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 			if($orderToValidate) {
 				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
-				if($pezzi_confezione>1)  $html .= $colli_completi;
-				else $html .= '';
+
+				$tot_qta_colli += $colli_completi;
+
+				if($colli1=='Y')
+					$html .= $colli_completi;
+				else {
+					if($pezzi_confezione>1)  $html .= $colli_completi;
+					else $html .= '';							
+				}
+
 				$html .= '</td>';
 				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:center;">';
-				if($pezzi_confezione>1) {
+				
+				if($colli1=='Y') {
 					if($differenza_da_ordinare!=$pezzi_confezione)  
 						$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
-					else
-						$html .= '0 (collo da '.$pezzi_confezione.')';					
+					else {
+						if($pezzi_confezione==1)
+							$html .= '(collo da '.$pezzi_confezione.')';
+						else
+							$html .= '0 (collo da '.$pezzi_confezione.')';
+					}
 				}
-				else 
-					$html .= '';
+				else {
+					if($pezzi_confezione>1) {
+						if($differenza_da_ordinare!=$pezzi_confezione)  
+							$html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$pezzi_confezione.')';
+						else
+							$html .= '0 (collo da '.$pezzi_confezione.')';
+					}
+					else 
+						$html .= '';
+				}
+
 				$html .= '</td>';
 			}
 			
@@ -302,8 +331,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '			<th width="'.$output->getCELLWIDTH50().'"></th>';
 			
 			if($orderToValidate) {
-				$html .= '			<th width="'.$output->getCELLWIDTH70().'"></th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH80().'"></th>';
+				$html .= '<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
+				if($colli1=='Y') 
+					$html .= $tot_qta_colli;
+				$html .= '</th>';
+				$html .= '<th width="'.$output->getCELLWIDTH80().'"></th>';
 			}
 				
 			$html .= '	<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" colspan="2" style="text-align:right;">'.__('Importo_totale').'&nbsp;'.number_format($tmp_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;'.$this->App->traslateQtaImportoModificati($importo_modificato).'</th>';

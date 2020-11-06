@@ -38,6 +38,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$qta_minima_order = 0;
 			$qta_massima_order = 0;
 			$tot_qta = 0;
+			$tot_qta_colli = 0;
 			$tot_importo = 0;
 			$order_id_old = 0;
 			$article_organization_id_old=0;
@@ -65,6 +66,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						$rows[] = $qta_massima_order;
 					if($orderToValidate)  {
 							$tmp = "";
+
+							$tot_qta_colli += $colli_completi;
 
 							if($colli1=='N') {
 								if($pezzi_confezione>1)  $tmp .= $colli_completi;
@@ -156,7 +159,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					$differenza_da_ordinare = (($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] * ($colli_completi +1)) - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
 				else {
 					$differenza_da_ordinare = ($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
-					$colli_completi = '0';
+
+					if($colli1!='Y') 
+						$colli_completi = '0';
+					else 
+						$colli_completi = $order['ArticlesOrder'][$numArticlesOrder]['qta_cart'];
 				}
 				
 				$pezzi_confezione = $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'];
@@ -184,21 +191,38 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$rows[] = $qta_massima_order;
 			if($orderToValidate)  {
 				$tmp = "";
-				if($pezzi_confezione>1)  $tmp .= $colli_completi;
-				else $tmp .= '';
-				$rows[] = $tmp;
+
+				$tot_qta_colli += $colli_completi;
 				
-				$tmp = "";
-				if($pezzi_confezione>1) {
+				if($colli1=='N') {
+					if($pezzi_confezione>1)  $tmp .= $colli_completi;
+					else $tmp .= '';
+					$rows[] = $tmp;
+					
+					$tmp = "";
+					if($pezzi_confezione>1) {
+						if($differenza_da_ordinare!=$pezzi_confezione)  
+							$tmp .= $differenza_da_ordinare.' (collo da '.$pezzi_confezione.')';
+						else
+							$tmp .= '(collo da '.$pezzi_confezione.')';
+					}
+					else 
+						$tmp .= '';
+
+					$rows[] = $tmp;
+				}
+				else {
+					$tmp .= $colli_completi;
+					$rows[] = $tmp;
+					
+					$tmp = "";
 					if($differenza_da_ordinare!=$pezzi_confezione)  
 						$tmp .= $differenza_da_ordinare.' (collo da '.$pezzi_confezione.')';
 					else
 						$tmp .= '(collo da '.$pezzi_confezione.')';
-				}
-				else 
-					$tmp .= '';
-					
-				$rows[] = $tmp;
+
+					$rows[] = $tmp;							
+				}	
 			}
 			
 			$rows[] = $this->ExportDocs->prepareCsv($this->App->getArticlePrezzo($prezzo));
@@ -233,7 +257,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$rows[] = '';
 			else
 			if($orderToValidate) {
-				$rows[] = '';
+				if($colli1=='Y') 
+					$rows[] = $tot_qta_colli;
+				else				
+					$rows[] = '';
 				$rows[] = '';
 			}
 			$rows[] = '';
