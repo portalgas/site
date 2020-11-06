@@ -129,10 +129,6 @@ class DesOrder extends AppModel {
 
     public function insertOrUpdateArticlesOrderAllOrganizations($user, $des_order_id, $order_id, $articles_orders_key = [], $isTitolareDesSupplier, $debug = false) {
 
-
-        $debug = true;
-
-
         /*
          * array di tutti i GAS dove copiare gli articlesOrders del GAS titolare
          */
