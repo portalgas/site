@@ -682,7 +682,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
             $options['recursive'] = 1;
             $this->unbindModel(['belongsTo' => ['Article', 'Cart']]);
             $results = $this->find('first', $options);
-          
+
             if($results['Order']['des_order_id']>0) {
                 
                 self::d("E' un ordine DES", $debug);
@@ -694,7 +694,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                 
                 $options = [];
                 $options['conditions'] = ['DesOrdersOrganization.des_order_id' => $results['Order']['des_order_id']];
-                $options['fields'] = ['DesOrder.des_id','DesOrder.des_supplier_id','DesOrdersOrganization.organization_id','DesOrdersOrganization.order_id'];
+                $options['fields'] = ['DesOrder.des_id', 'DesOrder.des_supplier_id', 'DesOrdersOrganization.organization_id', 'DesOrdersOrganization.des_order_id', 'DesOrdersOrganization.order_id'];
                 $options['recursive'] = 1;
                 $desOrdersOrganizationsResults = $DesOrdersOrganization->find('all', $options);
 
@@ -719,8 +719,8 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                     /* 
                      * aggiorno QtaCart e StatoQtaMax per tutti gli ordini del DES
                      */
-                    foreach ($desOrdersOrganizationsResults as $desOrdersOrganizationsResult) {
-                   
+                    foreach ($desOrdersOrganizationsResults as $numResult => $desOrdersOrganizationsResult) {
+
                         /*
                          * estraggo l'articlesOrders del GAS
                          */           
@@ -731,9 +731,13 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
                                       'ArticlesOrder.article_id' => $article_id];
                         $options['recursive'] = -1;
                         $ArticlesOrderResults = $this->find('first', $options);
-                              
-                        $ArticlesOrderResults['ArticlesOrder']['qta_cart'] = $qta_cart_new;
-                        $this->_updateArticlesOrderQtaCart_StatoQtaMax($ArticlesOrderResults, $debug);
+            /* 
+             * posso on averlo perche' il GAS non ha incluso l'articolo
+             */
+            if(!empty($ArticlesOrderResults)) {                              
+              $ArticlesOrderResults['ArticlesOrder']['qta_cart'] = $qta_cart_new;
+              $this->_updateArticlesOrderQtaCart_StatoQtaMax($ArticlesOrderResults, $debug);
+            }
                     }
                     self::d($desSupplierResults, $debug);
                   
