@@ -550,6 +550,10 @@ class UtilsCrons {
             if ($orderResult['Order']['qta_massima_um'] != 'PZ')
                 $totQuantita = ($totQuantita / 1000);
 
+            if($debug)
+                echo "\n" . 'CTRL totQuantita ' . $totQuantita . ' >= Order.qta_massima ' . $orderResult['Order']['qta_massima'] . " =>  INVIO MAIL \n";
+
+
             if ($totQuantita >= $orderResult['Order']['qta_massima']) {
 
                 $body_mail_final = "";

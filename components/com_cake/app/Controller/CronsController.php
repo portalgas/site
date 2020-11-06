@@ -50,21 +50,21 @@ class CronsController extends AppController {
 		$arr = ['category' => "Mail",
 									'name' => "Mail ai referenti per i prodotti che hanno raggiunto il limite",
 									'nota' => "Ai referenti per i prodotti che hanno <b>raggiunto il limite</b>",
-									'execute' => "10 12,17,20 * * *",
+									'execute' => "10 8,11,13,15,17,20,22 * * * ",
 									'method' => "mailReferentiQtaMax",
 									'stato' => 'Y'];
 		array_push($crons, $arr);	
 		$arr = ['category' => "Mail",
 									'name' => "Mail ai referenti se la quantità massima dell'ordine ha raggiunto il limite",
 									'nota' => "Ai referenti se la <b>quantità massima</b> dell'ordine ha raggiunto il limite",
-									'execute' => "11 13,18,21 * * *",
+									'execute' => "20 8,11,13,15,17,20,22 * * * ",
 									'method' => "mailReferentiOrderQtaMax",
 									'stato' => 'Y'];
 		array_push($crons, $arr);	
 		$arr = ['category' => "Mail",
 									'name' => "Mail ai referenti se l'importo massimo dell'ordine ha raggiunto il limite",
 									'nota' => "Ai referenti se l'<b>importo massimo</b> dell'ordine ha raggiunto il limite",
-									'execute' => "9 11,114,19 * * *",
+									'execute' => "40 8,11,13,15,17,20,22 * * *",
 									'method' => "mailReferentiOrderImportoMax",
 									'stato' => 'Y'];
 		array_push($crons, $arr);	
