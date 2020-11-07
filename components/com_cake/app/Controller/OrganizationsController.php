@@ -102,10 +102,11 @@ class OrganizationsController extends AppController {
         	$type='GAS';
         $this->set(compact('type'));
 
+        $SqlLimit = 100;
         $this->paginate = ['recursive' => 0,
         					'conditions' => ['Organization.type' => $type],
 				            'order' => 'Organization.id desc',
-				            'limit' => 100];
+				            'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 
         $results = $this->paginate('Organization');
         foreach ($results as $numResult => $result) {
@@ -159,10 +160,11 @@ class OrganizationsController extends AppController {
 		App::import('Model', 'UserGroupMap');
 		$UserGroupMap = new UserGroupMap;
 		
+		$SqlLimit = 100;
         $this->paginate = ['conditions' => ['Organization.type' => 'GAS'],
 							'recursive' => 0,
 							'order' => 'Organization.id desc',
-							'limit' => 100];
+							'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
         $results = $this->paginate('Organization');
 
         foreach ($results as $numResult => $result) {

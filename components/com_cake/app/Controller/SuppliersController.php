@@ -121,7 +121,7 @@ class SuppliersController extends AppController {
          */
         if (empty($FilterSupplierOrganizationId)) {
             $this->Supplier->recursive = 1;
-            $this->paginate = ['conditions' => $conditions, 'order' => 'Supplier.name', 'limit' => $SqlLimit];
+            $this->paginate = ['conditions' => $conditions, 'order' => ['Supplier.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
             $results = $this->paginate('Supplier');
 			self::d($results);
 
@@ -160,7 +160,7 @@ class SuppliersController extends AppController {
             } // foreach ($results as $i  => $result)					
         } else {
             $this->Supplier->SuppliersOrganization->recursive = 0;
-            $this->paginate = ['conditions' => $conditions, 'order' => 'Supplier.name', 'limit' => $SqlLimit];
+            $this->paginate = ['conditions' => $conditions, 'order' => ['Supplier.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 
             $results = $this->paginate('SuppliersOrganization');
 			
@@ -269,7 +269,7 @@ class SuppliersController extends AppController {
          */
         if (empty($FilterSupplierOrganizationId)) {
             $this->Supplier->recursive = 1;
-            $this->paginate = ['conditions' => [$conditions], 'order' => 'Supplier.name', 'limit' => $SqlLimit];
+            $this->paginate = ['conditions' => [$conditions], 'order' => ['Supplier.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
             $results = $this->paginate('Supplier');
 
 
@@ -305,7 +305,7 @@ class SuppliersController extends AppController {
             } // foreach ($results as $i  => $result)					
         } else {
             $this->Supplier->SuppliersOrganization->recursive = 0;
-            $this->paginate = array('conditions' => array($conditions), 'order' => 'Supplier.name', 'limit' => $SqlLimit);
+            $this->paginate = ['conditions' => array($conditions), 'order' => ['Supplier.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 
             $results = $this->paginate('SuppliersOrganization');
 			

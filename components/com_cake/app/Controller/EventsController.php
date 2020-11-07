@@ -32,10 +32,11 @@ class EventsController extends AppController {
 	var $name = 'Events';
 
     function admin_index() {
+    	$SqlLimit = 25;
 	    $this->paginate = array('conditions' => array('Event.organization_id' => $this->user->organization['Organization']['id'], 
 													  'DATE(Event.end) >= CURDATE()'),
 					    		'recursive' => 1,
-								'limit' => 25,
+								'maxLimit' => $SqlLimit, 'limit' => $SqlLimit,
 								'order' => array('Event.start' => 'asc', 'Event.end' => 'asc'));
 	    $results = $this->paginate('Event');
 		$results = $this->_getEventsUsers($results);
@@ -43,10 +44,11 @@ class EventsController extends AppController {
 	}
 	
     function admin_index_history() {
+    	$SqlLimit = 25;
 	    $this->paginate = array('conditions' => array('Event.organization_id' => $this->user->organization['Organization']['id'], 
 													  'DATE(Event.end) < CURDATE()'),
 					    		'recursive' => 1,
-								'limit' => 25,
+								'maxLimit' => $SqlLimit, 'limit' => $SqlLimit,
 								'order' => array('Event.start' => 'desc', 'Event.end' => 'desc'));
 	    $results = $this->paginate('Event');
 		$results = $this->_getEventsUsers($results);

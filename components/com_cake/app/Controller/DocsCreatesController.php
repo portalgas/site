@@ -15,9 +15,10 @@ class DocsCreatesController extends AppController {
 	}
 
     public function admin_index() {
+    	$SqlLimit = 100;
 	    $this->paginate = ['conditions' => ['DocsCreate.organization_id' => $this->user->organization['Organization']['id']],
 							'recursive' => 1,
-							'limit' => 100,
+							'maxLimit' => $SqlLimit, 'limit' => $SqlLimit,
 							'order' => ['DocsCreate.created' => 'desc']];
 	    $results = $this->paginate('DocsCreate');
 		$this->set('results', $results);

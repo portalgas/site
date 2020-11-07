@@ -49,7 +49,8 @@ class ProdGasPromotionsController extends AppController {
 
 		$this->ProdGasPromotion->unbindModel(['hasMany' => ['ProdGasArticlesPromotion']]);
 		$this->ProdGasPromotion->recursive = 2; 
-	    $this->paginate = ['conditions' => $conditions,'order'=>'ProdGasPromotion.data_inizio asc','limit' => $SqlLimit];
+	    $this->paginate = ['conditions' => $conditions, 'order '=> ['ProdGasPromotion.data_inizio asc'], 
+	    					'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('ProdGasPromotion');
 		
 		/*

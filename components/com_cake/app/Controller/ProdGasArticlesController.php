@@ -19,9 +19,10 @@ class ProdGasArticlesController extends AppController {
 	}
 	
 	public function admin_index() { 
-		$conditions = $this->_admin_index_sql_conditions($this->user);
+		$conditions = $this->_admin_index_sql_conditions($this->user);
 		
-		$SqlLimit = 25;				
+		$SqlLimit = 25;
+				
 		/*
 		 * parametri da passare eventualmente a admin_edit
 		 */
@@ -36,9 +37,12 @@ class ProdGasArticlesController extends AppController {
 		if (!empty($this->request->params['named']['direction'])) 
 			$direction = $this->request->params['named']['direction'];
 		if (!empty($this->request->params['named']['page'])) 
-			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);
-		$this->paginate = array('conditions' => $conditions,
-								'order' => 'ProdGasArticle.name','recursive' => -1,'limit' => $SqlLimit);
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);
+		$this->paginate = ['conditions' => $conditions,
+							'order' => ['ProdGasArticle.name'], 'recursive' => -1, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 	    $results = $this->paginate('ProdGasArticle');
 	    /*
 	    echo "<pre>";
@@ -53,8 +57,11 @@ class ProdGasArticlesController extends AppController {
 		
 		$debug = false;
 		
-		$results = array();		$SqlLimit = 1000;		
-		if ($this->request->is('post') || $this->request->is('put')) {				
+		$results = array();
+		$SqlLimit = 1000;
+		
+		if ($this->request->is('post') || $this->request->is('put')) {
+				
 			if(isset($this->request->data['ProdGasArticle']['article_id_selected']) && !empty($this->request->data['ProdGasArticle']['article_id_selected'])) {
 				$array_article_id = explode(',',$this->request->data['ProdGasArticle']['article_id_selected']);
 				$msg = '';
@@ -65,7 +72,8 @@ class ProdGasArticlesController extends AppController {
 												   'ProdGasArticle.id' => $id);
 					$options['recursive'] = -1;
 					$articleResults = $this->ProdGasArticle->find('first', $options);	
-					if (empty($articleResults)) 						$msg .= 'Errore articolo id '.$id.'<br />';
+					if (empty($articleResults)) 
+						$msg .= 'Errore articolo id '.$id.'<br />';
 					else {
 						
 						$name = $articleResults['ProdGasArticle']['name'];
@@ -78,10 +86,11 @@ class ProdGasArticlesController extends AppController {
 				}
 				$this->Session->setFlash($msg);
 			}	
-		}  // end if ($this->request->is('post') || $this->request->is('put'))						
+		}  // end if ($this->request->is('post') || $this->request->is('put'))
+						
 		$conditions = $this->_admin_index_sql_conditions($this->user);		
-		$this->paginate = array('conditions' => $conditions,
-								'order' => 'ProdGasArticle.name','recursive' => -1,'limit' => $SqlLimit);
+		$this->paginate = ['conditions' => $conditions,
+							'order' => ['ProdGasArticle.name'], 'recursive' => -1, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 	    $results = $this->paginate('ProdGasArticle');
 	    /*
 	    echo "<pre>";
@@ -89,7 +98,8 @@ class ProdGasArticlesController extends AppController {
 	    echo "</pre>";
 	    */
 	    $this->set('results', $results);
-		$this->set('SqlLimit', $SqlLimit);	}
+		$this->set('SqlLimit', $SqlLimit);
+	}
 		
 	public function admin_add() {
 		
@@ -109,7 +119,8 @@ class ProdGasArticlesController extends AppController {
 			/*
 			 * richiamo la validazione 
 			 */
-			$this->ProdGasArticle->set($this->request->data);			if(!$this->ProdGasArticle->validates()) {
+			$this->ProdGasArticle->set($this->request->data);
+			if(!$this->ProdGasArticle->validates()) {
 			
 					$errors = $this->ProdGasArticle->validationErrors;
 					$tmp = '';
@@ -221,7 +232,11 @@ class ProdGasArticlesController extends AppController {
 			 */
 			$this->request->data['ProdGasArticle']['um_riferimento'] = $this->request->data['Article']['um_riferimento'];
 			
-			/*			 * richiamo la validazione			*/			$this->ProdGasArticle->set($this->request->data);			if(!$this->ProdGasArticle->validates()) {
+			/*
+			 * richiamo la validazione
+			*/
+			$this->ProdGasArticle->set($this->request->data);
+			if(!$this->ProdGasArticle->validates()) {
 			
 					$errors = $this->ProdGasArticle->validationErrors;
 					$tmp = '';
@@ -232,13 +247,16 @@ class ProdGasArticlesController extends AppController {
 							$tmp .= $value.' - ';
 					}
 					$msg .= "Articolo non aggiornato: dati non validi, $tmp<br />";
-					$this->Session->setFlash($msg);											}			else {
+					$this->Session->setFlash($msg);								
+			}
+			else {
 				/*
 				echo "<pre>";
 				print_r($this->request->data);
 				echo "</pre>";	
 				*/
-				$this->ProdGasArticle->create();								if($this->ProdGasArticle->save($this->request->data)) {
+				$this->ProdGasArticle->create();				
+				if($this->ProdGasArticle->save($this->request->data)) {
 				
 					$msg = __('The article has been saved');
 
@@ -295,7 +313,8 @@ class ProdGasArticlesController extends AppController {
 										
 					$this->Session->setFlash($msg);
 						
-					$filterParams = '';					$filterParams .= '&sort:'.$this->request->data['ProdGasArticle']['sort'];
+					$filterParams = '';
+					$filterParams .= '&sort:'.$this->request->data['ProdGasArticle']['sort'];
 					$filterParams .= '&direction:'.$this->request->data['ProdGasArticle']['direction'];
 					$filterParams .= '&page:'.$this->request->data['ProdGasArticle']['page'];
 					$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasArticles&action=index'.$filterParams);  
@@ -327,7 +346,18 @@ class ProdGasArticlesController extends AppController {
 		/*
 		 * parametri di ricerca da ripassare a admin_index
 		 */ 
-		$sort = '';		$direction = '';		$page = 0;		if (!empty($this->request->params['named']['sort']))			$sort = $this->request->params['named']['sort'];		if (!empty($this->request->params['named']['direction']))			$direction = $this->request->params['named']['direction'];		if (!empty($this->request->params['named']['page']))			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);
+		$sort = '';
+		$direction = '';
+		$page = 0;
+		if (!empty($this->request->params['named']['sort']))
+			$sort = $this->request->params['named']['sort'];
+		if (!empty($this->request->params['named']['direction']))
+			$direction = $this->request->params['named']['direction'];
+		if (!empty($this->request->params['named']['page']))
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);
 	}
 		
 	public function admin_copy($id=0) {
@@ -394,7 +424,8 @@ class ProdGasArticlesController extends AppController {
 		$this->myRedirect($url);
 	}
 	
-	public function admin_delete($id) {		
+	public function admin_delete($id) {
+		
 		$options = array();
 		$options['conditions'] = array('ProdGasArticle.supplier_id' => $this->user->organization['Supplier']['Supplier']['id'],
 									  'ProdGasArticle.id' => $id);
@@ -432,7 +463,8 @@ class ProdGasArticlesController extends AppController {
 			else
 				$this->Session->setFlash(__('Article was not deleted'));
 				
-			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasArticles&action=index'.$filterParams);					}
+			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasArticles&action=index'.$filterParams);			
+		}
 				
 		/*
 		 * img1 
@@ -444,7 +476,21 @@ class ProdGasArticlesController extends AppController {
 			$this->set('file1', $file1);
 		}
 
-		/*		 * parametri di ricerca da ripassare a admin_index		*/		$sort = '';		$direction = '';		$page = 0;		if (!empty($this->request->params['named']['sort']))			$sort = $this->request->params['named']['sort'];		if (!empty($this->request->params['named']['direction']))			$direction = $this->request->params['named']['direction'];		if (!empty($this->request->params['named']['page']))			$page = $this->request->params['named']['page'];		$this->set('sort', $sort);		$this->set('direction', $direction);		$this->set('page', $page);
+		/*
+		 * parametri di ricerca da ripassare a admin_index
+		*/
+		$sort = '';
+		$direction = '';
+		$page = 0;
+		if (!empty($this->request->params['named']['sort']))
+			$sort = $this->request->params['named']['sort'];
+		if (!empty($this->request->params['named']['direction']))
+			$direction = $this->request->params['named']['direction'];
+		if (!empty($this->request->params['named']['page']))
+			$page = $this->request->params['named']['page'];
+		$this->set('sort', $sort);
+		$this->set('direction', $direction);
+		$this->set('page', $page);
 
 
 		$this->request->data = $results;
@@ -456,11 +502,35 @@ class ProdGasArticlesController extends AppController {
 		$this->set('promotionsResults', $promotionsResults);		
 	}
 	
-	/*	 * crea sql per l'elenco articoli	*/	private function _admin_index_sql_conditions($user) {					$conditions = array();			/*
+	/*
+	 * crea sql per l'elenco articoli
+	*/
+	private function _admin_index_sql_conditions($user) {
+			
+		$conditions = array();
+	
+		/*
 		 * conditions obbligatorie
-		*/		$conditions[] = array('ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id']);		
-		/*		 * ctrl se non e' ancora stata effettuata una ricerca		* */		if(empty($conditions))			$this->set('iniCallPage', true);		else			$this->set('iniCallPage', false);			/*		echo "<pre>";		print_r($conditions);		echo "</pre>";		*/
-			return $conditions;	}	
+		*/
+		$conditions[] = array('ProdGasArticle.supplier_id' => $user->supplier['Supplier']['id']);
+		
+		/*
+		 * ctrl se non e' ancora stata effettuata una ricerca
+		* */
+		if(empty($conditions))
+			$this->set('iniCallPage', true);
+		else
+			$this->set('iniCallPage', false);
+	
+		/*
+		echo "<pre>";
+		print_r($conditions);
+		echo "</pre>";
+		*/
+	
+		return $conditions;
+	}
+	
 	private function __delete_img($prod_gas_article_id, $img1, $debug=false) {
 
 		$img_path = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_article').DS.$this->user->organization['Supplier']['Supplier']['id'].DS;

@@ -15,7 +15,8 @@ class MailsController extends AppController {
 		if(!$this->isRoot() && !$this->isManager())
 			$conditions += ['Mail.user_id' => $this->user->id];
 		
-		$this->paginate = ['conditions' => [$conditions], 'order' => 'Mail.created desc, User.name', 'limit' => 100];
+		$SqlLimit = 100;
+		$this->paginate = ['conditions' => [$conditions], 'order' => 'Mail.created desc, User.name', 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Mail');
 		$this->set(compact('results'));	
 		

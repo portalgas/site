@@ -1307,7 +1307,7 @@ class DeliveriesController extends AppController {
         $SqlLimit = 20;
 
         $this->Delivery->recursive = -1;
-        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
+        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
         
         $this->set(compact('results'));
@@ -1323,7 +1323,7 @@ class DeliveriesController extends AppController {
         $SqlLimit = 20;
 
         $this->Delivery->recursive = -1;
-        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
+        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
 
         $this->set(compact('results'));
@@ -1344,7 +1344,7 @@ class DeliveriesController extends AppController {
         $SqlLimit = 20;
 
         $this->Delivery->recursive = -1;
-        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'limit' => $SqlLimit];
+        $this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data' => 'asc'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
         $results = $this->paginate('Delivery');
 
         $this->set(compact('results'));

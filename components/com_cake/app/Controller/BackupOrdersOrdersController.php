@@ -33,7 +33,7 @@ class BackupOrdersOrdersController extends AppController {
 		self::d($conditions, $debug);
 		self::d($order, $debug);
 		
-	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'limit' => $SqlLimit];
+	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('BackupOrdersOrder');
 		foreach($results as $numResult => $result) {
 	

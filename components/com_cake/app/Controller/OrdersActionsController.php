@@ -6,7 +6,7 @@ class OrdersActionsController extends AppController {
 	public $components = array('Paginator');
 
 	public $paginate = array(
-			'limit' => 500,
+			'maxLimit' => 500, 'limit' => 500,
 			'order' => array('id' => 'asc')
 	);
 	

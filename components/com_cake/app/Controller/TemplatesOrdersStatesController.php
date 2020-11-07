@@ -5,10 +5,10 @@ class TemplatesOrdersStatesController extends AppController {
 
 	public $components = array('Paginator');
 
-	public $paginate = array(
-			'limit' => 500,
-			'order' => array('id' => 'asc')
-	);
+	public $paginate = [
+			'maxLimit' => 500, 'limit' => 500,
+			'order' => ['id' => 'asc']
+	];
 	
 	public function admin_index() {
 

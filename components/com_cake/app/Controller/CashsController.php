@@ -21,8 +21,9 @@ class CashsController extends AppController {
                 // 'User.block' => 0  lo metto nel model se no non mi prende quelli con user_id = 0
         ];
 
+        $SqlLimit = 500;
         $this->Cash->recursive = 1;
-        $this->paginate = ['limit' => 250, 'conditions' => $conditions, 'order' => Configure::read('orderUser')];
+        $this->paginate = ['maxLimit' => $SqlLimit, 'limit' => $SqlLimit, 'conditions' => $conditions, 'order' => Configure::read('orderUser')];
         $results = $this->paginate('Cash');
         $this->set(compact('results'));
 

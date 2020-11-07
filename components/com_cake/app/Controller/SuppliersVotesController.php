@@ -74,7 +74,7 @@ class SuppliersVotesController extends AppController {
 
 		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Organization')));
 		$SuppliersOrganization->recursive = 0; 
-        $this->paginate = array('conditions' => array($conditions), 'order' => 'SuppliersOrganization.name', 'limit' => $SqlLimit);
+        $this->paginate =['conditions' => [$conditions], 'order' => ['SuppliersOrganization.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('SuppliersOrganization');
 		/*
 		echo "<pre>";

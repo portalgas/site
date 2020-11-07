@@ -159,7 +159,7 @@ class OrdersController extends AppController {
 		self::d($conditions, $debug);
 		self::d($order, $debug);
 		
-	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'limit' => $SqlLimit];
+	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
 		foreach($results as $numResult => $result) {
@@ -291,7 +291,7 @@ class OrdersController extends AppController {
 	
 		$this->Order->unbindModel(['belongsTo' => ['ArticlesOrder']]);
 		$this->Order->recursive = 0;
-		$this->paginate = ['conditions' => $conditions,'order'=>'Delivery.data desc,Order.data_inizio','limit' => $SqlLimit];
+		$this->paginate = ['conditions' => $conditions, 'order' => ['Delivery.data desc,Order.data_inizio'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
 		foreach($results as $numResult => $result) {

@@ -161,7 +161,8 @@ class ArticlesController extends AppController {
 		$this->paginate = ['conditions' => $conditions,
 					       'fields' => $fields,
 					       'group' => 'Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name',
-						   'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'], 'recursive' => 1, 'limit' => $SqlLimit];
+						   'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'], 'recursive' => 1, 
+						   'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Article');
 	    // debug($conditions);
 		// debug($results); 
@@ -202,7 +203,8 @@ class ArticlesController extends AppController {
 				    $this->paginate = ['conditions' => $conditions,
 										'fields' => $fields,
 										'group' => 'Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name',
-										'order' => 'SuppliersOrganization.name, Article.name','recursive' => 1,'limit' => $SqlLimit];
+										'order' => ['SuppliersOrganization.name, Article.name'], 'recursive' => 1, 
+										'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 				    $results = $this->paginate('Article');
 
 					$isSupplierOrganizationDesTitolare = true;
@@ -247,6 +249,7 @@ class ArticlesController extends AppController {
 		
 		$results = [];
 		$FilterArticleName = null;
+		$FilterArticleStato = 'Y';
 		$SqlLimit = 1000;
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -323,6 +326,20 @@ class ArticlesController extends AppController {
 		}
 		self::d($this->user->get('ACLsuppliersIdsOrganization'), $debug);
 		
+		/*
+		 * solo per il context=article
+		* per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)
+		*/
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Stato')) {
+			$FilterArticleStato = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Stato');
+			if($FilterArticleStato!='ALL')
+				$conditions[] = ['Article.stato' => $FilterArticleStato];
+		}
+		else {
+			if(!empty($FilterArticleStato))  // cosi' di default e' Y
+				$conditions[] = ['Article.stato' => $FilterArticleStato];
+		}
+
 		if(!empty($FilterArticleSupplierId)) {
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
 			if(!empty($this->request->params['pass']['FilterArticleName'])) {
@@ -335,11 +352,12 @@ class ArticlesController extends AppController {
 			$this->Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
 			
 			self::d($conditions, $debug);
-			
+
 			$this->paginate = ['conditions' => $conditions,
 								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],
 								'recursive' => 0,
-								'limit' => $SqlLimit];
+								'maxLimit' => $SqlLimit,
+								'limit' => $SqlLimit];						
 			$results = $this->paginate('Article');
 		
 			self::d($results, $debug);
@@ -363,9 +381,13 @@ class ArticlesController extends AppController {
 		else
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
 		
+		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];
+		$this->set(compact('stato'));
+
 		/* filtro */
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
 		$this->set('FilterArticleName', $FilterArticleName);
+		$this->set('FilterArticleStato', $FilterArticleStato);
 	
 		$this->set('results', $results);
 		$this->set('SqlLimit', $SqlLimit);
@@ -473,6 +495,7 @@ class ArticlesController extends AppController {
 			$this->paginate = ['conditions' => $conditions,
 								'order' => ['SuppliersOrganization.name' => 'asc', 'CategoriesArticle.name' => 'asc', 'Article.name' => 'asc'],
 								'recursive' => 0,
+								'maxLimit' => $SqlLimit,
 								'limit' => $SqlLimit];
 			$results = $this->paginate('Article');
 		}
@@ -636,6 +659,7 @@ class ArticlesController extends AppController {
 			$this->paginate = ['conditions' => $conditions,
 								'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'],
 								'recursive' => 0,
+								'maxLimit' => $SqlLimit,
 								'limit' => $SqlLimit];
 			$results = $this->paginate('Article');				
 		}

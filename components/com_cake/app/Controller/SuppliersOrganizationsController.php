@@ -136,7 +136,7 @@ class SuppliersOrganizationsController extends AppController {
 		
 		$this->SuppliersOrganization->unbindModel(['belongsTo' => ['Organization']]);
 		$this->SuppliersOrganization->recursive = 0; 
-        $this->paginate = ['conditions' => [$conditions],'order'=>'SuppliersOrganization.name','limit' => $SqlLimit];
+        $this->paginate = ['conditions' => [$conditions], 'order' => ['SuppliersOrganization.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('SuppliersOrganization');
 		self::d($results);
 		

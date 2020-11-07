@@ -29,9 +29,10 @@ class EventTypesController extends AppController {
 	var $name = 'EventTypes';
 
 	function admin_index() {
+		$SqlLimit = 25;
 	    $this->paginate = array('conditions' => array('EventType.organization_id' => $this->user->organization['Organization']['id']),
 					    		'recursive' => 1,
-								'limit' => 25,
+								'maxLimit' => $SqlLimit, 'limit' => $SqlLimit,
 								'order' => array('EventType.name' => 'asc'));
 	    $results = $this->paginate('EventType');
 		$this->set('results', $results);

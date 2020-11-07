@@ -23,15 +23,20 @@ if($user->organization['Organization']['type']=='GAS' || $user->organization['Or
 	if(count($ACLsuppliersOrganization) > Configure::read('HtmlSelectWithSearchNum'))
 		$options += array('class'=> 'selectpicker', 'data-live-search' => true);
 	
-	echo '<div class="col-md-5">';
+	echo '<div class="col-md-4">';
 	echo $this->Form->input('supplier_organization_id', $options);
 	echo '</div>';
 }
-echo '<div class="col-md-5">';
+echo '<div class="col-md-4">';
 echo $this->Ajax->autoComplete('FilterArticleName', 
 				   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteContextArticlesArticles_name&format=notmpl',
 					array('label' => 'Nome', 'class' => 'form-control', 'name'=>'FilterArticleName','value'=>$FilterArticleName ,'escape' => false));
 				echo '</div>';
+
+				echo '<div class="col-md-2">';
+				echo $this->Form->input('stato',array('label' => __('Stato'), 'class' => 'form-control', 'options' => $stato,'name'=>'FilterArticleStato','default'=>$FilterArticleStato,'escape' => false)); 
+				echo '</div>';	
+
 				echo '<div class="col-md-1">';
 				echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); 
 				echo '</div>';
@@ -41,7 +46,7 @@ echo $this->Ajax->autoComplete('FilterArticleName',
 				
 				echo '</div>';
 
-	echo '</fieldset>';
+echo '</fieldset>';
 				
 if(count($results)>0) { 
 	

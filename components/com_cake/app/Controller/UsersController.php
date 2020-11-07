@@ -148,7 +148,7 @@ class UsersController extends AppController {
 						'User.block' => 1];
 
         $this->User->recursive = 0;
-        $this->paginate = ['conditions' => $conditions, 'order' => Configure::read('orderUser'), 'limit' => $SqlLimit];
+        $this->paginate = ['conditions' => $conditions, 'order' => Configure::read('orderUser'), 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
         $results = $this->paginate('User');
 
         /*
