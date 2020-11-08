@@ -67,7 +67,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					if($orderToValidate)  {
 							$tmp = "";
 
-							$tot_qta_colli += $colli_completi;
+							$tot_qta_colli = ((int)$tot_qta_colli + (int)$colli_completi);
 
 							if($colli1=='N') {
 								if($pezzi_confezione>1)  $tmp .= $colli_completi;
@@ -192,7 +192,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			if($orderToValidate)  {
 				$tmp = "";
 
-				$tot_qta_colli += $colli_completi;
+				$tot_qta_colli = ((int)$tot_qta_colli + (int)$colli_completi);
 				
 				if($colli1=='N') {
 					if($pezzi_confezione>1)  $tmp .= $colli_completi;

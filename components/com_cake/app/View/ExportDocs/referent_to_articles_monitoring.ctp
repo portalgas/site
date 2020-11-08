@@ -124,7 +124,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					if($orderToValidate) {
 						$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
 
-						$tot_qta_colli += $colli_completi;
+						$tot_qta_colli = ((int)$tot_qta_colli + (int)$colli_completi);
 
 						if($colli1=='Y')
 							$html .= $colli_completi;
@@ -264,7 +264,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			if($orderToValidate) {
 				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
 
-				$tot_qta_colli += $colli_completi;
+				$tot_qta_colli = ((int)$tot_qta_colli + (int)$colli_completi);
 
 				if($colli1=='Y')
 					$html .= $colli_completi;
