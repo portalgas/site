@@ -227,7 +227,7 @@ if(!empty($results))
 			<label for="codice2" style="width:auto !important;">Visualizzo i colli a 1</label>&nbsp;&nbsp;
 			<input type="radio" name="colli1" id="colli1_N" value="N" checked /> No
 			<input type="radio" name="colli1" id="colli1_Y" value="Y" /> Si
-		</p>
+		</div>
 	</div>
 		
 	<div id="setting-to-articles" class="box-options">
