@@ -1211,8 +1211,9 @@ class OrderLifeCycle extends AppModel {
 					return $esito; 
 				}	
 	 				
-	 			if(!isset($orderResult['Order']['data_fine_validation']))
-	 				$orderResult['Order']['data_fine_validation'] = $opts['data_fine_validation'];	 			
+	 			if(!isset($orderResult['Order']['data_fine_validation']) || $orderResult['Order']['data_fine_validation']==Configure::write('DB.field.date.empty'))
+	 				$orderResult['Order']['data_fine_validation'] = $opts['data_fine_validation'];	 	
+
 	 		break;
 	 		case 'WAIT-PROCESSED-TESORIERE':
 	 			if(isset($opts['tesoriere_doc1']))

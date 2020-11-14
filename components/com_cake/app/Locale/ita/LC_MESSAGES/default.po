@@ -2371,6 +2371,9 @@ msgstr "Si chiuderà"
 msgid "DataInizioPast"
 msgstr "Si è aperto"
 
+msgid "DataFineValidation"
+msgstr "Riaperto l'ordine fino a"
+
 msgid "DataFinePast"
 msgstr "Si è chiuso"
 

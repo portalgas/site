@@ -985,7 +985,7 @@ class OrdersController extends AppController {
 		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
-				
+		
 			/*
 			 * ordine prima del salvataggio, ctrl successivi
 			 */
@@ -1339,6 +1339,7 @@ class OrdersController extends AppController {
 						
 			$data_fine_validation = $this->request->data['Order']['data_fine_validation'];
 			$data_fine_validation_db = $this->request->data['Order']['data_fine_validation_db'];
+			// debug($this->request->data['Order']);
 
 			/*
 			 * aggiorno stato ORDER
@@ -1355,7 +1356,7 @@ class OrdersController extends AppController {
 	        } 
 			
 			if($continue) {
-				if($debug) echo "<br />riapro l'ordine ";
+				if($debug) debug("riapro l'ordine");
 				$this->Order->riapriOrdine($this->user, $this->order_id, $debug);
 			}
 						

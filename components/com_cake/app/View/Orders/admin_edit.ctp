@@ -74,10 +74,13 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 		
 		if(!empty($this->request->data['Order']['data_fine_validation']) && $this->request->data['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) {
 			
-			echo $this->Form->input('data_fine_validation',array('type' => 'text', 'label' => "Riaperto l'ordine fino a", 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y"), 'required' => 'false'));
-			echo $this->Ajax->datepicker('OrderDataFineValidation',array('dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineValidationDb', 'altFormat' => 'yy-mm-dd'));
+			echo $this->App->drawDate('Order', 'data_fine_validation', __('DataFineValidation'), $this->Form->value('Order.data_fine_validation'));
+			echo $this->element('legendaOrdersDataFineValidation');
+			/*
+			echo $this->Form->input('data_fine_validation', ['type' => 'text', 'label' => "Riaperto l'ordine fino a", 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y"), 'required' => 'false']);
+			echo $this->Ajax->datepicker('OrderDataFineValidation', ['dateFormat' => 'DD, d MM yy','altField' => '#OrderDataFineValidationDb', 'altFormat' => 'yy-mm-dd']);
 			echo '<input type="hidden" id="OrderDataFineValidationDb" name="data[Order][data_fine_validation_db]" value="'.$this->Form->value('Order.data_fine_validation').'" />';
-				
+			*/				
 			echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
 		}
 		else {
@@ -101,7 +104,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 			echo '</div>';	
 		}		
 		
-		echo $this->Form->input('nota', array('type' => 'text', 'after' => '<img width="150" class="print_screen" id="print_screen_order_nota" src="'.Configure::read('App.img.cake').'/print_screen_order_nota.jpg" title="" border="0" />'));
+		echo $this->Form->input('nota', ['type' => 'text', 'after' => '<img width="150" class="print_screen" id="print_screen_order_nota" src="'.Configure::read('App.img.cake').'/print_screen_order_nota.jpg" title="" border="0" />']);
 		 		
 		echo $this->Html->div('clearfix','');
 
