@@ -206,10 +206,10 @@ class AjaxGasCart extends AppModel {
 
 		$this->unbindModel(['belongsTo' => ['Cart']]);
 		$options['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
-										'ArticlesOrder.order_id' => $order_id,
-										'ArticlesOrder.article_organization_id' => $article_organization_id,
-										'ArticlesOrder.article_id' => $article_id
-									];							
+								'ArticlesOrder.order_id' => $order_id,
+								'ArticlesOrder.article_organization_id' => $article_organization_id,
+								'ArticlesOrder.article_id' => $article_id
+							];							
 		$options['recursive'] = 0;
 		$results = $ArticlesOrder->find('first', $options);
 		
@@ -231,7 +231,7 @@ class AjaxGasCart extends AppModel {
 										'Cart.user_id' => $user_id,
 										);
 		$options['recursive'] = 0;
-		$this->Cart->unbindModel(array('belongsTo' => array('Order','User')));
+		$this->Cart->unbindModel(['belongsTo' => ['User']]);
 		$results = $this->Cart->find('first', $options);
 		
 		$this->log .= "\r\n Result dei dati ".print_r($results, true);
@@ -266,7 +266,12 @@ class AjaxGasCart extends AppModel {
 			App::import('Model', 'CashesUser');
 			$CashesUser = new CashesUser;
 
-			if($CashesUser->ctrlLimitCart($user, $results['Article']['supplier_organization_id'], $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo'])) {
+ 			/*
+			 * lo prendo dall'ordine perche' il listino puo' gestirlo un altro
+			 * $supplier_organization_id = $results['Article']['supplier_organization_id'];
+			 */
+			$supplier_organization_id = $results['Order']['supplier_organization_id'];
+			if($CashesUser->ctrlLimitCart($user, $supplier_organization_id, $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo'])) {
 				if ($this->Cart->save($cart)) {
 					
 					if(empty($this->returnJS))
@@ -314,7 +319,12 @@ class AjaxGasCart extends AppModel {
 			App::import('Model', 'CashesUser');
 			$CashesUser = new CashesUser;
 				
-			$esito_ctrl_limit_cart = $CashesUser->ctrlLimitCart($user, $results['Article']['supplier_organization_id'], $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo']);		
+			/*
+			 * lo prendo dall'ordine perche' il listino puo' gestirlo un altro
+			 * $supplier_organization_id = $results['Article']['supplier_organization_id'];
+			 */
+			$supplier_organization_id = $results['Order']['supplier_organization_id'];
+			$esito_ctrl_limit_cart = $CashesUser->ctrlLimitCart($user, $supplier_organization_id, $this->qta_prima_modifica, $this->qta, $results['ArticlesOrder']['prezzo']);		
 		} 
 
 		if($esito_ctrl_limit_cart) {
