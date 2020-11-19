@@ -23,8 +23,7 @@ class ConfigurationsController extends AppController {
 
 		$results = [];
 		if (function_exists('apcu_clear_cache')) {
-			apcu_clear_cache('user');
-			apcu_clear_cache('opcode');
+			apcu_clear_cache();
 			$results = ['success' => true];
 		}
 		else {

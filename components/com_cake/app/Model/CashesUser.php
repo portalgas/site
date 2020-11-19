@@ -25,10 +25,7 @@ class CashesUser extends AppModel {
 		/*
 		 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
 	     */		
-		App::import('Model', 'CashesUser');
-		$CashesUser = new CashesUser;
-
-        $supplierOrganizationCashExcludedResults = $CashesUser->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
+        $supplierOrganizationCashExcludedResults = $this->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
         $sql_supplier_organization_cash_excluded = '';
 		if(!empty($supplierOrganizationCashExcludedResults)) {
 			foreach($supplierOrganizationCashExcludedResults as $supplierOrganizationCashExcludedResult) {
@@ -39,7 +36,7 @@ class CashesUser extends AppModel {
 
 				$sql_supplier_organization_cash_excluded = ' AND `Order`.supplier_organization_id NOT IN ('.$sql_supplier_organization_cash_excluded.')';
 		} // end if(!empty($supplierOrganizationCashExcludedResults))
-		self::d($sql_supplier_organization_cash_excluded, $debug);
+		if($debug) debug($sql_supplier_organization_cash_excluded);
 
 		$sql = "SELECT
 					ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
@@ -62,7 +59,7 @@ class CashesUser extends AppModel {
 					and `Order`.state_code not in ($stateCodeUsersCash)";
 		if(!empty($sql_supplier_organization_cash_excluded))
 			$sql .= $sql_supplier_organization_cash_excluded;
-		self::d($sql, $debug); 
+		if($debug) debug($sql); 
 		$results = $this->query($sql);
 
 		foreach($results as $numResult => $result) {
@@ -91,10 +88,10 @@ class CashesUser extends AppModel {
 			}
 			
 			$tot_importo = ($tot_importo + $importo);
-			self::d('CashesUser::getTotImportoAcquistato - tot_importo '.$tot_importo, $debug);
+			if($debug) debug('CashesUser::getTotImportoAcquistato - tot_importo '.$tot_importo);
 		} // end foreach($results as $numResult => $result)
 				
-		self::d('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo, $debug);
+		if($debug) debug('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo);
 
 		return floatval($tot_importo);
     }
@@ -106,15 +103,12 @@ class CashesUser extends AppModel {
 	 */ 
     public function getTotImportoAcquistatoDetails($user, $user_id, $debug=false) {
 
-		self::d('CashesUser::getTotImportoAcquistatoDeatils', $debug);
+		if($debug) debug('CashesUser::getTotImportoAcquistatoDeatils');
 
 		/*
 		 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
 	     */		
-		App::import('Model', 'CashesUser');
-		$CashesUser = new CashesUser;
-
-        $supplierOrganizationCashExcludedResults = $CashesUser->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
+        $supplierOrganizationCashExcludedResults = $this->getSupplierOrganizationCashExcludedIds($user, $user->organization['Organization']['id'], $debug);
         $sql_supplier_organization_cash_excluded = '';
 		if(!empty($supplierOrganizationCashExcludedResults)) {
 			foreach($supplierOrganizationCashExcludedResults as $supplierOrganizationCashExcludedResult) {
@@ -125,7 +119,7 @@ class CashesUser extends AppModel {
 
 				$sql_supplier_organization_cash_excluded = ' AND `Order`.supplier_organization_id NOT IN ('.$sql_supplier_organization_cash_excluded.')';
 		} // end if(!empty($supplierOrganizationCashExcludedResults))
-		self::d($sql_supplier_organization_cash_excluded, $debug);
+		if($debug) debug($sql_supplier_organization_cash_excluded);
 
 		$sql = "SELECT
 					`Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.state_code, 
@@ -152,10 +146,10 @@ class CashesUser extends AppModel {
 			$sql .= $sql_supplier_organization_cash_excluded;				    
 		$sql .= " GROUP BY `Order`.id 
 				    ORDER BY Delivery.data asc, SuppliersOrganization.name";
-		self::d($sql, $debug); 
+		if($debug) debug($sql); 
 		$results = $this->query($sql);
 			
-		self::d($results, $debug);
+		if($debug) debug($results);
 
 		return $results;
     }
@@ -204,14 +198,14 @@ class CashesUser extends AppModel {
     	$results = [];
 
         if($user->organization['Organization']['hasCashFilterSupplier']=='N')
-            $results;
+            return $results;
 
         App::import('Model', 'SupplierOrganizationCashExcluded');
         $SupplierOrganizationCashExcluded = new SupplierOrganizationCashExcluded;
 
         $options = [];
         $options['conditions'] = ['organization_id' => $organization_id];
-        self::d($options, $debug);
+        if($debug) debug($options);
         /*
          * recurvice 1 da errore!!!
          */
@@ -224,7 +218,7 @@ class CashesUser extends AppModel {
 
         	$results = $newResults;
         }
-        self::d($results, $debug);
+        if($debug) debug($results);
         return $results;
     } 
 
@@ -242,7 +236,7 @@ class CashesUser extends AppModel {
         $options = [];
         $options['conditions'] = ['organization_id' => $organization_id,
                                   'supplier_organization_id' => $supplier_organization_id];
-        self::d($options, $debug);
+        if($debug) debug($options);
         /*
          * recurvice 1 da errore!!!
          */        
@@ -266,8 +260,7 @@ class CashesUser extends AppModel {
 		$results = []; 	
 		$results = $this->getUserData($user);
 
-		if($debug)
-			echo '<br />organization_cash_limit '.$results['organization_cash_limit'];
+		if($debug) debug('organization_cash_limit '.$results['organization_cash_limit']);
 		
 		if($results['organization_cash_limit']=='LIMIT-NO')
 			return true;
@@ -296,11 +289,9 @@ class CashesUser extends AppModel {
 		$results['user_tot_importo_acquistato'] = $this->getTotImportoAcquistato($user, $user->id /*, $debug */);
 		
 		if($debug) {
-			echo "<pre>";
-			echo '<br />user_cash '.$results['user_cash'];
-			echo '<br />user_tot_importo_acquistato '.$results['user_tot_importo_acquistato'];
-			echo '<br />cart_importo (qta_diff * prezzo) '.' ('.$qta_diff.' * '.$prezzo.') '.$cart_importo;
-			echo "</pre>";
+			debug('user_cash '.$results['user_cash']);
+			debug('user_tot_importo_acquistato '.$results['user_tot_importo_acquistato']);
+			debug('cart_importo (qta_diff * prezzo) '.' ('.$qta_diff.' * '.$prezzo.') '.$cart_importo);
 		}
 				
 		if($results['organization_cash_limit']=='LIMIT-CASH') {
@@ -317,15 +308,13 @@ class CashesUser extends AppModel {
 
 		if($results['organization_cash_limit']=='LIMIT-CASH-USER') {
 		
-			if($debug)
-				echo '<br />user_limit_type '.$results['user_limit_type'];
+			if($debug) debug('user_limit_type '.$results['user_limit_type']);
 		
 			if($results['user_limit_type']=='LIMIT-CASH') {
 			
 				$delta = ($results['user_cash'] - ($results['user_tot_importo_acquistato'] + $cart_importo));
 				
-				if($debug)
-					echo '<br />ctrlLimitCart => delta '.$delta;
+				if($debug) debug('ctrlLimitCart => delta '.$delta);
 
 				if($delta < $zero)
 					return false;
@@ -335,13 +324,11 @@ class CashesUser extends AppModel {
 			
 			if($results['user_limit_type']=='LIMIT-CASH-AFTER') {
 
-				if($debug)
-					echo '<br />user_limit_after '.$results['user_limit_after'];
+				if($debug) debug('user_limit_after '.$results['user_limit_after']);
 
 				$delta = (($results['user_cash'] + $results['user_limit_after'] ) - ($results['user_tot_importo_acquistato'] + $cart_importo));
 				
-				if($debug)
-					echo '<br />delta '.$delta;
+				if($debug) debug('delta '.$delta);
 				/*
 				echo '<br >user_cash '.$results['user_cash'].' '.gettype($results['user_cash']);
 				echo '<br >user_limit_after '.$results['user_limit_after'].' '.gettype($results['user_limit_after']);
@@ -354,13 +341,11 @@ class CashesUser extends AppModel {
 				echo '<br >zero '.$zero.' '.gettype($zero);
 				*/
 				if($delta < $zero) {
-					if($debug)
-						echo '<br >FALSE delta < zero ';
+					if($debug) debug('FALSE delta < zero');
 					return false;	
 				}	
 				else {
-					if($debug)
-						echo '<br >TRUE delta > zero ';		
+					if($debug) debug('TRUE delta > zero');		
 					return true;
 				}		
 			}
@@ -370,8 +355,7 @@ class CashesUser extends AppModel {
 				return false;
 		}		
 
-		if($debug)
-			echo '<br />ctrlLimitCart OK ';
+		if($debug) debug('ctrlLimitCart OK');
 
 		return true;		
 	}
@@ -384,13 +368,12 @@ class CashesUser extends AppModel {
 			$cashesUser = $cashesUser['CashesUser'];
 		
 		if($debug) {
-			echo "organization_cashLimit ".$organization_cashLimit."<br />";
-			echo "organization_limitCashAfter ".$organization_limitCashAfter."<br />";
-			echo "tot_importo_cash ".$tot_importo_cash."<br />";
-			echo "tot_importo_acquistato ".$tot_importo_acquistato."<br />";
-			echo "<pre>cashesUser \n ";
-			print_r($cashesUser);
-			echo "</pre>";			
+			debug("organization_cashLimit ".$organization_cashLimit);
+			debug("organization_limitCashAfter ".$organization_limitCashAfter);
+			debug("tot_importo_cash ".$tot_importo_cash);
+			debug("tot_importo_acquistato ".$tot_importo_acquistato);
+			debug("cashesUser");
+			debug($cashesUser);
 		}
 
 		 /*

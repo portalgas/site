@@ -10,8 +10,8 @@ class Cash extends AppModel {
 	public function getTotaleCash($user, $debug=false) {
 
 		$options = [];
-		$options['fields'] = array('SUM(Cash.importo) AS totale_importo');
-		$options['conditions'] = array('Cash.organization_id' => $user->organization['Organization']['id']);
+		$options['fields'] = ['SUM(Cash.importo) AS totale_importo'];
+		$options['conditions'] = ['Cash.organization_id' => $user->organization['Organization']['id']];
 		$options['recursive'] = -1;
 		$results = current($this->find('first', $options));
 

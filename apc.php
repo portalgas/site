@@ -7,11 +7,13 @@
     date_default_timezone_set($TZ);
 
     define('ENABLE_APC', extension_loaded('apcu') || extension_loaded('apc'));
+    /*
     define('ENABLE_OPCACHE', extension_loaded('Zend OPcache'));
     define('ENABLE_REALPATH', function_exists('realpath_cache_size'));
     define('ENABLE_MEMCACHE', extension_loaded('memcache') || extension_loaded('memcached'));
     define('ENABLE_REDIS', extension_loaded('redis'));
-
+    */
+    
     define('ENABLE_OPCACHE', false);
     define('ENABLE_REALPATH', false);
     define('ENABLE_MEMCACHE', false);

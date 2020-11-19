@@ -56,6 +56,10 @@ class Sql extends AppModel {
 		$results[$i]['name'] = "Invio mail a tutti con totali utenti";
 		$results[$i]['sql'] = "SELECT o.name, o.id, count(u.id) as tot_users, dest_options, m.created FROM k_mails m, k_organizations o, j_users u where m.organization_id = o.id and o.type = 'GAS' and o.stato = 'Y' and o.id = u.organization_id and u.block = 0 and dest_options_qta = 'ALL' and year(m.created) = %s group by  m.created, o.id, o.name, dest_options, dest_options_qta order by m.created desc;";
 		$results[$i]['params'] = ['year' => 'AnnoMailSend'];
+		$i++;
+		$results[$i]['name'] = "Ctrl - Ordini DES senza + ordine, se si trovano eliminarli da k_des_orders_organizations";
+		$results[$i]['sql'] = "SELECT organization_id, order_id FROM k_des_orders_organizations WHERE  order_id NOT IN (SELECT ID FROM k_orders);";
+		$results[$i]['params'] = [];
 
 		return $results;
 	}
