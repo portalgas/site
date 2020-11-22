@@ -426,6 +426,7 @@ class RestsController extends AppController {
 			  */
 			$results['user_tot_importo_acquistato'] = $CashesUser->getTotImportoAcquistato($this->user, $this->user->id);
 			
+			$cashesUserResults = [];
 			$cashesUserResults['limit_type'] = $results['user_limit_type'];
 			$cashesUserResults['limit_after'] = $results['user_limit_after'];
 			
