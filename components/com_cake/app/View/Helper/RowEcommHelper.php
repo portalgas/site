@@ -695,10 +695,10 @@ class RowEcommHelper extends AppHelper {
 		return $result;
 	}
 	
-	public function drawBackOfficeReportUsers($numArticlesOrder, $result, $permissions, $options=[]) {
+	public function drawBackOfficeReportUsers($user, $numArticlesOrder, $result, $permissions, $options=[]) {
 	
 		$rowId = $this->_getRowId($numArticlesOrder, $result);
-		
+//debug($user->organization['Organization']);		
 		$tmp = "";
 		
 		$k=0;
@@ -712,13 +712,21 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= '<a id="actionTrView-'.$rowId.'" action="articles_order-'.$rowId.'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 	
 		$tmp  .= '<td>'.($numArticlesOrder+1).'</td>';
+		
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+			$tmp  .= '<td>';
+			$tmp  .= $result['Article']['codice'];
+			$tmp  .= '</td>';
+		}
+
 		$tmp  .= "\n";
 		$tmp  .= '<td class="'; 
 		if($result['Cart']['deleteToReferent']=='Y')
 			$tmp  .= 'deleteToReferent';
 		$tmp  .= '">';
 		$tmp  .= $result['ArticlesOrder']['name'];
-		//$tmp  .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));		$tmp  .= '</td>';
+		//$tmp  .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));
+		$tmp  .= '</td>';
 		
 		$tmp  .= "\n";  // Conf.
 		$tmp  .= '<td style="white-space: nowrap;">';
@@ -731,7 +739,8 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= '</td>';
 		$tmp  .= "\n";  // Prezzo/UM
 		$tmp  .= '<td style="white-space: nowrap;">';
-		$tmp  .= $this->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);		$tmp  .= '</td>';
+		$tmp  .= $this->getArticlePrezzoUM($result['ArticlesOrder']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']);
+		$tmp  .= '</td>';
 		$tmp  .= "\n";
 	
 		$tmp  .= $this->_drawBackOfficeCart($rowId, $numArticlesOrder, $result, $permissions, $options);
@@ -744,7 +753,7 @@ class RowEcommHelper extends AppHelper {
 		return $tmp;
 	}
 
-	public function drawBackOfficeReportArticlesDetails($numArticlesOrder, $result, $permissions, $options=[]) {
+	public function drawBackOfficeReportArticlesDetails($user, $numArticlesOrder, $result, $permissions, $options=[]) {
 	
 		$rowId = $this->_getRowId($numArticlesOrder, $result);
 
@@ -762,12 +771,20 @@ class RowEcommHelper extends AppHelper {
 	
 		$tmp  .= '<td>'.($numArticlesOrder+1).'</td>';
 		$tmp  .= "\n";
+
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+			$tmp  .= '<td>';
+			$tmp  .= $result['Article']['codice'];
+			$tmp  .= '</td>';
+		}
+				
 		$tmp  .= '<td class="'; 
 		if($result['Cart']['deleteToReferent']=='Y')
 			$tmp  .= 'deleteToReferent';
 		$tmp  .= '">';
 		$tmp  .= $result['ArticlesOrder']['name'];
-		//$tmp  .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));		$tmp  .= '</td>';
+		//$tmp  .= $this->drawArticleNotaAjax($rowId, strip_tags($result['Article']['nota']));
+		$tmp  .= '</td>';
 	
 		$tmp  .= "\n";
 		$tmp  .= '<td class="';
@@ -827,7 +844,9 @@ class RowEcommHelper extends AppHelper {
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= 'AO.article_organization_id';
 		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
-		$tmp  .= "\n";		if($this->debug) $tmp  .= 'AO.article_id';		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp  .= "\n";
+		if($this->debug) $tmp  .= 'AO.article_id';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp  .= "\n";
 		if($this->debug) $tmp  .= '<br />AO.qta_cart';
 		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['ArticlesOrder']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxGasCart e' ricalcolato
@@ -850,7 +869,9 @@ class RowEcommHelper extends AppHelper {
 		
 		if(empty($result['User']['id']) && isset($result['Cart']['user_id'])) $result['User']['id'] = $result['Cart']['user_id'];
 			
-		if($this->debug) $tmp  .= 'U.id';		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';		
+		if($this->debug) $tmp  .= 'U.id';
+		$tmp  .= '<input class="debug form-control" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';
+		
 		/*
 		 * qta_prima_modifica
 		 * 	la prima volta che da backOffice modifico la qta, qta_prima_modifica = $result['Cart']['qta']
@@ -858,7 +879,8 @@ class RowEcommHelper extends AppHelper {
 		 */
 		if($result['Cart']['qta_forzato']==0) 
 			$qta_prima_modifica = $result['Cart']['qta'];
-		else			$qta_prima_modifica = $result['Cart']['qta_forzato'];
+		else
+			$qta_prima_modifica = $result['Cart']['qta_forzato'];
 		
 		if($this->debug) $tmp  .= 'C.qta_prima_mod';
 		if(empty($qta_prima_modifica)) $qta_prima_modifica=0;
@@ -1358,7 +1380,8 @@ class RowEcommHelper extends AppHelper {
 		
 		$tmp  = "";
 		
-		$importo = ($result['ArticlesOrder']['prezzo'] * $result['Cart']['qta']);		
+		$importo = ($result['ArticlesOrder']['prezzo'] * $result['Cart']['qta']);
+		
 		$tmp  .= "\n";
 		$qta = $result['Cart']['qta'];
 		if($qta>0) $classQta = "qtaUno";

@@ -4,13 +4,13 @@ if($results['Delivery'][0]['totArticlesOrder']==0)
 else {
 	echo '<div id="tabsDelivery">';
 	$order = ($results['Delivery'][0]['Order'][0]);
-	echo $this->Tabs->drawTableHeaderBackOfficeReportUsers($order, $permissions);	
+	echo $this->Tabs->drawTableHeaderBackOfficeReportUsers($user, $order, $permissions);	
 
 	if($results['Delivery'][0]['totOrders']>0) {
 		foreach($results['Delivery'] as $numDelivery => $delivery) 
 			foreach($delivery['Order'] as $numOrder => $order)
 				foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder)	
-					echo $this->RowEcomm->drawBackOfficeReportUsers($numArticlesOrder, $this->RowEcomm->prepareResult($numArticlesOrder, $order), $permissions);
+					echo $this->RowEcomm->drawBackOfficeReportUsers($user, $numArticlesOrder, $this->RowEcomm->prepareResult($numArticlesOrder, $order), $permissions);
 	}
 				
 	echo '</tbody>';

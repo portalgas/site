@@ -208,15 +208,35 @@ class TabsHelper extends AppHelper {
 		return $tmp;
 	}
 
-	function drawTabsAjax($results) {		$totTabs = count($results);			$tmp = '';		$tmp .= '<ul id="tabs" class="nav nav-tabs deliveries" data-tabs="tabs">';		foreach($results as $numTabs => $result) {
+	function drawTabsAjax($results) {
+
+		$totTabs = count($results);
+	
+		$tmp = '';
+		$tmp .= '<ul id="tabs" class="nav nav-tabs deliveries" data-tabs="tabs">';
+		foreach($results as $numTabs => $result) {
 			
 			$cssOldTime = "";
 			if($result['Delivery']['data']==Configure::read('DeliveryToDefinedDate')) 
 				$data = Configure::read('DeliveryToDefinedLabel');
 			else {
-				if($result['Delivery']['data'] < date('Y-m-d')) $cssOldTime = "oldTime";								if($totTabs > Configure::read('TabsDeliveriesSmallLabel'))					$data = $this->Time->i18nFormat($result['Delivery']['data'],"%a %e %b");				else					$data = $this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B");			}
-							$tmp .= '<li><a href="#tabs-'.$numTabs.'" data-toggle="tab" class="tabsDelivery '.$cssOldTime.'" onClick="javascript:drawDelivery(\''.$result['Delivery']['data'].'\', '.$numTabs.')">';
-			$tmp .= $data.'</a></li>';			}		$tmp .= '</ul>';			return $tmp;	}	
+				if($result['Delivery']['data'] < date('Y-m-d')) $cssOldTime = "oldTime";
+				
+				if($totTabs > Configure::read('TabsDeliveriesSmallLabel'))
+					$data = $this->Time->i18nFormat($result['Delivery']['data'],"%a %e %b");
+				else
+					$data = $this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B");
+			}
+				
+			$tmp .= '<li><a href="#tabs-'.$numTabs.'" data-toggle="tab" class="tabsDelivery '.$cssOldTime.'" onClick="javascript:drawDelivery(\''.$result['Delivery']['data'].'\', '.$numTabs.')">';
+			$tmp .= $data.'</a></li>';
+	
+		}
+		$tmp .= '</ul>';
+	
+		return $tmp;
+	}
+	
 	function drawTabsUserCart($results, $storeroomResults=null) {
 
 		$totTabs = count($results['Tab']);
@@ -488,7 +508,7 @@ class TabsHelper extends AppHelper {
 		return $str;
 	}
 
-	function drawTableHeaderBackOfficeReportUsers($result, $permissions) {
+	function drawTableHeaderBackOfficeReportUsers($user, $result, $permissions) {
 	
 		$str = "";
 		
@@ -515,6 +535,13 @@ class TabsHelper extends AppHelper {
 		$str .= '<th rowspan="2" style="height: 10px;"></th>';
 		$str .= "\n";
 		$str .= '<th rowspan="2" style="height: 10px;">N.</th>';
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+			$str .= "\n";
+			$str .= '<th rowspan="2" style="height: 10px;">&nbsp;'.__('Codice');
+			$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1downarrow.png" class="colsOrderBy" id="codice_asc"></span>';
+			$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1uparrow.png" class="colsOrderBy" id="codice_desc"></span>';
+			$str .= '</th>';			
+		}
 		$str .= "\n";
 		$str .= '<th rowspan="2" style="height: 10px;">&nbsp;'.__('Article');
 		$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1downarrow.png" class="colsOrderBy" id="articles_asc"></span>';
@@ -566,7 +593,7 @@ class TabsHelper extends AppHelper {
 		return $str;
 	}
 	
-	function drawTableHeaderBackOfficeReportArticlesDetails($result, $permissions) {
+	function drawTableHeaderBackOfficeReportArticlesDetails($user, $result, $permissions) {
 	
 		$str = "";
 		
@@ -591,6 +618,13 @@ class TabsHelper extends AppHelper {
 		$str .= '<th rowspan="2" style="height: 10px;"></th>';
 		$str .= "\n";
 		$str .= '<th rowspan="2" style="height: 10px;">N.</th>';
+		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
+			$str .= "\n";
+			$str .= '<th rowspan="2" style="height: 10px;">&nbsp;'.__('Codice');
+			$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1downarrow.png" class="colsOrderBy" id="codice_asc"></span>';
+			$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1uparrow.png" class="colsOrderBy" id="codice_desc"></span>';
+			$str .= '</th>';			
+		}		
 		$str .= "\n";
 		$str .= '<th rowspan="2" style="height: 10px;">&nbsp;'.__('Article');
 		$str .= '<span><img src="'.Configure::read('App.img.cake').'/actions/16x16/1downarrow.png" class="colsOrderBy" id="articles_asc"></span>';

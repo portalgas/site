@@ -1433,6 +1433,12 @@ class AjaxGasCodesController extends AppController {
                         'Order' => ['Order.isVisibleBackOffice' => 'Y', 'Order.id' => (int) $this->order_id],
                         'Cart' => ['Cart.user_id' => (int) $user_id, 'Cart.order_id' => (int) $this->order_id]];
 
+        if ($order_by == 'codice_asc')
+            $orderBy = ['Article' => 'Article.codice asc'];
+        else
+        if ($order_by == 'codice_desc')
+            $orderBy = ['Article' => 'Article.codice desc'];
+        else
         if ($order_by == 'articles_asc')
             $orderBy = ['Article' => 'Article.name asc'];
         else
@@ -1498,6 +1504,12 @@ class AjaxGasCodesController extends AppController {
          * S O R T
          */
         switch ($order_by) {
+            case "codice_asc":
+                $orderBy = ['Article' => 'Article.codice asc, Article.id, Cart.date'];
+                break;
+            case "codice_desc":
+                $orderBy = ['Article' => 'Article.codice desc, Article.id, Cart.date'];
+                break;
             case "articles_asc":
                 $orderBy = ['Article' => 'Article.name asc, Article.id, Cart.date'];
                 break;
