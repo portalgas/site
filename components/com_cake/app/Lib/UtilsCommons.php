@@ -514,7 +514,7 @@ class UtilsCommons {
                     $conditions = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
                     $resultsDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
                     if ($resultsDelivery['Delivery']['sys'] == 'N')
-                        $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']);
+                        $delivery_data = $this->dateFormat($resultsDelivery['Delivery']['data']).' '.$resultsDelivery['Delivery']['luogo'];
                     else
                         $delivery_data = Configure::read('DeliveryToDefinedLabel');
 
