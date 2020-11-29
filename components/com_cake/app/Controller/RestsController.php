@@ -37,7 +37,7 @@ class RestsController extends AppController {
    		$continua = true;
    		$debug = false;
 
-   		self::d($this->request->params, $debug);
+   		if($debug) debug($this->request->params);
  
    		if(!isset($this->request->params['pass']['u']) || empty($this->request->params['pass']['u'])) 
    			$continua = false;
@@ -64,12 +64,12 @@ class RestsController extends AppController {
 		if($continua) {
 			$user = $this->CryptDecrypt->decrypt($user_salt);
 			$user = unserialize($user);
-			self::d($user, $debug); 
+			if($debug) debug($user); 
 
 		    $db = JFactory::getDbo();
 		    $app = JFactory::getApplication();
 			$jUser = JFactory::getUser($user['user_id']);
-			self::d($jUser, $debug);	
+			if($debug) debug($jUser);	
 
             $instance = $jUser;     
             $instance->set('guest', 0);
@@ -87,23 +87,24 @@ class RestsController extends AppController {
                     '   '.$db->quoteName('username').' = '.$db->quote($instance->get('username')).',' .
                     '   '.$db->quoteName('userid').' = '.(int) $instance->get('id') .
                     ' WHERE '.$db->quoteName('session_id').' = '.$db->quote($session->getId());
-            self::d($sql, $debug);    
+            if($debug) debug($sql);    
             $db->setQuery($sql);
             $db->query();
             $instance->setLastVisit();  
 
             switch ($scope) {
             	case 'FE':
-            		$url = $c_to;
+            		$url = Configure::read('App.server').$c_to;
+            		break;
             	case 'BO':
-            		$url = '/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
+            		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
             		break;
             	default:
             		die("Resta::connect scpoe [$scope] invalid!");
             		break;
             }
             
-            self::d($url, $debug);
+            if($debug) debug($url);
 
             if(!$debug)
             	$app->redirect($url);

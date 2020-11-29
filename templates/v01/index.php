@@ -7,6 +7,8 @@ $doc				= JFactory::getDocument();
 $templateparams		= $app->getTemplate(true)->params;
 $organizationSEO    = $templateparams->get('organizationSEO');
 $sitename           = JFactory::getConfig()->get('sitename');
+$vue_is_active      = $app->getCfg('VueIsActive');
+
 /*
  * gestione ricerca motori di ricerca, escludo portalGasTest / PortAlGasNext
  */
@@ -294,6 +296,17 @@ function callPing() {
 }
 
 jQuery(document).ready(function () {
+
+	<?php 
+	if($vue_is_active) { // Configure::read('Vue.isActive')
+	 	echo 'console.log(jQuery("a:contains(\'Acquista\')").attr("href"));';
+	 	echo 'jQuery("a:contains(\'Acquista\')").attr("href", "/?option=com_cake&controller=Connects&action=index&c_to=index");'; // Configure::read('Neo.portalgas.url')
+	 	echo "\n\r";
+	 	echo 'jQuery("a:contains(\'Carrello\')").attr("href", "");';
+	 	echo 'jQuery("a:contains(\'Carrello\')").attr("href", "/?option=com_cake&controller=Connects&action=index&c_to=user-cart");';
+	}
+	?>
+
 	jQuery('.selectpicker').selectpicker({
 		style: 'btn-default'
 	});
@@ -322,8 +335,5 @@ jQuery(document).ready(function () {
       'Chiudi messaggio', 'Maggior informazioni', '/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas');
   });
 </script>  
-	</body>
-
-
-
+</body>
 </html>				
