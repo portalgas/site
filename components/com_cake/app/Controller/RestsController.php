@@ -15,17 +15,23 @@ class RestsController extends AppController {
 		$this->response->header('Access-Control-Allow-Origin', '*');
 		
 		/*
-		echo "<pre>";
-		print_r($_REQUEST);
-		echo "</pre>";
+		debug($_REQUEST);
 		*/
 	}
 
-    /*
-     * da cakephp a joomla25
-	 *
-	 *  /api/connect?u={salt}&c_to={c_to}&a_to={a_to}
-	 */
+   /*
+    * da NEO => OLD
+    *	(OLD => NEO Connects::index())
+    *
+    * da neo.joomla25Salts::index()
+    *	creo u (user_salt) e passo scope (FE / BO) c_to (controller destinazione) / a_to (action destinazione)
+	* richiamo https://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
+	* rimappa in Rests::connect()
+	*	unserialize(user_salt), crea Session e redirect pg destinazione
+    *
+    * localhost nginx non gestisce .htaccess  
+	* 	non passa da api/connect ma direttamente Rests::connect
+    */
     public function connect() {
 
    		$continua = true;
@@ -37,6 +43,10 @@ class RestsController extends AppController {
    			$continua = false;
 
    		if($continua) {
+   			if(isset($this->request->params['pass']['scope']))
+	   			$scope = $this->request->params['pass']['scope'];
+	   		else
+	   			$scope = 'FE';
    			if(isset($this->request->params['pass']['c_to']))
 	   			$c_to = $this->request->params['pass']['c_to'];
 	   		else
@@ -82,7 +92,17 @@ class RestsController extends AppController {
             $db->query();
             $instance->setLastVisit();  
 
-            $url = '/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
+            switch ($scope) {
+            	case 'FE':
+            		$url = $c_to;
+            	case 'BO':
+            		$url = '/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
+            		break;
+            	default:
+            		die("Resta::connect scpoe [$scope] invalid!");
+            		break;
+            }
+            
             self::d($url, $debug);
 
             if(!$debug)

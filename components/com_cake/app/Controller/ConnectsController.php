@@ -15,21 +15,29 @@ class ConnectsController extends AppController {
     }
 
     public function index() {
-   		$this->_index();
+    	$scope = 'FE';
+   		$this->_index($scope);
    	}
 
     public function admin_index() {
-   		$this->_index();
+    	$scope = 'BO';
+   		$this->_index($scope);
    	}
 
    /*
-    * da joomla25 a cakephp
+    * da OLD => NEO
+    *	(NEO => OLD /api/connect => Rests::connect())
     *
-    * da cakephp a joomla25 
-    * chiamando /api/connect?u={salt}&format=notmpl .htaccess
-    * Rests::connect()
+    * da neo.joomla25Salts::index()
+    *	creo u (user_salt) e passo scope (FE / BO) c_to (controller destinazione) / a_to (action destinazione)
+	* richiamo https://www.portalgas.it/api/connect?u={salt}=&c_to=Pages&a_to=home
+	* rimappa in Rests::connect()
+	*	unserialize(user_salt), crea Session e redirect pg destinazione
+    *
+    * localhost nginx non gestisce .htaccess  
+	* 	non passa da api/connect ma direttamente Rests::connect
     */
-   public function _index() {
+   public function _index($scope = 'FE') {
    		
    		if(!isset($this->user->id) || empty($this->user->id))
    			return false;
@@ -70,8 +78,8 @@ class ConnectsController extends AppController {
 			}
 		}
 
-		// https://neo.portalgas.it/api/token/login?u=
-		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&c_to='.$c_to.'&a_to='.$a_to;
+		// https://neo.portalgas.it/api/joomla25Salt/login
+		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&scope='.$scope.'&c_to='.$c_to.'&a_to='.$a_to;
 
 		if(!empty($q))
 			$url .= '&'.$q;

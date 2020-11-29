@@ -253,7 +253,7 @@ class ProdRowEcommHelper extends AppHelper {
 		return $tmp;
 	}
 	
-	public function drawBackOfficeReportUsers($numProdDeliveriesArticle, $prodDeliveryResults ,$result, $permissions, $options=array()) {
+	public function drawBackOfficeReportUsers($user, $numProdDeliveriesArticle, $prodDeliveryResults ,$result, $permissions, $options=array()) {
 	
 		$rowId = $this->__getRowId($numProdDeliveriesArticle, $prodDeliveryResults, $result);
 	
@@ -388,7 +388,9 @@ class ProdRowEcommHelper extends AppHelper {
 		$tmp .= "\n";
 		if($this->debug) $tmp .= 'PDA.article_organization_id';
 		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ProdDeliveriesArticle']['article_organization_id'].'" id="article_organization_id-'.$rowId.'" />';
-		$tmp .= "\n";		if($this->debug) $tmp .= 'PDA.article_id';		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ProdDeliveriesArticle']['article_id'].'" id="article_id-'.$rowId.'" />';
+		$tmp .= "\n";
+		if($this->debug) $tmp .= 'PDA.article_id';
+		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ProdDeliveriesArticle']['article_id'].'" id="article_id-'.$rowId.'" />';
 		$tmp .= "\n";
 		if($this->debug) $tmp .= '<br />PDA.qta_cart';
 		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ProdDeliveriesArticle']['qta_cart'].'" id="qta_cart-'.$rowId.'" />';   // la qta_cart serve solo per il ctrl js, in Model/AjaxProdCart e' ricalcolato
@@ -408,7 +410,9 @@ class ProdRowEcommHelper extends AppHelper {
 		if($this->debug) $tmp .= 'PDA.qta_mult';
 		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['ProdDeliveriesArticle']['qta_multipli'].'" id="qta_multipli-'.$rowId.'" />';
 		$tmp .= "\n";
-		if($this->debug) $tmp .= 'U.id';		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';		
+		if($this->debug) $tmp .= 'U.id';
+		$tmp .= '<input class="debug" type="'.$type_input.'" value="'.$result['User']['id'].'" id="user_id-'.$rowId.'" />';
+		
 		/*
 		 * qta_prima_modifica
 		 * 	la prima volta che da backOffice modifico la qta, qta_prima_modifica = $result['ProdCart']['qta']
@@ -416,7 +420,8 @@ class ProdRowEcommHelper extends AppHelper {
 		 */
 		if($result['ProdCart']['qta_forzato']==0) 
 			$qta_prima_modifica = $result['ProdCart']['qta'];
-		else			$qta_prima_modifica = $result['ProdCart']['qta_forzato'];
+		else
+			$qta_prima_modifica = $result['ProdCart']['qta_forzato'];
 		
 		if($this->debug) $tmp .= 'C.qta_prima_mod';
 		if(empty($qta_prima_modifica)) $qta_prima_modifica=0;
@@ -632,7 +637,8 @@ class ProdRowEcommHelper extends AppHelper {
 	private function __consegnaNonModificabileBackOffice($rowId, $prodDeliveryResults, $result) {
 		
 		$tmp = "";
-		$importo = ($result['ProdDeliveriesArticle']['prezzo'] * $result['ProdCart']['qta']);		
+		$importo = ($result['ProdDeliveriesArticle']['prezzo'] * $result['ProdCart']['qta']);
+		
 		$tmp .= "\n";
 		$qta = $result['ProdCart']['qta'];
 		if($qta>0) $classQta = "qtaUno";
