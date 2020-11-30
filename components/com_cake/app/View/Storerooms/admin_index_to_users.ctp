@@ -116,9 +116,12 @@ if(!empty($results)) {
 			}
 			else {
 				if($result['SuppliersOrganization']['IsReferente']=='Y' || $isUserCurrentStoreroom) 
-					echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica'));
-					echo $this->Html->link(null, ['action' => 'index_to_users', $result['Storeroom']['id']], 
-								['confirm' => "Sei sicuro di voler rimettere in dispensa l'articolo associato ora ad un gasista?", 'class' => 'action actionDelete', 'title' => __('Delete')]);			
+					/*
+					 * edit riporta l'artixcolo in dispensa come delete
+					 * echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => __('Edit')));
+					*/
+					 echo $this->Html->link(__('CartsToStoreroom'), ['action' => 'index_to_users', $result['Storeroom']['id']], 
+								['confirm' => "Sei sicuro di voler rimettere in dispensa l'articolo associato ora ad un gasista?", 'class' => 'btn btn-primary', 'title' => __('CartsToStoreroom')]);			
 			}
 			echo '</td>';
 		echo '</tr>';
@@ -178,7 +181,7 @@ if(!empty($results)) {
 				echo '</td>';
 				echo '</tr>';
 			}
-		echo '<tr>';
+			echo '<tr>';
 			echo '<td>'.($count).'</td>';
 			echo '<td>';
 			echo $result['SuppliersOrganization']['SuppliersOrganization']['name'].'</td>';
@@ -199,7 +202,13 @@ if(!empty($results)) {
 			echo '<td>'.$this->App->getArticleImporto($result['Storeroom']['prezzo'], $result['Storeroom']['qta']).'</td>';
 			echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Storeroom']['created']).'</td>';
 			echo '<td class="actions-table-img">';
-			echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => 'Modifica')); 
+
+			/*
+			 * edit riporta l'artixcolo in dispensa come delete
+			 * echo $this->Html->link(null, array('action' => 'edit', $result['Storeroom']['id']),array('class' => 'action actionEdit','title' => __('Edit')));
+			*/
+			 echo $this->Html->link(__('CartsToStoreroom'), ['action' => 'index_to_users', $result['Storeroom']['id']], 
+						['confirm' => "Sei sicuro di voler rimettere in dispensa l'articolo associato ora ad un gasista?", 'class' => 'btn btn-primary', 'title' => __('CartsToStoreroom')]);	
 			echo '</td>';
 		echo '</tr>';
 

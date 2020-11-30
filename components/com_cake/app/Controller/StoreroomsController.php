@@ -401,7 +401,7 @@ class StoreroomsController extends AppController {
 		}
 
 		/* 
-		 * qui  ho $_REQUEST e non $this->request->params['pass']
+		 * qui ho $_REQUEST e non $this->request->params['pass']
 		 * perche' la chiamata viene fatta da ajax e non con il submit del form
 		 * */
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -686,9 +686,12 @@ class StoreroomsController extends AppController {
 		if($debug) exit();
 	}
 	
+	/*
+	 * edit riporta l'artixcolo in dispensa come delete
+	*/
 	public function admin_edit($id) {
 		
-		$debug=false;
+		$debug = false;
 		
 		$deliveries = $this->Storeroom->getDeliveries($this->user);
 		if(empty($deliveries)) {
@@ -713,7 +716,7 @@ class StoreroomsController extends AppController {
 		$options['recursive'] = 1;
 
 		$results = $this->Storeroom->find('first', $options);
-		self::d($results, $debug);
+		if($debug) debug($results);
 		if($results['Delivery']['isToStoreroomPay']=='Y') {
 			$this->Session->setFlash(__('StoreroomArticleInRequestPayment'));
 			$this->myRedirect(['action' => 'index_to_users']);
@@ -721,11 +724,7 @@ class StoreroomsController extends AppController {
 			 
 		if ($this->request->is('post') || $this->request->is('put')) {
 
-			if($debug) {
-				echo "<pre>Storerooom::edit request->data \n ";
-				print_r($this->request->data);
-				echo "</pre>";
-			}
+			if($debug) debug($this->request->data);
 			
 			$this->Storeroom->unbindModel(['belongsTo' => ['Article','Delivery','User']]);
 			$storeroomOld = $this->Storeroom->read($id, $this->user->organization['Organization']['id']);
@@ -741,8 +740,7 @@ class StoreroomsController extends AppController {
 			$storeroomDestinazione['Storeroom']['id'] = 0; // verifica dopo se insert o update
 			$storeroomDestinazione['Storeroom']['user_id'] = $this->storeroomUser['User']['id']; // dispensa
 			$storeroomDestinazione['Storeroom']['delivery_id'] = 0;
-			$storeroomDestinazione['Storeroom']['qta'] = ($storeroomOld['Storeroom']['qta'] - $this->request->data['Storeroom']['qta']);			
-			
+			$storeroomDestinazione['Storeroom']['qta'] = ($storeroomOld['Storeroom']['qta'] - $this->request->data['Storeroom']['qta']);					
 			$this->_storeroom_management($id,$storeroomOrigine,$storeroomDestinazione, $debug);
 
 			$this->Session->setFlash(__('The storeroom has been saved'));
