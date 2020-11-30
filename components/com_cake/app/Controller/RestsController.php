@@ -94,7 +94,7 @@ class RestsController extends AppController {
 
             switch ($scope) {
             	case 'FE':
-            		$url = Configure::read('App.server').$c_to;
+            		$url = Configure::read('App.server').'/'.$c_to;
             		break;
             	case 'BO':
             		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
