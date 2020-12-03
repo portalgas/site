@@ -289,6 +289,9 @@ class UsersComponent extends Component {
 		
 		$results = false;
 
+		if(empty($user) || (isset($user->id && $user->id==0))
+			return true;
+			
 		$controllerLog = $this->Controller;
 		$controllerLog::d('hasUserRegistrationExpire '.$action, $debug);
 		
