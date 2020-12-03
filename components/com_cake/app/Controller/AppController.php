@@ -1224,6 +1224,8 @@ class AppController extends Controller {
 
             unset($results['Organization']['paramsConfig']);
             unset($results['Organization']['paramsFields']);
+            unset($results['Organization']['paramsPay']);
+            unset($results['Organization']['gcalendar_id']);
 			
 			if($results['Organization']['type']=='PRODGAS' ||
 			   $results['Organization']['type']=='PACT') {
