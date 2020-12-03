@@ -53,7 +53,7 @@ echo '<legend>'.__('Add Storeroom to User').'</legend>';
 	$options['style'] = 'display:inline;'; 
 	$options['value'] = $this->data['Storeroom']['prezzo_']; 
 	$options['after'] = ' <span style="font-size:14px;">&euro;</span>'; 
-	debug($options);
+	// debug($options);
 	echo $this->Form->input('prezzoNew', $options);
 	echo '</td>';
 	
