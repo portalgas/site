@@ -43,7 +43,7 @@ class SuppliersController extends AppController {
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
             $FilterSupplierName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             if (!empty($FilterSupplierName))
-                $conditions[] = ['Supplier.name LIKE ' => '%' . $FilterSupplierName . '%'];
+                $conditions[] = ['LOWER(Supplier.name) LIKE ' => '%'.strtolower($FilterSupplierName).'%'];
         }
 
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Region')) {
@@ -213,7 +213,7 @@ class SuppliersController extends AppController {
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
             $FilterSupplierName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             if (!empty($FilterSupplierName))
-                $conditions[] = ['Supplier.name LIKE ' => '%' . $FilterSupplierName . '%'];
+                $conditions[] = ['LOWER(Supplier.name) LIKE ' => '%'.strtolower($FilterSupplierName).'%'];
         }
 
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Stato')) {

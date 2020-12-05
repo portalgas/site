@@ -263,7 +263,7 @@ class SuppliersOrganizationsController extends AppController {
 			
 		if ($this->request->is('post') || $this->request->is('put')) {
 		
-			self::d($this->request->data,$debug);
+			self::d($this->request->data, $debug);
 
 			$supplier_id = $this->request->data['supplier_id'];
 			$Supplier->id = $supplier_id;
@@ -477,6 +477,8 @@ class SuppliersOrganizationsController extends AppController {
         $FilterSuppliersOrganizationRegion = null;
 		$FilterSuppliersOrganizationProvince = null;		
 		
+		if($debug) debug($this->request->params['pass']);
+
 		/* 
 		 * estraggo tutti i produttori non ancora associati 
 		 * escludo i PG perche' sono pagine personali del GAS
@@ -522,7 +524,7 @@ class SuppliersOrganizationsController extends AppController {
 				$search = str_replace('Agr. ', '', $search);
 				$search = str_replace('Ag. ', '', $search);
 				self::d($search, $debug);
-				$sql .= " AND Supplier.name LIKE '%".addslashes($FilterSuppliersOrganizationName)."%' ";
+				$sql .= " AND LOWER(Supplier.name) LIKE '%".addslashes(strtolower($FilterSuppliersOrganizationName))."%' ";
 			}
 			
 		// if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryId')) {
@@ -556,7 +558,7 @@ class SuppliersOrganizationsController extends AppController {
 			}
 		
 		$sql .= " ORDER BY Supplier.name";
-		self::d($sql, $debug);
+		if($debug) debug($sql);
 		
 		if(empty($FilterSuppliersOrganizationName) && empty($FilterSuppliersOrganizationCategoryId) && empty($FilterSuppliersOrganizationRegion) && empty($FilterSuppliersOrganizationProvince))
 			$search_execute = false;
