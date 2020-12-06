@@ -3,7 +3,8 @@ App::uses('AppController', 'Controller');
 
 class TesoriereController extends AppController {
 
-	private $isReferenteTesoriere = false;	public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm'];
+	private $isReferenteTesoriere = false;
+	public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm'];
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -267,7 +268,8 @@ class TesoriereController extends AppController {
 								}
 						} // end foreach ($order_ids as $order_id)
 						
-						$this->Session->setFlash(__('OrderStateCodeUpdateNowRequestPayment'));						/*
+						$this->Session->setFlash(__('OrderStateCodeUpdateNowRequestPayment'));
+						/*
 						 * non cambio + la pagina $this->myRedirect(['controller' => 'RequestPayments', 'action' => 'index', null, 'delivery_id='.$this->delivery_id]);
 						 */ 
 					break;					
@@ -966,12 +968,23 @@ class TesoriereController extends AppController {
 		
 		$this->layout = 'ajax';	
 	}
-			public function admin_sotto_menu_referentetesoriere_request_payment($request_payment_id) {			
+		
+	public function admin_sotto_menu_referentetesoriere_request_payment($request_payment_id) {
+			
 		App::import('Model', 'RequestPayment');
 		$RequestPayment = new RequestPayment;
 		
-		$RequestPayment->id = $request_payment_id;		if (!$RequestPayment->exists($RequestPayment->id, $this->user->organization['Organization']['id'])) {			$this->Session->setFlash(__('msg_error_params'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		
-		$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],						'RequestPayment.id' => $request_payment_id];		$requestPaymentResults = $RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);		$this->set('requestPaymentResults',$requestPaymentResults);	}	
+		$RequestPayment->id = $request_payment_id;
+		if (!$RequestPayment->exists($RequestPayment->id, $this->user->organization['Organization']['id'])) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$conditions = ['RequestPayment.organization_id' => $this->user->organization['Organization']['id'],
+						'RequestPayment.id' => $request_payment_id];
+		$requestPaymentResults = $RequestPayment->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+		$this->set('requestPaymentResults',$requestPaymentResults);
+	}	
 	
 	/*
 	 * devo cercare per all e creare la lista perche' dopo il submit il campo luogoData era vuoto!!

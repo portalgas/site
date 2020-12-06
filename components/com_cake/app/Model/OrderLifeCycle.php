@@ -1223,9 +1223,12 @@ class OrderLifeCycle extends AppModel {
 	 		break;
 	 		case 'INCOMING-ORDER':  // merce arrivata
 	 			if(!isset($opts['data_incoming_order'])) {
+					$opts['data_incoming_order'] = date('Y-m-d');
+					/*
 					$esito['CODE'] = "500";
 					$esito['MSG'] = "data_incoming_order non valorizzato";
 					return $esito; 
+					*/
 				}	
 	 				
 				$orderResult['Order']['data_incoming_order'] = $opts['data_incoming_order'];
