@@ -69,9 +69,11 @@ if ($type == 'logout') {
                             <label id="cash-action" data-attr-url="/?option=com_cake&controller=Ajax&action=view_cashes_histories&format=notmpl" class="btn btn-primary">Credito verso la cassa {{{ data.user_cash_e }}}</label>                        
                         {{/data.cash_btn_credito}}
                         </p>
-                        <p>
-                            <div class="alert alert-warning">{{{data.ctrl_limit.fe_msg}}}</div>
-                        </p>
+                        {{#data.ctrl_limit.fe_msg}}
+                            <p>
+                                <div class="alert alert-warning">{{{data.ctrl_limit.fe_msg}}}</div>
+                            </p>
+                        {{/data.ctrl_limit.fe_msg}}
                         {{#data.ctrl_limit.fe_msg_tot_acquisti}}
                         <p>
                             <div class="alert alert-warning">{{{data.ctrl_limit.fe_msg_tot_acquisti}}}</div>

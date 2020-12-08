@@ -376,6 +376,8 @@ class CashesUser extends AppModel {
 			debug($cashesUser);
 		}
 
+		$results['organization_id'] = $organization_id;
+
 		 /*
 		  * totale importo acquisti
 		  */
@@ -441,10 +443,10 @@ class CashesUser extends AppModel {
 					$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!';
 				}	
 
-				$results['has_fido'] = true;
-				$results['importo_fido'] = $results['importo'];
-				$results['importo_fido_'] = $results['importo_'];
-				$results['importo_fido_e'] = $results['importo_e'];
+                $results['has_fido'] = true;
+                $results['importo_fido'] = $organization_limitCashAfter;
+                $results['importo_fido_'] = number_format($organization_limitCashAfter ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                $results['importo_fido_e'] = number_format($organization_limitCashAfter,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')) .'&nbsp;&euro;'; 
     		break;
     		case "LIMIT-CASH-USER":
 			
@@ -511,17 +513,30 @@ class CashesUser extends AppModel {
 							$results['fe_msg'] = 'Hai esaurito il tuo credito in cassa!'; 
 			    		}  
 
-						$results['has_fido'] = true;
-						$results['importo_fido'] = $results['importo'];
-						$results['importo_fido_'] = $results['importo_'];
-						$results['importo_fido_e'] = $results['importo_e'];
+		                $results['has_fido'] = true;
+		                $results['importo_fido'] = $organization_limitCashAfter;
+		                $results['importo_fido_'] = number_format($organization_limitCashAfter ,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+		                $results['importo_fido_e'] = number_format($organization_limitCashAfter,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')) .'&nbsp;&euro;'; 
 		    		break;
 		    	}				 
     		break;
     	}
 
 		if($debug) debug($results);
-				
+			
+		/*
+         * custom btns per gas
+         */     
+        switch($organization_id) {
+            case 15: // ivrea
+                unset($results['has_fido']);
+                unset($results['importo_fido']);
+                unset($results['importo_fido_']);
+                unset($results['importo_fido_e']);
+                unset($results['fe_msg']); // puoi fare acquisti
+            break;
+        } 
+
     	return $results;
     } 
 	
