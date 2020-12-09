@@ -363,6 +363,7 @@ class CashesUser extends AppModel {
     public function ctrlLimit($user, $organization_cashLimit, $organization_limitCashAfter=0, $cashesUser, $tot_importo_cash=0, $tot_importo_acquistato=0, $debug=false) {
 		
 		$results = [];
+		$organization_id = $user->organization['Organization']['id'];
 
 		if(isset($cashesUser['CashesUser']))
 			$cashesUser = $cashesUser['CashesUser'];
