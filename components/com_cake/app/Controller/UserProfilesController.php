@@ -103,7 +103,7 @@ class UserProfilesController extends AppController {
         App::import('Model', 'User');
         $User = new User;
            
-   		$tmp->user->organization['Organization']['id'] = $this->organization_id;
+        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->organization_id]);
  		$userResults = $User->getAllUsers($tmp->user);
 		
 		if(!empty($userResults)) {

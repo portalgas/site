@@ -1323,7 +1323,21 @@ class OrderLifeCycle extends AppModel {
 		
 		return $tmp;
 	}
-		
+	
+    /* 
+     * ctrl se e' ordine chiuso agli acquisti
+     * se true l'importo e' carts.qta * article_orders.prezzo
+     * se false l'importo e' carts.final_price     
+     */     
+    public function isOpenToPurchasable($user, $order_state_code) {
+        
+        if($order_state_code == 'OPEN' ||  
+            $order_state_code == 'RI-OPEN-VALIDATE') 
+            return true;
+        else
+            return false;
+    }
+    	
     /*
      * $modulo: sono in quel modulo e ctrl se ho anche altri moduli che possono andare in conflitto
      * 			managementCartsOne (Gestisci gli acquisti nel dettaglio) con 

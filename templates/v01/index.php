@@ -300,7 +300,7 @@ jQuery(document).ready(function () {
 	<?php 
 	if($vue_is_active) { // Configure::read('Vue.isActive')
 	 	// echo 'console.log(jQuery("a:contains(\'Acquista\')").attr("href"));';
-	 	echo 'jQuery("a:contains(\'Acquista\')").attr("href", "/?option=com_cake&controller=Connects&action=index");'; // Configure::read('Neo.portalgas.url')
+	 	echo 'jQuery("a:contains(\'Acquista\')").attr("href", "/?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa");'; // Configure::read('Neo.portalgas.url')
 	 	echo "\n\r";
 	 	echo 'jQuery("a:contains(\'Carrello\')").attr("href", "");';
 	 	echo 'jQuery("a:contains(\'Carrello\')").attr("href", "/?option=com_cake&controller=Connects&action=index&c_to=user-cart");';
