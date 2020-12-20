@@ -17,7 +17,7 @@
 			<b>Sotto dominio</b><br /><span class="gasAlias"></span>.portalgas.it
 		</td>
 		<td width="75%">
-			Glesys: domains => Create new records => A record
+			<a href="https://managehosting.aruba.it/areautenti.asp" target="_blank">https://managehosting.aruba.it</a> 1195662@aruba.it => pannello controllo => Gestione DNS e Name Server => record A => 88.99.37.13
 		</td>
 	</tr>
 	<tr>
@@ -49,8 +49,8 @@
 		<td>		
 			<pre class="shell" rel="abilitazione virtualhost">
 	cd /etc/apache2/sites-available
-	cp arcoiris.portalgas.it <span class="gasAlias"></span>.portalgas.it
-	vi <span class="gasAlias"></span>.portalgas.it
+	cp arcoiris.portalgas.it.conf <span class="gasAlias"></span>.portalgas.it.conf
+	vi <span class="gasAlias"></span>.portalgas.it.conf
 	ESC SHIFT :   
 	%s/arcoiris/<span class="gasAlias"></span>/g
 </pre>
@@ -329,7 +329,7 @@
 		</td>
 	</tr>	
 	<tr>
-		<th class="border-bottom">Modulo: Gas Documenti<i>position-cols-right</i></th>
+		<th class="border-bottom">Modulo: Documenti del GAS <i>position-cols-right</i></th>
 		<td>Assegnarlo alla voce di menù della home	
 		</td>
 	</tr>	

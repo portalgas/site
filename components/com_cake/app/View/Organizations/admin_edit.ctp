@@ -53,7 +53,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	echo $this->Form->input('telefono');
 	echo $this->Form->input('telefono2');
 	echo $this->Form->input('mail', array('required'=>'required'));
-	echo $this->Form->input('www', array('label' => 'http://xxx.portalgas.it', 'required'=>'required'));
+	echo $this->Form->input('www', array('label' => 'https://xxx.portalgas.it', 'required'=>'required'));
 	echo $this->Form->input('www2', array('label' => 'Www'));
 	echo $this->Form->input('sede_logistica_1');
 	echo $this->Form->input('sede_logistica_2');
