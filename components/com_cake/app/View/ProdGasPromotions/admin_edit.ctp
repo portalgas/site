@@ -32,6 +32,8 @@ echo '<fieldset>';
 	
 	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), $this->Form->value('ProdGasPromotion.data_fine'));
 	
+	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_promotion_date')]);		
+
 	echo $this->Form->input('nota');
 		
 	echo $this->Html->div('clearfix','');
@@ -90,6 +92,11 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 		$i=0;
 		foreach ($this->request->data['ProdGasArticlesPromotion'] as $numResult => $result) {
 	
+			if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) 
+				$img = true;
+			else
+				$img = false;
+
 			$importo_originale = ($result['ProdGasArticlesPromotion']['qta'] * $result['Article']['prezzo']);
 			$importo_originale_ = number_format($importo_originale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 			
@@ -99,7 +106,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 			echo '<td>'.$result['Article']['codice'].'</td>';
 			
 			echo '<td>';
-			if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
+			if($img) {
 				echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 			}		
 			echo '</td>';
@@ -135,6 +142,8 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 			echo '<td style="white-space: nowrap;">';
 			echo '<input type="checkbox" id="'.$result['Article']['id'].'" name="article_id_selected" value="'.$result['Article']['id'].'" ';
 			if($result['ProdGasArticlesPromotion']['qta']!=0) echo ' checked';
+			if(!$img)
+				echo 'disabled="disabled"';
 			echo '/>';
 			echo '</td>';		
 			echo '</tr>';

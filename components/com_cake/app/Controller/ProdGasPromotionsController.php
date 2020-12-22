@@ -82,7 +82,7 @@ class ProdGasPromotionsController extends AppController {
 		/*
 		 * legenda
 		 */
-		$group_id = Configure::read('prod_gas_manager');
+		$group_id = Configure::read('prod_gas_supplier_manager');
 		$prodGasPromotionStates = $this->ActionsProdGasPromotions->getProdGasPromotionStatesToLegenda($this->user, $group_id);
 		$this->set('prodGasPromotionStates', $prodGasPromotionStates);		
 	}

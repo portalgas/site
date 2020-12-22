@@ -4,6 +4,7 @@ App::uses('Component', 'Controller');
 class ActionsProdGasPromotionsComponent extends Component {
 
     private $Controller = null;
+    private $_template_id = 1;
 
     public function initialize(Controller $controller) 
     {
@@ -25,10 +26,11 @@ class ActionsProdGasPromotionsComponent extends Component {
 		$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;
 		
 		$options = [];
-		$options['conditions'] = array('TemplatesProdGasPromotionsState.template_id' => 1, // $user->organization['Organization']['template_id'],
-									   'TemplatesProdGasPromotionsState.group_id' => $group_id);
+		$options['conditions'] = [
+				'TemplatesProdGasPromotionsState.template_id' => $this->_template_id, // $user->organization['Organization']['template_id'],
+				'TemplatesProdGasPromotionsState.group_id' => $group_id];
 		
-		$options['DesOrder'] = array('TemplatesProdGasPromotionsState.sort');
+		$options['DesOrder'] = ['TemplatesProdGasPromotionsState.sort'];
 		$options['recursive'] = 0;
 		$results = $TemplatesProdGasPromotionsState->find('all', $options);
 
@@ -48,16 +50,17 @@ class ActionsProdGasPromotionsComponent extends Component {
 		$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;
 		
 		$options = [];
-		$options['conditions'] = array('TemplatesProdGasPromotionsState.template_id' => 1, // $user->organization['Organization']['template_id'],
-									   'TemplatesProdGasPromotionsState.group_id' => $group_id,
-									   'TemplatesProdGasPromotionsState.flag_menu' => 'Y'
-		);
+		$options['conditions'] = [
+			'TemplatesProdGasPromotionsState.template_id' => $this->_template_id, // $user->organization['Organization']['template_id'],
+			'TemplatesProdGasPromotionsState.group_id' => $group_id,
+			'TemplatesProdGasPromotionsState.flag_menu' => 'Y'
+		];
 		
-		$options['order'] = array('TemplatesProdGasPromotionsState.sort');
+		$options['order'] = ['TemplatesProdGasPromotionsState.sort'];
 		$options['recursive'] = -1;
 		$prodGasPromotionStates = $TemplatesProdGasPromotionsState->find('all', $options);
 		
-		$controllerLog::d([$options, $prodGasPromotionStates],$debug);
+		$controllerLog::d([$options, $prodGasPromotionStates], $debug);
 
 		return $prodGasPromotionStates;
 	}

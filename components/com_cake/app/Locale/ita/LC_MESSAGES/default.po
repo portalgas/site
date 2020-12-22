@@ -4218,6 +4218,9 @@ msgstr "La modifica dei dati <strong>non</strong> ha effetto sugli articoli <str
 msgid "msg_prodgas_articles_valid"
 msgstr "Gli articoli validi per la promozione devono avere l'<strong>immagine</strong> associata."
 
+msgid "msg_prodgas_promotion_date"
+msgstr "Durante le date di apertura e chiusura,i G.A.S. potranno effettuare gli acquisti"
+
 msgid "msg_prodgas_contact"
 msgstr "Indica i riferimenti per essere contatto dai G.A.S. per avere maggiori informazioni"
 

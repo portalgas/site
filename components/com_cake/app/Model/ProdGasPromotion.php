@@ -226,7 +226,8 @@ class ProdGasPromotion extends AppModel {
 				
 				$options = [];
 				$options['conditions'] = ['Organization.id NOT IN ("'.$organization_ids .'")',
-										  'Organization.type' => 'GAS'];
+										  'Organization.type' => 'GAS',
+										  'Organization.stato' => 'Y'];
 				$options['order'] = ['Organization.name'];
 				$options['recursive'] = -1;
 				$results = $Organization->find('all', $options);

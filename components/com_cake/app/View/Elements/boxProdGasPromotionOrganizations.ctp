@@ -50,9 +50,9 @@ if(!empty($results)) {
 		 echo '<div class="table-responsive"><table class="table table-hover">';	
 		 echo '<tr>';	
 		 echo '<th colspan="2">'.__('Name').'</th>';	
-		 echo '<th>'.__('Package').'</th>';	
-		 echo '<th style="text-align:center;">'.__('PrezzoUnita').'</th>';		
+		 echo '<th>'.__('Package').'</th>';		
 		 echo '<th style="text-align:center;">'.__('qta_in_promozione').'</th>';	
+		 echo '<th style="text-align:center;">'.__('PrezzoUnita').'</th>';	
 		 echo '<th style="text-align:center;">'.__('Importo_originale').'</th>';	
 		 echo '<th style="text-align:center;">'.__('prezzo_unita_in_promozione').'</th>';
 		 echo '<th style="text-align:center;">'.__('Importo_scontato').'</th>';	
