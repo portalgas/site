@@ -240,10 +240,10 @@ class DesOrdersController extends AppController {
 						 */
 						App::import('Model', 'DesSupplier'); 
 						$DesSupplier = new DesSupplier;
-						$DesSupplier->unbindModel(array('belongsTo' => array('De', 'OwnOrganization')));
+						$DesSupplier->unbindModel(['belongsTo' => ['De', 'OwnOrganization']]);
 						
 						$options = [];
-						$options['conditions'] = array('DesSupplier.id' => $this->request->data['DesOrder']['des_supplier_id']);
+						$options['conditions'] = ['DesSupplier.id' => $this->request->data['DesOrder']['des_supplier_id']];
 						$options['recursive'] = 0;
 						$desSupplierResults = $DesSupplier->find('first', $options);			
 						self::d(["DesOrder::admid_add() - dati produttore", $desSupplierResults], $debug);	
@@ -253,14 +253,14 @@ class DesOrdersController extends AppController {
 						App::import('Model', 'DesOrganization');
 						$DesOrganization = new DesOrganization;
 					
-						$DesOrganization->unbindModel(array('belongsTo' => array('De', 'Organization')));
+						$DesOrganization->unbindModel(['belongsTo' => ['De', 'Organization']]);
 
 						$options = [];
 						$options['conditions'] = ['DesOrganization.des_id' => $this->user->des_id,
 													   // escludo il proprio 'DesOrganization.organization_id != ' => $this->user->organization['Organization']['id']
 												];
 						$options['recursive'] = 0;
-						$options['order_by'] = array('Organization.name');
+						$options['order_by'] = ['Organization.name'];
 						$desOrganizationsResults = $DesOrganization->find('all', $options);	
 						self::d(["DesOrder::admid_add() - Elenco DesOrganizations", $options['conditions'], $desOrganizationsResults], $debug);		
 

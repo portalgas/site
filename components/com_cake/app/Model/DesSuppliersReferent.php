@@ -14,8 +14,8 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 
 	 		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 			
-			self::d("DesSuppliersReferent::getUsersRoles()", $debug);
-			self::d($roles, $debug);
+			if($debug) debug("DesSuppliersReferent::getUsersRoles()");
+			if($debug) debug($roles);
 	 			 	
 	 		$results = [];
 	 		
@@ -28,7 +28,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 	 		if(in_array(Configure::read('group_id_manager_des'), $roles)) {
 				$User = new User;
 				
-				$conditions = array('UserGroup.id' => Configure::read('group_id_manager_des'));
+				$conditions = ['UserGroup.id' => Configure::read('group_id_manager_des')];
 				$usersResults = $User->getUsers($tmp_user, $conditions);
 				foreach($usersResults as $usersResult) {
 					$results[$usersResult['User']['id']]['User'] = $usersResult['User'];
@@ -50,7 +50,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				foreach($usersResults as $usersResult) {					
 					if(!isset($results[$usersResult['User']['id']])) {
 						$results[$usersResult['User']['id']]['User'] = $usersResult['User'];
-						$results[$usersResult['User']['id']]['User']['Group'] = array(Configure::read('group_id_super_referent_des')); 
+						$results[$usersResult['User']['id']]['User']['Group'] = [Configure::read('group_id_super_referent_des')]; 
 					}
 					else 
 						array_push($results[$usersResult['User']['id']]['User']['Group'], Configure::read('group_id_super_referent_des'));														
@@ -63,29 +63,26 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 	 		if(!empty($des_supplier_id) && in_array(Configure::read('group_id_referent_des'), $roles)) {
 	 		
 				$DesSuppliersReferent = new DesSuppliersReferent;
-				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
+				$DesSuppliersReferent->unbindModel(['belongsTo' => ['De', 'DesSupplier']]);
 
 				$options = [];
-				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
-											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
-											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
-											   'DesSuppliersReferent.group_id' => Configure::read('group_id_referent_des'));
+				$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
+										   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
+										   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
+										   'DesSuppliersReferent.group_id' => Configure::read('group_id_referent_des')];
 				$options['recursive'] = 1;
-				$options['order_by'] = array('User.name');
+				$options['order_by'] = ['User.name'];
 				$desSuppliersReferentResults = $DesSuppliersReferent->find('all', $options);
 				
-		 		if($debug) {
-		 			echo "<pre>DesSuppliersReferent::getUsersRoles() => group_id_referent_des \r ";
-		 			print_r($options);
-		 			print_r($desSuppliersReferentResults);
-		 			echo "</pre>";
-		 		}
+		 		if($debug) debug("DesSuppliersReferent::getUsersRoles() => group_id_referent_des");
+		 		if($debug) debug($options);
+		 		if($debug) debug($desSuppliersReferentResults);
 					
 				foreach($desSuppliersReferentResults as $desSuppliersReferentResult) {		
 
 					if(!isset($results[$desSuppliersReferentResult['User']['id']])) {
 						$results[$desSuppliersReferentResult['User']['id']]['User'] = $desSuppliersReferentResult['User'];
-						$results[$desSuppliersReferentResult['User']['id']]['User']['Group'] = array(Configure::read('group_id_referent_des'));
+						$results[$desSuppliersReferentResult['User']['id']]['User']['Group'] = [Configure::read('group_id_referent_des')];
 					}
 					else 
 						array_push($results[$desSuppliersReferentResult['User']['id']]['User']['Group'], Configure::read('group_id_referent_des'));	
@@ -98,23 +95,20 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 	 		if(!empty($des_supplier_id) && in_array(Configure::read('group_id_titolare_des_supplier'), $roles)) {
 	 		
 				$DesSuppliersReferent = new DesSuppliersReferent;
-				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
+				$DesSuppliersReferent->unbindModel(['belongsTo' => ['De', 'DesSupplier']]);
 
 				$options = [];
-				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
-											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
-											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
-											   'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier'));
+				$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
+										   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
+										   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
+										   'DesSuppliersReferent.group_id' => Configure::read('group_id_titolare_des_supplier')];
 				$options['recursive'] = 1;
-				$options['order_by'] = array('User.name');
+				$options['order_by'] = ['User.name'];
 				$desSuppliersReferentResults = $DesSuppliersReferent->find('all', $options);
 				
-		 		if($debug) {
-		 			echo "<pre>DesSuppliersReferent::getUsersRoles() => group_id_titolare_des_supplier \r ";
-		 			print_r($options);
-		 			print_r($desSuppliersReferentResults);
-		 			echo "</pre>";
-		 		}
+		 		if($debug) debug("DesSuppliersReferent::getUsersRoles() => group_id_titolare_des_supplier");
+		 		if($debug) debug($options);
+		 		if($debug) debug($desSuppliersReferentResults);
 		 		
 				foreach($desSuppliersReferentResults as $desSuppliersReferentResult) {					
 					if(!isset($results[$desSuppliersReferentResult['User']['id']])) {
@@ -135,37 +129,30 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'DesSupplier')));
 
 				$options = [];
-				$options['conditions'] = array('DesSuppliersReferent.des_id' => $user->des_id,
-											   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
-											   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
-											   'DesSuppliersReferent.group_id' => Configure::read('group_id_des_supplier_all_gas'));
+				$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
+										   'DesSuppliersReferent.organization_id' => $tmp_user->organization['Organization']['id'],
+										   'DesSuppliersReferent.des_supplier_id' => $des_supplier_id,
+										   'DesSuppliersReferent.group_id' => Configure::read('group_id_des_supplier_all_gas')];
 				$options['recursive'] = 1;
-				$options['order_by'] = array('User.name');
+				$options['order_by'] = ['User.name'];
 				$desSuppliersReferentResults = $DesSuppliersReferent->find('all', $options);
 				
-		 		if($debug) {
-		 			echo "<pre>DesSuppliersReferent::getUsersRoles() => group_id_des_supplier_all_gas \r ";
-		 			print_r($options);
-		 			print_r($desSuppliersReferentResults);
-		 			echo "</pre>";
-		 		}
+		 		if($debug) debug("DesSuppliersReferent::getUsersRoles() => group_id_des_supplier_all_gas");
+		 		if($debug) debug($options);
+				if($debug) debug($desSuppliersReferentResults);
 		 		
 				foreach($desSuppliersReferentResults as $desSuppliersReferentResult) {					
 					if(!isset($results[$desSuppliersReferentResult['User']['id']])) {
 						$results[$desSuppliersReferentResult['User']['id']]['User'] = $desSuppliersReferentResult['User'];
-						$results[$desSuppliersReferentResult['User']['id']]['User']['Group'] = array(Configure::read('group_id_des_supplier_all_gas')); 
+						$results[$desSuppliersReferentResult['User']['id']]['User']['Group'] = [Configure::read('group_id_des_supplier_all_gas')]; 
 					}
 					else 
 						array_push($results[$desSuppliersReferentResult['User']['id']]['User']['Group'], Configure::read('group_id_des_supplier_all_gas'));													
 				}
 			}	
-	 		 
-	 		 
-	 		if($debug) {
-	 			echo "<pre>DesSuppliersReferent::getUsersRoles()  \n";
-	 			print_r($results);
-	 			echo "</pre>";
-	 		}
+	 		  		 
+ 			if($debug) debug("DesSuppliersReferent::getUsersRoles()");
+ 			if($debug) debug($results);
 	 		
 	 		return $results;
 	 }
@@ -183,7 +170,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 
 		App::import('Model', 'Supplier');
 
-		$DesSuppliersReferent->unbindModel(array('belongsTo' => array('De', 'User')));
+		$DesSuppliersReferent->unbindModel(['belongsTo' => ['De', 'User']]);
 		
 		$options = [];
 		$options['conditions'] = ['DesSuppliersReferent.des_id' => $user->des_id,
@@ -340,7 +327,7 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 				$UserGroup = new UserGroup;
 					
 				$options = [];
-				$options['conditions'] = array('UserGroup.id' => $result['DesSuppliersReferent']['group_id']);
+				$options['conditions'] = ['UserGroup.id' => $result['DesSuppliersReferent']['group_id']];
 				$options['recursive'] = -1;
 				$userGroupResults = $UserGroup->find('first', $options);				
 				$group_name = $userGroupResults['UserGroup']['title'];
@@ -386,16 +373,14 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 			*  se NO lo e' associo lo joomla.users al gruppo referenti in joomla.user_usergroup_map
 			*/
 			$options = [];
-			$options['conditions'] = array('DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
+			$options['conditions'] = ['DesSuppliersReferent.organization_id' => $user->organization['Organization']['id'],
 										   'DesSuppliersReferent.user_id' => $user_id,
-										   'DesSuppliersReferent.group_id' => $group_id);
+										   'DesSuppliersReferent.group_id' => $group_id];
 			$totRows = $this->find('count', $options);
 			if($debug) {
 				echo '<h3>Ctrl in DesSuppliersReferent se associalo al gruppo Joomla con id '.$group_id.'</h3>';
 				echo '<h4>Eseguo la query</h4>';
-				echo "<pre>";
-				print_r($options);
-				echo "</pre>";
+				debug($options);
 				echo "<h3>Risultato $totRows (se 0 lo inserisco nel gruppo di joomla)</h3>";
 			}
 			

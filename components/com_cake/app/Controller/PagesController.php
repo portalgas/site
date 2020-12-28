@@ -191,7 +191,6 @@ class PagesController extends AppController {
 		$rules = [];
 		$rules['isSuperReferente'] = $this->isSuperReferente();
 		$rules['isReferente'] = $this->isReferente();
-		$rules['isManager'] = $this->isManager();
 
 		$prodGasPromotionsOrganizationsresults = $ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
 		$this->set(compact('prodGasPromotionsOrganizationsresults'));

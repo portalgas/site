@@ -125,6 +125,9 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		return $results;		
 	}
 	
+	/*
+	 * ctrl che lo user sia superReferent o referente del produttore 
+	 */
 	public function isAclToManagement($user, $supplier_id, $rules=[], $debug=false) {
 
 		$acl = false;
@@ -141,12 +144,14 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 			$isSuperReferente = false;
 		else 
 			$isSuperReferente = $rules['isSuperReferente'];
-			
+		
+		/*	
 		if(!isset($rules['isManager']))
 			$isManager = false;
 		else 
 			$isManager = $rules['isManager'];
-		
+		*/
+
 		if (!$isSuperReferente || $isReferente) {
 			App::import('Model', 'SuppliersOrganizationsReferent');
 			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
@@ -171,7 +176,82 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 	}
 	
 	/*
-	 * il managerGas accetta la promozione:
+	 * estrare i superReferent e referente del produttore di ogni GAS
+	 * se $organization_id solo del GAS 
+	 */	
+	public function getReferents($user, $prod_gas_promotion_id, $organization_id=0, $debug = false) {
+	
+		$results = [];
+
+        App::import('Model', 'ProdGasPromotion');
+        $ProdGasPromotion = new ProdGasPromotion;
+
+		$promotionResults = $ProdGasPromotion->getProdGasPromotion($user, $prod_gas_promotion_id, $organization_id, $debug);
+
+		if(!empty($promotionResults['Organization']))
+		foreach($promotionResults['ProdGasPromotionsOrganization'] as $promotionResult) {
+	
+			$organization_id = $promotionResult['ProdGasPromotionsOrganization']['id']; 
+
+	 		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
+
+	 		/*
+	 		 * estraggo users group_id_super_referent 
+	 		 */
+	        App::import('Model', 'User');
+	        $User = new User;
+
+			$conditions = [];
+			$conditions = ['UserGroup.group_id' => Configure::read('group_id_super_referent')];
+			// debug($conditions);
+			$superReferentUsersResults = $User->getUsersComplete($tmp_user, $conditions,  Configure::read('orderUser'), $debug);
+			if($debug) debug($superReferentUsersResults);
+			if(!empty($superReferentUsersResults)) {
+				foreach($superReferentUsersResults as $superReferentUsersResult) {
+					$results[$superReferentUsersResult['User']['id']]['User'] = $superReferentUsersResult['User'];
+					$results[$superReferentUsersResult['User']['id']]['UserProfile'] = $superReferentUsersResult['Profile'];
+				}
+			}
+
+	 		/*
+	 		 * estraggo users group_id_referent 
+	 		 */
+
+			/*
+			 * suppliers_organization_id del GAS per ricercare i referente ai quali inviare la mail  
+			 */ 
+			$suppliers_organization_id = 0;
+			foreach($promotionResults['Organization'] as $numResult => $organization) {
+				if($organization['Organization']['id']==$organization_id) {
+					$suppliers_organization_id = $organization['SuppliersOrganization']['id']; 
+					unset($promotionResults['Organization'][$numResult]);
+					break;
+				}
+			}	
+			
+			if(!empty($suppliers_organization_id)) {
+		
+		 		$conditions = [];
+		 		$conditions['SuppliersOrganization.id'] = $suppliers_organization_id;
+
+		        App::import('Model', 'SuppliersOrganizationsReferent');
+		        $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent; 		
+				$referentUsersResults = $SuppliersOrganizationsReferent->getReferentsCompact($tmp_user, $conditions);
+				if($debug) debug($referentUsersResults);
+				if(!empty($referentUsersResults)) {
+					foreach($referentUsersResults as $referentUsersResult) {
+						$results[$referentUsersResult['User']['id']]['User'] = $referentUsersResult['User'];
+						$results[$referentUsersResult['User']['id']]['UserProfile'] = $referentUsersResult['Profile'];
+					}
+				}
+			} // end if(!empty($suppliers_organization_id))
+		} // loop organizations
+
+		return $results;
+	}	
+
+	/*
+	 * il referente o superReferente accetta la promozione:
 	 * si importa il produttore (da Supplier a SuppliersOrganization)
 	 */
 	public function importProdGasSupplier($user, $prod_gas_promotion_id, $debug=false) {
@@ -291,7 +371,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 	}
 
 	/*
-	 * il managerGas accetta la promozione:
+	 * il referente / superReferente accetta la promozione:
 	 * si importa articoli in promozioni in articoli in ordine (da ProdGasArticlesPromotion a ArticlesOrders)
 	 * la ProdGasArticlesPromotion.qta diventera' ArticlesOrder.qta_minima_order e ArticlesOrder.qta_massima_order
 	 */

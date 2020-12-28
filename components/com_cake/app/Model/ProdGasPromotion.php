@@ -31,7 +31,7 @@ class ProdGasPromotion extends AppModel {
 			return false;
 		 */
 		 
-		self::d($user->organization['Supplier'], $debug);
+		if($debug) debug($user->organization['Supplier']);
 		if($user->organization['Supplier']['Supplier']['can_promotions']!='Y') 
 			return false;
 					
@@ -77,8 +77,8 @@ class ProdGasPromotion extends AppModel {
 		$options['conditions'] = ['ProdGasPromotion.id' => $prod_gas_promotion_id];
 		$options['recursive'] = -1;
 		$results = $this->find('first', $options);
-		self::d($results, $debug);
-		
+		if($debug) debug($results);
+	
 		/*
 		 * dati produttore 
 		 */
@@ -87,10 +87,10 @@ class ProdGasPromotion extends AppModel {
 		
 		$filters['organization_id'] = $organization_id;
 		$supplierResults = $ProdGasSupplier->getOrganizationSupplier($user, $results['ProdGasPromotion']['organization_id'], $filters);
-		self::d($supplierResults, $debug); 
+		if($debug) debug($supplierResults); 
 
 		$results += $supplierResults;
-		
+			
 		/* 
 		 * ProdGasPromotionsOrganization per spese trasporto, costi aggiuntivi + Order
 		 */
@@ -113,7 +113,7 @@ class ProdGasPromotion extends AppModel {
 			$results['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults;
 		}
 		
-		self::d($prodGasPromotionsOrganizationResults, $debug); 	
+		if($debug) debug($prodGasPromotionsOrganizationResults); 	
 
 		/* 
 		 * articoli i promozione
@@ -127,8 +127,8 @@ class ProdGasPromotion extends AppModel {
 		$options['conditions'] = ['ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id];
 		$options['recursive'] = 0;
 		$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('all', $options);
-		self::d($options, $debug);
-		self::d($prodGasArticlesPromotionResults, $debug); 	
+		if($debug) debug($options);
+		if($debug) debug($prodGasArticlesPromotionResults); 	
 		
 		$results['ProdGasArticlesPromotion'] = $prodGasArticlesPromotionResults;
 		 

@@ -231,10 +231,12 @@ class User extends AppModel {
 		else 
 			$organization_id = $user;
 		
-		$this->bindModel(['belongsTo' => ['UserProfile' => ['className' => 'UserProfile',
-															'foreignKey' => '',
-															'conditions' => "UserProfile.user_id = User.id and UserProfile.profile_key = 'profile.email'",
-															'fields' => 'UserProfile.profile_value']]]);
+		$this->bindModel(['belongsTo' => 
+				['UserProfile' => 
+					['className' => 'UserProfile',
+									'foreignKey' => '',
+									'conditions' => "UserProfile.user_id = User.id and UserProfile.profile_key = 'profile.email'",
+									'fields' => 'UserProfile.profile_value']]]);
 	
 		$options = [];
 		$options['conditions'] = ['User.organization_id' => $organization_id,

@@ -43,7 +43,7 @@ class ProdGasPromotionsController extends AppController {
    }
    
    public function admin_index() {
-		
+
 		$SqlLimit = 50;
 		$conditions[] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id']];
 

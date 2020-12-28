@@ -3,14 +3,14 @@ App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 
 /*
- * moduli utilizzati dai Manager / Referenti / SuperReferenti dei GAS per gestire le promozioni a loro offerte
+ * moduli utilizzati dai Referenti / SuperReferenti dei GAS per gestire le promozioni a loro offerte
  */
 class ProdGasPromotionsOrganizationsManagersController extends AppController {
     
    public function beforeFilter() {
    		parent::beforeFilter();
    		
-		if (!$this->isManager() && !$this->isReferente() && !$this->isSuperReferente()) {
+		if (!$this->isReferente() && !$this->isSuperReferente()) {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}		
@@ -24,7 +24,6 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$rules = [];
 		$rules['isSuperReferente'] = $this->isSuperReferente();
 		$rules['isReferente'] = $this->isReferente();
-		$rules['isManager'] = $this->isManager();
 
 		$results = $this->ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
 		$this->set(compact('results'));
@@ -208,7 +207,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set(compact('isVisibleFrontEnd','isVisibleBackOffice'));
 		
 		/*
-		 * se sono ManagerDelivery ho il link per cerare una nuova consenge, se no invio una mail
+		 * se sono ManagerDelivery ho il link per creare una nuova consenge, se no invio una mail
 		 */
 		$this->set('isManagerDelivery', $this->isManagerDelivery());
 	}
@@ -275,7 +274,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set(compact('isVisibleFrontEnd','isVisibleBackOffice'));
 		
 		/*
-		 * se sono ManagerDelivery ho il link per cerare una nuova consenge, se no invio una mail
+		 * se sono ManagerDelivery ho il link per creare una nuova consenge, se no invio una mail
 		 */
 		$this->set('isManagerDelivery', $this->isManagerDelivery());
 		
