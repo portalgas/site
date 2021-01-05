@@ -140,7 +140,6 @@ if (!empty($results['Order'])) {
 	$html .= '</tbody></table>';
 }
 
-
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 
 // reset pointer to the last page

@@ -24,7 +24,12 @@
 	</tr>
 	<tr>
 		<td>Stampa della <b>Cassa</b> con storico</td>
-		<td></td>
+		<td>
+			<?php
+				echo $this->Form->input('year', ['label' => false, 'id' => 'year',
+				'empty' => "Estrai dall'anno", 'escape' => false]);
+			?>
+		</td>
 		<td><a class="cashsHistoryData" id="cashsHistoryData-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima della cassa on lo storico"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>		
 		<td><a class="cashsHistoryData" id="cashsHistoryData-PDF" style="cursor:pointer;" rel="nofollow" title="stampa la cassa con lo storico <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
 		<td>
@@ -44,8 +49,8 @@
 		<td><?php echo __('to_cassiere_pos');?></td>
 		<td>
 			<?php
-				echo $this->Form->input('years_pos',array('label' => false, 'id' => 'years_pos', 'options' => $years_pos,
-															'empty' => 'Scegli l\'anno','escape' => false));
+				echo $this->Form->input('years_pos', ['label' => false, 'id' => 'years_pos', 'options' => $years_pos,
+				'empty' => 'Scegli l\'anno','escape' => false]);
 			?>		
 		</td>
 		<td><a class="exportToCassiereImportoPos" id="exportToCassiereImportoPos-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima della <?php echo __('to_cassiere_pos');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>				
@@ -68,9 +73,9 @@
 		<td><?php echo __('to_lists_suppliers_cassiere');?></td>
 		<td rowspan="3" style="vertical-align: middle;">
 			<?php
-				echo $this->Form->input('delivery_id',array('label' => false, 'id' => 'delivery_id',
-															'empty' => 'Scegli la consegna','escape' => false));
-			?>		
+				echo $this->Form->input('delivery_id', ['label' => false, 'id' => 'delivery_id',
+				'empty' => 'Scegli la consegna','escape' => false]);
+			?>
 		</td>
 		<td><a class="exportToCassiereListSuppliersAll" id="exportToCassiereListOrders-PREVIEW" style="cursor:pointer;" rel="nofollow" title="anteprima <?php echo __('to_lists_suppliers_cassiere');?>"><img alt="PREVIEW" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/document.png"></a></td>				
 		<td><a class="exportToCassiereListSuppliersAll" id="exportToCassiereListOrders-PDF" style="cursor:pointer;" rel="nofollow" title="<?php echo __('to_lists_suppliers_cassiere');?> <?php echo __('formatFilePdf');?>"><img alt="PDF" src="<?php echo Configure::read('App.img.cake');?>/minetypes/32x32/pdf.png"></a></td>
@@ -149,14 +154,16 @@ $(document).ready(function() {
 		var action      = idArray[0];
 		var doc_formato = idArray[1];
 		
+		var year = $('#year').val();
+		
 		if(doc_formato=='PREVIEW') {
 			$('#doc-preview').html("");
 			$('#doc-preview').show();
-			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl';
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&year='+year+'&doc_formato='+doc_formato+'&format=notmpl';
 			ajaxCallBox(url, idDivTarget);	
 		}
 		else {
-			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&year='+year+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
 			window.open(url);
 		}	
 	});	

@@ -125,7 +125,6 @@ if (!empty($results['Order'])) {
 	$this->PhpExcel->addTableRow($rowsExcel);
 }
 
-
 $this->PhpExcel->addTableFooter();
 $this->PhpExcel->output($fileData['fileName'].'.xlsx');
 ?>

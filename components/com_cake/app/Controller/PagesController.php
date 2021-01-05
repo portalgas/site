@@ -865,8 +865,7 @@ class PagesController extends AppController {
 						ORDER BY Delivery.data ASC";
             }
 
-            if ($debug)
-                echo '<br />' . $sql;
+            if ($debug) debug($sql);
             $results = $this->Page->query($sql);
 
             if (!empty($results))
@@ -922,6 +921,11 @@ class PagesController extends AppController {
                 $this->set(compact('years_pos'));
             }
         } // end if($this->user->organization['Template']['payToDelivery']=='ON' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
+
+        $years = [];
+        for ($i = 2016; $i <= date('Y'); $i++)
+            $years[$i] = $i;
+        $this->set(compact('years'));            
     }
 
     public function admin_export_docs_request_payment($request_payment_id=0) {

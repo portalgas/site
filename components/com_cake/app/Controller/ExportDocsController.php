@@ -3121,7 +3121,7 @@ class ExportDocsController extends AppController {
         }
     }
 
-    public function admin_cashsHistoryData($doc_formato) {
+    public function admin_cashsHistoryData($year, $doc_formato) {
 
         $debug = false;
         // $debug_user = '922'; 
@@ -3163,9 +3163,11 @@ class ExportDocsController extends AppController {
             
         
             $options = [];
-            $options['conditions'] = ['CashesHistory.organization_id' => $this->user->organization['Organization']['id'],
-                                      'CashesHistory.user_id' => $userResult['User']['id']];
-
+            $options['conditions'] = [
+                    'CashesHistory.organization_id' => $this->user->organization['Organization']['id'],
+                    'CashesHistory.user_id' => $userResult['User']['id']];
+            if(!empty($year))
+                $options['conditions'] += ['YEAR(CashesHistory.created) >= ' => $year];
             $options['recursive'] = -1;
             $options['order'] = ['CashesHistory.id asc']; // per created no perche' e' sempre = 
             $cashesHistoryResults = $CashesHistory->find('all', $options);
@@ -3178,8 +3180,11 @@ class ExportDocsController extends AppController {
              * aggiungo ultimo movimento
              */
             $options = [];
-            $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
-									   'Cash.user_id' => $userResult['User']['id']];
+            $options['conditions'] = [
+                'Cash.organization_id' => $this->user->organization['Organization']['id'],
+                'Cash.user_id' => $userResult['User']['id']];
+            if(!empty($year))
+                $options['conditions'] += ['YEAR(Cash.modified) >= ' => $year];
             $options['recursive'] = -1;
             $cashResults = $Cash->find('first', $options);
             if(!empty($cashResults))    
@@ -3201,7 +3206,7 @@ class ExportDocsController extends AppController {
 
         $this->set('fileData', $fileData);
         $this->set('organization', $this->user->organization);
-
+        
         switch ($doc_formato) {
             case 'PREVIEW':
                 $this->layout = 'ajax';  // mai utilizzato
