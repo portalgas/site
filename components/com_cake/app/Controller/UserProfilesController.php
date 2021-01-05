@@ -104,13 +104,14 @@ class UserProfilesController extends AppController {
         $User = new User;
            
         $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->organization_id]);
- 		$userResults = $User->getAllUsers($tmp->user);
-		
+ 		$userResults = $User->getAllUsers($tmp_user);
+			
+			
 		if(!empty($userResults)) {
 			foreach($userResults as $userResult) {
 				
-				self::d($userResult);
-				
+				if($debug) debug($userResult);
+	
 				$esito = $this->UserProfile->setValue($this->user, $userResult['User']['id'], 'hasUserRegistrationExpire', 'N', $debug);
 			}
 
