@@ -25,21 +25,19 @@
 
 		<h1 id="note-tecniche">Quali sono le caratteristiche tecniche di PortAlGas?</h1>
 
-			<p>PortAlGas è installato sul Cloud VPS (Virtual Private Server) in Svezia: <a href="http://glesys.com" target="_blank">http://glesys.com</a></p>
+			<p>PortAlGas è installato sul Cloud VPS (Virtual Private Server) presso <a href="https://www.hetzner.com" target="_blank">hetzner</a></p>
 
-			<p>Il sistema operativo è un Debian 6 squeeze</p>
+			<p>Il sistema operativo è un Ubunbu 18.4 (4 VCPU - 8 GB RAM)</p>
 
 			<p>Application Server Apache 2.x</p>
 
-			<p>Database MySql 5.1</p>
+			<p>Database MariaDB 10.x.x</p>
 
-			<p>Linguaggio di programmazione php 5.4.x</p>
-
-			<p>Server SMTP di posta Postfix</p>
+			<p>Linguaggio di programmazione php 7.4.x</p>
 
 			<p>Sistema di backup giornaliero</p>
 
-			<p>Framework utilizzati: CMS Joomla 2.5.27, CakePhp 2.5.4, Jquery, JqueryUI, Bootstrap per il front-end</p>
+			<p>Framework utilizzati: CMS Joomla 2.5.27, CakePhp 2.5.4, CakePhp 3.x.x, Jquery, JqueryUI, Vue Js, Bootstrap per il front-end</p>
 			
 			<p>Framework utilizzati per la versione app: Ionic, Angular Js</p>
 			
