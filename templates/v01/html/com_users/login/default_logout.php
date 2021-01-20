@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 
 <h2>Logout</h2>
 
-<div class="logout<?php echo $this->pageclass_sfx?>">
+<div class="logout<?php echo $this->pageclass_sfx?> jumbotron" style="text-align: center">
 	<?php if ($this->params->get('show_page_heading')) : ?>
 	<h1>
 		<?php echo $this->escape($this->params->get('page_heading')); ?>
@@ -37,8 +37,14 @@ defined('_JEXEC') or die;
 
 	<form action="<?php echo JRoute::_('index.php?option=com_users&task=user.logout'); ?>" method="post">
 		<div class="content-btn">
-			<button type="submit" class="button btn btn-success"><?php echo JText::_('JLOGOUT'); ?></button>
+			<button type="submit" class="button btn btn-danger" style="width: 150px;"><?php echo JText::_('JLOGOUT'); ?></button>
+
+			<input type="hidden" name="return" value="<?php echo base64_encode("/logout.php"); ?>" />
+			<?php 
+			/* 
 			<input type="hidden" name="return" value="<?php echo base64_encode($this->params->get('logout_redirect_url', $this->form->getValue('return'))); ?>" />
+			*/
+			?>
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
 	</form>

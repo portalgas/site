@@ -838,7 +838,7 @@ class ProdGasPromotionsController extends AppController {
 		$debug = false;
 		$continua=true;
 		
-		self::d($this->request->data, $debug);
+		if($debug) debug($this->request->data);
 		
 		if (empty($prod_gas_promotion_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -854,6 +854,9 @@ class ProdGasPromotionsController extends AppController {
 		App::import('Model', 'ProdGasSupplier');
 		$ProdGasSupplier = new ProdGasSupplier;	
 		
+		App::import('Model', 'MailsProdGasPromotionSend'); 
+		$MailsProdGasPromotionSend = new MailsProdGasPromotionSend;
+
 		$organizationResults = $ProdGasSupplier->getOrganizationsAssociate($this->user, $prod_gas_promotion_id, $debug);
 		
 		$this->set(compact('organizationResults'));	
@@ -875,13 +878,20 @@ class ProdGasPromotionsController extends AppController {
 					
 					$prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['nota_supplier'] = $nota_supplier;
 
-					self::d($options, $debug);
-					self::d($prodGasPromotionsOrganizationResults, $debug);
+					if($debug) debug($options);
+					if($debug) debug($prodGasPromotionsOrganizationResults);
 
 					$ProdGasPromotionsOrganization->create();
 					if(!$ProdGasPromotionsOrganization->save($prodGasPromotionsOrganizationResults)) {
 						$continua=false;
-					} 					
+					}
+
+					/*
+					 * invio mail al super-referente e referente GAS
+					 */
+					if($continua)
+						$results = $MailsProdGasPromotionSend->trasmissionToGas($this->user, $prod_gas_promotion_id, $organization_id, $debug);
+
 				}
 
 			} // loops nota_supplier
@@ -889,14 +899,14 @@ class ProdGasPromotionsController extends AppController {
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'TRASMISSION-TO-GAS', $debug);
 			$this->Session->setFlash(__('ProdGasPromotion in TRASMISSION-TO-GAS'));
 			if(!$debug) $this->myRedirect(['action' => 'index']);
-		}
+		} // end post
 	}
 
 	public function admin_change_state_code($prod_gas_promotion_id, $next_code='') {
 
 		$debug = false;
 		
-		self::d($this->request->data, $debug);
+		if($debug) debug($this->request->data);
 		
 		if(isset($this->request->data['ProdGasPromotion']['prod_gas_promotion_id']))
 			$prod_gas_promotion_id = $this->request->data['ProdGasPromotion']['prod_gas_promotion_id'];

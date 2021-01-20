@@ -105,7 +105,7 @@ if ($type == 'logout') {
                         <input type="submit" name="Submit" value="<?php echo JText::_('JLOGOUT'); ?>" class="btn btn-orange" />
                         <input type="hidden" name="option" value="com_users" />
                         <input type="hidden" name="task" value="user.logout" />
-                        <input type="hidden" name="return" value="<?php echo base64_encode("index.php"); ?>" />
+                        <input type="hidden" name="return" value="<?php echo base64_encode("/logout.php"); ?>" />
                         <?php echo JHtml::_('form.token'); ?>
                     </p>
                 </div>
