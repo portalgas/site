@@ -94,6 +94,8 @@ class RestsController extends AppController {
 
             switch ($scope) {
             	case 'FE':
+            		if(!$this->utilsCommons->string_starts_with($c_to, '/')) 
+            			$c_to = '/'.$c_to;
             		$url = Configure::read('App.server').'/'.$c_to;
             		break;
             	case 'BO':
