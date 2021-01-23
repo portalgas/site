@@ -320,10 +320,12 @@ jQuery(document).ready(function () {
 	 */
 	jQuery('.blog * img').css('padding','15px').addClass('img-responsive');
 	
+	/*
 	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {  
 	  jQuery('body').append('<div style="position:absolute;top:0;left:0;opacity: 0.8;background-color:#2c3e50;padding:10px;width:45%"><a style="color:#fff" href="https://www.portalgas.it/mobile">Vai alla versione mobile</a></div>');
 	}	
-
+	*/
+	
 	window.setInterval(callPing, 500000); // 1000 = 1 sec (0,14 h)
 });
 </script>

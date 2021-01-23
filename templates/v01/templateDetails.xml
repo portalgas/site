@@ -69,6 +69,7 @@
 					<option value="1">cavagnetta (id 1)</option>
 					<option value="10">colibri (id 10)</option>
 					<option value="11">condove (id 11)</option>
+					<option value="75">dendrosgascanelli (id 75)</option>
 					<option value="24">felettogas (id 24)</option>
 					<option value="27">fiordigas (id 27)</option>
 					<option value="13">galligas (id 13)</option>
@@ -127,6 +128,7 @@
 					<option value="castano-primo">castanoprimo</option>
 					<option value="colibri">colibrì</option>
 					<option value="condove">condove</option>
+					<option value="dendrosgascanelli">dendrosgascanelli</option>
 					<option value="felettogas">felettogas</option>
 					<option value="fiordigas">fiordigas</option>
 					<option value="galligas">galligas</option>

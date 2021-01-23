@@ -40,7 +40,7 @@ class CashesHistory extends AppModel {
             return false;
 	}
 	
-		/*
+	/*
      * call to Ajax::admin_view_cashes_histories / Ajax::view_cashes_histories
 	 */	 
 	public function getListCashHistoryByUser($user, $results) {
@@ -81,7 +81,6 @@ class CashesHistory extends AppModel {
 			$newResults[0]['Cash']['importo_e'] = '0,00 &euro;';
 			$operazione = (-1*(0 - $results[0]['CashesHistory']['importo']));
 			
-
 			$newResults[0]['CashesHistory']['importo'] = '0';
 			$newResults[0]['CashesHistory']['importo_'] = '0,00';
 			$newResults[0]['CashesHistory']['importo_e'] = '0,00 &euro;';
@@ -106,11 +105,7 @@ class CashesHistory extends AppModel {
 			}
 		}
 	
-		if($debug) {
-			echo "<pre>";
-			print_r($newResults);
-			echo "<pre>";
-		}
+		if($debug) debug ($newResults);
 		
 		return $newResults;
 	}

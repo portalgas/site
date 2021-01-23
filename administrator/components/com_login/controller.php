@@ -114,7 +114,8 @@ class LoginController extends JControllerLegacy
 		if (!($result instanceof Exception)) {
 			$model 	= $this->getModel('login');
 			$return = $model->getState('return');
-			$app->redirect($return);
+			$app->redirect('/logout.php');
+			// $app->redirect($return);
 		}
 
 		parent::display();
