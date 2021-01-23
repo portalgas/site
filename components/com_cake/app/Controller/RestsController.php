@@ -96,7 +96,7 @@ class RestsController extends AppController {
             	case 'FE':
             		if(!$this->utilsCommons->string_starts_with($c_to, '/')) 
             			$c_to = '/'.$c_to;
-            		$url = Configure::read('App.server').'/'.$c_to;
+            		$url = Configure::read('App.server').$c_to;
             		break;
             	case 'BO':
             		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
