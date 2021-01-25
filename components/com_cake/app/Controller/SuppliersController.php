@@ -772,7 +772,8 @@ class SuppliersController extends AppController {
 				/*
 				 * referenti del produttore solo se appartengo al GAS
 				 */
-				if($this->user->get('org_id')==$this->user->organization['Organization']['id']) {
+                // debug('org scelto dallo user org_id '.$this->user->get('org_id').' '.$this->user->organization['Organization']['id']);
+                if(!empty($this->user->id) && ($this->user->get('org_id')==$this->user->organization['Organization']['id'])) {
 					 $conditions['SuppliersOrganization.id'] = $result['SuppliersOrganization']['id'];
 					 $suppliersOrganizationsReferentResults = $SuppliersOrganizationsReferent->getReferentsCompact($this->user, $conditions);
 					 if(!empty($suppliersOrganizationsReferentResults))
