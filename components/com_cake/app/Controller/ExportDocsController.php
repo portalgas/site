@@ -259,19 +259,19 @@ class ExportDocsController extends AppController {
             $resultsSummaryOrderCostMore = [];
             $resultsSummaryOrderCostLess = [];
 
-            if ($hasTrasport == 'Y') {
+            if ($hasTrasport == 'Y' && $trasport!=0.00) {
                 App::import('Model', 'SummaryOrderTrasport');
                 $SummaryOrderTrasport = new SummaryOrderTrasport;
 
                 $resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->tmp_user, $order_id);
             }
-            if ($hasCostMore == 'Y') {
+            if ($hasCostMore == 'Y' && $cost_more!=0.00) {
                 App::import('Model', 'SummaryOrderCostMore');
                 $SummaryOrderCostMore = new SummaryOrderCostMore;
 
                 $resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->tmp_user, $order_id);
             }
-            if ($hasCostLess == 'Y') {
+            if ($hasCostLess == 'Y' && $cost_less!=0.00) {
                 App::import('Model', 'SummaryOrderCostLess');
                 $SummaryOrderCostLess = new SummaryOrderCostLess;
 
@@ -2990,17 +2990,21 @@ class ExportDocsController extends AppController {
         			$user_id = $result['User']['id'];
                     $delivery_id = $order['delivery_id'];
     				$order_id = $order['id'];
-    				$hasTrasport = $order['hasTrasport']; /* trasporto */
-    				$hasCostMore = $order['hasCostMore']; /* spesa aggiuntiva */
-    				$hasCostLess = $order['hasCostLess'];  /* sconto */
-    				$typeGest = $order['typeGest'];   /* AGGREGATE / SPLIT */
-    				
+
+                    $hasTrasport = $order['hasTrasport']; /* trasporto */
+                    $trasport = $order['trasport'];
+                    $hasCostMore = $order['hasCostMore']; /* spesa aggiuntiva */
+                    $cost_more = $order['cost_more'];
+                    $hasCostLess = $order['hasCostLess'];  /* sconto */
+                    $cost_less = $order['cost_less'];
+                    $typeGest = $order['typeGest'];   /* AGGREGATE / SPLIT */
+
     				$resultsSummaryOrder = [];
     				$resultsSummaryOrderTrasport = [];
     				$resultsSummaryOrderCostMore = [];
     				$resultsSummaryOrderCostLess = [];
 
-    				if ($hasTrasport == 'Y') {
+    				if ($hasTrasport == 'Y' && $trasport!=0.00) {
     					App::import('Model', 'SummaryOrderTrasport');
     					$SummaryOrderTrasport = new SummaryOrderTrasport;
 
@@ -3010,7 +3014,7 @@ class ExportDocsController extends AppController {
     						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
     					}
     				}
-    				if ($hasCostMore == 'Y') {
+    				if ($hasCostMore == 'Y' && $cost_more!=0.00) {
     					App::import('Model', 'SummaryOrderCostMore');
     					$SummaryOrderCostMore = new SummaryOrderCostMore;
 
@@ -3018,7 +3022,7 @@ class ExportDocsController extends AppController {
     					if(!empty($resultsSummaryOrderCostMore))
     						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
     				}
-    				if ($hasCostLess == 'Y') {
+    				if ($hasCostLess == 'Y' && $cost_less!=0.00) {
     					App::import('Model', 'SummaryOrderCostLess');
     					$SummaryOrderCostLess = new SummaryOrderCostLess;
 

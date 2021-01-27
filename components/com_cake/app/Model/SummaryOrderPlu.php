@@ -237,19 +237,19 @@ class SummaryOrderPlu extends AppModel {
 
 		$resultsSummaryOrder = $SummaryOrder->select_to_order($user, $order_id, $user_id);
 			
-        if($hasTrasport=='Y') {
+        if($hasTrasport=='Y' && $trasport!=0.00) {
             App::import('Model', 'SummaryOrderTrasport');
             $SummaryOrderTrasport = new SummaryOrderTrasport;
 
             $resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($user, $order_id, $user_id);
         }
-        if($hasCostMore=='Y') {
+        if($hasCostMore=='Y' && $cost_more!=0.00) {
             App::import('Model', 'SummaryOrderCostMore');
             $SummaryOrderCostMore = new SummaryOrderCostMore;
 
             $resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($user, $order_id, $user_id);
         }
-        if($hasCostLess=='Y') {
+        if($hasCostLess=='Y' && $cost_less!=0.00) {
             App::import('Model', 'SummaryOrderCostLess');
             $SummaryOrderCostLess = new SummaryOrderCostLess;
 
