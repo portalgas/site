@@ -2131,8 +2131,14 @@ msgstr "Utente disattivato"
 msgid "Users Block"
 msgstr "Utenti disattivati"
 
-msgid "UsersFlagPrivacy"
+msgid "UsersFlagPrivacyAndRegistrationExpire"
 msgstr "Gestione utenti per accettazione privacy e rinnovo"
+
+msgid "UsersFlagPrivacy"
+msgstr "Gestione utenti per accettazione privacy"
+
+msgid "UsersRegistrationExpire"
+msgstr "Gestione utenti per rinnovo"
 
 msgid "UserConfigure"
 msgstr "Configurazione dell'utente"

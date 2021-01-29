@@ -5,9 +5,16 @@ echo $this->Html->script('moduleUsers-v02.min');
 
 echo '<div class="users">';
 echo '<h2 class="ico-users">';
-echo __('UsersFlagPrivacy');
+if($user->organization['Organization']['hasUserFlagPrivacy']=='Y' && $user->organization['Organization']['hasUserRegistrationExpire']=='Y') 
+  echo __('UsersFlagPrivacyAndRegistrationExpire');
+else
+if($user->organization['Organization']['hasUserFlagPrivacy']=='Y') 
+  echo __('UsersFlagPrivacy');  
+else
+if($user->organization['Organization']['hasUserRegistrationExpire']=='Y')
+  echo __('UsersRegistrationExpire'); 
 echo '</h2>';
-
+   
 echo $this->Form->create('Filteruser', ['id' => 'formGasFilter', 'type' => 'get']);
 echo '<fieldset class="filter">';
 echo '<legend>'.__('Filter Users').'</legend>';
