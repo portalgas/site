@@ -28,10 +28,12 @@ echo '<td>';
 echo $this->Form->input('block', ['label' => __('Stato'), 'options' => $block, 'name' => 'FilterUserBlock', 'default' => $FilterUserBlock, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
-echo $this->Form->input('hasUserFlagPrivacy', ['label' => __('HasUserFlagPrivacy'), 'options' => $hasUserFlagPrivacys, 'name' => 'FilterUserHasUserFlagPrivacy', 'default' => $FilterUserHasUserFlagPrivacy, 'escape' => false]); 
+if($user->organization['Organization']['hasUserFlagPrivacy']=='Y') 
+  echo $this->Form->input('hasUserFlagPrivacy', ['label' => __('HasUserFlagPrivacy'), 'options' => $hasUserFlagPrivacys, 'name' => 'FilterUserHasUserFlagPrivacy', 'default' => $FilterUserHasUserFlagPrivacy, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
-echo $this->Form->input('hasUserRegistrationExpire', ['label' => __('HasUserRegistrationExpire'), 'options' => $hasUserRegistrationExpires, 'name' => 'FilterUserHasUserRegistrationExpire', 'default' => $FilterUserHasUserRegistrationExpire, 'escape' => false]); 
+if($user->organization['Organization']['hasUserRegistrationExpire']=='Y')
+  echo $this->Form->input('hasUserRegistrationExpire', ['label' => __('HasUserRegistrationExpire'), 'options' => $hasUserRegistrationExpires, 'name' => 'FilterUserHasUserRegistrationExpire', 'default' => $FilterUserHasUserRegistrationExpire, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
 echo $this->Form->input('sort', array('label' => __('Sort'), 'options' => $sorts, 'name' => 'FilterUserSort', 'default' => $FilterUserSort, 'escape' => false));  
@@ -46,7 +48,9 @@ echo '</fieldset>';
 echo '</form>';
 
 echo '<form>';
-echo $this->element('boxUserFlagPrivacy', ['organization_id' => $user->organization['Organization']['id'], 'ctrlUserFlagPrivacys' => $ctrlUserFlagPrivacys]);
+
+if($user->organization['Organization']['hasUserFlagPrivacy']=='Y') 
+  echo $this->element('boxUserFlagPrivacy', ['organization_id' => $user->organization['Organization']['id'], 'ctrlUserFlagPrivacys' => $ctrlUserFlagPrivacys]);
 
 if(!empty($results)) 
 	echo $this->UsersFlagPrivacy->drawRow($user, $results, $isManager, $isUserFlagPrivay);

@@ -785,6 +785,9 @@ class UtilsCommons {
                 case 'type':
                     $user->organization['Organization']['type'] = $value;
                 break;
+                case 'www':
+                    $user->organization['Organization']['www'] = $value;
+                break;
                 case 'orderUserPaid':
                     $user->organization['Organization']['orderUserPaid'] = $value;
                 break;

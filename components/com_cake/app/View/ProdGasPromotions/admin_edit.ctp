@@ -26,15 +26,14 @@ echo '<fieldset>';
 	echo '<div class="tab-content">';
 	echo '<div class="tab-pane fade active in" id="tabs-0">';
 
-	echo $this->Form->input('name', array('id' => 'name'));
+	echo $this->Form->input('name', ['id' => 'name']);
 	
 	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), $this->Form->value('ProdGasPromotion.data_inizio'));
 	
 	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), $this->Form->value('ProdGasPromotion.data_fine'));
 	
 	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_promotion_date')]);		
-
-	echo $this->Form->input('nota');
+	echo $this->Form->input('nota', ['label' => "Nota da aggiungere all'ordine"]);
 		
 	echo $this->Html->div('clearfix','');
 	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_contact')]);

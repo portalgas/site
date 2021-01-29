@@ -35,29 +35,12 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	/*
 	 * consegna
 	 */
-	echo $this->element('boxOrdersDelivery', array('modalita' => 'EDIT', 'isManagerDelivery' => $isManagerDelivery));
+	echo $this->element('boxOrdersPromotionDelivery', ['modalita' => 'EDIT']);
 	echo $this->Html->div('clearfix','');
-	
-	echo $this->App->drawDate('ProdGasPromotionsOrganizationsManager', 'data_inizio', __('DataInizio'), $promotionResults['ProdGasPromotion']['data_inizio']);
-	
-	if(!empty($this->request->data['Order']['data_fine_validation']) && $this->request->data['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty')) {
 		
-		echo $this->Form->input('data_fine_validation',array('type' => 'text','size'=>'30','label' => "Riaperto l'ordine fino a", 'value' => $this->Time->i18nFormat($this->Form->value('Order.data_fine_validation'),"%A, %e %B %Y"), 'required' => 'false'));
-		echo $this->Ajax->datepicker('ProdGasPromotionsOrganizationsManagerDataFineValidation',array('dateFormat' => 'DD, d MM yy','altField' => '#ProdGasPromotionsOrganizationsManagerDataFineValidationDb', 'altFormat' => 'yy-mm-dd'));
-		echo '<input type="hidden" id="ProdGasPromotionsOrganizationsManagerDataFineValidationDb" name="data[ProdGasPromotionsOrganizationsManager][data_fine_validation_db]" value="'.$this->Form->value('Order.data_fine_validation').'" />';
-			
-		echo '<input type="hidden" id="OrderDataFineDb" name="data[Order][data_fine_db]" value="'.$this->Form->value('Order.data_fine').'" />';
-	}
-	else {	
-		echo $this->App->drawDate('ProdGasPromotionsOrganizationsManager', 'data_fine', __('DataFine'), $promotionResults['ProdGasPromotion']['data_fine']);
-	}	
-		
-	if($this->request->data['Order']['data_incoming_order']!=Configure::read('DB.field.date.empty')) {
-		echo '<div class="input text required">';
-		echo '<label>'.__('DataIncomingOrder').'</label> ';
-		echo $this->Time->i18nFormat($this->Form->value('Order.data_incoming_order'),"%A, %e %B %Y");
-		echo '</div>';
-	}
+	echo $this->App->drawDate('ProdGasPromotionsOrganizationsManager', 'data_inizio', __('DataInizio'), $this->request->data['Order']['data_inizio']);
+
+	echo $this->App->drawDate('ProdGasPromotionsOrganizationsManager', 'data_fine', __('DataFine'), $this->request->data['Order']['data_fine']);
 		
 	/* 
 	 * data chiusura ordine promozione
@@ -218,7 +201,7 @@ $(document).ready(function() {
 	$("#modalOrderMailMsg").on("shown.bs.modal", function () {
 
 		var testo = "";
-		var orderDataInizioDb = $('#OrderDataInizioDb').val();
+		var orderDataInizioDb = $('#ProdGasPromotionsOrganizationsManagerDataInizioDb').val();
 		if(orderDataInizioDb=='' || orderDataInizioDb==undefined) 
 				testo = "Devi indicare la data di apertura dell'ordine";
 		else {

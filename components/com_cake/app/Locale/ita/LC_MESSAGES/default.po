@@ -2473,6 +2473,9 @@ msgstr "Importo modificato"
 msgid "importo_scontato"
 msgstr "Importo scontato"
 
+msgid "importo_totale_scontato"
+msgstr "Totale importo scontato"
+
 msgid "importo_richiesto"
 msgstr "Importo richiesto"
 
@@ -2493,6 +2496,9 @@ msgstr "Importo modificato"
 
 msgid "Importo_scontato"
 msgstr "Importo scontato"
+
+msgid "Importo_totale_scontato"
+msgstr "Totale importo scontato"
 
 msgid "Importo_richiesto"
 msgstr "Importo richiesto"

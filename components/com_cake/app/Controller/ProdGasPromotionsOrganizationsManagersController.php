@@ -229,7 +229,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		
-		self::d($this->request->data, $debug);
+		if($debug) debug($this->request->data);
 		
 		/*
 		 * da order_id recupero dati promozione
@@ -261,7 +261,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set(compact('promotionResults'));
 		
 		/*
-		 * prendo solo le consegne sclete dal produttore
+		 * prendo solo le consegne scelte dal produttore
 		 */
 		App::import('Model', 'ProdGasPromotionsOrganizationsDelivery');
 		$ProdGasPromotionsOrganizationsDelivery = new ProdGasPromotionsOrganizationsDelivery;

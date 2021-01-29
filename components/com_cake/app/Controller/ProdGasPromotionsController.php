@@ -802,6 +802,76 @@ class ProdGasPromotionsController extends AppController {
 		
 	}
 
+	public function admin_view($prod_gas_promotion_id) {
+	
+		$debug=false;
+		
+		if (empty($prod_gas_promotion_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$this->request->data = $this->ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id);
+		
+		/*
+		 * get elenco Article
+		 */	
+		App::import('Model', 'Article');
+		$Article = new Article;
+		
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id']];
+		$options['order'] = ['Article.name' => 'asc']; 
+		$options['recursive'] = 0;					  		
+		$articleResults = $Article->find('all', $options);
+		self::d($options, $debug);
+		self::d($articleResults, $debug);
+
+		if(!empty($this->request->data['ProdGasArticlesPromotion'])) {
+			
+			$prodGasArticlesPromotion = $this->request->data['ProdGasArticlesPromotion'];  // copio perche' dopo faccio unset
+			
+			foreach($articleResults as $numResults => $articleResult) {
+				
+				foreach($this->request->data['ProdGasArticlesPromotion'] as $numResults2 => $prodGasArticlesPromotion) {
+					if($articleResult['Article']['organization_id']==$prodGasArticlesPromotion['Article']['organization_id'] && $articleResult['Article']['id']==$prodGasArticlesPromotion['Article']['id']) {
+						unset($articleResults[$numResults]);
+						unset($prodGasArticlesPromotion[$numResults]);
+					}
+				}
+			}
+		} // end if(!empty($this->request->data['ProdGasArticlesPromotion']))
+		
+		$this->set(compact('articleResults'));	 
+
+		/*
+		 * non + gestito
+		if(!empty($this->request->data['ProdGasPromotion']['img1']) && 
+		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1'])) {
+			
+			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1']);
+			$this->set('file1', $file1);
+		}	
+		*/
+		
+		/*
+		 * get elenco Organizations
+		*/
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;	
+		
+		$organizationResults = $ProdGasSupplier->getOrganizationsAssociateWithDeliveries($this->user, $prod_gas_promotion_id, $debug);
+		$organizationNotResults = $ProdGasSupplier->getOrganizationsNotAssociate($this->user, $debug);
+	
+		$this->set('organizationResults',$organizationResults);		
+		$this->set('organizationNotResults',$organizationNotResults);	
+	}
+
 	public function admin_delete($prod_gas_promotion_id) {
 
 		$debug = false;
@@ -857,11 +927,16 @@ class ProdGasPromotionsController extends AppController {
 		App::import('Model', 'MailsProdGasPromotionSend'); 
 		$MailsProdGasPromotionSend = new MailsProdGasPromotionSend;
 
+		App::import('Model', 'Organization'); 
+		$Organization = new Organization;
+
 		$organizationResults = $ProdGasSupplier->getOrganizationsAssociate($this->user, $prod_gas_promotion_id, $debug);
-		
+			
 		$this->set(compact('organizationResults'));	
-		
+
 		if ($this->request->is('post') || $this->request->is('put')) {
+
+			// debug($this->request->data['ProdGasPromotionsOrganization']);
 
 			App::import('Model', 'ProdGasPromotionsOrganization');
 			$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;			
@@ -885,17 +960,20 @@ class ProdGasPromotionsController extends AppController {
 					if(!$ProdGasPromotionsOrganization->save($prodGasPromotionsOrganizationResults)) {
 						$continua=false;
 					}
+				} // end if(!empty($nota_supplier)) 
 
-					/*
-					 * invio mail al super-referente e referente GAS
-					 */
-					if($continua)
-						$results = $MailsProdGasPromotionSend->trasmissionToGas($this->user, $prod_gas_promotion_id, $organization_id, $debug);
-
-				}
+				/*
+				 * invio mail al super-referente e referente GAS
+				 */
+				if($continua) {
+					$tmp_user = $Organization->getOrganization($organization_id);
+					$options = [];
+					$options['nota_supplier'] = $nota_supplier;
+					$results = $MailsProdGasPromotionSend->trasmissionToGas($tmp_user, $organization_id, $prod_gas_promotion_id, $options, $debug);
+				}				
 
 			} // loops nota_supplier
-					
+			
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'TRASMISSION-TO-GAS', $debug);
 			$this->Session->setFlash(__('ProdGasPromotion in TRASMISSION-TO-GAS'));
 			if(!$debug) $this->myRedirect(['action' => 'index']);

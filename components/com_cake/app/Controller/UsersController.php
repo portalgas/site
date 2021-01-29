@@ -177,15 +177,16 @@ class UsersController extends AppController {
 		$isUserFlagPrivay = $this->isUserFlagPrivay();
 		$this->set(compact('isUserFlagPrivay'));
 		
+        $ctrlUserFlagPrivacys = [];
         if(isset($this->user->organization['Organization']['hasUserFlagPrivacy']) && $this->user->organization['Organization']['hasUserFlagPrivacy'] == 'Y') {
         	
 			App::import('Model', 'UserGroupMap');
 		  	$UserGroupMap = new UserGroupMap();
 		  	
 		  	$ctrlUserFlagPrivacys = $UserGroupMap->getUserFlagPrivacys($this->user);
-	        $this->set(compact('ctrlUserFlagPrivacys'));
         } 
-					
+        $this->set(compact('ctrlUserFlagPrivacys'));
+
         $this->set('isManager', $this->isManager());
 
         $FilterUserUsername = '';
@@ -283,9 +284,9 @@ class UsersController extends AppController {
 			
 			foreach($results['User'] as $numResult2 => $result) {
 				
-                $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $userResult['User']['organization_id']]);
+                $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['User']['organization_id']]);
 
-				$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
+				$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);    
 				$results['User'][$numResult2] += $cartResults; 
 			}
 		}

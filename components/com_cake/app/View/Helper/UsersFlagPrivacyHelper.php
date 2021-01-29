@@ -114,7 +114,7 @@ class UsersFlagPrivacyHelper extends AppHelper {
 			if($aclAction || $isUserFlagPrivay) {
 				if(!empty($user->organization['Organization']['hasUserFlagPrivacy']) && $user->organization['Organization']['hasUserFlagPrivacy']=='Y') {
 
-				if($result['Profile']['hasUserFlagPrivacy']=='Y')
+					if($result['Profile']['hasUserFlagPrivacy']=='Y')
 						$title = __('HasUserFlagPrivacyQuestion').' il '.$result['Profile']['dataUserFlagPrivacy'];
 					else
 						$title = __('HasUserFlagPrivacyQuestionN');
@@ -125,9 +125,9 @@ class UsersFlagPrivacyHelper extends AppHelper {
 					else {
 						// solo lettura
 						$str .= '<td class="stato_'.$this->traslateEnum($result['Profile']['hasUserFlagPrivacy']).'" title="'.$title.'" ></td>';						
-					}
-					
+					}	
 				}
+
 				if($aclAction && !empty($user->organization['Organization']['hasUserRegistrationExpire']) && $user->organization['Organization']['hasUserRegistrationExpire']=='Y') {
 					if($result['Profile']['hasUserRegistrationExpire']=='Y')
 						$title = __('HasUserRegistrationExpireQuestion');
@@ -135,10 +135,12 @@ class UsersFlagPrivacyHelper extends AppHelper {
 						$title = __('HasUserRegistrationExpireQuestionN');				
 					$str .= '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-organization-id="'.$result['User']['organization_id'].'" data-attr-field="hasUserRegistrationExpire" class="userProfileUpdate stato_'.$this->traslateEnum($result['Profile']['hasUserRegistrationExpire']).'" title="'.$title.'" ></td>';
 				}
+				/*
 				else {
 					// solo lettura
 					$str .= '<td class="stato_'.$this->traslateEnum($result['Profile']['hasUserRegistrationExpire']).'" title="'.$title.'" ></td>';
 				}
+				*/
 				
 				if($aclAction)
 					$str .= '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-organization-id="'.$result['User']['organization_id'].'" data-attr-field="block" class="userUpdate stato_'.$this->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';

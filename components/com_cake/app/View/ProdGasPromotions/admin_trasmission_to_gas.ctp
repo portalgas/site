@@ -26,7 +26,7 @@ if(!empty($organizationResults)) {
 		echo '<th>Localit&agrave;</th>';
 		echo '<th>'.__('Trasport').'</th>';
 		echo '<th>'.__('CostMore').'</th>';
-		echo '<th>'.__('Nota').'</th>';
+		echo '<th>'.__('Nota da aggiungere alla mail').'</th>';
 		echo '</tr>';
 		
 		foreach ($organizationResults as $result) {

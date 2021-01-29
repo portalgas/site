@@ -79,8 +79,8 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 		 echo '<th>'.__('Package').'</th>';		
 		 echo '<th>'.__('qta_in_promozione').'</th>';	
 		 echo '<th>'.__('prezzo_unita_in_promozione').'</th>';
-		 echo '<th>'.__('Importo_originale').'</th>';	
-		 echo '<th>'.__('Importo_scontato').'</th>';	
+		 // echo '<th>'.__('Importo_originale').'</th>';	
+		 echo '<th>'.__('Importo_totale_scontato').'</th>';	
 		 echo '</tr>';
 		 foreach ($results['ProdGasArticlesPromotion'] as $numResult => $prodGasArticlesPromotion) {
 			
@@ -96,14 +96,15 @@ echo '<legend>'.__('View ProdGasPromotion ArticlesOrder Short').'</legend>';
 			echo '<td>'.$prodGasArticlesPromotion['Article']['name'].'&nbsp;';
 			echo $this->App->drawArticleNota($i, strip_tags($prodGasArticlesPromotion['Article']['nota']));
 			echo '</td>';
-			echo '<td>'.$this->App->getArticleConf($prodGasArticlesPromotion['Article']['qta'], $prodGasArticlesPromotion['Article']['um']).'</td>';
+			echo '<td style="text-align:center;">'.$this->App->getArticleConf($prodGasArticlesPromotion['Article']['qta'], $prodGasArticlesPromotion['Article']['um']).'</td>';
 			echo '<td style="text-align:center;">'.$prodGasArticlesPromotion['ProdGasArticlesPromotion']['qta'].'</td>';
 			echo '<td>';
 			echo '<span style="text-decoration: line-through;">'.$prodGasArticlesPromotion['Article']['prezzo_e'].'</span><br />';
 			echo $prodGasArticlesPromotion['ProdGasArticlesPromotion']['prezzo_unita_e'];
 			echo '</td>';
-			echo '<td>'.$importo_originale.'&nbsp;&euro;</td>';
-			echo '<td>'.$prodGasArticlesPromotion['ProdGasArticlesPromotion']['importo_e'].'</td>';
+			echo '<td>';
+			echo '<span style="text-decoration: line-through;">'.$importo_originale.'</span><br />';
+			echo $prodGasArticlesPromotion['ProdGasArticlesPromotion']['importo_e'].'</td>';
 			echo '</tr>';
 						
 		} // loops 

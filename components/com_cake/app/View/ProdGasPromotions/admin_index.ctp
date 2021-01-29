@@ -6,7 +6,7 @@ echo '<h2 class="ico-bookmarkes-articles">';
 echo __('ProdGasPromotions');
 echo '<div class="actions-img">';			
 echo '	<ul>';
-echo '		<li>'.$this->Html->link(__('New ProdGasPromotion'), array('action' => 'add'),array('class' => 'action actionAdd','title' => __('New ProdGasPromotion'))).'</li>';
+echo '		<li>'.$this->Html->link(__('New ProdGasPromotion'), ['action' => 'add'], ['class' => 'action actionAdd','title' => __('New ProdGasPromotion')]).'</li>';
 echo '	</ul>';
 echo '</div>';
 echo '</h2>';
@@ -27,7 +27,7 @@ if(!empty($results)) {
 		echo '	<th class="actions">'.__('Actions').'</th>';
 		echo '</tr>';
 
-		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1); 
+		$numRow = ((($this->Paginator->counter(['format'=>'{:page}'])-1) * $SqlLimit) + $i+1); 
 		
 		echo '<tr class="view">';
 		echo '	<td>'.$numRow.'</td>';
@@ -62,16 +62,19 @@ if(!empty($results)) {
 		echo '<td class="actions-table-img-3">';
 		switch($result['ProdGasPromotion']['state_code']) {
 			case "WORKING":
-				echo $this->Html->link(null, array('controller' => 'ProdGasPromotions', 'action' => 'edit', $result['ProdGasPromotion']['id']), array('class' => 'action actionEdit','title' => __('Edit')));
-				echo $this->Html->link(null, array('controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id']), array('class' => 'action actionDelete','title' => __('Delete')));
-				echo $this->Html->link(null, array('controller' => 'ProdGasPromotions', 'action' => 'trasmission_to_gas', $result['ProdGasPromotion']['id']), array('class' => 'action actionMail','title' => __('ProdGasPromotionTrasmissionToGas')));			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id']], ['class' => 'action actionDelete','title' => __('Delete')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'trasmission_to_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionMail','title' => __('ProdGasPromotionTrasmissionToGas')]);			
 			break;
 			case "TRASMISSION-TO-GAS":
-				echo $this->Html->link(null, array('controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=WORKING'), array('class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')));
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);
 			break;
 			case "FINISH":
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 			case "PRODGASPROMOTION-CLOSE":
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 		}
 			
@@ -175,7 +178,7 @@ if(!empty($results)) {
 						case "TRASMISSION-TO-GAS":
 						case "FINISH":
 						case "PRODGASPROMOTION-CLOSE":
-							echo $this->Html->link(null, array('controller' => 'Docs', 'action' => 'prodGasSupplierDocsExport', null, 'organization_id='.$prodGasPromotionsOrganization['Order']['organization_id'].'&delivery_id='.$prodGasPromotionsOrganization['Order']['delivery_id'].'&order_id='.$prodGasPromotionsOrganization['Order']['id']), array('class' => 'action actionPrinter','title' => __('Print Order')));
+							echo $this->Html->link(null, ['controller' => 'Docs', 'action' => 'prodGasSupplierDocsExport', null, 'organization_id='.$prodGasPromotionsOrganization['Order']['organization_id'].'&delivery_id='.$prodGasPromotionsOrganization['Order']['delivery_id'].'&order_id='.$prodGasPromotionsOrganization['Order']['id']], ['class' => 'action actionPrinter','title' => __('Print Order')]);
 						break;
 					}
 				}
@@ -189,15 +192,15 @@ if(!empty($results)) {
 }
 
 echo '<p>';
-echo $this->Paginator->counter(array(
+echo $this->Paginator->counter([
 'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-));
+]);
 echo '</p>';
 
 echo '<div class="paging">';
-echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-echo $this->Paginator->numbers(array('separator' => ''));
-echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+echo $this->Paginator->prev('< ' . __('previous'), [], null, ['class' => 'prev disabled']);
+echo $this->Paginator->numbers(['separator' => '']);
+echo $this->Paginator->next(__('next') . ' >', [], null, ['class' => 'next disabled']);
 echo '</div>';
 	
 /*
@@ -206,7 +209,7 @@ echo '</div>';
 echo $this->App->drawLegenda($user, $prodGasPromotionStates);
 } 
 else  
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora promozioni registrate"));
+	echo $this->element('boxMsg', ['class_msg' => 'notice resultsNotFound', 'msg' => "Non ci sono ancora promozioni registrate"]);
 
 echo '</div>';
 ?>
