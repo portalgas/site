@@ -1553,7 +1553,7 @@ class UtilsCrons {
      
     public function prodDeliveriesStatoElaborazione($organization_id, $debug = true, $prod_delivery_id = 0) {
     
-        $user = $this->_getObjUserLocal($organization_id, ['PRDD']);
+        $user = $this->_getObjUserLocal($organization_id, ['PROD']);
         if(empty($user)) 
             return; 
         
@@ -1563,7 +1563,18 @@ class UtilsCrons {
         $StatoElaborazioneProd->prodDeliveries($user, $debug, $prod_delivery_id); 
     }
      
-     
+    public function prodGasPromotionsStatoElaborazione($organization_id, $prod_gas_promotion_id = 0, $debug = true) {
+    
+        $user = $this->_getObjUserLocal($organization_id, ['PRODGAS']);
+        if(empty($user)) 
+            return; 
+        
+        App::import('Model', 'StatoElaborazioneProdGas');
+        $StatoElaborazioneProdGas = new StatoElaborazioneProdGas();
+        
+        $StatoElaborazioneProdGas->promotions($user, $prod_gas_promotion_id, $debug); 
+    }
+
     private function _getProfileUser($user_id = 0) {
 
         App::import('Model', 'User');

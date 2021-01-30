@@ -62,8 +62,6 @@ if(!empty($results)) {
 		echo '<tr class="view">';
 		echo '	<td>';
 		echo ((int)$numResult+1);
-		if($result['Order']['prod_gas_promotion_id']>0)
-			echo ' <span class="ico-order-is-prod_gas_promotion" title="'.__('OrderIsProdGasPromotion').'"></span>';
 		echo '</td>';					
 		echo '	<td style="white-space:nowrap;">';
 		echo $this->Time->i18nFormat($result['Order']['data_inizio'],"%A %e %B %Y");
@@ -75,6 +73,9 @@ if(!empty($results)) {
 		echo '	</td>';
 		echo '	<td style="white-space:nowrap;">';
 		echo $this->App->utilsCommons->getOrderTime($result['Order']);
+
+		if($result['Order']['prod_gas_promotion_id']>0)
+			echo ' <span class="ico-order-is-prod_gas_promotion" title="'.__('OrderIsProdGasPromotion').'"></span>';		
 		echo '	</td>';
 		
 		echo '<td>';		 

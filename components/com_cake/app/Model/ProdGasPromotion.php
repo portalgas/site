@@ -409,7 +409,7 @@ class ProdGasPromotion extends AppModel {
 
 		if (!empty($this->data['ProdGasPromotion']['importo_scontato']))
 			$this->data['ProdGasPromotion']['importo_scontato'] = $this->importoToDatabase($this->data['ProdGasPromotion']['importo_scontato']);
-		
+	
 	    return true;
 	}	
 }

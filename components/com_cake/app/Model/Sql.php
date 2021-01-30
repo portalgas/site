@@ -60,6 +60,10 @@ class Sql extends AppModel {
 		$results[$i]['name'] = "Ctrl - Ordini DES senza + ordine, se si trovano eliminarli da k_des_orders_organizations";
 		$results[$i]['sql'] = "SELECT organization_id, order_id FROM k_des_orders_organizations WHERE  order_id NOT IN (SELECT ID FROM k_orders);";
 		$results[$i]['params'] = [];
+		$i++;
+		$results[$i]['name'] = "Ordini raggruppati per anno di creazione";
+		$results[$i]['sql'] = "SELECT count(id), year(created) FROM k_orders GROUP BY year(created) ORDER BY year(created) ASC;";
+		$results[$i]['params'] = [];
 
 		return $results;
 	}

@@ -54,11 +54,14 @@ foreach($results as $numResult => $result) {
 	*/
 	echo $this->Form->hidden('id', ['value' => $numResult]);	
 	echo $this->Form->end();
+	echo '<br />'; 
 }
 
 
 if(!empty($sqlResults))	{
 	
+	echo '<div class="jumbotron">';
+
 	// echo '<h1>'.$currentResults['name'].' ('.count($sqlResults).')</h1>';
 	echo '<pre class="shell" rel="'.$currentResults['name'].' ('.count($sqlResults).')">';
 	echo $currentResults['sql'];
@@ -85,5 +88,6 @@ if(!empty($sqlResults))	{
 		echo '</tr>';
 	}
 	echo '</table></div>';
+	echo '</div>';
 }
 ?>

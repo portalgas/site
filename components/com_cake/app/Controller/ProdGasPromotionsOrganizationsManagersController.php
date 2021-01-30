@@ -55,7 +55,6 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 			
-
 		/*
 		 * setting fields
 		*/
@@ -349,7 +348,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$data['Order']['qta_massima'] = 0;
 		$data['Order']['qta_massima_um'] = '';
 		$data['Order']['send_mail_qta_massima'] = 'N';
-		$data['Order']['importo_massimo']=0;
+		$data['Order']['importo_massimo'] = 0;
 		$data['Order']['send_mail_importo_massimo'] = 'N';
 		
 		if(isset($requestData['ProdGasPromotionsOrganizationsManager']['hasTrasport']))

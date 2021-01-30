@@ -47,9 +47,13 @@ class UsersFlagPrivacyHelper extends AppHelper {
 			// $str .= '<th class="actions">'.__('Actions').'</th>';
 		}
 		$str .= '</tr>';
+
+		$i=0;
 		if(isset($results['User']))
 		foreach ($results['User'] as $numResult => $result) {
 			
+			$i++;
+
 			// $this->dd($result);
 			
 			if(!isset($result['Profile']['hasUserFlagPrivacy']))
@@ -79,7 +83,7 @@ class UsersFlagPrivacyHelper extends AppHelper {
 				$img_nota = Configure::read('App.img.cake').'/actions/32x32/filenew.png';
 			
 			$str .= '<tr class="view">';
-			$str .= '<td>'.((int)$numResult+1).'</td>';
+			$str .= '<td>'.$i.'</td>';
 			$str .= '<td>'.$this->drawUserAvatar($user, $result['User']['id'], $result['User']).'</td>';
 			$str .= '<td>';
 			if(!empty($result['Profile']['codice']))

@@ -433,9 +433,13 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 			$data['ArticlesOrder']['qta_cart'] = 0;
 			$data['ArticlesOrder']['pezzi_confezione'] = $prodGasArticlesPromotionResult['Article']['pezzi_confezione'];
 			$data['ArticlesOrder']['qta_minima'] = $prodGasArticlesPromotionResult['Article']['qta_minima'];
-			$data['ArticlesOrder']['qta_massima'] = $prodGasArticlesPromotionResult['Article']['qta_massima'];
+			/*
+			 * ProdGasArticlesPromotion.qta = quantita' dell'offerta 
+			 */
+			$data['ArticlesOrder']['qta_massima'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
 			$data['ArticlesOrder']['qta_minima_order'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
 			$data['ArticlesOrder']['qta_massima_order'] = $prodGasArticlesPromotionResult['ProdGasArticlesPromotion']['qta'];
+			
 			$data['ArticlesOrder']['qta_multipli'] = $prodGasArticlesPromotionResult['Article']['qta_multipli'];
 			$data['ArticlesOrder']['flag_bookmarks'] = 'N';
 			$data['ArticlesOrder']['alert_to_qta'] = 0;
