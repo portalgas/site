@@ -15,7 +15,7 @@ class StatoElaborazioneProdGas extends AppModel {
 		$options = [];
 		$options['conditions'] = ['ProdGasPromotion.organization_id' => $user->organization['Organization']['id'],
 			'ProdGasPromotion.state_code' => 'TRASMISSION-TO-GAS',
-			'DATE(ProdGasPromotion.data_fine) >= CURDATE()'];
+			'DATE(ProdGasPromotion.data_fine) < CURDATE()'];
 		if(!empty($prod_gas_promotion_id))
 			$options['conditions'] += ['ProdGasPromotion.id' => $prod_gas_promotion_id];
 		$options['recursive'] = -1;
@@ -26,13 +26,14 @@ class StatoElaborazioneProdGas extends AppModel {
 		foreach ($results as $result) {
 			$result['ProdGasPromotion']['state_code'] = 'FINISH';
 
-			 self::dd($result, $debug);
+		    // self::d($result, $debug);
   			$ProdGasPromotion->set($result);
     		if(!$ProdGasPromotion->validates()) {
     			$errors = $this->validationErrors;
 				self::d($errors, $debug);	
 			}
 			else {
+				$ProdGasPromotion->create();
 				if(!$ProdGasPromotion->save($result)) {
 	    			$errors = $this->validationErrors;
 					self::d($result, $debug);

@@ -388,20 +388,20 @@ class ProdGasPromotion extends AppModel {
 
 	public function beforeValidate($options = []) {
 		 
-		if (!empty($this->data['ProdGasPromotion']['data_inizio']))
+		if (!empty($this->data['ProdGasPromotion']['data_inizio_db']))
 			$this->data['ProdGasPromotion']['data_inizio'] = $this->data['ProdGasPromotion']['data_inizio_db'];
 
-		if (!empty($this->data['ProdGasPromotion']['data_fine']))
+		if (!empty($this->data['ProdGasPromotion']['data_fine_db']))
 			$this->data['ProdGasPromotion']['data_fine'] = $this->data['ProdGasPromotion']['data_fine_db'];
 		
 		return true;
 	}
 		
 	public function beforeSave($options = []) {
-		if (!empty($this->data['ProdGasPromotion']['data_inizio'])) 
+		if (!empty($this->data['ProdGasPromotion']['data_inizio_db'])) 
 	    	$this->data['ProdGasPromotion']['data_inizio'] = $this->data['ProdGasPromotion']['data_inizio_db'];
 
-		if (!empty($this->data['ProdGasPromotion']['data_fine']))
+		if (!empty($this->data['ProdGasPromotion']['data_fine_db']))
 			$this->data['ProdGasPromotion']['data_fine'] = $this->data['ProdGasPromotion']['data_fine_db'];
 
 		if (!empty($this->data['ProdGasPromotion']['importo_originale']))
@@ -409,7 +409,7 @@ class ProdGasPromotion extends AppModel {
 
 		if (!empty($this->data['ProdGasPromotion']['importo_scontato']))
 			$this->data['ProdGasPromotion']['importo_scontato'] = $this->importoToDatabase($this->data['ProdGasPromotion']['importo_scontato']);
-	
+		
 	    return true;
 	}	
 }
