@@ -193,7 +193,7 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$this->set('promotionResults', $promotionResults);
 		
 		/*
-		 * prendo solo le consegne sclete dal produttore
+		 * prendo solo le consegne scelte dal produttore
 		 */
 		App::import('Model', 'ProdGasPromotionsOrganizationsDelivery');
 		$ProdGasPromotionsOrganizationsDelivery = new ProdGasPromotionsOrganizationsDelivery;
