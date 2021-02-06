@@ -70,12 +70,15 @@ class ConnectsController extends AppController {
 		 * parametri aggiuntivi
 		 */
 		$q = '';
-		unset($this->request->pass['c_to']);
-		unset($this->request->pass['a_to']);
-		if(!empty($this->request->pass)) {
-			foreach ($this->request->pass as $key => $value) {
-				$q = $key.'='.$value;
+		$pass = $this->request->pass;
+		unset($pass['c_to']);
+		unset($pass['a_to']);
+		if(!empty($pass)) {
+			// debug($pass);
+			foreach ($pass as $key => $value) {
+				$q .= $key.'='.$value.'&';
 			}
+			$q = substr($q, 0, strlen($q)-1);
 		}
 
 		// https://neo.portalgas.it/api/joomla25Salt/login
@@ -86,7 +89,7 @@ class ConnectsController extends AppController {
 
 	 	// debug($url); 	
 		// $this->redirect($url);
-				
+		
 		header("Location: $url");
 		exit;
 	}

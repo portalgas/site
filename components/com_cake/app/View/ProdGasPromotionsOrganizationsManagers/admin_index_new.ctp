@@ -66,7 +66,9 @@ if(!empty($results)) {
 			echo '<div class="actions-img">';		
 			echo '	<ul>';
 			echo '<li>'.$this->Html->link(__('Contact PromotionOrganizationManager'), ['action' => 'contact', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionPhone','title' => __('Contact PromotionOrganizationManager')]).'</li>';
-			echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['action' => 'add', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
+			// echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['action' => 'add', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
+			$query = 'c_to=admin/orders&a_to=add&order_type_id='.Configure::read('Order.type.promotion').'&prod_gas_promotion_id='.$result['ProdGasPromotion']['id'];
+			echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['controller' => 'Connects', 'action' => 'index', null, $query], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
 			echo '<li>'.$this->Html->link(__('Reject PromotionOrganizationManager'), ['action' => 'reject', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionDelete','title' => __('Reject PromotionOrganizationManager')]).'</li>';
 			echo '	</ul>';
 			echo '</div>';		

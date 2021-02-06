@@ -51,10 +51,7 @@ class ProdGasSupplier extends AppModel {
 	 * il prodGas ha filtrato per $SuppliersOrganization.owner_articles = SUPPLIER  
 	 */
 	public function getOrganizationSupplier($user, $organization_id, $filters=[], $debug=false) {
-				
-		App::import('Model', 'Supplier');
-		$Supplier = new Supplier;
-		
+			
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 		$SuppliersOrganization->unbindModel(['belongsTo' => ['CategoriesSupplier']]);
@@ -261,7 +258,6 @@ class ProdGasSupplier extends AppModel {
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
 
-		
 		$SuppliersOrganization->unbindModel(array('belongsTo' => array('Supplier', 'CategoriesSupplier')));
 		$SuppliersOrganization->unbindModel(array('hasMany' => array('Article', 'Order', 'SuppliersOrganizationsReferent')));
 		

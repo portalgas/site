@@ -163,7 +163,7 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 		echo '</tr>';
 		
 		foreach ($organizationResults as $numResult => $result):
-			
+	
 			echo '<tr class="view" id="row-org-'.$result['Organization']['id'].'">';
 			
 			echo '<td>';
@@ -193,7 +193,9 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 			echo '<td>';
 			if(isset($result['Delivery']) && !empty($result['Delivery'])) {
 				foreach($result['Delivery'] as $delivery_id => $delivery_name) {
-					echo '<input type="checkbox" id="delivery-'.$delivery_id.'" name="'.$result['Organization']['id'].'-delivery_id_selected" value="'.$delivery_id.'" /> '.$delivery_name.'<br />';
+					echo '<div style="height: 25px;">';
+					echo '<input type="checkbox" id="delivery-'.$delivery_id.'" name="'.$result['Organization']['id'].'-delivery_id_selected" value="'.$delivery_id.'" /> '.$delivery_name;
+					echo '</div>';
 				}
 			}
 			else
