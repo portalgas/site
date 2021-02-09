@@ -2,7 +2,7 @@
 $this->App->d($articleResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
+$this->Html->addCrumb(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas', null, 'type' => $type]);
 $this->Html->addCrumb(__('Add ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -260,9 +260,10 @@ echo '</div>'; // tab-content
 echo '</div>';
 echo '</fieldset>';
 
-echo $this->Form->hidden('article_ids_selected',array('id' =>'article_ids_selected', 'name' =>'data[ProdGasPromotion][article_ids_selected]', 'value'=>''));
-echo $this->Form->hidden('delivery_ids_selected',array('id' =>'delivery_ids_selected', 'name' =>'data[ProdGasPromotion][delivery_ids_selected]', 'value'=>''));
-echo $this->Form->hidden('organization_ids_selected',array('id' =>'organization_ids_selected', 'name' =>'data[ProdGasPromotion][organization_ids_selected]', 'value'=>''));
+echo $this->Form->hidden('article_ids_selected', ['id' =>'article_ids_selected', 'name' =>'data[ProdGasPromotion][article_ids_selected]', 'value' => '']);
+echo $this->Form->hidden('delivery_ids_selected', ['id' =>'delivery_ids_selected', 'name' =>'data[ProdGasPromotion][delivery_ids_selected]', 'value' => '']);
+echo $this->Form->hidden('organization_ids_selected', ['id' =>'organization_ids_selected', 'name' =>'data[ProdGasPromotion][organization_ids_selected]', 'value' => '']);
+echo $this->Form->hidden('type', ['value' => $type]);
 echo $this->Form->end(__('Submit'));
 
 echo '</div>';
@@ -270,7 +271,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'),array('class'=>'action actionReload')).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas', null, 'type' => $type], ['class' => 'action actionReload']).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>

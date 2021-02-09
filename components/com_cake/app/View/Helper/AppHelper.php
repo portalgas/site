@@ -557,7 +557,10 @@ class AppHelper extends Helper {
 		
 		if(isset($options['options'])) {
 			$tmp .= '<div class="input ';
-			if(in_array('required', $options) && $options['required']=='required') {				$tmp .= 'radio-required'; // mette * rosso dopo la label				unset($options['required']);			}			
+			if(in_array('required', $options) && $options['required']=='required') {
+				$tmp .= 'radio-required'; // mette * rosso dopo la label
+				unset($options['required']);
+			}			
 			$tmp .= '">';
 			
 			if(isset($options['label']) && $options['label']!=false)
@@ -629,15 +632,25 @@ class AppHelper extends Helper {
 			$nameHidden = "data[$model][".$fieldName."_hidden]";
 			$valueHidden = '';
 			
-			if(!empty($options['selected'])) {				foreach($options['selected'] as $articlesArticlesType) 					$valueHidden .= $articlesArticlesType['id'].',';
+			if(!empty($options['selected'])) {
+				foreach($options['selected'] as $articlesArticlesType) 
+					$valueHidden .= $articlesArticlesType['id'].',';
 					
-					$valueHidden = substr($valueHidden, 0, strlen($valueHidden)-1);			}
+					$valueHidden = substr($valueHidden, 0, strlen($valueHidden)-1);
+			}
 		}
 
 		$tmp = '';
-		if(isset($options['options'])) {			$tmp .= '<div class="input ';			if(in_array('required', $options) && $options['required']=='required') {				$tmp .= 'radio-required'; // mette * rosso dopo la label				unset($options['required']);			}			$tmp .= '">';
+		if(isset($options['options'])) {
+			$tmp .= '<div class="input ';
+			if(in_array('required', $options) && $options['required']=='required') {
+				$tmp .= 'radio-required'; // mette * rosso dopo la label
+				unset($options['required']);
+			}
+			$tmp .= '">';
 			
-			$tmp .= '<label class="control-label">'.$options['label'].'</label>';			
+			$tmp .= '<label class="control-label">'.$options['label'].'</label>';
+			
 			foreach($options['options'] as $key => $value) {
 
 				$tmp .= '<label class="checkbox-inline" for="'.$id.$key.'">';
@@ -647,33 +660,46 @@ class AppHelper extends Helper {
 				if(!empty($options['selected']))
 					foreach($options['selected'] as $articlesArticlesType) {
 						if(isset($articlesArticlesType['id'])) {
-							/* in Article::admin_edit */							if($articlesArticlesType['id']==$key) $tmp .= 'checked="checked" ';
+							/* in Article::admin_edit */
+							if($articlesArticlesType['id']==$key) $tmp .= 'checked="checked" ';
 						}
 						else { 
 							/* in Article::admin_index, filtro di ricerca */
 							if($articlesArticlesType==$key) $tmp .= 'checked="checked" ';
-						}					}
+						}
+					}
 				
-				$tmp .= 'value="'.$key.'" id="'.$id.$key.'" name="'.$name.'"> ';				$tmp .= ' '.$value.'</label>';
-							}			if(isset($options['after'])) $tmp .= $options['after'];			$tmp .= '</div>';		}
+				$tmp .= 'value="'.$key.'" id="'.$id.$key.'" name="'.$name.'"> ';
+				$tmp .= ' '.$value.'</label>';
+							}
+			if(isset($options['after'])) $tmp .= $options['after'];
+			$tmp .= '</div>';
+		}
 		
 		$tmp .= '<input type="hidden" id="'.$id.$key.'_hidden" name="'.$nameHidden.'" value="'.$valueHidden.'" />';
 		
 		$tmp .= '<script type="text/javascript">';
 		$tmp .= '$(document).ready(function() { ';
 		$tmp .= "\r\n";
-		$tmp .= '$("input[name=\''.$name.'\']").click(function() { ';		$tmp .= "\r\n";
+		$tmp .= '$("input[name=\''.$name.'\']").click(function() { ';
+		$tmp .= "\r\n";
 		$tmp .= 'var checkbox_id_selected = "";';
-		$tmp .= "\r\n";		$tmp .= 'for(i = 0; i < $("input[name=\''.$name.'\']:checked").length; i++) {';
-		$tmp .= "\r\n";		$tmp .= 'checkbox_id_selected += $("input[name=\''.$name.'\']:checked").eq(i).val()+","; ';		$tmp .= "\r\n";
-		$tmp .= '}';		$tmp .= "\r\n";
+		$tmp .= "\r\n";
+		$tmp .= 'for(i = 0; i < $("input[name=\''.$name.'\']:checked").length; i++) {';
+		$tmp .= "\r\n";
+		$tmp .= 'checkbox_id_selected += $("input[name=\''.$name.'\']:checked").eq(i).val()+","; ';
+		$tmp .= "\r\n";
+		$tmp .= '}';
+		$tmp .= "\r\n";
 		$tmp .= 'checkbox_id_selected = checkbox_id_selected.substring(0, checkbox_id_selected.length-1);';
-		$tmp .= "\r\n";		$tmp .= '$("#'.$id.$key.'_hidden").val(checkbox_id_selected);';
+		$tmp .= "\r\n";
+		$tmp .= '$("#'.$id.$key.'_hidden").val(checkbox_id_selected);';
 		$tmp .= "\r\n";
 		$tmp .= '});';
 		$tmp .= '});';
 		$tmp .= '</script>';
-				return $tmp;		
+		
+		return $tmp;		
 	}
 	
 	/*
@@ -760,7 +786,10 @@ class AppHelper extends Helper {
 				$states[$numResult] = $state['TemplatesDesOrdersState'];
 			else
 			if(isset($state['TemplatesProdGasPromotionsState'])) 
-				$states[$numResult] = $state['TemplatesProdGasPromotionsState'];			
+				$states[$numResult] = $state['TemplatesProdGasPromotionsState'];
+			else
+			if(isset($state['TemplatesProdGasPromotionsGasUsersState'])) 
+				$states[$numResult] = $state['TemplatesProdGasPromotionsGasUsersState'];			
 		}
 		
 		$this->d($states, $debug);
@@ -1018,8 +1047,15 @@ class AppHelper extends Helper {
 	
 	public function getArticleConf($qta, $um) {
 
-		/*		 * qta, da 1.00 a 1		* 		da 0.75 a 0,75		* */
-		$qta = str_replace(".", ",", $qta);		if (strpos($qta, ',') !== false) {			$arrCtrlTwoZero = explode(",",$qta);			if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];		}
+		/*
+		 * qta, da 1.00 a 1
+		* 		da 0.75 a 0,75
+		* */
+		$qta = str_replace(".", ",", $qta);
+		if (strpos($qta, ',') !== false) {
+			$arrCtrlTwoZero = explode(",",$qta);
+			if($arrCtrlTwoZero[1]=='00') $qta = $arrCtrlTwoZero[0];
+		}
 		
 		$um = $this->traslateEnum($um);
 				
@@ -1031,8 +1067,17 @@ class AppHelper extends Helper {
 	
 	public function getArticleImporto($prezzo, $qta) {
 		
-		if(empty($prezzo)) return $prezzo;				$importo = ($prezzo * $qta); 
-		$importo = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));				$tmp = '';		$tmp .= $importo;		$tmp .= '&nbsp;&euro;';				return $tmp;		
+		if(empty($prezzo)) return $prezzo;
+		
+		$importo = ($prezzo * $qta); 
+		$importo = number_format($importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+		
+		$tmp = '';
+		$tmp .= $importo;
+		$tmp .= '&nbsp;&euro;';
+		
+		return $tmp;
+		
 	}
 	
 	/*
@@ -1115,7 +1160,21 @@ class AppHelper extends Helper {
 	 	return $isArticlesTypeBio;
 	 }
 	 
-	 /*	  * verifica se un utente ha la gestione degli articoli sugli ordini	 * dipende da	 * 		- Organization.hasArticlesOrder	 * 		- User.hasArticlesOrder	 *	 * anche in AppController, AppModel	 */	public function isUserPermissionArticlesOrder($user) {	 	if($user->organization['Organization']['hasArticlesOrder']=='Y' && $user->user['User']['hasArticlesOrder']=='Y')	 		return true;	 	else	 		return false;	}	 
+	 /*
+	  * verifica se un utente ha la gestione degli articoli sugli ordini
+	 * dipende da
+	 * 		- Organization.hasArticlesOrder
+	 * 		- User.hasArticlesOrder
+	 *
+	 * anche in AppController, AppModel
+	 */
+	public function isUserPermissionArticlesOrder($user) {
+	 	if($user->organization['Organization']['hasArticlesOrder']=='Y' && $user->user['User']['hasArticlesOrder']=='Y')
+	 		return true;
+	 	else
+	 		return false;
+	}
+	 
 	function formatBytes($bytes, $precision = 2) {
 	 	$units = array('B', 'KB', 'MB', 'GB', 'TB');
 	 

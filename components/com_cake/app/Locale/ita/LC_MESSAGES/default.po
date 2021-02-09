@@ -1631,6 +1631,12 @@ msgstr "Promozione"
 msgid "ProdGasPromotions"
 msgstr "Promozioni"
 
+msgid "ProdGasPromotionsGAS"
+msgstr "Promozioni ai G.A.S."
+
+msgid "ProdGasPromotionsGAS-USERS"
+msgstr "Promozioni ai singoli utenti"
+
 msgid "ProdGasPromotionRejectsNotes"
 msgstr "Motivo del rifiuto"
 
@@ -3761,6 +3767,9 @@ msgstr "Associato ad una richiesta di pagamento"
 msgid "WORKING-label"
 msgstr "In lavorazione"
 
+msgid "PRODGASPROMOTION-WORKING-label"
+msgstr "In lavorazione"
+
 msgid "TRASMISSION-TO-GAS-label"
 msgstr "Trasmesso ai G.A.S."
 
@@ -3778,6 +3787,9 @@ msgstr "In attesa che la richiesta si chiuda"
 
 msgid "CLOSE-label"
 msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-OPEN-label"
+msgstr "Promozione aperta"
 
 msgid "PRODGASPROMOTION-CLOSE-label"
 msgstr "Promozione chiusa"
@@ -3833,6 +3845,9 @@ msgstr "Possibilità di richiederne il pagamento"
 msgid "WORKING-intro"
 msgstr "In lavorazione, non visibile ai G.A.S."
 
+msgid "PRODGASPROMOTION-intro"
+msgstr "In lavorazione, non visibile agli utenti"
+
 msgid "TRASMISSION-TO-GAS-intro"
 msgstr "Trasmesso ai gestori dei G.A.S. per valutarla"
 
@@ -3850,6 +3865,9 @@ msgstr "In attesa che la richiesta di pagamento si chiuda"
 
 msgid "CLOSE-intro"
 msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-OPEN-intro"
+msgstr "Promozione aperta"
 
 msgid "PRODGASPROMOTION-CLOSE-intro"
 msgstr "Promozione chiusa"
@@ -3905,6 +3923,9 @@ msgstr "L'ordine può nuovamente essere modificato dai referenti dei singoli G.A
 msgid "WORKING-descri"
 msgstr "In questa fase si possono apportare le modifiche prima di trasmetterlo ai G.A.S."
 
+msgid "PRODGASPROMOTION-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
 msgid "TRASMISSION-TO-GAS-descri"
 msgstr "Se i gestori dei G.A.S. la riterranno interessante potranno creare un ordine per i loro gasisti"
 
@@ -3922,6 +3943,9 @@ msgstr "L'ordine sarà chiuso quando tutti gli ordini associati alla richiesta d
 
 msgid "CLOSE-descri"
 msgstr "Ordine chiuso"
+
+msgid "PRODGASPROMOTION-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
 
 msgid "PRODGASPROMOTION-CLOSE-descri"
 msgstr "Promozione chiusa"

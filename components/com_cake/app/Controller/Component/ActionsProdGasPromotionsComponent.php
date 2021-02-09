@@ -30,7 +30,7 @@ class ActionsProdGasPromotionsComponent extends Component {
 				'TemplatesProdGasPromotionsState.template_id' => $this->_template_id, // $user->organization['Organization']['template_id'],
 				'TemplatesProdGasPromotionsState.group_id' => $group_id];
 		
-		$options['DesOrder'] = ['TemplatesProdGasPromotionsState.sort'];
+		$options['order'] = ['TemplatesProdGasPromotionsState.sort'];
 		$options['recursive'] = 0;
 		$results = $TemplatesProdGasPromotionsState->find('all', $options);
 
@@ -41,22 +41,35 @@ class ActionsProdGasPromotionsComponent extends Component {
 	
 	/*
 	 * estrae gli stati della promozione per la legenda profilata e per gli stati del ProdGasPromotion.sotto_menu
-	 */
-	public function getProdGasPromotionStatesToLegenda($user, $group_id, $debug=false) {
+     *
+     * $type='GAS'        promozioni ai G.A.S.
+     * $type='GAS-USERS'  promozioni ai singoli utenti
+     */
+	public function getProdGasPromotionStatesToLegenda($user, $group_id, $type='GAS', $debug=false) {
 		
 		$controllerLog = $this->Controller;
 		
-		App::import('Model', 'TemplatesProdGasPromotionsState');
-		$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;
+		switch (strtoupper($type)) {
+			case 'GAS':
+				App::import('Model', 'TemplatesProdGasPromotionsState');
+				$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsState;	
+			break;
+			case 'GAS-USERS':
+				App::import('Model', 'TemplatesProdGasPromotionsGasUsersState');
+				$TemplatesProdGasPromotionsState = new TemplatesProdGasPromotionsGasUsersState;	
+			break;
+			
+			default:
+				die("getProdGasPromotionStatesToLegenda type non previsto [$type]");
+				break;
+		}
 		
 		$options = [];
-		$options['conditions'] = [
-			'TemplatesProdGasPromotionsState.template_id' => $this->_template_id, // $user->organization['Organization']['template_id'],
-			'TemplatesProdGasPromotionsState.group_id' => $group_id,
-			'TemplatesProdGasPromotionsState.flag_menu' => 'Y'
-		];
+		$options['conditions'] = ['template_id' => $this->_template_id, // $user->organization['Organization']['template_id'],
+									'group_id' => $group_id,
+									'flag_menu' => 'Y'];
 		
-		$options['order'] = ['TemplatesProdGasPromotionsState.sort'];
+		$options['order'] = ['sort'];
 		$options['recursive'] = -1;
 		$prodGasPromotionStates = $TemplatesProdGasPromotionsState->find('all', $options);
 		

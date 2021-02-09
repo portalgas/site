@@ -3,10 +3,13 @@ $this->App->d($results);
 
 echo '<div class="orders">';
 echo '<h2 class="ico-bookmarkes-articles">';		
-echo __('ProdGasPromotions');
+echo __('ProdGasPromotions'.$type);
 echo '<div class="actions-img">';			
 echo '	<ul>';
-echo '		<li>'.$this->Html->link(__('New ProdGasPromotion'), ['action' => 'add'], ['class' => 'action actionAdd','title' => __('New ProdGasPromotion')]).'</li>';
+if($type=='GAS')
+	echo '<li>'.$this->Html->link(__('New ProdGasPromotion'), ['action' => 'add_gas', null], ['class' => 'action actionAdd','title' => __('New ProdGasPromotion')]).'</li>';
+if($type=='GAS-USERS')
+	echo '<li>'.$this->Html->link(__('New ProdGasPromotion'), ['action' => 'add_gas_users', null], ['class' => 'action actionAdd','title' => __('New ProdGasPromotion')]).'</li>';
 echo '	</ul>';
 echo '</div>';
 echo '</h2>';
