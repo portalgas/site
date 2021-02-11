@@ -30,7 +30,9 @@ class ProdGasPromotion extends AppModel {
 		if(empty($supplierResults))
 			return false;
 		 */
-		 
+		if($user->organization['Organization']['hasPromotionGas']=='N' && $user->organization['Organization']['hasPromotionGasUsers']=='N')
+			return false;
+
 		if($debug) debug($user->organization['Supplier']);
 		if($user->organization['Supplier']['Supplier']['can_promotions']!='Y') 
 			return false;

@@ -4257,6 +4257,9 @@ msgstr "Gli articoli validi per la promozione devono avere l'<strong>immagine</s
 msgid "msg_prodgas_promotion_date"
 msgstr "Durante le date di apertura e chiusura,i G.A.S. potranno effettuare gli acquisti"
 
+msgid "msg_prodgaspromotion_gas_user_delivery"
+msgstr "Indica dove e quando il gasista può ritirare gli articoli prenotati"
+
 msgid "msg_prodgas_contact"
 msgstr "Indica i riferimenti per essere contatto dai G.A.S. per avere maggiori informazioni"
 

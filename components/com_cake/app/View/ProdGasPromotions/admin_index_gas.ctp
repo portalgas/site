@@ -65,24 +65,27 @@ if(!empty($results)) {
 		echo '<td class="actions-table-img-3">';
 		switch($result['ProdGasPromotion']['state_code']) {
 			case "WORKING":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id']], ['class' => 'action actionDelete','title' => __('Delete')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id'], null, 'type=GAS'], ['class' => 'action actionDelete','title' => __('Delete')]);
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'trasmission_to_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionMail','title' => __('ProdGasPromotionTrasmissionToGas')]);			
 			break;
 			case "TRASMISSION-TO-GAS":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);
 			break;
 			case "FINISH":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 			case "PRODGASPROMOTION-CLOSE":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 		}
 			
 		echo '</td>';
 
+		/*
+		 * ordini dei GAS
+		 */
 		if(isset($result['ProdGasPromotionsOrganization'])) {
 		
 			echo '<tr>';

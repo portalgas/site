@@ -1189,7 +1189,7 @@ class AppController extends Controller {
      * configurazione organization[Organization] 
      * 		dati 
      *  	paramsConfig hasArticlesOrder, hasVisibility, hasTrasport, hasCostMore, hasCostLess, hasStoreroom, hasDes, prodSupplierOrganizationId
-     *  	paramsFields hasFieldArticleCodice, hasFieldArticleIngredienti, hasFieldArticleAlertToQta, hasFieldArticleCategoryId, hasFieldSupplierCategoryId,
+     *  	paramsFields hasFieldArticleCodice, hasFieldArticleIngredienti, hasFieldArticleAlertToQta, hasFieldArticleCategoryId, hasFieldSupplierCategoryId, hasPromotionGas, hasPromotionGasUsers
      *  				 hasFieldFatturaRequired)
      */
     private function _getOrganization($organization_id = 0) {
@@ -1246,7 +1246,8 @@ class AppController extends Controller {
 				$results['Supplier'] = $suppliersOrganizationResults;
 			}
         }
-
+		// debug($results);
+		
         return $results;
     }
 	

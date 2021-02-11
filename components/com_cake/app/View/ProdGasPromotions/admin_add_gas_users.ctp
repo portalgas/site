@@ -2,7 +2,7 @@
 $this->App->d($articleResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas_users', null, 'type' => $type]);
+$this->Html->addCrumb(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas_users']);
 $this->Html->addCrumb(__('Add ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -24,11 +24,16 @@ echo '<fieldset>';
 	echo '<div class="tab-content">';
 	echo '<div class="tab-pane fade active in" id="tabs-0">';
 
-	echo $this->Form->input('name', ['id' => 'name']);
+	echo $this->Form->input('name', ['id' => 'name', 'required' => 'required']);
 	
-	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), '');
+	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), '', ['required' => 'required']);
 	
-	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), '');
+	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), '', ['required' => 'required']);
+
+	echo $this->Form->input('nota', ['label' => "Indica le condizioni di consegna", 'value' => $nota, 'required' => 'required']);
+
+	echo $this->Html->div('clearfix','');
+	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgaspromotion_gas_user_delivery')]);	
 
 	echo '</div>';
 
@@ -215,7 +220,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas_users', null, 'type' => $type], ['class' => 'action actionReload']).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas_users'], ['class' => 'action actionReload']).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>
@@ -421,6 +426,14 @@ $(document).ready(function() {
 			return false;
 		}	
 		
+		var nota = $("textarea[name='data[ProdGasPromotion][nota]']").val();
+		if(nota=='' || nota==undefined) {
+			alert("Indica le condizioni di consegna");
+			$('.tabs li:eq(0) a').tab('show');
+			$("input[name='data[ProdGasPromotion][nota]']").focus();
+			return false;
+		}
+
 		/*
 		 * articoli scelti
 		 */

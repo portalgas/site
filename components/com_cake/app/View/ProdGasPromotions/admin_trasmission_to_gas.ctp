@@ -2,8 +2,8 @@
 $this->App->d([$results, $organizationResults]);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
-$this->Html->addCrumb(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit', $prod_gas_promotion_id));
+$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
+$this->Html->addCrumb(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $prod_gas_promotion_id));
 $this->Html->addCrumb(__('ProdGasPromotionTrasmissionToGas'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -75,7 +75,7 @@ echo '</div>';
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'),array('class'=>'action actionReload'));?></li>
-		<li><?php echo $this->Html->link(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit', $prod_gas_promotion_id),array('class'=>'action actionEdit'));?></li>
+		<li><?php echo $this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload'));?></li>
+		<li><?php echo $this->Html->link(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $prod_gas_promotion_id),array('class'=>'action actionEdit'));?></li>
 	</ul>	
 </div>

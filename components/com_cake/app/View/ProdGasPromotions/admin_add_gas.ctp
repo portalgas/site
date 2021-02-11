@@ -2,7 +2,7 @@
 $this->App->d($articleResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas', null, 'type' => $type]);
+$this->Html->addCrumb(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas']);
 $this->Html->addCrumb(__('Add ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -24,11 +24,11 @@ echo '<fieldset>';
 	echo '<div class="tab-content">';
 	echo '<div class="tab-pane fade active in" id="tabs-0">';
 
-	echo $this->Form->input('name', ['id' => 'name']);
+	echo $this->Form->input('name', ['id' => 'name', 'required' => 'required']);
 	
-	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), '');
+	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), '', ['required' => 'required']);
 	
-	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), '');
+	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), '', ['required' => 'required']);
 
 	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_promotion_date')]);
 	
@@ -271,7 +271,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas', null, 'type' => $type], ['class' => 'action actionReload']).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), ['controller' => 'ProdGasPromotions', 'action' => 'index_gas'], ['class' => 'action actionReload']).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>

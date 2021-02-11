@@ -4,7 +4,7 @@ $this->App->d($articleResults, $debug);
 $this->App->d($organizationResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
+$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
 $this->Html->addCrumb(__('Edit ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -26,40 +26,16 @@ echo '<fieldset>';
 	echo '<div class="tab-content">';
 	echo '<div class="tab-pane fade active in" id="tabs-0">';
 
-	echo $this->Form->input('name', ['id' => 'name']);
+	echo $this->Form->input('name', ['id' => 'name', 'required' => 'required']);
 	
 	echo $this->App->drawDate('ProdGasPromotion', 'data_inizio', __('DataInizio'), $this->Form->value('ProdGasPromotion.data_inizio'));
 	
 	echo $this->App->drawDate('ProdGasPromotion', 'data_fine', __('DataFine'), $this->Form->value('ProdGasPromotion.data_fine'));
 	
-	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_promotion_date')]);		
-	echo $this->Form->input('nota', ['label' => "Nota da aggiungere all'ordine"]);
-		
+	echo $this->Form->input('nota', ['label' => "Indica le condizioni di consegna", 'required' => 'required']);
+
 	echo $this->Html->div('clearfix','');
-	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgas_contact')]);
-	
-	echo $this->Form->input('contact_name', ['value' => $this->Form->value('ProdGasPromotion.contact_name'), 'label' => __('Name'), 'required' => false]);
-	echo $this->Form->input('contact_mail', ['value' => $this->Form->value('ProdGasPromotion.contact_mail'), 'label' => __('Email'), 'required' => false]);
-	echo $this->Form->input('contact_phone', ['value' => $this->Form->value('ProdGasPromotion.contact_phone'), 'label' => __('Telephone'), 'required' => false]);
-	
-	/*		
-	if(isset($file1)) {
-		echo '<div class="input">';
-		echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.prod_gas_promotions').'/'.$this->request->data['ProdGasPromotion']['supplier_id'].'/'.$file1->name.'" />';	
-		echo '&nbsp;&nbsp;&nbsp;'.$this->App->formatBytes($file1->size());
-		echo '</div>';	
-		// echo $this->Form->checkbox('file1_delete', array('label' => 'Cancella file', 'value' => 'Y'));
-		// echo $this->Form->label('Cancella file');					
-	}
-						
-	echo $this->Form->input('Document.img1', array(
-	    'between' => '<br />',
-	    'type' => 'file',
-	     'label' => 'Carica una nuova immagine', 'tabindex'=>($i+1)
-	));
-		
-	echo $this->element('legendaProdGasPromotionImg');
-	*/
+	echo $this->element('boxMsg', ['class_msg' => 'info', 'msg' => __('msg_prodgaspromotion_gas_user_delivery')]);	
 
 /*
  * elenco Articoli
@@ -239,22 +215,10 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 	echo '<div class="table-responsive"><table class="table table-hover table-striped">';
 		echo '<tr>';
 		echo '<th colspan="2">'.__('Name').'</th>';
-		echo '<th>'.__('Trasport').'</th>';
-		echo '<th>'.__('CostMore').'</th>';
-		echo '<th>'.__('ProdGasSupplierDeliveriesBooking').'</th>';
 		echo '<th><input type="checkbox" id="organization_id_selected_all" name="organization_id_selected_all" value="ALL" /></th>';
 		echo '</tr>';
 		
 		foreach ($organizationResults as $numResult => $result) {
-		
-			if(isset($result['ProdGasPromotionsOrganization'])) {
-				$trasport = $result['ProdGasPromotionsOrganization']['trasport_'];
-				$costMore = $result['ProdGasPromotionsOrganization']['cost_more_'];
-			}
-			else {
-				$trasport = '0,00';
-				$costMore = '0,00'; 
-			}				
 			
 			echo '<tr class="view" id="row-org-'.$result['Organization']['id'].'">';
 			
@@ -266,46 +230,11 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 				echo $result['Organization']['name']; 
 				if(!empty($result['Organization']['descrizione'])) echo '<div class="small">'.$result['Organization']['descrizione'].'</div>';
 			echo '</td>';
-
-			echo '<td style="white-space: nowrap;">';
-			if(isset($result['Delivery']) && !empty($result['Delivery']))
-				echo $this->Form->input('trasport',array('id' => 'trasport-'.$result['Organization']['id'], 'name' => 'data[ProdGasPromotion][Organization]['.$result['Organization']['id'].'][trasport]', 'label' => false, 'type' => 'text', 'style' => 'display:inline', 'default' => $trasport,'tabindex'=>($i+1),'class' => 'double', 'after' => '&nbsp;&euro;', 'required'=>'false'));
-			echo '</td>';
-			echo '<td style="white-space: nowrap;">';
-			if(isset($result['Delivery']) && !empty($result['Delivery']))
-				echo $this->Form->input('costMore',array('id' => 'costMore-'.$result['Organization']['id'], 'name' => 'data[ProdGasPromotion][Organization]['.$result['Organization']['id'].'][costMore]', 'label' => false, 'type' => 'text', 'style' => 'display:inline', 'default' => $costMore,'tabindex'=>($i+1),'class' => 'double', 'after' => '&nbsp;&euro;', 'required'=>'false'));
-			echo '</td>';
 			
 			echo '<td>';
-			if(isset($result['Delivery']) && !empty($result['Delivery'])) {
-				foreach($result['Delivery'] as $delivery_id => $delivery_name) {
-					echo '<input type="checkbox" id="delivery-'.$delivery_id.'" name="'.$result['Organization']['id'].'-delivery_id_selected" value="'.$delivery_id.'" " ';
-					
-					if(isset($result['ProdGasPromotionsOrganizationsDelivery']))
-					foreach($result['ProdGasPromotionsOrganizationsDelivery'] as $numResult => $prodGasPromotionsOrganizationsDelivery) {
-						if($delivery_id==$prodGasPromotionsOrganizationsDelivery['ProdGasPromotionsOrganizationsDelivery']['delivery_id']) {
-							echo ' checked';
-							unset($result['ProdGasPromotionsOrganizationsDelivery'][$numResult]);
-							break;
-						}
-					}
-					echo '/>'.$delivery_name.'<br />';
-				}
-			}
-			else
-			if($result['SuppliersOrganization']['can_promotions']=='N')
-				echo '<span class="label label-warning">Non abilitato alle promozioni</span>';
-			else
-			if(!isset($result['Delivery']) || empty($result['Delivery'])) 
-			 	echo '<span class="label label-warning">Il G.A.S. non ha consegne aperte</span>';				
-			echo '</td>';
-			
-			echo '<td>';
-			if(isset($result['Delivery']) && !empty($result['Delivery'])) {
-				echo '<input type="checkbox" id="org-'.$result['Organization']['id'].'" name="organization_id_selected" value="'.$result['Organization']['id'].'" ';
-				if(isset($result['ProdGasPromotionsOrganization'])) echo ' checked';
-				echo '/>';			
-			}
+			echo '<input type="checkbox" id="org-'.$result['Organization']['id'].'" name="organization_id_selected" value="'.$result['Organization']['id'].'" ';
+			if(isset($result['ProdGasPromotionsOrganization'])) echo ' checked';
+			echo '/>';			
 			echo '</td>';
 			echo '</tr>';
 		}		
@@ -361,7 +290,6 @@ echo '</div>';
 echo '</fieldset>';
 
 echo $this->Form->hidden('article_ids_selected',array('id' =>'article_ids_selected', 'name' =>'data[ProdGasPromotion][article_ids_selected]', 'value'=>''));
-echo $this->Form->hidden('delivery_ids_selected',array('id' =>'delivery_ids_selected', 'name' =>'data[ProdGasPromotion][delivery_ids_selected]', 'value'=>''));
 echo $this->Form->hidden('organization_ids_selected',array('id' =>'organization_ids_selected', 'name' =>'data[ProdGasPromotion][organization_ids_selected]', 'value'=>''));
 echo $this->Form->end(__('Submit'));
 
@@ -370,7 +298,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'),array('class'=>'action actionReload')).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload')).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>
@@ -438,17 +366,9 @@ function abilitaDisabilitaRowArticles(idRow, checked) {
 function abilitaDisabilitaRowOrganizations(idRow, checked) {
 	if(checked==false) {
 		$('#row-org-'+idRow).css('opacity', '0.5');
-		$('#trasport-'+idRow).prop('disabled', true);
-		$('#costMore-'+idRow).prop('disabled', true);	
-		$('#trasport-'+idRow).val("0,00");
-		$('#costMore-'+idRow).val("0,00");
-		$("input[name='"+idRow+"-delivery_id_selected']").prop('disabled', true);
 	}
 	else {
 		$('#row-org-'+idRow).css('opacity', '1');
-		$('#trasport-'+idRow).prop('disabled', false);
-		$('#costMore-'+idRow).prop('disabled', false);
-		$("input[name='"+idRow+"-delivery_id_selected']").prop('disabled', false);
 	}	
 }
 
@@ -559,32 +479,9 @@ $(document).ready(function() {
 	});
 	
 	$('#formGas').submit(function() {
-	
-		var contact_name = $("input[name='data[ProdGasPromotion][contact_name]']").val();
-		if(contact_name=='' || contact_name==undefined) {
-			alert("Indica il nome del contatto");
-			$('.tabs li:eq(0) a').tab('show');
-			$("input[name='data[ProdGasPromotion][contact_name]']").focus();
-			return false;
-		}		
-		var contact_mail = $("input[name='data[ProdGasPromotion][contact_mail]']").val();
-		if(contact_mail=='' || contact_mail==undefined) {
-			alert("Indica la mail del contatto");
-			$('.tabs li:eq(0) a').tab('show');
-			$("input[name='data[ProdGasPromotion][contact_mail]']").focus();
-			return false;
-		}		
-		var contact_phone = $("input[name='data[ProdGasPromotion][contact_phone]']").val();
-		if(contact_phone=='' || contact_phone==undefined) {
-			alert("Indica il telefono del contatto");
-			$('.tabs li:eq(0) a').tab('show');
-			$("input[name='data[ProdGasPromotion][contact_phone]']").focus();
-			return false;
-		}		
-	
+			
 		$('#article_ids_selected').val("");
 		$('#organization_ids_selected').val("");
-	    $('#delivery_ids_selected').val("");
 	
 		var name = $('#name').val();
 		if(name=='' || name==undefined) {
@@ -607,7 +504,15 @@ $(document).ready(function() {
 			alert("Devi indicare la data di chiusura della promozione");
 			return false;
 		}	
-		
+	
+		var nota = $("textarea[name='data[ProdGasPromotion][nota]']").val();
+		if(nota=='' || nota==undefined) {
+			alert("Indica le condizioni di consegna");
+			$('.tabs li:eq(0) a').tab('show');
+			$("input[name='data[ProdGasPromotion][nota]']").focus();
+			return false;
+		}
+
 		/*
 		 * articoli scelti
 		 */
@@ -641,30 +546,15 @@ $(document).ready(function() {
 		}
 		
 		/*
-		 * GAS scelti + deliveries
+		 * GAS scelti
 		 */
 		var organization_id_selected = '';
-		var delivery_id_selected = '';
 		for(i = 0; i < $("input[name='organization_id_selected']:checked").length; i++) {
 			var elem = $("input[name='organization_id_selected']:checked").eq(i);
 			var organization_id = elem.val();
 			organization_id_selected += elem.val()+',';
 			
-			/* console.log("Scelto GAS "+organization_id); */
-			
-			var checked_delivery_to_gas = false;
-			for(ii = 0; ii < $("input[name='"+organization_id+"-delivery_id_selected']:checked").length; ii++) {
-			
-				checked_delivery_to_gas = true;
-				var elem_delivery = $("input[name='"+organization_id+"-delivery_id_selected']:checked").eq(ii);
-				
-				delivery_id_selected += organization_id+'-'+elem_delivery.val()+',';
-			}
-			if(!checked_delivery_to_gas) {
-				$('.tabs li:eq(2) a').tab('show');
-				alert("Indica per il GAS scelto per quali consegne potresti consegnare");
-				return false;
-			}			
+			/* console.log("Scelto GAS "+organization_id); */			
 		}		
 		if(organization_id_selected!='') {
 			organization_id_selected = organization_id_selected.substring(0,organization_id_selected.length-1);		
@@ -675,12 +565,7 @@ $(document).ready(function() {
 			alert("Scegli quali GAS associare alla promozione");
 			return false;
 		}	 
-		
-		if(delivery_id_selected!='') {
-			delivery_id_selected = delivery_id_selected.substring(0,delivery_id_selected.length-1);		
-			$('#delivery_ids_selected').val(delivery_id_selected);
-		}		
-				
+						
 		return true;
 	});
 	

@@ -4,7 +4,7 @@ $this->App->d($articleResults, $debug);
 $this->App->d($organizationResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'));
+$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
 $this->Html->addCrumb(__('View ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -255,7 +255,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index'),array('class'=>'action actionReload')).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload')).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>

@@ -65,23 +65,47 @@ if(!empty($results)) {
 		echo '<td class="actions-table-img-3">';
 		switch($result['ProdGasPromotion']['state_code']) {
 			case "WORKING":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id']], ['class' => 'action actionDelete','title' => __('Delete')]);
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'trasmission_to_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionMail','title' => __('ProdGasPromotionTrasmissionToGas')]);			
-			break;
-			case "TRASMISSION-TO-GAS":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);
-			break;
-			case "FINISH":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+			case "OPEN":
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id'], null, 'type=GAS-USERS'], ['class' => 'action actionDelete','title' => __('Delete')]);				
 			break;
 			case "PRODGASPROMOTION-CLOSE":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 		}
-			
+
+		echo $this->Html->link(null, ['controller' => 'Docs', 'action' => 'ProdGasPromotionGasUsersDocsExport', $result['ProdGasPromotion']['id']], ['class' => 'action actionPrinter','title' => __('Print Promotion')]);		
 		echo '</td>';		
+		
+		/*
+		 * GAS
+		 */
+		if(isset($result['ProdGasPromotionsOrganization'])) {
+		
+			echo '<tr>';
+			echo '	<th></th>';
+			echo '	<th></th>';
+			echo '	<th></th>';
+			echo '	<th></th>';
+			echo '	<th colspan="7">'.$this->Paginator->sort('organization_id').'</th>';
+			echo '</tr>';
+					
+			foreach($result['ProdGasPromotionsOrganization'] as $numResult2 => $prodGasPromotionsOrganization) {
+
+				echo '<tr>';
+				echo '	<td></td>';
+				echo '	<td></td>';
+				echo '	<td></td>';
+				echo '	<td></td>';
+				echo '	<td>';
+				if(!empty($prodGasPromotionsOrganization['Organization']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$prodGasPromotionsOrganization['Organization']['img1']))
+					echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$prodGasPromotionsOrganization['Organization']['img1'].'" alt="'.$prodGasPromotionsOrganization['Organization']['name'].'" /> ';
+				echo '	</td>';
+				echo '	<td colspan="6">'.$prodGasPromotionsOrganization['Organization']['name'].'</td>';				
+				echo '</tr>';				
+			}					
+		}
+
 		echo '</tr>';
 		echo '</table></div>';
 }

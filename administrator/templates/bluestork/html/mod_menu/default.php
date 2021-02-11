@@ -108,6 +108,12 @@ if($componentIsComCake) {
 		print_r($paramsConfig);
 		echo "</pre>";
 		*/
+		/*
+		 * produttori
+		 */
+		$hasPromotionGas = $paramsConfig['hasPromotionGas'];
+		$hasPromotionGasUsers = $paramsConfig['hasPromotionGasUsers'];
+				
 		$hasArticlesGdxp = $paramsConfig['hasArticlesGdxp'];
 		$hasBookmarsArticles = $paramsConfig['hasBookmarsArticles'];
 		$hasDocuments = $paramsConfig['hasDocuments'];
@@ -171,6 +177,8 @@ if($componentIsComCake) {
 		$hasRolesTesoriere = 'N';
 		$hasRolesStoreroom = 'N';
 		$hasCashFilterSupplier = 'N';
+		$hasPromotionGasUsers = 'N';
+		$hasPromotionGas = 'N';
 	}
 	
 	$_menus = [];

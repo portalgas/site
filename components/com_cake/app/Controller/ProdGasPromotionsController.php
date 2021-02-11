@@ -50,6 +50,11 @@ class ProdGasPromotionsController extends AppController {
 
    		$type='GAS';
 
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}	
+
 		$SqlLimit = 50;
 		$conditions[] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id'],
 						 'ProdGasPromotion.type' => $type];
@@ -103,6 +108,11 @@ class ProdGasPromotionsController extends AppController {
 
    		$type='GAS-USERS';
 
+		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
 		$SqlLimit = 50;
 		$conditions[] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id'],
 						 'ProdGasPromotion.type' => $type];
@@ -134,6 +144,11 @@ class ProdGasPromotionsController extends AppController {
 	
 		$debug=false;
 		$type = 'GAS';
+
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
 
 		$msg = "";
 
@@ -177,10 +192,13 @@ class ProdGasPromotionsController extends AppController {
 		*/
 		$userProfile = JUserHelper::getProfile($this->user->id);
 		self::d($userProfile);
-		
+
 		$contact_name = $this->user->name;
 		$contact_mail = $this->user->email;
-		$contact_phone = $userProfile->profile['phone'];
+		if(isset($userProfile->profile['phone']) && !empty($userProfile->profile['phone']))	
+			$contact_phone = $userProfile->profile['phone']; // telefono dell'utente
+		else
+			$contact_phone = $this->user->organization['Supplier']['Supplier']['telefono']; // telefono del produttore
 		$this->set(compact('contact_name', 'contact_mail', 'contact_phone'));
 
 			
@@ -229,14 +247,14 @@ class ProdGasPromotionsController extends AppController {
 			 */
 			if($continue) {
 				App::import('Model', 'UserProfile');
-				$UserProfile = new UserProfile;	
+				$userProfile = new UserProfile;	
 				
-				$UserProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
+				if(!isset($userProfile->profile['phone']) || empty($userProfile->profile['phone']))	
+					$userProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
 			}
 			
 			/*
 			 * immagine non + gestita
-			 */
 			if($continue) {
 				$arr_extensions = Configure::read('App.web.img.upload.extension');
 				$arr_contentTypes = Configure::read('ContentType.img');		 
@@ -260,7 +278,8 @@ class ProdGasPromotionsController extends AppController {
 						self::d("msg UPLOAD ".$msg, $debug);
 				}				
 			}
-			
+			*/
+
 			/*
 			 * ProdGasArticlesPromotion
 			 */
@@ -381,7 +400,7 @@ class ProdGasPromotionsController extends AppController {
 			if($continue) {
 				
 				$msg .= __('The ProdGasPromotion has been saved');
-				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index&type='.$type;
+				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index_gas';
 
 				self::d($url, $debug);
 				
@@ -439,6 +458,11 @@ class ProdGasPromotionsController extends AppController {
 		
 		$type = 'GAS-USERS';
 		$msg = "";
+
+		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
 
 		/*
 		 * setting fields
@@ -585,7 +609,7 @@ class ProdGasPromotionsController extends AppController {
 			if($continue) {
 				
 				$msg .= __('The ProdGasPromotion has been saved');
-				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index&type='.$type;
+				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index_gas_users';
 
 				self::d($url, $debug);
 				
@@ -597,7 +621,24 @@ class ProdGasPromotionsController extends AppController {
 				$this->Session->setFlash($msg);			
 			}
 		} // end if ($this->request->is('post') || $this->request->is('put'))
-							
+			
+		/*
+		 * nota con i riferimenti della consegna
+		*/
+		// $userProfile = JUserHelper::getProfile($this->user->id);
+		// self::d($userProfile);
+
+		$nota = 'Potrai ritirare gli articoli prenotati presso la nostra sede <br>
+				'.$this->user->organization['Supplier']['Supplier']['indirizzo'].' '.$this->user->organization['Supplier']['Supplier']['localita'].' <br>
+				nei seguenti orari<br >
+				.....<br >
+				.....<br >
+				.....<br ><br>
+				Se desideri contattarci telefoninamente '.$this->user->organization['Supplier']['Supplier']['telefono'].'<br >
+				'.$this->user->organization['Supplier']['Supplier']['mail'].' <br><br>
+				'.$contact_name = $this->user->name;
+		$this->set(compact('nota'));
+
 		/*
 		 * get elenco Organizations
 		*/
@@ -634,10 +675,16 @@ class ProdGasPromotionsController extends AppController {
 		$this->set('type', $type);	 
 	}
 
-	public function admin_edit($prod_gas_promotion_id) {
+	public function admin_edit_gas($prod_gas_promotion_id) {
 	
 		$debug=false;
-		
+		$type = 'GAS';
+
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
 		if (empty($prod_gas_promotion_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -674,17 +721,21 @@ class ProdGasPromotionsController extends AppController {
  			 */
 			$continue = false;
 			
-			$this->request->data['ProdGasPromotion']['id'] = $prod_gas_promotion_id;
-			$this->request->data['ProdGasPromotion']['organization_id'] = $this->user->organization['Organization']['id'];
-			$this->request->data['ProdGasPromotion']['name'] = $this->request->data['ProdGasPromotion']['name'];
-			$this->request->data['ProdGasPromotion']['data_inizio_db'] = $this->request->data['ProdGasPromotion']['data_inizio_db'];
-			$this->request->data['ProdGasPromotion']['data_fine_db'] = $this->request->data['ProdGasPromotion']['data_fine_db'];
-			$this->request->data['ProdGasPromotion']['importo_originale'] = $this->request->data['ProdGasPromotion']['importo_originale_totale'];
-			$this->request->data['ProdGasPromotion']['importo_scontato'] = $this->request->data['ProdGasPromotion']['importo_scontato_totale'];
-			$this->request->data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
-			$this->request->data['ProdGasPromotion']['contact_name'] = $this->request->data['ProdGasPromotion']['contact_name'];
-			$this->request->data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
-			$this->request->data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];			
+			$data = [];
+			$data['ProdGasPromotion'] = $prodGasPromotionResults['ProdGasPromotion'];
+			$data['ProdGasPromotion']['id'] = $prod_gas_promotion_id;
+			$data['ProdGasPromotion']['organization_id'] = $this->user->organization['Organization']['id'];
+			$data['ProdGasPromotion']['name'] = $data['ProdGasPromotion']['name'];
+			$data['ProdGasPromotion']['data_inizio_db'] = $data['ProdGasPromotion']['data_inizio_db'];
+			$data['ProdGasPromotion']['data_fine_db'] = $data['ProdGasPromotion']['data_fine_db'];
+			$data['ProdGasPromotion']['importo_originale'] = $data['ProdGasPromotion']['importo_originale_totale'];
+			$data['ProdGasPromotion']['importo_scontato'] = $data['ProdGasPromotion']['importo_scontato_totale'];
+			$data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
+			$data['ProdGasPromotion']['contact_name'] = $this->request->data['ProdGasPromotion']['contact_name'];
+			$data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
+			$data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];	  			
+			// debug($data); 
+			$this->ProdGasPromotion->set($data);
    
 			$this->ProdGasPromotion->set($this->request->data);
 			if(!$this->ProdGasPromotion->validates()) {
@@ -706,14 +757,14 @@ class ProdGasPromotionsController extends AppController {
 			 */
 			if($continue) {
 				App::import('Model', 'UserProfile');
-				$UserProfile = new UserProfile;	
+				$userProfile = new UserProfile;	
 				
-				$UserProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
+				if(!isset($userProfile->profile['phone']) || empty($userProfile->profile['phone']))	
+					$userProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
 			}
 			
 			/*
-			 * immagine
-			 */
+			 * immagine non + gestita
 			if($continue) {
 				$arr_extensions = Configure::read('App.web.img.upload.extension');
 				$arr_contentTypes = Configure::read('ContentType.img');		 
@@ -737,6 +788,7 @@ class ProdGasPromotionsController extends AppController {
 						self::d("msg UPLOAD ".$msg, $debug);
 				}				
 			}
+			*/
 			
 			/*
 			 * ProdGasArticlesPromotion
@@ -975,7 +1027,7 @@ class ProdGasPromotionsController extends AppController {
 			if($continue) {
 				
 				$msg .= __('The ProdGasPromotion has been saved');
-				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index&type=GAS';
+				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index_gas';
 
 				self::d([$msg, $url], $debug);
 				
@@ -1053,10 +1105,353 @@ class ProdGasPromotionsController extends AppController {
 		
 	}
 
-	public function admin_view($prod_gas_promotion_id) {
+	public function admin_edit_gas_users($prod_gas_promotion_id) {
+	
+		$debug=false;
+		$type = 'GAS-USERS';
+
+		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
+		if (empty($prod_gas_promotion_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$msg = "";
+		
+		/*
+		 * ctrl state_code
+		 */
+		$options = [];
+		$options['conditions'] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id'],
+								   'ProdGasPromotion.id' => $prod_gas_promotion_id];
+		$options['recursive'] = -1;
+		$prodGasPromotionResults = $this->ProdGasPromotion->find('first', $options);
+		
+		self::d($options, $debug);
+		self::d($prodGasPromotionResults, $debug);
+
+		/*
+		 * setting fields
+		*/
+		if ($this->request->is('post') || $this->request->is('put')) {
+			
+			self::d($this->request->data, $debug);
+			
+			/*
+			 * dati promozione
+ 			 */
+			$continue = false;
+			
+			$data = [];
+			$data['ProdGasPromotion'] = $prodGasPromotionResults['ProdGasPromotion'];
+			$data['ProdGasPromotion']['id'] = $prod_gas_promotion_id;
+			$data['ProdGasPromotion']['organization_id'] = $this->user->organization['Organization']['id'];
+			$data['ProdGasPromotion']['name'] = $data['ProdGasPromotion']['name'];
+			$data['ProdGasPromotion']['data_inizio_db'] = $data['ProdGasPromotion']['data_inizio_db'];
+			$data['ProdGasPromotion']['data_fine_db'] = $data['ProdGasPromotion']['data_fine_db'];
+			$data['ProdGasPromotion']['importo_originale'] = $data['ProdGasPromotion']['importo_originale_totale'];
+			$data['ProdGasPromotion']['importo_scontato'] = $data['ProdGasPromotion']['importo_scontato_totale'];
+			$data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
+   			// debug($data); 
+			$this->ProdGasPromotion->set($data);
+			if(!$this->ProdGasPromotion->validates()) {
+				$errors = $this->ProdGasPromotion->validationErrors;
+				$continue = false;
+				self::d($errors, $debug);
+			}
+			else {
+				$this->ProdGasPromotion->create();
+				if($this->ProdGasPromotion->save($this->request->data)) {
+					$continue = true;
+				}
+				else 
+					$continue = false;
+			}
+
+			/*
+			 * UserProfile 
+			 */
+			if($continue) {
+				App::import('Model', 'UserProfile');
+				$userProfile = new UserProfile;	
+				
+				if(!isset($userProfile->profile['phone']) || empty($userProfile->profile['phone']))	
+					$userProfile->setValue($this->user, $this->user->id, 'profile.phone', $this->request->data['ProdGasPromotion']['contact_phone'], $debug);
+			}
+			
+			/*
+			 * immagine non + gestita
+			if($continue) {
+				$arr_extensions = Configure::read('App.web.img.upload.extension');
+				$arr_contentTypes = Configure::read('ContentType.img');		 
+				$path_upload = Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->user->organization['Supplier']['Supplier']['id'].DS;
+				
+				if(!empty($this->request->data['Document']['img1']['name'])){
+					$esito = $this->Documents->genericUpload($this->user, $this->request->data['Document']['img1'], $path_upload, 'UPLOAD', $prod_gas_promotion_id, $arr_extensions, $arr_contentTypes, Configure::read('App.web.img.upload.width.prod_gas_promotion'), $debug);
+					if(empty($esito['msg'])) {	
+						$sql = "UPDATE
+									".Configure::read('DB.prefix')."prod_gas_promotions
+								SET
+									img1 = '".$esito['fileNewName']."'
+								WHERE
+									organization_id = ".$this->user->organization['Organization']['id']."
+									and id = ".$prod_gas_promotion_id;
+						self::d("UPDATE IMG ".$sql, $debug);
+						$uploadResults = $this->ProdGasPromotion->query($sql);						
+					}
+					else
+						$msg = $esito['msg'];
+						self::d("msg UPLOAD ".$msg, $debug);
+				}				
+			}
+			*/
+
+			/*
+			 * ProdGasArticlesPromotion
+			 */
+			if($continue) {
+				if(!empty($this->request->data['ProdGasPromotion']['article_ids_selected'])) {
+					
+					App::import('Model', 'ProdGasArticlesPromotion');
+					$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
+		
+					$article_ids_selected = explode(',', $this->request->data['ProdGasPromotion']['article_ids_selected']);
+					self::d("ProdGasArticles scelti ".$this->request->data['ProdGasPromotion']['article_ids_selected'], $debug);
+					
+					$delete_not_ids = [];
+					foreach($article_ids_selected as $article_id) {
+						
+						if(isset($this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id])) {
+							
+							$data = [];
+							
+							/*
+							 * ctrl se insert / update 
+							 */
+							$options = [];
+							$options['conditions'] = ['ProdGasArticlesPromotion.organization_id' => $this->user->organization['Organization']['id'],
+													  'ProdGasArticlesPromotion.prod_gas_promotion_id' => $prod_gas_promotion_id,
+												      'ProdGasArticlesPromotion.article_id' => $article_id];
+							$options['recursive'] = -1;
+							$prodGasArticlesPromotionResults = $ProdGasArticlesPromotion->find('first', $options);
+							if(!empty($prodGasArticlesPromotionResults)) 
+								$data['ProdGasArticlesPromotion']['id'] = $prodGasArticlesPromotionResults['ProdGasArticlesPromotion']['id'];
+							else
+								$data['ProdGasArticlesPromotion']['id'] = '';
+							
+							$prezzo_unita = $this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id]['prezzo_unita'];
+							$qta = $this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id]['qta'];
+							$importo = $this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id]['importo_scontato'];
+							self::d("ProdGasArticlesPromotion $article_id - qta $qta - prezzo_unita $prezzo_unita - importo $importo - ID ".$data['ProdGasArticlesPromotion']['id'], $debug);
+														
+							$data['ProdGasArticlesPromotion']['organization_id'] = $this->user->organization['Organization']['id'];	
+							$data['ProdGasArticlesPromotion']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
+							$data['ProdGasArticlesPromotion']['article_id'] = $article_id;	
+							$data['ProdGasArticlesPromotion']['prezzo_unita'] = $prezzo_unita;
+							$data['ProdGasArticlesPromotion']['qta'] = $qta;
+							$data['ProdGasArticlesPromotion']['importo'] = $importo;
+
+							$ProdGasArticlesPromotion->create();
+							if($ProdGasArticlesPromotion->save($data)) {
+								if(!empty($prodGasArticlesPromotionResults)) 
+									array_push($delete_not_ids, $data['ProdGasArticlesPromotion']['id']);
+								else
+									array_push($delete_not_ids, $order_id = $ProdGasArticlesPromotion->getLastInsertId());				
+							}
+						}	
+					}
+
+					/*
+				     * delete id esclusi
+					 */
+					if(!empty($delete_not_ids)) {
+						try {
+							$sql = "DELETE FROM ".Configure::read('DB.prefix')."prod_gas_articles_promotions WHERE id NOT IN (".implode(',', $delete_not_ids).")";
+							$sql .= " AND organization_id = ".$this->user->organization['Organization']['id']." AND prod_gas_promotion_id = ".$prod_gas_promotion_id; 
+
+							self::d($sql, $debug);
+							$deleteResults = $ProdGasArticlesPromotion->query($sql);
+						}
+						catch (Exception $e) {
+							CakeLog::write('error',$sql);
+						} 	
+					}
+				}
+			} // end if($continue) 
+
+			/*
+			 * Organization
+			 */
+			if(!empty($this->request->data['ProdGasPromotion']['organization_ids_selected'])) {
+				$organization_ids_selected = explode(',', $this->request->data['ProdGasPromotion']['organization_ids_selected']);
+				self::d("Organizations scelte ".$this->request->data['ProdGasPromotion']['organization_ids_selected'], $debug);
+					
+				App::import('Model', 'ProdGasPromotionsOrganization');
+				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
+					
+				$delete_not_ids = [];
+				foreach($organization_ids_selected as $organization_id) {
+					
+					if(isset($this->request->data['ProdGasPromotion']['Organization'][$organization_id])) {
+					
+						$data = [];
+						
+						$trasport = $this->request->data['ProdGasPromotion']['Organization'][$organization_id]['trasport'];
+						$cost_more = $this->request->data['ProdGasPromotion']['Organization'][$organization_id]['costMore'];
+						self::d("Organization $organization_id - trasport $trasport - cost_more $cost_more", $debug);
+						
+						/*
+						 * cerco se esiste gia' un occorrenza  
+						 */
+						$options = [];
+						$options['conditions'] = ['ProdGasPromotionsOrganization.organization_id' => (int)$organization_id,  // e' quello del GAS
+												  'ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id];
+						$options['order'] = ['ProdGasPromotionsOrganization.id'];
+						$options['recursive'] = -1;
+						$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
+						self::d($prodGasPromotionsOrganizationResults, $debug);
+						if(!empty($prodGasPromotionsOrganizationResults)) {
+							$data['ProdGasPromotionsOrganization']['id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['id'];
+							$data['ProdGasPromotionsOrganization']['order_id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['order_id'];
+							$data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
+							$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+							$data['ProdGasPromotionsOrganization']['user_id'] = 0;
+						}	
+						else {
+							$data['ProdGasPromotionsOrganization']['order_id'] = 0;	
+							$data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
+							$data['ProdGasPromotionsOrganization']['nota_user'] = '';
+							$data['ProdGasPromotionsOrganization']['user_id'] = 0;
+						}							 				
+										
+						$data['ProdGasPromotionsOrganization']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
+						$data['ProdGasPromotionsOrganization']['organization_id'] = $organization_id;    // e' quello del GAS
+						$data['ProdGasPromotionsOrganization']['hasTrasport'] = 'N';
+						$data['ProdGasPromotionsOrganization']['trasport'] = '0.00';							
+						$data['ProdGasPromotionsOrganization']['hasCostMore'] = 'N';	
+						$data['ProdGasPromotionsOrganization']['cost_more'] = '0.00';
+						
+						self::d($data, $debug);
+						$ProdGasPromotionsOrganization->create();
+						if($ProdGasPromotionsOrganization->save($data)) {
+							if(!empty($prodGasPromotionsOrganizationResults)) 
+								array_push($delete_not_ids, $data['ProdGasPromotionsOrganization']['id']);
+							else
+								array_push($delete_not_ids, $order_id = $ProdGasPromotionsOrganization->getLastInsertId());				
+						}						
+					}	
+				} // end loop Organization
+
+				/*
+				 * delete id esclusi
+				 */
+				if(!empty($delete_not_ids)) {
+					try {
+						$sql = "DELETE FROM ".Configure::read('DB.prefix')."prod_gas_promotions_organizations WHERE id NOT IN (".implode(',', $delete_not_ids).") AND prod_gas_promotion_id = ".$prod_gas_promotion_id; 
+						self::d($sql, $debug);
+						$deleteResults = $ProdGasArticlesPromotion->query($sql);
+					}
+					catch (Exception $e) {
+						CakeLog::write('error',$sql);
+					} 	
+				}					
+			}
+
+			
+			if($continue) {
+				
+				$msg .= __('The ProdGasPromotion has been saved');
+				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=ProdGasPromotions&action=index_gas_users';
+
+				self::d([$msg, $url], $debug);
+				
+				$this->Session->setFlash($msg);
+				if(!empty($url) && !$debug) $this->myRedirect($url);	
+			}
+			else {
+				$msg = __('The ProdGasPromotion could not be saved. Please, try again.');	
+				$this->Session->setFlash($msg);			
+			}
+		}
+
+		$this->request->data = $this->ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id);
+		
+		/*
+		 * get elenco Article esludendo quelli gia' in promozione
+		 */	
+		/*
+		 * get elenco Article
+		 */	
+		App::import('Model', 'Article');
+		$Article = new Article;
+		
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id']];
+		$options['order'] = ['Article.name' => 'asc']; 
+		$options['recursive'] = 0;					  		
+		$articleResults = $Article->find('all', $options);
+		self::d($options, $debug);
+		self::d($articleResults, $debug);
+
+		if(!empty($this->request->data['ProdGasArticlesPromotion'])) {
+			
+			$prodGasArticlesPromotion = $this->request->data['ProdGasArticlesPromotion'];  // copio perche' dopo faccio unset
+			
+			foreach($articleResults as $numResults => $articleResult) {
+				
+				foreach($this->request->data['ProdGasArticlesPromotion'] as $numResults2 => $prodGasArticlesPromotion) {
+					if($articleResult['Article']['organization_id']==$prodGasArticlesPromotion['Article']['organization_id'] && $articleResult['Article']['id']==$prodGasArticlesPromotion['Article']['id']) {
+						unset($articleResults[$numResults]);
+						unset($prodGasArticlesPromotion[$numResults]);
+					}
+				}
+			}
+		} // end if(!empty($this->request->data['ProdGasArticlesPromotion']))
+		
+		$this->set(compact('articleResults'));	 
+
+		/*
+		 * non + gestito
+		if(!empty($this->request->data['ProdGasPromotion']['img1']) && 
+		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1'])) {
+			
+			$file1 = new File(Configure::read('App.root').Configure::read('App.img.upload.prod_gas_promotions').DS.$this->request->data['ProdGasPromotion']['supplier_id'].DS.$this->request->data['ProdGasPromotion']['img1']);
+			$this->set('file1', $file1);
+		}	
+		*/
+		
+		/*
+		 * get elenco Organizations
+		*/
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;	
+		
+		$organizationResults = $ProdGasSupplier->getOrganizationsAssociate($this->user, $prod_gas_promotion_id, $debug);
+		$organizationNotResults = $ProdGasSupplier->getOrganizationsNotAssociate($this->user, $debug);
+	
+		$this->set('organizationResults',$organizationResults);		
+		$this->set('organizationNotResults',$organizationNotResults);
+		
+	}
+
+	public function admin_view_gas($prod_gas_promotion_id) {
 	
 		$debug=false;
 		
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
 		if (empty($prod_gas_promotion_id)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -1123,22 +1518,26 @@ class ProdGasPromotionsController extends AppController {
 		$this->set('organizationNotResults',$organizationNotResults);	
 	}
 
-	public function admin_delete($prod_gas_promotion_id) {
+	public function admin_delete($prod_gas_promotion_id, $type='') {
 
 		$debug = false;
 		self::d($this->request->data, $debug);
 		
 		if(isset($this->request->data['ProdGasPromotion']['prod_gas_promotion_id']))
 			$prod_gas_promotion_id = $this->request->data['ProdGasPromotion']['prod_gas_promotion_id'];
+
+		if(isset($this->request->data['ProdGasPromotion']['type']))
+			$type = $this->request->data['ProdGasPromotion']['type'];
 		
-		if (empty($prod_gas_promotion_id)) {
+		if (empty($prod_gas_promotion_id) || empty($type)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		 
 		$results = $this->ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id);
 		$this->set('results', $results);
-			
+		$this->set('type', $type);
+
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			$this->ProdGasPromotion->id = $prod_gas_promotion_id;
@@ -1147,7 +1546,11 @@ class ProdGasPromotionsController extends AppController {
 				$this->Session->setFlash($msg);				
 			}
 			
-			$this->myRedirect(['action' => 'index']);
+			if($type=='GAS')
+				$this->myRedirect(['action' => 'index_gas']);
+			else
+			if($type=='GAS-USERS')
+				$this->myRedirect(['action' => 'index_gas_users']);
 		}
 	}
 	
@@ -1155,6 +1558,11 @@ class ProdGasPromotionsController extends AppController {
 	 * stato da WORKING a TRASMISSION-TO-GAS
 	 */
 	public function admin_trasmission_to_gas($prod_gas_promotion_id) {
+
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
 
 		$debug = false;
 		$continua=true;
@@ -1227,14 +1635,19 @@ class ProdGasPromotionsController extends AppController {
 			
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'TRASMISSION-TO-GAS', $debug);
 			$this->Session->setFlash(__('ProdGasPromotion in TRASMISSION-TO-GAS'));
-			if(!$debug) $this->myRedirect(['action' => 'index']);
+			if(!$debug) $this->myRedirect(['action' => 'index_gas']);
 		} // end post
 	}
 
 	public function admin_change_state_code($prod_gas_promotion_id, $next_code='') {
 
 		$debug = false;
-		
+
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
 		if($debug) debug($this->request->data);
 		
 		if(isset($this->request->data['ProdGasPromotion']['prod_gas_promotion_id']))
@@ -1268,7 +1681,7 @@ class ProdGasPromotionsController extends AppController {
 			
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, $next_code, $debug);
 			$this->Session->setFlash($msg);
-			if(!$debug) $this->myRedirect(['action' => 'index']);
+			if(!$debug) $this->myRedirect(['action' => 'index_gas']);
 		}
 	}	
 }
