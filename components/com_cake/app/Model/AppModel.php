@@ -50,6 +50,14 @@ class AppModel extends Model {
 		die($var);
 	}
 		
+	public function getLastQuery()
+	{
+	    $dbo = $this->getDatasource();
+	    $logs = $dbo->getLog();
+	    $lastLog = end($logs['log']);
+	    return $lastLog['query'];
+	}
+
     public function _getOrderById($user, $order_id, $debug) {
 
 		/* 

@@ -62,7 +62,7 @@ if(!empty($results)) {
 		/*
 		 * action su ProdGasPromotion
 		 */
-		echo '<td class="actions-table-img-3">';
+		echo '<td class="actions-table-img-4">';
 		switch($result['ProdGasPromotion']['state_code']) {
 			case "WORKING":
 			case "OPEN":
@@ -74,7 +74,10 @@ if(!empty($results)) {
 			break;
 		}
 
-		echo $this->Html->link(null, ['controller' => 'Docs', 'action' => 'ProdGasPromotionGasUsersDocsExport', $result['ProdGasPromotion']['id']], ['class' => 'action actionPrinter','title' => __('Print Promotion')]);		
+		echo '<a class="prodGasPromotionGasUsersDocsExport" id="prodGasPromotionGasUsersDocsExport-PREVIEW" data-attr-id="'.$result['ProdGasPromotion']['id'].'" style="cursor:pointer;" rel="nofollow" title="anteprima della promozione"><img alt="PREVIEW" src="'.Configure::read('App.img.cake').'/minetypes/32x32/document.png"></a>';
+		echo '<a class="prodGasPromotionGasUsersDocsExport" id="prodGasPromotionGasUsersDocsExport-PDF" data-attr-id="'.$result['ProdGasPromotion']['id'].'" style="cursor:pointer;" rel="nofollow" title="stampa la promozione '.__('formatFilePdf').'"><img alt="PDF" src="'.Configure::read('App.img.cake').'/minetypes/32x32/pdf.png"></a>';
+
+//		echo $this->Html->link(null, ['controller' => 'Docs', 'action' => 'ProdGasPromotionGasUsersDocsExport', $result['ProdGasPromotion']['id']], ['class' => 'action actionPrinter','title' => __('Print Promotion')]);		
 		echo '</td>';		
 		
 		/*
@@ -108,7 +111,7 @@ if(!empty($results)) {
 
 		echo '</tr>';
 		echo '</table></div>';
-}
+} 
 
 echo '<p>';
 echo $this->Paginator->counter([
@@ -122,6 +125,8 @@ echo $this->Paginator->numbers(['separator' => '']);
 echo $this->Paginator->next(__('next') . ' >', [], null, ['class' => 'next disabled']);
 echo '</div>';
 	
+echo '<div class="clearfix" id="doc-preview" style="display:none;"></div>';
+	
 /*
  * legenda profilata
 */
@@ -133,33 +138,27 @@ else
 echo '</div>';
 ?>
 <script type="text/javascript">
+var idDivTarget = 'doc-preview';
+var url = "";
 $(document).ready(function() {
-	$(".actionMenu").each(function () {
-		$(this).click(function() {
 
-			$('.menuDetails').css('display','none');
-			
-			var idRow = $(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			$('#menuDetails-'+numRow).show();
+	$('.prodGasPromotionGasUsersDocsExport').click(function() {	
+		var id =  $(this).attr('id');
+		idArray = id.split('-');
+		var action      = idArray[0];
+		var doc_formato = idArray[1];
+		var prod_gas_promotion_id = $(this).attr('data-attr-id');
 
-			viewOrderSottoMenu(numRow,"bgLeft");
-
-			var offset = $(this).offset();
-			var newTop = (offset.top - 100);
-			var newLeft = (offset.left - 350);
-
-			$('#menuDetails-'+numRow).offset({ top: newTop, left: newLeft});			
-		});
+		if(doc_formato=='PREVIEW') {
+			$('#doc-preview').html("");
+			$('#doc-preview').show();
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&prod_gas_promotion_id='+prod_gas_promotion_id+'&doc_formato='+doc_formato+'&format=notmpl';
+			ajaxCallBox(url, idDivTarget);	
+		}
+		else {
+			url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&prod_gas_promotion_id='+prod_gas_promotion_id+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+			window.open(url);
+		}				
 	});	
-
-	$(".menuDetailsClose").each(function () {
-		$(this).click(function() {
-			var idRow = $(this).attr('id');
-			numRow = idRow.substring(idRow.indexOf('-')+1,idRow.lenght);
-			$('#menuDetails-'+numRow).hide('slow');
-		});
-	});	
-
 });
 </script>

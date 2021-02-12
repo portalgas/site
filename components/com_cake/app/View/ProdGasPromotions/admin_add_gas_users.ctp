@@ -159,6 +159,9 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 			
 			echo '<td>';
 			echo '<input type="checkbox" id="org-'.$result['Organization']['id'].'" name="organization_id_selected" value="'.$result['Organization']['id'].'" />';
+
+			echo '<input type="hidden" value="'.$result['Organization']['id'].'" name=data[ProdGasPromotion][Organization]['.$result['Organization']['id'].'][id]" />';
+
 			echo '</td>';
 			echo '</tr>';
 		endforeach;		
@@ -311,9 +314,9 @@ $(document).ready(function() {
 	$('#article_id_selected_all').click(function () {
 		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			$('input[name=article_id_selected]').prop('checked',true);
+			$('input[name=article_id_selected]:not(:disabled)').prop('checked',true);
 		else
-			$('input[name=article_id_selected]').prop('checked',false);
+			$('input[name=article_id_selected]:not(:disabled)').prop('checked',false);
 		
 		$("input[name='article_id_selected']").each(function( index ) {
 			var idRow = $(this).attr('id');
@@ -323,7 +326,7 @@ $(document).ready(function() {
 	});
 
 	/* seleziona uno */ 
-	$("input[name='article_id_selected']").click(function () {
+	$("input[name='article_id_selected']:not(:disabled)").click(function () {
 		var idRow = $(this).attr('id');
 		var checked = $(this).is(":checked");
 		

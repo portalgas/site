@@ -98,13 +98,13 @@ $(document).ready(function() {
 		<div id="deliveries">
 		<?php
 		if(!empty($deliveries)) {
-			$options = array('id'=>'delivery_id', 'class' => 'form-control', 'onChange' => 'javascript:choiceDelivery(this);');
-			$options += array('default' => $delivery_id);
+			$options = ['id'=>'delivery_id', 'class' => 'form-control', 'onChange' => 'javascript:choiceDelivery(this);'];
+			$options += ['default' => $delivery_id];
 		    
 		    echo $this->Form->input('delivery_id',$options);
 	    }
 	    else
-	    	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "Non ci sono consegne da elaborare"));		    
+	    	echo $this->element('boxMsg', ['class_msg' => 'notice', 'msg' => "Non ci sono consegne da elaborare"]);
 		?>
 		</div>
 		

@@ -3481,6 +3481,35 @@ class ExportDocsController extends AppController {
         }
     }
 
+    public function admin_prodGasPromotionGasUsersDocsExport($prod_gas_promotion_id, $doc_formato = null) {
+
+        App::import('Model', 'ProdGasPromotionsUserGasManager');
+        $ProdGasPromotionsUserGasManager = new ProdGasPromotionsUserGasManager;
+        
+        $debug=false;
+        $organization_id=0; // filtra per la promozione per il GAS passato
+
+        $results = $ProdGasPromotionsUserGasManager->getCartOrderUsers($this->user, $prod_gas_promotion_id, $organization_id, $debug);
+
+        debug($results);
+
+        $this->set(compact('results'));
+
+        $params = ['prod_gas_promotion_id' => $prod_gas_promotion_id];
+        $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'prod_gas_promotion_user_gas', $params, null));
+        $this->set('organization', $this->user->organization);
+
+        switch ($doc_formato) {
+            case 'PREVIEW':
+                $this->layout = 'ajax';  // mai utilizzato
+                $this->render('prod_gas_promotion_gas_users');
+                break;
+            case 'PDF':
+                $this->layout = 'pdf';
+                $this->render('prod_gas_promotion_gas_users');
+                break;
+        }        
+    }
 }
 
 class UserLocal {

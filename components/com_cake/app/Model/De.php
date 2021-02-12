@@ -10,10 +10,10 @@ class De extends AppModel {
 		
 		$belongsTo = ['className' => 'Organization',
 					'foreignKey' => '',
-					'conditions' => array('Organization.id = Cart.organization_id'),
+					'conditions' => ['Organization.id = Cart.organization_id'],
 					'fields' => '',
 					'order' => ''];
-		$Cart->bindModel(array('belongsTo' => array('Organization' => $belongsTo)));				
+		$Cart->bindModel(['belongsTo' => ['Organization' => $belongsTo]]);				
 		$Cart->unbindModel(['belongsTo' => ['Order']]);
 		
 		$options['conditions'] = ['ArticlesOrder.stato != ' => 'N',

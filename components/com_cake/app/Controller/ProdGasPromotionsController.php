@@ -357,7 +357,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WAITING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WORKING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -512,7 +512,7 @@ class ProdGasPromotionsController extends AppController {
 			$this->request->data['ProdGasPromotion']['type'] = $type;
 			$this->request->data['ProdGasPromotion']['state_code'] = 'WORKING';
 			$this->request->data['ProdGasPromotion']['stato'] = 'Y';
-   
+  
 			$this->ProdGasPromotion->set($this->request->data);
 			if(!$this->ProdGasPromotion->validates()) {
 				$errors = $this->ProdGasPromotion->validationErrors;
@@ -531,16 +531,23 @@ class ProdGasPromotionsController extends AppController {
 			}
 
 			/*
-			 * ProdGasArticlesPromotion
+			 * ProdGasArticlesPromotion 
+			 * ArticlesOrder del produttore
 			 */
 			if($continue) {
 				if(!empty($this->request->data['ProdGasPromotion']['article_ids_selected'])) {
 					
 					App::import('Model', 'ProdGasArticlesPromotion');
 					$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
+
+					App::import('Model', 'Article');
+					$Article = new Article;
+
+					App::import('Model', 'ArticlesOrder');
+					$ArticlesOrder = new ArticlesOrder;
 		
 					$article_ids_selected = explode(',', $this->request->data['ProdGasPromotion']['article_ids_selected']);
-					self::d("ProdGasArticles scelti ".$this->request->data['ProdGasPromotion']['article_ids_selected'], $debug);
+					if($debug) debug("ProdGasArticles scelti ".$this->request->data['ProdGasPromotion']['article_ids_selected']);
 					
 					foreach($article_ids_selected as $article_id) {
 						
@@ -561,7 +568,42 @@ class ProdGasPromotionsController extends AppController {
 							if($ProdGasArticlesPromotion->save($this->request->data)) {
 								
 							}
-						}	
+
+							/* 
+							 * ArticlesOrder del produttore
+							 */
+							$options = [];
+							$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 
+													  'Article.id' => $article_id];
+							$options['recursive'] = -1;							  
+							$articleResult = $Article->find('first', $options);
+
+							$data = [];
+							$data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
+							$data['ArticlesOrder']['order_id'] = $prod_gas_promotion_id;
+				            $data['ArticlesOrder']['article_organization_id'] = $articleResult['Article']['organization_id'];
+				            $data['ArticlesOrder']['article_id'] = $articleResult['Article']['id'];
+				            $data['ArticlesOrder']['name'] = $articleResult['Article']['name'];
+				            $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				            $data['ArticlesOrder']['qta_cart'] = 0;
+				            $data['ArticlesOrder']['pezzi_confezione'] = $articleResult['Article']['pezzi_confezione'];
+				            $data['ArticlesOrder']['qta_minima'] = $articleResult['Article']['qta_minima'];
+				            $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
+				            $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
+				            $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+				            $data['ArticlesOrder']['qta_multipli'] = $articleResult['Article']['qta_multipli'];
+				            $data['ArticlesOrder']['flag_bookmarks'] = 'N';
+				            if ($this->user->organization['Organization']['hasFieldArticleAlertToQta'] == 'N')
+				                $data['ArticlesOrder']['alert_to_qta'] = 0;
+				            else
+				                $data['ArticlesOrder']['alert_to_qta'] = $articleResult['Article']['alert_to_qta'];
+				            $data['ArticlesOrder']['stato'] = 'Y';
+
+							$ArticlesOrder->set($data);
+							if($ArticlesOrder->save($data)) {
+								
+							}				            
+						} // if(isset($this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id])) 
 					}	
 				}
 			} // end if($continue) 
@@ -587,7 +629,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['organization_id'] = $this->user->organization['Organization']['id'];	
 						$this->request->data['ProdGasPromotionsOrganization']['prod_gas_promotion_id'] = $prod_gas_promotion_id;	
 						$this->request->data['ProdGasPromotionsOrganization']['organization_id'] = $organization_id;	
-						$this->request->data['ProdGasPromotionsOrganization']['order_id'] = 0;	
+						$this->request->data['ProdGasPromotionsOrganization']['order_id'] = $prod_gas_promotion_id;	
 						$this->request->data['ProdGasPromotionsOrganization']['hasTrasport'] = 'N';
 						$this->request->data['ProdGasPromotionsOrganization']['trasport'] = '0.00';							
 						$this->request->data['ProdGasPromotionsOrganization']['hasCostMore'] = 'N';	
@@ -596,7 +638,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WAITING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-WORKING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -736,8 +778,6 @@ class ProdGasPromotionsController extends AppController {
 			$data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];	  			
 			// debug($data); 
 			$this->ProdGasPromotion->set($data);
-   
-			$this->ProdGasPromotion->set($this->request->data);
 			if(!$this->ProdGasPromotion->validates()) {
 				$errors = $this->ProdGasPromotion->validationErrors;
 				$continue = false;
@@ -1107,7 +1147,7 @@ class ProdGasPromotionsController extends AppController {
 
 	public function admin_edit_gas_users($prod_gas_promotion_id) {
 	
-		$debug=false;
+		$debug = false;
 		$type = 'GAS-USERS';
 
 		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
@@ -1212,6 +1252,7 @@ class ProdGasPromotionsController extends AppController {
 
 			/*
 			 * ProdGasArticlesPromotion
+			 * ArticlesOrder del produttore
 			 */
 			if($continue) {
 				if(!empty($this->request->data['ProdGasPromotion']['article_ids_selected'])) {
@@ -1219,6 +1260,12 @@ class ProdGasPromotionsController extends AppController {
 					App::import('Model', 'ProdGasArticlesPromotion');
 					$ProdGasArticlesPromotion = new ProdGasArticlesPromotion;
 		
+					App::import('Model', 'Article');
+					$Article = new Article;
+
+					App::import('Model', 'ArticlesOrder');
+					$ArticlesOrder = new ArticlesOrder;
+
 					$article_ids_selected = explode(',', $this->request->data['ProdGasPromotion']['article_ids_selected']);
 					self::d("ProdGasArticles scelti ".$this->request->data['ProdGasPromotion']['article_ids_selected'], $debug);
 					
@@ -1262,7 +1309,42 @@ class ProdGasPromotionsController extends AppController {
 								else
 									array_push($delete_not_ids, $order_id = $ProdGasArticlesPromotion->getLastInsertId());				
 							}
-						}	
+
+							/* 
+							 * ArticlesOrder del produttore
+							 */
+							$options = [];
+							$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 
+													  'Article.id' => $article_id];
+							$options['recursive'] = -1;							  
+							$articleResult = $Article->find('first', $options);
+
+							$data = [];
+							$data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
+							$data['ArticlesOrder']['order_id'] = $prod_gas_promotion_id;
+				            $data['ArticlesOrder']['article_organization_id'] = $articleResult['Article']['organization_id'];
+				            $data['ArticlesOrder']['article_id'] = $articleResult['Article']['id'];
+				            $data['ArticlesOrder']['name'] = $articleResult['Article']['name'];
+				            $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				            $data['ArticlesOrder']['qta_cart'] = 0;
+				            $data['ArticlesOrder']['pezzi_confezione'] = $articleResult['Article']['pezzi_confezione'];
+				            $data['ArticlesOrder']['qta_minima'] = $articleResult['Article']['qta_minima'];
+				            $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
+				            $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
+				            $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+				            $data['ArticlesOrder']['qta_multipli'] = $articleResult['Article']['qta_multipli'];
+				            $data['ArticlesOrder']['flag_bookmarks'] = 'N';
+				            if ($this->user->organization['Organization']['hasFieldArticleAlertToQta'] == 'N')
+				                $data['ArticlesOrder']['alert_to_qta'] = 0;
+				            else
+				                $data['ArticlesOrder']['alert_to_qta'] = $articleResult['Article']['alert_to_qta'];
+				            $data['ArticlesOrder']['stato'] = 'Y';
+
+							$ArticlesOrder->set($data);
+							if($ArticlesOrder->save($data)) {
+								
+							}					            
+						} // if(isset($this->request->data['ProdGasPromotion']['ProdGasArticlesPromotion'][$article_id])) 
 					}
 
 					/*
@@ -1288,21 +1370,21 @@ class ProdGasPromotionsController extends AppController {
 			 */
 			if(!empty($this->request->data['ProdGasPromotion']['organization_ids_selected'])) {
 				$organization_ids_selected = explode(',', $this->request->data['ProdGasPromotion']['organization_ids_selected']);
-				self::d("Organizations scelte ".$this->request->data['ProdGasPromotion']['organization_ids_selected'], $debug);
+				if($debug) debug("Organizations scelte ".$this->request->data['ProdGasPromotion']['organization_ids_selected']);
 					
 				App::import('Model', 'ProdGasPromotionsOrganization');
 				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
 					
 				$delete_not_ids = [];
 				foreach($organization_ids_selected as $organization_id) {
-					
+					if($debug) debug($this->request->data['ProdGasPromotion']);
 					if(isset($this->request->data['ProdGasPromotion']['Organization'][$organization_id])) {
 					
 						$data = [];
 						
 						$trasport = $this->request->data['ProdGasPromotion']['Organization'][$organization_id]['trasport'];
 						$cost_more = $this->request->data['ProdGasPromotion']['Organization'][$organization_id]['costMore'];
-						self::d("Organization $organization_id - trasport $trasport - cost_more $cost_more", $debug);
+						if($debug) debug("Organization $organization_id - trasport $trasport - cost_more $cost_more");
 						
 						/*
 						 * cerco se esiste gia' un occorrenza  
@@ -1313,7 +1395,7 @@ class ProdGasPromotionsController extends AppController {
 						$options['order'] = ['ProdGasPromotionsOrganization.id'];
 						$options['recursive'] = -1;
 						$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
-						self::d($prodGasPromotionsOrganizationResults, $debug);
+						if($debug) debug($prodGasPromotionsOrganizationResults);
 						if(!empty($prodGasPromotionsOrganizationResults)) {
 							$data['ProdGasPromotionsOrganization']['id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['id'];
 							$data['ProdGasPromotionsOrganization']['order_id'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization']['order_id'];
@@ -1335,7 +1417,7 @@ class ProdGasPromotionsController extends AppController {
 						$data['ProdGasPromotionsOrganization']['hasCostMore'] = 'N';	
 						$data['ProdGasPromotionsOrganization']['cost_more'] = '0.00';
 						
-						self::d($data, $debug);
+						if($debug) debug($data);
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($data)) {
 							if(!empty($prodGasPromotionsOrganizationResults)) 

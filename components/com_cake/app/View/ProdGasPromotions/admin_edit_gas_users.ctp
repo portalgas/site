@@ -4,7 +4,7 @@ $this->App->d($articleResults, $debug);
 $this->App->d($organizationResults, $debug);
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
+$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas_users'));
 $this->Html->addCrumb(__('Edit ProdGasPromotion'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
@@ -234,7 +234,10 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 			echo '<td>';
 			echo '<input type="checkbox" id="org-'.$result['Organization']['id'].'" name="organization_id_selected" value="'.$result['Organization']['id'].'" ';
 			if(isset($result['ProdGasPromotionsOrganization'])) echo ' checked';
-			echo '/>';			
+			echo '/>';	
+
+			echo '<input type="hidden" value="'.$result['Organization']['id'].'" name=data[ProdGasPromotion][Organization]['.$result['Organization']['id'].'][id]" />';	
+
 			echo '</td>';
 			echo '</tr>';
 		}		
@@ -298,7 +301,7 @@ echo '</div>';
 echo '<div class="actions">';
 echo '<h3>'.__('Actions').'</h3>';
 echo '<ul>';
-echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload')).'</li>';
+echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas_users'),array('class'=>'action actionReload')).'</li>';
 echo '</ul>';
 echo '</div>';
 ?>
@@ -390,9 +393,9 @@ $(document).ready(function() {
 	$('#article_id_selected_all').click(function () {
 		var checked = $("input[name='article_id_selected_all']:checked").val();
 		if(checked=='ALL')
-			$('input[name=article_id_selected]').prop('checked',true);
+			$('input[name=article_id_selected]:not(:disabled)').prop('checked',true);
 		else
-			$('input[name=article_id_selected]').prop('checked',false);
+			$('input[name=article_id_selected]:not(:disabled)').prop('checked',false);
 		
 		$("input[name='article_id_selected']").each(function( index ) {
 			var idRow = $(this).attr('id');
@@ -402,7 +405,7 @@ $(document).ready(function() {
 	});
 
 	/* seleziona uno */ 
-	$("input[name='article_id_selected']").click(function () {
+	$("input[name='article_id_selected']:not(:disabled)").click(function () {
 		var idRow = $(this).attr('id');
 		var checked = $(this).is(":checked");
 		
