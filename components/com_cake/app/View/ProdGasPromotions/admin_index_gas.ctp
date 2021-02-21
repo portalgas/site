@@ -64,19 +64,19 @@ if(!empty($results)) {
 		 */
 		echo '<td class="actions-table-img-3">';
 		switch($result['ProdGasPromotion']['state_code']) {
-			case "WORKING":
+			case "PRODGASPROMOTION-GAS-WORKING":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id'], null, 'type=GAS'], ['class' => 'action actionDelete','title' => __('Delete')]);
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'trasmission_to_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionMail','title' => __('ProdGasPromotionTrasmissionToGas')]);			
 			break;
-			case "TRASMISSION-TO-GAS":
+			case "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=PRODGASPROMOTION-GAS-WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);
 			break;
-			case "FINISH":
+			case "PRODGASPROMOTION-GAS-FINISH":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
-			case "PRODGASPROMOTION-CLOSE":
+			case "PRODGASPROMOTION-GAS-CLOSE":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 		}
@@ -179,11 +179,11 @@ if(!empty($results)) {
 				echo '<td class="actions-table-img">';
 				if(isset($prodGasPromotionsOrganization['Order']) && !empty($prodGasPromotionsOrganization['Order'])) {
 					switch($result['ProdGasPromotion']['state_code']) {
-						case "WORKING":
+						case "PRODGASPROMOTION-GAS-WORKING":
 						break;
-						case "TRASMISSION-TO-GAS":
-						case "FINISH":
-						case "PRODGASPROMOTION-CLOSE":
+						case "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS":
+						case "PRODGASPROMOTION-GAS-FINISH":
+						case "PRODGASPROMOTION-GAS-CLOSE":
 							echo $this->Html->link(null, ['controller' => 'Docs', 'action' => 'prodGasSupplierDocsExport', null, 'organization_id='.$prodGasPromotionsOrganization['Order']['organization_id'].'&delivery_id='.$prodGasPromotionsOrganization['Order']['delivery_id'].'&order_id='.$prodGasPromotionsOrganization['Order']['id']], ['class' => 'action actionPrinter','title' => __('Print Order')]);
 						break;
 					}

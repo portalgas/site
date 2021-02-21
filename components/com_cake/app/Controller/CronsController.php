@@ -239,7 +239,7 @@ class CronsController extends AppController {
 		$arr = ['category' => "Ordini",
 									'name' => "Promozioni: stato elaborazione",
 									'nota' => "Elabora tutti gli stati elaborazione delle promozioni'",
-									'execute' => "Dopo la mezzanotte<br />5 0 * * *",
+									'execute' => "Dopo la mezzanotte<br />25 0 * * *",
 									'method' => "prodGasPromotionsStatoElaborazione",
 									'stato' => 'Y'];
 		array_push($crons, $arr);

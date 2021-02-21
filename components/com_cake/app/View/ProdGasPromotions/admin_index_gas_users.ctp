@@ -64,12 +64,12 @@ if(!empty($results)) {
 		 */
 		echo '<td class="actions-table-img-4">';
 		switch($result['ProdGasPromotion']['state_code']) {
-			case "WORKING":
-			case "OPEN":
+			case "PRODGASPROMOTION-GAS-USER-WORKING":
+			case "PRODGASPROMOTION-GAS-USER-OPEN":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id'], null, 'type=GAS-USERS'], ['class' => 'action actionDelete','title' => __('Delete')]);				
 			break;
-			case "PRODGASPROMOTION-CLOSE":
+			case "PRODGASPROMOTION-GAS-USER-CLOSE":
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);			
 			break;
 		}

@@ -5,12 +5,13 @@ $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home'])
 $this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
 
 switch($results['ProdGasPromotion']['state_code']) {
-	case "WORKING":
+	case "PRODGASPROMOTION-GAS-WORKING":
+	case "PRODGASPROMOTION-GAS-USER-WORKING":
 		$this->Html->addCrumb(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $results['ProdGasPromotion']['id']));
 	break;
-	case "TRASMISSION-TO-GAS":
-	case "FINISH":
-	case "PRODGASPROMOTION-CLOSE":
+	case "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS":
+	case "PRODGASPROMOTION-GAS-FINISH":
+	case "PRODGASPROMOTION-GAS-CLOSE":
 	break;
 }
 $this->Html->addCrumb(__('Title ChangeStateCode ProdGasPromotion'));

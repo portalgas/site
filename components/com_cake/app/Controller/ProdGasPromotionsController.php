@@ -55,6 +55,14 @@ class ProdGasPromotionsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_stop'));		
 		}	
 
+	   	/*
+	   	 * aggiorno lo stato delle promozioni
+	   	 * */
+   		$utilsCrons = new UtilsCrons(new View(null));
+   		if(Configure::read('developer.mode')) echo "<pre>";
+   		$utilsCrons->prodGasPromotionsStatoElaborazione($this->user->organization['Organization']['id'], 0, (Configure::read('developer.mode')) ? true : false);
+   		if(Configure::read('developer.mode')) echo "</pre>";
+
 		$SqlLimit = 50;
 		$conditions[] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id'],
 						 'ProdGasPromotion.type' => $type];
@@ -112,6 +120,14 @@ class ProdGasPromotionsController extends AppController {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));		
 		}
+
+	   	/*
+	   	 * aggiorno lo stato delle promozioni
+	   	 * */
+   		$utilsCrons = new UtilsCrons(new View(null));
+   		if(Configure::read('developer.mode')) echo "<pre>";
+   		$utilsCrons->prodGasPromotionsStatoElaborazione($this->user->organization['Organization']['id'], 0, (Configure::read('developer.mode')) ? true : false);
+   		if(Configure::read('developer.mode')) echo "</pre>";
 
 		$SqlLimit = 50;
 		$conditions[] = ['ProdGasPromotion.organization_id' => $this->user->organization['Organization']['id'],
@@ -222,7 +238,7 @@ class ProdGasPromotionsController extends AppController {
 			$this->request->data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
 			$this->request->data['ProdGasPromotion']['contact_phone'] = $this->request->data['ProdGasPromotion']['contact_phone'];
 			$this->request->data['ProdGasPromotion']['type'] = $type;
-			$this->request->data['ProdGasPromotion']['state_code'] = 'WORKING';
+			$this->request->data['ProdGasPromotion']['state_code'] = 'PRODGASPROMOTION-GAS-WORKING';
 			$this->request->data['ProdGasPromotion']['stato'] = 'Y';
    
 			$this->ProdGasPromotion->set($this->request->data);
@@ -357,7 +373,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WORKING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-GAS-WORKING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -510,7 +526,7 @@ class ProdGasPromotionsController extends AppController {
 			$this->request->data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
 			
 			$this->request->data['ProdGasPromotion']['type'] = $type;
-			$this->request->data['ProdGasPromotion']['state_code'] = 'WORKING';
+			$this->request->data['ProdGasPromotion']['state_code'] = 'PRODGASPROMOTION-GAS-USERS-WORKING';
 			$this->request->data['ProdGasPromotion']['stato'] = 'Y';
   
 			$this->ProdGasPromotion->set($this->request->data);
@@ -638,7 +654,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-WORKING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-GAS-WORKING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -746,7 +762,7 @@ class ProdGasPromotionsController extends AppController {
 		self::d($options, $debug);
 		self::d($prodGasPromotionResults, $debug);
 		
-		if($prodGasPromotionResults['ProdGasPromotion']['state_code']=='TRASMISSION-TO-GAS') {
+		if($prodGasPromotionResults['ProdGasPromotion']['state_code']=='PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS') {
 			$this->Session->setFlash(__('msg_not_promotion_state'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));			
 		}
@@ -1752,7 +1768,8 @@ class ProdGasPromotionsController extends AppController {
 			
 			$msg = '';
 			switch($next_code) {
-				case "WORKING":
+				case "PRODGASPROMOTION-GAS-WORKING":
+				case "PRODGASPROMOTION-GAS-USERS-WORKING":
 					$msg = __('ProdGasPromotion in WORKING');
 				break;
 				default:

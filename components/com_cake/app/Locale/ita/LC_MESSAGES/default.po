@@ -3764,16 +3764,16 @@ msgstr "Possibilità di richiederne il pagamento"
 msgid "TO-PAYMENT-label"
 msgstr "Associato ad una richiesta di pagamento"
 
-msgid "WORKING-label"
+msgid "PRODGASPROMOTION-GAS-WORKING-label"
 msgstr "In lavorazione"
 
-msgid "PRODGASPROMOTION-WORKING-label"
+msgid "PRODGASPROMOTION-GAS-USER-WORKING-label"
 msgstr "In lavorazione"
 
-msgid "TRASMISSION-TO-GAS-label"
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-label"
 msgstr "Trasmesso ai G.A.S."
 
-msgid "FINISH-label"
+msgid "PRODGASPROMOTION-GAS-FINISH-label"
 msgstr "Terminata"
 
 msgid "USER-PAID-label"
@@ -3788,10 +3788,16 @@ msgstr "In attesa che la richiesta si chiuda"
 msgid "CLOSE-label"
 msgstr "Ordine chiuso"
 
-msgid "PRODGASPROMOTION-OPEN-label"
+msgid "PRODGASPROMOTION-GAS-OPEN-label"
 msgstr "Promozione aperta"
 
-msgid "PRODGASPROMOTION-CLOSE-label"
+msgid "PRODGASPROMOTION-GAS-USER-OPEN-label"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-label"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USER-CLOSE-label"
 msgstr "Promozione chiusa"
 
 #
@@ -3842,16 +3848,16 @@ msgstr "In carico al tesoriere per associarlo ad una richiesta il pagamento"
 msgid "TO-PAYMENT-intro"
 msgstr "Possibilità di richiederne il pagamento"
 
-msgid "WORKING-intro"
+msgid PRODGASPROMOTION-GAS-WORKING-intro"
 msgstr "In lavorazione, non visibile ai G.A.S."
 
-msgid "PRODGASPROMOTION-intro"
+msgid "PRODGASPROMOTION-GAS-USER-WORKING-intro"
 msgstr "In lavorazione, non visibile agli utenti"
 
-msgid "TRASMISSION-TO-GAS-intro"
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-intro"
 msgstr "Trasmesso ai gestori dei G.A.S. per valutarla"
 
-msgid "FINISH-intro"
+msgid "PRODGASPROMOTION-GAS-FINISH-intro"
 msgstr "Data di fine promozione terminata"
 
 msgid "USER-PAID-intro"
@@ -3866,10 +3872,16 @@ msgstr "In attesa che la richiesta di pagamento si chiuda"
 msgid "CLOSE-intro"
 msgstr "Ordine chiuso"
 
-msgid "PRODGASPROMOTION-OPEN-intro"
+msgid "PRODGASPROMOTION-GAS-OPEN-intro"
 msgstr "Promozione aperta"
 
-msgid "PRODGASPROMOTION-CLOSE-intro"
+msgid "PRODGASPROMOTION-GAS-USER-OPEN-intro"
+msgstr "Promozione aperta"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-intro"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USER-CLOSE-intro"
 msgstr "Promozione chiusa"
 
 #
@@ -3923,13 +3935,16 @@ msgstr "L'ordine può nuovamente essere modificato dai referenti dei singoli G.A
 msgid "WORKING-descri"
 msgstr "In questa fase si possono apportare le modifiche prima di trasmetterlo ai G.A.S."
 
-msgid "PRODGASPROMOTION-WORKING-descri"
+msgid "PRODGASPROMOTION-GAS-USER-WORKING-descri"
 msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
 
-msgid "TRASMISSION-TO-GAS-descri"
+msgid "PRODGASPROMOTION-GAS-WORKING-descri"
+msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
+
+msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-descri"
 msgstr "Se i gestori dei G.A.S. la riterranno interessante potranno creare un ordine per i loro gasisti"
 
-msgid "FINISH-descri"
+msgid "PRODGASPROMOTION-GAS-FINISH-descri"
 msgstr "La promozione è terminata e gli eventuali G.A.S. non possono più effettuare acquisti"
 
 msgid "USER-PAID-descri"
@@ -3944,10 +3959,16 @@ msgstr "L'ordine sarà chiuso quando tutti gli ordini associati alla richiesta d
 msgid "CLOSE-descri"
 msgstr "Ordine chiuso"
 
-msgid "PRODGASPROMOTION-OPEN-descri"
+msgid "PRODGASPROMOTION-GAS-OPEN-descri"
 msgstr "Gli utenti potranno effettuare gli acquisti"
 
-msgid "PRODGASPROMOTION-CLOSE-descri"
+msgid "PRODGASPROMOTION-GAS-USER-OPEN-descri"
+msgstr "Gli utenti potranno effettuare gli acquisti"
+
+msgid "PRODGASPROMOTION-GAS-CLOSE-descri"
+msgstr "Promozione chiusa"
+
+msgid "PRODGASPROMOTION-GAS-USER-CLOSE-descri"
 msgstr "Promozione chiusa"
 
 #
