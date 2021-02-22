@@ -991,7 +991,7 @@ body {
 .cakeContainer .desSupplierStatoOPEN,
 .cakeContainer .orderStatoOPEN,
 .cakeContainer .orderStatoPRODGASPROMOTION-GAS-OPEN,
-.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USER-OPEN {
+.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USERS-OPEN {
     background: url(/images/cake/cart/32x32/shopping_cart_basket.png) no-repeat!important
 }
 .cakeContainer .orderStatoRI-OPEN-VALIDATE {
@@ -1029,7 +1029,7 @@ body {
 .cakeContainer .orderStatoPROCESSED-TESORIERE-POST-DELIVERY,
 .cakeContainer .orderStatoWORKING,
 .cakeContainer .orderStatoPRODGASPROMOTION-GAS-WORKING,
-.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USER-WORKING {
+.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USERS-WORKING {
     background: url(/images/cake/cart/32x32/shopping_cart_basket_run.png) no-repeat!important
 }
 .cakeContainer .orderStatoTO-REQUEST-PAYMENT, 
@@ -1039,7 +1039,7 @@ body {
 .cakeContainer .desSupplierStatoCLOSE,
 .cakeContainer .orderStatoCLOSE,
 .cakeContainer .orderStatoPRODGASPROMOTION-GAS-CLOSE,
-.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USER-CLOSE {
+.cakeContainer .orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE {
     background: url(/images/cake/cart/32x32/shopping_cart_delete_basket.png) no-repeat!important
 }
 .cakeContainer .orderStatoUSER-PAID {
@@ -1372,10 +1372,10 @@ body {
 }
 .cakeContainer ul.menuLateraleItems .orderStatoCLOSE,
 .cakeContainer ul.menuLateraleItems .orderStatoPRODGASPROMOTION-GAS-CLOSE,
-.cakeContainer ul.menuLateraleItems .orderStatoPRODGASPROMOTION-GAS-USER-CLOSE,
+.cakeContainer ul.menuLateraleItems .orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE,
 .cakeContainer ul.menuLateraleItems a.orderStatoCLOSE,
 .cakeContainer ul.menuLateraleItems a.orderStatoPRODGASPROMOTION-GAS-CLOSE,
-.cakeContainer ul.menuLateraleItems a.orderStatoPRODGASPROMOTION-GAS-USER-CLOSE {
+.cakeContainer ul.menuLateraleItems a.orderStatoPRODGASPROMOTION-GAS-USERS-CLOSE {
     background: url(/images/cake/cart/32x32/shopping_cart_delete_basket.png) no-repeat
 }
 .cakeContainer ul.menuLateraleItems .bgLeft {

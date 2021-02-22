@@ -3767,7 +3767,7 @@ msgstr "Associato ad una richiesta di pagamento"
 msgid "PRODGASPROMOTION-GAS-WORKING-label"
 msgstr "In lavorazione"
 
-msgid "PRODGASPROMOTION-GAS-USER-WORKING-label"
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-label"
 msgstr "In lavorazione"
 
 msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-label"
@@ -3791,13 +3791,13 @@ msgstr "Ordine chiuso"
 msgid "PRODGASPROMOTION-GAS-OPEN-label"
 msgstr "Promozione aperta"
 
-msgid "PRODGASPROMOTION-GAS-USER-OPEN-label"
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-label"
 msgstr "Promozione aperta"
 
 msgid "PRODGASPROMOTION-GAS-CLOSE-label"
 msgstr "Promozione chiusa"
 
-msgid "PRODGASPROMOTION-GAS-USER-CLOSE-label"
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-label"
 msgstr "Promozione chiusa"
 
 #
@@ -3851,7 +3851,7 @@ msgstr "Possibilità di richiederne il pagamento"
 msgid PRODGASPROMOTION-GAS-WORKING-intro"
 msgstr "In lavorazione, non visibile ai G.A.S."
 
-msgid "PRODGASPROMOTION-GAS-USER-WORKING-intro"
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-intro"
 msgstr "In lavorazione, non visibile agli utenti"
 
 msgid "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS-intro"
@@ -3875,13 +3875,13 @@ msgstr "Ordine chiuso"
 msgid "PRODGASPROMOTION-GAS-OPEN-intro"
 msgstr "Promozione aperta"
 
-msgid "PRODGASPROMOTION-GAS-USER-OPEN-intro"
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-intro"
 msgstr "Promozione aperta"
 
 msgid "PRODGASPROMOTION-GAS-CLOSE-intro"
 msgstr "Promozione chiusa"
 
-msgid "PRODGASPROMOTION-GAS-USER-CLOSE-intro"
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-intro"
 msgstr "Promozione chiusa"
 
 #
@@ -3935,7 +3935,7 @@ msgstr "L'ordine può nuovamente essere modificato dai referenti dei singoli G.A
 msgid "WORKING-descri"
 msgstr "In questa fase si possono apportare le modifiche prima di trasmetterlo ai G.A.S."
 
-msgid "PRODGASPROMOTION-GAS-USER-WORKING-descri"
+msgid "PRODGASPROMOTION-GAS-USERS-WORKING-descri"
 msgstr "In questa fase si possono apportare le modifiche prima di aprirlo"
 
 msgid "PRODGASPROMOTION-GAS-WORKING-descri"
@@ -3962,13 +3962,13 @@ msgstr "Ordine chiuso"
 msgid "PRODGASPROMOTION-GAS-OPEN-descri"
 msgstr "Gli utenti potranno effettuare gli acquisti"
 
-msgid "PRODGASPROMOTION-GAS-USER-OPEN-descri"
+msgid "PRODGASPROMOTION-GAS-USERS-OPEN-descri"
 msgstr "Gli utenti potranno effettuare gli acquisti"
 
 msgid "PRODGASPROMOTION-GAS-CLOSE-descri"
 msgstr "Promozione chiusa"
 
-msgid "PRODGASPROMOTION-GAS-USER-CLOSE-descri"
+msgid "PRODGASPROMOTION-GAS-USERS-CLOSE-descri"
 msgstr "Promozione chiusa"
 
 #
@@ -4238,6 +4238,9 @@ msgstr "Lo stato dell'ordine condiviso è stato aggiornato: i referenti potranno
 
 msgid "ProdGasPromotion in WORKING"
 msgstr "Promozione in stato di lavorazione per essere modificata: i G.A.S. scelti non potranno effettuare acquisti"
+
+msgid "ProdGasPromotion in OPEN"
+msgstr "Promozione aperta, i gasisti dei G.A.S. che potranno effettuare gli ordini"
 
 msgid "ProdGasPromotion in TRASMISSION-TO-GAS"
 msgstr "Promozione trasmessa ai referenti dei G.A.S. che potranno valutare se creare un ordine per i loro gasisti"

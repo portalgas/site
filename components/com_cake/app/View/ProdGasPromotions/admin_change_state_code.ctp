@@ -1,13 +1,22 @@
 <?php
 $this->App->d($results);
 
+$type = $results['ProdGasPromotion']['type'];
+$nextResults['ProdGasPromotion']['state_code'] = $next_code;
+
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
+if($type=='GAS')
+	$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'));
+else
+if($type=='GAS-USERS')
+	$this->Html->addCrumb(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas_users'));
 
 switch($results['ProdGasPromotion']['state_code']) {
 	case "PRODGASPROMOTION-GAS-WORKING":
-	case "PRODGASPROMOTION-GAS-USER-WORKING":
-		$this->Html->addCrumb(__('Edit ProdGasPromotion'), array('controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $results['ProdGasPromotion']['id']));
+		$this->Html->addCrumb(__('Edit ProdGasPromotion'), ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas', $results['ProdGasPromotion']['id']]);
+	case "PRODGASPROMOTION-GAS-USERS-WORKING":
+		$this->Html->addCrumb(__('Edit ProdGasPromotion'), ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas_users', $results['ProdGasPromotion']['id']]);
+		
 	break;
 	case "PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS":
 	case "PRODGASPROMOTION-GAS-FINISH":
@@ -15,7 +24,7 @@ switch($results['ProdGasPromotion']['state_code']) {
 	break;
 }
 $this->Html->addCrumb(__('Title ChangeStateCode ProdGasPromotion'));
-echo $this->Html->getCrumbList(array('class'=>'crumbs'));
+echo $this->Html->getCrumbList(['class'=>'crumbs']);
 
 echo '<div class="orders form">';
 
@@ -23,9 +32,7 @@ echo $this->Form->create('ProdGasPromotion', ['type' => 'post']);
 echo '<fieldset>';
 echo '<legend>'.__('Title ChangeStateCode ProdGasPromotion').'</legend>';
 
-echo $this->Element('boxProdGasPromotionOrganizations', array('results' => $results));
-
-$nextResults['ProdGasPromotion']['state_code'] = 'WORKING';
+echo $this->Element('boxProdGasPromotionOrganizations', ['results' => $results]);
 
 echo '<div class="table-responsive"><table class="table table-hover">';
 echo '<tr>';
@@ -47,6 +54,12 @@ echo '</div>';
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload'));?></li>
+		<?php 
+		if($type=='GAS')
+			echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas'),array('class'=>'action actionReload')).'</li>';
+		else
+		if($type=='GAS-USERS')
+			echo '<li>'.$this->Html->link(__('List ProdGasPromotions'), array('controller' => 'ProdGasPromotions', 'action' => 'index_gas_users'),array('class'=>'action actionReload')).'</li>';
+		?>
 	</ul>	
 </div>

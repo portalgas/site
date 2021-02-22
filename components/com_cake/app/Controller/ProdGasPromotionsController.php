@@ -783,11 +783,12 @@ class ProdGasPromotionsController extends AppController {
 			$data['ProdGasPromotion'] = $prodGasPromotionResults['ProdGasPromotion'];
 			$data['ProdGasPromotion']['id'] = $prod_gas_promotion_id;
 			$data['ProdGasPromotion']['organization_id'] = $this->user->organization['Organization']['id'];
-			$data['ProdGasPromotion']['name'] = $data['ProdGasPromotion']['name'];
-			$data['ProdGasPromotion']['data_inizio_db'] = $data['ProdGasPromotion']['data_inizio_db'];
-			$data['ProdGasPromotion']['data_fine_db'] = $data['ProdGasPromotion']['data_fine_db'];
-			$data['ProdGasPromotion']['importo_originale'] = $data['ProdGasPromotion']['importo_originale_totale'];
-			$data['ProdGasPromotion']['importo_scontato'] = $data['ProdGasPromotion']['importo_scontato_totale'];
+			$data['ProdGasPromotion']['name'] = $this->request->data['ProdGasPromotion']['name'];
+			$data['ProdGasPromotion']['data_inizio_db'] = $this->request->data['ProdGasPromotion']['data_inizio_db'];
+			$data['ProdGasPromotion']['data_fine_db'] = $this->request->data['ProdGasPromotion']['data_fine_db'];
+			$data['ProdGasPromotion']['importo_originale'] = $this->request->data['ProdGasPromotion']['importo_originale_totale'];
+			$data['ProdGasPromotion']['importo_scontato'] = $this->request->data['ProdGasPromotion']['importo_scontato_totale'];
+			$data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
 			$data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
 			$data['ProdGasPromotion']['contact_name'] = $this->request->data['ProdGasPromotion']['contact_name'];
 			$data['ProdGasPromotion']['contact_mail'] = $this->request->data['ProdGasPromotion']['contact_mail'];
@@ -801,7 +802,7 @@ class ProdGasPromotionsController extends AppController {
 			}
 			else {
 				$this->ProdGasPromotion->create();
-				if($this->ProdGasPromotion->save($this->request->data)) {
+				if($this->ProdGasPromotion->save($data)) {
 					$continue = true;
 				}
 				else 
@@ -1206,11 +1207,11 @@ class ProdGasPromotionsController extends AppController {
 			$data['ProdGasPromotion'] = $prodGasPromotionResults['ProdGasPromotion'];
 			$data['ProdGasPromotion']['id'] = $prod_gas_promotion_id;
 			$data['ProdGasPromotion']['organization_id'] = $this->user->organization['Organization']['id'];
-			$data['ProdGasPromotion']['name'] = $data['ProdGasPromotion']['name'];
-			$data['ProdGasPromotion']['data_inizio_db'] = $data['ProdGasPromotion']['data_inizio_db'];
-			$data['ProdGasPromotion']['data_fine_db'] = $data['ProdGasPromotion']['data_fine_db'];
-			$data['ProdGasPromotion']['importo_originale'] = $data['ProdGasPromotion']['importo_originale_totale'];
-			$data['ProdGasPromotion']['importo_scontato'] = $data['ProdGasPromotion']['importo_scontato_totale'];
+			$data['ProdGasPromotion']['name'] = $this->request->data['ProdGasPromotion']['name'];
+			$data['ProdGasPromotion']['data_inizio_db'] = $this->request->data['ProdGasPromotion']['data_inizio_db'];
+			$data['ProdGasPromotion']['data_fine_db'] = $this->request->data['ProdGasPromotion']['data_fine_db'];
+			$data['ProdGasPromotion']['importo_originale'] = $this->request->data['ProdGasPromotion']['importo_originale_totale'];
+			$data['ProdGasPromotion']['importo_scontato'] = $this->request->data['ProdGasPromotion']['importo_scontato_totale'];
 			$data['ProdGasPromotion']['nota'] = $this->request->data['ProdGasPromotion']['nota'];
    			// debug($data); 
 			$this->ProdGasPromotion->set($data);
@@ -1221,7 +1222,7 @@ class ProdGasPromotionsController extends AppController {
 			}
 			else {
 				$this->ProdGasPromotion->create();
-				if($this->ProdGasPromotion->save($this->request->data)) {
+				if($this->ProdGasPromotion->save($data)) {
 					$continue = true;
 				}
 				else 
@@ -1731,7 +1732,7 @@ class ProdGasPromotionsController extends AppController {
 
 			} // loops nota_supplier
 			
-			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'TRASMISSION-TO-GAS', $debug);
+			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS', $debug);
 			$this->Session->setFlash(__('ProdGasPromotion in TRASMISSION-TO-GAS'));
 			if(!$debug) $this->myRedirect(['action' => 'index_gas']);
 		} // end post
@@ -1772,15 +1773,25 @@ class ProdGasPromotionsController extends AppController {
 				case "PRODGASPROMOTION-GAS-USERS-WORKING":
 					$msg = __('ProdGasPromotion in WORKING');
 				break;
+				case "PRODGASPROMOTION-GAS-USERS-OPEN":
+					$msg = __('ProdGasPromotion in OPEN');
+				break;
 				default:
 					$this->Session->setFlash(__('msg_error_params'));
 					$this->myRedirect(Configure::read('routes_msg_exclamation'));			
 				break;
 			}
-			
+		
 			$this->ProdGasPromotion->settingStateCode($this->user, $prod_gas_promotion_id, $next_code, $debug);
 			$this->Session->setFlash($msg);
-			if(!$debug) $this->myRedirect(['action' => 'index_gas']);
+
+
+			$type = $results['ProdGasPromotion']['type'];
+
+			if($type=='GAS')
+				if(!$debug) $this->myRedirect(['action' => 'index_gas']);
+			if($type=='GAS-USERS')
+				if(!$debug) $this->myRedirect(['action' => 'index_gas_users']);
 		}
 	}	
 }
