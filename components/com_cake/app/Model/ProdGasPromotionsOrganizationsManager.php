@@ -13,7 +13,8 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		$options = [];
 		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
 								   'ProdGasPromotionsOrganizationsManager.state_code' => 'WAITING',
-								   'ProdGasPromotion.state_code' => 'TRASMISSION-TO-GAS',
+								   'ProdGasPromotion.state_code' => 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS',
+								   'ProdGasPromotion.type' =>  'GAS-USERS',
 								   'DATE(ProdGasPromotion.data_inizio) <= CURDATE() AND DATE(ProdGasPromotion.data_fine) >= CURDATE()'];
 
 		$this->unbindModel(['belongsTo' => ['Organization']]);
@@ -79,7 +80,8 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		$options = [];
 		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
 								   'ProdGasPromotionsOrganizationsManager.state_code' => 'OPEN',
-								   'ProdGasPromotion.state_code != ' => 'WORKING'];
+								   'ProdGasPromotion.state_code != ' => 'PRODGASPROMOTION-GAS-WORKING',
+								   'ProdGasPromotion.type' =>  'GAS-USERS'];
 
 		$this->unbindModel(['belongsTo' => ['Organization']]);
 		$options['recursive'] = 1;

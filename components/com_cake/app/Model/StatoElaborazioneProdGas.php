@@ -24,11 +24,11 @@ class StatoElaborazioneProdGas extends AppModel {
         App::import('Model', 'ProdGasPromotion');
 		$ProdGasPromotion = new ProdGasPromotion;
 		
-		self::d(date("d/m/Y")." - ".date("H:i:s")." StatoElaborazioneProdGas::promotions - estraggo le promoziponi type='GAS' scadute con state_code = TRASMISSION-TO-GAS", $debug);
+		self::d(date("d/m/Y")." - ".date("H:i:s")." StatoElaborazioneProdGas::promotions - estraggo le promoziponi type='GAS' scadute con state_code = PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS", $debug);
 
 		$options = [];
 		$options['conditions'] = ['ProdGasPromotion.organization_id' => $user->organization['Organization']['id'],
-									'ProdGasPromotion.state_code' => 'TRASMISSION-TO-GAS',
+									'ProdGasPromotion.state_code' => 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS',
 									'ProdGasPromotion.type' =>  'GAS',
 									'DATE(ProdGasPromotion.data_fine) < CURDATE()'];
 		if(!empty($prod_gas_promotion_id))
@@ -39,7 +39,7 @@ class StatoElaborazioneProdGas extends AppModel {
 
 		if(!empty($results)) 	
 		foreach ($results as $result) {
-			$result['ProdGasPromotion']['state_code'] = 'FINISH';
+			$result['ProdGasPromotion']['state_code'] = 'PRODGASPROMOTION-GAS-FINISH';
 
 		    // self::d($result, $debug);
   			$ProdGasPromotion->set($result);
@@ -69,15 +69,15 @@ class StatoElaborazioneProdGas extends AppModel {
      * $type='GAS-USERS'  promozioni ai singoli utenti
 	 */
 	public function promotionsGasUsers($user, $prod_gas_promotion_id=0, $debug=false) {
-        
+      
         App::import('Model', 'ProdGasPromotion');
 		$ProdGasPromotion = new ProdGasPromotion;
 		
-		self::d(date("d/m/Y")." - ".date("H:i:s")." StatoElaborazioneProdGas::promotions - estraggo le promoziponi type='GAS-USERS' scadute con state_code = PRODGASPROMOTION-OPEN", $debug);
+		self::d(date("d/m/Y")." - ".date("H:i:s")." StatoElaborazioneProdGas::promotions - estraggo le promoziponi type='GAS-USERS' scadute con state_code = PRODGASPROMOTION-GAS-USERS-OPEN", $debug);
 
 		$options = [];
 		$options['conditions'] = ['ProdGasPromotion.organization_id' => $user->organization['Organization']['id'],
-									'ProdGasPromotion.state_code' => 'PRODGASPROMOTION-OPEN',
+									'ProdGasPromotion.state_code' => 'PRODGASPROMOTION-GAS-USERS-OPEN',
 									'ProdGasPromotion.type' =>  'GAS-USERS',
 									'DATE(ProdGasPromotion.data_fine) < CURDATE()'];
 		if(!empty($prod_gas_promotion_id))
@@ -89,7 +89,7 @@ class StatoElaborazioneProdGas extends AppModel {
 
 		if(!empty($results)) 	
 		foreach ($results as $result) {
-			$result['ProdGasPromotion']['state_code'] = 'PRODGASPROMOTION-CLOSE';
+			$result['ProdGasPromotion']['state_code'] = 'PRODGASPROMOTION-GAS-USERS-CLOSE';
 
 		    // self::d($result, $debug);
   			$ProdGasPromotion->set($result);

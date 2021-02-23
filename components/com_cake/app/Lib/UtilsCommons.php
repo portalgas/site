@@ -170,45 +170,48 @@ class UtilsCommons {
         return $htmlLegenda;
     }
 
-    public function getOrderTime($order) {
-		/*
-         echo "<pre>";
-         print_r($order);
-         echo "</pre>";
-        */
-
+    /*
+     * $results order / promotion  
+     */
+    public function getOrderTime($results) {
+		
+        // debug($results);
+        
         $str = '';
+        
+        if ($results['state_code'] != 'CREATE-INCOMPLETE') {
 
-        if ($order['state_code'] != 'CREATE-INCOMPLETE') {
-
-			switch($order['state_code']) {
+			switch($results['state_code']) {
 				case 'OPEN-NEXT':
-					$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($order['data_inizio'], "%A %e %B") . '</span>';
+					$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($results['data_inizio'], "%A %e %B") . '</span>';
 				break;
+                case 'PRODGASPROMOTION-GAS-OPEN':
+                case 'PRODGASPROMOTION-GAS-USERS-OPEN':
 				case 'OPEN':
 				case 'RI-OPEN-VALIDATE':
-					if ($order['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
+					if ($results['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
 						$str .= '<span style="background-color:#999999;color:yellow;">Si sta chiudendo! ';
-						if ($order['dayDiffToDateFine'] == 0)
+						if ($results['dayDiffToDateFine'] == 0)
 							$str .= 'oggi';
 						else
-							$str .= 'Tra&nbsp;' . (-1 * $order['dayDiffToDateFine']) . '&nbsp;gg';
+							$str .= 'Tra&nbsp;' . (-1 * $results['dayDiffToDateFine']) . '&nbsp;gg';
 						$str .= '</span>';
 					} else
 						$str .= '<span style="color:green;font-weight:bold;">Aperto</span>';
 				break;
 				// case ProdGasPromotion
-				case 'TRASMISSION-TO-GAS': 
-				case 'WORKING':          
-					if ($order['dayDiffToDateInizio'] < 0) 
-						$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($order['data_inizio'], "%A %e %B") . '</span>';
+				case 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS': 
+                case 'PRODGASPROMOTION-GAS-WORKING': 
+                case 'PRODGASPROMOTION-GAS-USERS-WORKING':
+					if ($results['dayDiffToDateInizio'] < 0) 
+						$str .= '<span style="color:#000000;">Aprira&grave; ' . $this->time->i18nFormat($results['data_inizio'], "%A %e %B") . '</span>';
 					else
-					if ($order['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
+					if ($results['dayDiffToDateFine'] >= Configure::read('GGOrderCloseNext')) {
 						$str .= '<span style="background-color:#999999;color:yellow;">Si sta chiudendo! ';
-						if ($order['dayDiffToDateFine'] == 0)
+						if ($results['dayDiffToDateFine'] == 0)
 							$str .= 'oggi';
 						else
-							$str .= 'Tra&nbsp;' . (-1 * $order['dayDiffToDateFine']) . '&nbsp;gg';
+							$str .= 'Tra&nbsp;' . (-1 * $results['dayDiffToDateFine']) . '&nbsp;gg';
 						$str .= '</span>';
 					} else
 						$str .= '<span style="color:green;font-weight:bold;">Aperto</span>';				
