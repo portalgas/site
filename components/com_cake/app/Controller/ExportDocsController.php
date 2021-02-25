@@ -2927,8 +2927,7 @@ class ExportDocsController extends AppController {
                         and Cart.deleteToReferent = 'N'
                         and ArticlesOrder.stato != 'N' 
                         AND Cart.user_id = $user_id 
-                        AND Delivery.id = $delivery_id      
-and `Order`.id = 22742                      
+                        AND Delivery.id = $delivery_id                          
                      ORDER BY SuppliersOrganization.name, `Order`.id ";
             /*
              * fratis
