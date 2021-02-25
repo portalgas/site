@@ -5,12 +5,12 @@ class ExportDocsController extends AppController {
 
     public $components = ['RequestHandler', 'ActionsDesOrder']; // Include the RequestHandler, it makes sure the proper layout and views files are used
     public $helpers = ['App',
-						'Html',
-						'Form',
-						'Time',
-						'Ajax',
-						'ExportDocs',
-						'PhpExcel'];
+                        'Html',
+                        'Form',
+                        'Time',
+                        'Ajax',
+                        'ExportDocs',
+                        'PhpExcel'];
     private $tmp_user;
 
     public function beforeFilter() {
@@ -30,28 +30,28 @@ class ExportDocsController extends AppController {
             }
 
 
-			/*
-			 * trovo Order.organization_id del GAS
-			 */
-			App::import('Model', 'Order');
-			$Order = new Order();
+            /*
+             * trovo Order.organization_id del GAS
+             */
+            App::import('Model', 'Order');
+            $Order = new Order();
 
-			$options = [];
-			$options['conditions'] = ['Order.id' => $order_id,
-									  'Order.delivery_id' => $delivery_id];
-			$options['fields'] = ['Order.organization_id'];
-			$options['recursive'] = -1;
-			$orderResults = $Order->find('first', $options);
+            $options = [];
+            $options['conditions'] = ['Order.id' => $order_id,
+                                      'Order.delivery_id' => $delivery_id];
+            $options['fields'] = ['Order.organization_id'];
+            $options['recursive'] = -1;
+            $orderResults = $Order->find('first', $options);
 
-			$organization_id = $orderResults['Order']['organization_id'];
-			
+            $organization_id = $orderResults['Order']['organization_id'];
+            
             /* ctrl ACL 
              * i tesoriere e cassiere sono abilitati 
              * ctrl ACL */
             $is_order_des = false;
             if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
-				$this->isReferentDesAllGas() && $this->user->get('des_id') != 0 && 
-				$organization_id!=$this->user->organization['Organization']['id']) {
+                $this->isReferentDesAllGas() && $this->user->get('des_id') != 0 && 
+                $organization_id!=$this->user->organization['Organization']['id']) {
 
                 /*
                  * ctr se l'ordine è DES
@@ -61,13 +61,13 @@ class ExportDocsController extends AppController {
 
                 $options = [];
                 $options['conditions'] = ['DesOrdersOrganization.des_id' => $this->user->get('des_id'),
-										'DesOrdersOrganization.order_id' => $order_id,
-										'DesOrdersOrganization.organization_id' => $organization_id];
+                                        'DesOrdersOrganization.order_id' => $order_id,
+                                        'DesOrdersOrganization.organization_id' => $organization_id];
                 $options['recursive'] = -1;
                 $desOrdersOrganizationResults = $DesOrdersOrganization->find('first', $options);
-				
-				self::d([$options,$desOrdersOrganizationResults],$debug);
-				
+                
+                self::d([$options,$desOrdersOrganizationResults],$debug);
+                
                 if (!empty($desOrdersOrganizationResults)) {
                     $organization_id = $desOrdersOrganizationResults['DesOrdersOrganization']['organization_id'];
 
@@ -103,25 +103,25 @@ class ExportDocsController extends AppController {
         }
     }
 
-	/*
-	 * stampe gli ordini del Produttore abilitato
-	 */
-	public function admin_exportProdGasSupplierToReferent($organization_id=0, $delivery_id = 0, $order_id = 0, $doc_options = null, $doc_formato = null, $a = null, $b = null, $c = null, $d = null, $e = null, $f = null, $g = null, $h = null, $i = null) {
+    /*
+     * stampe gli ordini del Produttore abilitato
+     */
+    public function admin_exportProdGasSupplierToReferent($organization_id=0, $delivery_id = 0, $order_id = 0, $doc_options = null, $doc_formato = null, $a = null, $b = null, $c = null, $d = null, $e = null, $f = null, $g = null, $h = null, $i = null) {
 
         $this->tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
-		$this->admin_exportToReferent($delivery_id, $order_id, $doc_options, $doc_formato, $a, $b, $c, $d, $e, $f, $g, $h, $i);
-	}
-		
+        $this->admin_exportToReferent($delivery_id, $order_id, $doc_options, $doc_formato, $a, $b, $c, $d, $e, $f, $g, $h, $i);
+    }
+        
     /*
      * $doc_options = to-users, to-users-label, to-users-articles-label, to-users-all-modify, to-articles, to-articles-monitoring, to-articles-details
      * parametri di Setting
-     * 		se  $doc_options=to-users-all-modify    $a = trasport
-     * 		se  $doc_options=to-users            $a = user_phone, $b = user_email, $c = user_address, $d = totale_per_utente, $e = trasportAndCost, $f = user_avatar, $g = dettaglio_per_utente, $h = note, $i = delete_to_referent
-     * 		se  $doc_options=to-users-label      $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
-	 *      se  $doc_options=to-users-articles-label   $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
+     *      se  $doc_options=to-users-all-modify    $a = trasport
+     *      se  $doc_options=to-users            $a = user_phone, $b = user_email, $c = user_address, $d = totale_per_utente, $e = trasportAndCost, $f = user_avatar, $g = dettaglio_per_utente, $h = note, $i = delete_to_referent
+     *      se  $doc_options=to-users-label      $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
+     *      se  $doc_options=to-users-articles-label   $a = user_phone, $b = user_email, $c = user_address, $d = trasportAndCost, $e = user_avatar, $f = delete_to_referent, $g = codice
      *      se  $doc_options=to-articles-monitoring    $a = colli1
      *      se  $doc_options=to-articles         $a = trasportAndCost, $b = codice, $c = pezzi_confezione
-     * 		se  $doc_options=to-articles-details $a = acquistato_il, $b = article_img, $c = trasportAndCost, $d = totale_per_articolo, $e = codice
+     *      se  $doc_options=to-articles-details $a = acquistato_il, $b = article_img, $c = trasportAndCost, $d = totale_per_articolo, $e = codice
      *      se  $doc_options=to-articles-monitoring
      *
      * $doc_formato = PREVIEW, PDF, CSV, EXCEL
@@ -142,7 +142,7 @@ class ExportDocsController extends AppController {
             CakeLog::write('info', $str_log);
         }
          */
-		 
+         
         $debug = false;
 
         self::d("ExportDocs::admin_exportToReferent ", $debug);
@@ -164,62 +164,62 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-		/* 
-		 * ctrl se l'ordine e' DES
-		 */
-		 $des_order_id = 0;
-		 if($this->user->organization['Organization']['hasDes']=='Y') {
-	        App::import('Model', 'DesOrdersOrganization');
-	        $DesOrdersOrganization = new DesOrdersOrganization();
-	
-	        $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $order_id, $debug);
-	        if (!empty($desOrdersOrganizationResults)) {
-	        	$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
-	        }
-		} // end if($user->organization['Organization']['hasDes']=='Y') 
-		
-		App::import('Model', 'Cart');
-		$Cart = new Cart;
-				
+        /* 
+         * ctrl se l'ordine e' DES
+         */
+         $des_order_id = 0;
+         if($this->user->organization['Organization']['hasDes']=='Y') {
+            App::import('Model', 'DesOrdersOrganization');
+            $DesOrdersOrganization = new DesOrdersOrganization();
+    
+            $desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($this->user, $order_id, $debug);
+            if (!empty($desOrdersOrganizationResults)) {
+                $des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];
+            }
+        } // end if($user->organization['Organization']['hasDes']=='Y') 
+        
+        App::import('Model', 'Cart');
+        $Cart = new Cart;
+                
         App::import('Model', 'Delivery');
         $Delivery = new Delivery;
 
         $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
-							'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
-							'suppliers' => true, 'referents' => true];
+                            'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
+                            'suppliers' => true, 'referents' => true];
 
-		/*
-		 * CONDITIONS
-		 */
+        /*
+         * CONDITIONS
+         */
         $conditions = ['Delivery' => ['Delivery.id' => (int) $delivery_id, 'Delivery.isVisibleBackOffice' => 'Y'],
-				       'Order' => ['Order.isVisibleBackOffice' => 'Y', 'Order.id' => (int) $order_id]];
-			                
+                       'Order' => ['Order.isVisibleBackOffice' => 'Y', 'Order.id' => (int) $order_id]];
+                            
         if ($doc_options == 'to-users-all-modify' && ($doc_formato == 'PREVIEW' || $doc_formato == 'PDF')) {
          
         }
         else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label') {
            
            if ($doc_options == 'to-users') {
-           		if($i=='N')
-	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
- 	            else
-	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y']];
+                if($i=='N')
+                   $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
+                else
+                   $conditions += ['Cart' => ['Cart.stato' => 'Y']];
            }
-		   else
+           else
            if ($doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label') {
-           		if($f=='N')
-	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
- 	            else
-	           	   $conditions += ['Cart' => ['Cart.stato' => 'Y']];
+                if($f=='N')
+                   $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
+                else
+                   $conditions += ['Cart' => ['Cart.stato' => 'Y']];
            }
 
            
         } else
             $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
 
-		/*
-		 * ORDER BY
-		 */
+        /*
+         * ORDER BY
+         */
         if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify')
             $orderBy = ['User' => Configure::read('orderUser') . ', Article.name, Article.id'];
         else
@@ -236,10 +236,10 @@ class ExportDocsController extends AppController {
 
         /*
          * ctrl eventuali
-         * 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
-         * 		- spese di trasporto  (SummaryOrderTrasport)
-         * 		- costi aggiuntivi  (SummaryOrderCostMore)
-         * 		- sconti  (SummaryOrderCostLess)
+         *      - totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
+         *      - spese di trasporto  (SummaryOrderTrasport)
+         *      - costi aggiuntivi  (SummaryOrderCostMore)
+         *      - sconti  (SummaryOrderCostLess)
          */
         if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify') {
 
@@ -278,53 +278,53 @@ class ExportDocsController extends AppController {
                 $resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->tmp_user, $order_id);
             }
 
-			if ($typeGest == 'AGGREGATE') {
-		        App::import('Model', 'SummaryOrderAggregate');
-		        $SummaryOrderAggregate = new SummaryOrderAggregate;
-			
-	            $resultsSummaryOrderAggregate = $SummaryOrderAggregate->select_to_order($this->tmp_user, $order_id); // se l'ordine e' ancora aperto e' vuoto
-			}
-			
+            if ($typeGest == 'AGGREGATE') {
+                App::import('Model', 'SummaryOrderAggregate');
+                $SummaryOrderAggregate = new SummaryOrderAggregate;
+            
+                $resultsSummaryOrderAggregate = $SummaryOrderAggregate->select_to_order($this->tmp_user, $order_id); // se l'ordine e' ancora aperto e' vuoto
+            }
+            
             $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess);
         } 
         
-		if($doc_options == 'to-articles-monitoring') {
-		
-			    if(!empty($des_order_id)) {
-			    	/*
-			    	 * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
-			    	 */
-			    	foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {					                
-						if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {		
-								foreach($result['Delivery']['Order'] as $numOrder => $order) {
-									foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
-									
-								        $options = [];
-								        $options['conditions'] = ['Cart.organization_id' => $this->user->organization['Organization']['id'],
-																	'Cart.order_id' => $articlesOrder['order_id'],
-																	'Cart.article_organization_id' => $articlesOrder['article_organization_id'],
-																	'Cart.article_id' => $articlesOrder['article_id'],
-																	'Cart.deleteToReferent' => 'N'];
-								        $options['recursive'] = -1;
-								        $options['fields'] = ['Cart.qta','Cart.qta_forzato'];
-								        $cartResults = $Cart->find('all', $options);		
-								        $qta_cart = 0;
-								        if(!empty($cartResults)) {
-								        	foreach($cartResults as $cartResult) {
-								        		if(!empty($cartResult['Cart']['qta_forzato']))
-								        			$qta_cart += $cartResult['Cart']['qta_forzato'];
-								        		else
-								        			$qta_cart += $cartResult['Cart']['qta'];
-								        	}							      								        	
-								        	$results['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder]['qta_cart'] = $qta_cart;
-								        }
-									}
-								}
-						}			    	
-					}
-			    	 
-			    } // end if(!empty($des_order_id))
-   		} // end if($doc_options == 'to-articles-monitoring')
+        if($doc_options == 'to-articles-monitoring') {
+        
+                if(!empty($des_order_id)) {
+                    /*
+                     * se DES non prendo ArticlesOrder.qta_cart perche' e' la somma di tutti i GAS
+                     */
+                    foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {                                  
+                        if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {       
+                                foreach($result['Delivery']['Order'] as $numOrder => $order) {
+                                    foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
+                                    
+                                        $options = [];
+                                        $options['conditions'] = ['Cart.organization_id' => $this->user->organization['Organization']['id'],
+                                                                    'Cart.order_id' => $articlesOrder['order_id'],
+                                                                    'Cart.article_organization_id' => $articlesOrder['article_organization_id'],
+                                                                    'Cart.article_id' => $articlesOrder['article_id'],
+                                                                    'Cart.deleteToReferent' => 'N'];
+                                        $options['recursive'] = -1;
+                                        $options['fields'] = ['Cart.qta','Cart.qta_forzato'];
+                                        $cartResults = $Cart->find('all', $options);        
+                                        $qta_cart = 0;
+                                        if(!empty($cartResults)) {
+                                            foreach($cartResults as $cartResult) {
+                                                if(!empty($cartResult['Cart']['qta_forzato']))
+                                                    $qta_cart += $cartResult['Cart']['qta_forzato'];
+                                                else
+                                                    $qta_cart += $cartResult['Cart']['qta'];
+                                            }                                                                           
+                                            $results['Delivery'][$numDelivery]['Order'][$numOrder]['ArticlesOrder'][$numArticlesOrder]['qta_cart'] = $qta_cart;
+                                        }
+                                    }
+                                }
+                        }                   
+                    }
+                     
+                } // end if(!empty($des_order_id))
+        } // end if($doc_options == 'to-articles-monitoring')
         
         $this->set(compact('results'));
 
@@ -450,7 +450,7 @@ class ExportDocsController extends AppController {
                     $this->render('referent_to_users_label');
                 else
                 if ($doc_options == 'to-users-articles-label')
-                    $this->render('referent_to_users_articles_label');				
+                    $this->render('referent_to_users_articles_label');              
                 else
                 if ($doc_options == 'to-users-all-modify')
                     $this->render('referent_to_users_all_modify');
@@ -539,9 +539,9 @@ class ExportDocsController extends AppController {
         $conditions = [];
         $conditions = ['Delivery.id' => $delivery_id];
 
-		/*
-		 * stampa disponibile tra tutte le stampe
-		 */
+        /*
+         * stampa disponibile tra tutte le stampe
+         */
         if ($this->isCassiere() || $this->isManager() || $this->isSuperReferente())
             $users = $User->getUserWithCartByDelivery($this->user, $conditions, '', '', $debug);
         else
@@ -559,7 +559,7 @@ class ExportDocsController extends AppController {
                 $newResults[$numResult] = $results;
             }
         
-		$this->set('results', $newResults);
+        $this->set('results', $newResults);
 
         /*
          * filtri stampa
@@ -584,7 +584,7 @@ class ExportDocsController extends AppController {
 
             $options = [];
             $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-										'Delivery.id' => (int) $delivery_id];
+                                        'Delivery.id' => (int) $delivery_id];
             $options['recursive'] = -1;
             $resultDelivery = $Delivery->find('first', $options);
             $this->set('resultDelivery', $resultDelivery);
@@ -731,7 +731,7 @@ class ExportDocsController extends AppController {
 
             $options = [];
             $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
-									  'Delivery.id' => (int) $delivery_id];
+                                      'Delivery.id' => (int) $delivery_id];
             $options['recursive'] = -1;
             $resultDelivery = $Delivery->find('first', $options);
             $this->set('resultDelivery', $resultDelivery);
@@ -809,9 +809,9 @@ class ExportDocsController extends AppController {
         } // end if($doc_options=='to-lists-suppliers-cassiere')
 
         $this->set(compact('results'));
-		
+        
         self::d($results, false);
-		
+        
         $params = ['delivery_id' => $delivery_id];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options, $params));
         $this->set('organization', $this->user->organization);
@@ -846,9 +846,9 @@ class ExportDocsController extends AppController {
 
     /*
      * situazione di tutti gli ordini in
-     * 		PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) 
-     * 		WAIT-PROCESSED-TESORIERE, PROCESSED-TESORIERE, TO-PAYMENT
-     * 		CLOSE 	 
+     *      PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) 
+     *      WAIT-PROCESSED-TESORIERE, PROCESSED-TESORIERE, TO-PAYMENT
+     *      CLOSE    
      */
 
     public function admin_exportToCassiereListOrdersAll($delivery_id = 0, $doc_options = null, $doc_formato = null) {
@@ -936,9 +936,9 @@ class ExportDocsController extends AppController {
 
     /*
      * situazione di tutti gli ordini in
-     * 		PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) 
-     * 		WAIT-PROCESSED-TESORIERE, PROCESSED-TESORIERE, TO-PAYMENT
-     * 		CLOSE 	 
+     *      PROCESSED-ON-DELIVERY (in carico al cassiere durante la consegna) 
+     *      WAIT-PROCESSED-TESORIERE, PROCESSED-TESORIERE, TO-PAYMENT
+     *      CLOSE    
      */
 
     public function admin_exportToCassiereListUsersDeliveryAll($delivery_id = 0, $doc_options = null, $doc_formato = null) {
@@ -994,7 +994,7 @@ class ExportDocsController extends AppController {
             'suppliers' => true, 'referents' => false];
 
         $conditions = ['Delivery' => ['Delivery.id' => (int) $delivery_id,
-									  'Delivery.isVisibleBackOffice' => 'Y'],
+                                      'Delivery.isVisibleBackOffice' => 'Y'],
                        'Order' => ['Order.isVisibleBackOffice' => 'Y']];
 
         if ($user_id > 0)
@@ -1004,13 +1004,13 @@ class ExportDocsController extends AppController {
 
         $orderBy = ['User' => Configure::read('orderUser') . ', Article.name, Article.id'];
         $results = $Delivery->getDataWithoutTabs($user, $conditions, $options, $orderBy);
-		
+        
         /*
          * ctrl eventuali
-         * 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
-         * 		- spese di trasporto  (SummaryOrderTrasport)
-         * 		- costi aggiuntivi  (SummaryOrderCostMore)
-         * 		- sconti  (SummaryOrderCostLess)
+         *      - totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
+         *      - spese di trasporto  (SummaryOrderTrasport)
+         *      - costi aggiuntivi  (SummaryOrderCostMore)
+         *      - sconti  (SummaryOrderCostLess)
          */
         $deliveryResults = $results;
         unset($deliveryResults['Delivery'][$numDelivery]['Order']);
@@ -1055,7 +1055,7 @@ class ExportDocsController extends AppController {
                     $resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($user, $order_id, $user_id);
                 }
 
-                $resultsSummaryOrderAggregate = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id); // se l'ordine e' ancora aperto e' vuoto				
+                $resultsSummaryOrderAggregate = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id); // se l'ordine e' ancora aperto e' vuoto               
                 $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);
             }  // ciclo orders
 
@@ -1079,24 +1079,24 @@ class ExportDocsController extends AppController {
         $storeroomResults = [];
         if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
 
-			$storeroomOptions = []; 
+            $storeroomOptions = []; 
             $storeroomOptions = ['orders' => false, 'storerooms' => true, 'summaryOrders' => false,
                 'suppliers' => true, 'referents' => false];
 
-			$conditions = []; 
+            $conditions = []; 
             $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
-										'Delivery.stato_elaborazione' => 'OPEN',
-										'Delivery.id' => $delivery_id],
+                                        'Delivery.stato_elaborazione' => 'OPEN',
+                                        'Delivery.id' => $delivery_id],
                 'Storeroom' => ['Storeroom.user_id' => (int) $user_id,
-                				 'Storeroom.delivery_id' => (int) $delivery_id]];
+                                 'Storeroom.delivery_id' => (int) $delivery_id]];
             $orderBy = null;
 
-			$storeroomDelivery = new Delivery;
+            $storeroomDelivery = new Delivery;
             $storeroomResults = $storeroomDelivery->getDataWithoutTabs($user, $conditions, $storeroomOptions, $orderBy);           
         }
         $this->set('storeroomResults', $storeroomResults);
 
-		self::d($results, $debug);
+        self::d($results, $debug);
 
         return $results;
     }
@@ -1159,51 +1159,51 @@ class ExportDocsController extends AppController {
             'Delivery.id' => (int) $delivery_id];
 
         $resultDelivery = $Delivery->find('first', ['conditions' => $conditions, 'recursive' => -1]);
-		$this->set('resultDelivery', $resultDelivery);
+        $this->set('resultDelivery', $resultDelivery);
 
         /*
          * S U M M A R Y - O R D E R S 
          */
         if ($doc_options == 'to-supplier') {
             $sql = "select 
-						SummaryOrder.order_id, 
-						`Order`.data_inizio, `Order`.data_fine, 
-						sum(importo) as totImporto, SupplierOrganization.name
-					FROM 
-						" . Configure::read('DB.prefix') . "summary_orders as SummaryOrder,
-						" . Configure::read('DB.prefix') . "orders as `Order`,
-						" . Configure::read('DB.prefix') . "suppliers_organizations as SupplierOrganization
-					WHERE 
-						SummaryOrder.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
-						and `Order`.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
-						and SupplierOrganization.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
-						and SummaryOrder.order_id in (" . $order_id_selected . ")
-						and `Order`.id = SummaryOrder.order_id
-						and `Order`.supplier_organization_id = SupplierOrganization.id
-					GROUP BY 
-						SummaryOrder.order_id, `Order`.data_inizio, `Order`.data_fine 
-					ORDER BY
-						 SupplierOrganization.name";
+                        SummaryOrder.order_id, 
+                        `Order`.data_inizio, `Order`.data_fine, 
+                        sum(importo) as totImporto, SupplierOrganization.name
+                    FROM 
+                        " . Configure::read('DB.prefix') . "summary_orders as SummaryOrder,
+                        " . Configure::read('DB.prefix') . "orders as `Order`,
+                        " . Configure::read('DB.prefix') . "suppliers_organizations as SupplierOrganization
+                    WHERE 
+                        SummaryOrder.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+                        and `Order`.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
+                        and SupplierOrganization.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
+                        and SummaryOrder.order_id in (" . $order_id_selected . ")
+                        and `Order`.id = SummaryOrder.order_id
+                        and `Order`.supplier_organization_id = SupplierOrganization.id
+                    GROUP BY 
+                        SummaryOrder.order_id, `Order`.data_inizio, `Order`.data_fine 
+                    ORDER BY
+                         SupplierOrganization.name";
             self::d($sql, false);
             $results = $Delivery->query($sql);
             $this->set(compact('results'));
         } else
         if ($doc_options == 'to-users') {
             $sql = "SELECT 
-						SummaryOrder.user_id, importo,
-						User.name 
-					FROM 
-						" . Configure::read('DB.prefix') . "summary_orders as SummaryOrder, 
-						" . Configure::read('DB.portalPrefix') . "users as User 
-					WHERE
-						SummaryOrder.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
-						and User.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
-						and SummaryOrder.order_id in (" . $order_id_selected . ")
-						and SummaryOrder.user_id = User.id
-						and User.block = 0   		
-					GROUP BY
-						User.name
-					ORDER BY " . Configure::read('orderUser');
+                        SummaryOrder.user_id, importo,
+                        User.name 
+                    FROM 
+                        " . Configure::read('DB.prefix') . "summary_orders as SummaryOrder, 
+                        " . Configure::read('DB.portalPrefix') . "users as User 
+                    WHERE
+                        SummaryOrder.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
+                        and User.organization_id = " . (int) $this->user->organization['Organization']['id'] . "  
+                        and SummaryOrder.order_id in (" . $order_id_selected . ")
+                        and SummaryOrder.user_id = User.id
+                        and User.block = 0          
+                    GROUP BY
+                        User.name
+                    ORDER BY " . Configure::read('orderUser');
             self::d($sql, false);
             $results = $Delivery->query($sql);
             $this->set(compact('results'));
@@ -1254,8 +1254,8 @@ class ExportDocsController extends AppController {
 
         $this->ctrlHttpReferer();
 
-		$this->_tesoriere_request_payment($request_payment_id, $doc_formato);
-		
+        $this->_tesoriere_request_payment($request_payment_id, $doc_formato);
+        
         switch ($doc_formato) {
             case 'EXCEL':
                 $this->layout = 'excel';
@@ -1264,21 +1264,21 @@ class ExportDocsController extends AppController {
         }
     }
 
-	public function admin_tesoriere_request_payment_pagamenti($request_payment_id = 0, $doc_formato = null) {
+    public function admin_tesoriere_request_payment_pagamenti($request_payment_id = 0, $doc_formato = null) {
         
         $this->ctrlHttpReferer();
 
-		$this->_tesoriere_request_payment($request_payment_id, $doc_formato);
-		
+        $this->_tesoriere_request_payment($request_payment_id, $doc_formato);
+        
         switch ($doc_formato) {
             case 'EXCEL':
                 $this->layout = 'excel';
                 $this->render('tesoriere_request_payment_pagamenti_excel');
                 break;
         }
-	
-	}
-	
+    
+    }
+    
     public function _tesoriere_request_payment($request_payment_id , $doc_formato, $debug=false) {
 
         /* ctrl ACL */
@@ -1306,13 +1306,13 @@ class ExportDocsController extends AppController {
 
         /*
          * estraggo i dettagli di una richiesta di pagamento
-         * 	- ordini associati
+         *  - ordini associati
          *  - voci di spesa generica
          *  - dispensa
          */
         $conditions = [];
         $results = $RequestPayment->getAllDetails($this->user, $request_payment_id, $conditions);
-		
+        
         /*
          * dati cassa per l'utente
          */
@@ -1322,7 +1322,7 @@ class ExportDocsController extends AppController {
 
             $options = [];
             $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
-									  'Cash.user_id' => $result['User']['id']];
+                                      'Cash.user_id' => $result['User']['id']];
             $options['recursive'] = -1;
             $cashResults = $Cash->find('first', $options);
             if (empty($cashResults)) {
@@ -1333,15 +1333,15 @@ class ExportDocsController extends AppController {
             $results['SummaryPayment'][$numResult]['Cash'] = $cashResults['Cash'];
         }
         
-		self::d($results, $debug);
-		
+        self::d($results, $debug);
+        
         $this->set(compact('results'));
 
 
         $params = ['request_payment_num' => $results['RequestPayment']['num']];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, 'to-tesoriere-request-payment', $params, $user_target = 'TESORIERE'));
     }
-	
+    
     /*
      * stampa il carrello dell'utente passato
      */
@@ -1387,7 +1387,7 @@ class ExportDocsController extends AppController {
          */
         $options = [];
         $options['conditions'] = ['RequestPayment.organization_id' => (int) $this->user->organization['Organization']['id'],
-								  'RequestPayment.id' => $request_payment_id];
+                                  'RequestPayment.id' => $request_payment_id];
         $options['fields'] = ['RequestPayment.num'];
         $options['recursive'] = -1;
         $results = $RequestPayment->find('first', $options);
@@ -1425,7 +1425,7 @@ class ExportDocsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-								  'User.id' => $user_id];
+                                  'User.id' => $user_id];
         $options['recursive'] = -1;
         $userResults = $User->find('first', $options);
         $this->set('userResults', $userResults);
@@ -1496,27 +1496,27 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-		/*
-		 * se lo user e' dispensa report di cosa arrivera' in dispensa (quello inserito dai referenti)
-		 */
-		$isUserCurrentStoreroom = false; 
-		if($this->user->organization['Organization']['hasStoreroom']=='Y') {
-			App::import('Model', 'Storeroom');
-        	$Storeroom = new Storeroom;
+        /*
+         * se lo user e' dispensa report di cosa arrivera' in dispensa (quello inserito dai referenti)
+         */
+        $isUserCurrentStoreroom = false; 
+        if($this->user->organization['Organization']['hasStoreroom']=='Y') {
+            App::import('Model', 'Storeroom');
+            $Storeroom = new Storeroom;
         
-			$storeroomUser = $Storeroom->getStoreroomUser($this->user);
-			if($storeroomUser['User']['id']==$this->user->get('id') && 
-				$storeroomUser['User']['organization_id']==$this->user->organization['Organization']['id']) {
-				$isUserCurrentStoreroom = true;
-			}	
-		}
-		
+            $storeroomUser = $Storeroom->getStoreroomUser($this->user);
+            if($storeroomUser['User']['id']==$this->user->get('id') && 
+                $storeroomUser['User']['organization_id']==$this->user->organization['Organization']['id']) {
+                $isUserCurrentStoreroom = true;
+            }   
+        }
+        
         App::import('Model', 'SummaryOrderPlu');
         $SummaryOrderPlu = new SummaryOrderPlu;
-		
+        
         App::import('Model', 'SummaryOrderLifeCycle');
         $SummaryOrderLifeCycle = new SummaryOrderLifeCycle;
-		
+        
         App::import('Model', 'Cart');
         $Cart = new Cart;
 
@@ -1537,38 +1537,38 @@ class ExportDocsController extends AppController {
 
                         foreach ($result['Delivery']['Order'] as $numOrder => $order) {
 
-							/*
-							 * aggiunge ad un ordine le eventuali 
-							 *  SummaryOrder 
-							 *  SummaryOrderTrapsort spese di trasporto
-							 *  SummaryOrderMore spese generiche
-							 *  SummaryOrderLess sconti
-							 */
+                            /*
+                             * aggiunge ad un ordine le eventuali 
+                             *  SummaryOrder 
+                             *  SummaryOrderTrapsort spese di trasporto
+                             *  SummaryOrderMore spese generiche
+                             *  SummaryOrderLess sconti
+                             */
                             if($SummaryOrderLifeCycle->canAddSummaryOrder($this->user, $order['Order']['state_code'])) {
-								
-								$resultsSummaryOrderPlus = $SummaryOrderPlu->addSummaryOrder($this->user, $order, $user_id);
-								
+                                
+                                $resultsSummaryOrderPlus = $SummaryOrderPlu->addSummaryOrder($this->user, $order, $user_id);
+                                
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderAggregate'] = $resultsSummaryOrderPlus['SummaryOrderAggregate'];
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderTrasport'] = $resultsSummaryOrderPlus['SummaryOrderTrasport'];
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderCostMore'] = $resultsSummaryOrderPlus['SummaryOrderCostMore'];
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderCostLess'] = $resultsSummaryOrderPlus['SummaryOrderCostLess'];
 
-                                // $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);					
+                                // $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
                             }  // if($result['Order']['state_code']=='PROCESSED-ON-DELIVERY')
                         } // loops Orders
                     }
-                } // loops Deliveries	   
+                } // loops Deliveries      
         }
         $this->set('resultsWithModifies', $resultsWithModifies);
 
         $this->set('storeroomResults', $Cart->getUserCartStoreroom($this->user, $user_id, $delivery_id));
 
         $params = ['delivery_id' => $delivery_id, 'user_id' => $this->user->get('id')];
-		if($isUserCurrentStoreroom) 
-		    $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'storeroom_cart', $params, null));
-		else 
-	        $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'user_cart', $params, null));
-	    
+        if($isUserCurrentStoreroom) 
+            $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'storeroom_cart', $params, null));
+        else 
+            $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'user_cart', $params, null));
+        
         $this->set('organization', $this->user->organization);
 
         /*
@@ -1578,59 +1578,59 @@ class ExportDocsController extends AppController {
         $arrayDistances = [];
          
         if(!$isUserCurrentStoreroom) {
-	        jimport('joomla.user.helper');
-	        $userProfile = JUserHelper::getProfile($this->user->get('id'));
-	
-	        if (!empty($userProfile->profile['lat']) && $userProfile->profile['lat'] != Configure::read('LatLngNotFound') && !empty($userProfile->profile['lng']) && $userProfile->profile['lng'] != Configure::read('LatLngNotFound')) {
-	
-	            $userLat = $userProfile->profile['lat'];
-	            $userLng = $userProfile->profile['lng'];
-	
-	            if (isset($results['Delivery']))
-	                foreach ($results['Delivery'] as $numDelivery => $result['Delivery']) {
-	                    if ($result['Delivery']['totOrders'] > 0 && $result['Delivery']['totArticlesOrder'] > 0) {
-	                        foreach ($result['Delivery']['Order'] as $numOrder => $order) {
-	                            if (isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti			
-	
-	                                /*
-	                                 *  crea l'array DISTANCE
-	                                 */
-	                                $supplierLat = $order['SuppliersOrganization']['lat'];
-	                                $supplierLng = $order['SuppliersOrganization']['lng'];
-	
-	                                if (!empty($supplierLat) && $supplierLat != Configure::read('LatLngNotFound') && !empty($supplierLng) && $supplierLng != Configure::read('LatLngNotFound')) {
-	
-	                                    $arrayDistances[$numDistance]['supplierName'] = $order['SuppliersOrganization']['name'];
-	
-	                                    $address = "";
-	                                    $address = $order['SuppliersOrganization']['localita'];
-	                                    //if(!empty($order['SuppliersOrganization']['cap']))
-	                                    //	$address .= ' ('.$order['SuppliersOrganization']['cap'].')';
-	                                    $arrayDistances[$numDistance]['supplierLocalita'] = $address;
-	
-	                                    $distance = $this->distance($userLat, $userLng, $supplierLat, $supplierLng, "K");
-	                                    $distance = round($distance, 2);
-	
-	                                    $arrayDistances[$numDistance]['distance'] = $distance;
-	                                    $percentuale = 100;
-	                                    if ($distance < Configure::read('LatLngDistanceAbsolute')) {
-	                                        $percentuale = $distance * 100 / Configure::read('LatLngDistanceAbsolute');
-	                                        $percentuale = round($percentuale);
-	                                    }
-	                                    $arrayDistances[$numDistance]['percentuale'] = $percentuale;
-	
-	                                    $numDistance++;
-	                                }
-	                                /*
-	                                 *  crea l'array DISTANCE
-	                                 */
-	                            }
-	                        }
-	                    }
-	                } // end foreach
-	        } // end if lng
-	   }  // end if(!$isUserCurrentStoreroom) 
-	   $this->set('arrayDistances', $arrayDistances);
+            jimport('joomla.user.helper');
+            $userProfile = JUserHelper::getProfile($this->user->get('id'));
+    
+            if (!empty($userProfile->profile['lat']) && $userProfile->profile['lat'] != Configure::read('LatLngNotFound') && !empty($userProfile->profile['lng']) && $userProfile->profile['lng'] != Configure::read('LatLngNotFound')) {
+    
+                $userLat = $userProfile->profile['lat'];
+                $userLng = $userProfile->profile['lng'];
+    
+                if (isset($results['Delivery']))
+                    foreach ($results['Delivery'] as $numDelivery => $result['Delivery']) {
+                        if ($result['Delivery']['totOrders'] > 0 && $result['Delivery']['totArticlesOrder'] > 0) {
+                            foreach ($result['Delivery']['Order'] as $numOrder => $order) {
+                                if (isset($order['ArticlesOrder'])) { // cosi' escludo gli ordini senza acquisti            
+    
+                                    /*
+                                     *  crea l'array DISTANCE
+                                     */
+                                    $supplierLat = $order['SuppliersOrganization']['lat'];
+                                    $supplierLng = $order['SuppliersOrganization']['lng'];
+    
+                                    if (!empty($supplierLat) && $supplierLat != Configure::read('LatLngNotFound') && !empty($supplierLng) && $supplierLng != Configure::read('LatLngNotFound')) {
+    
+                                        $arrayDistances[$numDistance]['supplierName'] = $order['SuppliersOrganization']['name'];
+    
+                                        $address = "";
+                                        $address = $order['SuppliersOrganization']['localita'];
+                                        //if(!empty($order['SuppliersOrganization']['cap']))
+                                        //  $address .= ' ('.$order['SuppliersOrganization']['cap'].')';
+                                        $arrayDistances[$numDistance]['supplierLocalita'] = $address;
+    
+                                        $distance = $this->distance($userLat, $userLng, $supplierLat, $supplierLng, "K");
+                                        $distance = round($distance, 2);
+    
+                                        $arrayDistances[$numDistance]['distance'] = $distance;
+                                        $percentuale = 100;
+                                        if ($distance < Configure::read('LatLngDistanceAbsolute')) {
+                                            $percentuale = $distance * 100 / Configure::read('LatLngDistanceAbsolute');
+                                            $percentuale = round($percentuale);
+                                        }
+                                        $arrayDistances[$numDistance]['percentuale'] = $percentuale;
+    
+                                        $numDistance++;
+                                    }
+                                    /*
+                                     *  crea l'array DISTANCE
+                                     */
+                                }
+                            }
+                        }
+                    } // end foreach
+            } // end if lng
+       }  // end if(!$isUserCurrentStoreroom) 
+       $this->set('arrayDistances', $arrayDistances);
 
 
         switch ($doc_formato) {
@@ -1689,8 +1689,8 @@ class ExportDocsController extends AppController {
      */
     private function _articlesSupplierOrganization($supplier_organization_id, $filterType, $filterCategory, $filterNota, $filterIngredienti, $doc_formato) {
 
-		$debug = false;
-		
+        $debug = false;
+        
         if ($supplier_organization_id == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -1708,13 +1708,13 @@ class ExportDocsController extends AppController {
 
         /*
          * dati anagrafici articoli 
-         * 	   Article, SupplierOrganization, CategoriesArticle, ArticlesType
+         *     Article, SupplierOrganization, CategoriesArticle, ArticlesType
          */
         App::import('Model', 'Article');
         $Article = new Article;
 
-		$opts = [];
-		        /*
+        $opts = [];
+                /*
          * se lo user e' referente del produttore ho anche gli articoli a stato N
          */
         $isReferenteSupplierOrganization = false;
@@ -1730,7 +1730,7 @@ class ExportDocsController extends AppController {
         }
         $this->set('isReferenteSupplierOrganization', $isReferenteSupplierOrganization);
 
-		$results = $Article->getBySupplierOrganization($this->user, $supplier_organization_id, $opts=[], $debug);
+        $results = $Article->getBySupplierOrganization($this->user, $supplier_organization_id, $opts=[], $debug);
         $this->set(compact('results'));
 
         $params = ['supplier_organization_id' => $supplier_organization_id];
@@ -1836,7 +1836,7 @@ class ExportDocsController extends AppController {
         
         /*
          * dati anagrafici articoli 
-         * 	   Article, SupplierOrganization, CategoriesArticle, ArticlesType
+         *     Article, SupplierOrganization, CategoriesArticle, ArticlesType
          */
         App::import('Model', 'Article');
         $Article = new Article;
@@ -1845,8 +1845,8 @@ class ExportDocsController extends AppController {
         
         $options = [];
         $options['conditions'] = ['Article.organization_id' => $own_organization_id,
-								'Article.supplier_organization_id' => $supplier_organization_id,
-								'Article.stato' => 'Y'];
+                                'Article.supplier_organization_id' => $supplier_organization_id,
+                                'Article.stato' => 'Y'];
 
         $results = $Article->getArticlesDataAnagr($tmp_user, $options);
         $this->set(compact('results'));
@@ -1885,7 +1885,7 @@ class ExportDocsController extends AppController {
      */
     private function _articlesOrders($order_id, $filterType, $filterCategory, $filterNota, $filterIngredienti, $doc_formato) {
 
-		$debug = false;
+        $debug = false;
 
         if ($order_id == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -1902,7 +1902,7 @@ class ExportDocsController extends AppController {
 
         $conditions = ['Order.id' => (int) $order_id];
         $results = $ArticlesOrder->getArticlesOrdersInOrder($this->user, $conditions);
-		self::d($results, $debug);
+        self::d($results, $debug);
         if (!empty($results)) {
 
             /*
@@ -1917,10 +1917,10 @@ class ExportDocsController extends AppController {
 
                 $Article = new Article;
 
-				/*
-				 * ridefinisco $this->user->organization['Organization']['id'] 
-				 * perche' se e' DES potrebbero essere articoli di un'altor GAS 
-				 */
+                /*
+                 * ridefinisco $this->user->organization['Organization']['id'] 
+                 * perche' se e' DES potrebbero essere articoli di un'altor GAS 
+                 */
                 $tmp_user = $this->utilsCommons->createObjUser([
                     'organization_id' => $result['Article']['organization_id'],
                     'hasFieldArticleCategoryId' => $this->user->organization['Organization']['hasFieldArticleCategoryId']
@@ -1942,7 +1942,7 @@ class ExportDocsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['Order.organization_id' => (int) $this->user->organization['Organization']['id'],
-									'Order.id' => $order_id];
+                                    'Order.id' => $order_id];
         $options['recursive'] = 1;
         $orderResults = $Order->find('first', $options);
         if ($orderResults['Delivery']['sys'] == 'N')
@@ -2029,27 +2029,27 @@ class ExportDocsController extends AppController {
 
         $debug = false;
 
-		/*
-		 * ctrl ACL su organization_id
-		 */
-		$aclOrganizationId = false;
+        /*
+         * ctrl ACL su organization_id
+         */
+        $aclOrganizationId = false;
         if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
             $this->user->organization['Organization']['hasDesUserManager'] == 'Y' && 
             !empty($this->user->des_id) && 
             $this->isManagerUserDes()) {
-			
-			$aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
+            
+            $aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
         }
         else {
-        	if($organization_id==$this->user->organization['Organization']['id'])
-        		$aclOrganizationId = true;
+            if($organization_id==$this->user->organization['Organization']['id'])
+                $aclOrganizationId = true;
         }
 
-		if($aclOrganizationId===false) {
+        if($aclOrganizationId===false) {
             $this->Session->setFlash(__('msg_not_permission'));
-            $this->myRedirect(Configure::read('routes_msg_stop'));		
-		}
-		
+            $this->myRedirect(Configure::read('routes_msg_stop'));      
+        }
+        
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
@@ -2058,12 +2058,12 @@ class ExportDocsController extends AppController {
         $options['recursive'] = -1;
         $organizationsResults = $Organization->find('first', $options);
 
-		$user = new UserLocal();
-		$user->organization = $organizationsResults;
-			
-		/*
-		 * ctrl ACL su organization_id
-		 */
+        $user = new UserLocal();
+        $user->organization = $organizationsResults;
+            
+        /*
+         * ctrl ACL su organization_id
+         */
 
         $this->_usersData($user, $userGroupIds, $doc_formato, $debug);
 
@@ -2100,9 +2100,9 @@ class ExportDocsController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-		App::import('Model', 'Cart');
-		$Cart = new Cart;
-		
+        App::import('Model', 'Cart');
+        $Cart = new Cart;
+        
         $conditions = [];
 
         /*
@@ -2111,7 +2111,7 @@ class ExportDocsController extends AppController {
         if (!empty($userGroupIds)) {
             $userGroupIds = explode(',', $userGroupIds);
 
-			self::d($userGroupIds,$debug);
+            self::d($userGroupIds,$debug);
 
             /*
              * ciclo per gli userGroups passati per evitare che vengano passati group_id strano 
@@ -2152,13 +2152,13 @@ class ExportDocsController extends AppController {
         } // end if($userGroupIds!='ALL')
 
         $results = $User->getUsersComplete($user, $conditions);
-		foreach($results as $numResult2 => $result) {
-			
+        foreach($results as $numResult2 => $result) {
+            
             $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['User']['organization_id']]);
 
-			$cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
-			$results[$numResult2] += $cartResults; 
-		}       
+            $cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
+            $results[$numResult2] += $cartResults; 
+        }       
         $this->set(compact('results'));
 
         self::d([$conditions, $results], $debug);
@@ -2172,27 +2172,27 @@ class ExportDocsController extends AppController {
 
         $debug = false;
 
-		/*
-		 * ctrl ACL su organization_id
-		 */
-		$aclOrganizationId = false;
+        /*
+         * ctrl ACL su organization_id
+         */
+        $aclOrganizationId = false;
         if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
             $this->user->organization['Organization']['hasDesUserManager'] == 'Y' && 
             !empty($this->user->des_id) && 
             $this->isManagerUserDes()) {
-			
-			$aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
+            
+            $aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
         }
         else {
-        	if($organization_id==$this->user->organization['Organization']['id'])
-        		$aclOrganizationId = true;
+            if($organization_id==$this->user->organization['Organization']['id'])
+                $aclOrganizationId = true;
         }
 
-		if($aclOrganizationId===false) {
+        if($aclOrganizationId===false) {
             $this->Session->setFlash(__('msg_not_permission'));
-            $this->myRedirect(Configure::read('routes_msg_stop'));		
-		}
-		
+            $this->myRedirect(Configure::read('routes_msg_stop'));      
+        }
+        
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
@@ -2200,24 +2200,24 @@ class ExportDocsController extends AppController {
         $options['conditions'] = ['Organization.id' => $organization_id];
         $options['recursive'] = -1;
         $organizationsResults = $Organization->find('first', $options);
-	        		
-		$user = new UserLocal();
-		$user->organization = $organizationsResults;
-	        				
-		/*
-		 * ctrl ACL su organization_id
-		 */
-		 
+                    
+        $user = new UserLocal();
+        $user->organization = $organizationsResults;
+                            
+        /*
+         * ctrl ACL su organization_id
+         */
+         
         App::import('Model', 'User');
         $User = new User;
         
-		$conditions['User.block'] = "User.block IN ('0','1')";
+        $conditions['User.block'] = "User.block IN ('0','1')";
         
         if($FilterUserSort=='NAME')
-        	$FilterUserSort = Configure::read('orderUser');
+            $FilterUserSort = Configure::read('orderUser');
         else 
         if($FilterUserSort=='REGISTERDATA')
-        	$FilterUserSort = 'User.registerDate';
+            $FilterUserSort = 'User.registerDate';
                         
         $results = $User->getUsersComplete($user, $conditions, $FilterUserSort, false);
         $this->set(compact('results'));
@@ -2285,27 +2285,27 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
 
-		/*
-		 * ctrl ACL su organization_id
-		 */
-		$aclOrganizationId = false;
+        /*
+         * ctrl ACL su organization_id
+         */
+        $aclOrganizationId = false;
         if ($this->user->organization['Organization']['hasDes'] == 'Y' && 
             $this->user->organization['Organization']['hasDesUserManager'] == 'Y' && 
             !empty($this->user->des_id) && 
             $this->isManagerUserDes()) {
-			
-			$aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
+            
+            $aclOrganizationId = $this->aclOrganizationIdinUso($organization_id);
         }
         else {
-        	if($organization_id==$this->user->organization['Organization']['id'])
-        		$aclOrganizationId = true;
+            if($organization_id==$this->user->organization['Organization']['id'])
+                $aclOrganizationId = true;
         }
 
-		if($aclOrganizationId===false) {
+        if($aclOrganizationId===false) {
             $this->Session->setFlash(__('msg_not_permission'));
-            $this->myRedirect(Configure::read('routes_msg_stop'));		
-		}
-		
+            $this->myRedirect(Configure::read('routes_msg_stop'));      
+        }
+        
         App::import('Model', 'Organization');
         $Organization = new Organization;
 
@@ -2313,13 +2313,13 @@ class ExportDocsController extends AppController {
         $options['conditions'] = ['Organization.id' => $organization_id];
         $options['recursive'] = -1;
         $organizationsResults = $Organization->find('first', $options);
-	        		
-		$user = new UserLocal();
-		$user->organization = $organizationsResults;
-		
-		/*
-		 * ctrl ACL su organization_id
-		 */
+                    
+        $user = new UserLocal();
+        $user->organization = $organizationsResults;
+        
+        /*
+         * ctrl ACL su organization_id
+         */
 
         $this->_referentsData($user, $filterOrder, $doc_formato, $debug);
 
@@ -2364,8 +2364,8 @@ class ExportDocsController extends AppController {
         $results = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, $orderBy);
         $this->set(compact('results'));
 
-		self::d([$conditions, $results], $debug);
-		
+        self::d([$conditions, $results], $debug);
+        
         $this->set('fileData', $this->utilsCommons->getFileData($user, $doc_options = 'referents_data', null, null));
         $this->set('organization', $user->organization);
     }
@@ -2387,10 +2387,10 @@ class ExportDocsController extends AppController {
 
     /*
      *  doc_options
-     * 		des-referent-to-supplier            $a = codice
-     * 		des-referent-to-supplier-details    $a = codice
-     * 		des-referent-to-supplier-split-org  $a = codice
-     * 		des-referent-to-supplier-monitoring  $a = codice
+     *      des-referent-to-supplier            $a = codice
+     *      des-referent-to-supplier-details    $a = codice
+     *      des-referent-to-supplier-split-org  $a = codice
+     *      des-referent-to-supplier-monitoring  $a = codice
      *      des-referent-to-supplier-split-org-monitoring  $a = codice
      */
 
@@ -2441,13 +2441,13 @@ class ExportDocsController extends AppController {
 
                     $orderBy = ['Organization.name', 'Article.name ASC', 'Article.id ASC'];
                     $conditions = ['Cart.order_id' => $resultDesOrdersOrganization['DesOrdersOrganization']['order_id'],
-									'Cart.stato' => 'Y',
-									'Cart.deleteToReferent' => 'N'];
+                                    'Cart.stato' => 'Y',
+                                    'Cart.deleteToReferent' => 'N'];
                     $newResults[$numResult]['Cart'] = $De->getArticoliAcquistatiDaUtenteInDesOrdine($this->user, $conditions, $orderBy);
                 } // loop DesOrdersOrganizations
 
-			self::d($newResults,false);
-			
+            self::d($newResults,false);
+            
             $this->set('results', $newResults);
         } else {
             $order_ids = '';
@@ -2457,8 +2457,8 @@ class ExportDocsController extends AppController {
             $order_ids = substr($order_ids, 0, strlen($order_ids) - 1);
 
             $conditions = ['Cart.order_id' => $order_ids,
-							'Cart.stato' => 'Y',
-							'Cart.deleteToReferent' => 'N'];
+                            'Cart.stato' => 'Y',
+                            'Cart.deleteToReferent' => 'N'];
             switch ($doc_options) {
                 case 'des-referent-to-supplier':
                 case 'des-referent-to-supplier-monitoring':
@@ -2490,7 +2490,7 @@ class ExportDocsController extends AppController {
 
             /*
              * rispetto all'ordine del titolare ctrl se il suo ordine 
-             * 		dev'essere validato (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
+             *      dev'essere validato (ArticlesOrder.pezzi_confezione > 1) per la gestione dei colli
              */
             $order_id = 0;
             foreach ($desOrdersResults['DesOrdersOrganizations'] as $desOrdersOrganization) {
@@ -2678,7 +2678,7 @@ class ExportDocsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['SummaryDeliveriesPos.organization_id' => $this->user->organization['Organization']['id'],
-								 'DATE_FORMAT(SummaryDeliveriesPos.created, "%Y")' => (int) $year_pos];
+                                 'DATE_FORMAT(SummaryDeliveriesPos.created, "%Y")' => (int) $year_pos];
         $options['recursive'] = 1;
         $options['order'] = ['User.name', 'Delivery.data'];
         $summaryDeliveriesPosResults = $SummaryDeliveriesPos->find('all', $options);
@@ -2754,7 +2754,7 @@ class ExportDocsController extends AppController {
              */
             $options = [];
             $options['conditions'] = ['SuppliersOrganizationsReferent.supplier_organization_id' => $result['SuppliersOrganization']['id'],
-									  'SuppliersOrganizationsReferent.organization_id' => (int) $this->user->organization['Organization']['id']];
+                                      'SuppliersOrganizationsReferent.organization_id' => (int) $this->user->organization['Organization']['id']];
             $suppliersOrganizationsReferents = $SuppliersOrganization->SuppliersOrganizationsReferent->find('all', $options);
             if (!empty($suppliersOrganizationsReferents)) {
                 foreach ($suppliersOrganizationsReferents as $numResult2 => $suppliersOrganizationsReferent) {
@@ -2770,8 +2770,8 @@ class ExportDocsController extends AppController {
             $results[$numResult]['Articles'] = $SuppliersOrganization->getTotArticlesAttivi($this->user, $result['SuppliersOrganization']['id']);
         }
         
-		self::d($results, false);
-		
+        self::d($results, false);
+        
         $this->set(compact('results'));
 
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'to_suppliers_organizations', $params, null));
@@ -2816,23 +2816,23 @@ class ExportDocsController extends AppController {
             $user_id = $result['User']['id'];
 
             $sql = "SELECT 
-						Cart.qta, Cart.qta_forzato 
-					FROM 
-						" . Configure::read('DB.prefix') . "deliveries as Delivery,
-						" . Configure::read('DB.prefix') . "orders as `Order`,
-						" . Configure::read('DB.prefix') . "carts as Cart
-					WHERE 
-						Delivery.organization_id = " . $this->user->organization['Organization']['id'] . "
-						AND `Order`.organization_id = " . $this->user->organization['Organization']['id'] . "
-						AND Cart.organization_id = " . $this->user->organization['Organization']['id'] . "
-						AND Cart.deleteToReferent = 'N' 
-						AND Cart.stato = 'Y' 
-						AND `Order`.isVisibleFrontEnd = 'Y' 
-						AND `Order`.isVisibleBackOffice = 'Y' 
-						AND Delivery.id = Order.delivery_id
-						AND Cart.order_id = Order.id
-						AND Cart.user_id = $user_id 
-						AND Delivery.id = $delivery_id ";
+                        Cart.qta, Cart.qta_forzato 
+                    FROM 
+                        " . Configure::read('DB.prefix') . "deliveries as Delivery,
+                        " . Configure::read('DB.prefix') . "orders as `Order`,
+                        " . Configure::read('DB.prefix') . "carts as Cart
+                    WHERE 
+                        Delivery.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        AND `Order`.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        AND Cart.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        AND Cart.deleteToReferent = 'N' 
+                        AND Cart.stato = 'Y' 
+                        AND `Order`.isVisibleFrontEnd = 'Y' 
+                        AND `Order`.isVisibleBackOffice = 'Y' 
+                        AND Delivery.id = Order.delivery_id
+                        AND Cart.order_id = Order.id
+                        AND Cart.user_id = $user_id 
+                        AND Delivery.id = $delivery_id ";
             self::d($sql);
             $cartResults = $this->ExportDoc->query($sql);
 
@@ -2845,7 +2845,7 @@ class ExportDocsController extends AppController {
             }
 
             $results[$numResults]['User']['cart_qta_tot'] = $tot_user_qta;
-        } // foreach $users	
+        } // foreach $users 
 
         $this->set(compact('results'));
 
@@ -2884,7 +2884,7 @@ class ExportDocsController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-		App::import('Model', 'SummaryOrderAggregate');
+        App::import('Model', 'SummaryOrderAggregate');
         $SummaryOrderAggregate = new SummaryOrderAggregate;
 
         $conditions = ['Delivery.id' => $delivery_id];
@@ -2895,40 +2895,41 @@ class ExportDocsController extends AppController {
         /*
          *  per ogni user estraggo la qta di ogni singolo ordine
          */
-		$supplier_organizations = []; 
+        $supplier_organizations = []; 
         foreach ($results as $numResults => $result) {
 
             $user_id = $result['User']['id'];
 
             $sql = "SELECT 
-						SuppliersOrganization.id, SuppliersOrganization.name, `Order`.*, Cart.*, ArticlesOrder.* 
-					FROM 
-						".Configure::read('DB.prefix')."deliveries as Delivery,
-						".Configure::read('DB.prefix')."orders as `Order`,
-						".Configure::read('DB.prefix')."articles_orders as ArticlesOrder,
-						".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization,
-						".Configure::read('DB.prefix')."carts as Cart
-					WHERE 
-						Delivery.organization_id = " . $this->user->organization['Organization']['id'] . "
-						AND `Order`.organization_id = " . $this->user->organization['Organization']['id'] . "
-						AND Cart.organization_id = " . $this->user->organization['Organization']['id'] . "
-						and ArticlesOrder.organization_id = ".(int)$this->user->organization['Organization']['id']."
-						and SuppliersOrganization.organization_id = ".(int)$this->user->organization['Organization']['id']."
-						AND Cart.deleteToReferent = 'N' 
-						AND Cart.stato = 'Y' 
-						AND SuppliersOrganization.id = `Order`.supplier_organization_id
-						AND `Order`.isVisibleFrontEnd = 'Y' 
-						AND `Order`.isVisibleBackOffice = 'Y' 
-						AND Delivery.id = Order.delivery_id
-						AND Cart.order_id = Order.id
-						and `Order`.id = ArticlesOrder.order_id
-						and ArticlesOrder.order_id = Cart.order_id
-						and ArticlesOrder.article_id = Cart.article_id
-					    and Cart.deleteToReferent = 'N'
-					    and ArticlesOrder.stato != 'N' 
-						AND Cart.user_id = $user_id 
-						AND Delivery.id = $delivery_id						
-					 ORDER BY SuppliersOrganization.name, `Order`.id ";
+                        SuppliersOrganization.id, SuppliersOrganization.name, `Order`.*, Cart.*, ArticlesOrder.* 
+                    FROM 
+                        ".Configure::read('DB.prefix')."deliveries as Delivery,
+                        ".Configure::read('DB.prefix')."orders as `Order`,
+                        ".Configure::read('DB.prefix')."articles_orders as ArticlesOrder,
+                        ".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization,
+                        ".Configure::read('DB.prefix')."carts as Cart
+                    WHERE 
+                        Delivery.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        AND `Order`.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        AND Cart.organization_id = " . $this->user->organization['Organization']['id'] . "
+                        and ArticlesOrder.organization_id = ".(int)$this->user->organization['Organization']['id']."
+                        and SuppliersOrganization.organization_id = ".(int)$this->user->organization['Organization']['id']."
+                        AND Cart.deleteToReferent = 'N' 
+                        AND Cart.stato = 'Y' 
+                        AND SuppliersOrganization.id = `Order`.supplier_organization_id
+                        AND `Order`.isVisibleFrontEnd = 'Y' 
+                        AND `Order`.isVisibleBackOffice = 'Y' 
+                        AND Delivery.id = Order.delivery_id
+                        AND Cart.order_id = Order.id
+                        and `Order`.id = ArticlesOrder.order_id
+                        and ArticlesOrder.order_id = Cart.order_id
+                        and ArticlesOrder.article_id = Cart.article_id
+                        and Cart.deleteToReferent = 'N'
+                        and ArticlesOrder.stato != 'N' 
+                        AND Cart.user_id = $user_id 
+                        AND Delivery.id = $delivery_id      
+and `Order`.id = 22742                      
+                     ORDER BY SuppliersOrganization.name, `Order`.id ";
             /*
              * fratis
             if($user_id==846)
@@ -2939,57 +2940,60 @@ class ExportDocsController extends AppController {
             // fractis and `Order`.id = $order_id
 
             $tot_user_importo = 0;
-			// debug($cartResults);			
+            // debug($cartResults);         
             foreach ($cartResults as $cartResult) {
-			 	
-				/*
-				 * importo Cart
-				 */
-				if(number_format($cartResult['Cart']['importo_forzato'])==0) {
-					if(number_format($cartResult['Cart']['qta_forzato'])>0)
-						$tot_user_importo = ($cartResult['Cart']['qta_forzato'] * $cartResult['ArticlesOrder']['prezzo']);
-					else 
-						$tot_user_importo = ($cartResult['Cart']['qta'] * $cartResult['ArticlesOrder']['prezzo']);
-				}
-				else {
-					$tot_user_importo = $cartResult['Cart']['importo_forzato'];
-				}
-				
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['id'] = $cartResult['Order']['id'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['delivery_id'] = $cartResult['Order']['delivery_id'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasTrasport'] = $cartResult['Order']['hasTrasport'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostMore'] = $cartResult['Order']['hasCostMore'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostLess'] = $cartResult['Order']['hasCostLess'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['typeGest'] = $cartResult['Order']['typeGest'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_id'] = $cartResult['Order']['supplier_organization_id'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['name'] = $cartResult['Order']['typeGest'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_name'] = $cartResult['SuppliersOrganization']['name'];
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo_orig'] += $tot_user_importo;
-				$results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo'] += $tot_user_importo;
-				
-				$supplier_organizations[$cartResult['SuppliersOrganization']['id']] = $cartResult['SuppliersOrganization']['name'];
-			} // foreach ($cartResults as $cartResult)
-		} // foreach $users	
-		
-		/*
-		* ctrl eventuali
-		* 		- totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
-		* 		- spese di trasporto  (SummaryOrderTrasport)
-		* 		- costi aggiuntivi  (SummaryOrderCostMore)
-		* 		- sconti  (SummaryOrderCostLess)
-		*/
+                
+                /*
+                 * importo Cart
+                 */
+                if(number_format($cartResult['Cart']['importo_forzato'])==0) {
+                    if(number_format($cartResult['Cart']['qta_forzato'])>0)
+                        $tot_user_importo = ($cartResult['Cart']['qta_forzato'] * $cartResult['ArticlesOrder']['prezzo']);
+                    else 
+                        $tot_user_importo = ($cartResult['Cart']['qta'] * $cartResult['ArticlesOrder']['prezzo']);
+                }
+                else {
+                    $tot_user_importo = $cartResult['Cart']['importo_forzato'];
+                }
+                
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['id'] = $cartResult['Order']['id'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['delivery_id'] = $cartResult['Order']['delivery_id'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasTrasport'] = $cartResult['Order']['hasTrasport'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['trasport'] = $cartResult['Order']['trasport'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostMore'] = $cartResult['Order']['hasCostMore'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['cost_more'] = $cartResult['Order']['cost_more'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['hasCostLess'] = $cartResult['Order']['hasCostLess'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['cost_less'] = $cartResult['Order']['cost_less'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['typeGest'] = $cartResult['Order']['typeGest'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_id'] = $cartResult['Order']['supplier_organization_id'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['name'] = $cartResult['Order']['typeGest'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['supplier_organization_name'] = $cartResult['SuppliersOrganization']['name'];
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo_orig'] += $tot_user_importo;
+                $results[$numResults]['Order'][$cartResult['Order']['supplier_organization_id']]['tot_user_importo'] += $tot_user_importo;
+                
+                $supplier_organizations[$cartResult['SuppliersOrganization']['id']] = $cartResult['SuppliersOrganization']['name'];
+            } // foreach ($cartResults as $cartResult)
+        } // foreach $users 
+        
+        /*
+        * ctrl eventuali
+        *       - totali impostati dal referente (SummaryOrder) in Carts::managementCartsGroupByUsers 
+        *       - spese di trasporto  (SummaryOrderTrasport)
+        *       - costi aggiuntivi  (SummaryOrderCostMore)
+        *       - sconti  (SummaryOrderCostLess)
+        */
  
-		foreach ($results as $numResults => $result) {
-	
+        foreach ($results as $numResults => $result) {
+    
             // debug($result);
-			
-			if(isset($result['Order'])) {
-			
+            
+            if(isset($result['Order'])) {
+            
                 foreach ($result['Order'] as $supplier_organization_id => $order) {
 
-        			$user_id = $result['User']['id'];
+                    $user_id = $result['User']['id'];
                     $delivery_id = $order['delivery_id'];
-    				$order_id = $order['id'];
+                    $order_id = $order['id'];
 
                     $hasTrasport = $order['hasTrasport']; /* trasporto */
                     $trasport = $order['trasport'];
@@ -2999,49 +3003,49 @@ class ExportDocsController extends AppController {
                     $cost_less = $order['cost_less'];
                     $typeGest = $order['typeGest'];   /* AGGREGATE / SPLIT */
 
-    				$resultsSummaryOrder = [];
-    				$resultsSummaryOrderTrasport = [];
-    				$resultsSummaryOrderCostMore = [];
-    				$resultsSummaryOrderCostLess = [];
+                    $resultsSummaryOrder = [];
+                    $resultsSummaryOrderTrasport = [];
+                    $resultsSummaryOrderCostMore = [];
+                    $resultsSummaryOrderCostLess = [];
 
-    				if ($hasTrasport == 'Y' && $trasport!=0.00) {
-    					App::import('Model', 'SummaryOrderTrasport');
-    					$SummaryOrderTrasport = new SummaryOrderTrasport;
+                    if ($hasTrasport == 'Y' && $trasport!=0.00) {
+                        App::import('Model', 'SummaryOrderTrasport');
+                        $SummaryOrderTrasport = new SummaryOrderTrasport;
 
-    					$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id, $user_id);
+                        $resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id, $user_id);
                         if(!empty($resultsSummaryOrderTrasport)) {
-    						// debug($resultsSummaryOrderTrasport);
-    						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
-    					}
-    				}
-    				if ($hasCostMore == 'Y' && $cost_more!=0.00) {
-    					App::import('Model', 'SummaryOrderCostMore');
-    					$SummaryOrderCostMore = new SummaryOrderCostMore;
+                            // debug($resultsSummaryOrderTrasport);
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
+                        }
+                    }
+                    if ($hasCostMore == 'Y' && $cost_more!=0.00) {
+                        App::import('Model', 'SummaryOrderCostMore');
+                        $SummaryOrderCostMore = new SummaryOrderCostMore;
 
-    					$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id, $user_id);
-    					if(!empty($resultsSummaryOrderCostMore))
-    						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
-    				}
-    				if ($hasCostLess == 'Y' && $cost_less!=0.00) {
-    					App::import('Model', 'SummaryOrderCostLess');
-    					$SummaryOrderCostLess = new SummaryOrderCostLess;
+                        $resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id, $user_id);
+                        if(!empty($resultsSummaryOrderCostMore))
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
+                    }
+                    if ($hasCostLess == 'Y' && $cost_less!=0.00) {
+                        App::import('Model', 'SummaryOrderCostLess');
+                        $SummaryOrderCostLess = new SummaryOrderCostLess;
 
-    					$resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->user, $order_id, $user_id);
-    					if(!empty($resultsSummaryOrderCostLess)) {
-    						// debug('BEFORE '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
-    						// debug('importo_cost_less '.$resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less']);
-    						$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
-    					    // debug('AFTER '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
-    					}
-    				}	
+                        $resultsSummaryOrderCostLess = $SummaryOrderCostLess->select_to_order($this->user, $order_id, $user_id);
+                        if(!empty($resultsSummaryOrderCostLess)) {
+                            // debug('BEFORE '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
+                            // debug('importo_cost_less '.$resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less']);
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
+                            // debug('AFTER '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
+                        }
+                    }   
                 } // foreach ($result['Order'] as $supplier_organization_id => $order)
    
-			} // end if(isset($result['Order']))
+            } // end if(isset($result['Order']))
         } // foreach ($cartResults as $cartResult)
-	
-		$this->set(compact('results', 'supplier_organizations'));
-		self::d($results);
-	
+    
+        $this->set(compact('results', 'supplier_organizations'));
+        self::d($results);
+    
         $params = ['delivery_id' => $delivery_id];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'users_data_delivery_sum_orders', $params, null));
         $this->set('organization', $this->user->organization);
@@ -3056,7 +3060,7 @@ class ExportDocsController extends AppController {
                 break;
         }
     }
-	
+    
     public function admin_cashsData($doc_formato) {
 
         $debug = false;
@@ -3075,7 +3079,7 @@ class ExportDocsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
-								  'User.block' => 0];
+                                  'User.block' => 0];
 
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
@@ -3085,7 +3089,7 @@ class ExportDocsController extends AppController {
 
             $options = [];
             $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
-									  'Cash.user_id' => $result['User']['id']];
+                                      'Cash.user_id' => $result['User']['id']];
             $userResults = $Cash->find('first', $options);
             if (!empty($userResults))
                 $results[$numResult]['Cash'] = $userResults['Cash'];
@@ -3108,7 +3112,7 @@ class ExportDocsController extends AppController {
         switch ($doc_formato) {
             case 'PREVIEW':
                 $this->layout = 'ajax';  // mai utilizzato
-				$this->render('cashs_data');
+                $this->render('cashs_data');
                 break;
             case 'PDF':
                 $this->layout = 'pdf';
@@ -3214,7 +3218,7 @@ class ExportDocsController extends AppController {
         switch ($doc_formato) {
             case 'PREVIEW':
                 $this->layout = 'ajax';  // mai utilizzato
-				$this->render('cashs_history_data');
+                $this->render('cashs_history_data');
                 break;
             case 'PDF':
                 $this->layout = 'pdf';
@@ -3246,15 +3250,15 @@ class ExportDocsController extends AppController {
         $ArticlesOrder = new ArticlesOrder;
 
         $conditions = ['Order.id' => $order_id,
-						'Order.organization_id' => $this->tmp_user->organization['Organization']['id'],
-						'Cart.stato' => 'Y',
-						'Cart.deleteToReferent' => 'N'];
+                        'Order.organization_id' => $this->tmp_user->organization['Organization']['id'],
+                        'Cart.stato' => 'Y',
+                        'Cart.deleteToReferent' => 'N'];
         $orderBy = ['Article' => 'Article.id'];
         $results = $ArticlesOrder->getArticoliAcquistatiDaUtenteInOrdine($this->tmp_user, $conditions, $orderBy);
         
-		self::d($results, false);
-		
-        // 	'PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'
+        self::d($results, false);
+        
+        //  'PZ', 'GR', 'HG', 'KG', 'ML', 'DL', 'LT'
         $newResults = [];
         $pesoResults = [];
         $peso_gr_totale = 0;
@@ -3335,13 +3339,13 @@ class ExportDocsController extends AppController {
 
                 $newResults[$result['Article']['id']]['Article']['organization_id'] = $result['Article']['organization_id'];
                 $newResults[$result['Article']['id']]['Article']['id'] = $result['Article']['id'];
-				/*
-				 * per gli articoli DES che prendono gli articoli da un'altro GAS il pregresso potrebbe non avere ArticlesOrder.name
-				 */					
-				if(!empty($result['ArticlesOrder']['name']))
-					$newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['ArticlesOrder']['name'];
-				else
-					$newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['Article']['name'];
+                /*
+                 * per gli articoli DES che prendono gli articoli da un'altro GAS il pregresso potrebbe non avere ArticlesOrder.name
+                 */                 
+                if(!empty($result['ArticlesOrder']['name']))
+                    $newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['ArticlesOrder']['name'];
+                else
+                    $newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['Article']['name'];
                 $newResults[$result['Article']['id']]['Article']['codice'] = $result['Article']['codice'];
                 $newResults[$result['Article']['id']]['Article']['bio'] = $result['Article']['bio'];
                 $newResults[$result['Article']['id']]['Article']['img1'] = $result['Article']['img1'];
@@ -3406,7 +3410,7 @@ class ExportDocsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['Organization.type' => 'GAS'];
-        $options['order'] = ['Organization.name'];		
+        $options['order'] = ['Organization.name'];      
         $options['recursive'] = -1;
 
         $results = $Organization->find('all', $options);
@@ -3417,20 +3421,20 @@ class ExportDocsController extends AppController {
             $organization_id = $result['Organization']['id'];
 
             $tot_users = $OrganizationsPay->totUsers($organization_id);
-			if($organization_id==37)
-				$tot_users = 24;
-				
+            if($organization_id==37)
+                $tot_users = 24;
+                
             /*
-			 * tolgo info@nomegas.portalgas.it
-			 * eventuale dispensa@nomegas.portalgas.it
-			 */
-			$paramsConfig = json_decode($result['Organization']['paramsConfig'], true); 
-			if($paramsConfig['hasStoreroom']=='Y') 
-				$users_default = 2;
-			else
-				$users_default = 1;
-			$tot_users = ($tot_users - $users_default);
-			
+             * tolgo info@nomegas.portalgas.it
+             * eventuale dispensa@nomegas.portalgas.it
+             */
+            $paramsConfig = json_decode($result['Organization']['paramsConfig'], true); 
+            if($paramsConfig['hasStoreroom']=='Y') 
+                $users_default = 2;
+            else
+                $users_default = 1;
+            $tot_users = ($tot_users - $users_default);
+            
             $tot_orders = $OrganizationsPay->totOrders($organization_id, $year);
 
             $tot_suppliers_organizations = $OrganizationsPay->totSuppliersOrganizations($organization_id);
@@ -3448,12 +3452,12 @@ class ExportDocsController extends AppController {
             /*
              * verifica se ho pagato
              */
-		    $options = [];
-	        $options['conditions'] = ['OrganizationsPay.organization_id' => $organization_id, 
-	        						   'OrganizationsPay.year' => $year];
-	        $options['fields'] = ['OrganizationsPay.importo', 'OrganizationsPay.data_pay', 'OrganizationsPay.beneficiario_pay', 'OrganizationsPay.type_pay'];
-	        $options['recursive'] = -1;
-	        $organizationsPayResults = $OrganizationsPay->find('first', $options);
+            $options = [];
+            $options['conditions'] = ['OrganizationsPay.organization_id' => $organization_id, 
+                                       'OrganizationsPay.year' => $year];
+            $options['fields'] = ['OrganizationsPay.importo', 'OrganizationsPay.data_pay', 'OrganizationsPay.beneficiario_pay', 'OrganizationsPay.type_pay'];
+            $options['recursive'] = -1;
+            $organizationsPayResults = $OrganizationsPay->find('first', $options);
              
             $resultsNew[$numResult]['OrganizationsPay']['beneficiario_pay'] = $organizationsPayResults['OrganizationsPay']['beneficiario_pay'];
             $resultsNew[$numResult]['OrganizationsPay']['type_pay'] = $organizationsPayResults['OrganizationsPay']['type_pay'];
