@@ -98,6 +98,10 @@ class XTCPREVIEW
     public function getCELLWIDTH80() { return "80";}
     public function getCELLWIDTH90() { return "90";}
     public function getCELLWIDTH100() { return "100";}
+    public function getCELLWIDTH110() { return "110";}
+    public function getCELLWIDTH120() { return "120";}
+    public function getCELLWIDTH130() { return "130";}
+    public function getCELLWIDTH140() { return "140";}
     public function getCELLWIDTH150() { return "150";}
     public function getCELLWIDTH160() { return "160";}
     public function getCELLWIDTH170() { return "170";}

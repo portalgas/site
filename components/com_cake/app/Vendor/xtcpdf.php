@@ -23,6 +23,10 @@ class XTCPDF  extends TCPDF
     private $CELLWIDTH80 = 80;
     private $CELLWIDTH90 = 90;
     private $CELLWIDTH100 = 100;
+    private $CELLWIDTH110 = 110;
+    private $CELLWIDTH120 = 120;
+    private $CELLWIDTH130 = 130;
+    private $CELLWIDTH140 = 140;
     private $CELLWIDTH150 = 150;
     private $CELLWIDTH160 = 160;
     private $CELLWIDTH170 = 170;
@@ -230,6 +234,18 @@ class XTCPDF  extends TCPDF
 	 }
 	 public function getCELLWIDTH100() {
 	 	return $this->CELLWIDTH100;
+	 }
+	 public function getCELLWIDTH110() {
+	 	return $this->CELLWIDTH110;
+	 }
+	 public function getCELLWIDTH120() {
+	 	return $this->CELLWIDTH120;
+	 }
+	 public function getCELLWIDTH130() {
+	 	return $this->CELLWIDTH130;
+	 }
+	 public function getCELLWIDTH140() {
+	 	return $this->CELLWIDTH140;
 	 }
 	 public function getCELLWIDTH150() {
 	 	return $this->CELLWIDTH150;

@@ -48,10 +48,22 @@ class ProdGasPromotionsUserGasManager extends AppModel {
             $Cart->bindModel(['belongsTo' => ['User' => $belongsTo]]);  
             $cartResults = $Cart->find('all', $options);  
             // debug($Cart);  
-            debug($options);  
-            debug($cartResults);// exit; 
-            $results[$numResult]['ProdGasSupplier'] = $cartResults;
+            // debug($options);  
+            // debug($cartResults);// exit; 
+            $results['ProdGasPromotionsOrganization'][$numResult]['Cart'] = $cartResults;
+
+            /*
+             * recupero i dati dell'organization
+             */
+            foreach($results['Organization'] as $numResult2 => $organization) {
+                if($gas_organization_id==$organization['Organization']['id']) {
+                  $results['ProdGasPromotionsOrganization'][$numResult]['Organization'] = $organization['Organization'];
+                  break;
+                }
+            }
+
         }
 
-	}
+        return $results;
+	   }
 }

@@ -607,6 +607,20 @@ class UtilsCommons {
                 $fileName = 'stampa_produttori_';
                 $fileTitle = 'Stampa produttori ';
                 break;
+            /*
+             * promotions
+             */
+            case 'prod_gas_promotion_user_gas':
+                $prod_gas_promotion_id = $params['prod_gas_promotion_id'];
+                
+                App::import('Model', 'ProdGasPromotion');
+                $ProdGasPromotion = new ProdGasPromotion;
+                $conditions = ['ProdGasPromotion.organization_id' => (int) $user->organization['Organization']['id'], 'ProdGasPromotion.id' => $prod_gas_promotion_id];
+                $prodGasPromotionResults = $ProdGasPromotion->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+
+                $fileName = 'promozione_' . $prodGasPromotionResults['ProdGasPromotion']['name'] . '_';
+                $fileTitle = 'Promozione ' . $prodGasPromotionResults['ProdGasPromotion']['name'] . ' ';
+                break;
         }
 
         $fileName .= date("Ymd");

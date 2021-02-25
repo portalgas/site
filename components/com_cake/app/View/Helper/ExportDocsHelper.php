@@ -2,7 +2,20 @@
 class ExportDocsHelper extends AppHelper {
         
 	var $helpers = ['Html','Time'];
-	
+
+	/*
+	 * T I T L E
+	*/
+	public function title($label) {
+		
+		$tmp  = '';
+		$tmp .= '<div class="h1Pdf">';
+		$tmp .= $label;
+		$tmp .= '</div>';
+
+		return $tmp;
+	}
+
 	/*
 	 * D E L I V E R Y
 	*/
@@ -81,6 +94,21 @@ class ExportDocsHelper extends AppHelper {
 		return $tmp;
 	}
 	
+	/*
+	 * P R O M O T I O N
+	*/
+	public function promotion($promotion) {
+		
+		$tmp  = '';
+		$tmp .= '<div class="h1Pdf">';
+		$tmp .=  __('ProdGasPromotion').' ';
+		$tmp .= $promotion['ProdGasPromotion']['name'];
+		$tmp .= ' del produttore '.$promotion['SuppliersOrganization']['name'];
+		$tmp .= '</div>';
+
+		return $tmp;
+	}
+
 	public function desSupplier($supplier) {
 	
 		$tmp  = '';

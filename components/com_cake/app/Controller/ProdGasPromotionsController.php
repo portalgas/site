@@ -762,7 +762,7 @@ class ProdGasPromotionsController extends AppController {
 		self::d($options, $debug);
 		self::d($prodGasPromotionResults, $debug);
 		
-		if($prodGasPromotionResults['ProdGasPromotion']['state_code']=='PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS') {
+		if($prodGasPromotionResults['ProdGasPromotion']['state_code']!='PRODGASPROMOTION-GAS-WORKING') {
 			$this->Session->setFlash(__('msg_not_promotion_state'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));			
 		}
@@ -1191,6 +1191,11 @@ class ProdGasPromotionsController extends AppController {
 		self::d($options, $debug);
 		self::d($prodGasPromotionResults, $debug);
 
+		if($prodGasPromotionResults['ProdGasPromotion']['state_code']!='PRODGASPROMOTION-GAS-USERS-WORKING') {
+			$this->Session->setFlash(__('msg_not_promotion_state'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));			
+		}
+
 		/*
 		 * setting fields
 		*/
@@ -1342,13 +1347,24 @@ class ProdGasPromotionsController extends AppController {
 				            $data['ArticlesOrder']['article_organization_id'] = $articleResult['Article']['organization_id'];
 				            $data['ArticlesOrder']['article_id'] = $articleResult['Article']['id'];
 				            $data['ArticlesOrder']['name'] = $articleResult['Article']['name'];
-				            $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				            /* 
+				             * $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				             * imposto l'importo scontato
+				             */
+				            $data['ArticlesOrder']['prezzo'] = $prezzo_unita;
 				            $data['ArticlesOrder']['qta_cart'] = 0;
 				            $data['ArticlesOrder']['pezzi_confezione'] = $articleResult['Article']['pezzi_confezione'];
 				            $data['ArticlesOrder']['qta_minima'] = $articleResult['Article']['qta_minima'];
-				            $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
-				            $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
-				            $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+				            
+				            /* 
+				             * $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+				             * $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
+				             * $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
+				             * imposto la qta della promozione
+				             */	
+				            $data['ArticlesOrder']['qta_massima'] = $qta;
+				            $data['ArticlesOrder']['qta_minima_order'] = $qta;        
+				            $data['ArticlesOrder']['qta_massima_order'] = $qta;
 				            $data['ArticlesOrder']['qta_multipli'] = $articleResult['Article']['qta_multipli'];
 				            $data['ArticlesOrder']['flag_bookmarks'] = 'N';
 				            if ($this->user->organization['Organization']['hasFieldArticleAlertToQta'] == 'N')
@@ -1611,10 +1627,71 @@ class ProdGasPromotionsController extends AppController {
 		$ProdGasSupplier = new ProdGasSupplier;	
 		
 		$organizationResults = $ProdGasSupplier->getOrganizationsAssociateWithDeliveries($this->user, $prod_gas_promotion_id, $debug);
-		$organizationNotResults = $ProdGasSupplier->getOrganizationsNotAssociate($this->user, $debug);
 	
 		$this->set('organizationResults',$organizationResults);		
-		$this->set('organizationNotResults',$organizationNotResults);	
+	}
+
+	public function admin_view_gas_users($prod_gas_promotion_id) {
+	
+		$debug=false;
+		
+		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
+			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));		
+		}
+
+		if (empty($prod_gas_promotion_id)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		
+		$this->request->data = $this->ProdGasPromotion->getProdGasPromotion($this->user, $prod_gas_promotion_id);
+		
+		/*
+		 * get elenco Article
+		 */	
+		App::import('Model', 'Article');
+		$Article = new Article;
+		
+		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+		
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+								  'SuppliersOrganization.id' => $this->user->organization['Supplier']['SuppliersOrganization']['id']];
+		$options['order'] = ['Article.name' => 'asc']; 
+		$options['recursive'] = 0;					  		
+		$articleResults = $Article->find('all', $options);
+		self::d($options, $debug);
+		self::d($articleResults, $debug);
+
+		if(!empty($this->request->data['ProdGasArticlesPromotion'])) {
+			
+			$prodGasArticlesPromotion = $this->request->data['ProdGasArticlesPromotion'];  // copio perche' dopo faccio unset
+			
+			foreach($articleResults as $numResults => $articleResult) {
+				
+				foreach($this->request->data['ProdGasArticlesPromotion'] as $numResults2 => $prodGasArticlesPromotion) {
+					if($articleResult['Article']['organization_id']==$prodGasArticlesPromotion['Article']['organization_id'] && $articleResult['Article']['id']==$prodGasArticlesPromotion['Article']['id']) {
+						unset($articleResults[$numResults]);
+						unset($prodGasArticlesPromotion[$numResults]);
+					}
+				}
+			}
+		} // end if(!empty($this->request->data['ProdGasArticlesPromotion']))
+		
+		$this->set(compact('articleResults'));	 
+		
+		/*
+		 * get elenco Organizations
+		*/
+		App::import('Model', 'ProdGasSupplier');
+		$ProdGasSupplier = new ProdGasSupplier;	
+		
+		$organizationResults = $ProdGasSupplier->getOrganizationsAssociate($this->user, $prod_gas_promotion_id, $debug);
+	
+		$this->set('organizationResults',$organizationResults);		
 	}
 
 	public function admin_delete($prod_gas_promotion_id, $type='') {

@@ -3493,9 +3493,20 @@ class ExportDocsController extends AppController {
         $organization_id=0; // filtra per la promozione per il GAS passato
 
         $results = $ProdGasPromotionsUserGasManager->getCartOrderUsers($this->user, $prod_gas_promotion_id, $organization_id, $debug);
+        // debug($results);
 
-        debug($results);
-
+        /*
+        foreach($results['ProdGasPromotionsOrganization'] as $numResult => $prodGasPromotionsOrganization) {
+            debug($prodGasPromotionsOrganization['Organization']['name']);
+            if(!empty($prodGasPromotionsOrganization['Cart'])) {
+              foreach($prodGasPromotionsOrganization['Cart'] as $numResult => $cart) {
+                  debug($cart['Cart']['qta']);
+                  debug($cart['ArticlesOrder']['name']);
+                  debug($cart['ArticlesOrder']['prezzo']);
+              }
+            }
+        }
+        */
         $this->set(compact('results'));
 
         $params = ['prod_gas_promotion_id' => $prod_gas_promotion_id];

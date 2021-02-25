@@ -24,59 +24,99 @@ $html = '';
 
 if (!empty($results)) {
 
-		$html = '';
-		$html .= '	<table cellpadding="0" cellspacing="0">';
-		$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
-		$html .= '		<tr>';
-		
-		$html .= '			<th width="'.$output->getCELLWIDTH30().'">'.__('N.').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Mail').'</th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('Importo').'</th>';				
-		$html .= '			<th width="'.$output->getCELLWIDTH200().'">'.__('Nota').'</th>';
+	/*
+	 * P R O M O T I O N S 
+	 */
+	$html .= $this->ExportDocs->promotion($results);
 
-		$html .= '		</tr>';				
-		$html .= '	</thead><tbody>';
-			
-		$i=0;
-		$tot_importo=0;
-		foreach ($results as $numResult => $result) {
-			
-			$html .= '<tr>';
-			$html .= '			<td width="'.$output->getCELLWIDTH30().'">'.($numResult + 1).'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$result['User']['email'].'</td>';
-			$html .= '			<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$result['Cash']['importo_e'].'</td>';	
-			$html .= '			<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
-			$html .= 'background-color:';
-			if($result['Cash']['importo']=='0.00') $html .= '#fff';
-			else
-			if($result['Cash']['importo']<0) $html .= 'red';
-			else
-			if($result['Cash']['importo']>0) $html .= 'green';
-			$html .= '">';			
-			$html .= '</td>';				
-			$html .= '			<td width="'.$output->getCELLWIDTH200().'">'.$result['Cash']['nota'].'</td>';
-			$html .= '</tr>';
-			
-			$tot_importo += $result['Cash']['importo'];
-			$i++;
-		}		
+	foreach($results['ProdGasPromotionsOrganization'] as $numResult => $prodGasPromotionsOrganization) {
 		
 		/*
-		 * totale cassa
+		 * G A S 
 		 */
-		$tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-		
-		$html .= '		<tr>';
-		$html .= '			<th width="'.$output->getCELLWIDTH30().'"></th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'"></th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH200().'"></th>';
-		$html .= '			<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.$tot_importo.'&nbsp;&euro;</th>';				
-		$html .= '			<th width="'.$output->getCELLWIDTH200().'"></th>';
-		$html .= '		</tr>';				
-		$html .= '</tbody></table>';
+		$html .= $this->ExportDocs->title($prodGasPromotionsOrganization['Organization']['name']);
+
+        if(!empty($prodGasPromotionsOrganization['Cart'])) {
+
+			$html .= '	<table cellpadding="0" cellspacing="0">';
+			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+			$html .= '		<tr>';
+			
+			$html .= '			<th width="'.$output->getCELLWIDTH120().'">'.__('User').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH130().'">'.__('Name').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH80().'">'.__('Conf').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH80().'">'.__('Prezzo/UM').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Qta').'</th>';
+			$html .= '			<th width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.__('Importo').'</th>';				
+			$html .= '		</tr>';				
+			$html .= '	</thead><tbody>';
 				
+			$tot_importo_user = 0;
+			$tot_qta_user = 0;
+            $user_id_old = 0;
+            foreach($prodGasPromotionsOrganization['Cart'] as $numResult => $cart) {
+				
+				$html .= '<tr>';
+				$html .= '<td width="'.$output->getCELLWIDTH120().'">'.$cart['User']['name'].'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH130().'">'.$cart['ArticlesOrder']['name'].'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH80().'">'.$this->App->getArticleConf($cart['Article']['qta'], $cart['Article']['um']).'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH80().'">'.$this->App->getArticlePrezzoUM($cart['ArticlesOrder']['prezzo'], $cart['Article']['qta'], $cart['Article']['um'], $cart['Article']['um_riferimento']).'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$this->App->getArticlePrezzo($cart['ArticlesOrder']['prezzo']).'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cart['Cart']['qta'].'</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.$this->App->getArticleImporto($cart['ArticlesOrder']['prezzo'], $cart['Cart']['qta']).'</td>';
+				$html .= '</tr>';
+				
+				$tot_importo_user += ($cart['ArticlesOrder']['prezzo'] * $cart['Cart']['qta']);
+				$tot_qta_user += $cart['Cart']['qta'];
+				
+				/*
+				 * totale per utente
+				 */				
+				if($user_id_old>0 && $user_id_old != $cart['User']['id']) {
+					$tot_importo_user = number_format($tot_importo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					
+					$html .= '<tr>';
+					$html .= '	<th width="'.$output->getCELLWIDTH120().'"></th>';
+					$html .= '  <th width="'.$output->getCELLWIDTH130().'"></th>';
+					$html .= '	<th width="'.$output->getCELLWIDTH80().'"></th>';
+					$html .= '	<th width="'.$output->getCELLWIDTH80().'"></th>';
+					$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
+					$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$tot_qta_user.'</th>';
+					$html .= '	<th width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.$tot_importo_user.'&nbsp;&euro;</th>';
+					$html .= '</tr>';				
+
+					$tot_importo_user = 0;
+				}
+
+				$user_id_old = $cart['User']['id'];
+			} // end foreach($prodGasPromotionsOrganization['Cart'] as $numResult => $cart)
+
+			/*
+			 * totale per utente
+			 */				
+			$tot_importo_user = number_format($tot_importo_user,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+			
+			$html .= '<tr>';
+			$html .= '	<th width="'.$output->getCELLWIDTH120().'"></th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH130().'"></th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH80().'"></th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH80().'"></th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$tot_qta_user.'</th>';
+			$html .= '	<th width="'.$output->getCELLWIDTH80().'" style="text-align:right;">'.$tot_importo_user.'&nbsp;&euro;</th>';
+			$html .= '</tr>';				
+
+
+			$html .= '</tbody></table>';
+			
+			$html .= '<br />';
+
+        } // end if(!empty($prodGasPromotionsOrganization['Cart']))
+        else {
+			$html .= '<div class="h3Pdf">Nessun acquisto da parte dei gasisti del G.A.S.</div>';
+        }			
+	} // end foreach($results['ProdGasPromotionsOrganization'] as $numResult => $prodGasPromotionsOrganization)
 }	
 
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');

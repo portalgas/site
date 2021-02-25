@@ -70,7 +70,7 @@ if(!empty($results)) {
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'delete', $result['ProdGasPromotion']['id'], null, 'type=GAS-USERS'], ['class' => 'action actionDelete','title' => __('Delete')]);		
 			break;
 			case "PRODGASPROMOTION-GAS-USERS-OPEN":
-				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'edit_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionEdit','title' => __('Edit')]);
+				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'view_gas_users', $result['ProdGasPromotion']['id']], ['class' => 'action actionView','title' => __('View')]);
 				echo $this->Html->link(null, ['controller' => 'ProdGasPromotions', 'action' => 'change_state_code', $result['ProdGasPromotion']['id'], 'next_code=PRODGASPROMOTION-GAS-USERS-WORKING'], ['class' => 'action actionOpen','title' => __('ChangeStateProdGasPromotion')]);									
 			break;
 			case "PRODGASPROMOTION-GAS-USERS-CLOSE":
