@@ -198,7 +198,7 @@ class plgUserJoomla extends JPlugin
 		// Hit the user last visit field
 		$instance->setLastVisit();
 
-				if($options['action'] == 'core.login.site') {
+			if($options['action'] == 'core.login.site') {
 			/*
 			 * front-end fractis
 			*/
@@ -207,86 +207,28 @@ class plgUserJoomla extends JPlugin
 			 * ctrl se l'utente ha delle Attivita'
 			*/
 			$debug = false;
-			$sql = "SELECT Event.id FROM k_events as Event, k_events_users EventsUser WHERE
-					Event.organization_id = ".(int)$instance->get('organization_id')."
-					and EventsUser.organization_id = ".(int)$instance->get('organization_id')."
-					and EventsUser.user_id = ".$instance->get('id')."
-					and EventsUser.event_id = Event.id 
-					and DATE(Event.date_alert_fe) <= CURDATE() and Event.date_alert_fe != '0000-00-00' and DATE(Event.end) >= CURDATE()";
-			if($debug) echo '<br />'.$sql;
-			$db->setQuery($sql);
-			$results = $db->loadObject();
-			
-			if($debug)  {
-				echo "<pre>";
-				print_r($results);
-				echo "</pre>";
-			}
+			$urlRedirect = '';
 
-			/*
-			 * ctrl se l'utente e' responsabile delle Attivita'
-			*/			
-			if(empty($results)) {
-				$sql = "SELECT Event.id FROM k_events as Event WHERE
-						Event.organization_id = ".(int)$instance->get('organization_id')."
-						and Event.user_id = ".$instance->get('id')."
-						and DATE(Event.date_alert_fe) <= CURDATE() and Event.date_alert_fe != '0000-00-00'and DATE(Event.end) >= CURDATE()";
-				if($debug) echo '<br />'.$sql;
-				$db->setQuery($sql);
-				$results = $db->loadObject();
-				
-				if($debug)  {
-					echo "<pre>";
-					print_r($results);
-					echo "</pre>";
-				}				
-			}
-				
-			if(!empty($results))
-				$urlRedirect = "events";
-			else {
-				/*
-				 * ctrl se l'utente ha delle richieste di pagamento
-				*/
-				$debug = false;
-				$sql = "SELECT
-						RequestPayment.id, RequestPayment.num, RequestPayment.created
-					FROM
-						j_users as User,
-						k_summary_payments as SummaryPayment,
-						k_request_payments as RequestPayment
-					WHERE
-						User.organization_id = ".(int)$instance->get('organization_id')."
-						and SummaryPayment.organization_id = ".(int)$instance->get('organization_id')."
-						and RequestPayment.organization_id = ".(int)$instance->get('organization_id')."
-						and RequestPayment.id = SummaryPayment.request_payment_id
-						and RequestPayment.stato_elaborazione = 'OPEN'
-						and SummaryPayment.stato != 'PAGATO' 
-						and SummaryPayment.user_id = User.id
-						and User.id = ".$instance->get('id')."
-					ORDER BY
-						RequestPayment.created DESC ";
-				if($debug) echo '<br />'.$sql;
-				$db->setQuery($sql);
-				$results = $db->loadObject();
-				
-				if($debug)  {
-					echo "<pre>";
-					print_r($results);
-					echo "</pre>";
-				}
-				
-				if(!empty($results))
-					$urlRedirect = "request.payment";
-				else 
-					$urlRedirect = "organization.home";
-			}
+			$organization_id = $instance->get('organization_id');
+			$user_id = $instance->get('id');
+
+			if(empty($urlRedirect))
+				$urlRedirect = $this->_hasEvents($organization_id, $user_id, $debug);
+			if(empty($urlRedirect))
+				$urlRedirect = $this->_hasRequestPayments($organization_id, $user_id, $debug);
+			if(empty($urlRedirect))
+				$urlRedirect = $this->_hasGasUserPromotions($organization_id, $debug);
+			if(empty($urlRedirect))
+				$urlRedirect = "organization.home";
+
+			$protoloc = $this->_getProtocol();
 
 			if($debug)  {
+				echo '<br />protoloc '.$protoloc;
 				echo '<br />urlRedirect '.$urlRedirect;
 				exit;
 			}
-				
+
 			/*
 			 * redirect 
 			 */
@@ -296,7 +238,7 @@ class plgUserJoomla extends JPlugin
 					FROM
 						k_organizations as Organization 
 					WHERE
-						Organization.id = ".(int)$instance->get('organization_id');
+						Organization.id = ".(int)$organization_id;
 				if($debug) echo '<br />'.$sql;
 				$db->setQuery($sql);
 				$results = $db->loadObject();
@@ -305,21 +247,24 @@ class plgUserJoomla extends JPlugin
 				$app = JFactory::getApplication();
 				switch ($urlRedirect) {
 					case "request.payment":
-						$app->redirect('http://'.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/stampe-'.$j_seo);
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/stampe-'.$j_seo);
 						break;
 					case "events":
-						$app->redirect('http://'.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/events');
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/events');
 						break;
+					case "gas.users.promotions":
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=promozioni');
+						break; 		
 					case "organization.home":
-						$app->redirect('http://'.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
 						break;
 				}					
 			}
 			else {
 				/*
 				 * user con organization_id non valorizzato
-				 */
-				$app->redirect('http://'.$_SERVER['HTTP_HOST'].'/');
+				 */exit;
+				$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/');
 			}
 						
 			// break;
@@ -425,5 +370,143 @@ class plgUserJoomla extends JPlugin
 		}
 
 		return $instance;
+	}
+
+	/*
+	 * ctrl se lo user e' associato ad eventi
+	 */
+	private function _hasEvents($organization_id, $user_id, $debug=false) {
+
+		$db = JFactory::getDBO();
+
+		$sql = "SELECT Event.id FROM k_events as Event, k_events_users EventsUser WHERE
+				Event.organization_id = ".(int)$organization_id."
+				and EventsUser.organization_id = ".(int)$organization_id."
+				and EventsUser.user_id = ".$user_id."
+				and EventsUser.event_id = Event.id 
+				and DATE(Event.date_alert_fe) <= CURDATE() and Event.date_alert_fe != '0000-00-00' and DATE(Event.end) >= CURDATE()";
+		if($debug) echo '<br />'.$sql;
+		$db->setQuery($sql);
+		$results = $db->loadObject();
+		
+		if($debug)  {
+			echo "<pre>";
+			print_r($results);
+			echo "</pre>";
+		}
+
+		/*
+		 * ctrl se l'utente e' responsabile delle Attivita'
+		*/			
+		if(empty($results)) {
+			$sql = "SELECT Event.id FROM k_events as Event WHERE
+					Event.organization_id = ".(int)$organization_id."
+					and Event.user_id = ".$user_id."
+					and DATE(Event.date_alert_fe) <= CURDATE() and Event.date_alert_fe != '0000-00-00'and DATE(Event.end) >= CURDATE()";
+			if($debug) echo '<br />'.$sql;
+			$db->setQuery($sql);
+			$results = $db->loadObject();
+			
+			if($debug)  {
+				echo "<pre>";
+				print_r($results);
+				echo "</pre>";
+			}				
+		}
+
+		if(!empty($results))
+			return 'events';
+		else
+			return '';
+	}	
+
+	/*
+	 * ctrl se l'utente ha delle richieste di pagamento
+	*/
+	private function _hasRequestPayments($organization_id, $user_id, $debug=false) {
+
+		$db = JFactory::getDBO();
+
+		$sql = "SELECT
+				RequestPayment.id, RequestPayment.num, RequestPayment.created
+			FROM
+				j_users as User,
+				k_summary_payments as SummaryPayment,
+				k_request_payments as RequestPayment
+			WHERE
+				User.organization_id = ".(int)$organization_id."
+				and SummaryPayment.organization_id = ".(int)$organization_id."
+				and RequestPayment.organization_id = ".(int)$organization_id."
+				and RequestPayment.id = SummaryPayment.request_payment_id
+				and RequestPayment.stato_elaborazione = 'OPEN'
+				and SummaryPayment.stato != 'PAGATO' 
+				and SummaryPayment.user_id = User.id
+				and User.id = ".$user_id."
+			ORDER BY
+				RequestPayment.created DESC ";
+		if($debug) echo '<br />'.$sql;
+		$db->setQuery($sql);
+		$results = $db->loadObject();
+		
+		if($debug)  {
+			echo "<pre>";
+			print_r($results);
+			echo "</pre>";
+		}
+		
+		if(!empty($results))
+			return 'request.payment';
+		else 
+			return '';
+	}	
+
+	/*
+	 * ctrl se l'utente promozioni type GAS-USERS
+	*/
+	private function _hasGasUserPromotions($organization_id, $debug=false) {
+
+		$db = JFactory::getDBO();
+
+		$sql = "SELECT
+				ProdGasPromotion.id
+			FROM
+				k_prod_gas_promotions as ProdGasPromotion, 
+				k_prod_gas_promotions_organizations as ProdGasPromotionsOrganization
+			WHERE
+				ProdGasPromotionsOrganization.prod_gas_promotion_id = ProdGasPromotion.id
+				and ProdGasPromotionsOrganization.organization_id = ".(int)$organization_id."
+				and ProdGasPromotion.type = 'GAS-USERS'";
+		if($debug) echo '<br />'.$sql;
+		$db->setQuery($sql);
+		$results = $db->loadObject();
+		
+		if($debug)  {
+			echo "<pre>";
+			print_r($results);
+			echo "</pre>";
+		}
+		
+		if(!empty($results))
+			return 'gas.users.promotions';
+		else 
+			return '';
+	}
+	
+	private function _getProtocol() {
+		
+		if(isset($_SERVER['HTTP_REFERER']))
+			$url = $_SERVER['HTTP_REFERER'];
+		else
+		if(isset($_SERVER['HTTP_ORIGIN']))
+			$url = $_SERVER['HTTP_ORIGIN'];
+		else
+			return 'https://';
+
+		if (strpos($url, 'http://') === false)
+		{
+			return 'https://';
+		}
+		else
+			return 'http://';		
 	}
 }

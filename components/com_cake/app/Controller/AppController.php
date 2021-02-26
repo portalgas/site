@@ -111,7 +111,8 @@ class AppController extends Controller {
             unset($this->userGroups[Configure::read('group_id_root_supplier')]);
 
 
-        self::d(["------- BEFORE APPController ---------", $this->user], $debug);
+        if($debug) debug("------- BEFORE APPController ---------");
+        if($debug) debug($this->user);
 		
         /*
          *  B A C K O F F I C E
@@ -380,7 +381,13 @@ class AppController extends Controller {
                 else
                     $this->user->set('organization', $this->_getOrganization($organization_id));
             }
-			
+			else {
+				/*
+				 * se dopo la login vado su ?option=com_cake&controller=Connects&action=index&c_to=promozioni per passare a neo
+				 * non ho organizationId preso da getTemplate
+				 */
+				$this->user->set('organization', $this->_getOrganization($this->user->organization_id));
+			}
 
 			/*
 			 * aggiungo i dati per il prepagati, x BO e FE

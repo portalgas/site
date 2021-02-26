@@ -38,7 +38,7 @@ class ConnectsController extends AppController {
 	* 	non passa da api/connect ma direttamente Rests::connect
     */
    public function _index($scope = 'FE') {
-   		
+
    		if(!isset($this->user->id) || empty($this->user->id))
    			return false;
 
