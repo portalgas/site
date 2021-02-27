@@ -292,7 +292,7 @@ class User extends AppModel {
 		
 		$results = [];
 		$sql = "SELECT 
-					User.organization_id, User.id, User.name, User.username, User.email, 
+					User.organization_id, User.id, User.name, User.username, User.email, User.lastVisitDate, 
 					UserGroupMap.group_id, UserGroup.id, UserGroup.title 
 				FROM
 					".Configure::read('DB.portalPrefix')."user_usergroup_map UserGroupMap,

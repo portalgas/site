@@ -189,6 +189,12 @@ foreach($results as $numResult => $result) {
 			foreach($result['User'] as $numResult => $user) {
 				
 				if($user_id_old != $user['User']['id']) {
+
+					if($user['User']['lastVisitDate']=='0000-00-00 00:00:00')
+						$lastVisitDate = 'Mai';
+					else
+						$lastVisitDate = $this->Time->i18nFormat($user['User']['lastVisitDate'],"%e %B %Y");
+
 					echo '<tr class="no_prod">';
 					echo '<td></td>';
 					echo '<td></td>';
@@ -198,8 +204,8 @@ foreach($results as $numResult => $result) {
 					echo '<td colspan="3">';
 					echo $user['User']['name'].' ['.$user['User']['id'].']';
 					echo '</td>';
-					echo '<td></td>';
-					echo '<td colspan="3">';
+					echo '<td colspan="2"><b>'.__('LastVisitDate').'</b>: '.$lastVisitDate.'</td>';
+					echo '<td colspan="2">';
 					echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
 					echo '</td>';
 					echo '</tr>';	
@@ -210,8 +216,8 @@ foreach($results as $numResult => $result) {
 					echo '<td></td>';
 					echo '<td></td>';
 					echo '<td colspan="3"></td>';
-					echo '<td></td>';
-					echo '<td colspan="3">';
+					echo '<td colspan="2"></td>';
+					echo '<td colspan="2">';
 					echo $user['UserGroup']['title'].' ['.$user['UserGroup']['id'].']';
 					echo '</td>';
 					echo '</tr>';					

@@ -110,7 +110,7 @@ class ProdGasSuppliersImportsController extends AppController {
 					}	
 					/*
 					 * ctrl dati Users
-					 */			 
+					 */			
 					if(!isset($result['User']) || empty($result['User'])) {
 						$results[$numResult]['Users']['sql_update_user'] = sprintf($sql_update_user, $result['Organization']['id'], $result['Supplier']['Supplier']['id']);
 					}
