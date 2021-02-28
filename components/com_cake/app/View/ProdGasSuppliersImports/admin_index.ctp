@@ -11,6 +11,48 @@ echo '<h3>'.__('Suppliers').'</h3>';
 
 echo $this->element('legendaOrganizationProdGas', ['max_id' => $max_id]);
 
+/*
+ * export excel
+ */
+echo '<h2 class="ico-export-docs" style="margin: 5px 0">';
+echo __('Print Report');
+echo '<div class="actions-img">';
+echo '<ul>';
+echo '<li>';					   
+echo $this->App->drawFormRadio('typeDoc','doc_formato', ['options' => ['EXCEL' => 'Excel'], 
+										'value'=> 'EXCEL', 'label' => false]);										
+echo '</li>';
+echo '<li style="padding-left:25px;">';
+echo $this->Html->link(__('Print Report'), '', ['id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Report')]);
+echo '</li>';
+echo '</ul>';
+echo '</div>';
+echo '</h2>';
+?>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	$(function() {
+		$(".blank").attr("target","_blank");
+	});
+	
+	$('#actionExportDoc').click(function() {
+		var doc_formato = $("input[name='data[typeDoc][doc_formato]']:checked").val();
+
+		if(doc_formato==null) {
+			alert("<?php echo __('jsAlertPrintTypeRequired');?>");
+			return false;
+		}
+
+		url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportOrganizationsProdGas&doc_formato='+doc_formato+'&format=notmpl';
+		$('#actionExportDoc').attr('href', url);
+		
+		return true;
+	});	
+});
+</script>
+<?php
 echo '<div class="btn-group">';
  echo ' <button type="button" class="btn btn-info btn-view" data-attr-view="view_all">Visualizzazione completa</button>';
 echo '  <button type="button" class="btn btn-primary btn-view" data-attr-view="only_prod">Visualizzazione sintesi</button>';

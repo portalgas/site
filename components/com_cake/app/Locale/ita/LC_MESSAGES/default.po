@@ -2036,6 +2036,9 @@ msgstr "Trasmetti ai G.A.S."
 msgid "Referent Working"
 msgstr "Permetti ai referenti di lavorarci"
 
+msgid "Print Report"
+msgstr "Stampa il report"
+
 msgid "Print Order"
 msgstr "Stampa l'ordine"
 

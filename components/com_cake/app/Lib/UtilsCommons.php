@@ -621,6 +621,13 @@ class UtilsCommons {
                 $fileName = 'promozione_' . $prodGasPromotionResults['ProdGasPromotion']['name'] . '_';
                 $fileTitle = 'Promozione ' . $prodGasPromotionResults['ProdGasPromotion']['name'] . ' ';
                 break;
+            /*
+             * organization con type PRODGAS 
+             */
+            case 'organizations_prod_gas':
+                $fileName = 'account_produttori_';
+                $fileTitle = 'Account produttori ';
+            break;
         }
 
         $fileName .= date("Ymd");

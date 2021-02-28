@@ -3524,10 +3524,32 @@ class ExportDocsController extends AppController {
                 break;
         }        
     }
+
+    public function admin_exportOrganizationsProdGas($doc_formato = null) {
+
+        App::import('Model', 'ProdGasSuppliersImport');
+        $ProdGasSuppliersImport = new ProdGasSuppliersImport;
+        
+        $debug=false;
+        $organization_id=0; // filtra per la promozione per il GAS passato
+
+        $results = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $organization_id, 0, [], $debug);  
+        // debug($results);
+
+        $this->set(compact('results'));
+
+        $params = [];
+        $this->set('fileData', $this->utilsCommons->getFileData($this->user, $doc_options = 'organizations_prod_gas', $params, null));
+        
+        switch ($doc_formato) {
+            case 'EXCEL':
+                $this->layout = 'excel'; 
+                $this->render('organizations_prod_gas_excel');
+            break;
+        }
+    }  
 }
 
 class UserLocal {
-
     public $organization;
-
 }
