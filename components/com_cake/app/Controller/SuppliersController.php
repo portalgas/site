@@ -471,11 +471,13 @@ class SuppliersController extends AppController {
         $this->set('direction', $direction);
         $this->set('page', $page);
 
+        $options = [];
+        $options['conditions'] = array('Supplier.id' => $id);
+        $options['recursive'] = 1;
+        $results = $this->Supplier->find('first', $options);
+
         if ($this->request->is('post') || $this->request->is('put')) {
-
-            $this->Supplier->create();
-
-
+ 
             /*
              * 	$img1 = array(
              * 		'name' => 'immagine.jpg',
@@ -510,19 +512,18 @@ class SuppliersController extends AppController {
                         $imgNewName = Configure::read('App.prefix.upload.content') . $id . '.' . $ext;
 
                     if (move_uploaded_file($img1['tmp_name'], $path_upload . $imgNewName)) {
-                        $this->request->data['Supplier']['img1'] = $imgNewName;
+                        $results['Supplier']['img1'] = $imgNewName;
                     } else
                         $this->Session->setFlash(__('Error upload move_uploaded_file ') . $img1['error']);
                 } else
                     $this->Session->setFlash(__('Error upload is_uploaded_file ') . $img1['error']);
             } // end if(!empty($this->request->data['Document']['img1']['name'])) 
 
+            $results['Supplier'] = $this->request->data['Supplier'];
             if (!empty($this->request->data['Supplier']['www']))
-                $this->request->data['Supplier']['www'] = $this->traslateWww($this->request->data['Supplier']['www']);
+                $results['Supplier']['www'] = $this->traslateWww($this->request->data['Supplier']['www']);
 
-            if ($this->Supplier->save($this->request->data)) {
-
-                $this->request->data = $this->Supplier->read($id, 0);
+            if ($this->Supplier->save($results['Supplier'])) {
 
                 /*
                  * Aggiorno (name, category_supplier_id) di eventuali SuppliersOrganization
@@ -537,9 +538,9 @@ class SuppliersController extends AppController {
                         $sql = "UPDATE
 								 	" . Configure::read('DB.prefix') . "suppliers_organizations 
 								SET  
-									name = '" . addslashes($this->request->data['Supplier']['name']) . "',
-									category_supplier_id = ".$this->request->data['Supplier']['category_supplier_id'];
-						if($this->request->data['Supplier']['can_promotions']=='N') 
+									name = '" . addslashes($results['Supplier']['name']) . "',
+									category_supplier_id = ".$results['Supplier']['category_supplier_id'];
+						if($results['Supplier']['can_promotions']=='N') 
 							$sql .= ", can_promotions = 'N' "; 					
 						$sql .= " WHERE id = " . (int) $suppliersOrganization['SuppliersOrganization']['id'];
                         self::d($sql, false);
@@ -553,10 +554,6 @@ class SuppliersController extends AppController {
                 $this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
             }
         } else {
-            $options = [];
-            $options['conditions'] = array('Supplier.id' => $id);
-            $options['recursive'] = 1;
-            $results = $this->Supplier->find('first', $options);
 
             /*
              * estraggo il nome dell'organizzazione per ogni fornitore
@@ -568,9 +565,9 @@ class SuppliersController extends AppController {
                 $Organization = new Organization;
 
                 $options = [];
-                $options['conditions'] = array('Organization.id' => $suppliersOrganization['organization_id']);
+                $options['conditions'] = ['Organization.id' => $suppliersOrganization['organization_id']];
                 $options['recursive'] = -1;
-                $options['fields'] = array('name', 'descrizione', 'mail', 'www', 'www2');
+                $options['fields'] = ['name', 'descrizione', 'mail', 'www', 'www2'];
                 $organizationResults = $Organization->find('first', $options);
                 $results['SuppliersOrganization'][$ii]['Organization'] = $organizationResults['Organization'];
             }
@@ -580,7 +577,7 @@ class SuppliersController extends AppController {
             $CategoriesSupplier = new CategoriesSupplier;
 
             $options = [];
-            $options['order'] = array('CategoriesSupplier.name');
+            $options['order'] = ['CategoriesSupplier.name'];
             $categories = $CategoriesSupplier->find('list', $options);
             $this->set(compact('categories'));
 
@@ -588,7 +585,7 @@ class SuppliersController extends AppController {
             $SuppliersDeliveriesType = new SuppliersDeliveriesType;
 
             $options = [];
-            $options['order'] = array('SuppliersDeliveriesType.sort');
+            $options['order'] = ['SuppliersDeliveriesType.sort'];
             $suppliersDeliveriesType = $SuppliersDeliveriesType->find('list', $options);
             $this->set(compact('suppliersDeliveriesType'));
 
