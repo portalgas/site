@@ -40,18 +40,7 @@
 	</li>
 	<li>
 		<a href="http://manuali.portalgas.it" target="_blank"><img title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="http://www.portalgas.it/images/cake/ico-manual.png" border="0"> Manuali</a>
-	</li>						
-	<li>
-		<a target="_blank" href="http://www.portalgas.it/mobile"><img src="http://www.portalgas.it/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile" border="0"> Mobile</a>
-	</li>
-	<li>
-	<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
-		<img title="vai allo store di Itunes" src="http://www.portalgas.it/images/appstore.png" border="0"></a>
-			</li>
-	<li>
-		<a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
-			<img title="vai allo store di Google" src="http://www.portalgas.it/images/googleplay.png" border="0"></a>
-	</li>						
+	</li>												
 </ul>
 <h1>Partecipare</h1>	
 <p>Desideri anche tu partecipare al progetto PortAlGas, scrivici a <a href="mailto:info@portalgas.it">info@portalgas.it</a></p>				

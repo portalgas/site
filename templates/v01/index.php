@@ -213,18 +213,28 @@ else {
 						<li>
 							<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA"><img border="0" src="/images/cake/ico-social-youtube.png" alt="PortAlGas su YouTube" title="PortAlGas su YouTube"> YouTube</a>
 						</li>
+						<!-- li>
+							<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a>
+						</li -->					
+					</ul>			
+				
+				</div>
+				<div class="footer-col col-md-3 col-xs-12 col-sm-6">
+					<!-- a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
+						<img border="0" title="vai allo store di Itunes" src="/images/appstore.png"></a>								
+					<a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
+						<img border="0" title="vai allo store di Google" src="/images/googleplay.png"></a -->	
+
+					<ul class="social">
 						<li>
 							<a href="https://manuali.portalgas.it" target="_blank"><img border="0" title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="/images/cake/ico-manual.png"> Manuali</a>
 						</li>						
 						<li>
-							<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a>
-						</li>					
-						<li>
 							<a target="_blank" href="https://github.com/portalgas/site"><img border="0" src="/images/cake/ico-github.png" alt="il codice di PortAlGas disponibile per chi desidera partecipare" title="il codice di PortAlGas disponibile per chi desidera partecipare"> GitHub</a>
 						</li>
-					</ul>			
-				
-				</div>
+					</ul>	
+
+				</div>				
 				<div class="footer-col col-md-3 col-xs-12 col-sm-6">
 
 					<?php 
@@ -243,13 +253,7 @@ else {
 					?>						
 										
 				</div>
-					
-				<div class="footer-col col-md-3 col-xs-12 col-sm-6">
-					<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
-						<img border="0" title="vai allo store di Itunes" src="/images/appstore.png"></a>								
-					<a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
-						<img border="0" title="vai allo store di Google" src="/images/googleplay.png"></a>								
-				</div>
+				
 				
 				<div class="footer-col col-md-3 col-xs-12 col-sm-6 text-right">
 					<ul class="social">

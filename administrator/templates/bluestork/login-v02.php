@@ -556,7 +556,8 @@ input[type="password"], input[type="text"], input[type="email"]  {
 							<span>
 								<a href="http://manuali.portalgas.it" target="_blank"><img border="0" title="I manuali di PortAlGas" alt="I manuali di PortAlGas" src="/images/cake/ico-manual.png"> Manuali</a>&nbsp;
 							</span>						
-							<span>
+							
+							<!-- span>
 								<a target="_blank" href="/mobile"><img border="0" src="/images/cake/ico-mobile.png" alt="PortAlGas per tablet e mobile" title="PortAlGas per tablet e mobile"> Mobile</a> 
 							</span>		
 						
@@ -567,7 +568,7 @@ input[type="password"], input[type="text"], input[type="email"]  {
 							<span style="float:right">
 								<a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">
 				     				<img border="0" title="vai allo store di Google" src="/images/googleplay.png"></a>
-							</span>
+							</span -->
 
 						<div class="clearbreak"></div>
 					</div>

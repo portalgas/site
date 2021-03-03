@@ -135,14 +135,14 @@
 									<?php echo $body_footer;?>
 								</td>
 								<td align="left" width="20%">
-										<span>
+										<!-- span>
 											<a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">
 												<img border="0" title="vai allo store di Itunes" src="https://www.portalgas.it/images/appstore.png"></a>		
 										</span>								
 										<span>
 											<a href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas" target="_blank">
 												<img border="0" src="https://www.portalgas.it/images/googleplay.png" title="vai allo store di Google"></a>
-										</span>	
+										</span -->	
 								</td>								
 								<td align="left" width="20%">
 									<ul class="social">
@@ -155,9 +155,9 @@
 											<li style="list-style: outside none none; margin-bottom:5px">
 													<a href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA" target="_blank"><img border="0" title="PortAlGas su YouTube" alt="PortAlGas su YouTube" src="https://www.portalgas.it/images/cake/ico-social-youtube.png"> YouTube</a>
 											</li>
-											<li style="list-style: outside none none; margin-bottom:5px">
+											<!-- li style="list-style: outside none none; margin-bottom:5px">
 													<a href="https://www.portalgas.it/mobile" target="_blank"><img border="0" title="PortAlGas per tablet e mobile" alt="PortAlGas per tablet e mobile" src="https://www.portalgas.it/images/cake/ico-mobile.png"> Mobile</a>
-											</li>
+											</li -->
 									</ul>
 								</td>
 

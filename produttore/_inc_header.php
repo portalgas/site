@@ -214,12 +214,12 @@ ul.nav-contenitore > .active > a, ul.nav-contenitore > .active:hover > a, ul.nav
 				<li class="dropdown">
 					<a aria-expanded="true" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">Link <span class="caret"></span></a>
 					<ul class="dropdown-menu">           
-						<li><a target="_blank" href="https://www.portalgas.it/">Version desktop</a></li>
-						<li><a target="_blank" href="https://www.portalgas.it/mobile/#/app/home">Version mobile</a></li> 
+						<li><a target="_blank" href="https://www.portalgas.it/">Sito</a></li>
+						<!-- li><a target="_blank" href="https://www.portalgas.it/mobile/#/app/home">Version mobile</a></li --> 
 						<li><a target="_blank" href="https://www.facebook.com/portalgas.it">Facebook</a></li> 
 						<li><a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">YouTube</a></li> 
-						<li><a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">GoogleStore</a></li>	
-						<li><a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">AppleStrore</a></li>		
+						<!-- li><a target="_blank" href="https://play.google.com/store/apps/details?id=com.ionicframework.portalgas">GoogleStore</a></li>	
+						<li><a target="_blank" href="https://itunes.apple.com/us/app/portalgas/id1133263691">AppleStrore</a></li -->		
 					</ul>
 				</li>				
 				<li></li>
