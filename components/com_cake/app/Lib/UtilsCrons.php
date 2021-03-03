@@ -298,7 +298,7 @@ class UtilsCrons {
      */
     public function mailReferentiQtaMax($organization_id) {
 
-        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        $user = $this->_getObjUserLocal($organization_id, ['GAS', 'PRODGAS']);
         if(empty($user)) 
             return; 
         
@@ -307,8 +307,6 @@ class UtilsCrons {
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder;
 
-        App::import('Model', 'SuppliersOrganizationsReferent');        
-        
         /*
          * prima porto tutti gli ArticleOrder.stato = Y con send_mail = Y a send_mail = N
          *      perche' solo quelli con ArticleOrder.stato = QTAMAXORDER possono avere send_mail = Y 
@@ -321,8 +319,13 @@ class UtilsCrons {
         $options['conditions'] = ['ArticlesOrder.organization_id' => (int) $user->organization['Organization']['id'],
                                 'ArticlesOrder.stato' => 'Y',
                                 'ArticlesOrder.send_mail' => 'Y',
-                                'Article.stato' => 'Y',
-                                'Order.state_code' => 'OPEN'];
+                                'Article.stato' => 'Y'];
+        /*
+         * PRODGAS e' una promozione e l'ordine e' vuoto (order_id => prod_gas_promotion_id)
+         */
+        if($user->organization['Organization']['type']=='GAS')  
+            $options['conditions'] += ['Order.state_code' => 'OPEN'];
+
         $options['recursive'] = 1;
         $articlesOrderResults = $ArticlesOrder->find('all', $options);
         echo "trovati ".count($articlesOrderResults)." articoli da aggiornare \n";
@@ -354,13 +357,17 @@ class UtilsCrons {
         $options['conditions'] = ['ArticlesOrder.organization_id' => (int) $user->organization['Organization']['id'],
                                     'ArticlesOrder.stato' => 'QTAMAXORDER',
                                     'ArticlesOrder.send_mail' => 'N',
-                                    'Article.stato' => 'Y',
-                                    'Order.state_code' => 'OPEN'];
-        $options['recursive'] = 1;
-        
+                                    'Article.stato' => 'Y'];
+        /*
+         * PRODGAS e' una promozione e l'ordine e' vuoto (order_id => prod_gas_promotion_id)
+         */
+        if($user->organization['Organization']['type']=='GAS')  
+            $options['conditions'] += ['Order.state_code' => 'OPEN'];
+        $options['recursive'] = 1;     
         $ArticlesOrder->unbindModel(['belongsTo' => ['Cart']]);
 
         $articlesOrderResults = $ArticlesOrder->find('all', $options);
+        
         echo "trovati ".count($articlesOrderResults)." articoli da inviare mail notifica \n";
         foreach ($articlesOrderResults as $articlesOrderResult) {
          
@@ -417,12 +424,29 @@ class UtilsCrons {
                     /*
                      * estraggo i referenti
                      */
-                   $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;              
-                   $conditions = ['User.block' => 0,
-                                  'SuppliersOrganization.id' => $articlesOrderResult['Order']['supplier_organization_id']];
-                   $mail_destinatati = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, $orderBy = null, $modalita = 'CRON');
+                    $mail_destinatati = [];
+                    switch ($user->organization['Organization']['type']) {
+                        case 'GAS':
+                                App::import('Model', 'SuppliersOrganizationsReferent'); 
+                                $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+                                $conditions = ['User.block' => 0,
+                                              'SuppliersOrganization.id' => $articlesOrderResult['Order']['supplier_organization_id']];
+                                $mail_destinatati = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, $orderBy = null, $modalita = 'CRON');
 
-                   $this->_mailReferentiQtaMaxSendMail($user, $articlesOrderResult, $mail_destinatati, $debug);            
+                            break;
+                        /*
+                         * PRODGAS e' una promozione e l'ordine e' vuoto (order_id => prod_gas_promotion_id)
+                         */
+                        case 'PRODGAS':
+                                App::import('Model', 'User');
+                                $User = new User;
+                                $mail_destinatati = $User->getUsersComplete($user);       
+                            break;
+                    }
+
+                    if(!empty($mail_destinatati)) {
+                       $this->_mailReferentiQtaMaxSendMail($user, $articlesOrderResult, $mail_destinatati, $debug);
+                    }
             }
          } // end foreach($articlesOrderResults as $numResult => $articlesOrderResult)
     }
@@ -644,7 +668,6 @@ class UtilsCrons {
      *
      * => chiudo l'ordine
      */
-
     public function mailReferentiOrderImportoMax($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
@@ -1636,6 +1659,7 @@ class UtilsCrons {
     
     /*
      * $user = new UserLocal() e non new User() se no override App::import('Model', 'User');
+     * type ENUM('GAS', 'PRODGAS', 'PROD', 'PACT')
      */
     private function _getObjUserLocal($organization_id, $type=['GAS']) {
 
@@ -1646,7 +1670,7 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Organization.id' => (int) $organization_id,
-                                  'Organization.type' => $type];        
+                                  'Organization.type IN ' => $type];        
         $options['recursive'] = 0;
 
         $results = $Organization->find('first', $options);

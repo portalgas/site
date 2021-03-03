@@ -48,8 +48,8 @@ class CronsController extends AppController {
 									'stato' => 'Y'];
 		array_push($crons, $arr);	
 		$arr = ['category' => "Mail",
-									'name' => "Mail ai referenti per i prodotti che hanno raggiunto il limite",
-									'nota' => "Ai referenti per i prodotti che hanno <b>raggiunto il limite</b>",
+									'name' => "Mail per i prodotti che hanno raggiunto il limite",
+									'nota' => "Ai <b>referenti</b> o <b>produttori</b>(prodGasPromotions) per i prodotti che hanno <b>raggiunto il limite</b>",
 									'execute' => "10 8,11,13,15,17,20,22 * * * ",
 									'method' => "mailReferentiQtaMax",
 									'stato' => 'Y'];

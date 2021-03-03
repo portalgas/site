@@ -580,6 +580,12 @@ class ProdGasPromotionsController extends AppController {
 							$this->request->data['ProdGasArticlesPromotion']['qta'] = $qta;
 							$this->request->data['ProdGasArticlesPromotion']['importo'] = $importo;
 
+							$this->request->data['ProdGasArticlesPromotion']['alert_to_qta'] = 0;								
+							$this->request->data['ProdGasArticlesPromotion']['send_mail'] = 'N';
+							$this->request->data['ProdGasArticlesPromotion']['qta_cart'] = '0';
+							$this->request->data['ProdGasArticlesPromotion']['flag_bookmarks'] = 'N';
+							$this->request->data['ProdGasArticlesPromotion']['stato'] = 'Y';
+
 							$ProdGasArticlesPromotion->create();
 							if($ProdGasArticlesPromotion->save($this->request->data)) {
 								
@@ -613,6 +619,10 @@ class ProdGasPromotionsController extends AppController {
 				                $data['ArticlesOrder']['alert_to_qta'] = 0;
 				            else
 				                $data['ArticlesOrder']['alert_to_qta'] = $articleResult['Article']['alert_to_qta'];
+							
+							$data['ArticlesOrder']['send_mail'] = 'N';
+							$data['ArticlesOrder']['qta_cart'] = '0';
+							$data['ArticlesOrder']['flag_bookmarks'] = 'N';				            
 				            $data['ArticlesOrder']['stato'] = 'Y';
 
 							$ArticlesOrder->set($data);
@@ -1371,6 +1381,10 @@ class ProdGasPromotionsController extends AppController {
 				                $data['ArticlesOrder']['alert_to_qta'] = 0;
 				            else
 				                $data['ArticlesOrder']['alert_to_qta'] = $articleResult['Article']['alert_to_qta'];
+
+							$data['ArticlesOrder']['send_mail'] = 'N';
+							$data['ArticlesOrder']['qta_cart'] = '0';
+							$data['ArticlesOrder']['flag_bookmarks'] = 'N';				            
 				            $data['ArticlesOrder']['stato'] = 'Y';
 
 							$ArticlesOrder->set($data);
