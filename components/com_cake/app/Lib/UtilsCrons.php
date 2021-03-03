@@ -1670,7 +1670,7 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Organization.id' => (int) $organization_id,
-                                  'Organization.type IN ' => $type];        
+                                  'Organization.type' => $type];        
         $options['recursive'] = 0;
 
         $results = $Organization->find('first', $options);
