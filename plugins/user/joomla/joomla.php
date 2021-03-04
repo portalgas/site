@@ -200,7 +200,7 @@ class plgUserJoomla extends JPlugin
 
 			if($options['action'] == 'core.login.site') {
 			/*
-			 * front-end fractis
+			 * front-end login fractis
 			*/
 
 			/*
@@ -234,7 +234,7 @@ class plgUserJoomla extends JPlugin
 			 */
 			if($instance->get('organization_id')>0) {
 				$sql = "SELECT
-						Organization.j_seo 
+						Organization.j_seo, Organization.type 
 					FROM
 						k_organizations as Organization 
 					WHERE
@@ -243,7 +243,11 @@ class plgUserJoomla extends JPlugin
 				$db->setQuery($sql);
 				$results = $db->loadObject();
 				$j_seo = $results->j_seo;
-				
+				$type = $results->type;
+				if($type!='GAS') {
+					$urlRedirect = 'organization.prodgas.home';
+				}
+
 				$app = JFactory::getApplication();
 				switch ($urlRedirect) {
 					case "request.payment":
@@ -257,6 +261,9 @@ class plgUserJoomla extends JPlugin
 						break; 		
 					case "organization.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						break;	
+					case "organization.prodgas.home":
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST']);
 						break;
 				}					
 			}
