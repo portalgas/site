@@ -9,6 +9,10 @@ class Sql extends AppModel {
 		
 		$results = [];
 		$i=0;
+		$results[$i]['name'] = "Elenco produttori e dati anagrafici";
+		$results[$i]['sql'] = "SELECT Supplier.id,Supplier.name,Supplier.provincia,Supplier.telefono,Supplier.mail,Supplier.www FROM ".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization, ".Configure::read('DB.prefix')."suppliers as Supplier, ".Configure::read('DB.prefix')."organizations Organization WHERE SuppliersOrganization.supplier_id = Supplier.id and Supplier.stato = 'Y' and SuppliersOrganization.stato = 'Y' and Organization.id = SuppliersOrganization.organization_id and Organization.type = 'GAS' GROUP BY Supplier.id,Supplier.name,Supplier.provincia,Supplier.telefono,Supplier.mail,Supplier.www ORDER BY SuppliersOrganization.name;";
+		$results[$i]['params'] = [];
+		$i++;
 		$results[$i]['name'] = "Elenco produttori e GAS associati";
 		$results[$i]['sql'] = "SELECT count(*) totGasAssociati, so.name as produttore, so.supplier_id as idProduttore, if(oso.name is null,'-','Si') AccountProduttore FROM ".Configure::read('DB.prefix')."suppliers_organizations so LEFT JOIN ".Configure::read('DB.prefix')."organizations oso on (oso.id = so.owner_organization_id and so.owner_articles='SUPPLIER'), ".Configure::read('DB.prefix')."organizations o WHERE so.supplier_id>0 and o.id = so.organization_id and o.stato = 'Y' and so.stato = 'Y' GROUP BY so.supplier_id, so.name, so.supplier_id, AccountProduttore having count(totGasAssociati) > 1 ORDER BY totGasAssociati desc;";
 		$results[$i]['params'] = [];
