@@ -373,7 +373,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-GAS-WORKING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WAITING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {
@@ -664,7 +664,7 @@ class ProdGasPromotionsController extends AppController {
 						$this->request->data['ProdGasPromotionsOrganization']['nota_supplier'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['nota_user'] = '';
 						$this->request->data['ProdGasPromotionsOrganization']['user_id'] = 0;
-						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'PRODGASPROMOTION-GAS-WORKING';
+						$this->request->data['ProdGasPromotionsOrganization']['state_code'] = 'WAITING';
 
 						$ProdGasPromotionsOrganization->create();
 						if($ProdGasPromotionsOrganization->save($this->request->data)) {

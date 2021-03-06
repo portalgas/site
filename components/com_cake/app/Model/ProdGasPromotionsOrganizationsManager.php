@@ -6,7 +6,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
     public $useTable = 'prod_gas_promotions_organizations';
  
 	/*
-	 * promozioni da associare ad un ordine di GAS state_code = WAITING
+	 * promozioni da associare ad un ordine di GAS state_code = PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS
 	 */
     public function getWaitingPromotions($user, $rules=[], $debug=false) {
     
@@ -14,7 +14,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
 								   'ProdGasPromotionsOrganizationsManager.state_code' => 'WAITING',
 								   'ProdGasPromotion.state_code' => 'PRODGASPROMOTION-GAS-TRASMISSION-TO-GAS',
-								   'ProdGasPromotion.type' =>  'GAS-USERS',
+								   'ProdGasPromotion.type' =>  'GAS',
 								   'DATE(ProdGasPromotion.data_inizio) <= CURDATE() AND DATE(ProdGasPromotion.data_fine) >= CURDATE()'];
 
 		$this->unbindModel(['belongsTo' => ['Organization']]);
@@ -81,7 +81,7 @@ class ProdGasPromotionsOrganizationsManager extends AppModel {
 		$options['conditions'] = ['ProdGasPromotionsOrganizationsManager.organization_id' => $user->organization['Organization']['id'],
 								   'ProdGasPromotionsOrganizationsManager.state_code' => 'OPEN',
 								   'ProdGasPromotion.state_code != ' => 'PRODGASPROMOTION-GAS-WORKING',
-								   'ProdGasPromotion.type' =>  'GAS-USERS'];
+								   'ProdGasPromotion.type' =>  'GAS'];
 
 		$this->unbindModel(['belongsTo' => ['Organization']]);
 		$options['recursive'] = 1;

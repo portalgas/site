@@ -1,1 +1,1 @@
-<h1>PHP</h1><pre class="shell" rel="file php.ini">php -i | grep php.ini	Configuration File (php.ini) Path => /etc/php/7.4/cli	Loaded Configuration File => /etc/php/7.4/cli/php.ini</pre>
+<h1>PHP</h1><pre class="shell" rel="file php.ini">php -i | grep php.ini	Configuration File (php.ini) Path => /etc/php/7.4/cli	Loaded Configuration File => /etc/php/7.4/cli/php.ini/etc/php/7.4/fpm/php.inisystemctl restart php7.4-fpmtail -1000f /var/log/php7.4-fpm.log	</pre>

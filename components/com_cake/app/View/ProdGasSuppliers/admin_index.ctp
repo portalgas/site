@@ -15,6 +15,8 @@ echo '<th colspan="2">'.__('GasOrganizations').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_owner_articles').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders_users').'</th>';
+if($user->organization['Organization']['hasPromotionGas']=='Y' || $user->organization['Organization']['hasPromotionGasUsers']=='Y')
+	echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_promotions').'</th>';
 echo '<th class="actions">'.__('Actions').'</th>';
 echo '</tr>';
 
@@ -48,7 +50,10 @@ else {
 		echo '</td>';
 		echo '<td title="'.__('toolTipProdGasSupplierCanViewOrders').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders']).'"></td>';
 		echo '<td title="'.__('toolTipProdGasSupplierCanViewOrdersUsers').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders_users']).'"></td>';
-		
+
+		if($user->organization['Organization']['hasPromotionGas']=='Y' || $user->organization['Organization']['hasPromotionGasUsers']=='Y')
+			echo '<td title="'.__('toolTipProdGasSupplierCanPromotions').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_promotions']).'"></td>';
+
 		echo '<td class="actions-table-img">';
 		if($result['SuppliersOrganization']['can_view_orders']=='Y' || $result['SuppliersOrganization']['can_view_orders_users']=='Y')
 			echo $this->Html->link(null, array('controller' => 'ProdGasOrders','action' => 'index', null, 'organization_id='.$result['Organization']['id']),array('class' => 'action actionList','title' => __('List Orders')));	
