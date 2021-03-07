@@ -606,13 +606,24 @@ class ProdGasPromotionsController extends AppController {
 				            $data['ArticlesOrder']['article_organization_id'] = $articleResult['Article']['organization_id'];
 				            $data['ArticlesOrder']['article_id'] = $articleResult['Article']['id'];
 				            $data['ArticlesOrder']['name'] = $articleResult['Article']['name'];
-				            $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				            /* 
+				             * $data['ArticlesOrder']['prezzo'] = $articleResult['Article']['prezzo'];
+				             * imposto l'importo scontato
+				             */	
+				            $data['ArticlesOrder']['prezzo'] = $prezzo_unita; 			            
 				            $data['ArticlesOrder']['qta_cart'] = 0;
 				            $data['ArticlesOrder']['pezzi_confezione'] = $articleResult['Article']['pezzi_confezione'];
 				            $data['ArticlesOrder']['qta_minima'] = $articleResult['Article']['qta_minima'];
-				            $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
-				            $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
-				            $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+
+				            /* 
+				             * $data['ArticlesOrder']['qta_massima_order'] = $articleResult['Article']['qta_massima_order'];
+				             * $data['ArticlesOrder']['qta_minima_order'] = $articleResult['Article']['qta_minima_order'];
+				             * $data['ArticlesOrder']['qta_massima'] = $articleResult['Article']['qta_massima'];
+				             * imposto la qta della promozione
+				             */	
+				            $data['ArticlesOrder']['qta_massima'] = $qta;
+				            $data['ArticlesOrder']['qta_minima_order'] = $qta;        
+				            $data['ArticlesOrder']['qta_massima_order'] = $qta;
 				            $data['ArticlesOrder']['qta_multipli'] = $articleResult['Article']['qta_multipli'];
 				            $data['ArticlesOrder']['flag_bookmarks'] = 'N';
 				            if ($this->user->organization['Organization']['hasFieldArticleAlertToQta'] == 'N')
@@ -644,7 +655,7 @@ class ProdGasPromotionsController extends AppController {
 					
 				App::import('Model', 'ProdGasPromotionsOrganization');
 				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
-					
+
 				foreach($organization_ids_selected as $organization_id) {
 					
 					if(isset($this->request->data['ProdGasPromotion']['Organization'][$organization_id])) {
@@ -1386,7 +1397,7 @@ class ProdGasPromotionsController extends AppController {
 							$data['ArticlesOrder']['qta_cart'] = '0';
 							$data['ArticlesOrder']['flag_bookmarks'] = 'N';				            
 				            $data['ArticlesOrder']['stato'] = 'Y';
-
+				            // debug($data);
 							$ArticlesOrder->set($data);
 							if($ArticlesOrder->save($data)) {
 								

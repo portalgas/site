@@ -857,6 +857,13 @@ class OrdersController extends AppController {
 	
 		$debug = false;
 	
+        /*
+         * aggiorno lo stato dell'ordine 
+         * se ordine della promozione creato in neo, qui aggiorno lo stato
+         */
+        $utilsCrons = new UtilsCrons(new View(null));
+        $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $this->order_id);
+
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;

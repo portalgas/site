@@ -215,6 +215,7 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 	echo '<div class="table-responsive"><table class="table table-hover table-striped">';
 		echo '<tr>';
 		echo '<th colspan="2">'.__('Name').'</th>';
+		echo '<th style="text-align: center;">'.__('TotaleUsersActive').'</th>';
 		echo '<th><input type="checkbox" id="organization_id_selected_all" name="organization_id_selected_all" value="ALL" /></th>';
 		echo '</tr>';
 		
@@ -227,10 +228,13 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 			echo '</td>';
 			
 			echo '<td>';
-				echo $result['Organization']['name']; 
-				if(!empty($result['Organization']['descrizione'])) echo '<div class="small">'.$result['Organization']['descrizione'].'</div>';
+			echo $result['Organization']['name']; 
+			if(!empty($result['Organization']['descrizione'])) echo '<div class="small">'.$result['Organization']['descrizione'].'</div>';
 			echo '</td>';
-			
+			echo '<td style="text-align: center;">';
+			echo $result['Organization']['totUsers']; 
+			echo '</td>';
+
 			echo '<td>';
 			echo '<input type="checkbox" id="org-'.$result['Organization']['id'].'" name="organization_id_selected" value="'.$result['Organization']['id'].'" ';
 			if(isset($result['ProdGasPromotionsOrganization'])) echo ' checked';

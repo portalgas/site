@@ -2536,6 +2536,9 @@ msgstr "Totale"
 msgid "TotaleUsers"
 msgstr "Totale gasisti"
 
+msgid "TotaleUsersActive"
+msgstr "Totale gasisti attivi"
+
 msgid "TotaleOrders"
 msgstr "Totale ordini"
 
@@ -4285,7 +4288,7 @@ msgid "msg_prodgas_promotion_date"
 msgstr "Durante le date di apertura e chiusura,i G.A.S. potranno effettuare gli acquisti"
 
 msgid "msg_prodgaspromotion_gas_user_delivery"
-msgstr "Indica dove e quando il gasista può ritirare gli articoli prenotati"
+msgstr "Indica <b>dove</b> e <b>quando</b> il gasista può ritirare gli articoli prenotati e la <b>modalità di pagamento</b>"
 
 msgid "msg_prodgas_contact"
 msgstr "Indica i riferimenti per essere contatto dai G.A.S. per avere maggiori informazioni"

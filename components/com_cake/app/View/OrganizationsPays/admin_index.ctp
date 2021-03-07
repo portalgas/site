@@ -17,7 +17,7 @@
 			<th rowspan="2" style="text-align:center;">Produttori</th>
 			<th rowspan="2" style="text-align:center;">Articoli</th>
 			<th rowspan="2" style="text-align:center;">Ordini effettuati</th>
-			<th rowspan="2" style="text-align:center;">Utenti attivi</th>
+			<th rowspan="2" style="text-align:center;"><?php echo __('TotaleUsersActive');?></th>
 			<th rowspan="2" style="text-align:center;">Utenti default *</th>
 			<th rowspan="2"><?php echo __('Importo');?></th>
 			<th rowspan="2"></th>			

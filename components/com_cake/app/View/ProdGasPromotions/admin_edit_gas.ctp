@@ -239,6 +239,7 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 	echo '<div class="table-responsive"><table class="table table-hover table-striped">';
 		echo '<tr>';
 		echo '<th colspan="2">'.__('Name').'</th>';
+		echo '<th style="text-align: center;">'.__('TotaleUsersActive').'</th>';
 		echo '<th>'.__('Trasport').'</th>';
 		echo '<th>'.__('CostMore').'</th>';
 		echo '<th>'.__('ProdGasSupplierDeliveriesBooking').'</th>';
@@ -266,7 +267,10 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 				echo $result['Organization']['name']; 
 				if(!empty($result['Organization']['descrizione'])) echo '<div class="small">'.$result['Organization']['descrizione'].'</div>';
 			echo '</td>';
-
+			echo '<td style="text-align: center;">';
+			echo $result['Organization']['totUsers']; 
+			echo '</td>';
+			
 			echo '<td style="white-space: nowrap;">';
 			if(isset($result['Delivery']) && !empty($result['Delivery']))
 				echo $this->Form->input('trasport',array('id' => 'trasport-'.$result['Organization']['id'], 'name' => 'data[ProdGasPromotion][Organization]['.$result['Organization']['id'].'][trasport]', 'label' => false, 'type' => 'text', 'style' => 'display:inline', 'default' => $trasport,'tabindex'=>($i+1),'class' => 'double', 'after' => '&nbsp;&euro;', 'required'=>'false'));

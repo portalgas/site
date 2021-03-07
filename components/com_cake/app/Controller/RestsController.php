@@ -34,34 +34,53 @@ class RestsController extends AppController {
     */
     public function connect() {
 
-   		$continua = true;
    		$debug = false;
-
+		$continua = true;
+   		
    		if($debug) debug($this->request->params);
  
-   		if(!isset($this->request->params['pass']['u']) || empty($this->request->params['pass']['u'])) 
+ 		$q = '';
+ 		$queries = $this->request->params['pass'];
+
+   		if(!isset($queries['u']) || empty($queries['u'])) 
    			$continua = false;
 
    		if($continua) {
-   			if(isset($this->request->params['pass']['scope']))
-	   			$scope = $this->request->params['pass']['scope'];
+   			if(isset($queries['scope']))
+	   			$scope = $queries['scope'];
 	   		else
 	   			$scope = 'FE';
-   			if(isset($this->request->params['pass']['c_to']))
-	   			$c_to = $this->request->params['pass']['c_to'];
+   			if(isset($queries['c_to']))
+	   			$c_to = $queries['c_to'];
 	   		else
 	   			$c_to = 'Pages';
-   			if(isset($this->request->params['pass']['a_to']))
-	   			$a_to = $this->request->params['pass']['a_to'];
+   			if(isset($queries['a_to']))
+	   			$a_to = $queries['a_to'];
 	   		else
 	   			$a_to = 'home';
-   			if(isset($this->request->params['pass']['u']))
-	   			$user_salt = $this->request->params['pass']['u'];
+   			if(isset($queries['u']))
+	   			$user_salt = $queries['u'];
 	   		else
 	   			$continua = false;
    		}
 
 		if($continua) {
+			/*
+			 * recupero valori queryString
+			 */
+			unset($queries['u']);
+			unset($queries['scope']);
+			unset($queries['c_to']);
+			unset($queries['a_to']);
+			if(!empty($queries)) {
+				foreach($queries as $key => $value) {
+	                $q .= $key.'='.$value.'&';
+	            }
+	            if(!empty($q))  
+	               $q = substr($q, 0, (strlen($q)-1));	            
+			}
+			if($debug) debug($q);
+
 			$user = $this->CryptDecrypt->decrypt($user_salt);
 			$user = unserialize($user);
 			if($debug) debug($user); 
@@ -99,7 +118,7 @@ class RestsController extends AppController {
             		$url = Configure::read('App.server').$c_to;
             		break;
             	case 'BO':
-            		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to;
+            		$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller='.$c_to.'&action='.$a_to.'&'.$q;
             		break;
             	default:
             		die("Resta::connect scpoe [$scope] invalid!");

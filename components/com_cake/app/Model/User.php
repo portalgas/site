@@ -418,12 +418,8 @@ class User extends AppModel {
 			$resultsList[$user['User']['id']] = $label;
 	 	}
 	 	
-		/*	 	
-	 	echo "<pre>";
-	 	print_r($resultsList);
-	 	echo "</pre>";
-		*/
-		
+		// debug($resultsList);
+	 	
 	 	return $resultsList;
 	 }
 	 

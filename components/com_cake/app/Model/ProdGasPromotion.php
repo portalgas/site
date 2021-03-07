@@ -161,7 +161,7 @@ class ProdGasPromotion extends AppModel {
 		 */
 		if($prod_gas_promotion_id>0) {
 			App::import('Model', 'ProdGasPromotionsOrganization');
-
+		
 			foreach($results as $numResult => $result) {
 				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
 
@@ -174,14 +174,15 @@ class ProdGasPromotion extends AppModel {
 
 				self::d($prodGasPromotionsOrganizationResults, $debug);	
 				
-				if(!empty($prodGasPromotionsOrganizationResults)) 
+				if(!empty($prodGasPromotionsOrganizationResults)) {
 					$results[$numResult]['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization'];
+				}
 			}			
 
 
 		}
 		
-		self::d($results, $debug);	
+		if($debug) debug($results);	
 		
 		return $results;
 	}

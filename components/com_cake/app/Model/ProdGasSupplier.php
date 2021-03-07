@@ -296,40 +296,55 @@ class ProdGasSupplier extends AppModel {
 		$options['order'] = ['SuppliersOrganization.name'];
 		$options['recursive'] = 1;
 		$results = $SuppliersOrganization->find('all', $options);
-		self::d($results, $debug);
+		if($debug) debug($results);
 		
 		/* 
 		 * ProdGasPromotionsOrganization per spese trasporto, costi aggiuntivi + Order
 		 */
-		if($prod_gas_promotion_id>0 && !empty($results)) {
-			App::import('Model', 'ProdGasPromotionsOrganization');
+		if(!empty($results)) {
+			if($prod_gas_promotion_id>0) {
+				App::import('Model', 'ProdGasPromotionsOrganization');
 
-			foreach($results as $numResult => $result) {
-				$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
+				App::import('Model', 'OrganizationsPay');
 
-				$options = [];
-				$options['conditions'] = ['ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
-										  'ProdGasPromotionsOrganization.organization_id' => $result['SuppliersOrganization']['organization_id']  // e' quello del gas
-										  ];
-				$options['recursive'] = -1;
-				$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
+				foreach($results as $numResult => $result) {
+					$ProdGasPromotionsOrganization = new ProdGasPromotionsOrganization;
+					$OrganizationsPay = new OrganizationsPay;
 
-				if($debug) {
-					echo "<br /> Tratto ".$result['SuppliersOrganization']['name'].' ('.$result['SuppliersOrganization']['id'].') per il GAS '.$result['SuppliersOrganization']['organization_id'];
-					echo "<pre>ProdGasPromotion->getProdGasPromotion() dati del GAS \n";
-					print_r($options['conditions']);
-					print_r($prodGasPromotionsOrganizationResults);
-					echo "</pre>";
+					$options = [];
+					$options['conditions'] = ['ProdGasPromotionsOrganization.prod_gas_promotion_id' => $prod_gas_promotion_id,
+											  'ProdGasPromotionsOrganization.organization_id' => $result['SuppliersOrganization']['organization_id']  // e' quello del gas
+											  ];
+					$options['recursive'] = -1;
+					$prodGasPromotionsOrganizationResults = $ProdGasPromotionsOrganization->find('first', $options);
+
+					if($debug) {
+						echo "<br /> Tratto ".$result['SuppliersOrganization']['name'].' ('.$result['SuppliersOrganization']['id'].') per il GAS '.$result['SuppliersOrganization']['organization_id'];
+						echo "<pre>ProdGasPromotion->getProdGasPromotion() dati del GAS \n";
+						print_r($options['conditions']);
+						print_r($prodGasPromotionsOrganizationResults);
+						echo "</pre>";
+					}
+					
+					if(!empty($prodGasPromotionsOrganizationResults)) {
+						$results[$numResult]['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization'];
+					}
+
+					$results[$numResult]['Organization']['totUsers'] = $OrganizationsPay->totUsers($result['SuppliersOrganization']['organization_id']);					
+
 				}
-				
-				if(!empty($prodGasPromotionsOrganizationResults)) 
-					$results[$numResult]['ProdGasPromotionsOrganization'] = $prodGasPromotionsOrganizationResults['ProdGasPromotionsOrganization'];
-			}			
+			}
+			else {
+				App::import('Model', 'OrganizationsPay');
 
-
-		}
+				foreach($results as $numResult => $result) {
+					$OrganizationsPay = new OrganizationsPay;
+					$results[$numResult]['Organization']['totUsers'] = $OrganizationsPay->totUsers($result['SuppliersOrganization']['organization_id']);
+				}
+			}
+		} // end if(!empty($results))
 		
-		self::d($results, $debug);						
+		if($debug) debug($results);						
 		
 		return $results;
 	}
