@@ -45,6 +45,7 @@ class ProdGasSuppliersImport extends AppModel {
 			$options['conditions'] += ['Organization.id' => $prod_gas_organization_id];
 		$options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
+		// debug($options);
 		
 		$organizationResults = $Organization->find('all', $options);
 		self::d("totale Organization.type PRODGAS ".count($organizationResults),$debug);

@@ -72,7 +72,9 @@ class ProdGasSupplier extends AppModel {
 			 * estraggo tutti i GAS che hanno il produttore
 			 */
 			$options = [];
-			$options['conditions'] = ['SuppliersOrganization.supplier_id' => $results['Supplier']['id'],
+			$options['conditions'] = ['Organization.stato' => 'Y',
+									  'Organization.type' => 'GAS', 
+									  'SuppliersOrganization.supplier_id' => $results['Supplier']['id'],
 									  'SuppliersOrganization.organization_id != ' => $organization_id];
 			if(isset($filters['ownerArticles']))
 				$options['conditions'] += ['SuppliersOrganization.owner_articles' => $filters['ownerArticles']];
