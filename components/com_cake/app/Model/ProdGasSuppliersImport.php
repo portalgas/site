@@ -40,7 +40,7 @@ class ProdGasSuppliersImport extends AppModel {
 		$User = new User;
 		
 		$options = [];
-		$options['conditions'] = ['Organization.type' => 'PRODGAS'];
+		$options['conditions'] = ['Organization.type' => 'PRODGAS', 'Organization.stato' => 'Y'];
 		if(!empty($prod_gas_organization_id))
 			$options['conditions'] += ['Organization.id' => $prod_gas_organization_id];
 		$options['order'] = ['Organization.name'];

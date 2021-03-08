@@ -17,7 +17,7 @@ class ProdGasSupplier extends AppModel {
 		$Supplier->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization', 'foreignKey' => 'owner_organization_id']]]);
 		
 		$options = [];
-		$options['conditions'] = ['Organization.type' => 'PRODGAS', 
+		$options['conditions'] = ['Organization.type' => 'PRODGAS', 'Organization.stato' => 'Y',
 								  'Supplier.id' => $supplier_id];
 		$options['recursive'] = 0;
 		$supplierResults = $Supplier->find('first', $options);
