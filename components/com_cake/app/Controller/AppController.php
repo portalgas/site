@@ -386,7 +386,8 @@ class AppController extends Controller {
 				 * se dopo la login vado su ?option=com_cake&controller=Connects&action=index&c_to=promozioni per passare a neo
 				 * non ho organizationId preso da getTemplate
 				 */
-				$this->user->set('organization', $this->_getOrganization($this->user->organization_id));
+				if(!empty($this->user->organization_id))
+					$this->user->set('organization', $this->_getOrganization($this->user->organization_id));
 			}
 
 			/*
