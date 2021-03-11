@@ -1,7 +1,7 @@
 <div class="legenda">
 
 <pre class="shell" rel="aggiornare paramsConfig">
-update  k_organizations set paramsConfig = CONCAT(SUBSTRING(paramsConfig, 1, LENGTH(paramsConfig)-1), ',"hasUsersRegistrationFE":"Y"}');
+update k_organizations set paramsConfig = CONCAT(SUBSTRING(paramsConfig, 1, LENGTH(paramsConfig)-1), ',"hasUsersRegistrationFE":"Y"}') where type = 'GAS';
 </pre>
 
 <?php 

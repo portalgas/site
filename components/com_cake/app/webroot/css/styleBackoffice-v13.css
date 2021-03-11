@@ -156,6 +156,10 @@ body {
     background: url(/images/cake/apps/32x32/date.png) 7px 7px no-repeat #C3D2E5;
     padding-left: 45px
 }
+.cakeContainer h2.ico-sharing {
+    background: url(/images/cake/apps/32x32/sharemanager.png) 7px 7px no-repeat #C3D2E5;
+    padding-left: 45px
+}
 .cakeContainer h2.ico-orders {
     background: url(/images/cake/apps/32x32/cards.png) 7px 7px no-repeat #C3D2E5;
     padding-left: 45px
@@ -869,6 +873,9 @@ body {
 }
 .cakeContainer .actionPhone {
     background: url(/images/cake/apps/32x32/linphone.png) no-repeat
+}
+.cakeContainer .actionSharing {
+    background: url(/images/cake/apps/32x32/sharemanager.png) no-repeat
 }
 .cakeContainer .actionValidate {
     background: url(/images/cake/apps/32x32/clean.png) no-repeat

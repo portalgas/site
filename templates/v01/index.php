@@ -107,7 +107,7 @@ jQuery(document).ready(function() {
 }
 ?>
 
-<script>
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -116,6 +116,19 @@ jQuery(document).ready(function() {
   ga('create', 'UA-48245560-1', 'portalgas.it');
   ga('send', 'pageview');
 </script>
+
+<!-- script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function(event) {
+    cookieChoices.showCookieConsentBar('PortAlGas per offrirti una migliore esperienza su questo sito utilizza cookie tecnici e di profilazione. Il sito consente anche l\'invio di cookie di terze parti, sia tecnici, analitici che di profilazione.',
+      'Chiudi messaggio', 'Maggior informazioni', '/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas');
+  });
+</script -->  
+<script type="text/javascript">
+var _iub = _iub || [];
+_iub.csConfiguration = {"consentOnContinuedBrowsing":false,"whitelabel":false,"lang":"it","siteId":1216676,"cookiePolicyId":56886383,"enableCMP":true,"cookiePolicyUrl":"https://www.portalgas.it/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas", "banner":{ "acceptButtonDisplay":true,"customizeButtonDisplay":true,"position":"float-top-center","acceptButtonColor":"#0073CE","acceptButtonCaptionColor":"white","customizeButtonColor":"#DADADA","customizeButtonCaptionColor":"#4D4D4D","rejectButtonColor":"#0073CE","rejectButtonCaptionColor":"white","textColor":"black","backgroundColor":"white","rejectButtonDisplay":true }};
+</script>
+<script type="text/javascript" src="//cdn.iubenda.com/cs/tcf/stub-v2.js"></script>
+<script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
 </head>
 <body>
 <div class="container">
@@ -334,12 +347,6 @@ jQuery(document).ready(function () {
 });
 </script>
 <jdoc:include type="modules" name="debug" />
-	
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', function(event) {
-    cookieChoices.showCookieConsentBar('PortAlGas per offrirti una migliore esperienza su questo sito utilizza cookie tecnici e di profilazione. Il sito consente anche l\'invio di cookie di terze parti, sia tecnici, analitici che di profilazione.',
-      'Chiudi messaggio', 'Maggior informazioni', '/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas');
-  });
-</script>  
+
 </body>
 </html>				

@@ -4,7 +4,7 @@ App::uses('CakeEmail', 'Network/Email');
 
 class OrdersController extends AppController {
 
-   public $components = ['RequestHandler', 'Routings', 'ActionsDesOrder', 'Documents']; 
+   public $components = ['RequestHandler', 'Routings', 'ActionsDesOrder', 'Documents', 'Connects']; 
    
    public $helpers = ['OrderHome', 'Text'];
    
@@ -1168,8 +1168,8 @@ class OrdersController extends AppController {
 		 */
 		switch ($this->request->data['Order']['order_type_id']) {
 			case Configure::read('Order.type.pact'):
-				$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-				$url .= '&controller=Connects&action=index&c_to=admin/orders&a_to=edit&order_id='.$this->order_id;
+				$params = ['order_id' => $this->order_id];
+				$url = $this->Connects->createUrlBo('admin/orders', 'edit', $params);
 				$this->myRedirect($url);
 			break;
 		}

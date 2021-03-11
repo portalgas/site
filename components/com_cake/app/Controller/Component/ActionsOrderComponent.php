@@ -484,6 +484,18 @@ class ActionsOrderComponent extends Component {
 		
 		return $esito;			
 	}
+
+	private function orgHasOrdersGdxp($user, $results, $value_da_verificare) {
+		$esito = false;
+		
+		if($user->organization['Organization']['hasOrdersGdxp']==$value_da_verificare)
+			$esito = true;
+		else
+			$esito = false;
+		
+		return $esito;			
+	}
+
 	/*
 	 * Controlli su User
 	*/

@@ -1934,6 +1934,9 @@ msgstr "Riportalo allo stato 'in carico al tesoriere'"
 msgid "OrderGoBackStateCodeProcessedTesoriereNote"
 msgstr "Annulli i pagamenti"
 
+msgid "GdxpOrderExport"
+msgstr "Esporta in GDXP"
+
 msgid "Order end"
 msgstr "Concludi ordine"
 
@@ -3045,6 +3048,9 @@ msgstr "Ha la gestione del prepagato solo per alcuni produttori"
 
 msgid "HasArticlesGdxp"
 msgstr "Ha la gestione del GDXP degli articoli"
+
+msgid "HasOrdersGdxp"
+msgstr "Ha la gestione del GDXP degli ordini"
 
 msgid "HasBookmarsArticles"
 msgstr "Ha la gestione degli articoli preferiti"
@@ -4508,6 +4514,9 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire il prepagato solo per alcuni 
 
 msgid "toolTipHasArticlesGdxp"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli GDXP"
+
+msgid "toolTipHasOrdersGdxp"
+msgstr "Se è valorizzato a 'Si' si potrà gestire gli ordini GDXP"
 
 msgid "toolTipHasBookmarsArticles"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"

@@ -16,7 +16,7 @@ App::uses('AppController', 'Controller');
 
 class DeliveriesController extends AppController {
 
-    public $components = ['RequestHandler', 'Users'];
+    public $components = ['RequestHandler', 'Users', 'Connects'];
     public $helpers = ['Html', 'Javascript', 'Ajax', 'Tabs', 'RowEcomm']; 
 
     public function beforeFilter() {
@@ -282,6 +282,12 @@ class DeliveriesController extends AppController {
 		$prodGasPromotionsOrganizationsResults = $ProdGasPromotionsOrganizationsManager->getOpenPromotions($this->user, $debug);
 		$this->set(compact('prodGasPromotionsOrganizationsResults'));
 		
+        $url_prd_gas_promotion = '';
+        if(!empty($prodGasPromotionsOrganizationsResults)) {
+            $url_prd_gas_promotion = $this->Connects->createUrlFe('pages');
+        }
+        $this->set(compact('url_prd_gas_promotion'));            
+ 
         $this->layout = 'default_front_end';
     }
 

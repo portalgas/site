@@ -8,7 +8,7 @@ echo '		<ul class="nav nav-tabs" role="tablist">';
 echo '		  <li role="presentation" class="active"><a data-toggle="tab" href="#tabType0content" onClick="javascript:drawTab(0)">'.__('OrdersToDelivery').'</a></li>';
 echo '		  <li role="presentation"><a data-toggle="tab" href="#tabType1content" onClick="javascript:drawTab(1)">'.__('OrdersToSupplier').'</a></li>';
 if(!empty($prodGasPromotionsOrganizationsResults))
-	echo '<li role="presentation"><a target="_blank" class="btn-externel btn btn-orange" href="'.Configure::read('App.server').'?option=com_cake&controller=Connects&action=index&c_to=pages&a_to=">'.__('ProdGasPromotionNames').'</a></li>';
+	echo '<li role="presentation"><a target="_blank" class="btn-externel btn btn-orange" href="'.$url_prd_gas_promotion.'">'.__('ProdGasPromotionNames').'</a></li>';
 // echo '		  <li role="presentation"><a href="/?option=com_cake&controller=Deliveries&action=tabsUserCart">Carrello</a></li>';
 echo '		</ul>';	
 echo '	</div>';

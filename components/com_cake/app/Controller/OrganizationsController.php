@@ -349,6 +349,7 @@ class OrganizationsController extends AppController {
 
             $paramsConfig = [];
             $paramsConfig += ['hasArticlesGdxp' => $this->request->data['Organization']['hasArticlesGdxp']];
+            $paramsConfig += ['hasOrdersGdxp' => $this->request->data['Organization']['hasOrdersGdxp']];
             $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
             $paramsConfig += ['hasDocuments' => $this->request->data['Organization']['hasDocuments']];
             $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
@@ -446,6 +447,7 @@ class OrganizationsController extends AppController {
          * configuration
          */
         $hasArticlesGdxp = ['Y' => 'Si', 'N' => 'No'];
+        $hasOrdersGdxp = ['Y' => 'Si', 'N' => 'No'];
         $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
         $hasDocuments = ['Y' => 'Si', 'N' => 'No'];
         $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
@@ -491,7 +493,7 @@ class OrganizationsController extends AppController {
         $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 		/*
 		 * template
@@ -527,6 +529,7 @@ class OrganizationsController extends AppController {
 
             $paramsConfig = [];
             $paramsConfig += ['hasArticlesGdxp' => $this->request->data['Organization']['hasArticlesGdxp']];
+            $paramsConfig += ['hasOrdersGdxp' => $this->request->data['Organization']['hasOrdersGdxp']];
             $paramsConfig += ['hasBookmarsArticles' => $this->request->data['Organization']['hasBookmarsArticles']];
             $paramsConfig += ['hasDocuments' => $this->request->data['Organization']['hasDocuments']];
             $paramsConfig += ['hasArticlesOrder' => $this->request->data['Organization']['hasArticlesOrder']];
@@ -639,6 +642,7 @@ class OrganizationsController extends AppController {
              * configurazione
              */
             $hasArticlesGdxp = ['Y' => 'Si', 'N' => 'No'];
+            $hasOrdersGdxp = ['Y' => 'Si', 'N' => 'No'];
             $hasBookmarsArticles = ['Y' => 'Si', 'N' => 'No'];
             $hasDocuments = ['Y' => 'Si', 'N' => 'No'];
             $hasArticlesOrder = ['Y' => 'Si', 'N' => 'No'];
@@ -696,7 +700,7 @@ class OrganizationsController extends AppController {
             $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
-            $this->set(compact('hasArticlesGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 			/*
 			 * template

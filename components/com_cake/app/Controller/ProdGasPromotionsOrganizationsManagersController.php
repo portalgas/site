@@ -7,6 +7,8 @@ App::uses('CakeEmail', 'Network/Email');
  */
 class ProdGasPromotionsOrganizationsManagersController extends AppController {
     
+   public $components = ['Connects'];
+
    public function beforeFilter() {
    		parent::beforeFilter();
    		
@@ -27,6 +29,11 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 
 		$results = $this->ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
 		$this->set(compact('results'));
+
+		$params = ['order_type_id' => Configure::read('Order.type.promotion'), 
+				   'prod_gas_promotion_id' => $result['ProdGasPromotion']['id']];
+		$url_query = $this->Connects->createQueryParams('admin/orders', 'add', $params);
+		$this->set(compact('url_query'));
 	}
 	
    /*
