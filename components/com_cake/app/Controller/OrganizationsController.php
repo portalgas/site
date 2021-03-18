@@ -883,7 +883,7 @@ class OrganizationsController extends AppController {
 			 */
 			$topmenu_name = 'topmenu-'.$gasAliaSEO;
 			if(strlen($topmenu_name)>24)
-				$topmenu_name = substr ($topmenu_name, 0, 24);
+				$topmenu_name = substr ($topmenu_name, 0, 23);
 			
 			$sql = ""; 
 		    $sql .= "INSERT ".Configure::read('DB.portalPrefix')."menu_types (menutype, title) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
