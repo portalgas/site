@@ -1,2860 +1,2860 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.sitemaps.org/schemas/sitemap/0.9
+            https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
 
 <url>
-  <loc>http://www.portalgas.it/</loc>
+  <loc>https://www.portalgas.it/</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/index.php</loc>
+  <loc>https://www.portalgas.it/index.php</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/registrati</loc>
+  <loc>https://www.portalgas.it/registrati</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/resetta-password</loc>
+  <loc>https://www.portalgas.it/resetta-password</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/richiesta-nome-utente</loc>
+  <loc>https://www.portalgas.it/richiesta-nome-utente</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/cos-e-un-g-a-s-gruppo-d-acquisto-solidale</loc>
+  <loc>https://www.portalgas.it/cos-e-un-g-a-s-gruppo-d-acquisto-solidale</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/gmaps-gas</loc>
+  <loc>https://www.portalgas.it/gmaps-gas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/contattaci</loc>
+  <loc>https://www.portalgas.it/contattaci</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori</loc>
+  <loc>https://www.portalgas.it/produttori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie</loc>
+  <loc>https://www.portalgas.it/notizie</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/gestionale-web-gas</loc>
+  <loc>https://www.portalgas.it/gestionale-web-gas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/360-l-app-di-portalgas-per-iphone-android</loc>
+  <loc>https://www.portalgas.it/notizie/360-l-app-di-portalgas-per-iphone-android</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/mobile/</loc>
+  <loc>https://www.portalgas.it/mobile/</loc>
   <lastmod>2018-01-09T15:58:24+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas/2-termini-di-utilizzo</loc>
+  <loc>https://www.portalgas.it/12-portalgas/2-termini-di-utilizzo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas</loc>
+  <loc>https://www.portalgas.it/12-portalgas/143-come-sono-utilizzati-i-cookies-da-parte-di-portalgas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas/103-bilancio</loc>
+  <loc>https://www.portalgas.it/12-portalgas/103-bilancio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/contattaci?contactOrganizationId=</loc>
+  <loc>https://www.portalgas.it/contattaci?contactOrganizationId=</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/56-abbigliamento</loc>
+  <loc>https://www.portalgas.it/produttori/56-abbigliamento</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/58-fiori</loc>
+  <loc>https://www.portalgas.it/produttori/58-fiori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/45-libri-e-cancelleria</loc>
+  <loc>https://www.portalgas.it/produttori/45-libri-e-cancelleria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/49-salse-maionese-gelati</loc>
+  <loc>https://www.portalgas.it/produttori/49-salse-maionese-gelati</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/50-sciroppi-e-liquori</loc>
+  <loc>https://www.portalgas.it/produttori/50-sciroppi-e-liquori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/52-uova</loc>
+  <loc>https://www.portalgas.it/produttori/52-uova</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/70-yogurt</loc>
+  <loc>https://www.portalgas.it/produttori/70-yogurt</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/5-cereal-terra</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/5-cereal-terra</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/426-giuseppina-vigliano</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/426-giuseppina-vigliano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/206-biogold</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/206-biogold</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/353-economia-solidale-in-festa-15-e-16-ottobre-buttigliera-alta</loc>
+  <loc>https://www.portalgas.it/notizie/353-economia-solidale-in-festa-15-e-16-ottobre-buttigliera-alta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/342-l-app-di-portalgas</loc>
+  <loc>https://www.portalgas.it/notizie/342-l-app-di-portalgas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/307-des-l-unione-fa-la-forza</loc>
+  <loc>https://www.portalgas.it/notizie/307-des-l-unione-fa-la-forza</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/173-fairphone2-il-primo-telefono-etico</loc>
+  <loc>https://www.portalgas.it/notizie/173-fairphone2-il-primo-telefono-etico</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/144-avigliana-mangia-bio-e-festa-dei-g-a-s</loc>
+  <loc>https://www.portalgas.it/notizie/144-avigliana-mangia-bio-e-festa-dei-g-a-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/139-proposte-per-un-agenda-del-cibo</loc>
+  <loc>https://www.portalgas.it/notizie/139-proposte-per-un-agenda-del-cibo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/129-integrazione-con-google-calendar</loc>
+  <loc>https://www.portalgas.it/notizie/129-integrazione-con-google-calendar</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/119-canale-youtube-di-portalgas</loc>
+  <loc>https://www.portalgas.it/notizie/119-canale-youtube-di-portalgas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/95-portalgas-mobile</loc>
+  <loc>https://www.portalgas.it/notizie/95-portalgas-mobile</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/66-l-altra-spesa-e-diventata-grande</loc>
+  <loc>https://www.portalgas.it/notizie/66-l-altra-spesa-e-diventata-grande</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/34-i-10-prodotti-di-uso-comune-che-contribuiscono-alla-deforestazione</loc>
+  <loc>https://www.portalgas.it/notizie/34-i-10-prodotti-di-uso-comune-che-contribuiscono-alla-deforestazione</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/23-10-consigli-per-l-orto-e-il-giardino-in-estate</loc>
+  <loc>https://www.portalgas.it/notizie/23-10-consigli-per-l-orto-e-il-giardino-in-estate</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/16-mensa-sana-2013-le-mense-scolastiche-italiane-sono-sempre-piu-bio</loc>
+  <loc>https://www.portalgas.it/notizie/16-mensa-sana-2013-le-mense-scolastiche-italiane-sono-sempre-piu-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/4-km-zero-essere-o-non-essere-locavoro</loc>
+  <loc>https://www.portalgas.it/notizie/4-km-zero-essere-o-non-essere-locavoro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/notizie/3-i-gas-gruppi-di-acquisto-solidale</loc>
+  <loc>https://www.portalgas.it/notizie/3-i-gas-gruppi-di-acquisto-solidale</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/images/manuali/presentazione-slide.pdf</loc>
+  <loc>https://www.portalgas.it/images/manuali/presentazione-slide.pdf</loc>
   <lastmod>2015-04-09T11:34:07+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/images/manuali/AppPortalgas-mobile.pdf</loc>
+  <loc>https://www.portalgas.it/images/manuali/AppPortalgas-mobile.pdf</loc>
   <lastmod>2016-06-16T14:37:45+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas</loc>
+  <loc>https://www.portalgas.it/12-portalgas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.64</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/56-abbigliamento/31-calzificio-zambelli-pierino</loc>
+  <loc>https://www.portalgas.it/produttori/56-abbigliamento/31-calzificio-zambelli-pierino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/56-abbigliamento/483-mina-volpe-shop</loc>
+  <loc>https://www.portalgas.it/produttori/56-abbigliamento/483-mina-volpe-shop</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/56-abbigliamento/253-risorse-future</loc>
+  <loc>https://www.portalgas.it/produttori/56-abbigliamento/253-risorse-future</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/622-az-agr-bio-casale-nibbi-amatrice</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/622-az-agr-bio-casale-nibbi-amatrice</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/49-salse-maionese-gelati/347-associazione-produzioni-fuori-dal-ghetto</loc>
+  <loc>https://www.portalgas.it/produttori/49-salse-maionese-gelati/347-associazione-produzioni-fuori-dal-ghetto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/564-birra-due-tocchi</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/564-birra-due-tocchi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/275-acqua-di-cocco-bio</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/275-acqua-di-cocco-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/211-azienda-agricola-lolmaia</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/211-azienda-agricola-lolmaia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/319-cibocrudo-srl</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/319-cibocrudo-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/269-datecoop</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/269-datecoop</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/255-datecoop-narafood</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/255-datecoop-narafood</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/626-euro-company-srl-societa-benefit</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/626-euro-company-srl-societa-benefit</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/583-grano-vita</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/583-grano-vita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/304-hemp-factory</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/304-hemp-factory</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/313-mediterranea-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/313-mediterranea-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/387-mida-srl-cremoli</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/387-mida-srl-cremoli</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/664-natura-bonta-srls</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/664-natura-bonta-srls</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/270-oryza-srl</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/270-oryza-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/378-pignatelli-antonio</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/378-pignatelli-antonio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/54-alimenti-vegani/20-sun-soy-food-srl</loc>
+  <loc>https://www.portalgas.it/produttori/54-alimenti-vegani/20-sun-soy-food-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/116-caffe-san-domenico</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/116-caffe-san-domenico</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/581-smurra-di-biosmurra</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/581-smurra-di-biosmurra</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/202-cooperativa-agricola-valli-unite</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/202-cooperativa-agricola-valli-unite</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/241-birrificio-aleghe</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/241-birrificio-aleghe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/212-birrificio-artigianale-gedeone</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/212-birrificio-artigianale-gedeone</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/310-birrificio-castagnero</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/310-birrificio-castagnero</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/451-birrificio-gambolo</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/451-birrificio-gambolo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/149-birrificio-san-michele</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/149-birrificio-san-michele</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/457-birrificio-un-terzo</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/457-birrificio-un-terzo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/309-birrificio-valsusa-scrl</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/309-birrificio-valsusa-scrl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/686-brasseria-alpina</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/686-brasseria-alpina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/515-hordeum-srl-societa-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/515-hordeum-srl-societa-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/429-microbirrificio-birra-elvo</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/429-microbirrificio-birra-elvo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/245-soralama-srl</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/245-soralama-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/32-birra/586-spezzabolgia-snc</loc>
+  <loc>https://www.portalgas.it/produttori/32-birra/586-spezzabolgia-snc</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/388-azienda-agricola-gabriele-francesco</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/388-azienda-agricola-gabriele-francesco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/246-qualiterbe-srl</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/246-qualiterbe-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/52-uova/17-cascina-mana</loc>
+  <loc>https://www.portalgas.it/produttori/52-uova/17-cascina-mana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/538-associazione-ya-basta-milano</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/538-associazione-ya-basta-milano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/300-azienda-agricola-ca-dei-fiori</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/300-azienda-agricola-ca-dei-fiori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/409-azienda-agricola-le-zercole</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/409-azienda-agricola-le-zercole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/654-caffe-kyondo</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/654-caffe-kyondo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/213-caffe-malatesta</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/213-caffe-malatesta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/312-caffe-san-domenico-di-messineo-roberto</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/312-caffe-san-domenico-di-messineo-roberto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/436-escalera-nongtaaba-aps</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/436-escalera-nongtaaba-aps</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/52-eurocaf-snc</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/52-eurocaf-snc</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/424-lazzarelle-cooperativa-sociale-a-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/424-lazzarelle-cooperativa-sociale-a-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/82-mokafe</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/82-mokafe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/93-officinali-bio-capanna</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/93-officinali-bio-capanna</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/185-pausa-caffe</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/185-pausa-caffe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/81-tatawelo</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/81-tatawelo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/33-caffe-the-tisane/337-torrefazione-caffe-salomoni-srl</loc>
+  <loc>https://www.portalgas.it/produttori/33-caffe-the-tisane/337-torrefazione-caffe-salomoni-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/511-albero-di-greta-onlus-associazione-italiana-cdkl5</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/511-albero-di-greta-onlus-associazione-italiana-cdkl5</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/470-la-giunca</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/470-la-giunca</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/644-agriturismo-cascina-san-nazario</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/644-agriturismo-cascina-san-nazario</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/70-aimone</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/70-aimone</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/235-az-agr-massola</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/235-az-agr-massola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/134-az-agric-scaglia</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/134-az-agric-scaglia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/546-azienda-agricola-ascione</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/546-azienda-agricola-ascione</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/320-azienda-agricola-cirenaica</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/320-azienda-agricola-cirenaica</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/193-azienda-agricola-giordano-aldo</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/193-azienda-agricola-giordano-aldo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/279-azienda-agricola-glarey-massimo</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/279-azienda-agricola-glarey-massimo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/391-azienda-agricola-glarey-massimo-polli-conigli-agnolotti-lavorati-di-carne</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/391-azienda-agricola-glarey-massimo-polli-conigli-agnolotti-lavorati-di-carne</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/560-azienda-agricola-il-filo-di-paglia</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/560-azienda-agricola-il-filo-di-paglia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/417-azienda-agricola-is-ul-di-isaia-giovanni</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/417-azienda-agricola-is-ul-di-isaia-giovanni</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/662-azienda-agricola-lege</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/662-azienda-agricola-lege</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/122-azienda-agricola-parva-domus</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/122-azienda-agricola-parva-domus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/237-azienda-agricola-rolle-michelangelo</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/237-azienda-agricola-rolle-michelangelo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/444-azienda-marco-e-carla</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/444-azienda-marco-e-carla</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/72-calvetto</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/72-calvetto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/71-cimpiasole</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/71-cimpiasole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/321-cooperativa-san-pietro-s-c-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/321-cooperativa-san-pietro-s-c-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/301-fattoria-il-palazzo</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/301-fattoria-il-palazzo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/170-giannarelli-lardo-di-colonnata-srl</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/170-giannarelli-lardo-di-colonnata-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/611-l-eremo-soc-agr-s-s</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/611-l-eremo-soc-agr-s-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/220-la-cascinassa-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/220-la-cascinassa-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/547-petacci-salumi</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/547-petacci-salumi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/165-pramstrahler</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/165-pramstrahler</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/682-societa-agricola-la-cerea</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/682-societa-agricola-la-cerea</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/683-tosco-gianluca-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/683-tosco-gianluca-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/34-carni/298-azienda-agricola-artuffo-agostino-lorenzo</loc>
+  <loc>https://www.portalgas.it/produttori/34-carni/298-azienda-agricola-artuffo-agostino-lorenzo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/311-fior-di-latte-di-giacone-ramona</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/311-fior-di-latte-di-giacone-ramona</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/234-agriturismo-zinedi</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/234-agriturismo-zinedi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/450-antos-di-emmedue-cosmetics-srl</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/450-antos-di-emmedue-cosmetics-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/660-erba-madre</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/660-erba-madre</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/597-erbe-alpine</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/597-erbe-alpine</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/135-essenze-del-brusafer</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/135-essenze-del-brusafer</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/105-la-petite-savonnerie-di-marin-samanta</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/105-la-petite-savonnerie-di-marin-samanta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/513-la-saponaria</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/513-la-saponaria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/19-nabla-cosmetics-srls</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/19-nabla-cosmetics-srls</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/184-purobio-cosmetics</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/184-purobio-cosmetics</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/467-rose-caprioli-srl</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/467-rose-caprioli-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/39-cosmesi/488-smom-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/39-cosmesi/488-smom-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/97-podere-ex-senesi</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/97-podere-ex-senesi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/265-associazione-la-matrioska-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/265-associazione-la-matrioska-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/80-allegro-natura</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/80-allegro-natura</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/631-alpeko</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/631-alpeko</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/50-herba-buena</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/50-herba-buena</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/545-i-saponi-di-ascanio</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/545-i-saponi-di-ascanio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/12-le-erbe-di-brillor</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/12-le-erbe-di-brillor</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/109-officina-naturae</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/109-officina-naturae</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/40-detersivi/292-zefiro</loc>
+  <loc>https://www.portalgas.it/produttori/40-detersivi/292-zefiro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/7-azienda-agricola-il-ciliegio</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/7-azienda-agricola-il-ciliegio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/147-ij-canestrei-d-flaminia</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/147-ij-canestrei-d-flaminia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/59-agribiscotto</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/59-agribiscotto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/602-aiassa-il-buon-rubata-panettoni-colombe</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/602-aiassa-il-buon-rubata-panettoni-colombe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/449-associazione-il-sogno-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/449-associazione-il-sogno-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/445-ballesio-cioccolato-di-ballesio-luca</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/445-ballesio-cioccolato-di-ballesio-luca</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/113-biogovinda</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/113-biogovinda</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/100-biscottificio-burovo-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/100-biscottificio-burovo-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/196-biscottificio-cervo</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/196-biscottificio-cervo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/280-biscottificio-scapigliati</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/280-biscottificio-scapigliati</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/434-bobokoli-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/434-bobokoli-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/648-bonne-vallee</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/648-bonne-vallee</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/663-casa-famiglia-budrola</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/663-casa-famiglia-budrola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/162-castagna-guido-atelier-del-cioccolatao</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/162-castagna-guido-atelier-del-cioccolatao</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/364-cioccolateria-pasticceria-durighello</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/364-cioccolateria-pasticceria-durighello</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/406-cioccolateria-reale</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/406-cioccolateria-reale</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/456-cioccolato-crudo-srl</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/456-cioccolato-crudo-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/338-deola-dolciaria-snc</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/338-deola-dolciaria-snc</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/390-dolci-aveja-srl</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/390-dolci-aveja-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/393-farina-nel-sacco-coop-ecosol</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/393-farina-nel-sacco-coop-ecosol</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/650-galup-srl</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/650-galup-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/534-genuine-tentazioni</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/534-genuine-tentazioni</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/28-giordano-cioccolato</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/28-giordano-cioccolato</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/106-i-dolcetti-del-buonumore</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/106-i-dolcetti-del-buonumore</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/571-il-giardinetto-dei-sapori</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/571-il-giardinetto-dei-sapori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/252-l-isola-che-c-e-asd</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/252-l-isola-che-c-e-asd</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/226-la-bottega-del-canestrello</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/226-la-bottega-del-canestrello</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/525-leali-coop-sociale</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/525-leali-coop-sociale</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/285-prodotti-gianduja-torino-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/285-prodotti-gianduja-torino-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/585-sprigioniamo-sapori</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/585-sprigioniamo-sapori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/41-dolci-biscotti/98-ziccat-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/41-dolci-biscotti/98-ziccat-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/219-pastificio-patty</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/219-pastificio-patty</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/50-sciroppi-e-liquori/328-gustonatura</loc>
+  <loc>https://www.portalgas.it/produttori/50-sciroppi-e-liquori/328-gustonatura</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/58-fiori/126-azienda-agricola-berardi</loc>
+  <loc>https://www.portalgas.it/produttori/58-fiori/126-azienda-agricola-berardi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/73-agribosco</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/73-agribosco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/318-az-agr-matergia</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/318-az-agr-matergia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/656-az-agricola-filosini-di-rosella-anzuini</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/656-az-agricola-filosini-di-rosella-anzuini</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/325-azienda-agraria-matergia</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/325-azienda-agraria-matergia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/394-azienda-agricola-damigella</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/394-azienda-agricola-damigella</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/271-azienda-agricola-dolci-giuseppina</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/271-azienda-agricola-dolci-giuseppina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/589-azienda-agricola-fiorindo-mazzolini-naturaviva</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/589-azienda-agricola-fiorindo-mazzolini-naturaviva</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/373-azienda-agricola-piccola-terra</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/373-azienda-agricola-piccola-terra</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/362-azienda-renzo-nadalutti</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/362-azienda-renzo-nadalutti</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/463-brotformen-fa-ernst-birnbaum</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/463-brotformen-fa-ernst-birnbaum</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/494-cascina-bonasera</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/494-cascina-bonasera</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/638-cascina-malerbe</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/638-cascina-malerbe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/228-cascina-regina</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/228-cascina-regina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/286-floriddia-azienda-agricola-biologica</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/286-floriddia-azienda-agricola-biologica</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/244-fratelli-caprino</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/244-fratelli-caprino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/624-gino-girolomoni-cooperativa-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/624-gino-girolomoni-cooperativa-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/79-il-lombrico-felice</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/79-il-lombrico-felice</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/386-intini-c-sas</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/386-intini-c-sas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/306-kentool-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/306-kentool-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/218-mais-rosso-di-banchette</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/218-mais-rosso-di-banchette</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/672-molino-cofelice</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/672-molino-cofelice</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/190-molino-di-piezza-di-aldo-bacci</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/190-molino-di-piezza-di-aldo-bacci</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/383-molino-parri</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/383-molino-parri</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/466-molino-pivetti</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/466-molino-pivetti</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/412-molino-profili</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/412-molino-profili</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/413-molino-profili-farine-pane-inter-nos</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/413-molino-profili-farine-pane-inter-nos</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/39-mulino-marino</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/39-mulino-marino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/76-mulino-sobrino</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/76-mulino-sobrino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi?start=30</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi?start=30</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/537-bio-colombini</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/537-bio-colombini</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/175-carmelo-leocata-az-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/175-carmelo-leocata-az-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/58-fiori/487-kraeuterschloessl-srl</loc>
+  <loc>https://www.portalgas.it/produttori/58-fiori/487-kraeuterschloessl-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/180-l-altromercato-di-ferrero-luca</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/180-l-altromercato-di-ferrero-luca</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/242-scoiattolorosso</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/242-scoiattolorosso</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/94-l-ape-curiosa</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/94-l-ape-curiosa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/236-alpe-troncea-fam-giletta</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/236-alpe-troncea-fam-giletta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/104-az-biologica-montagnana</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/104-az-biologica-montagnana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/676-azienda-agraria-corbusier</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/676-azienda-agraria-corbusier</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/282-azienda-agricola-antica-fattoria-caseificio-scalabrini</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/282-azienda-agricola-antica-fattoria-caseificio-scalabrini</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/344-azienda-agricola-biologica-nuovo-muretto-di-casulli-angelo-paolo</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/344-azienda-agricola-biologica-nuovo-muretto-di-casulli-angelo-paolo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/621-azienda-agricola-biologica-aureli-amatrice</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/621-azienda-agricola-biologica-aureli-amatrice</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/428-azienda-agricola-biologica-ciaolatte</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/428-azienda-agricola-biologica-ciaolatte</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/138-azienda-agricola-challier-ivano</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/138-azienda-agricola-challier-ivano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/221-azienda-agricola-claudia-franzino</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/221-azienda-agricola-claudia-franzino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/453-azienda-agricola-f-lli-caretti</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/453-azienda-agricola-f-lli-caretti</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/446-azienda-agricola-falchero-marco</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/446-azienda-agricola-falchero-marco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/372-azienda-agricola-gioia</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/372-azienda-agricola-gioia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/551-azienda-agricola-iris</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/551-azienda-agricola-iris</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/635-azienda-agricola-ivano-depetro</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/635-azienda-agricola-ivano-depetro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/239-azienda-agricola-latza</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/239-azienda-agricola-latza</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/225-azienda-agricola-nicoletta</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/225-azienda-agricola-nicoletta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/56-azienda-agricola-persegona</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/56-azienda-agricola-persegona</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/459-azienda-agricola-sonia</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/459-azienda-agricola-sonia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/576-azienda-agricola-vercellino-lucia</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/576-azienda-agricola-vercellino-lucia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/427-azienda-agricola-zootecnica-la-briata</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/427-azienda-agricola-zootecnica-la-briata</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/263-caseificio-marovelli</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/263-caseificio-marovelli</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/49-caseificio-rosario</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/49-caseificio-rosario</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/326-caseificio-san-simone-soc-coop-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/326-caseificio-san-simone-soc-coop-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/315-caseificio-santa-rita-bio-societa-agricola-arl</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/315-caseificio-santa-rita-bio-societa-agricola-arl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/522-cg-agrialp</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/522-cg-agrialp</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi?start=30</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi?start=30</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/358-societa-agricola-i-gelsi-e-la-talpa</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/358-societa-agricola-i-gelsi-e-la-talpa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/188-alemat</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/188-alemat</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/524-agricola-bargiolina</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/524-agricola-bargiolina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/540-agrumi-famiglia-messina</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/540-agrumi-famiglia-messina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/379-altalanga-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/379-altalanga-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/533-arance-fratelli-messina</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/533-arance-fratelli-messina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/554-arance-marretta</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/554-arance-marretta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/171-arcolaio-s-c-s</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/171-arcolaio-s-c-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/431-assoc-produttori-carciofo-spinoso-di-menfi</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/431-assoc-produttori-carciofo-spinoso-di-menfi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/569-associazione-fior-di-corleone</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/569-associazione-fior-di-corleone</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/614-associazione-solidaria</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/614-associazione-solidaria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/314-az-agricola-dolcefragola</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/314-az-agricola-dolcefragola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/460-azienda-agricola-del-giudice-severino</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/460-azienda-agricola-del-giudice-severino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/639-az-agr-loconsole</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/639-az-agr-loconsole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/591-az-agricola-dinamica-salentina</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/591-az-agricola-dinamica-salentina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/132-az-agricola-san-nicola-s-a-s</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/132-az-agricola-san-nicola-s-a-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/495-az-agricola-sanza</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/495-az-agricola-sanza</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/518-az-ortofrutticola-sett-olmi</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/518-az-ortofrutticola-sett-olmi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/216-azienda-agribio-d-apolito</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/216-azienda-agribio-d-apolito</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/640-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/640-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/633-azienda-agricola-agrinova</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/633-azienda-agricola-agrinova</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/645-azienda-agricola-alessandro-fiuscello</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/645-azienda-agricola-alessandro-fiuscello</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/617-azienda-agricola-biologica-pratelli-maria</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/617-azienda-agricola-biologica-pratelli-maria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/556-azienda-agricola-biologica-san-francesco</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/556-azienda-agricola-biologica-san-francesco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/568-azienda-agricola-bori</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/568-azienda-agricola-bori</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/437-azienda-agricola-cascina-bedria</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/437-azienda-agricola-cascina-bedria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/217-azienda-agricola-cascina-di-francia</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/217-azienda-agricola-cascina-di-francia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura?start=30</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura?start=30</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura?start=60</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura?start=60</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura?start=90</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura?start=90</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/401-sondaggio</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/401-sondaggio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/630-orto-dei-ragazzi-in-accoglienza-a-le-c-a-s-e-pomino</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/630-orto-dei-ragazzi-in-accoglienza-a-le-c-a-s-e-pomino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia/486-agricola-chimisso</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia/486-agricola-chimisso</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia/324-albio-s-r-l-la-spiga-bio</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia/324-albio-s-r-l-la-spiga-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia/345-nuova-cooperazione-organizzata-s-c-s-p-a-consorzio-cooperative-sociali</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia/345-nuova-cooperazione-organizzata-s-c-s-p-a-consorzio-cooperative-sociali</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia/346-rete-utile-buono-e-bio</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia/346-rete-utile-buono-e-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/57-gastronomia/620-salumificio-tarasconi-s-n-c</loc>
+  <loc>https://www.portalgas.it/produttori/57-gastronomia/620-salumificio-tarasconi-s-n-c</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/580-terra-viva-del-tibi</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/580-terra-viva-del-tibi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/343-garfagnana-trote-di-satti-luca-e-francesco-s-a-s</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/343-garfagnana-trote-di-satti-luca-e-francesco-s-a-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/210-aq-system</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/210-aq-system</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/491-associazione-biud10-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/491-associazione-biud10-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/400-associazione-dello-zafferano-di-cascia</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/400-associazione-dello-zafferano-di-cascia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/509-az-agr-novelli-alessandro-zone-terremoto-centro-italia</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/509-az-agr-novelli-alessandro-zone-terremoto-centro-italia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/665-azienda-agricola-arcobio</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/665-azienda-agricola-arcobio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/502-azienda-agricola-carmela-iurilli</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/502-azienda-agricola-carmela-iurilli</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/124-azienda-agricola-mulia-di-antonio-brancatisano</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/124-azienda-agricola-mulia-di-antonio-brancatisano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/477-azienda-agricola-tenuta-collotta</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/477-azienda-agricola-tenuta-collotta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/641-beeopak</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/641-beeopak</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/555-c-orto-circuito</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/555-c-orto-circuito</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/414-casabase-avigliana</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/414-casabase-avigliana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/497-centro-ricerche-altantide</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/497-centro-ricerche-altantide</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/359-coop-quetzal-e-sprigioniamo-sapori-del-carcere-di-ragusa</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/359-coop-quetzal-e-sprigioniamo-sapori-del-carcere-di-ragusa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/340-cooperativa-copavi-del-movimento-sem-terra-mst</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/340-cooperativa-copavi-del-movimento-sem-terra-mst</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/154-cooperativa-il-ponte-avigliana</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/154-cooperativa-il-ponte-avigliana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/156-dado-sng-food-di-sigfried-frizzi</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/156-dado-sng-food-di-sigfried-frizzi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/257-eco-culture-e-viaggi-soc-coop</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/257-eco-culture-e-viaggi-soc-coop</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/75-eloquente-luciano</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/75-eloquente-luciano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/517-euphytos</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/517-euphytos</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/41-fattoria-della-mandorla</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/41-fattoria-della-mandorla</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/558-festa-altra-velocita</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/558-festa-altra-velocita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico?start=30</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico?start=30</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico?start=60</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico?start=60</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/74-acetaia-pagani</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/74-acetaia-pagani</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/49-salse-maionese-gelati/588-associazione-diritti-a-sud</loc>
+  <loc>https://www.portalgas.it/produttori/49-salse-maionese-gelati/588-associazione-diritti-a-sud</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/629-frantoio-olivarum</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/629-frantoio-olivarum</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/658-carone-s-n-c-nadia-c</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/658-carone-s-n-c-nadia-c</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/123-in-natura</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/123-in-natura</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/670-lucart</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/670-lucart</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/114-mamma-ecologica-snc</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/114-mamma-ecologica-snc</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/33-neve-cosmetics</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/33-neve-cosmetics</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/21-sanicot-srl</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/21-sanicot-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/53-igiene/601-sapone-di-aleppo-km-0</loc>
+  <loc>https://www.portalgas.it/produttori/53-igiene/601-sapone-di-aleppo-km-0</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/493-miele-di-rossella-surdo</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/493-miele-di-rossella-surdo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/58-fiori/447-fiori-per-corso-di-formazione</loc>
+  <loc>https://www.portalgas.it/produttori/58-fiori/447-fiori-per-corso-di-formazione</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/530-finanziamento-festa-altra-velocita</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/530-finanziamento-festa-altra-velocita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/45-libri-e-cancelleria/142-carto-cars</loc>
+  <loc>https://www.portalgas.it/produttori/45-libri-e-cancelleria/142-carto-cars</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/247-cooperativa-produttori-agricoli-pieve-di-santaluce</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/247-cooperativa-produttori-agricoli-pieve-di-santaluce</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/178-societa-agricola-ioboscovivo</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/178-societa-agricola-ioboscovivo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/61-agrinova</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/61-agrinova</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/14-arc-en-ciel</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/14-arc-en-ciel</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/384-azienda-agricola-bubot-di-bregola-paola</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/384-azienda-agricola-bubot-di-bregola-paola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/567-azienda-agricola-sambuco</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/567-azienda-agricola-sambuco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/566-azienda-agricola-terra-del-roero</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/566-azienda-agricola-terra-del-roero</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/499-azienda-agricola-uva-rama</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/499-azienda-agricola-uva-rama</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/433-cooperativa-campo-aperto</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/433-cooperativa-campo-aperto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/600-le-confetture-del-priore</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/600-le-confetture-del-priore</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/498-le-marmellate-di-liam</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/498-le-marmellate-di-liam</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/46-marmellate-sott-oli/117-tanta-frutta-marmellate-fatte-con-amore</loc>
+  <loc>https://www.portalgas.it/produttori/46-marmellate-sott-oli/117-tanta-frutta-marmellate-fatte-con-amore</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/288-podere-pereto-az-agricola-bio</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/288-podere-pereto-az-agricola-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/274-l-savuj</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/274-l-savuj</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/402-adi-apicoltura-srl</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/402-adi-apicoltura-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/553-agriturismo-la-dolce-vista</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/553-agriturismo-la-dolce-vista</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/205-apicoltura-attilio-berra</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/205-apicoltura-attilio-berra</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/485-apicoltura-la-margherita</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/485-apicoltura-la-margherita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/254-apicoltura-maurizio-quirino</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/254-apicoltura-maurizio-quirino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/653-apicoltura-raineri</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/653-apicoltura-raineri</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/674-az-agr-e-apicoltura-melissa-favro</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/674-az-agr-e-apicoltura-melissa-favro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/612-azienda-agricola-apicoltura-canavesana</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/612-azienda-agricola-apicoltura-canavesana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/657-azienda-agricola-apimargherita-di-marco-felettig</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/657-azienda-agricola-apimargherita-di-marco-felettig</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/438-azienda-agricola-bolzanello-roberto</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/438-azienda-agricola-bolzanello-roberto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/277-azienda-agricola-clemente-sergio</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/277-azienda-agricola-clemente-sergio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/303-azienda-agricola-pandisole</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/303-azienda-agricola-pandisole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/687-azienda-agricola-quota-1116</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/687-azienda-agricola-quota-1116</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/153-cooperativa-sociale-amico</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/153-cooperativa-sociale-amico</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/140-girba-bio</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/140-girba-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/561-il-favo-goloso</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/561-il-favo-goloso</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/47-miele/579-oro-di-gaia</loc>
+  <loc>https://www.portalgas.it/produttori/47-miele/579-oro-di-gaia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/287-granelli-massimo-az-agricola-bio</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/287-granelli-massimo-az-agricola-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/278-azienda-olivicola-bosco-e-mare</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/278-azienda-olivicola-bosco-e-mare</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/37-antico-frantoio-ramoino</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/37-antico-frantoio-ramoino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/258-apolio-srl</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/258-apolio-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/480-azienda-agr-la-ferrari</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/480-azienda-agr-la-ferrari</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/366-azienda-agricola-agricortesebio-di-valerio-cortese</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/366-azienda-agricola-agricortesebio-di-valerio-cortese</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/327-azienda-agricola-biologica-piccapane</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/327-azienda-agricola-biologica-piccapane</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/191-azienda-agricola-caruso</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/191-azienda-agricola-caruso</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/469-azienda-agricola-monaco</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/469-azienda-agricola-monaco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/125-azienda-agricola-mulia</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/125-azienda-agricola-mulia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/473-azienda-agricola-pellegrino-moceri</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/473-azienda-agricola-pellegrino-moceri</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/11-azienda-agricola-piscione</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/11-azienda-agricola-piscione</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/416-azienda-agricola-ramundo</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/416-azienda-agricola-ramundo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/441-azienda-agricola-tarsitani</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/441-azienda-agricola-tarsitani</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/440-azienda-macri</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/440-azienda-macri</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/370-cooperativa-sociale-giovani-in-vita</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/370-cooperativa-sociale-giovani-in-vita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/618-copa-societa-cooperativa-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/618-copa-societa-cooperativa-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/168-del-borrello-giuseppe</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/168-del-borrello-giuseppe</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/570-extra-etico</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/570-extra-etico</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/84-frantoio-bianco</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/84-frantoio-bianco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/261-frantoio-polizzi</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/261-frantoio-polizzi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/439-guerzoni</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/439-guerzoni</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/339-intini-srl</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/339-intini-srl</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/685-l-olio-dei-sassi</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/685-l-olio-dei-sassi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/408-lariservabio-az-agr-di-de-rossi-anna-maria</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/408-lariservabio-az-agr-di-de-rossi-anna-maria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto?start=30</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto?start=30</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/519-cooperativa-camucissi</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/519-cooperativa-camucissi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/529-azienda-agricola-il-casaboch</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/529-azienda-agricola-il-casaboch</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/26-agriforneria</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/26-agriforneria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/549-antico-forno-di-santolin-sandro-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/549-antico-forno-di-santolin-sandro-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/371-azienda-agricola-lu-piane</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/371-azienda-agricola-lu-piane</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/161-bioagri-2003-il-forno-del-borgo</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/161-bioagri-2003-il-forno-del-borgo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/227-cascina-escuelita</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/227-cascina-escuelita</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/183-forno-fenoglio</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/183-forno-fenoglio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/655-forno-la-torre</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/655-forno-la-torre</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/634-la-macina</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/634-la-macina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/229-laboratorio-del-gabbio</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/229-laboratorio-del-gabbio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/628-micapan-la-bottega</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/628-micapan-la-bottega</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/137-panemadre</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/137-panemadre</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/496-panifici-riuniti-valle-susa-snc-di-romanato-o-c</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/496-panifici-riuniti-valle-susa-snc-di-romanato-o-c</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/610-panificio-antiche-tradizioni-sardegna</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/610-panificio-antiche-tradizioni-sardegna</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/248-panificio-demartini</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/248-panificio-demartini</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/512-panificio-palumbo-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/512-panificio-palumbo-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/151-panificio-perdomo</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/151-panificio-perdomo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/36-pane/632-panifico-demurtas</loc>
+  <loc>https://www.portalgas.it/produttori/36-pane/632-panifico-demurtas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/542-az-agr-la-fattoria-di-sara-e-giulia</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/542-az-agr-la-fattoria-di-sara-e-giulia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/83-azienda-agricola-cerutti</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/83-azienda-agricola-cerutti</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/637-azienda-agricola-di-rovasenda-biandrate-maria</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/637-azienda-agricola-di-rovasenda-biandrate-maria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/351-azienda-agricola-la-ghiraia</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/351-azienda-agricola-la-ghiraia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/404-azienda-agricola-lopresti-maria</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/404-azienda-agricola-lopresti-maria</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/186-azienda-biologica-lesca</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/186-azienda-biologica-lesca</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/367-cascina-belvedere</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/367-cascina-belvedere</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/58-cascina-canta</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/58-cascina-canta</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/667-catella-s-s-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/667-catella-s-s-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/32-coop-agricola-iris-astra-bio</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/32-coop-agricola-iris-astra-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/85-deambrogio-franco-az-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/85-deambrogio-franco-az-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/365-i-piemonteiss-di-joannes</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/365-i-piemonteiss-di-joannes</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/356-il-pastificio-loto-societa-cooperativa-sociale-onlus</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/356-il-pastificio-loto-societa-cooperativa-sociale-onlus</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/350-la-fagiana</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/350-la-fagiana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/323-la-terra-e-il-cielo-societa-agricola-cooperativa</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/323-la-terra-e-il-cielo-societa-agricola-cooperativa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/465-pastificio-agricolo-lenato</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/465-pastificio-agricolo-lenato</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/688-pastificio-g-di-martino</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/688-pastificio-g-di-martino</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/527-progetto-terra-s-r-l-s</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/527-progetto-terra-s-r-l-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/625-riseria-gazzani-1648-di-soave-marco-c-sas</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/625-riseria-gazzani-1648-di-soave-marco-c-sas</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/605-riseria-re-carlo</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/605-riseria-re-carlo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/435-riseria-rovasenda</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/435-riseria-rovasenda</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/582-riso-melotti-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/582-riso-melotti-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/290-terre-di-lomellina</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/290-terre-di-lomellina</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/35-pasta-e-riso/283-terre-di-lomellina-s-s</loc>
+  <loc>https://www.portalgas.it/produttori/35-pasta-e-riso/283-terre-di-lomellina-s-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/623-societa-agricola-nardi-clemente-e-figli-s</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/623-societa-agricola-nardi-clemente-e-figli-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/192-allevamento-ittico-la-jara</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/192-allevamento-ittico-la-jara</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/232-allevamento-trote-manuel-bovio</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/232-allevamento-trote-manuel-bovio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/13-aqua</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/13-aqua</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/484-associazione-pesce-d-aprile</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/484-associazione-pesce-d-aprile</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/77-bio-e-mare</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/77-bio-e-mare</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/179-ditta-drago-sebastiano</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/179-ditta-drago-sebastiano</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/40-fishbox</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/40-fishbox</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/146-peppino-brunetto-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/146-peppino-brunetto-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/243-spanu</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/243-spanu</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/31-pesce/559-vongole-bigman</loc>
+  <loc>https://www.portalgas.it/produttori/31-pesce/559-vongole-bigman</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/596-caseificio-artigianale-il-muretto-di-casulli-paolo</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/596-caseificio-artigianale-il-muretto-di-casulli-paolo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/49-salse-maionese-gelati/163-lina-brand-di-alfano-e-figli</loc>
+  <loc>https://www.portalgas.it/produttori/49-salse-maionese-gelati/163-lina-brand-di-alfano-e-figli</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/42-azienda-agricola-sirgole</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/42-azienda-agricola-sirgole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/50-sciroppi-e-liquori/403-liquorificio-rapa</loc>
+  <loc>https://www.portalgas.it/produttori/50-sciroppi-e-liquori/403-liquorificio-rapa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/594-produttore-finto-2</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/594-produttore-finto-2</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/52-uova/643-azienda-agricola-la-verdella-piccola</loc>
+  <loc>https://www.portalgas.it/produttori/52-uova/643-azienda-agricola-la-verdella-piccola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/52-uova/455-uova-freschissime-larizzate</loc>
+  <loc>https://www.portalgas.it/produttori/52-uova/455-uova-freschissime-larizzate</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/336-arcania-s-r-l</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/336-arcania-s-r-l</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/256-az-agr-isiya</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/256-az-agr-isiya</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/238-azienda-agricola-benotto</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/238-azienda-agricola-benotto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/214-azienda-agricola-caretto</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/214-azienda-agricola-caretto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/207-azienda-agricola-giovanetto</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/207-azienda-agricola-giovanetto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/209-azienda-agricola-gruppo-vignaioli-di-cesari-e-carrara-s-s</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/209-azienda-agricola-gruppo-vignaioli-di-cesari-e-carrara-s-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/468-azienda-agricola-la-quercia</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/468-azienda-agricola-la-quercia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/87-bolla</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/87-bolla</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/86-boron-f-lli-az-agr</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/86-boron-f-lli-az-agr</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/89-bossotti-vincenzo</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/89-bossotti-vincenzo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/471-cantine-quat-gat</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/471-cantine-quat-gat</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/88-cascina-perfumo</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/88-cascina-perfumo</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/475-cavallero-lorenzo-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/475-cavallero-lorenzo-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/357-folicello-societa-agricola-s-s</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/357-folicello-societa-agricola-s-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/680-marsaglia-societa-agricola-semplice</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/680-marsaglia-societa-agricola-semplice</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/689-perlage</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/689-perlage</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/166-pizzolato-prosecco-vini-e-spumanti-bio</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/166-pizzolato-prosecco-vini-e-spumanti-bio</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/615-poggio-la-tana</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/615-poggio-la-tana</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/425-serata-assaggi-vini-piemontesi</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/425-serata-assaggi-vini-piemontesi</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/678-soc-agr-az-agr-scagliola-s-s</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/678-soc-agr-az-agr-scagliola-s-s</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/51-vino/452-vino-biologico-la-casaccia</loc>
+  <loc>https://www.portalgas.it/produttori/51-vino/452-vino-biologico-la-casaccia</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/70-yogurt/160-gayo-yogurth-az-agr-borrello-franco</loc>
+  <loc>https://www.portalgas.it/produttori/70-yogurt/160-gayo-yogurth-az-agr-borrello-franco</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/99-datteri</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/99-datteri</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas?start=3</loc>
+  <loc>https://www.portalgas.it/12-portalgas?start=3</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/12-portalgas?start=6</loc>
+  <loc>https://www.portalgas.it/12-portalgas?start=6</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.51</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/25-azienda-agricola-gandoro</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/25-azienda-agricola-gandoro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/65-bianciotto</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/65-bianciotto</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/669-azienda-agricola-la-soleggiata</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/669-azienda-agricola-la-soleggiata</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/231-azienda-agricola-denarier-anna</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/231-azienda-agricola-denarier-anna</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/443-il-noccioleto-di-piverone</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/443-il-noccioleto-di-piverone</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/276-gius-spremitura</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/276-gius-spremitura</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/272-l-orto-di-carmen</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/272-l-orto-di-carmen</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/107-azienda-agricola-baffa</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/107-azienda-agricola-baffa</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/505-tesseramento</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/505-tesseramento</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/587-zahar-di-tania-stefani</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/587-zahar-di-tania-stefani</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/43-formaggi/53-il-girasole</loc>
+  <loc>https://www.portalgas.it/produttori/43-formaggi/53-il-girasole</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/679-mezza-giornata</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/679-mezza-giornata</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/536-fat-come-une-volte-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/536-fat-come-une-volte-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/67-liriodendro</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/67-liriodendro</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/42-farine-cereali-legumi/289-poggio-di-camporbiano-azienda-agricola</loc>
+  <loc>https://www.portalgas.it/produttori/42-farine-cereali-legumi/289-poggio-di-camporbiano-azienda-agricola</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/55-generico/574-azienda-agricola-baccanella</loc>
+  <loc>https://www.portalgas.it/produttori/55-generico/574-azienda-agricola-baccanella</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/201-zollegrame</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/201-zollegrame</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/48-olio-olive-e-aceto/195-salvagno-giovanni-frantoio-per-olive</loc>
+  <loc>https://www.portalgas.it/produttori/48-olio-olive-e-aceto/195-salvagno-giovanni-frantoio-per-olive</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>http://www.portalgas.it/produttori/44-frutta-e-verdura/47-noci-di-butea-tramite-il-sermig</loc>
+  <loc>https://www.portalgas.it/produttori/44-frutta-e-verdura/47-noci-di-butea-tramite-il-sermig</loc>
   <lastmod>2020-04-29T20:24:11+00:00</lastmod>
   <priority>0.41</priority>
 </url>
 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasalmese</loc>
+    <loc>https://www.portalgas.it/home-gas-gasalmese</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasalmese/consegne-gas-gasalmese</loc>
+    <loc>https://www.portalgas.it/home-gas-gasalmese/consegne-gas-gasalmese</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-arcoiris</loc>
+    <loc>https://www.portalgas.it/home-gas-arcoiris</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-arcoiris/consegne-gas-arcoiris</loc>
+    <loc>https://www.portalgas.it/home-gas-arcoiris/consegne-gas-arcoiris</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-castano-primo</loc>
+    <loc>https://www.portalgas.it/home-gas-castano-primo</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-castano-primo/consegne-gas-castano-primo</loc>
+    <loc>https://www.portalgas.it/home-gas-castano-primo/consegne-gas-castano-primo</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasavigliana</loc>
+    <loc>https://www.portalgas.it/home-gas-gasavigliana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasavigliana/consegne-gas-gasavigliana</loc>
+    <loc>https://www.portalgas.it/home-gas-gasavigliana/consegne-gas-gasavigliana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasbuttigliera</loc>
+    <loc>https://www.portalgas.it/home-gas-gasbuttigliera</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasbuttigliera/consegne-gas-gasbuttigliera</loc>
+    <loc>https://www.portalgas.it/home-gas-gasbuttigliera/consegne-gas-gasbuttigliera</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gassepiossasco</loc>
+    <loc>https://www.portalgas.it/home-gas-gassepiossasco</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gassepiossasco/consegne-gas-gassepiossasco</loc>
+    <loc>https://www.portalgas.it/home-gas-gassepiossasco/consegne-gas-gassepiossasco</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-cavagnetta</loc>
+    <loc>https://www.portalgas.it/home-gas-cavagnetta</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</loc>
+    <loc>https://www.portalgas.it/home-gas-cavagnetta/consegne-gas-cavagnetta</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-ocasansalvario</loc>
+    <loc>https://www.portalgas.it/home-gas-ocasansalvario</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-ocasansalvario/consegne-gas-ocasansalvario</loc>
+    <loc>https://www.portalgas.it/home-gas-ocasansalvario/consegne-gas-ocasansalvario</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-villargas</loc>
+    <loc>https://www.portalgas.it/home-gas-villargas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-villargas/consegne-gas-villargas</loc>
+    <loc>https://www.portalgas.it/home-gas-villargas/consegne-gas-villargas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-colibri</loc>
+    <loc>https://www.portalgas.it/home-gas-colibri</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-colibri/consegne-gas-colibri</loc>
+    <loc>https://www.portalgas.it/home-gas-colibri/consegne-gas-colibri</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gascondove</loc>
+    <loc>https://www.portalgas.it/home-gas-gascondove</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gascondove/consegne-gas-gascondove</loc>
+    <loc>https://www.portalgas.it/home-gas-gascondove/consegne-gas-gascondove</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gastaldi</loc>
+    <loc>https://www.portalgas.it/home-gas-gastaldi</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gastaldi/consegne-gas-gastaldi</loc>
+    <loc>https://www.portalgas.it/home-gas-gastaldi/consegne-gas-gastaldi</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-galligas</loc>
+    <loc>https://www.portalgas.it/home-gas-galligas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-galligas/consegne-gas-galligas</loc>
+    <loc>https://www.portalgas.it/home-gas-galligas/consegne-gas-galligas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gastrana</loc>
+    <loc>https://www.portalgas.it/home-gas-gastrana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gastrana/consegne-gas-gastrana</loc>
+    <loc>https://www.portalgas.it/home-gas-gastrana/consegne-gas-gastrana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasmarti</loc>
+    <loc>https://www.portalgas.it/home-gas-gasmarti</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasmarti/consegne-gas-gasmarti</loc>
+    <loc>https://www.portalgas.it/home-gas-gasmarti/consegne-gas-gasmarti</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvaldellatorre</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvaldellatorre</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvaldellatorre/consegne-gas-gasvaldellatorre</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvaldellatorre/consegne-gas-gasvaldellatorre</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasivrea</loc>
+    <loc>https://www.portalgas.it/home-gas-gasivrea</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasivrea/consegne-gas-gasivrea</loc>
+    <loc>https://www.portalgas.it/home-gas-gasivrea/consegne-gas-gasivrea</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasdorabaltea</loc>
+    <loc>https://www.portalgas.it/home-gas-gasdorabaltea</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasdorabaltea/consegne-gas-gasdorabaltea</loc>
+    <loc>https://www.portalgas.it/home-gas-gasdorabaltea/consegne-gas-gasdorabaltea</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvalchiusella</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvalchiusella</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvalchiusella/consegne-gas-gasvalchiusella</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvalchiusella/consegne-gas-gasvalchiusella</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>  
   <url>
-    <loc>http://www.portalgas.it/home-gas-amicogas</loc>
+    <loc>https://www.portalgas.it/home-gas-amicogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-amicogas/consegne-gas-amicogas</loc>
+    <loc>https://www.portalgas.it/home-gas-amicogas/consegne-gas-amicogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasgarfagnana</loc>
+    <loc>https://www.portalgas.it/home-gas-gasgarfagnana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasgarfagnana/consegne-gas-gasgarfagnana</loc>
+    <loc>https://www.portalgas.it/home-gas-gasgarfagnana/consegne-gas-gasgarfagnana</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasati</loc>
+    <loc>https://www.portalgas.it/home-gas-gasati</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasati/consegne-gas-gasati</loc>
+    <loc>https://www.portalgas.it/home-gas-gasati/consegne-gas-gasati</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-felettogas</loc>
+    <loc>https://www.portalgas.it/home-gas-felettogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-felettogas/consegne-gas-felettogas</loc>
+    <loc>https://www.portalgas.it/home-gas-felettogas/consegne-gas-felettogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>  
   <url>
-    <loc>http://www.portalgas.it/home-gas-madrisiogas</loc>
+    <loc>https://www.portalgas.it/home-gas-madrisiogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-madrisiogas/consegne-gas-madrisiogas</loc>
+    <loc>https://www.portalgas.it/home-gas-madrisiogas/consegne-gas-madrisiogas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-remolonsgas</loc>
+    <loc>https://www.portalgas.it/home-gas-remolonsgas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-remolonsgas/consegne-gas-remolonsgas</loc>
+    <loc>https://www.portalgas.it/home-gas-remolonsgas/consegne-gas-remolonsgas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-fiordigas</loc>
+    <loc>https://www.portalgas.it/home-gas-fiordigas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-fiordigas/consegne-gas-fiordigas</loc>
+    <loc>https://www.portalgas.it/home-gas-fiordigas/consegne-gas-fiordigas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-villanovagas</loc>
+    <loc>https://www.portalgas.it/home-gas-villanovagas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-villanovagas/consegne-gas-villanovagas</loc>
+    <loc>https://www.portalgas.it/home-gas-villanovagas/consegne-gas-villanovagas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-villaltagas</loc>
+    <loc>https://www.portalgas.it/home-gas-villaltagas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-villaltagas/consegne-gas-villaltagas</loc>
+    <loc>https://www.portalgas.it/home-gas-villaltagas/consegne-gas-villaltagas</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-borgobonta</loc>
+    <loc>https://www.portalgas.it/home-gas-borgobonta</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-borgobonta/consegne-gas-borgobonta</loc>
+    <loc>https://www.portalgas.it/home-gas-borgobonta/consegne-gas-borgobonta</loc>
     <lastmod>2020-04-29T20:24:11+00:00</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasamuni</loc>
+    <loc>https://www.portalgas.it/home-gas-gasamuni</loc>
     <lastmod>2016-09-12</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasamuni/consegne-gas-gasamuni</loc>
+    <loc>https://www.portalgas.it/home-gas-gasamuni/consegne-gas-gasamuni</loc>
     <lastmod>2016-09-12</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-anxagas</loc>
+    <loc>https://www.portalgas.it/home-gas-anxagas</loc>
     <lastmod>2016-10-24</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-anxagas/consegne-gas-anxagas</loc>
+    <loc>https://www.portalgas.it/home-gas-anxagas/consegne-gas-anxagas</loc>
     <lastmod>2016-10-24</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-pastamadristiromani</loc>
+    <loc>https://www.portalgas.it/home-gas-pastamadristiromani</loc>
     <lastmod>2016-11-04</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-pastamadristiromani/consegne-gas-pastamadristiromani</loc>
+    <loc>https://www.portalgas.it/home-gas-pastamadristiromani/consegne-gas-pastamadristiromani</loc>
     <lastmod>2016-11-04</lastmod>
     <changefreq>yearly</changefreq>
   </url> 
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvercelli</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvercelli</loc>
     <lastmod>2017-02-15</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasvercelli/consegne-gas-gasvercelli</loc>
+    <loc>https://www.portalgas.it/home-gas-gasvercelli/consegne-gas-gasvercelli</loc>
     <lastmod>2017-02-15</lastmod>
     <changefreq>yearly</changefreq>
   </url>  
   <url>
-    <loc>http://www.portalgas.it/home-gas-gaslacittachecresce</loc>
+    <loc>https://www.portalgas.it/home-gas-gaslacittachecresce</loc>
     <lastmod>2017-02-15</lastmod>
     <changefreq>yearly</changefreq>
   </url>  
   <url>
-    <loc>http://www.portalgas.it/home-gas-gaslacittachecresce/consegne-gas-gaslacittachecresce</loc>
+    <loc>https://www.portalgas.it/home-gas-gaslacittachecresce/consegne-gas-gaslacittachecresce</loc>
     <lastmod>2017-02-15</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasquinzano</loc>
+    <loc>https://www.portalgas.it/home-gas-gasquinzano</loc>
     <lastmod>2020-07-08</lastmod>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>http://www.portalgas.it/home-gas-gasquinzano/consegne-gas-gasquinzano</loc>
+    <loc>https://www.portalgas.it/home-gas-gasquinzano/consegne-gas-gasquinzano</loc>
     <lastmod>2020-07-08</lastmod>
     <changefreq>yearly</changefreq>
   </url>
@@ -2867,5 +2867,20 @@
     <loc>https://www.portalgas.it/home-gas-dendrosgascanelli/consegne-gas-dendrosgascanelli</loc>
     <lastmod>2021-01-23</lastmod>
     <changefreq>yearly</changefreq>
-  </url>  
+  </url> 
+  <url>
+    <loc>https://www.portalgas.it/home-gas-bio-colombini-firenze-sud/consegne-gas-bio-colombini-firenze-sud</loc>
+    <lastmod>2021-03-15</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-bio-colombini-castiglioncello/consegne-gas-bio-colombini-castiglioncello</loc>
+    <lastmod>2021-03-15</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-bio-colombini-lippi/consegne-gas-bio-colombini-lippi</loc>
+    <lastmod>2021-03-15</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>       
 </urlset>
