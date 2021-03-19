@@ -249,7 +249,7 @@ class plgUserJoomla extends JPlugin
 					$urlRedirect = 'organization.prodgas.home';
 				}
 				else {
-					$urlRedirect = $this->_hasUserFlagPrivacy($organization_id, $user_id, $debug);
+					$urlRedirect = $this->_hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug);
 				}
 				
 
@@ -510,11 +510,20 @@ class plgUserJoomla extends JPlugin
 	/*
 	* ctrl se deve confermare il modulo della privacy
 	*/
-	private function _hasUserFlagPrivacy($organization_id, $user_id, $debug=false) {
+	private function _hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug=false) {
 
 		$urlRedirect = 'acquista';
+		
+		/*
+		echo "<pre>";
+		print_r($paramsConfig);
+		echo "</pre>";
+		*/
 
 		if(isset($paramsConfig['hasUserFlagPrivacy']) && $paramsConfig['hasUserFlagPrivacy']=='Y') {
+			
+			$db = JFactory::getDBO();
+
 			$sql = "SELECT profile_value FROM j_user_profiles 
 					WHERE profile_key = 'profile.hasUserFlagPrivacy'
 					AND user_id = ".$user_id;
