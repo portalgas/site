@@ -2882,5 +2882,15 @@
     <loc>https://www.portalgas.it/home-gas-bio-colombini-lippi/consegne-gas-bio-colombini-lippi</loc>
     <lastmod>2021-03-15</lastmod>
     <changefreq>yearly</changefreq>
-  </url>       
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-bio-colombini-dimanoinmano</loc>
+    <lastmod>2021-03-19</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-bio-colombini-dimanoinmano/consegne-gas-bio-colombini-dimanoinmano</loc>
+    <lastmod>2021-03-19</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>      
 </urlset>
