@@ -730,6 +730,9 @@ msgstr "Aggiungi una nuova consegna"
 msgid "Add Cash"
 msgstr "Aggiungi una nuova voce alla cassa"
 
+msgid "Add Cash User"
+msgstr "Aggiungi una nuova voce di cassa al gasista"
+
 msgid "Add Event"
 msgstr "Aggiungi attività"
 

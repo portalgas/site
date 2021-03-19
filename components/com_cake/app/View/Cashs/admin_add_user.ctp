@@ -2,13 +2,13 @@
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 if(!isset($delivery_id)) $delivery_id = 0;
 $this->Html->addCrumb(__('Cassiere'),array('controller' => 'Cassiere', 'action' => 'home', $delivery_id));
-$this->Html->addCrumb(__('Edit Cash'));
-echo $this->Html->getCrumbList(array('class'=>'crumbs'));
+$this->Html->addCrumb(__('Add Cash User'));
+echo $this->Html->getCrumbList(['class'=>'crumbs']);
 
 echo '<div class="cashs form">';
-echo $this->Form->create('Cash', array('id' => 'formGas'));
+echo $this->Form->create('Cash', ['id' => 'formGas']);
 echo '<fieldset>';
-echo '<legend>'.__('Edit Cash').'</legend>';
+echo '<legend>'.__('Add Cash User').'</legend>';
 
 		echo $this->Form->input('id');
 		
@@ -67,8 +67,8 @@ echo '<legend>'.__('Edit Cash').'</legend>';
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List Cashs'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
-		<li><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Cash.id')),array('class' => 'action actionDelete','title' => __('Delete'))); ?></li>
+		<li><?php echo $this->Html->link(__('List Cashs'), ['action' => 'index'], ['class'=>'action actionReload']);?></li>
+		<li><?php echo $this->Html->link(__('Delete'), ['action' => 'delete', $this->Form->value('Cash.id')], ['class' => 'action actionDelete','title' => __('Delete')]); ?></li>
 	</ul>
 </div>
 <script type="text/javascript">

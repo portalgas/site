@@ -17,6 +17,8 @@ class CashsController extends AppController {
 
     public function admin_index() {
 
+        App::import('Model', 'User');
+
         $conditions = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
                 // 'User.block' => 0  lo metto nel model se no non mi prende quelli con user_id = 0
         ];
@@ -25,6 +27,25 @@ class CashsController extends AppController {
         $this->Cash->recursive = 1;
         $this->paginate = ['maxLimit' => $SqlLimit, 'limit' => $SqlLimit, 'conditions' => $conditions, 'order' => Configure::read('orderUser')];
         $results = $this->paginate('Cash');
+        foreach ($results as $numResult => $result) {
+            /*
+             * user disabilitati
+             */
+            if(!isset($result['User']['id']) && !empty($result['Cash']['user_id'])) {
+                $User = new User;   
+
+                $options = [];
+                $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
+                                          'User.id' => $result['Cash']['user_id']];
+
+                $options['recursive'] = -1;
+                $userResults = $User->find('first', $options);  
+
+                $results[$numResult]['User']['name'] = $userResults['User']['name'];
+                $results[$numResult]['User']['email'] = $userResults['User']['email'];
+                $results[$numResult]['User']['block'] = $userResults['User']['block'];                      
+            }
+        }
         $this->set(compact('results'));
 
        self::d($results, false);
@@ -249,7 +270,7 @@ class CashsController extends AppController {
         }
         else {
 			$cash_id = $cashResults['Cash']['id'];
-			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Cashs&action=edit&id='.$cash_id;		
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Cashs&action=add_user&id='.$cash_id;		
 		}					
 		$this->myRedirect($url);
 	}
@@ -257,7 +278,7 @@ class CashsController extends AppController {
 	/*
 	 * Cash precedente lo salvo in CashesHistories
 	 */
-    public function admin_edit($id = null) {
+    public function admin_add_user($id = null) {
 
         $this->Cash->id = $id;
         if (!$this->Cash->exists($this->Cash->id, $this->user->organization['Organization']['id'])) {

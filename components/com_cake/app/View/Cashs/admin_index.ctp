@@ -25,6 +25,9 @@
 	$i=0;
 	$tot_importo=0;
 	foreach ($results as $result):
+
+		// debug($result);
+
 		$numRow = ((($this->Paginator->counter(array('format'=>'{:page}'))-1) * $SqlLimit) + $i+1);
 		 
 		echo '<tr class="view">';
@@ -40,7 +43,17 @@
 				echo ' <a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';
 			echo '</td>';
 		}
-		else {
+		else 
+		if(!empty($result['Cash']['user_id'])) {
+			echo '<td><span class="label label-danger">'.__('User Block').'</span></td>';
+			echo '<td>'.$result['User']['name'].'</td>';
+			echo '<td>';
+			if(!empty($result['User']['email']))	
+				echo ' <a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['User']['email'].'">'.$result['User']['email'].'</a>';
+			echo '</td>';			
+		}
+		else
+		{
 			/*
 			 * voce di cassa non associata all'utente
 			 */
@@ -65,9 +78,12 @@
 		echo '<td style="white-space: nowrap;">';
 		echo $this->App->formatDateCreatedModifier($result['Cash']['modified']);
 		echo '</td>';
-		echo '<td class="actions-table-img">';
-		echo $this->Html->link(null, array('action' => 'edit', $result['Cash']['id']),array('class' => 'action actionEdit','title' => __('Edit')));
-		echo $this->Html->link(null, array('action' => 'delete', $result['Cash']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
+		echo '<td class="actions-table-img-3">';
+		if($result['User']['block']==0) {
+			echo $this->Html->link(null, array('action' => 'add_user', $result['Cash']['id']), ['class' => 'action actionAdd','title' => __('Add Cash User')]);
+			// echo $this->Html->link(null, array('action' => 'edit', $result['Cash']['id']), ['class' => 'action actionEdit','title' => __('Edit Cash')]);
+		}
+		echo $this->Html->link(null, array('action' => 'delete', $result['Cash']['id']), ['class' => 'action actionDelete','title' => __('Delete')]); 
 		echo '</td>';
 	echo '</tr>';
 
