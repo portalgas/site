@@ -200,7 +200,7 @@ class plgUserJoomla extends JPlugin
 
 			if($options['action'] == 'core.login.site') {
 			/*
-			 * front-end login fractis
+			 * front-end login fractis => redirect 
 			*/
 
 			/*
@@ -260,7 +260,8 @@ class plgUserJoomla extends JPlugin
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=promozioni');
 						break; 		
 					case "organization.home":
-						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						// $app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa');
 						break;	
 					case "organization.prodgas.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST']);
