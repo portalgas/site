@@ -28,12 +28,18 @@ class ProdGasPromotionsOrganizationsManagersController extends AppController {
 		$rules['isReferente'] = $this->isReferente();
 
 		$results = $this->ProdGasPromotionsOrganizationsManager->getWaitingPromotions($this->user, $rules, $debug);
-		$this->set(compact('results'));
+		
+		foreach ($results as $numResult => $result) {
+			// debug($result);
+			$params = ['order_type_id' => Configure::read('Order.type.promotion'), 
+					   'prod_gas_promotion_id' => $result['ProdGasPromotion']['id']];
 
-		$params = ['order_type_id' => Configure::read('Order.type.promotion'), 
-				   'prod_gas_promotion_id' => $result['ProdGasPromotion']['id']];
-		$url_query = $this->Connects->createQueryParams('admin/orders', 'add', $params);
-		$this->set(compact('url_query'));
+			$url_query = $this->Connects->createQueryParams('admin/orders', 'add', $params);
+			$results[$numResult]['url_order_add'] = $url_query;
+		}
+		// debug($results);
+
+		$this->set(compact('results'));
 	}
 	
    /*

@@ -90,8 +90,7 @@ class CashsController extends AppController {
         $user_id = $this->request->data['user_id'];
         $value = $this->request->data['value'];
 
-		self::d('admin_index_quick_update', $debug);
-		self::d($this->request->data, $debug);
+		if($debug) debug($this->request->data);
 		
         /*
          *   ctrl se insert / update 
@@ -102,8 +101,8 @@ class CashsController extends AppController {
         $options['fields'] = ['Cash.id'];
         $options['recursive'] = -1;
         $results = $this->Cash->find('first', $options);
-		self::d($options, $debug);
-		self::d($results, $debug); 
+		if($debug) debug($options);
+		if($debug) debug($results); 
         if (!empty($results)) {
             /*
              * UPDATE
@@ -129,7 +128,7 @@ class CashsController extends AppController {
 		
 		$msg_errors = $this->Cash->getMessageErrorsToValidate($this->Cash, $data);
 		if(!empty($msg_errors)) {
-			self::d($msg_errors, $debug);
+			if($debug) debug($msg_errors);
 		}
 		else {			
 			$this->Cash->create();
@@ -150,8 +149,8 @@ class CashsController extends AppController {
         $user_id = $this->request->data['user_id'];
         $value = $this->request->data['value'];
 	
-		self::d('admin_index_quick_update_nota', $debug);
-		self::d($this->request->data, $debug);
+		if($debug) debug('admin_index_quick_update_nota');
+		if($debug) debug($this->request->data);
 
         /*
          *   ctrl se insert / update 
@@ -166,14 +165,14 @@ class CashsController extends AppController {
             /*
              * UPDATE
              */
-            $data['Cash'] = $results['Cash'];	        	            
+            $data['Cash'] = $results['Cash'];	            
 		}
 		
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['nota'] = $value; // '".addslashes($nota)."' 
         
-		self::d($data, false);
+		if($debug) debug($data);
 		
         $this->Cash->create();
         $this->Cash->save($data);
@@ -183,7 +182,7 @@ class CashsController extends AppController {
     }
 	
 	/*
-	 * se if(!empty($user_id)) h gia' lo user settato 
+	 * se if(!empty($user_id)) ha gia' lo user settato 
 	 */
     public function admin_add($user_id=0) {
 
@@ -226,7 +225,7 @@ class CashsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 0];
+                                  'User.block' => 0];
 
         if (!empty($user_ids)) {
             $user_ids = substr($user_ids, 0, (strlen($user_ids) - 1));

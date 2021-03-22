@@ -63,11 +63,11 @@ if(!empty($results)) {
 			} // end if(!empty($result['nota_supplier']))
 			echo '</td>';						
 			echo '<td class="actions-table-img">';
-			echo '<div class="actions-img">';		
+			echo '<div class="actions-img">';
 			echo '	<ul>';
 			echo '<li>'.$this->Html->link(__('Contact PromotionOrganizationManager'), ['action' => 'contact', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionPhone','title' => __('Contact PromotionOrganizationManager')]).'</li>';
 			// echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['action' => 'add', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
-			echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['controller' => 'Connects', 'action' => 'index', null, $url_query], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
+			echo '<li>'.$this->Html->link(__('Add PromotionOrganizationManager'), ['controller' => 'Connects', 'action' => 'index', $result['url_order_add']], ['class' => 'action actionAdd','title' => __('Add PromotionOrganizationManager')]).'</li>';
 			echo '<li>'.$this->Html->link(__('Reject PromotionOrganizationManager'), ['action' => 'reject', null, 'prod_gas_promotion_id='.$result['ProdGasPromotion']['id']], ['class' => 'action actionDelete','title' => __('Reject PromotionOrganizationManager')]).'</li>';
 			echo '	</ul>';
 			echo '</div>';		

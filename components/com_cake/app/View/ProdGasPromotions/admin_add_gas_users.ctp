@@ -130,7 +130,7 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	
 	}
 	else
-		echo $this->element('boxMsg', ['class_msg' => 'danger', 'msg' => __('msg_prodgas_articles_not_found')]);
+		echo $this->element('boxMsg', ['class_msg' => 'danger', 'msg' => __('msg_prodgas_articles_valid')]);
 
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-2">';
