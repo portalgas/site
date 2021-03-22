@@ -245,6 +245,45 @@ class CashsController extends AppController {
         $this->set('totale_importo', $totale_importo);
     }
 
+    /*
+     * modifica voce di cassa dell'utente 
+     */
+    public function admin_edit($id=0) {
+
+        $debug = false;
+
+        $options = [];
+        $options['conditions'] = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                  'Cash.id' => $id];
+        $options['recursive'] = 1;
+        $results = $this->Cash->find('first', $options);
+
+        if($debug) debug($results);
+        $this->set(compact('results'));
+
+        $results = $this->Cash->getTotaleCash($this->user);
+        $totale_importo = $results['totale_importo'];
+        $this->set('totale_importo', $totale_importo);
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+
+            $this->request->data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
+            /*
+             * voce di spesa generica
+             */
+            if (empty($this->request->data['Cash']['user_id']))
+                $this->request->data['Cash']['user_id'] = 0;
+            // debug($this->request->data);
+            $this->Cash->create();
+            if ($this->Cash->save($this->request->data)) {
+                $this->Session->setFlash(__('The cash has been saved'));
+                $this->myRedirect(['action' => 'index']);
+            } else {
+                $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
+            }
+        } // if ($this->request->is('post') || $this->request->is('put'))
+    }
+
     public function admin_edit_by_user_id($user_id=0) {
 
        if (empty($user_id)) {

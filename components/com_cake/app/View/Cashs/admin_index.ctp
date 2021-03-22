@@ -81,7 +81,7 @@
 		echo '<td class="actions-table-img-3">';
 		if($result['User']['block']==0) {
 			echo $this->Html->link(null, array('action' => 'add_user', $result['Cash']['id']), ['class' => 'action actionAdd','title' => __('Add Cash User')]);
-			// echo $this->Html->link(null, array('action' => 'edit', $result['Cash']['id']), ['class' => 'action actionEdit','title' => __('Edit Cash')]);
+			echo $this->Html->link(null, array('action' => 'edit', $result['Cash']['id']), ['class' => 'action actionEdit','title' => __('Edit Cash')]);
 		}
 		echo $this->Html->link(null, array('action' => 'delete', $result['Cash']['id']), ['class' => 'action actionDelete','title' => __('Delete')]); 
 		echo '</td>';
