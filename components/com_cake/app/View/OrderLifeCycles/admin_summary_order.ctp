@@ -60,11 +60,16 @@ echo '<fieldset style="margin: 0;padding: 0;">';
 /*
  * non pagato
  */	
+if(isset($summaryOrderNotPaid) && !empty($summaryOrderNotPaid))
+	$tot = count($summaryOrderNotPaid);
+else
+	$tot = 0;
+
 echo '	<div class="panel-group">';
 echo '<div class="panel panel-primary">';
 echo '<div class="panel-heading">';
 echo '<h4 class="panel-title">';
-echo '<a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-lg fa-minus" aria-hidden="true"></i> '.__('OrderLifeCyclesSummaryOrderNotPaid').' ('.count($summaryOrderNotPaid).')</a>';
+echo '<a data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="fa fa-lg fa-minus" aria-hidden="true"></i> '.__('OrderLifeCyclesSummaryOrderNotPaid').' ('.$tot.')</a>';
 echo '</h4>';
 echo '</div>';
 echo '<div id="collapse1" class="panel-collapse collapse in">';
