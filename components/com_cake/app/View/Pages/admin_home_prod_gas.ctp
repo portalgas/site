@@ -25,11 +25,22 @@
 		</div>	
 		<div class="col-xs-12 col-sm-4 col-md-3">
 			<div class="box-container">
-				<a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasPromotions&amp;action=index">
+				<a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasPromotions&amp;action=index_gas">
 					<div class="box">
 						<span class="fa fa-3x fa-magic"></span>
 						<h4>Promozioni</h4>
-						<p>Gestisci le promozioni</p>
+						<p>Gestisci le promozioni ai G.A.S.</p>
+					</div>	
+				</a>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a href="/administrator/index.php?option=com_cake&amp;controller=ProdGasPromotions&amp;action=index_gas_users">
+					<div class="box">
+						<span class="fa fa-3x fa-magic"></span>
+						<h4>Promozioni</h4>
+						<p>Gestisci le promozioni ai singoli utenti</p>
 					</div>	
 				</a>
 			</div>

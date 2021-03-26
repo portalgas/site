@@ -870,12 +870,18 @@ class OrganizationsController extends AppController {
 				$id_template_styles = $results[0]['j_template_styles']['id'];
 				// echo $id_template_styles;
 			}
+			else {
+				debug("No result ".$sql);
+			}
 			
 			$sql = "SELECT id FROM ".Configure::read('DB.portalPrefix')."viewlevels where title = 'Registred".$gasUpperCase."';";
 			$results = $this->Organization->query($sql);
 			if(!empty($results) && isset($results[0])) {
 				$id_viewlevels = $results[0]['j_viewlevels']['id'];
 				// echo $id_viewlevels;
+			}
+			else {
+				debug("No result ".$sql);
 			}
 
 			/*
