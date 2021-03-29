@@ -55,7 +55,7 @@
 				<strong>Memo: </strong> rigenerare il trasporto
 			</div>	 
 
-			<p><b>Memo</b>: poichè i calcoli sul trasporto vengono fatti <b>in base agli acquisti effettuati</b> dai gasisti, se calcolo già il trasporto per i gasisti ma poi <b>successivamente</b>:
+			<p>Poichè i calcoli sul trasporto vengono fatti <b>in base agli acquisti effettuati</b> dai gasisti, se calcolo già il trasporto per i gasisti ma poi <b>successivamente</b>:
 			</p>
             
   			<p>
