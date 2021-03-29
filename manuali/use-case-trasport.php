@@ -50,7 +50,11 @@
 			<p>
 				<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-trasport/05.png" class="img-responsive"></a>
 			</p>
-		
+					
+			<div role="alert" class="alert alert-info">
+				<strong>Memo: </strong> rigenerare il trasporto
+			</div>	 
+
 			<p><b>Memo</b>: poichè i calcoli sul trasporto vengono fatti <b>in base agli acquisti effettuati</b> dai gasisti, se calcolo già il trasporto per i gasisti ma poi <b>successivamente</b>:
 			</p>
             
