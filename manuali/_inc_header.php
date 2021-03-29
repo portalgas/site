@@ -21,6 +21,7 @@
 <style>
 body {
 	min-height: 2000px;
+    font-size: 16px!important;
 }
 .footer {
     background-color: #000;
