@@ -719,15 +719,14 @@ class UtilsCommons {
             $prezzo_um_riferimento = number_format($prezzo_um_riferimento, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
         }
 
+        $tmp = '';
         if (!empty($um_riferimento)) {
             $um_riferimento = $this->traslateEnum($um_riferimento);
 
-            $tmp = "";
             $tmp .= $prezzo_um_riferimento;
             $tmp .= ' &euro;';
             $tmp .= ' al ' . $um_riferimento;
         } else {
-            $tmp = "";
             $tmp .= $prezzo_um_riferimento;
         }
 

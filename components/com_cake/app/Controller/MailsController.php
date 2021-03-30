@@ -66,7 +66,7 @@ class MailsController extends AppController {
 					$options = [];
 					$options['conditions'] = ['SuppliersOrganization.organization_id' => $pass_org_id,
 											   'SuppliersOrganization.id' => $pass_id];
-					$options['fields'] = array('SuppliersOrganization.name');
+					$options['fields'] = ['SuppliersOrganization.name'];
 					$options['recursive'] = -1;
 					$suppliersOrganizationResults = $SuppliersOrganization->find('first', $options);
 
@@ -78,13 +78,13 @@ class MailsController extends AppController {
 					App::import('Model', 'SuppliersOrganizationsReferent');
 					$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 						
-					$conditions = array('User.block' => 0,
-										'SuppliersOrganization.id' => $pass_id);
+					$conditions = ['User.block' => 0,
+									'SuppliersOrganization.id' => $pass_id];
 					/*
 					 * non gli passo organization_id dell'utente ma dell'organization
 					*/
-					$user->organization['Organization']['id'] = $pass_org_id;
-					$results = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);	
+					$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $pass_org_id]);
+					$results = $SuppliersOrganizationsReferent->getReferentsCompact($tmp_user, $conditions);	
 					
 					self::d($results, $debug);
 					
