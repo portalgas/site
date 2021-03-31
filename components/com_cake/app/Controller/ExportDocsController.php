@@ -3408,7 +3408,7 @@ class ExportDocsController extends AppController {
         $OrganizationsPay = new OrganizationsPay;
 
         $options = [];
-        $options['conditions'] = ['Organization.type' => 'GAS'];
+        $options['conditions'] = ['Organization.type' => 'GAS', 'Organization.stato' => 'Y'];
         $options['order'] = ['Organization.name'];      
         $options['recursive'] = -1;
 
