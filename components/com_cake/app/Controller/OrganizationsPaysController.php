@@ -22,7 +22,7 @@ class OrganizationsPaysController extends AppController {
         $Organization = new Organization;
 		
 		$options = [];
-        $options['conditions'] = ['Organization.type' => 'GAS'];
+        $options['conditions'] = ['Organization.type' => 'GAS', 'Organization.stato' => 'Y'];
         $options['order'] = ['Organization.name'];		
 		$options['recursive'] = -1;
 	
@@ -83,7 +83,7 @@ class OrganizationsPaysController extends AppController {
 		 $results = []; 
 				
 		$options = [];
-		$options['order'] = array('OrganizationsPay.year','Organization.name');
+		$options['order'] = ['OrganizationsPay.year','Organization.name'];
 		$options['recursive'] = 1;
 		 
 		$results = $this->OrganizationsPay->find('all', $options);
@@ -116,7 +116,7 @@ class OrganizationsPaysController extends AppController {
 		$year = date('Y');
 		
 		$options = [];
-        $options['conditions'] = ['Organization.type' => 'GAS'];
+        $options['conditions'] = ['Organization.type' => 'GAS', 'Organization.stato' => 'Y'];
         $options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
 	
@@ -183,7 +183,7 @@ class OrganizationsPaysController extends AppController {
 			$this->set('nota2', $nota2);
 			
 			$options = [];
-			$options['conditions'] = array('Organization.id' => $organization_id);
+			$options['conditions'] = ['Organization.id' => $organization_id];
 			$options['recursive'] = -1;
 		
 			$organizationResults = $Organization->find('first', $options);
