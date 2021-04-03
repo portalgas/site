@@ -821,92 +821,103 @@ class RequestPaymentsController extends AppController {
 		
 		if ($this->request->is('post') || $this->request->is('put')) {		
 
-			$sql = "SELECT
-						sum(qta * prezzo) as importo, user_id
-					FROM 
-						".Configure::read('DB.prefix')."storerooms as Storeroom 
-					WHERE
-						Storeroom.organization_id = ".(int)$this->user->organization['Organization']['id']."
-						and Storeroom.user_id != ".$this->storeroomUser['User']['id']."
-						and Storeroom.stato = 'Y'
-						and Storeroom.delivery_id = ".$this->request['data']['RequestPayment']['delivery_id']." 
-					GROUP BY user_id
-					ORDER BY user_id ";
-			self::d($sql, false);
-			$results = $Storeroom->query($sql);
-			
-			App::import('Model', 'SummaryPayment');
-			$SummaryPayment = new SummaryPayment;
-			
-			foreach ($results as $i => $result) {
-				$data = null;
-				
-				/*
-				 * ctrl se esiste gia' un'occorrenza in SummaryPayment, se SI => update
-				 * */
-				$conditions = ['SummaryPayment.organization_id' => (int)$this->user->organization['Organization']['id'],
-									'SummaryPayment.user_id' => (int)$result['Storeroom']['user_id'],
-									'SummaryPayment.request_payment_id' => (int)$id];
-				$resultCtrl = $SummaryPayment->find('first', ['conditions' => $conditions,'recursive' => -1]);
-				if(!empty($resultCtrl)) {
-					// UPDATE
-					$data['SummaryPayment']['id'] = $resultCtrl['SummaryPayment']['id'];
-					$data['SummaryPayment']['importo_pagato'] = $resultCtrl['SummaryPayment']['importo_pagato'];
-					$data['SummaryPayment']['modalita'] = $resultCtrl['SummaryPayment']['modalita'];
-					$importo = ($resultCtrl['SummaryPayment']['importo_dovuto'] + $result['0']['importo']);
-				}
-				else {
-					// INSERT
-					$importo = $result['0']['importo'];
-					$data['SummaryPayment']['importo_pagato'] = 0;
-					$data['SummaryPayment']['modalita'] = 'DEFINED';
-				}
-				$data['SummaryPayment']['importo_dovuto'] = $importo; // $this->importoToDatabase($importo);
-				$data['SummaryPayment']['importo_richiesto'] = $importo; // $this->importoToDatabase($importo);
-				
-				$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
-				$data['SummaryPayment']['request_payment_id'] = $id;
-				$data['SummaryPayment']['user_id'] = $result['Storeroom']['user_id'];
-				
-				$SummaryPayment->create();
-				if(!$SummaryPayment->save($data))
-					$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));	
-			} // end foreach ($results as $i => $result)
+			$request_payment_id = $id;
+			$delivery_id = $this->request['data']['RequestPayment']['delivery_id'];
 
 			App::import('Model', 'RequestPaymentsStoreroom');
 			$RequestPaymentsStoreroom = new RequestPaymentsStoreroom;
-			$data = null;
-			$data['RequestPaymentsStoreroom']['organization_id'] = (int)$this->user->organization['Organization']['id'];
-			$data['RequestPaymentsStoreroom']['request_payment_id'] = $id;
-			$data['RequestPaymentsStoreroom']['delivery_id'] = $this->request['data']['RequestPayment']['delivery_id'];
-				
-			$RequestPaymentsStoreroom->create();
-			if($RequestPaymentsStoreroom->save($data)) {
-				/*
-				 * aggiorno la consegna con isToStoreroomPay = Y
-				 */
-				App::import('Model', 'Delivery');
-				$Delivery = new Delivery;
-				
-				$data = null;
-				$data['Delivery']['id'] = $this->request['data']['RequestPayment']['delivery_id'];
-				$data['Delivery']['organization_id'] = (int)$this->user->organization['Organization']['id'];
-				$data['Delivery']['isToStoreroomPay'] = 'Y';
-				$data['Delivery']['isToStoreroom'] = 'Y';
-				$data['Delivery']['isVisibleBackOffice'] = 'Y';
-				$data['Delivery']['isVisibleFrontEnd'] = 'Y';
-				$data['Delivery']['Delivery.sys'] = 'N';
 
-				$Delivery->create();
-				if($Delivery->save($data)) 
-					$this->Session->setFlash(__('The request payments storeroom has been saved'));				
-				else
-					$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+			if(!$RequestPaymentsStoreroom->exist($this->user, $this->user->organization['Organization']['id'], $request_payment_id, $delivery_id)) {
+
+				$sql = "SELECT
+							sum(qta * prezzo) as importo, user_id
+						FROM 
+							".Configure::read('DB.prefix')."storerooms as Storeroom 
+						WHERE
+							Storeroom.organization_id = ".(int)$this->user->organization['Organization']['id']."
+							and Storeroom.user_id != ".$this->storeroomUser['User']['id']."
+							and Storeroom.stato = 'Y'
+							and Storeroom.delivery_id = ".$delivery_id." 
+						GROUP BY user_id
+						ORDER BY user_id ";
+				self::d($sql, false);
+				$results = $Storeroom->query($sql);
 				
-				$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
-			}
-			else		
-				$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+				App::import('Model', 'SummaryPayment');
+				$SummaryPayment = new SummaryPayment;
+				
+				foreach ($results as $i => $result) {
+					
+					$data = [];
+					
+					/*
+					 * ctrl se esiste gia' un'occorrenza in SummaryPayment, se SI => update
+					 * */
+					$conditions = ['SummaryPayment.organization_id' => (int)$this->user->organization['Organization']['id'],
+										'SummaryPayment.user_id' => (int)$result['Storeroom']['user_id'],
+										'SummaryPayment.request_payment_id' => (int)$id];
+					$resultCtrl = $SummaryPayment->find('first', ['conditions' => $conditions,'recursive' => -1]);
+					if(!empty($resultCtrl)) {
+						// UPDATE
+						$data['SummaryPayment']['id'] = $resultCtrl['SummaryPayment']['id'];
+						$data['SummaryPayment']['importo_pagato'] = $resultCtrl['SummaryPayment']['importo_pagato'];
+						$data['SummaryPayment']['modalita'] = $resultCtrl['SummaryPayment']['modalita'];
+						$importo = ($resultCtrl['SummaryPayment']['importo_dovuto'] + $result['0']['importo']);
+					}
+					else {
+						// INSERT
+						$importo = $result['0']['importo'];
+						$data['SummaryPayment']['importo_pagato'] = 0;
+						$data['SummaryPayment']['modalita'] = 'DEFINED';
+					}
+					$data['SummaryPayment']['importo_dovuto'] = $importo; // $this->importoToDatabase($importo);
+					$data['SummaryPayment']['importo_richiesto'] = $importo; // $this->importoToDatabase($importo);
+					
+					$data['SummaryPayment']['organization_id'] = $this->user->organization['Organization']['id'];
+					$data['SummaryPayment']['request_payment_id'] = $id;
+					$data['SummaryPayment']['user_id'] = $result['Storeroom']['user_id'];
+					
+					$SummaryPayment->create();
+					if(!$SummaryPayment->save($data))
+						$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));	
+				} // end foreach ($results as $i => $result)
+
+				$data = [];
+				$data['RequestPaymentsStoreroom']['organization_id'] = (int)$this->user->organization['Organization']['id'];
+				$data['RequestPaymentsStoreroom']['request_payment_id'] = $id;
+				$data['RequestPaymentsStoreroom']['delivery_id'] = $delivery_id;
+					
+				$RequestPaymentsStoreroom->create();
+				if($RequestPaymentsStoreroom->save($data)) {
+					/*
+					 * aggiorno la consegna con isToStoreroomPay = Y
+					 */
+					App::import('Model', 'Delivery');
+					$Delivery = new Delivery;
+					
+					$data = null;
+					$data['Delivery']['id'] = $delivery_id;
+					$data['Delivery']['organization_id'] = (int)$this->user->organization['Organization']['id'];
+					$data['Delivery']['isToStoreroomPay'] = 'Y';
+					$data['Delivery']['isToStoreroom'] = 'Y';
+					$data['Delivery']['isVisibleBackOffice'] = 'Y';
+					$data['Delivery']['isVisibleFrontEnd'] = 'Y';
+					$data['Delivery']['Delivery.sys'] = 'N';
+
+					$Delivery->create();
+					if($Delivery->save($data)) 
+						$this->Session->setFlash(__('The request payments storeroom has been saved'));				
+					else
+						$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+					
+					$this->myRedirect(['controller' => 'RequestPayments', 'action' => 'edit', 'id' => $id]);
+				}
+				else		
+					$this->Session->setFlash(__('The request payments could not be saved. Please, try again.'));
+			} 
+			else {
+				$this->Session->setFlash(__("Richiesto già il pagamento per la consegna scelta: indica un'altra consegna"));
+			} // end if(!$RequestPaymentsStoreroom->exist($this->user, $organization_id, $request_payment_id, $delivery_id))
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 		
 		$FilterRequestPaymentDeliveryId = null;
@@ -925,21 +936,23 @@ class RequestPaymentsController extends AppController {
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId')) {
 			$FilterRequestPaymentDeliveryId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'DeliveryId');
 		
-			$conditions = ['Storeroom.organization_id' => (int)$this->user->organization['Organization']['id'],
+			$options = [];
+			$options['conditions'] = ['Storeroom.organization_id' => (int)$this->user->organization['Organization']['id'],
 							'Storeroom.user_id != ' => $this->storeroomUser['User']['id'],
 							'Storeroom.delivery_id > ' => 0,
 							'Storeroom.stato' => 'Y',
-							'Storeroom.delivery_id'=>$FilterRequestPaymentDeliveryId];
-				
-			$orderBy = ['Storeroom.delivery_id, '.Configure::read('orderUser').', Storeroom.name'];
+							'Storeroom.delivery_id' => $FilterRequestPaymentDeliveryId];
+			$options['order'] = ['Storeroom.delivery_id, '.Configure::read('orderUser').', Storeroom.name'];
+			$options['recursive'] = 1;
 
 			$Storeroom->Delivery->unbindModel(['hasMany' => ['Order']]);			
 			$Storeroom->Article->unbindModel(['hasOne' => ['ArticlesOrder']]);
 			$Storeroom->Article->unbindModel(['hasMany' => ['ArticlesOrder']]);
 			$Storeroom->Article->unbindModel(['hasAndBelongsToMany' => ['Order']]);
 			$Storeroom->User->unbindModel(['hasMany' => ['Cart']]);
-			$results = $Storeroom->find('all', ['conditions' => $conditions,'order' => $orderBy,'recursive' => 1]);
-			
+			$results = $Storeroom->find('all', $options);
+			// debug($options);
+
 			/*
 			 * aggiungo informazione sul produttore
 			 */

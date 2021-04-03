@@ -27,12 +27,18 @@ class DeliveryLifeCycle extends AppModel {
 	 *  elimino le consegne 
 	 *		- scadute DATE(Delivery.data) < CURDATE()
 	 *		- senza ordini associati
+	 *
+	 *  elimino le consegne 
+	 *		- scadute DATE(Delivery.data) < CURDATE() - 6 mesi
+	 *		- configurate a dispensa 
+	 *		- senza ordini associati
+	 *		- senza richieste associate
 	 */	
 	public function deleteExpiredWithoutAssociations($user, $delivery_id=0, $debug=false) {
 		
 		App::import('Model', 'Order');
 		$Order = new Order;
-		
+	
 		$options = [];
 		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
 								 'Delivery.sys' => 'N',
@@ -53,7 +59,7 @@ class DeliveryLifeCycle extends AppModel {
 		$deliveryResults = $this->find('all', $options);
 		self::d($deliveryResults, $debug);
 		self::d("Estratte ".count($deliveryResults)." consegne SCADUTE ed eventualmente pagate alla dispensa => controllo se SENZA Ordini (passate in statistiche)", $debug);
-	
+
 		foreach ($deliveryResults as $deliveryResult) {
 			
 			$options = [];
@@ -70,6 +76,72 @@ class DeliveryLifeCycle extends AppModel {
 			else 
 				self::d("NON CANCELLO la consegna ".$deliveryResult['Delivery']['id']." con ".$orderResults." ordini o eventualmente da pagate alla dispensa", $debug);	
 		} // end loops Delivery
+
+		/*
+		 *  elimino le consegne 
+		 *		- scadute DATE(Delivery.data) < CURDATE() - 6 mesi
+		 *		- configurate a dispensa 
+	 	 *		- senza ordini associati
+		 *		- senza richieste associate
+		 */	
+		if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
+
+			$options = [];
+			$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+									 'Delivery.sys' => 'N',
+									 'Delivery.isVisibleFrontEnd' => 'Y',
+									 'Delivery.isVisibleFrontEnd' => 'Y',
+									 'Delivery.isToStoreroom' => 'Y', 
+									 'DATE(Delivery.data) < CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesConDispensa') . ' DAY'];
+			if (!empty($delivery_id))
+				$options['conditions'] += ['Delivery.id' => $delivery_id];
+
+			$options['fields'] = ['Delivery.id', 'Delivery.data'];
+			$options['recursive'] = -1;
+			self::d($options['conditions'], $debug);
+			$deliveryResults = $this->find('all', $options);
+			// self::d($deliveryResults, $debug);
+			self::d("Estratte ".count($deliveryResults)." consegne SCADUTE da ".Configure::read('GGinMenoPerEstrarreDeliveriesConDispensa')." gg configurate per la dispensa", $debug);
+
+			foreach ($deliveryResults as $deliveryResult) {
+				
+				// self::d($deliveryResult, $debug);
+
+				$options = [];
+				$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'],
+										  'Order.delivery_id' => $deliveryResult['Delivery']['id']];
+				$options['recursive'] = -1;
+				$orderResults = $Order->find('count', $options);
+
+				if($orderResults==0) { 
+
+					/*
+					 * ctrl che non abbiamo RequestPaymentsStoreroom
+					 */
+					App::import('Model', 'RequestPaymentsStoreroom');
+					$RequestPaymentsStoreroom = new RequestPaymentsStoreroom;
+					
+					$options = [];
+					$options['conditions'] = ['RequestPaymentsStoreroom.organization_id' => $user->organization['Organization']['id'],
+											  'RequestPaymentsStoreroom.delivery_id' => $deliveryResult['Delivery']['id']];
+					$options['recursive'] = -1;
+
+					$results = $RequestPaymentsStoreroom->find('count', $options);
+					// self::d($options, $debug);
+					// self::d($results, $debug);
+					if($results==0) {
+						$this->id = $deliveryResult['Delivery']['id'];
+						self::d("CANCELLO la consegna ".$deliveryResult['Delivery']['id']." del ".$deliveryResult['Delivery']['data']." con ".$orderResults." ordini e ".$results." richieste di pagamento associate alla dispensa", $debug);			
+						$this->delete();
+
+					}				
+					else 
+						self::d("NON CANCELLO la consegna ".$deliveryResult['Delivery']['id']." del ".$deliveryResult['Delivery']['data']." con ".$orderResults." ordini e ".$results." richieste di pagamento associate alla dispensa", $debug);	
+				}
+				else 
+					self::d("NON CANCELLO la consegna ".$deliveryResult['Delivery']['id']." del ".$deliveryResult['Delivery']['data']." con ".$orderResults." ordini o eventualmente da pagate alla dispensa", $debug);	
+			} // end loops Delivery
+		} // if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')
     }				
 	
     public function deliveriesToClose($user, $delivery_id=0, $debug=false) {

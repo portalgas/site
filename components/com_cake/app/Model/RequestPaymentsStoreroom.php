@@ -4,6 +4,26 @@ App::uses('AppModel', 'Model');
 
 class RequestPaymentsStoreroom extends AppModel {
 
+	/*
+	 * ctrl se non esiste gia' la consegna legata alla richiesta di pagamento
+	 */
+	public function exist($user, $organization_id, $request_payment_id, $delivery_id, $debug=false) {
+
+		$options = [];
+		$options['conditions'] = ['RequestPaymentsStoreroom.organization_id' => $organization_id,
+		 						  'RequestPaymentsStoreroom.request_payment_id' => $request_payment_id,
+								  'RequestPaymentsStoreroom.delivery_id' => $delivery_id];
+		$options['recursive'] = -1;
+
+		$results = $this->find('count', $options);
+		// debug($options);
+		// debug($results);
+		if($results==0)
+			return false;
+		else
+			return true;
+	}
+
 /**
  * Validation rules
  *
