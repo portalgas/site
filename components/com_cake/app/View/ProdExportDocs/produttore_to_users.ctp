@@ -27,15 +27,23 @@ if($this->layout=='ajax') {
 if(!empty($results)) {
 			
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella	$html .= '		<tr>';				
-	$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()).'" colspan="2">'.__('Name').'</th>';	$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('PrezzoUnita').'</th>';	$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Prezzo/UM').'</th>';	$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('qta').'</th>';	$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
+	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+	$html .= '		<tr>';				
+	$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()).'" colspan="2">'.__('Name').'</th>';
+	$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('PrezzoUnita').'</th>';
+	$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Prezzo/UM').'</th>';
+	$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('qta').'</th>';
+	$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
 	$html .= '		</tr>';				
 	$html .= '	</thead><tbody>';
 
 
 	foreach ($results as $rows) {
 	
-		$user_id = current(array_keys($rows));		$rows = current(array_values($rows));		
+		$user_id = current(array_keys($rows));
+		$rows = current(array_values($rows));
+		
 		$html .= '<tr>';
 			
 		foreach ($rows as $typeRow => $cols) {
@@ -79,7 +87,14 @@ if(!empty($results)) {
 				case 'TRDATA':
 					
 					$name = $cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
-																	$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';					$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH70()).'">'.$name.'</td>';					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_E'].'</td>';					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_UMRIF'].' al '.$this->App->traslateEnum($cols['UMRIF']).'</td>';					$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';					$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';				break;
+												
+					$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
+					$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH70()).'">'.$name.'</td>';
+					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_E'].'</td>';
+					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_UMRIF'].' al '.$this->App->traslateEnum($cols['UMRIF']).'</td>';
+					$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
+					$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+				break;
 				case 'TRDATABIS':
 					$colspan = '5';
 					$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
@@ -110,4 +125,5 @@ else {
 $output->lastPage();
 
 echo $output->Output($fileData['fileName'].'.pdf', 'D');
+exit;
 ?>
