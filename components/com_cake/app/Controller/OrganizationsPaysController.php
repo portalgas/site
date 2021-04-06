@@ -139,7 +139,7 @@ class OrganizationsPaysController extends AppController {
 		$title_RITENUTA = "RICEVUTA per PRESTAZIONE di LAVORO AUTONOMO OCCASIONALE";
 		$this->request->data['OrganizationsPay']['intro'] = 
 			"Il sottoscritto Francesco Actis Grosso nato a Torino (TO), il 02/11/1973 codice fiscale CTSFNC73S02L219I residente a Torino in via Sant'Anselmo, 28<br /><br /> ".
-			"Il sottoscritto Marco Siviero nato a Torino (TO), il 14/06/1965 codice fiscale SVRMRC65H14L219S residente a Torino in via San Donato, 55b<br /><br /> ".
+			"Il sottoscritto Marco Siviero nato a Torino (TO), il 14/06/1965 codice fiscale SVRMRC65H14L219S residente a Torino in via Angelo Sismonda 10/4<br /><br /> ".
 			"dichiara di ricevere il pagamento del compenso lordo di ..... &euro; relativo alla seguente prestazione: assistenza software fornita per la gestione del portale PG ".date('Y').", per un totale di giorni lavorativi inferiore a 30.<br /><br />";
 			
 		$text_RICEVUTA = "";
