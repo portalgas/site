@@ -127,9 +127,7 @@ class OrganizationsPaysController extends AppController {
         	$organizationsNew[$organization['Organization']['id']] = $organization['Organization']['name'].' ('.$organization['Organization']['id'].')';
         }		
 		/*
-  		echo "<pre>";
-		print_r($organizationsNew);
-        echo "</pre>";
+		debug($organizationsNew);
 		*/
         $this->set('organizations', $organizationsNew);
 		
@@ -162,7 +160,7 @@ class OrganizationsPaysController extends AppController {
 			
 			/*
 			echo "<pre>";
-			print_r($this->request->data);
+			debug($this->request->data);
 			echo "<pre>";
 			*/
 
