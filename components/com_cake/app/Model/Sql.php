@@ -41,6 +41,10 @@ class Sql extends AppModel {
 		$results[$i]['sql'] = "SELECT count(u.id) as totale, o.name , o.id FROM ".Configure::read('DB.portalPrefix')."users u, ".Configure::read('DB.prefix')."organizations o WHERE u.block = 0 and u.email not like '%portalgas.it' and o.type = 'GAS' and o.stato = 'Y' and u.organization_id = o.id  GROUP BY o.name, o.id ORDER BY totale desc;";
 		$results[$i]['params'] = [];
 		$i++;
+        $results[$i]['name'] = "Totale utenti attivi per G.A.S. filtrati per gruppi (group_id 10 GasManager, 11 gasTesoriere)";
+        $results[$i]['sql'] = "SELECT o.name, u.id, u.username, u.email FROM ".Configure::read('DB.portalPrefix')."users u,  ".Configure::read('DB.portalPrefix')."user_usergroup_map g , ".Configure::read('DB.prefix')."organizations o where g.user_id = u.id and u.email not like '%portalgas.it' and g.group_id IN (10,11) and o.id = u.organization_id and u.block = 0 and o.stato = 'Y' and o.type = 'GAS' GROUP BY o.name, u.id, u.username, u.email  ORDER BY o.name , u.email DESC;";  // and u.email not like '\%portalgas.it'
+        $results[$i]['params'] = []; // non posso parametrizzarlo perche' sprintf in conflitto con u.email not like '%portalgas.it'  ['group_id' => 'GroupIds'];		
+		$i++;
 		$results[$i]['name'] = "Totale G.A.S. attivi";
 		$results[$i]['sql'] = "SELECT count(*) totale FROM ".Configure::read('DB.prefix')."organizations WHERE type = 'GAS' and stato = 'Y';";
 		$results[$i]['params'] = [];
