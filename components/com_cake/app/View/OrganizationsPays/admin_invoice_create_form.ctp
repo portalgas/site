@@ -32,6 +32,12 @@ echo $this->Form->input('title',array('label' => __('Title'), 'required'=>'true'
 echo $this->Form->input('intro',array('label' => __('Intro'), 'type' => 'textarea', 'required'=>'true'));
 echo $this->Form->input('text',array('label' => __('Text'), 'type' => 'textarea', 'required'=>'false', 'id' => 'text'));
 
+echo '<div id="importo-ritenuta">';
+$msg = 'Se <b>importo 100</b>: Compenso lordo 100&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 20&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 80<br />';
+$msg .= 'Se <b>importo 50</b>: Compenso lordo 50&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 10&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 40';
+echo $this->element('boxMsg', ['msg' => $msg, 'class_msg' => 'info']);
+echo '</div>';
+
 echo $this->Form->input('nota',array('label' => __('Nota'), 'type' => 'textarea', 'required'=>'required'));
 
 echo $this->Form->input('nota2',array('label' => __('Nota aggiuntiva'), 'type' => 'textarea'));
@@ -58,10 +64,12 @@ function settingTypePay() {
 		if(type_pay=='RICEVUTA') {
 			$('#title').val("<?php echo $title_RICEVUTA;?>");
 			$('#text').val("<?php echo $text_RICEVUTA;?>");
+			$('#importo-ritenuta').hide();
 		}
 		else {
 			$('#title').val("<?php echo $title_RITENUTA;?>");
 			$('#text').val("<?php echo $text_RITENUTA;?>");
+			$('#importo-ritenuta').show();
 		}
 	}
 }
