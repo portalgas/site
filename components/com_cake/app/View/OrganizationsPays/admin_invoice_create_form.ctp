@@ -1,20 +1,29 @@
-<div class="organizations form">
-
 <?php 
-echo $this->Form->create('OrganizationsPay', array('id' => 'formGas', 
-												   'target' => '_blank',
-												   'url' => array('controller' => 'OrganizationsPays', 'action' => 'admin_invoice_create_pdf',
-																	'doc_formato'=>'PDF',
-																	'format'=>'notmpl'
-																)));
+echo '<div class="organizations form">';
+
+echo $this->Form->create('OrganizationsPay', ['id' => 'formGas', 
+											   'target' => '_blank',
+											   'url' => ['controller' => 'OrganizationsPays', 
+											   			 'action' => 'admin_invoice_create_pdf',
+														 'doc_formato'=>'PDF',
+														 'format'=>'notmpl'
+											]]);
 
 echo '<fieldset>';
 echo '<legend>'.__('OrganizationsPay').'</legend>';
 
-$options =  array('id' => 'organization_id',
+$options =  ['id' => 'organization_id',
 				  'empty' => Configure::read('option.empty'),
-				  'class'=> 'selectpicker', 'data-live-search' => true);
-echo $this->Form->input('organization_id',$options);
+				  'class'=> 'selectpicker', 'data-live-search' => true];
+
+echo '<div class="row">';
+echo '<div class="col-md-8">';
+echo $this->Form->input('organization_id', $options);
+echo '</div>';
+echo '<div class="col-md-4" id="organization_details">';
+echo '</div>';
+echo '</div>';
+
 
 $options = array('options' => $type_pay, 'value' => 'RICEVUTA', 'label'=>__('Stato'), 'required'=>'true');
 echo $this->App->drawFormRadio('OrganizationsPay','type_pay', $options);
@@ -56,11 +65,24 @@ function settingTypePay() {
 		}
 	}
 }
+function organizationDetails(organization_id) {
+	if(organization_id!=undefined && organization_id!=0 && organization_id!='') {
+		var url = "/administrator/index.php?option=com_cake&controller=OrganizationsPays&action=organizationDetails&organization_id="+organization_id+"&format=notmpl";
+		var idDivTarget = 'organization_details';
+		ajaxCallBox(url, idDivTarget);		
+	}
+}	
+
 $(document).ready(function() {
 	settingTypePay();
 	
 	$("input[name='data[OrganizationsPay][type_pay]']").change(function() {	
 		settingTypePay();
-	});		
+	});	
+
+	$('#organization_id').change(function() {
+		var organization_id = $(this).val();
+		organizationDetails(organization_id);
+	});
 });
 </script>

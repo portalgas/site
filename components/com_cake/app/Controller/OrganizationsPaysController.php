@@ -214,4 +214,23 @@ class OrganizationsPaysController extends AppController {
 			$this->layout = 'pdf';			
 		}
 	}	
+
+	/*
+	 * ajax con dato di dettaglio organization scelta
+	 */
+	public function admin_organizationDetails($organization_id) {
+		
+		$year = date('Y');
+		
+		$options = [];
+        $options['conditions'] = ['OrganizationsPay.organization_id' => $organization_id, 
+        						  'OrganizationsPay.year' => $year];
+		$options['recursive'] = 1;
+	
+        $results = $this->OrganizationsPay->find('first', $options);
+
+        $this->set(compact('results'));
+
+        $this->layout = 'ajax';        
+	}
 }
