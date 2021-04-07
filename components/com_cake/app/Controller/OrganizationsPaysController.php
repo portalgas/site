@@ -115,16 +115,33 @@ class OrganizationsPaysController extends AppController {
 		
 		$year = date('Y');
 		
+		/*
+		 * elenco GAS
+		 */
 		$options = [];
         $options['conditions'] = ['Organization.type' => 'GAS', 'Organization.stato' => 'Y'];
         $options['order'] = ['Organization.name'];
 		$options['recursive'] = -1;
 	
         $organizations = $Organization->find('all', $options);
-		
 		$organizationsNew = [];
         foreach($organizations as $organization) {
-        	$organizationsNew[$organization['Organization']['id']] = $organization['Organization']['name'].' ('.$organization['Organization']['id'].')';
+
+			/*
+			 * estraggo beneficiario_pay MARCO / FRANCESCO
+			 */
+			$options = [];
+	        $options['conditions'] = ['OrganizationsPay.organization_id' => $organization['Organization']['id'], 
+	        						  'OrganizationsPay.year' => $year];
+			$options['recursive'] = -1;
+		
+	        $organizationsPayResults = $this->OrganizationsPay->find('first', $options);
+
+	        $beneficiario_pay = '';
+	        if(!empty($organizationsPayResults)) 
+	        	$beneficiario_pay = $organizationsPayResults['OrganizationsPay']['beneficiario_pay'];
+
+        	$organizationsNew[$organization['Organization']['id']] = $organization['Organization']['name'].' ('.$organization['Organization']['id'].') '.$beneficiario_pay;
         }		
 		/*
 		debug($organizationsNew);
