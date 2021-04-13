@@ -1,7 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 
-class Gdxp extends AppModel {
+class GdxpExport extends AppModel {
 
 	public $useTable = false;
 }

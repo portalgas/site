@@ -1,7 +1,7 @@
 <?php
 App::uses('AppController', 'Controller');
 
-class GdxpsController extends AppController {
+class GdxpExportsController extends AppController {
    
    public $components = ['Connects']; 
 
@@ -9,7 +9,7 @@ class GdxpsController extends AppController {
    		parent::beforeFilter();
    }
 
-   public function admin_order_export($delivery_id, $order_id) {
+   public function admin_order($delivery_id, $order_id) {
    
 		$debug = false;
 		
@@ -33,7 +33,7 @@ class GdxpsController extends AppController {
 		}
 
 		$params = ['order_type_id' => $orderResults['Order']['order_type_id'], 'order_id' => $this->order_id];
-		$url = $this->Connects->createUrlBo('admin/gdxps', 'order_export', $params);
+		$url = $this->Connects->createUrlBo('admin/gdxpExports', 'order', $params);
 		if($debug) debug($url); 
 		
 		if(!$debug) $this->myRedirect($url);
