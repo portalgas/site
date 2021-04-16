@@ -146,6 +146,8 @@ class plgUserJoomla extends JPlugin
 	 */
 	public function onUserLogin($user, $options = array())
 	{
+		$debug = false;
+
 		$instance = $this->_getUser($user, $options);
 
 		// If _getUser returned an error, then pass it back.
@@ -206,7 +208,6 @@ class plgUserJoomla extends JPlugin
 			/*
 			 * ctrl se l'utente ha delle Attivita'
 			*/
-			$debug = false;
 			$urlRedirect = '';
 
 			$organization_id = $instance->get('organization_id');
@@ -219,14 +220,13 @@ class plgUserJoomla extends JPlugin
 			if(empty($urlRedirect))
 				$urlRedirect = $this->_hasGasUserPromotions($organization_id, $debug);
 			if(empty($urlRedirect))
-				$urlRedirect = "organization.home";
+				$urlRedirect = "acquista"; // default
 
 			$protoloc = $this->_getProtocol();
 
 			if($debug)  {
 				echo '<br />protoloc '.$protoloc;
 				echo '<br />urlRedirect '.$urlRedirect;
-				exit;
 			}
 
 			/*
@@ -239,7 +239,7 @@ class plgUserJoomla extends JPlugin
 						k_organizations as Organization 
 					WHERE
 						Organization.id = ".(int)$organization_id;
-				if($debug) echo '<br />'.$sql;
+				if(!$debug) echo '<br />'.$sql;
 				$db->setQuery($sql);
 				$results = $db->loadObject();
 				$j_seo = $results->j_seo;
@@ -249,9 +249,12 @@ class plgUserJoomla extends JPlugin
 					$urlRedirect = 'organization.prodgas.home';
 				}
 				else {
-					$urlRedirect = $this->_hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug);
+					$urlRedirectUserFlagPrivacy = $this->_hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug);
+					if(!empty($urlRedirectUserFlagPrivacy))
+						$urlRedirect = $urlRedirectUserFlagPrivacy;
 				}
 				
+				if($debug)  echo '<br />urlRedirect '.$urlRedirect;
 
 				$app = JFactory::getApplication();
 				switch ($urlRedirect) {
@@ -267,11 +270,11 @@ class plgUserJoomla extends JPlugin
 					case "organization.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
 						break;	
-					case "acquista":
-						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa');
-						break;	
 					case "organization.prodgas.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST']);
+						break;
+					default:
+						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa');
 						break;
 				}					
 			}
@@ -512,7 +515,7 @@ class plgUserJoomla extends JPlugin
 	*/
 	private function _hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug=false) {
 
-		$urlRedirect = 'acquista';
+		$urlRedirect = '';
 		
 		/*
 		echo "<pre>";
@@ -533,8 +536,6 @@ class plgUserJoomla extends JPlugin
 			$profile_value = $resultsProfile->profile_value;
 			if($profile_value=='"N"') 
 				$urlRedirect = 'organization.home';
-			else
-				$urlRedirect = 'acquista';
 		}
 		
 		return $urlRedirect;

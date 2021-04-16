@@ -58,7 +58,7 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 		if(isset($opts['order']))
 			$options['order'] = $opts['order'];
 		else
-			$options['order'] = ['Article.name'];	
+			$options['order'] = ['Article.name' => 'asc'];	
 	   	$options['recursive'] = 0;
 		$Model::d($options, $debug);
 

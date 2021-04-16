@@ -14,6 +14,8 @@ class ProdGasPromotion extends AppModel {
 	
 		$canPromotions = false;
 		
+		// debug($user);
+
 		/*
 		 * ctrl a livello di produttore 
 		 *

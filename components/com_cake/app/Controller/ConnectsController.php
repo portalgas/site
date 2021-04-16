@@ -37,7 +37,7 @@ class ConnectsController extends AppController {
     * localhost nginx non gestisce .htaccess  
 	* 	non passa da api/connect ma direttamente Rests::connect
     */
-   public function _index($scope = 'FE') {
+   public function _index($scope = 'FE', $debug=false) {
 
    		if(!isset($this->user->id) || empty($this->user->id))
    			return false;
@@ -47,11 +47,11 @@ class ConnectsController extends AppController {
 		$organization_id = $this->user->organization['Organization']['id']; // gas scelto o gas dello user
 		
 		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];
-		// debug($user);
+		if($debug) debug($user);
 		$user = serialize($user);
 		
 		$user_salt = $this->CryptDecrypt->encrypt($user);
-		// debug($user_salt);
+		if($debug) debug($user_salt);
 		
 		// $user = $this->CryptDecrypt->decrypt($user_salt);
 		// debug($user);
@@ -87,7 +87,8 @@ class ConnectsController extends AppController {
 		if(!empty($q))
 			$url .= '&'.$q;
 
-	 	// debug($url); 	
+	 	if($debug) debug($url); 
+	 	if($debug) exit;	
 		// $this->redirect($url);
 		
 		header("Location: $url");
