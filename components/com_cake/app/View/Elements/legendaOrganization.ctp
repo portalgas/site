@@ -384,6 +384,26 @@ else
 				<li>Ricevi email di sistema = Si</li>
 			</ul>
 		</td>
+		<td>
+alert('change pwd');<br />
+
+document.getElementById('jform_name').value  = 'Assistente PortAlGas';<br />
+document.getElementById('jform_username').value = 'info@<span class="gasAlias"></span>.portalgas.it';<br />
+document.getElementById('jform_password').value = '<?php echo Configure::read('pwd');?>';<br />
+document.getElementById('jform_password2').value = '<?php echo Configure::read('pwd');?>';<br />
+document.getElementById('jform_email').value = 'info@<span class="gasAlias"></span>.portalgas.it';<br />
+
+document.getElementById('1group_21').checked = true;  // GasCassiere<br />
+document.getElementById('1group_20').checked = true;  // gasManagerConsegne<br />
+document.getElementById('1group_36').checked = true; // gasManagerDes<br />
+document.getElementById('1group_19').checked = true; // gasSuperReferente<br />
+document.getElementById('1group_38').checked = true; // gasSuperReferenteDes<br />
+document.getElementById('1group_11').checked = true; // GasTesoriere<br />
+document.getElementById('1group_77').checked = true; // gasUserManagerDes<br />
+document.getElementById('1group_10').checked = true; // gasManager<br />
+
+alert('Gas Register del GAS');
+		</td>
 	</tr>
 	<tr>
 		<th>Manager</th>
@@ -400,6 +420,7 @@ else
 				<li>Ricevi email di sistema = No</li>
 			</ul>
 		</td>
+		<td></td>
 	</tr>
 	<tr>
 		<th rowspan="2">Users</th>
@@ -410,6 +431,7 @@ else
 				<li>Sotto Registred => GasPages[nome organizazione]</li>
 			</ul>
 		</td>
+		<td></td>
 	</tr>
 	<tr>
 		<td>
@@ -423,9 +445,10 @@ else
 					    avigl-15</li>
 			</ul>
 		</td>
+		<td></td>
 	</tr>	
 	<tr>
-		<td colspan="2">
+		<td colspan="3">
 			creare gli <b>utenti</b>
 			<ul>
 				<li>Dispensa con gruppo gasDispensa (e solo quel gruppo)</li>
@@ -434,7 +457,7 @@ else
 		</td>
 	</tr>	
 	<tr>
-		<td colspan="2">
+		<td colspan="3">
 			Se devo <b>disabilitare</b> utenti in Produzione e lasciarli solo in Test
 <pre class="shell" rel="sql">			
 	update j_users set block = 1 where organization_id = x 
