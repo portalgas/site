@@ -257,7 +257,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 	<tr>
 		<th></th>
 		<td>
-			<a href="#" id="j_menu" class="action actionAdd" title="Crea Menu"></a>
+			<a href="#" id="j_menu" class="action actionAdd" title="Crea Menu"></a> Crea Menu
 		</td>
 		<td>
 			<div id="j_menu_esito"></div>
@@ -321,17 +321,23 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 <table class="table table-bordered table-hover">		
 	<tr>
 		<th>Modulo: Gas - Contenuto immagine <i>position-cols-right</i></th>
-		<td class="border-bottom">Assegnarlo alla voce di menù della home	
+		<td>Assegnarlo alla voce di menù della home	
+		</td>
+		<td rowspan="2">
+			<a href="#" id="j_moduli" class="action actionAdd" title="Crea moduli"></a> Crea moduli
 		</td>
 	</tr>	
 	<tr>
 		<th>Modulo: Facebook LikeBox <i>position-cols-right</i></th>
-		<td class="border-bottom">Assegnarlo alla voce di menù della home	
+		<td>Assegnarlo alla voce di menù della home	
 		</td>
 	</tr>
 	<tr>
 		<th class="border-bottom">Modulo: FaceBook Html <i>position-cols-right</i></th>
 		<td>Assegnarlo alla voce di menù della home	
+		</td>
+		<td rowspan="2">
+			<div id="j_moduli_esito"></div>
 		</td>
 	</tr>	
 	<tr>
@@ -619,6 +625,28 @@ $(document).ready(function() {
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
 				$('#j_menu_esito').html("error!");
+			}
+		});
+	});
+
+	$("#j_moduli").click(function(event) {
+		event.preventDefault();
+		
+		$('#j_moduli_esito').html("");
+		
+		var organizationId = $("#organizationId").val();
+		var gasAlias = $("#gasAlias").val();
+		var gasUpperCase = $("#gasUpperCase").val();
+		var gasAliaSEO = $("#gasAliaSEO").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=Organizations&action=ajax_joomla_modules&organizationId="+organizationId+"&gasAlias="+gasAlias+"&gasUpperCase="+gasUpperCase+"&gasAliaSEO="+gasAliaSEO+"&format=notmpl",
+			success: function(response){
+				$('#j_moduli_esito').html(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#j_moduli_esito').html("error!");
 			}
 		});
 	});	

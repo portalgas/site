@@ -85,9 +85,10 @@ echo '<div class="tab-pane fade" id="tabs-3">';
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-4">';
 		
-	echo $this->Form->input('j_page_category_id',array('label' => __('joomla_page_category_id'), 'type' => 'text', 'required'=>'required', 'after'=>$this->App->drawTooltip(null,__('toolJoomlaCategory'),$type='HELP')));
 	echo $this->Form->input('j_group_registred',array('label' => __('joomla_group_registred'), 'type' => 'text', 'required'=>'required', 'after'=>$this->App->drawTooltip(null,__('toolJoomlaGroupRegistred'),$type='HELP')));
 
+	echo $this->Form->input('j_page_category_id',array('label' => __('joomla_page_category_id'), 'type' => 'text', 'required'=>'required', 'after'=>$this->App->drawTooltip(null,__('toolJoomlaCategory'),$type='HELP')));
+	
 	/*
 	 * prefix joomla seo
 	 */	

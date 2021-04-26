@@ -892,7 +892,7 @@ class OrganizationsController extends AppController {
 				$topmenu_name = substr ($topmenu_name, 0, 23);
 			
 			$sql = ""; 
-		    $sql .= "INSERT `".Configure::read('DB.portalPrefix')."menu_types` (`menutype`, `title`) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
+		    $sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."menu_types` (`menutype`, `title`) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
 		  	// $insertResults = $this->Organization->query($sql);
 			
 			$sql .= "<h2>Seleziono tutte le voce del menù Top menu Gas GassePiossasco e \"Seleziona il menu per Spostare/Copiare\"</h2>";
@@ -921,7 +921,39 @@ class OrganizationsController extends AppController {
         $this->layout = 'ajax';
         $this->render('/Organizations/admin_ajax_joomla_menu');
 	}	
+	
+	public function admin_ajax_joomla_modules($organizationId, $gasAlias, $gasUpperCase, $gasAliaSEO) {
+
+		$sql = '';
+		$results = [];
+		$modules = ['163' => 'Documenti del GAS', 
+				  '119' => 'Facebook LikeBox', 
+				  '118' => 'Facebook Html',
+				  '109' => 'Gas - Contenuto immagine'];
+
+		if(!empty($organizationId) && !empty($gasAlias) && !empty($gasUpperCase) && !empty($gasAliaSEO)) {
+			
+			$sql = "SELECT id FROM ".Configure::read('DB.portalPrefix')."menu where alias = 'home-".$gasAliaSEO."'";
+			$results = $this->Organization->query($sql);
+			if(!empty($results) && isset($results[0])) {
+				$menu_id = $results[0]['j_menu']['id'];
+
+				foreach ($modules as $id => $name) {
+					$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`modulesid`, `menuid`) values ($id, $menu_id); <br />";
+				}
+			}
+			else {
+				debug("No result ".$sql);
+				$sql = '';
+			}
+		}
+	
+		$this->set('sql', $sql);
 		
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_joomla_modules');
+	}	
+
 	public function admin_get_user_details($q='', $format = 'notmpl') {
 		
 		/*
