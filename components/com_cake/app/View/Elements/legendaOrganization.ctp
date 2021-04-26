@@ -2,6 +2,9 @@
 
 <p>gasAlias: <input class="from-control" type="text" value="gastorino" id="gasAlias" /></p>
 <p>gasAliasSEO: <input class="from-control" type="text" value="gas-gastorino" id="gasAliaSEO" /></p>
+<?php	
+echo $this->element('legendaOrganizationjoomlaSeo');
+?>
 <p>gasUpperCase <input class="from-control" type="text" value="GasTorino" id="gasUpperCase" /></p>
 <p>organization_id <input class="from-control" type="text" value="<?php echo $max_id;?>" id="organizationId" /></p>
 <p><a href="#" id="custom">parametrizza</a></p>
@@ -233,7 +236,10 @@
 		<td class="border-bottom">dall'ID dell'articolo per la home
 			<ul>
 				<li>mettere il file in <?php echo Configure::read('App.img.upload.content');?>/N.jpg  con width <b>massima</b> 250px</li>
-				<li>se non c'&egrave; il logo, prendere la <?php echo Configure::read('App.img.upload.content');?>/0.jpg</li>
+				<li>
+					se non c'&egrave; il logo, prendere la <?php echo Configure::read('App.img.upload.content');?>/0.jpg
+					<img src="<?php echo Configure::read('App.img.upload.content');?>/0.jpg">
+				</li>
 				<li>aggiornare database Organizations.img1 = N.<b>jpg</b></li>
 			</ul>
 		</td>

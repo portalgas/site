@@ -892,7 +892,7 @@ class OrganizationsController extends AppController {
 				$topmenu_name = substr ($topmenu_name, 0, 23);
 			
 			$sql = ""; 
-		    $sql .= "INSERT ".Configure::read('DB.portalPrefix')."menu_types (menutype, title) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
+		    $sql .= "INSERT `".Configure::read('DB.portalPrefix')."menu_types` (`menutype`, `title`) values ('$topmenu_name', 'Top menu ".$gasUpperCase."'); <br />";
 		  	// $insertResults = $this->Organization->query($sql);
 			
 			$sql .= "<h2>Seleziono tutte le voce del menù Top menu Gas GassePiossasco e \"Seleziona il menu per Spostare/Copiare\"</h2>";

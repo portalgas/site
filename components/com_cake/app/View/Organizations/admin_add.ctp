@@ -85,10 +85,17 @@ echo '<div class="tab-pane fade" id="tabs-4">';
 	
 	echo $this->Form->input('j_page_category_id',array('label' => __('joomla_page_category_id'), 'type' => 'text', 'required'=>'required', 'after'=>$this->App->drawTooltip(null,__('toolJoomlaCategory'),$type='HELP')));
 	echo $this->Form->input('j_group_registred',array('label' => __('joomla_group_registred'), 'type' => 'text', 'required'=>'required', 'after'=>$this->App->drawTooltip(null,__('toolJoomlaGroupRegistred'),$type='HELP')));
-	echo $this->Form->input('j_seo',array('label' => __('joomla_seo'),'value' => 'gas-','required' => 'required', 'after' => $this->App->drawTooltip(null,__('toolJoomlaSeo'),$type='HELP')));					
+	
+	/*
+	 * prefix joomla seo
+	 */
+	echo $this->Form->input('j_seo', ['label' => __('joomla_seo'),'value' => 'gas-','required' => 'required', 'after' => $this->App->drawTooltip(null,__('toolJoomlaSeo'),$type='HELP')]);	
+	echo $this->element('legendaOrganizationjoomlaSeo');
+
 	echo $this->Form->input('img1',array('label' => __('img1'),'required' => 'required'));
 	echo '<p>id della page home</p>';
 	echo '<p>'.Configure::read('App.img.upload.content').'/N.jpg</p>';
+	echo '<p><img src="'.Configure::read('App.img.upload.content').'/0.jpg"></p>';
 
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-5">';
