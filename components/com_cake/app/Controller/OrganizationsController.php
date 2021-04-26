@@ -938,8 +938,9 @@ class OrganizationsController extends AppController {
 			if(!empty($results) && isset($results[0])) {
 				$menu_id = $results[0]['j_menu']['id'];
 
+				$sql = '';
 				foreach ($modules as $id => $name) {
-					$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`modulesid`, `menuid`) values ($id, $menu_id); <br />";
+					$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`moduleid`, `menuid`) values ($id, $menu_id); <br />";
 				}
 			}
 			else {

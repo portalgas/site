@@ -220,8 +220,8 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 	Appena nati entriamo subito nella community di PortAlGas per gestire i nostri ordini e le nostre consegne, si parte!
 </pre>	
 <pre class="shell" rel="footer per mail">
-	&lt;p class="emailbox"&gt;&lt;a href="/contattaci?contactOrganizationId=<span class="organizationId"></span>" title="scrivi una mail al G.A.S."&gt;Contattaci scrivendo una mail&lt;/a&gt;&lt;/p&gt;
-	&lt;p>{flike}&lt;/p&gt;
+&lt;p class="emailbox"&gt;&lt;a href="/contattaci?contactOrganizationId=<span class="organizationId"></span>" title="scrivi una mail al G.A.S."&gt;Contattaci scrivendo una mail&lt;/a&gt;&lt;/p&gt;
+&lt;p>{flike}&lt;/p&gt;
 </pre>	
 <p>segnare <b>article_id</b> per logo 
 <ul>
