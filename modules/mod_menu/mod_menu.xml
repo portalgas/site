@@ -35,7 +35,7 @@
 				<field
 					name="startLevel"
 					type="list"
-					default="1"
+					default="2"
 					label="MOD_MENU_FIELD_STARTLEVEL_LABEL"
 					description="MOD_MENU_FIELD_STARTLEVEL_DESC"
 				>
@@ -54,7 +54,7 @@
 				<field
 					name="endLevel"
 					type="list"
-					default="0"
+					default="2"
 					label="MOD_MENU_FIELD_ENDLEVEL_LABEL"
 					description="MOD_MENU_FIELD_ENDLEVEL_DESC"
 					>
@@ -74,7 +74,7 @@
 				<field
 					name="showAllChildren"
 					type="radio"
-					default="1"
+					default="0"
 					label="MOD_MENU_FIELD_ALLCHILDREN_LABEL"
 					description="MOD_MENU_FIELD_ALLCHILDREN_DESC">
 					<option
@@ -95,6 +95,7 @@
 				<field
 					name="class_sfx"
 					type="text"
+					default=" nav navbar-nav"
 					label="MOD_MENU_FIELD_CLASS_LABEL"
 					description="MOD_MENU_FIELD_CLASS_DESC" />
 

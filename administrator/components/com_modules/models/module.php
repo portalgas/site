@@ -587,10 +587,11 @@ class ModulesModelModule extends JModelAdmin
 				$data->set('params', $params);
 			}
 		}
-		echo "<pre>";
+		/*
+		echo "<pre>loadFormData \n";
 		print_r($data);
 		echo "</pre>";
-
+		*/
 		return $data;
 	}
 
