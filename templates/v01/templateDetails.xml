@@ -75,6 +75,7 @@
 					<option value="11">condove (id 11)</option>
 					<option value="87">coopwork (id 87)</option>
 					<option value="75">dendrosgascanelli (id 75)</option>
+					<option value="100">desmodena (id 100)</option>
 					<option value="96">equigaslissone (id 96)</option>
 					<option value="24">felettogas (id 24)</option>
 					<option value="27">fiordigas (id 27)</option>
@@ -117,6 +118,7 @@
 					<option value="2">oca sansalvario (id 2)</option>
 					<option value="33">pastamadristiromani (id 33)</option>
 					<option value="26">remolonsgas (id 26)</option>
+					<option value="99">retegasmarche (id 99)</option>
 					<option value="86">solonaturabio (id 86)</option>
 					<option value="42">verdessenza (id 42)</option>
 					<option value="28">villaltagas (id 28)</option>
@@ -151,6 +153,7 @@
 					<option value="condove">condove</option>
 					<option value="coopwork">coopwork</option>
 					<option value="dendrosgascanelli">dendrosgascanelli</option>
+					<option value="desmodena">desmodena</option>
 					<option value="equigaslissone">equigaslissone</option>
 					<option value="felettogas">felettogas</option>
 					<option value="fiordigas">fiordigas</option>
@@ -191,6 +194,7 @@
 					<option value="lisoladiamantani">lisoladiamantani</option>
 					<option value="madrisiogas">madrisiogas</option>
 					<option value="remolonsgas">remolonsgas</option>
+					<option value="retegasmarche">retegasmarche</option>
 					<option value="solonaturabio">solonaturabio</option>
 					<option value="verdessenza">verdessenza</option> 
 					<option value="villaltagas">villaltagas</option>
