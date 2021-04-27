@@ -587,6 +587,9 @@ class ModulesModelModule extends JModelAdmin
 				$data->set('params', $params);
 			}
 		}
+		echo "<pre>";
+		print_r($data);
+		echo "</pre>";
 
 		return $data;
 	}

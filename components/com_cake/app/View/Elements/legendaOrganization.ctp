@@ -103,7 +103,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 			</ul>			
 		</td>
 		<td>
-			<a href="#" id="j_group" class="action actionAdd" title="Crea Gruppo"></a>
+			<a href="#" id="j_group" class="action actionAdd" title="Crea Gruppo"></a> Crea Gruppo
 		</td>
 		<td>
 			<div id="j_group_esito"></div>
@@ -160,7 +160,17 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 				<li>
 					&lt;option value="<span class=gasAlias></span>"&gt;<span class="gasAlias"></span>&lt;/option&gt;
 				</li>
-				<li><b>Duplicare</b> un template di joomla</li>				
+				<li>
+					<b>Duplicare</b> un template di joomla
+
+						<p>
+							<a href="#" id="j_template" class="action actionAdd" title="Duplica template"></a> Duplica template
+						</p>
+						<p>
+							<div id="j_template_esito"></div>
+						</p>
+
+				</li>				
 				<li>in Gestione template
 					<ul>
 						<li>nome V01 <span class="gasUpperCase"></span></li>
@@ -607,6 +617,28 @@ $(document).ready(function() {
 			},
 			error:function (XMLHttpRequest, textStatus, errorThrown) {
 				$('#j_group_esito').html("error!");
+			}
+		});
+	});	
+	
+	$("#j_template").click(function(event) {
+		event.preventDefault();
+		
+		$('#j_template_esito').html("");
+		
+		var organizationId = $("#organizationId").val();
+		var gasAlias = $("#gasAlias").val();
+		var gasUpperCase = $("#gasUpperCase").val();
+		var gasAliaSEO = $("#gasAliaSEO").val();
+		
+		$.ajax({
+			type: "GET",
+			url: "/administrator/index.php?option=com_cake&controller=Organizations&action=ajax_joomla_template&organizationId="+organizationId+"&gasAlias="+gasAlias+"&gasUpperCase="+gasUpperCase+"&gasAliaSEO="+gasAliaSEO+"&format=notmpl",
+			success: function(response){
+				$('#j_template_esito').html(response);
+			},
+			error:function (XMLHttpRequest, textStatus, errorThrown) {
+				$('#j_template_esito').html("error!");
 			}
 		});
 	});	

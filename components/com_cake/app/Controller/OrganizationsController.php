@@ -802,6 +802,24 @@ class OrganizationsController extends AppController {
         $this->render('/Organizations/admin_ajax_joomla_group');
 	}
 	
+	public function admin_ajax_joomla_template($organizationId, $gasAlias, $gasUpperCase, $gasAliaSEO) {
+
+		$sql = '';
+		$results = [];
+
+		if(!empty($organizationId) && !empty($gasAlias) && !empty($gasUpperCase) && !empty($gasAliaSEO)) {
+			
+			$params = '{"organizationId":'.$organizationId.',"organizationSEO":"'.$gasAliaSEO.'"}';
+
+			$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('V01', 0, 0, 'V01 $gasUpperCase', '$params'); <br />";
+		}
+	
+		$this->set('sql', $sql);
+		
+        $this->layout = 'ajax';
+        $this->render('/Organizations/admin_ajax_joomla_template');
+	}	
+
 	public function admin_ajax_joomla_category($title_group) {
 
 		$sql = '';
@@ -938,9 +956,11 @@ class OrganizationsController extends AppController {
 			if(!empty($results) && isset($results[0])) {
 				$menu_id = $results[0]['j_menu']['id'];
 
-				$sql = '';
+				$sql = 'Eseguito <br />';
 				foreach ($modules as $id => $name) {
 					$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`moduleid`, `menuid`) values ($id, $menu_id); <br />";
+
+					$insertResults = $this->Organization->query($sql);
 				}
 			}
 			else {
