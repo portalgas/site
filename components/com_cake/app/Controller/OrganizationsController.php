@@ -809,10 +809,10 @@ class OrganizationsController extends AppController {
 
 		if(!empty($organizationId) && !empty($gasAlias) && !empty($gasUpperCase) && !empty($gasAliaSEO)) {
 			
-			$params = '{"organizationId":'.$organizationId.',"organizationSEO":"'.$gasAliaSEO.'"}';
+			$params = '{"organizationId":'.$organizationId.',"organizationSEO":"'.$gasAlias.'"}';
 
 			$sql = 'Eseguito<br />';
-			$sql_insert .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('V01', 0, 0, 'V01 $gasUpperCase', '$params');";
+			$sql_insert .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('v01', 0, 0, 'V01 $gasUpperCase', '$params');";
 
 			$sql .= $sql_insert."<br />";
 
