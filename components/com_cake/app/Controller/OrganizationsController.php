@@ -811,7 +811,13 @@ class OrganizationsController extends AppController {
 			
 			$params = '{"organizationId":'.$organizationId.',"organizationSEO":"'.$gasAliaSEO.'"}';
 
-			$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('V01', 0, 0, 'V01 $gasUpperCase', '$params'); <br />";
+			$sql = 'Eseguito<br />';
+			$sql_insert .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('V01', 0, 0, 'V01 $gasUpperCase', '$params');";
+
+			$sql .= $sql_insert."<br />";
+
+			// $insertResults = $this->Organization->query($sql_insert);
+
 		}
 	
 		$this->set('sql', $sql);
@@ -958,9 +964,11 @@ class OrganizationsController extends AppController {
 
 				$sql = 'Eseguito <br />';
 				foreach ($modules as $id => $name) {
-					$sql .= "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`moduleid`, `menuid`) values ($id, $menu_id); <br />";
+					$sql_insert = "INSERT INTO `".Configure::read('DB.portalPrefix')."modules_menu` (`moduleid`, `menuid`) values ($id, $menu_id);";
 
-					$insertResults = $this->Organization->query($sql);
+					$sql .= $sql_insert."<br />";
+
+					$insertResults = $this->Organization->query($sql_insert);
 				}
 			}
 			else {
