@@ -93,6 +93,7 @@
 					<option value="93">gasconsumattorigiussano (id 93)</option>
 					<option value="19">gasdorabaltea (id 19)</option>
 					<option value="8">gasbuttigliera (id 8)</option>
+					<option value="103">gasfiordirobinia (id 103)</option>
 					<option value="22">gasgarfagnana (id 22)</option>
 					<option value="88">gasgorgonzola (id 88)</option>
 					<option value="15">gasivrea (id 15)</option>
@@ -170,6 +171,7 @@
 					<option value="gasconsumattorigiussano">gasconsumattorigiussano</option>
 					<option value="gasdorabaltea">gasdorabaltea</option>
 					<option value="gasbuttigliera">gasbuttigliera</option>
+					<option value="gasfiordirobinia">gasfiordirobinia</option>
 					<option value="gasgarfagnana">gasgarfagnana</option>
 					<option value="gasgorgonzola">gasgorgonzola</option>
 					<option value="gasivrea">gasivrea</option>
