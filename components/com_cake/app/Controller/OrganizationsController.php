@@ -815,9 +815,7 @@ class OrganizationsController extends AppController {
 			$sql_insert .= "INSERT INTO `".Configure::read('DB.portalPrefix')."template_styles` (`template`, `client_id`, home, title, params) values ('v01', 0, 0, 'V01 $gasUpperCase', '$params');";
 
 			$sql .= $sql_insert."<br />";
-
-			// $insertResults = $this->Organization->query($sql_insert);
-
+			$insertResults = $this->Organization->query($sql_insert);
 		}
 	
 		$this->set('sql', $sql);
