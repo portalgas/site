@@ -74,6 +74,7 @@
 
 				<ul id="myScrollspy" class="nav nav-contenitore nav-stacked affix-top hidden-print hidden-xs hidden-sm" data-spy="affix" data-offset-top="125">
 					<li class="active"><a href="use-case-trasport.php">Gestione del trasporto</a></li>
+					<li><a href="use-case-des.php">Ordine D.E.S. (condiviso)</a></li>
 					<li><a href="/use-case.php#gestione-degli-articoli-per-gli-ordini-settimanali">Gestione degli articoli per gli ordini settimanali</a></li>
 				</ul>
  
