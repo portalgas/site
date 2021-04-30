@@ -88,6 +88,7 @@
 					<option value="74">atuttogaspsm (id 74)</option>
 					<option value="7">gasavigliana (id 7)</option>
 					<option value="16">gasbarga (id 16)</option>
+					<option value="105">gasbrugherio (id 105)</option>
 					<option value="92">gasbussero (id 92)</option>
 					<option value="97">gascassina (id 97)</option>
 					<option value="93">gasconsumattorigiussano (id 93)</option>
@@ -166,6 +167,7 @@
 					<option value="gasamuni">gasamunì</option>
 					<option value="gasati">gasati</option>
 					<option value="gasavigliana">gasavigliana</option>
+					<option value="gasbrugherio">gasbrugherio</option>
 					<option value="gasbussero">gasbussero</option>
 					<option value="gascassina">gascassina</option>
 					<option value="gasconsumattorigiussano">gasconsumattorigiussano</option>
