@@ -3,16 +3,7 @@
     <div class="container">
       
 
-	  
-
-
-
-	
-	  
-	
-
-
-        <div class="col-sm-8 cakeContainer" role="main">
+ <div class="col-sm-8 cakeContainer" role="main">
 
 
 <h1 class="page-header" id="problemi-con-le-stampe-di-portalgas">Problemi con le stampe di PortAlGas</h1>
@@ -70,6 +61,17 @@
 	</li>
 	<li><a href="https://support.google.com/mail/answer/9008?hl=it" target="_blank">leggete la pagina dedicata</a></li>
 </ul>
+
+<h2 id="non-ricevo-le-mail-di-portalgas-promozioni">Non ricevo le mail di PortAlGas: promozioni</h2>
+
+<p>Per chi utilizza <strong>GMail</strong>:</p>
+
+<ul>
+	<li>Cercare le mail di PortAlGas dentro la cartella "Promozioni"</li>
+	<li>Tasto destro sulla mail e scegliere "Sposta nella scheda", scegliere "Principale"
+	</li>
+</ul>
+
 
 <h2 id="non-ricevo-le-mail-di-portalgas-mailbox-piena">Non ricevo le mail di PortAlGas: mailbox piena</h2>
 
@@ -183,6 +185,7 @@ le mail inviate all'indirizzo mario.rossi+alias@gmail.com arriveranno alla tua c
 					<li><a href="#problemi-con-le-mail-di-portalgas">Problemi con le mail di PortAlGas</a>
 						<ul class="nav"> 
 							<li><a href="#non-ricevo-le-mail-di-portalgas-spam">Non ricevo le mail di PortAlGas: spam</a></li>
+							<li><a href="#non-ricevo-le-mail-di-portalgas-promozioni">Non ricevo le mail di PortAlGas: promozioni</a></li>
 							<li><a href="#non-ricevo-le-mail-di-portalgas-mailbox-piena">Non ricevo le mail di PortAlGas: mailbox piena</a></li>
 							<li><a href="#non-riesco-ad-inviare-le-mail-da-portalgas">Non riesco ad inviare le mail da PortAlGas</a></li>
 						</ul>

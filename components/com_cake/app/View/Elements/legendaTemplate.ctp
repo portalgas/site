@@ -5,6 +5,10 @@ update k_organizations set paramsConfig = CONCAT(SUBSTRING(paramsConfig, 1, LENG
 </pre>
 
 <?php 
+echo '<pre class="shell no_prod" rel="iesneo">';
+echo 'json paramsConfig da aggiornare se modificato Configure::write(OrganizationProdGas.paramsConfig.default)';
+echo '</pre>';
+
 if(isset($templates))
 foreach ($templates as $template) 
 	echo '<b>'.$template.'</b><br />';

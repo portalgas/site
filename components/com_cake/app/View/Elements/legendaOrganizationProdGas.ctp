@@ -29,4 +29,6 @@ echo '<pre class="shell no_prod" rel="img">';
 echo '/var/www/portalgas/images/organizations/contents/prodgas-'.$max_id.'.jpg<br />';
 echo '</pre>';
 
+echo $this->element('legendaTemplate');
+
 echo '</div>';
