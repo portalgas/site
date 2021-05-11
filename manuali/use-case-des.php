@@ -7,7 +7,7 @@
 
 		<h1 id="gestione-des">Gestione di un ordine D.E.S. (condiviso)</h1>
 		
-			<p>Accedre all'area di amministrazione (backoffice) https://www.portalgas.it/my e autenticarsi con le proprie credenziali</p>
+			<p>Accedere all'area di amministrazione (backoffice) https://www.portalgas.it/my e autenticarsi con le proprie credenziali</p>
 
 			<p>Accedete tramite il menù superiore al modulo <b>Ordini condivisi</b>: D.E.S. => Ordini condivisi</p>
 
@@ -141,6 +141,7 @@
 				<ul id="myScrollspy" class="nav nav-contenitore nav-stacked affix-top hidden-print hidden-xs hidden-sm" data-spy="affix" data-offset-top="125">
 					<li><a href="use-case-des.php">Gestione del trasporto</a></li>
 					<li class="active"><a href="use-case-des.php">Ordine D.E.S. (condiviso)</a></li>
+					<li><a href="use-case-cart-update.php">Gestire gli acquisti</a></li>
 					<li><a href="/use-case.php#gestione-degli-articoli-per-gli-ordini-settimanali">Gestione degli articoli per gli ordini settimanali</a></li>
 				</ul>
  

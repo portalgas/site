@@ -27,7 +27,7 @@ $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home'])
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 if(isset($order['Order']['id']) && !empty($order['Order']['id'])) {
 	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order['Order']['id']));
-	$this->Html->addCrumb($label, array('controller' => 'ArticlesOrders', 'action' => 'index',$order['Order']['id']));
+	$this->Html->addCrumb($label, array('controller' => 'ArticlesOrders', 'action' => 'index', 'delivery_id='.$order['Order']['delivery_id'].'&order_id='.$order['Order']['id']));
 }
 $this->Html->addCrumb($labelSingle);
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
@@ -120,7 +120,7 @@ echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
 	echo '</div>';
 
 $links = [];
-$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles Orders').' </span><span class="fa fa-reply"></span>', ['controller' => 'ArticlesOrders', 'action' => 'index', $order['Order']['id']], ['class' => 'animate', 'escape' => false]);
+$links[] = $this->Html->link('<span class="desc animate"> '.__('List Articles Orders').' </span><span class="fa fa-reply"></span>', ['controller' => 'ArticlesOrders', 'action' => 'index',  'delivery_id='.$order['Order']['delivery_id'].'&order_id='.$order['Order']['id']], ['class' => 'animate', 'escape' => false]);
 echo $this->Menu->draw($links);
 ?>
 <script type="text/javascript">
