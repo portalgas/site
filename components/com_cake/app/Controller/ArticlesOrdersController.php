@@ -230,7 +230,7 @@ class ArticlesOrdersController extends AppController {
 	 */
     public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc', $filter_name='') {
 
-        $debug=false;
+        $debug = false;
 		
 		if(isset($this->request->data['ArticlesOrder']['order_id']))
 			$order_id = $this->request->data['ArticlesOrder']['order_id'];
@@ -263,7 +263,7 @@ class ArticlesOrdersController extends AppController {
 		else
         	$canEdit = $ArticlesOrderLifeCycle->canEdit($this->user, $this->order, false, $debug);
         $this->set(compact('canEdit'));
-
+       
 		if($this->order['Order']['owner_articles']=='REFERENT' || $this->order['Order']['owner_articles']=='SUPPLIER') {
 			$previousResults = $this->_getPreviousArticlesOrder($this->user, $this->order['Order']);
 			$this->set(compact('previousResults'));
@@ -446,7 +446,7 @@ class ArticlesOrdersController extends AppController {
 					 */
 					if(!empty($desResults['des_order_id'])) { 
 						$titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
-						$results = $this->ArticlesOrder->getArticlesDesTitolareByOrderId_Ordinabili($this->user, $this->order, $titolareOrderResult, $opt, $debug);	// articoli da associare		 
+						$results = $this->ArticlesOrder->getArticlesDesTitolareByOrderId_Ordinabili($this->user, $this->order, $titolareOrderResult, $opt, $debug);	// articoli da associare
 					}
 					else {
 						/*

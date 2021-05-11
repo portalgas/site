@@ -924,7 +924,7 @@ class OrdersController extends AppController {
 
 	public function admin_edit() {
 	
-		$debug=false;
+		$debug = false;
 		$continua = true;
 		
 		App::import('Model', 'Delivery');
@@ -1001,6 +1001,7 @@ class OrdersController extends AppController {
 			$options['recursive'] = -1;
 			$OrderOldresults = $this->Order->find('first', $options);
 			self::d($OrderOldresults, $debug);
+			$this->request->data['Order']['owner_articles'] = $OrderOldresults['Order']['owner_articles'];
 			$this->request->data['Order']['owner_organization_id'] = $OrderOldresults['Order']['owner_organization_id'];
 			$this->request->data['Order']['owner_supplier_organization_id'] = $OrderOldresults['Order']['owner_supplier_organization_id'];
 			$this->request->data['Order']['order_type_id'] = $OrderOldresults['Order']['order_type_id'];
@@ -1068,8 +1069,8 @@ class OrdersController extends AppController {
 				$this->request->data['Order']['nota'] = '';
 						
 			if($debug) {
-				echo '<br />oggi '.$data_oggi.' = '.$data_inizio_db;
-				echo '<br />mail_open_send '.$this->request->data['Order']['mail_open_send'];
+				debug ('oggi '.$data_oggi.' = '.$data_inizio_db);
+				debug ('mail_open_send '.$this->request->data['Order']['mail_open_send']);
 			}
 
 			/*
