@@ -12,7 +12,7 @@
                 quando l'ordine sarà <b>chiuso</b> (lo stato dell'ordine sarà "In carico al referente prima della consegna") e quindi quando i gasisti non potranno più effettuare gli acquisti.
 			</div>	
 
-			<p>Accedere all'area di amministrazione (backoffice) https://www.portalgas.it/my e autenticarsi con le proprie credenziali</p>
+			<p>Accedere all'area di amministrazione (backoffice) <a target="_blank" href="https://www.portalgas.it/my">https://www.portalgas.it/my</a> e autenticarsi con le proprie credenziali</p>
 
 			<p>Accedete tramite il menù superiore al modulo <b>Ordini</b>: Referenti => Ordini</p>
 
@@ -93,6 +93,47 @@
                 maggior dettagli sul modulo "gestione dei colli" <a href="moduli.php#modulo-per-la-gestione-dei-colli">leggi qui</a> 
 			</div>	           
 
+			<h1 id="gestione-front-end">Gestire le quantità ad ordine aperto</h1>
+			
+            <p>Finchè l'ordine è aperto, si posso fare gli acquisti da <a target="_blank" href="https://www.portalgas.it">https://www.portalgas.it</a> (front-end la parte dei gasisti)</p>
+
+            <p>Accedere all'area di front-end <a target="_blank" href="https://www.portalgas.it">https://www.portalgas.it</a> e autenticarsi con le proprie credenziali</p>
+
+            <p>
+                <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-cart-update/08.png" class="img-responsive"></a>
+            </p>
+
+            <p>Dopo l'autenticazione accederete alla pagina degli <b>acquisti</b> composta dai "tab"</p>
+			<p>
+				<ul>
+					<li>Ordini per <b>consegna</b></li>
+					<li>Ordini per <b>produttore</b></li>
+				</ul>
+			</p>            
+            
+            <p>
+                <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-cart-update/09.png" class="img-responsive"></a>
+            </p>
+
+            <p>Cliccate sulla consegna dell'ordine: "Da definire"</p>
+
+            <p>
+                <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-cart-update/10.png" class="img-responsive"></a>
+            </p>
+
+            <p>Cliccate sul l'ordine</p>
+
+            <p>Si presentarà la lista degli articoli da acquistare</p>
+            <p>Modificate le quantità e salvate</p>
+
+            <p>
+                <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-cart-update/11.png" class="img-responsive"></a>
+            </p>
+
+            <p>Cliccando su <b>Carrello</b> avrete la stampa di tutti gli acquisti</p>
+            <p>
+                <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-cart-update/12.png" class="img-responsive"></a>
+            </p>
 
 		</div> <!-- col-sm-8 -->
 		
@@ -101,7 +142,15 @@
 				<ul id="myScrollspy" class="nav nav-contenitore nav-stacked affix-top hidden-print hidden-xs hidden-sm" data-spy="affix" data-offset-top="125">
 					<li><a href="use-case-cart-update.php">Gestione del trasporto</a></li>
 					<li><a href="use-case-cart-update.php">Ordine D.E.S. (condiviso)</a></li>
-					<li class="active"><a href="use-case-cart-update.php">Gestire gli acquisti</a></li>
+					<li class="active"><a href="use-case-cart-update.php">Gestire gli acquisti</a>
+                        <ul class="nav">
+                            <li><a href="#gestione-cart">Gestione degli acquisti</a></li>
+                            <li><a href="#gestione-modulo">Modulo "Gestisci gli acquisti dell'ordine nel dettaglio"</a></li>
+                            <li><a href="#gestione-multiple">Gestione delle quantità multiple</a></li>
+                            <li><a href="#gestione-articoli">Modulo per la "gestione degli articoli associati all'ordine"</a></li>
+                            <li><a href="#gestione-front-end">Gestire le quantità ad ordine aperto</a></li>
+                        </ul>
+					</li>
 					<li><a href="/use-case.php#gestione-degli-articoli-per-gli-ordini-settimanali">Gestione degli articoli per gli ordini settimanali</a></li>
 				</ul>
  

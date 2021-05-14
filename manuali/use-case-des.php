@@ -7,7 +7,7 @@
 
 		<h1 id="gestione-des">Gestione di un ordine D.E.S. (condiviso)</h1>
 		
-			<p>Accedere all'area di amministrazione (backoffice) https://www.portalgas.it/my e autenticarsi con le proprie credenziali</p>
+			<p>Accedere all'area di amministrazione (backoffice) <a target="_blank" href="https://www.portalgas.it/my">https://www.portalgas.it/my</a> e autenticarsi con le proprie credenziali</p>
 
 			<p>Accedete tramite il menù superiore al modulo <b>Ordini condivisi</b>: D.E.S. => Ordini condivisi</p>
 
