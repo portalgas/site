@@ -802,6 +802,9 @@ class User extends AppModel {
 	 	return $encrypted;
 	 }
 	 
+	 /*
+	  * call Delibveries::tabsUserCartPreview()
+	  */
 	 public function getUsernameToUsernameCrypted($usernameCrypted) {
 	 	 
 		$salt = Configure::read('Security.salt');

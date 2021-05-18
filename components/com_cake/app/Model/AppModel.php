@@ -348,14 +348,35 @@ class AppModel extends Model {
             return false;
     } 
 
-	protected function _decoding($value) {
+	protected function _decoding($value, $debug=true) {
 
 		$results = '';
 
 		if(!empty($value)) {
-			$encryption_key = base64_decode(Configure::read('crypt_key'));
-		    list($encrypted_data, $iv) = explode('::', base64_decode($value), 2);
-		    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
+			try {
+				$encryption_key = base64_decode(Configure::read('crypt_key'));
+				list($encrypted_data, $iv) = explode('::', base64_decode($value), 2);
+			    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);	
+
+				if($debug) {
+					debug($value);
+					echo "<pre>encryption_key \n";
+					print_r($encryption_key);
+					echo "</pre>";
+					echo "<pre>base64_decode \n";
+					print_r(base64_decode($value));
+					echo "</pre>";
+					echo "<pre>encrypted_data \n";
+					print_r($encrypted_data);
+					echo "</pre>";
+					debug($results);
+				}			    
+	        } catch (Exception $e) {
+	            CakeLog::write('error', '_decoding '.$value);
+	            CakeLog::write('error', '_decoding '.base64_decode($value));
+	            CakeLog::write('error', '_decoding '.$encryption_key);
+	            CakeLog::write('error', $e);
+	        }
 		}
 
 		return $results;
@@ -366,9 +387,15 @@ class AppModel extends Model {
 		$results = '';
 
 		if(!empty($value)) {
-			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
-			$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
-			$results = base64_encode($results.'::'.$iv);
+			try {
+				$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
+				$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
+				$results = base64_encode($results.'::'.$iv);
+	        } catch (Exception $e) {
+	            CakeLog::write('error', '_encoding '.$value);
+	            CakeLog::write('error', '_encoding '.$iv);
+	            CakeLog::write('error', $e);
+	        }
 		}
 
 		return $results;
