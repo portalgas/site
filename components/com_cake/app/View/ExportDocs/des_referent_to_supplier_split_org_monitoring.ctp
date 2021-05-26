@@ -213,6 +213,70 @@ $html .= '</div>';
 
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 
+
+/* 
+ *  dati da comunicare al produttore
+ */
+$html = '';
+$draw_header_table = false;
+if(isset($desOrdersResults['DesOrdersOrganizations']))
+foreach($desOrdersResults['DesOrdersOrganizations'] as $desOrdersOrganization) {
+	
+	if(!empty($desOrdersOrganization['DesOrdersOrganization']['luogo'])) {
+			
+			if(!$draw_header_table) {
+
+			   $html = '';
+			   $html .= '<h2>Indicazioni per la consegna</h2>';
+			   
+			   $html .= '<table cellpadding="0" cellspacing="0">';
+			   $html .= '<thead><tr>';
+			   $html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('G.A.S.').'</th>';
+			   $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'">'.__('Delivery').'</th>';
+			   $html .= '<th width="'.$output->getCELLWIDTH300().'">'.__('Riferimenti').'</th>';
+			   $html .= '</tr></thead><tbody>';
+			
+				$draw_header_table = true;
+				
+			} // end (!$draw_header_table)
+		   
+					
+		   $html .= '<tr class="view-2">';							
+		   $html .= '<td width="'.$output->getCELLWIDTH100().'">'.$desOrdersOrganization['Organization']['name'].'</td>';
+		   $html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'">';
+		   $html .= $desOrdersOrganization['DesOrdersOrganization']['luogo'];
+		   if($desOrdersOrganization['DesOrdersOrganization']['data']!=Configure::read('DB.field.date.empty'))
+			   $html .= '<br />'.$this->Time->i18nFormat($desOrdersOrganization['DesOrdersOrganization']['data'],"%A, %e %B %Y");
+		   if($desOrdersOrganization['DesOrdersOrganization']['orario']!='00:00:00')
+			   $html .= '<br />'.$this->App->formatOrario($desOrdersOrganization['DesOrdersOrganization']['orario']);
+		   $html .= '</td>';
+			   
+		   $html .= '<td width="'.$output->getCELLWIDTH300().'">';
+		   if(!empty($desOrdersOrganization['DesOrdersOrganization']['contatto_nominativo']))
+			   $html .= '<br />'.$desOrdersOrganization['DesOrdersOrganization']['contatto_nominativo'];
+		   if(!empty($desOrdersOrganization['DesOrdersOrganization']['contatto_telefono']))
+			   $html .= '<br />'.$desOrdersOrganization['DesOrdersOrganization']['contatto_telefono'];
+		   if(!empty($desOrdersOrganization['DesOrdersOrganization']['contatto_mail']))
+			   $html .= '<br />'.$desOrdersOrganization['DesOrdersOrganization']['contatto_mail'];
+		   $html .= '</td>';		
+		   $html .= '</tr>';	
+				
+		   if(!empty($desOrdersOrganization['DesOrdersOrganization']['nota'])) {
+			   $html .= '<tr>';
+			   $html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';		
+			   $html .= '<td colspan="2" width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH30()).'">'.$desOrdersOrganization['DesOrdersOrganization']['nota'].'</td>';
+			   $html .= '</tr>';			
+		   }
+		   
+	} // if(!empty($desOrdersOrganization['DesOrdersOrganization']['luogo'])) 
+}
+
+if($draw_header_table)
+	$html .= '</tbody></table>';	
+
+$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align=''); 	 
+
+
 // reset pointer to the last page
 $output->lastPage();
 
