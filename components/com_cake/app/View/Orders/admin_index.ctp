@@ -227,6 +227,10 @@ if(!empty($results)) {
 	$modal_header = __('Order').' '.$result['SuppliersOrganization']['name'];
 	echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
 	
+	if($isRoot && $result['Order']['state_code']=='CLOSE')
+		echo $this->Html->link(null, ['action' => 'state_code_change', null, 'order_id='.$result['Order']['id'].'&url_bck=index_history'], ['class' => 'action action actionSyncronize', 'title' => __('Orders state_code change')]);
+
+
 	/*
 	 * gestione menu' precedente
 	echo '<td class="actions-table-img-3">';

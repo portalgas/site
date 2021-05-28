@@ -123,7 +123,7 @@ if(!empty($results)) {
 				}
 			*/
 
-			if($isRoot)
+			if($isRoot && $result['Order']['state_code']=='CLOSE')
 				echo $this->Html->link(null, ['action' => 'state_code_change', null, 'order_id='.$result['Order']['id'].'&url_bck=index_history'], ['class' => 'action action actionSyncronize', 'title' => __('Orders state_code change')]);
 
 			echo '</td>';
