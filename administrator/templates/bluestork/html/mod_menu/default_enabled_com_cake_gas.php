@@ -724,7 +724,7 @@ if(!empty($organization_id)) {
 						$_menus[$i]['level'] = 1;
 						$_menus[$i]['label'] = "Stampa i singoli ordini";
 						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_docs_export";
-						if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || in_array(group_id_referent_cassiere), $user->getAuthorisedGroups()) {
+						if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || in_array(group_id_referent_cassiere), $user->getAuthorisedGroups())) {
 							$i++;
 							$_menus[$i]['level'] = 1;
 							$_menus[$i]['label'] = "Passa gli ordini al tesoriere";
