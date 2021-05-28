@@ -336,8 +336,8 @@ class CassiereController extends AppController {
 	public function admin_ajax_orders_to_wait_processed_tesoriere($delivery_id=0) {
 		
 		if($this->user->organization['Template']['payToDelivery']!='ON-POST' ||
-		   $this->user->organization['Organization']['hasUserGroupsTesoriere']=='N' ||
-		   !$this->isCassiere()) {
+		   $this->user->organization['Organization']['hasUserGroupsTesoriere']=='N'
+		   /* || !$this->isCassiere() */ ) {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
