@@ -1727,6 +1727,9 @@ msgstr "Dati dell'ordine"
 msgid "Orders current"
 msgstr "Ordini con consegne ancora aperte"
 
+msgid "Orders state_code change"
+msgstr "Ripristina ordine chiuso"
+
 msgid "Orders history"
 msgstr "Ordini con consegne chiuse"
 

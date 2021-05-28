@@ -74,7 +74,11 @@ if(!empty($results)) {
 				
 			if($user->organization['Organization']['hasVisibility']=='Y') 
 				echo '<td title="'.__('toolTipVisibleBackOffice').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleBackOffice']).'"></td>';		
-				echo '<td>';			echo $this->App->drawOrdersStateDiv($result);			echo '&nbsp;';			echo __($result['Order']['state_code'].'-label');
+	
+			echo '<td>';
+			echo $this->App->drawOrdersStateDiv($result);
+			echo '&nbsp;';
+			echo __($result['Order']['state_code'].'-label');
 			echo '</td>';
 			
 			echo '<td>';
@@ -112,11 +116,16 @@ if(!empty($results)) {
 			 * gestione menu' precedente			
 			echo '<td class="actions-table-img-3">';
 				if($result['Delivery']['isVisibleBackOffice']=='Y' && $result['Order']['isVisibleBackOffice']=='Y') { 
-					echo $this->Html->link(null, array('action' => 'home', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionWorkflow','title' => __('Order home')));					echo $this->Html->link(null, array('action' => 'view', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionView','title' => __('View Order')));
+					echo $this->Html->link(null, array('action' => 'home', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionWorkflow','title' => __('Order home')));
+					echo $this->Html->link(null, array('action' => 'view', null, 'order_id='.$result['Order']['id']), array('class' => 'action actionView','title' => __('View Order')));
 					//echo $this->Html->link(null, array('action' => 'delete', null, 'order_id='.$result['Order']['id']),array('class' => 'action actionDelete','title' => __('Delete'))); 
 					echo $this->Html->link(null, array('controller' => 'Docs', 'action' => 'referentDocsExportHistory', null, 'delivery_id='.$result['Delivery']['id'], 'order_id='.$result['Order']['id']),array('class' => 'action actionPrinter','title' => __('Export Docs to order')));
 				}
 			*/
+
+			if($isRoot)
+				echo $this->Html->link(null, ['action' => 'state_code_change', null, 'order_id='.$result['Order']['id'].'&url_bck=index_history'], ['class' => 'action action actionSyncronize', 'title' => __('Orders state_code change')]);
+
 			echo '</td>';
 			echo '</tr>';
 			echo '<tr class="trView" id="trViewId-'.$result['Order']['id'].'">';
@@ -141,7 +150,8 @@ if(!empty($results)) {
 	
 	 	echo '</div>';
 	 	
-	 	echo $this->element('legendaRequestPaymentStato');	 	
+	 	echo $this->element('legendaRequestPaymentStato');
+	 	
 	} 
 	else 
 		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => "Non ci sono ancora ordini associati a consegne chiuse"));

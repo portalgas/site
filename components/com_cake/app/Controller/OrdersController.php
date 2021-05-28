@@ -359,6 +359,8 @@ class OrdersController extends AppController {
 			 
 		}
 		
+		$this->set('isRoot', $this->isRoot());
+
 		$this->set(compact('results'));
 		$this->set('SqlLimit', $SqlLimit);
 	}
@@ -2416,5 +2418,69 @@ class OrdersController extends AppController {
 		$this->set(compact('desSuppliersReferents'));
 
 		return $desSuppliersReferents;	
+   }
+
+   /*
+    * cambia stato da CLOSE a PROCESSED-BEFORE-DELIVERY / PROCESSED-POST-DELIVERY / INCOMING-ORDER
+	*/
+   public function admin_state_code_change($order_id, $url_bck) {
+
+		$debug = false;
+
+   		/* ctrl ACL */	   		 
+		   if(!$this->isRoot()) {
+			$this->Session->setFlash(__('msg_not_permission'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
+
+		$options = [];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
+					'Order.id' => $order_id,
+					'Order.state_code' => 'CLOSE'
+			];
+		$options['recursive'] = 0;
+		$orderResult = $this->Order->find('first', $options);
+		// if($debug) debug($orderResult); 
+		if (empty($orderResult)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle();	
+
+		App::import('Model', 'DeliveryLifeCycle');
+		$DeliveryLifeCycle = new DeliveryLifeCycle();			
+		
+		if($debug) debug($this->user->organization['Template']); 
+		switch ($this->user->organization['Template']['payToDelivery']) {
+			case 'ON':
+				if ($orderResult['Delivery']['data'] > date("Y-m-d"))
+					$state_code_next = 'PROCESSED-BEFORE-DELIVERY';
+				$state_code_next = 'PROCESSED-POST-DELIVERY';
+			break;
+			case 'POST':
+			case 'ON-POST':
+				$state_code_next = 'INCOMING-ORDER';
+			break;
+		}				
+		if($debug) debug('state_code_next '.$state_code_next); 
+
+		$results = $OrderLifeCycle->stateCodeUpdate($this->user, $orderResult, $state_code_next, $opts=[], $debug);
+		if(isset($results['CODE']) && $results['CODE']!='200') {
+			if($debug) debug($results);
+		}
+		else {
+			$results = $DeliveryLifeCycle->deliveriesToOpen($this->user, $orderResult['Delivery']['id'], $debug);
+			if($debug) debug($results);
+
+			$this->Session->setFlash("Ripristinato l'ordine allo stato ".__($state_code_next.'-label'));
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$orderResult['Delivery']['id'].'&order_id='.$order_id;
+			if($debug) debug($url);	
+		}
+		
+		if(!$debug) $this->myRedirect($url);
+
+		exit;
    }
 }
