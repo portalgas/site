@@ -7,7 +7,7 @@
 
 if($this->layout=='pdf') {
 	App::import('Vendor','xtcpdf');
-	
+
 	$output = new XTCPDF($organization, PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 	$output->headerText = $fileData['fileTitle'];
@@ -40,19 +40,27 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 			
 			$html = '';
-			$html .= '	<table cellpadding="0" cellspacing="0">';			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella			$html .= '		<tr>';				
+			$html .= '	<table cellpadding="0" cellspacing="0">';
+			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+			$html .= '		<tr>';
+				
 			if($trasportAndCost=='Y') {
 				$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()).'" colspan="2">'.__('Name').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH60().'">'.__('PrezzoUnita').'</th>';				if($note=='N') $html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Prezzo/UM').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH60().'">'.__('PrezzoUnita').'</th>';
+				if($note=='N') $html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Prezzo/UM').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('qta').'</th>';
-				if($note=='Y') $html .= '			<th width="'.$output->getCELLWIDTH70().'">Nota</th>';				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
+				if($note=='Y') $html .= '			<th width="'.$output->getCELLWIDTH70().'">Nota</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
 			} 
-			else {				$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()).'" colspan="2">'.__('Name').'</th>';				$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('PrezzoUnita').'</th>';
+			else {
+				$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()).'" colspan="2">'.__('Name').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('PrezzoUnita').'</th>';
 				if($note=='N') $html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Prezzo/UM').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('qta').'</th>';
-				if($note=='Y') $html .= '			<th width="'.$output->getCELLWIDTH100().'">Nota</th>';				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
+				if($note=='Y') $html .= '			<th width="'.$output->getCELLWIDTH100().'">Nota</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
 			} // end if($trasportAndCost=='Y')
 			$html .= '		</tr>';				
 			$html .= '	</thead><tbody>';
@@ -60,7 +68,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			foreach ($order['ExportRows'] as $rows) {
 			
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));				
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
 				$html .= '<tr>';
 			
 				foreach ($rows as $typeRow => $cols) {
@@ -140,21 +150,38 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							
 								
 							if($trasportAndCost=='Y') {
-								$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';								$html .= '<td width="'.$output->getCELLWIDTH200().'" ';
+								$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
+								$html .= '<td width="'.$output->getCELLWIDTH200().'" ';
 								if($cols['DELETE_TO_REFERENT']=='Y') $html .= ' style="text-decoration: line-through;"';
-								$html .= '>'.$name.'</td>';								$html .= '<td width="'.$output->getCELLWIDTH60().'">'.$cols['PREZZO_E'].'</td>';								if($note=='N') 
-									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_UMRIF'].'</td>';								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
+								$html .= '>'.$name.'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH60().'">'.$cols['PREZZO_E'].'</td>';
+								if($note=='N') 
+									$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_UMRIF'].'</td>';
+								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
 								if($note=='Y') 
-									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="border-bottom:1px solid #999;"></td>';								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';							}							else {																$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH70()).'" ';
+									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="border-bottom:1px solid #999;"></td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';
+							}
+							else {								
+								$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
+								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH70()).'" ';
 								if($cols['DELETE_TO_REFERENT']=='Y') $html .= ' style="text-decoration: line-through;"';
-								$html .= '>'.$name.'</td>';								$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_E'].'</td>';								if($note=='N') 
-									$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_UMRIF'].'</td>';								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
+								$html .= '>'.$name.'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_E'].'</td>';
+								if($note=='N') 
+									$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$cols['PREZZO_UMRIF'].'</td>';
+								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH70().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
 								if($note=='Y') 
-									$html .= '<td width="'.$output->getCELLWIDTH100().'" style="border-bottom:1px solid #999;"></td>';								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH100().'" style="border-bottom:1px solid #999;"></td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							} // end if($trasportAndCost=='Y')
 						break;
 						case 'TRDATABIS':
-							if($trasportAndCost=='Y') 								$colspan = '7';							else								$colspan = '5';
+							if($trasportAndCost=='Y') 
+								$colspan = '7';
+							else
+								$colspan = '5';
 							$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
 							$html .= '<td colspan="'.$colspan.'">NOTA: '.$cols['NOTA'].'</td>';
 						break;
