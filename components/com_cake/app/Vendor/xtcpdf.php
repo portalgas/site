@@ -110,9 +110,11 @@ class XTCPDF  extends TCPDF
 				}				
 				</style>";
 
-	
-	public function __construct($organization, $orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
-		parent::__construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false);
+	/*
+	 * $orientation (PDF_PAGE_ORIENTATION) L / P
+	 */
+	 public function __construct($organization, $orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
+		parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 		
 		$this->organization = $organization;
 		

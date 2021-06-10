@@ -281,6 +281,12 @@ class StatoElaborazione extends AppModel {
 				App::import('Model', 'RequestPaymentsOrder');
 				$RequestPaymentsOrder = new RequestPaymentsOrder;
 
+				App::import('Model', 'RequestPaymentsStoreroom');
+				$RequestPaymentsStoreroom = new RequestPaymentsStoreroom;
+
+				App::import('Model', 'RequestPaymentsGeneric');
+				$RequestPaymentsGeneric = new RequestPaymentsGeneric;
+
 				/*
 				 * cron: estraggo i summary_payments associati alla richiesta di pagamento con importo_richiesto = importo_pagato
 				 */
@@ -321,7 +327,7 @@ class StatoElaborazione extends AppModel {
 							break;
 						}
 					}
-					
+
 					if ($all_summary_order_importi_uguali) {
 						$this->_requestPaymentClose($user, $requestPaymentResult['RequestPayment']['id'], $debug);
 						
@@ -331,7 +337,11 @@ class StatoElaborazione extends AppModel {
 				} // loop foreach($requestPaymentResults as $requestPaymentResult) 
 				
 				/*
-				 * cancello le richieste di pagamento senza ordini associati perche' gia' in statistiche
+				 * cancello le richieste di pagamento senza 
+				 *    ordini associati 
+				 *	  dispensa
+				 *	  generics
+				 * perche' gia' in statistiche
 				 */
 				$options = [];
 				$options['conditions'] = ['RequestPayment.organization_id' => (int)$user->organization['Organization']['id'],
@@ -342,7 +352,9 @@ class StatoElaborazione extends AppModel {
 				$requestPaymentResults = $RequestPayment->find('all', $options);
 				self::d([$options,$requestPaymentResults], $debug);
 				foreach($requestPaymentResults as $requestPaymentResult) {					
-					
+			
+					$delete = false;
+
 					$options = [];
 					$options['conditions'] = ['RequestPaymentsOrder.organization_id' => (int)$user->organization['Organization']['id'],
 											  'RequestPaymentsOrder.request_payment_id' => $requestPaymentResult['RequestPayment']['id']];
@@ -350,7 +362,40 @@ class StatoElaborazione extends AppModel {
 					$requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
 					self::d([$options,$requestPaymentsOrderResults], $debug);
 				
-					if(empty($requestPaymentsOrderResults)) {
+					if(empty($requestPaymentsOrderResults)) 
+						$delete = true;
+					else
+						$delete = false;
+
+					if($delete) {
+						$options = [];
+						$options['conditions'] = ['RequestPaymentsStoreroom.organization_id' => (int)$user->organization['Organization']['id'],
+												  'RequestPaymentsStoreroom.request_payment_id' => $requestPaymentResult['RequestPayment']['id']];
+						$options['recursive'] = -1;	
+						$requestPaymentsStoreroomResults = $RequestPaymentsStoreroom->find('all', $options);
+						self::d([$options,$requestPaymentsStoreroomResults], $debug);
+					
+						if(empty($requestPaymentsStoreroomResults)) 
+							$delete = true;
+						else
+							$delete = false;
+					}
+
+					if($delete) {
+						$options = [];
+						$options['conditions'] = ['RequestPaymentsGeneric.organization_id' => (int)$user->organization['Organization']['id'],
+												  'RequestPaymentsGeneric.request_payment_id' => $requestPaymentResult['RequestPayment']['id']];
+						$options['recursive'] = -1;	
+						$requestPaymentsGenericResults = $RequestPaymentsGeneric->find('all', $options);
+						self::d([$options,$requestPaymentsGenericResults], $debug);
+					
+						if(empty($requestPaymentsGenericResults)) 
+							$delete = true;
+						else
+							$delete = false;
+					}
+
+					if($delete) {
 						$RequestPayment->id = $requestPaymentResult['RequestPayment']['id'];
 						
 						if ($RequestPayment->delete())
