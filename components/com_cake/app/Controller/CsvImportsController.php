@@ -274,6 +274,13 @@ class CsvImportsController extends AppController {
 				
 					$Article = new Article;
 					
+					$pos = strpos($result['qta'], ',');
+					if ($pos !== false)
+						$result['qta'] = str_replace(',','.',$result['qta']);
+					else
+						$result['qta'] = $result['qta'].'.00';
+					$qta = floatval($result['qta']);  // se string diventa 0
+
 					$rows['Article']['organization_id'] = $this->user->organization['Organization']['id'];
 					$rows['Article']['id'] = $Article->getMaxIdOrganizationId($this->user->organization['Organization']['id']);
 					$rows['Article']['supplier_organization_id'] = $supplier_organization_id;
@@ -286,9 +293,12 @@ class CsvImportsController extends AppController {
 					if($this->user->organization['Organization']['hasFieldArticleIngredienti']=='Y')
 						$rows['Article']['ingredienti'] = $result['ingredienti'];
 					$rows['Article']['prezzo'] = $result['prezzo'];
-					$rows['Article']['qta'] = $result['qta'];
+					$rows['Article']['qta'] = $qta;
 					$rows['Article']['um'] = $result['um'];
-					$rows['Article']['um_riferimento'] = $result['um_riferimento'];
+					if(isset($result['um_riferimento']))
+						$rows['Article']['um_riferimento'] = $result['um_riferimento'];
+					else
+						$rows['Article']['um_riferimento'] = $result['um'];
 					/*
 					 * campi non presenti nella version SIMPLE
 					 */
@@ -1187,15 +1197,27 @@ class CsvImportsController extends AppController {
 					$valueTest = str_replace(',','.',$value);
 				else
 					$valueTest = $value.'.00';
-				
 				$valueTest = floatval($valueTest);  // se string diventa 0
+
+				// debug($value.' '.$valueTest.' '.(is_float($valueTest)===true? 'is_float': 'NOT is_float'));
+				if(!is_float($valueTest)) {
+					$this->esito_value = 'ERROR_FORMAT';
+					$this->esito_row = false;
+				}
+				else
+					$this->esito_row = true;
+
+				/* debug($valueTest.' '.is_float($valueTest));
+				// $valueTest = floatval($valueTest);  // se string diventa 0
+				debug($value.' => '.$valueTest);
 				if($valueTest==0) {
 					$this->esito_value = 'ERROR_FORMAT';
 					$this->esito_row = false;
 				}
 				else
 					$this->esito_row = true;
-					
+				*/
+
 				/*
 				 * floatval() toglie i decimali = a 0, li ricreo (1.00)
 				$pos = strpos($value, ',');

@@ -271,6 +271,7 @@ class RequestPaymentsController extends AppController {
 		 * dati cassa per l'utente
 		 */
 		App::import('Model', 'Cash');
+		if(!empty($results['SummaryPayment']))
 		foreach($results['SummaryPayment'] as $numResult => $result) {
 			$Cash = new Cash;
 			
@@ -289,7 +290,6 @@ class RequestPaymentsController extends AppController {
 
 			$results['SummaryPayment'][$numResult]['Cash'] = $cashResults['Cash'];
 		}
-		
 		self::d($results, false);
 		
 		$this->set(compact('results'));
