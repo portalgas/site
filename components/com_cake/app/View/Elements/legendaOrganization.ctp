@@ -171,7 +171,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 						</p>
 
 				</li>				
-				<li>in Gestione template
+				<li>in Gestione template troverai già eseguito
 					<ul>
 						<li>nome V01 <span class="gasUpperCase"></span></li>
 						<li>settare organizationId</li>
