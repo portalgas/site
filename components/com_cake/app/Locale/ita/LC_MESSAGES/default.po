@@ -2840,7 +2840,7 @@ msgid "User profile"
 msgstr "Dati anagrafici"
 
 msgid "Payment profile"
-msgstr "Dati per il pagamento"
+msgstr "Dati per il pagamento di PortAlGas"
 
 msgid "Code"
 msgstr "Codice"
