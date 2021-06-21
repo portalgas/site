@@ -95,8 +95,9 @@ echo '<div class="tab-pane fade" id="tabs-3">';
 				$lastvisitDate = $this->Time->i18nFormat($result['lastvisitDate'],"%e %b %Y");
 			else 
 				$lastvisitDate = "";
+			
+			echo '<tr class="view">';
 			?>
-		<tr class="view">
 			<td><?php echo ((int)$numResult+1);?></td>
 			<td><?php echo $result['Profile']['codice']; ?></td>
 			<td><?php echo $this->App->drawUserAvatar($user, $result['id'], $result); ?></td>
@@ -105,12 +106,10 @@ echo '<div class="tab-pane fade" id="tabs-3">';
 			<td><?php  	
 				if(!empty($result['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['email'].'">'.$result['email'].'</a><br />';
 			echo '</td>';
-			?>
-			<td><?php echo $this->Time->i18nFormat($result['registerDate'],"%e %b %Y");?></td>
-			<td><?php echo $lastvisitDate;?></td>
-			<td title="<?php echo __('toolTipStato');?>" class="stato_<?php echo $this->App->traslateEnum($result['block']); ?>"></td>		
-		</tr>
-	<?php 
+			echo '<td>'.$this->Time->i18nFormat($result['registerDate'],"%e %b %Y").'</td>';
+			echo '<td>'.$lastvisitDate.'</td>';
+			echo '<td title="'.__('toolTipStato').'" class="stato_'.$this->App->traslateEnum($result['block']).'"></td>';
+			echo '</tr>';
 	} // end loop
 echo '</table></div>';
 		
