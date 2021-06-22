@@ -165,7 +165,6 @@ class MailsController extends AppController {
 								
 						$Email->replyTo(array($mittente => $mittente));
 						
-						$Email->from(array($mittente => $mittente));
 						$Email->subject($subject_mail);
 					
 						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
@@ -225,7 +224,6 @@ class MailsController extends AppController {
 				
 						$Email->replyTo(array($mittente => $mittente));
 							
-						$Email->from(array($mittente => $mittente));
 						$Email->subject($subject_mail);
 						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 			
