@@ -119,18 +119,18 @@ echo '</h2>';
 		echo '<th></th>';	
 		echo '<th>'.__('N').'</th>';	
 		if($user->organization['Organization']['type']=='GAS')
-			echo '<th>'.$this->Paginator->sort('supplier_id').'</th>';			
+			echo '<th>'.__('SuppliersOrganization').'</th>';			
 		if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y') 
-			echo '<th>'.$this->Paginator->sort('Category').'</th>';
+			echo '<th>'.__('Category').'</th>';
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-			echo '<th>'.$this->Paginator->sort('codice').'</th>';
-		echo '<th colspan="2">'.$this->Paginator->sort('name','Nome prodotto').'</th>';
-		echo '<th>'.$this->Paginator->sort('Package').'</th>';
-		echo '<th>'.$this->Paginator->sort('PrezzoUnita').'</th>';
-		echo '<th>'.$this->Paginator->sort('Prezzo/UM').'</th>';
-		echo '<th>'.$this->Paginator->sort('bio',__('Bio')).'</th>';
+			echo '<th>'.__('Codice').'</th>';
+		echo '<th colspan="2">'.__('Nome prodotto').'</th>';
+		echo '<th>'.__('Package').'</th>';
+		echo '<th>'.__('PrezzoUnita').'</th>';
+		echo '<th>'.__('Prezzo/UM').'</th>';
+		echo '<th>'.__('Bio').'</th>';
 		echo '<th>'.__('Type').'</th>';
-		echo '<th>'.$this->Paginator->sort('stato',__('Stato')).'</th>';
+		echo '<th>'.__('Stato').'</th>';
 		echo '<th>Associabili <span style="float:right;">'.$this->App->drawTooltip('Articoli associabili ad un ordine', __('toolFlag_presente_articlesorders'),$type='HELP',$pos='LEFT').'</span>';
 		echo '<th style="width:15px"></th>';
 		echo '<th class="actions">'.__('Actions').'</th>';
@@ -178,7 +178,9 @@ echo '</h2>';
 		echo '<td>'.$result['Article']['prezzo_e'].'</td>';
 		echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
 		 
-		/*		 * qui calcolo runtime se e' bio, se no prendo il campo article.bio		*/		
+		/*
+		 * qui calcolo runtime se e' bio, se no prendo il campo article.bio
+		*/		
 		echo '<td>';
 		if($this->App->isArticlesTypeBio($result['ArticlesType'])) 
 			echo '<span class="bio" title="'.Configure::read('bio').'"></span>';

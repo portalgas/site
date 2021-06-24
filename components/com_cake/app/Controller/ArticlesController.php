@@ -150,18 +150,22 @@ class ArticlesController extends AppController {
 			$direction = $this->request->params['named']['direction'];
 		if (!empty($this->request->params['named']['page'])) 
 			$page = $this->request->params['named']['page'];
+		
+		$sorts = $this->_getSorts($sort, $direction);
+
 		$this->set('sort', $sort);
 		$this->set('direction', $direction);
 		$this->set('page', $page);
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'ArticleTypeIds_hidden')) 
-			$fields = array('Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name,ArticlesArticlesType.article_type_id');
+			$fields = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name,ArticlesArticlesType.article_type_id'];
 		else
-			$fields = array('Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name');
+			$fields = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name'];
 	   
 		$this->paginate = ['conditions' => $conditions,
 					       'fields' => $fields,
 					       'group' => 'Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name',
-						   'order' => ['SuppliersOrganization.name' => 'asc', 'Article.name' => 'asc'], 'recursive' => 1, 
+						   'order' => $sorts, 
+						   'recursive' => 1, 
 						   'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Article');
 	    // debug($conditions);
@@ -172,8 +176,8 @@ class ArticlesController extends AppController {
 	     *  cerco eventuali articoli del Gas titolare per visualizzarli in lettura
 	     * solo se ho scelto un produttore
 	     */
-	     $isSupplierOrganizationDesTitolare = false;
-	     $ownOrganizationResults= [];
+	    $isSupplierOrganizationDesTitolare = false;
+	    $ownOrganizationResults= [];
 	    if(empty($results) && $this->user->organization['Organization']['hasDes']=='Y') {
 	    
 			if($context=='articles') {
@@ -211,7 +215,7 @@ class ArticlesController extends AppController {
 		    	}
 		    	
 		    }
-	    }
+	    } // end if(empty($results) && $this->user->organization['Organization']['hasDes']=='Y')
 
 		self::d($results, false);
 		
@@ -1790,5 +1794,53 @@ class ArticlesController extends AppController {
 
         $this->layout = 'ajax';
         $this->render('/Layouts/ajax');
+   } 
+
+   private function _getSorts($sort, $direction='asc', $debug=false) {
+
+   		$sorts = [];
+
+		if($debug) debug($sort.' '.$direction);
+
+		if(empty($sort))	
+			$sorts = ['SuppliersOrganization.name' => $direction, 'Article.name' => $direction];
+		else {
+			switch (strtolower($sort)) {
+				case 'supplier_id':
+					$sorts = ['SuppliersOrganization.name' => $direction, 'Article.name' => $direction];
+					break;
+				case 'category':
+					$sorts = ['CategoriesSupplier.name' => $direction, 'Article.name' => $direction];
+				break;
+				case 'codice':
+					$sorts = ['Article.code' => $direction];
+				break;
+				case 'name':
+					$sorts = ['Article.name' => $direction];
+				break;
+				case 'package': // conf
+					$sorts = ['Article.qta' => $direction];
+				break;
+				case 'prezzounita': 
+					$sorts = ['Article.prezzo' => $direction];
+				break;
+				case 'prezzo/um': 
+					$sorts = ['Article.prezzo' => $direction];
+				break;
+				case 'bio': 
+					$sorts = ['Article.bio' => $direction];
+				break;
+				case 'stato': 
+					$sorts = ['Article.stato' => $direction];
+				break;
+				default:
+					$sorts = ['SuppliersOrganization.name' => $direction, 'Article.name' => $direction];
+					break;
+			}
+		}
+
+		if($debug) debug($sorts);
+
+		return $sorts;
    } 	
 }

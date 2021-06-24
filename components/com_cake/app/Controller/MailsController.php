@@ -174,6 +174,8 @@ class MailsController extends AppController {
 						else
 							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
+						$body_mail = "Il gasista " . $this->user->name .' <a href="mailto:'.$this->user->email.'">'.$this->user->email.'</a> scrive<br />'. $body_mail;
+
 						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
 						if(isset($mailResults['OK'])) {
 							$tot_ok++;

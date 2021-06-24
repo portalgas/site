@@ -60,7 +60,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	/*
 	 * consegna
 	 */
-	echo $this->element('boxOrdersDelivery', array('modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery));
+	echo $this->element('boxOrdersDelivery', ['modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery]);
 	echo $this->Html->div('clearfix','');
 	
 	echo $this->App->drawDate('Order', 'data_inizio', __('DataInizio'), $data_inizio_db);
