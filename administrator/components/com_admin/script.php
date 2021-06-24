@@ -217,7 +217,7 @@ class joomlaInstallerScript
 		$extensions[] = array('module', 'mod_custom', '', 1);
 		$extensions[] = array('module', 'mod_feed', '', 1);
 		$extensions[] = array('module', 'mod_latest', '', 1);
-		$extensions[] = array('module', 'mod_logged', '', 1);
+		// $extensions[] = array('module', 'mod_logged', '', 1);
 		$extensions[] = array('module', 'mod_login', '', 1);
 		$extensions[] = array('module', 'mod_menu', '', 1);
 		$extensions[] = array('module', 'mod_popular', '', 1);

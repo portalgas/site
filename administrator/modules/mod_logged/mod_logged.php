@@ -8,15 +8,16 @@
 // no direct access
 defined('_JEXEC') or die;
 
-// Include dependencies.
-require_once dirname(__FILE__).'/helper.php';
-
 /* 
  * fractis mod_logged solo per root
  */
 $user = JFactory::getUser();
 // echo "<pre>"; print_r($user); echo "</pre>"; 
 if($user->id==1) {
+
+    // Include dependencies.
+    require_once dirname(__FILE__).'/helper.php';
+
     $users = modLoggedHelper::getList($params);
     require JModuleHelper::getLayoutPath('mod_logged', $params->get('layout', 'default'));    
 }
