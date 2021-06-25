@@ -56,23 +56,26 @@ class SummaryPayment extends AppModel {
 		$user_id = $data['SummaryPayment']['user_id'];
 		
 		/*
+		 * se SummaryPayment.stato = 'PAGATO'
 		 * per ogni user aggiorno SummaryOrder.saldato_a = 'TESORIERE' cosi' l'ordine andra' allo stato successivo
 		 * con il ctrl $SummaryOrderLifeCycle->isSummaryOrderAllSaldato in UtilsCron::ordersStatoElaborazione() con Order.state_code TO-PAYMENT
-		 */
-		try {
-			 $sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders s
-					INNER JOIN ".Configure::read('DB.prefix')."request_payments_orders o 
-					ON (s.order_id = o.order_id and o.organization_id = $organization_id and o.request_payment_id = $request_payment_id)
-					SET s.saldato_a = 'TESORIERE', s.importo_pagato = s.importo  
-					WHERE s.importo_pagato = '0.00' 
-					and s.organization_id = $organization_id
-					and s.user_id = $user_id";
-				self::l('SummaryPayment::paid '.$sql, $debug);
-				$results = $this->query($sql);
-        } catch (Exception $e) {
-            CakeLog::write('error', $sql);
-            CakeLog::write('error', $e);
-        }
+		 */ 
+		if($data['SummaryPayment']['stato']=='PAGATO') {
+			try {
+				 $sql = "UPDATE ".Configure::read('DB.prefix')."summary_orders s
+						INNER JOIN ".Configure::read('DB.prefix')."request_payments_orders o 
+						ON (s.order_id = o.order_id and o.organization_id = $organization_id and o.request_payment_id = $request_payment_id)
+						SET s.saldato_a = 'TESORIERE', s.importo_pagato = s.importo  
+						WHERE s.importo_pagato = '0.00' 
+						and s.organization_id = $organization_id
+						and s.user_id = $user_id";
+					self::d('SummaryPayment::paid '.$sql, $debug);
+					$results = $this->query($sql);
+	        } catch (Exception $e) {
+	            CakeLog::write('error', $sql);
+	            CakeLog::write('error', $e);
+	        }			
+		}
 
 		return true;
 	}
@@ -161,9 +164,15 @@ class SummaryPayment extends AppModel {
 		]
 	];	
 	
-	public function afterFind($results, $primary = false) {			foreach ($results as $key => $val) {			if(!empty($val)) {			
+	public function afterFind($results, $primary = false) {
+	
+		foreach ($results as $key => $val) {
+			if(!empty($val)) {
+			
 				if(isset($val['SummaryPayment']['importo_dovuto'])) {
-					$results[$key]['SummaryPayment']['importo_dovuto_'] = number_format($val['SummaryPayment']['importo_dovuto'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));					$results[$key]['SummaryPayment']['importo_dovuto_e'] = $results[$key]['SummaryPayment']['importo_dovuto_'].' &euro;';				}
+					$results[$key]['SummaryPayment']['importo_dovuto_'] = number_format($val['SummaryPayment']['importo_dovuto'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['SummaryPayment']['importo_dovuto_e'] = $results[$key]['SummaryPayment']['importo_dovuto_'].' &euro;';
+				}
 				if(isset($val['SummaryPayment']['importo_richiesto'])) {
 					$results[$key]['SummaryPayment']['importo_richiesto_'] = number_format($val['SummaryPayment']['importo_richiesto'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['SummaryPayment']['importo_richiesto_e'] = $results[$key]['SummaryPayment']['importo_richiesto_'].' &euro;';
@@ -171,8 +180,11 @@ class SummaryPayment extends AppModel {
 				if(isset($val['SummaryPayment']['importo_pagato'])) {
 					$results[$key]['SummaryPayment']['importo_pagato_'] = number_format($val['SummaryPayment']['importo_pagato'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['SummaryPayment']['importo_pagato_e'] = $results[$key]['SummaryPayment']['importo_pagato_'].' &euro;';
-				}			}				
-		}		return $results;	}
+				}
+			}				
+		}
+		return $results;
+	}
 	
 	public function beforeSave($options = []) {		
 		if(!empty($this->data['SummaryPayment']['importo_dovuto'])) {
@@ -183,5 +195,8 @@ class SummaryPayment extends AppModel {
 		}
 		if(!empty($this->data['SummaryPayment']['importo_pagato'])) {
 			$this->data['SummaryPayment']['importo_pagato'] =  $this->importoToDatabase($this->data['SummaryPayment']['importo_pagato']);
-		}		return true;	}	
+		}
+		return true;
+	}
+	
 }
