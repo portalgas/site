@@ -34,7 +34,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$tot_importo = 0;
 			$pezzi_confezione = 1;
 			$order_id_old = 0;
-			$article_organization_id_old = 0;			$article_id_old = 0;	
+			$article_organization_id_old = 0;
+			$article_id_old = 0;	
 			$i=0;
 			foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
 

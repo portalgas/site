@@ -23,6 +23,9 @@ if($this->layout=='ajax') {
 	$css = $output->getCss();
 }
 
+$html = $this->ExportDocs->organization($user);
+$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+
 if(isset($results['Delivery']))
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
@@ -275,7 +278,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				
 				$order_id_old = $order['ArticlesOrder'][$numArticlesOrder]['order_id'];
 				$article_organization_id_old = $order['ArticlesOrder'][$numArticlesOrder]['article_organization_id_old'];
-				$article_id_old = $order['ArticlesOrder'][$numArticlesOrder]['article_id'];				
+				$article_id_old = $order['ArticlesOrder'][$numArticlesOrder]['article_id'];
+				
 			}  // end foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) 
 
 		

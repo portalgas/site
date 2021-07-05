@@ -25,6 +25,9 @@ class GeoProvince extends AppModel {
         return $geoProvinces;	
 	}
 	
+    /*
+     * estarggo tuttle le province di una regione 
+     */	
 	public function getByIdGeoRegion($geo_region_id, $debug=false) {
 		
         $options = [];
@@ -48,6 +51,9 @@ class GeoProvince extends AppModel {
 		return $geoProvinces;
 	}
 	
+    /*
+     * estarggo tuttle le sigle di una regione 
+     */	
 	public function getSiglaByIdGeoRegion($geo_region_id, $debug=false) {
 		
 		$geoProvinces = [];

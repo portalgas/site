@@ -116,7 +116,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$rows[] = $cols['IMPORTO_COMPLETO'];
 						break;								
 						case 'TRDATA':
-							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UMRIF']));
+							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->ExportDocs->prepareCsv($this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM'])));
 							if($cols['DELETE_TO_REFERENT']=='Y') $name .= " (CANCELLATO)";
 							$codice = $this->ExportDocs->prepareCsv($cols['CODICE']);
 									

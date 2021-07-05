@@ -23,6 +23,9 @@ if($this->layout=='ajax') {
 	$css = $output->getCss();
 }
 
+$html = $this->ExportDocs->organization($user);
+$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+
 if(isset($results['Delivery']) && !empty($results['Delivery']))
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
@@ -83,13 +86,16 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$tot_importo = 0;
 			$pezzi_confezione = 1;
 			$order_id_old = 0;
-			$article_organization_id_old=0;			$article_id_old = 0;			$i=0;
+			$article_organization_id_old=0;
+			$article_id_old = 0;
+			$i=0;
 			foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
 			
 				if(!empty($order_id_old) && // salto la prima volta
 				   ($order_id_old != $order['ArticlesOrder'][$numArticlesOrder]['order_id'] ||
 				    $article_organization_id_old != $order['ArticlesOrder'][$numArticlesOrder]['article_organization_id'] ||
-				    $article_id_old != $order['ArticlesOrder'][$numArticlesOrder]['article_id'])) {				
+				    $article_id_old != $order['ArticlesOrder'][$numArticlesOrder]['article_id'])) {
+				
 					// $bio = $order['Article'][$numArticlesOrder]['bio'];
 					
 					$html .= '<tr>';

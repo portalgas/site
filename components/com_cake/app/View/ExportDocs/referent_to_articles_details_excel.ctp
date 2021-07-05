@@ -124,7 +124,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						 $name = $order['ArticlesOrder'][$numArticlesOrder]['name'];
 					 else
 						 $name = $order['Article'][$numArticlesOrder]['name'];	
-					$name = $this->ExportDocs->prepareCsv($name).' '.$this->App->getArticleConf($order['Article'][$numArticlesOrder]['qta'], $order['Article'][$numArticlesOrder]['um']);
+					$name = $this->ExportDocs->prepareCsv($name).' '.$this->ExportDocs->prepareCsv($this->App->getArticleConf($order['Article'][$numArticlesOrder]['qta'], $order['Article'][$numArticlesOrder]['um']));
 						
 					$i++;
 				}
@@ -159,7 +159,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					 $name = $order['ArticlesOrder'][$numArticlesOrder]['name'];
 				 else
 					 $name = $order['Article'][$numArticlesOrder]['name'];
-				$name = $this->ExportDocs->prepareCsv($name).' '.$this->App->getArticleConf($order['Article'][$numArticlesOrder]['qta'], $order['Article'][$numArticlesOrder]['um']);
+				$name = $this->ExportDocs->prepareCsv($name).' '.$this->ExportDocs->prepareCsv($this->App->getArticleConf($order['Article'][$numArticlesOrder]['qta'], $order['Article'][$numArticlesOrder]['um']));
 				
 				if($order['Article'][$numArticlesOrder]['bio']=='Y')
 					$bio = 'Si';

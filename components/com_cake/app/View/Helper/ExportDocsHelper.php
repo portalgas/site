@@ -17,6 +17,31 @@ class ExportDocsHelper extends AppHelper {
 	}
 
 	/*
+	 * O R G A N I Z A T I O N
+	*/
+	public function organization($user) {
+	
+		// echo "<pre>"; print_r($user->organization['Organization']); echo "</pre>"; 
+		
+		$tmp  = '';
+		$tmp .= '<div class="h2Pdf">';
+		$tmp .= __('GasOrganization').' ';
+		$tmp .= $user->organization['Organization']['name'].' ';
+		$tmp .= '<small>';
+		if(!empty($user->organization['Organization']['indirizzo']))
+			$tmp .= $user->organization['Organization']['indirizzo'].' ';
+		if(!empty($user->organization['Organization']['localita']))
+			$tmp .= $user->organization['Organization']['localita'].' ';
+		if(!empty($user->organization['Organization']['provincia']))
+			$tmp .= '('.$user->organization['Organization']['provincia'].') ';
+		$tmp .= $user->organization['Organization']['cap'];	
+		$tmp .= '</small>';
+		$tmp .= '</div>';
+
+		return $tmp;
+	}
+
+	/*
 	 * D E L I V E R Y
 	*/
 	public function delivery($delivery) {
