@@ -102,7 +102,6 @@ class Mail extends AppModel {
 		
 		return $results;
 	}
-
 							
 	public function drawLogo($organization=null) {
 	

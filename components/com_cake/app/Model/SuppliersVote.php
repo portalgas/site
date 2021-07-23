@@ -1,7 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
 
-
 class SuppliersVote extends AppModel {
 
 	public function getVotoOptions() {

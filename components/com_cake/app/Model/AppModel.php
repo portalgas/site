@@ -348,7 +348,7 @@ class AppModel extends Model {
             return false;
     } 
 
-	protected function _decoding($value, $debug=true) {
+	protected function _decoding($value, $debug=false) {
 
 		$results = '';
 
