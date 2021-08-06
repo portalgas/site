@@ -2455,13 +2455,13 @@ class OrdersController extends AppController {
 		if($debug) debug($this->user->organization['Template']); 
 		switch ($this->user->organization['Template']['payToDelivery']) {
 			case 'ON':
-				if ($orderResult['Delivery']['data'] > date("Y-m-d"))
-					$state_code_next = 'PROCESSED-BEFORE-DELIVERY';
-				$state_code_next = 'PROCESSED-POST-DELIVERY';
-			break;
-			case 'POST':
 			case 'ON-POST':
 				$state_code_next = 'INCOMING-ORDER';
+			break;
+			case 'POST':
+				if ($orderResult['Delivery']['data'] > date("Y-m-d"))
+					$state_code_next = 'PROCESSED-BEFORE-DELIVERY';
+				$state_code_next = 'PROCESSED-POST-DELIVERY';				
 			break;
 		}				
 		if($debug) debug('state_code_next '.$state_code_next); 
