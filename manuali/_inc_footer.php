@@ -49,7 +49,7 @@
 
 <div id="scroll_to_top"><a href="#top" style="z-index: 9; position: fixed; top: 80%; width: 110px; margin-top: -30px; right: 0px; margin-left: -50px; height: 40px; padding: 3px; font-size: 18px; text-align: center; color: rgb(255, 255, 255); background-color: rgb(98, 80, 67); opacity: 0.8; text-decoration: none;">Torna su</a></div>
 
-    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
