@@ -215,8 +215,9 @@ if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->o
 	echo '<div class="tab-pane fade" id="tabs-6">';	
 	
 		/*
-		 * ora la fattura e' per tutti	
+		 * ora la fattura e' per tutti: cassiere e tesoriere
 		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+		*/
 			echo '<div class="input text">';
 			echo '<label> '.__('Fattura').'</label> ';
 		
