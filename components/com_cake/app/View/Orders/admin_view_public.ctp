@@ -214,6 +214,8 @@ if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->o
 
 	echo '<div class="tab-pane fade" id="tabs-6">';	
 	
+		/*
+		 * ora la fattura e' per tutti	
 		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 			echo '<div class="input text">';
 			echo '<label> '.__('Fattura').'</label> ';
@@ -268,7 +270,7 @@ if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->o
 				echo $this->request->data['Order']['tesoriere_nota']; 
 				echo '</div>';			
 			}
-		} // end if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
+		// } // end if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
 				
 		/*
 		 * pagamento ai produttori
