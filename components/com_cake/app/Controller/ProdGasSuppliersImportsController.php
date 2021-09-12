@@ -49,7 +49,7 @@ class ProdGasSuppliersImportsController extends AppController {
 		$results = $this->ProdGasSuppliersImport->getProdGasSuppliers($this->user, $organization_id, 0, [], $debug);		
 
 		/*
-		 * per ogni il produttore, ctrl cho ogni suo GAS con suppliers_organizations.owner_articles = 'SUPPLIER' abbia owner_organization_id e owner_supplier_organization_id del produttore
+		 * per ogni il produttore, ctrl che ogni suo GAS con suppliers_organizations.owner_articles = 'SUPPLIER' abbia owner_organization_id e owner_supplier_organization_id del produttore
 		 */
 		foreach($results as $numResult => $result) {
 		

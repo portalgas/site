@@ -32,7 +32,7 @@ else
 if($user->organization['Template']['payToDelivery']=='POST')
 	echo '<li><a href="#tabs-4" data-toggle="tab">'.__('Dopo la consegna').'</a></li>';
 echo '<li><a href="#tabs-5" data-toggle="tab">'.__('Suppliers Organizations Referents').'</a></li>';
-if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y')
+if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->organization['Organization']['hasUserGroupsTesoriere']=='Y')
 	echo '<li><a href="#tabs-6" data-toggle="tab">'.__('Fattura').'</a></li>';
 echo '</ul>';
 
@@ -246,7 +246,7 @@ else
 	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "Non ci sono referenti associati"));	
 echo '</div>';
 
-if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
+if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
 
 		echo '<div class="tab-pane fade" id="tabs-6">';
 	
@@ -336,8 +336,7 @@ if($user->organization['Organization']['hasUserGroupsTesoriere']=='Y') {
 		} // end if($user->organization['Template']['orderSupplierPaid']=='Y') 
 	
 	echo '</div>';
-} // end if($user->organization['Organization']['hasTesoriere']=='Y')
-	
+} // end if($user->organization['Organization']['hasUserGroupsCassiere']=='Y' || $user->organization['Organization']['hasUserGroupsTesoriere']=='Y') 
 
 
 echo '</div>'; // end class tab-content
