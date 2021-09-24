@@ -1,4 +1,6 @@
 <?php
+echo $this->Html->script('jquery/jquery.cookie');
+
 $link = [];
 $link['label'] = 'Vai alla pagina dei produttori';
 $link['url'] = Configure::read('Neo.portalgas.url').'site/produttori';
@@ -25,6 +27,17 @@ $carousels[$i]['text'] = "Il produttore sarà presente nell'elenco dei produttor
 <style>
 .box-carousel {
   background-color: #efefef;
+}
+.box-carousel .btn-close {
+   position: absolute;
+   top:  15px;
+   right: 25px;
+   color: #2c6877;
+   z-index: 50;
+   border:  none;
+}
+.box-carousel .btn-close:hover {
+   color: #fa824f;
 }
 .box-carousel .link {
   padding: 10px;
@@ -79,7 +92,10 @@ $carousels[$i]['text'] = "Il produttore sarà presente nell'elenco dei produttor
 echo '<div class="col-xs-12 col-sm-12 col-md-12">';
 echo '<div class="box-container">';
 
-echo '<div class="box-carousel">';
+echo '<div class="box-carousel" style="display: none">';
+
+echo '<button  href="#" class="btn-close fa fa-3x fa-close"></button>';
+
 echo '<div id="myCarousel" class="carousel slide" data-ride="carousel">';
 
 echo '<ol class="carousel-indicators">';
@@ -135,3 +151,27 @@ echo '</div>'; // box-carousel
 echo '</div>'; // box-container
 echo '</div>';
 ?>
+
+<script type="text/javascript">
+$(function() {
+
+  /* $.cookie("<?php echo Configure::read('Cookies.carousel.close');?>", "", { expires: <?php echo Configure::read('Cookies.expire');?>, path: '<?php echo Configure::read('Cookies.path');?>/' }); */
+  var hasCarouselClose = $.cookie("<?php echo Configure::read('Cookies.carousel.close');?>");
+
+  console.log(hasCarouselClose);
+  if(typeof hasCarouselClose !== 'undefined' && hasCarouselClose == <?php echo $user->id;?>) {
+      $('.box-carousel').hide();
+  }
+  else
+    $('.box-carousel').show();
+
+  $('.btn-close').click(function(e) {
+    
+    e.preventDefault();
+
+    $('.box-carousel').hide('slow');
+
+    $.cookie("<?php echo Configure::read('Cookies.carousel.close');?>", "<?php echo $user->id;?>", { expires: <?php echo Configure::read('Cookies.expire');?>, path: '<?php echo Configure::read('Cookies.path');?>/' });
+  });
+});
+</script>

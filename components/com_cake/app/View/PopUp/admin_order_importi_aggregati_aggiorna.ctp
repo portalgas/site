@@ -105,6 +105,6 @@ echo $this->Html->css('popupSlider-min');
 <?php 
 echo $this->Html->script('jquery/jquery.cookie');
 
-echo $this->Form->create('PopUp',array('id'=>'formGas'));
+echo $this->Form->create('PopUp', ['id'=>'formGas']);
 echo $this->Form->end();
 ?>
