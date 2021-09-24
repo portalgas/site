@@ -3730,6 +3730,9 @@ msgstr "Non sei titolare dell'ordine per poterlo gestire"
 msgid "DesOrderOrganizationSupplierOwnerArticlesError"
 msgstr "La configurazione del produttore è errata"
 
+msgid "DesOrderOrganizationGasTitolareOwnerArticlesError"
+msgstr "Il referente titolare del tuo G.A.S. può aprire l'ordine"
+
 msgid "DesOrderOrganizationSupplierOwnerArticlesMsg"
 msgstr "Per gestire un ordine D.E.S. configura il produttore la \"Gestore del listino degli articoli\"  al \"Titolare D.E.S. del produttore\""
 

@@ -12,6 +12,8 @@ echo '<h3>'.__('GasOrganizations').'</h3>';
 echo '<div class="table-responsive"><table class="table table-hover">';
 echo '<tr>';
 echo '<th colspan="2">'.__('GasOrganizations').'</th>';
+echo '<th>'.__('Place').'</th>';
+echo '<th>'.__('Contacts').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_owner_articles').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders').'</th>';
 echo '<th style="text-align:center;">'.__('prod_gas_supplier_can_view_orders_users').'</th>';
@@ -41,6 +43,13 @@ else {
 		echo '</td>';
 		echo '<td>';
 		echo $result['Organization']['name'];
+		echo '</td>';
+		echo '<td>';
+		if(!empty($result['Organization']['localita'])) echo $result['Organization']['localita'];
+		if(!empty($result['Organization']['provincia'])) echo ' ('.$result['Organization']['provincia'].')';
+		echo '</td>';
+		echo '<td>';
+		if(!empty($result['Organization']['mail'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.h($result['Organization']['mail']).'" class="fa fa-envelope-o fa-lg"></a><br />';
 		echo '</td>';
 		echo '<td style="text-align:center;">';
 		if($result['SuppliersOrganization']['owner_articles']=='SUPPLIER') 

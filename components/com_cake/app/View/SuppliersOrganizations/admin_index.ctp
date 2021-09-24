@@ -94,9 +94,13 @@ if(!empty($results)) {
 			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 		echo '</td>';
 		echo '<td>';
-			echo $result['Supplier']['name']; 
-			if(!empty($result['Supplier']['descrizione']))
-				echo '<br /><small>'.$result['Supplier']['descrizione'].'</small>';
+
+		if(!empty($result['Supplier']['slug'])) echo '<a title="link esterno al sito del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'"">';
+		echo $result['Supplier']['name'];
+		if(!empty($result['Supplier']['slug'])) echo '</a>';
+
+		if(!empty($result['Supplier']['descrizione']))
+			echo '<br /><small>'.$result['Supplier']['descrizione'].'</small>';
 		echo '</td>';
 		echo '<td style="text-align:center;">';
 		echo $result['Articles']['totArticles'];

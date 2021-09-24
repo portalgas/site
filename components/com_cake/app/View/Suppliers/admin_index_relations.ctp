@@ -26,7 +26,9 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 									'escape' => false];
 					if(count($organizations) > Configure::read('HtmlSelectWithSearchNum')) 
 						$options += ['class'=> 'selectpicker', 'data-live-search' => true]; 
-						echo $this->Form->input('organization_id', $options);					echo '</td>';
+	
+					echo $this->Form->input('organization_id', $options);
+					echo '</td>';
 					
 					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 						echo '<td>';
@@ -164,7 +166,11 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 			echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 		echo '</td>';
 		
-		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['name'].'</td>';
+		echo '<td rowspan="'.$rowspan.'">';
+		if(!empty($result['Supplier']['slug'])) echo '<a title="link esterno al sito del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'"">';
+		echo $result['Supplier']['name'];
+		if(!empty($result['Supplier']['slug'])) echo '</a>';
+		echo '</td>';
 		echo '<td rowspan="'.$rowspan.'">'.$result['Supplier']['descrizione'].'</td>';
 		
 		if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {

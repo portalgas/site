@@ -1,6 +1,7 @@
 <?php
 $debug=false;
 $this->App->d($results);
+$this->App->dd($acl_owner_articles);
 
 echo $this->Html->script('genericBackOfficeGasDes.min');
 
@@ -222,6 +223,8 @@ echo '<div class="orders">';
 				$this->App->d('isTitolareDesSupplier Y', $debug);
 			else
 				$this->App->d('isTitolareDesSupplier N', $debug);
+
+
 			if($desOrganizationsResult['Organization']['id']==$user->organization['Organization']['id']) {
 				if($acl_owner_articles!==true) {
 					switch ($acl_owner_articles['owner_articles']) {
@@ -232,6 +235,11 @@ echo '<div class="orders">';
 								echo $this->element('boxMsg', ['class_msg' => 'danger', 'msg' => __('DesOrderOrganizationSupplierOwnerArticlesMsg')]);
 							}
 						break;
+						case 'GAS-TITOLARE':
+							if($results['DesOrder']['state_code']=='OPEN') {
+								echo '<span class="label label-info">'.__('DesOrderOrganizationGasTitolareOwnerArticlesError').'</span>';
+							}
+						break;						
 						case '':
 							// Il G.A.S. non ha il produttore associato
 							echo '<span class="label label-info">'.__('DesOrderOrganizationNotSupplier').'</span>';

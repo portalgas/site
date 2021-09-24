@@ -169,6 +169,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 		if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
 		if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
 		if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank fa fa-globe fa-lg"></a>';
+		if(!empty($result['Supplier']['slug'])) echo '<a title="link esterno al sito del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
 		echo '<td rowspan="'.$rowspan.'" title="'.__('toolJoomlaContent').' - vale '.$result['Supplier']['j_content_id'].'" class="'.$class_j_content_id.'"></td>';
 		echo '<td rowspan="'.$rowspan.'" title="'.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';

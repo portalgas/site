@@ -117,11 +117,28 @@ class DesOrdersOrganizationsController extends AppController {
 		 * non e' stato creato alcun ordine, solo il titolare puo'
 		 */
 		$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);	
-		self::d($suppliersOrganizationResults, $debug);	
+		self::dd($suppliersOrganizationResults, $debug);	
 		$this->set(compact('isTitolareDesSupplier'));
 
+		/*
+		 * ctrl che sia titolare il GAS (lo user potrebbe non esserlo)
+		 */
+		$isTitolareGas = false;
+		if(isset($results['OwnOrganization'])) {
+			$titolare_organization_id = $results['OwnOrganization']['id'];
+			if($titolare_organization_id==$this->user->organization['Organization']['id'])
+				$isTitolareGas = true;
+			else
+				$isTitolareGas = false;
+		}	
+		$this->set(compact('isTitolareGas'));
+
+
 	   /*
-	    *  ctrl se il produttore ha il owner_articles DES o REFERENT + Titolare
+	    *  ctrl se il produttore ha il owner_articles 
+	    *     DES lo gestisce il DES e il mio GAS non e' titolare
+	    *     REFERENT + Titolare => OK
+	    *	  REFERENT ma lo user non e' titolare
 	    */
 		App::import('Model', 'SuppliersOrganization');
 		$SuppliersOrganization = new SuppliersOrganization;
@@ -137,8 +154,15 @@ class DesOrdersOrganizationsController extends AppController {
 			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='DES' && !$isTitolareDesSupplier)
 				$acl_owner_articles = true;
 			else
+			// lo user e' titolare
 			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='REFERENT' && $isTitolareDesSupplier)
 				$acl_owner_articles = true;
+			else
+			// lo user non e' titolare ma il suo GAS si
+			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='REFERENT' && !$isTitolareDesSupplier && $isTitolareGas) {
+				$acl_owner_articles['supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['id'];
+				$acl_owner_articles['owner_articles'] = 'GAS-TITOLARE'; 				
+			}
 			else
 			if($suppliersOrganizationResults['SuppliersOrganization']['owner_articles']=='SUPPLIER' && $isTitolareDesSupplier)
 				$acl_owner_articles = true;

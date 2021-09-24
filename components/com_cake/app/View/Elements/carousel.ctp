@@ -1,19 +1,52 @@
 <?php
+$link = [];
+$link['label'] = 'Vai alla pagina dei produttori';
+$link['url'] = Configure::read('Neo.portalgas.url').'site/produttori';
+$link['target'] = '_blank';
+
 $carousels = [];
 $i=0;
-$carousels[$i]['img'] = '/images/cake/print_screen_type_draw_complete2.jpg';
-$carousels[$i]['title'] = '111111111111';
-$carousels[$i]['text'] = 'AAAAAAAAAAAAA';
+$carousels[$i]['img'] = '/images/cake/carousel/produttori-ricerca.png';
+$carousels[$i]['title'] = 'Nuova pagina per i produttori';
+$carousels[$i]['text'] = "Accedi alla nuova pagina per ricercare nuovi produttori che collarorano già con altri G.A.S.";
 $i++;
-$carousels[$i]['img'] = '/images/cake/print_screen_type_draw_complete2.jpg';
-$carousels[$i]['title'] = '22222222222222';
-$carousels[$i]['text'] = 'bbbbbbbbbbbbbbbbb';
+$carousels[$i]['img'] = '/images/cake/carousel/produttori-listino.png';
+$carousels[$i]['title'] = 'Filtra tra quelli che gestiscono il proprio listino articoli';
+$carousels[$i]['text'] = "Così non dovrai più pensare ad aggiornare il listino articoli, lo farà il produttore. Il referente dovrà solo occuparsi di gestire l'ordine!";
 $i++;
-$carousels[$i]['img'] = '/images/cake/print_screen_type_draw_complete2.jpg';
-$carousels[$i]['title'] = '33333333333333';
-$carousels[$i]['text'] = 'ccccccccccccc';
+$carousels[$i]['img'] = '/images/cake/carousel/produttore.png';
+$carousels[$i]['title'] = 'Scegli il produttori';
+$carousels[$i]['text'] = "Hai le informazioni relative al produttore, i riferimenti per contattarlo, l'elenco dei suoi prodotti e l'elenco dei G.A.S. con il quale collabora";
+$i++;
+$carousels[$i]['img'] = '/images/cake/carousel/import.png';
+$carousels[$i]['title'] = 'Con un semplice click';
+$carousels[$i]['text'] = "Il produttore sarà presente nell'elenco dei produttori del tuo G.A.S. e con il listino aggiornato! Contattalo e apri un ordine!";
 ?>
 <style>
+.box-carousel {
+  background-color: #efefef;
+}
+.box-carousel .link {
+  padding: 10px;
+}
+.carousel-indicators {
+    top: 20px;
+}
+.carousel-indicators li {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fa824f;
+    margin: 3px;
+}
+.carousel-indicators .active {
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    background-color: #337ab7;
+}
+.box-carousel .btn-primary {
+    color: #fff !important;
+}
 .carousel-control.left, .carousel-control.right {
   background-image: none;
 }
@@ -21,13 +54,24 @@ $carousels[$i]['text'] = 'ccccccccccccc';
   display: initial;
 }
 .carousel-caption {
+  padding-bottom: 0px !important;;
   color: #000;
+  margin-left: 5%;
+  margin-right: 5%;
+  bottom: 0px !important;  
+  text-shadow: none;
+}    
+.carousel-caption .text {
+  background-color: #efefef;
 }
 .carousel-caption h3 {
-    color: #2c6877;
-    font-size: 20px;
+  color: #fa824f;
+  font-size: 30px;
 }
 .carousel-caption p {
+  color: #2c6877;
+  font-size: 18px;  
+  line-height: 1.6;
 }
 </style>
 
@@ -35,7 +79,7 @@ $carousels[$i]['text'] = 'ccccccccccccc';
 echo '<div class="col-xs-12 col-sm-12 col-md-12">';
 echo '<div class="box-container">';
 
-
+echo '<div class="box-carousel">';
 echo '<div id="myCarousel" class="carousel slide" data-ride="carousel">';
 
 echo '<ol class="carousel-indicators">';
@@ -55,8 +99,13 @@ foreach($carousels as $numResult => $carousel) {
     echo '">';
     echo '<img src="'.$carousel['img'].'" alt="'.$carousel['title'].'">';
     echo '<div class="carousel-caption">';
-    echo '<h3>'.$carousel['title'].'</h3>';
+
+    echo '<div class="text">';
+    echo '<h3>'.$carousel['title'];
+    echo '</h3>';
     echo '<p>'.$carousel['text'].'</p>';
+    echo '</div>';
+
     echo '</div>';
     echo '</div>';
 
@@ -71,8 +120,18 @@ echo '<a class="right carousel-control" href="#myCarousel" data-slide="next">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span>';
 echo '<span class="sr-only">Next</span>';
 echo '</a>';
-echo '</div>';
 
-echo '</div>';
+
+echo '</div>'; // myCarousel
+
+if(isset($link)) {
+  echo '<p class="link">';
+  echo '<a href="'.$link['url'].'" class="btn btn-primary" target="'.$link['target'].'">'.$link['label'].'</a>';
+  echo '</p>';
+}
+
+echo '</div>'; // box-carousel
+
+echo '</div>'; // box-container
 echo '</div>';
 ?>

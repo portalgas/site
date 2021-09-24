@@ -5,9 +5,10 @@
 if(!empty($prodGasPromotionsOrganizationsresults) && ($isManager || $isSuperReferente || $isReferente)) {
 	echo $this->element('boxMsgProdGasPromotions');
 }
-
 echo '<div class="container-fluid text-center">';
 echo '  <div class="row">';
+
+echo $this->element('carousel');
 
 if($isReferentGeneric) {
 ?>
@@ -55,9 +56,9 @@ if($isReferentGeneric) {
     		</a>
     	</div>
     </div>
-	<?php
-	}
-	?>
+<?php
+} // end if($isReferentGeneric)
+?>
 	
 	<?php
 	if($isManager || $isManagerDelivery) 
