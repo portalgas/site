@@ -285,14 +285,18 @@ else {
 		</div> <!-- container -->
 	</div> <!-- footer-above -->
 
+
 	<div class="footer-below">
         <div class="container">
                 <div class="row">
-                    <div class="col-lg-12 text-center">
+                    <div class="col-lg-2 text-center">
+	                	<a href="https://www.iubenda.com/privacy-policy/56886383" class="iubenda-white iubenda-noiframe iubenda-embed iubenda-noiframe " title="Privacy Policy ">Privacy Policy</a><script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src="https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
+	                </div>
+                    <div class="col-lg-8 text-center">
 						Copyright &copy; <?php echo date('Y');?> PortAlGas. All Rights Reserved.
-						<span class="pull-right">
-							<a href="mailto:info@portalgas.it" title="Scrivi una mail a info@portalgas.it">info@portalgas.it</a>
-						</span>
+					</div>
+                    <div class="col-lg-2 text-center">	
+						<a href="mailto:info@portalgas.it" title="Scrivi una mail a info@portalgas.it">info@portalgas.it</a>
                     </div>
                 </div>
         </div>
