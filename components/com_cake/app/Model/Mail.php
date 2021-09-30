@@ -93,7 +93,9 @@ class Mail extends AppModel {
 							$results['OK'] = $mail;
 					} catch (Exception $e) {
 						$results['KO'] = $mail;
-						CakeLog::write("error", $e, array("mails"));
+						CakeLog::write("error", 'mail '.$mail, ['mails']);
+						CakeLog::write("error", $body_mail, ['mails']);
+						CakeLog::write("error", $e, ['mails']);
 					}
 				}
 			} // end if(empty($mail)) 
