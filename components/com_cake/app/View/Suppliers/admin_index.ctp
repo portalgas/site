@@ -32,7 +32,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 					
 					if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') {
 						echo '<td>';
-						echo $this->Form->input('category_supplier_id',array('label' => '&nbsp;','options' => $categories, 'empty' => 'Filtra per categoria','name'=>'FilterSupplierCategoryId','default'=>$FilterSupplierCategoryId,'escape' => false)); 
+						echo $this->Form->input('category_supplier_id', array('label' => '&nbsp;','options' => $categories, 'empty' => 'Filtra per categoria','name'=>'FilterSupplierCategoryId','default'=>$FilterSupplierCategoryId,'escape' => false)); 
 						echo '</td>';
 					}
 					?>
@@ -40,6 +40,10 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 						<?php echo $this->Ajax->autoComplete('FilterSupplierName', 
 															   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteRootSuppliers_name&format=notmpl',
 								   								array('label' => 'Nome','name'=>'FilterSupplierName','value'=>$FilterSupplierName,'size'=>'75','escape' => false));
+						?>
+					</td>
+					<td>
+						<?php echo $this->Form->input('FilterSupplierMail', ['label' => 'Mail', 'name'=>'FilterSupplierMail','value'=>$FilterSupplierMail, 'escape' => false]);
 						?>
 					</td>
 					<td>

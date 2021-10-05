@@ -250,17 +250,44 @@ class ProdGasPromotion extends AppModel {
 
 		if(empty($prod_gas_promotion_id) || empty($next_state))
 			return false;
-		
-		$sql = "UPDATE 
-					".Configure::read('DB.prefix')."prod_gas_promotions
-				SET
-					state_code = '".$next_state."',
-					modified = '".date('Y-m-d H:i:s')."'
-				WHERE
-				    organization_id = ".$user->organization['Organization']['id']." and id = ".(int)$prod_gas_promotion_id;
-		self::d($sql, $debug);
+
 		try {
+			$sql = "UPDATE 
+						".Configure::read('DB.prefix')."prod_gas_promotions
+					SET
+						state_code = '".$next_state."',
+						modified = '".date('Y-m-d H:i:s')."'
+					WHERE
+					    organization_id = ".$user->organization['Organization']['id']." and id = ".(int)$prod_gas_promotion_id;
+			self::d($sql, $debug);
 			$results = $this->query($sql);
+
+			$next_state_prod_gas_promotions_organizations = ''; 
+			switch($next_state) {
+				case "PRODGASPROMOTION-GAS-USERS-WORKING":
+					/*
+					 * se porto in WORKING (lavorazione) la promozione per i singoli utenti, porto le ProdGasPromotionsOrganizations a WAITING
+					 */				
+					$next_state_prod_gas_promotions_organizations = 'WAITING'; 
+				break;
+				case "PRODGASPROMOTION-GAS-USERS-OPEN":
+					/*
+					 * se apro la promozione per i singoli utenti, porto le ProdGasPromotionsOrganizations a OPEN
+					 */				
+					$next_state_prod_gas_promotions_organizations = 'OPEN';
+				break;
+			}			
+
+			if(!empty($next_state_prod_gas_promotions_organizations)) {
+				$sql = "UPDATE 
+							".Configure::read('DB.prefix')."prod_gas_promotions_organizations
+						SET
+							state_code = '".$next_state_prod_gas_promotions_organizations."',
+							modified = '".date('Y-m-d H:i:s')."'
+						WHERE prod_gas_promotion_id = ".(int)$prod_gas_promotion_id;
+				self::d($sql, $debug);
+				$results = $this->query($sql);
+			} // end if(!empty($next_state_prod_gas_promotions_organizations))
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);

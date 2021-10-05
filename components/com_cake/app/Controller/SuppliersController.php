@@ -199,6 +199,7 @@ class SuppliersController extends AppController {
         $FilterSupplierOrganizationId = null;
         $FilterSupplierStato = null;
         $FilterSupplierName = null;
+        $FilterSupplierMail = null;
         $FilterSupplierCategoryId = null;
         $conditions = [];
         $SqlLimit = 20;
@@ -214,6 +215,12 @@ class SuppliersController extends AppController {
             $FilterSupplierName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             if (!empty($FilterSupplierName))
                 $conditions[] = ['LOWER(Supplier.name) LIKE ' => '%'.strtolower($FilterSupplierName).'%'];
+        }
+
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Mail')) {
+            $FilterSupplierMail = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Mail');
+            if (!empty($FilterSupplierMail))
+                $conditions[] = ['LOWER(Supplier.mail) LIKE ' => '%'.strtolower($FilterSupplierMail).'%'];
         }
 
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Stato')) {
@@ -241,6 +248,7 @@ class SuppliersController extends AppController {
         $this->set('FilterSupplierOrganizationId', $FilterSupplierOrganizationId);
         $this->set('FilterSupplierStato', $FilterSupplierStato);
         $this->set('FilterSupplierName', $FilterSupplierName);
+        $this->set('FilterSupplierMail', $FilterSupplierMail);
         $this->set('FilterSupplierCategoryId', $FilterSupplierCategoryId);
 
 		App::import('Model', 'SuppliersVote');
