@@ -3355,6 +3355,9 @@ msgstr "Ha il campo CATEGORIA per i produttori"
 msgid "HasFieldFatturaRequired"
 msgstr "La fattura per il cassiere/tesoriere è obbligatoria"
 
+msgid "HasFieldCartNote"
+msgstr "Il carrello ha il campo note per il referente"
+
 msgid "Prod Supplier Organization Id"
 msgstr "Produttore"
 

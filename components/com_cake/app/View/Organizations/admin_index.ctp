@@ -148,7 +148,8 @@
                     echo '</div> <br />';
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldArticleCategoryId']).'_int">'.__('HasFieldArticleCategoryId').'</div> <br />';
 					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldSupplierCategoryId']).'_int">'.__('HasFieldSupplierCategoryId').'</div> <br />';
-					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldFatturaRequired']).'_int">'.__('HasFieldFatturaRequired').'</div>';
+					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldFatturaRequired']).'_int">'.__('HasFieldFatturaRequired').'</div> <br />';
+					echo '<div class="stato_'.$this->App->traslateEnum($result['Organization']['hasFieldCartNote']).'_int">'.__('HasFieldCartNote').'</div>';
 					echo '</td>';
 					?>				
 				</tr>

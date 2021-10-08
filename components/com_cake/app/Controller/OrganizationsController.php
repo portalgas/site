@@ -403,6 +403,7 @@ class OrganizationsController extends AppController {
             $paramsFields += ['hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']];
             $paramsFields += ['hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']];
             $paramsFields += ['hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']];
+            $paramsFields += ['hasFieldCartNote' => $this->request->data['Organization']['hasFieldCartNote']];
             $this->request->data['Organization']['paramsFields'] = json_encode($paramsFields);
 
             /*
@@ -491,9 +492,11 @@ class OrganizationsController extends AppController {
         $hasFieldArticleCategoryId = ['Y' => 'Si', 'N' => 'No'];
         $hasFieldSupplierCategoryId = ['Y' => 'Si', 'N' => 'No'];
         $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
+        $hasFieldCartNote = ['Y' => 'Si', 'N' => 'No'];
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'hasFieldCartNote'));
+        $this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 		/*
 		 * template
@@ -587,6 +590,7 @@ class OrganizationsController extends AppController {
             $paramsFields += ['hasFieldArticleCategoryId' => $this->request->data['Organization']['hasFieldArticleCategoryId']];
             $paramsFields += ['hasFieldSupplierCategoryId' => $this->request->data['Organization']['hasFieldSupplierCategoryId']];
             $paramsFields += ['hasFieldFatturaRequired' => $this->request->data['Organization']['hasFieldFatturaRequired']];
+            $paramsFields += ['hasFieldCartNote' => $this->request->data['Organization']['hasFieldCartNote']];
             $this->request->data['Organization']['paramsFields'] = json_encode($paramsFields);
 
             /*
@@ -698,9 +702,11 @@ class OrganizationsController extends AppController {
             $hasFieldArticleCategoryId = ['Y' => 'Si', 'N' => 'No'];
             $hasFieldSupplierCategoryId = ['Y' => 'Si', 'N' => 'No'];
             $hasFieldFatturaRequired = ['Y' => 'Si', 'N' => 'No'];
+            $hasFieldCartNote = ['Y' => 'Si', 'N' => 'No'];
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
-        $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        	$this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'hasFieldCartNote'));
+        	$this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
 
 			/*
 			 * template

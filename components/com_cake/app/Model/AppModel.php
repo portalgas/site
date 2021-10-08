@@ -356,6 +356,9 @@ class AppModel extends Model {
 			try {
 				$encryption_key = base64_decode(Configure::read('crypt_key'));
 				list($encrypted_data, $iv) = explode('::', base64_decode($value), 2);
+				/*
+				 * Warning: Warning (2): openssl_decrypt(): IV passed is only 14 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0 
+				 */
 			    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);	
 
 				if($debug) {

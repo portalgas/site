@@ -188,7 +188,9 @@ echo '<div class="tab-pane fade" id="tabs-7">';
 	echo $this->App->drawFormRadio('Organization','hasFieldArticleCategoryId',array('options' => $hasFieldArticleCategoryId, 'value'=>'Y', 'label'=>__('HasFieldArticleCategoryId'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasFieldSupplierCategoryId',array('options' => $hasFieldSupplierCategoryId, 'value'=>'Y', 'label'=>__('HasFieldSupplierCategoryId'), 'required'=>'required',
 				'after'=>$this->App->drawTooltip(null,"Deve sempre essere abilitato, nel front-end c'è il menù con l'elenco delle categorie dei produttori",$type='WARNING')));
-	echo $this->App->drawFormRadio('Organization','hasFieldFatturaRequired',array('options' => $hasFieldFatturaRequired, 'value'=>'N', 'label'=>__('HasFieldFatturaRequired'), 'required'=>'required'));					
+	echo $this->App->drawFormRadio('Organization','hasFieldFatturaRequired',array('options' => $hasFieldFatturaRequired, 'value'=>'N', 'label'=>__('HasFieldFatturaRequired'), 'required'=>'required'));
+	echo $this->App->drawFormRadio('Organization','hasFieldCartNote', ['options' => $hasFieldCartNote, 'value'=>'N', 'label'=>__('HasFieldCartNote'), 'required'=>'required']);
+	
 echo '</div>';
 echo '</div>'; // tab-content
 echo '</div>';
