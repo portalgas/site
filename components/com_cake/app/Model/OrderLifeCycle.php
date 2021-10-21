@@ -1275,6 +1275,7 @@ class OrderLifeCycle extends AppModel {
 	 */
 	public function getStateCodeNotUpdateArticle($user) {
 		
+		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna
 		$results[] = 'PROCESSED-TESORIERE';
 		$results[] = 'TO-REQUEST-PAYMENT';		
 		$results[] = 'TO-PAYMENT';	
@@ -1291,7 +1292,7 @@ class OrderLifeCycle extends AppModel {
 	 */	
 	public function getStateCodeManagementPayments($user) {
 
-		$results[] = 'PROCESSED-ON-DELIVERY';
+		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna
 		$results[] = 'TO-PAYMENT';		
 		$results[] = 'WAIT-REQUEST-PAYMENT-CLOSE';
 		$results[] = 'USER-PAID';				
