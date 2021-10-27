@@ -21,7 +21,7 @@ if(!empty($results)) {
 	$table[] =	array('label' => __('Kg'), 'width' => 'auto');
 	$table[] =	array('label' => __('Lt'), 'width' => 'auto');
 	$table[] =	array('label' => __('Pz'), 'width' => 'auto');
-	$table[] =	array('label' => __('Quantità acquitata'), 'width' => 'auto');	
+	$table[] =	array('label' => __('Quantità acquistata'), 'width' => 'auto');	
 	// heading
 	$this->PhpExcel->addTableHeader($table, array('name' => 'Cambria', 'bold' => true));
 

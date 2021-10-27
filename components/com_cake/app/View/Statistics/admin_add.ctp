@@ -1,1 +1,1 @@
-<?php$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);$this->Html->addCrumb(__('Statitics'));echo $this->Html->getCrumbList(array('class'=>'crumbs'));?>
+<?php$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);$this->Html->addCrumb(__('Statistiche'));echo $this->Html->getCrumbList(array('class'=>'crumbs'));?>

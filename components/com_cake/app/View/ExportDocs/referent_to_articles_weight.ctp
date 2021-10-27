@@ -47,7 +47,7 @@ if(!empty($results)) {
 	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH80().'">Kg</th>';
 	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH80().'">Lt</th>';
 	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH80().'">Pz</th>';
-	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH80().'">Quantit&agrave acquitata</th>';
+	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH80().'">Quantit&agrave acquistata</th>';
 	$html .= '	</thead><tbody>';
 	$html .= '</tr>';
 	
