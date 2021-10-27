@@ -1275,6 +1275,7 @@ class OrderLifeCycle extends AppModel {
 	 */
 	public function getStateCodeNotUpdateArticle($user) {
 		
+		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna
 		$results[] = 'PROCESSED-TESORIERE';
 		$results[] = 'TO-REQUEST-PAYMENT';		
 		$results[] = 'TO-PAYMENT';	
@@ -1291,7 +1292,7 @@ class OrderLifeCycle extends AppModel {
 	 */	
 	public function getStateCodeManagementPayments($user) {
 
-		$results[] = 'PROCESSED-ON-DELIVERY';
+		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna
 		$results[] = 'TO-PAYMENT';		
 		$results[] = 'WAIT-REQUEST-PAYMENT-CLOSE';
 		$results[] = 'USER-PAID';				
@@ -1756,7 +1757,7 @@ class OrderLifeCycle extends AppModel {
 				}
 			}
 			else
-				$esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>cancellalo</b></a>";
+				$esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>cancellarlo</b></a>";
 		}
 			
 		return $esito;
