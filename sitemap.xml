@@ -3092,5 +3092,15 @@
     <loc>https://www.portalgas.it/home-gas-caneva/consegne-gas-caneva</loc>
     <lastmod>2021-10-11</lastmod>
     <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-gasnavese</loc>
+    <lastmod>2021-10-29</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-gasnavese/consegne-gas-gasnavese</loc>
+    <lastmod>2021-10-29</lastmod>
+    <changefreq>yearly</changefreq>
   </url>  
 </urlset>

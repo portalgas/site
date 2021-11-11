@@ -26,7 +26,7 @@ echo 'crea k_categories_articles.name = \'Generale\'<br />';
 echo '</pre>';
 
 echo '<pre class="shell no_prod" rel="img">';
-echo '/var/www/portalgas/images/organizations/contents/prodgas-'.$max_id.'.jpg<br />';
+echo Configure::read('App.root').'/images/organizations/contents/prodgas-'.$max_id.'.jpg<br />';
 echo '</pre>';
 
 echo $this->element('legendaTemplate');
