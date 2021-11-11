@@ -130,7 +130,7 @@ foreach($results as $numResult => $result) {
 			echo $this->element('boxMsg',['class_msg' => 'notice','msg' => $results[$numResult]['Dir']['articles_path']]);	 
 		
 		 if($result['Organization']['sql_update_organization']=='OK') {
-		 	echo 'Organization.img1 '.$result['Organization']['img1'];
+		 	echo 'Organization.img1 '.Configure::read('App.root').'/images/organizations/contents/'.$result['Organization']['img1'];
 		 }
 		 else {
 			 if(empty($result['Supplier']['Supplier']['img1'])) {

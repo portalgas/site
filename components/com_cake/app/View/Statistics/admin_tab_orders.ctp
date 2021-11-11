@@ -12,10 +12,13 @@ if(!empty($results)) {
 	echo '<th>Inizio ordine</th>';
 	echo '<th>Fine ordine</th>';
 	echo '<th style="text-align:center;">Importo totale</th>';
+	/*
+	 * ora lo visualizzo per tutti i templates
 	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+	 */ 		
 		echo '<th style="text-align:center;">Pagamento</th>';
 		echo '<th style="text-align:center;">'.__('request_payment_num_short').'</th>';
-	}
+	// }
 	
 	$totale = 0;
 	$delivery_id_old = 0;
@@ -46,7 +49,10 @@ if(!empty($results)) {
 		echo '<td>'.$order_data_fine.'</td>';
 		echo '<td style="text-align:center;">'.$importo.'&nbsp;&euro;</td>';
 		
-		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') { 
+		/*
+		 * ora lo visualizzo per tutti i templates
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+		 */ 	
 			echo '<td>';
 			if(!empty($result['StatOrder']['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$result['StatOrder']['tesoriere_doc1'])) {
 				$ico = $this->App->drawDocumentIco($result['StatOrder']['tesoriere_doc1']);
@@ -77,7 +83,7 @@ if(!empty($results)) {
 			}
 			echo '</td>';
 			echo '<td style="text-align:center;">'.$result['StatOrder']['request_payment_num'].'</td>';
-		}
+		// }
 		
 		
 		echo '</tr>';
@@ -95,8 +101,12 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
-	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') 
+	/*
+	 * ora lo visualizzo per tutti i templates
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+	 */ 		
 		echo '<td></td><td></td>';
+	// }
 	echo '</tr>';
 		
 	echo '</table></div>';
