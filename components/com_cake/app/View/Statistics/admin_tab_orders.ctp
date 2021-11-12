@@ -12,13 +12,10 @@ if(!empty($results)) {
 	echo '<th>Inizio ordine</th>';
 	echo '<th>Fine ordine</th>';
 	echo '<th style="text-align:center;">Importo totale</th>';
-	/*
-	 * ora lo visualizzo per tutti i templates
-	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
-	 */ 		
-		echo '<th style="text-align:center;">Pagamento</th>';
+	echo '<th style="text-align:center;">Pagamento</th>';
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {		
 		echo '<th style="text-align:center;">'.__('request_payment_num_short').'</th>';
-	// }
+	}
 	
 	$totale = 0;
 	$delivery_id_old = 0;
@@ -49,28 +46,38 @@ if(!empty($results)) {
 		echo '<td>'.$order_data_fine.'</td>';
 		echo '<td style="text-align:center;">'.$importo.'&nbsp;&euro;</td>';
 		
+		echo '<td>';
 		/*
-		 * ora lo visualizzo per tutti i templates
-		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
-		 */ 	
-			echo '<td>';
-			if(!empty($result['StatOrder']['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$result['StatOrder']['tesoriere_doc1'])) {
-				$ico = $this->App->drawDocumentIco($result['StatOrder']['tesoriere_doc1']);
-				echo '<a alt="Scarica il documento" title="Scarica il documento" href="'.Configure::read('App.server').Configure::read('App.web.doc.upload.tesoriere').'/'.$user->organization['Organization']['id'].'/'.$result['StatOrder']['tesoriere_doc1'].'" target="_blank"><img src="'.$ico.'" /></a>';
-			}
-			
-			if(!empty($result['StatOrder']['tesoriere_fattura_importo'])) {
-				echo '<p>'.__('Tesoriere fattura importo').' ';
-				echo number_format($result['StatOrder']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
-				echo '</p>';	
-			}
+		 * fattura
+		 */
+		if(!empty($result['StatOrder']['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$result['StatOrder']['tesoriere_doc1'])) {
+			$ico = $this->App->drawDocumentIco($result['StatOrder']['tesoriere_doc1']);
+			echo '<a alt="Scarica il documento" title="Scarica il documento" href="'.Configure::read('App.server').Configure::read('App.web.doc.upload.tesoriere').'/'.$user->organization['Organization']['id'].'/'.$result['StatOrder']['tesoriere_doc1'].'" target="_blank"><img src="'.$ico.'" /></a>';
+		}
+		
+		/*
+		 * Importo della fattura
+		 */
+		if(!empty($result['StatOrder']['tesoriere_fattura_importo'])) {
+			echo '<p>'.__('Tesoriere fattura importo').' ';
+			echo number_format($result['StatOrder']['tesoriere_fattura_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+			echo '</p>';	
+		}
 
+
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+			/*
+			 * Importo pagamento
+			 */
 			if(!empty($result['StatOrder']['tesoriere_importo_pay'])) {
 				echo '<p>'.__('Tesoriere Importo Pay').' ';
 				echo number_format($result['StatOrder']['tesoriere_importo_pay'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
 				echo '</p>';
 			}
 			
+			/*
+			 * Data pagamento
+			 */
 			if(!empty($result['StatOrder']['tesoriere_data_pay'])) {
 				echo '<p>'.__('Tesoriere Data Pay').' ';
 				if($result['StatOrder']['tesoriere_data_pay']==Configure::read('DB.field.date.empty'))
@@ -81,9 +88,12 @@ if(!empty($results)) {
 				echo $tesoriere_data_pay;
 				echo '</p>';
 			}
-			echo '</td>';
+		}
+		echo '</td>';
+
+		if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 			echo '<td style="text-align:center;">'.$result['StatOrder']['request_payment_num'].'</td>';
-		// }
+		}
 		
 		
 		echo '</tr>';
@@ -101,12 +111,12 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td></td>';
 	echo '<td style="text-align:center;"><b>'.$totale.'&nbsp;&euro;</b></td>';
-	/*
-	 * ora lo visualizzo per tutti i templates
-	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
-	 */ 		
-		echo '<td></td><td></td>';
-	// }
+
+	echo '<td></td>';
+	
+	if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {		
+		echo '<td></td>';
+	}
 	echo '</tr>';
 		
 	echo '</table></div>';
