@@ -1,7 +1,7 @@
 <?php
 $debug=false;
 $this->App->d($results);
-$this->App->dd($acl_owner_articles);
+$this->App->d($acl_owner_articles);
 
 echo $this->Html->script('genericBackOfficeGasDes.min');
 
