@@ -263,6 +263,7 @@ class OrdersController extends AppController {
 
 	/*
 	 * ordini con consegne 'Delivery.stato_elaborazione' => 'CLOSE'
+	 * DeliveryLifeCycle::deliveriesToClose()
 	 */
 	public function admin_index_history() {
 	
