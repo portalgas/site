@@ -35,12 +35,12 @@ $loggeduser = JFactory::getUser();
 			</label>
 
 			<select name="filter_state" class="inputbox" onchange="this.form.submit()">
-				<option value="*"><?php echo JText::_('COM_USERS_FILTER_STATE');?></option>
+				<option value="*">Attivato/Disattivato<?php // echo JText::_('COM_USERS_FILTER_STATE');?></option>
 				<?php echo JHtml::_('select.options', UsersHelper::getStateOptions(), 'value', 'text', $this->state->get('filter.state'));?>
 			</select>
 
 			<select name="filter_active" class="inputbox" onchange="this.form.submit()">
-				<option value="*"><?php echo JText::_('COM_USERS_FILTER_ACTIVE');?></option>
+				<option value="*">Registrazione attivata<?php // echo JText::_('COM_USERS_FILTER_ACTIVE');?></option>
 				<?php echo JHtml::_('select.options', UsersHelper::getActiveOptions(), 'value', 'text', $this->state->get('filter.active'));?>
 			</select>
 
@@ -70,11 +70,21 @@ $loggeduser = JFactory::getUser();
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_USERNAME', 'a.username', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
+					Attivato/Disattivato
+				</th>
+				<th class="nowrap" width="5%">
+					Registrazione attivata
+				</th>
+				<?php
+				/*
+				<th class="nowrap" width="5%">
 					<?php echo JHtml::_('grid.sort', 'COM_USERS_HEADING_ENABLED', 'a.block', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
 					<?php echo JHtml::_('grid.sort', 'COM_USERS_HEADING_ACTIVATED', 'a.activation', $listDirn, $listOrder); ?>
 				</th>
+				*/
+				?>
 				<th class="nowrap" width="10%">
 					<?php echo JText::_('COM_USERS_HEADING_GROUPS'); ?>
 				</th>
@@ -135,6 +145,15 @@ $loggeduser = JFactory::getUser();
 				<td class="center">
 					<?php echo $this->escape($item->username); ?>
 				</td>
+
+				<td class="center">
+					<?php echo JText::_($item->block ? 'JNO' : 'JYES'); ?>
+				</td>
+				<td class="center">
+					<?php echo JHtml::_('grid.boolean', $i, !$item->activation, 'users.activate', null); ?>
+				</td>							
+				<?php 
+				/*
 				<td class="center">
 					<?php if ($canChange) : ?>
 						<?php if ($loggeduser->id != $item->id) : ?>
@@ -149,6 +168,8 @@ $loggeduser = JFactory::getUser();
 				<td class="center">
 					<?php echo JHtml::_('grid.boolean', $i, !$item->activation, 'users.activate', null); ?>
 				</td>
+				*/
+				?>
 				<td class="center">
 					<?php if (substr_count($item->group_names, "\n") > 1) : ?>
 						<span class="hasTip" title="<?php echo JText::_('COM_USERS_HEADING_GROUPS').'::'.nl2br($item->group_names); ?>"><?php echo JText::_('COM_USERS_USERS_MULTIPLE_GROUPS'); ?></span>

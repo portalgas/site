@@ -117,6 +117,7 @@
 					<option value="14">gastrana (id 14)</option>
 					<option value="20">gasvalchiusella (id 20)</option>
 					<option value="18">gasvaldellatorre (id 18)</option>
+					<option value="123">gasvasto (id 123)</option> 
 					<option value="34">gasvercelli (id 34)</option>
 					<option value="91">gasvillasanta (id 91)</option>
 					<option value="95">gasvitalearcore (id 95)</option>
@@ -200,6 +201,7 @@
 					<option value="gastrana">gastrana</option>
 					<option value="gasvalchiusella">gasvalchiusella</option>
 					<option value="gasvaldellatorre">gasvaldellatorre</option>
+					<option value="gasvasto">gasvasto</option>
 					<option value="gasvercelli">gasvercelli</option>
 					<option value="gasvillasanta">gasvillasanta</option>
 					<option value="gasvitalearcore">gasvitalearcore</option>
