@@ -49,13 +49,19 @@ $(document).ready(function () {
 				'<p><b>Indirizzo</b> <?php echo $indirizzo;?> <?php echo $localita;?>';
 		
 		<?php
+		/*
 		if(!empty($result['Supplier']['j_content_id']) && !empty($result['CategoriesSupplier']['j_category_id'])) {
 					
 			$url = JRoute::_(ContentHelperRoute::getArticleRoute($result['Supplier']['j_content_id'], $result['CategoriesSupplier']['j_category_id'])).'?tmpl=popup';					
 			
 			echo "contentString".$result['Supplier']['id']." += '<p><a rel=\"nofollow\" data-toggle=\"modal\" data-target=\"#myModalScheda\" url=\"".$url."\" href=\"#\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>';";
 		}
-		
+		*/
+		if(!empty($result['Supplier']['slug'])) {
+			$url = "https://neo.portalgas.it/site/produttore/".$result['Supplier']['slug'];
+			echo "contentString".$result['Supplier']['id']." += '<p><a target=\"_blank\" href=\"".$url."\" title=\"".$result['Supplier']['name']."\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>';";
+		}
+
 		if(isset($result['SuppliersOrganizationsReferent']) && !empty($result['SuppliersOrganizationsReferent'])) {
 
 			echo "\ncontentString".$result['Supplier']['id']." += '<p><b>".__('Suppliers Organizations Referents')."</b></p>';";

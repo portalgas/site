@@ -223,6 +223,9 @@ class SuppliersController extends AppController {
                 $conditions[] = ['LOWER(Supplier.mail) LIKE ' => '%'.strtolower($FilterSupplierMail).'%'];
         }
 
+        if(!empty($FilterSupplierName) || !empty($FilterSupplierMail))
+            $this->Session->write(Configure::read('Filter.prefix') . $this->modelClass . 'Stato', 'ALL');
+
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Stato')) {
             $FilterSupplierStato = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Stato');
             if ($FilterSupplierStato != 'ALL')
