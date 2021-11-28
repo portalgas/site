@@ -21,41 +21,41 @@ echo '</ul>';
 echo '<div class="tab-content">';
 echo '<div class="tab-pane fade active in" id="tabs-0">';
 
-                            if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') 
-                                    echo $this->Form->input('category_supplier_id',array('options' => $categories, 'default' => $results['SuppliersOrganization']['category_supplier_id'], 'empty' => 'Filtra per categoria','escape' => false, 'required' => false));
+	    if($user->organization['Organization']['hasFieldSupplierCategoryId']=='Y') 
+	            echo $this->Form->input('category_supplier_id',array('options' => $categories, 'default' => $results['SuppliersOrganization']['category_supplier_id'], 'empty' => 'Filtra per categoria','escape' => false, 'required' => false));
 
-                            echo $this->Form->input('name',array('value' => $results['Supplier']['name'], 'label'=>'Ragione sociale', 'required' => false));
-                            echo $this->Form->input('nome', array('value' => $results['Supplier']['nome']));
-                            echo $this->Form->input('cognome', array('value' => $results['Supplier']['cognome']));
-                            echo $this->Form->input('frequenza', array('value' => $results['SuppliersOrganization']['frequenza'], 'after'=>$this->App->drawTooltip(null,__('toolTipSupplierOrganizationFrequenza'),$type='HELP')));
-							
-                            echo $this->Form->input('descrizione',  array('value' => $results['Supplier']['descrizione'], 'label'=>'Descrizione breve', 'type' => 'text', 'after' => '<br /><img width="150" class="print_screen" id="print_screen_supplier_nota" src="'.Configure::read('App.img.cake').'/print_screen_supplier_nota.jpg" title="" border="0" />'));
+	    echo $this->Form->input('name',array('value' => $results['Supplier']['name'], 'label'=>'Ragione sociale', 'required' => false));
+	    echo $this->Form->input('nome', array('value' => $results['Supplier']['nome']));
+	    echo $this->Form->input('cognome', array('value' => $results['Supplier']['cognome']));
+	    echo $this->Form->input('frequenza', array('value' => $results['SuppliersOrganization']['frequenza'], 'after'=>$this->App->drawTooltip(null,__('toolTipSupplierOrganizationFrequenza'),$type='HELP')));
+					
+	    echo $this->Form->input('descrizione',  array('value' => $results['Supplier']['descrizione'], 'label'=>'Descrizione breve', 'type' => 'text', 'after' => '<br /><img width="150" class="print_screen" id="print_screen_supplier_nota" src="'.Configure::read('App.img.cake').'/print_screen_supplier_nota.jpg" title="" border="0" />'));
  echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-1">';
-                                    echo $this->Form->input('indirizzo', array('required' => false, 'value' => $results['Supplier']['indirizzo']));
-                                    echo $this->Form->input('localita', array('value' => $results['Supplier']['localita']));
-									
-									echo '<div class="row">';
-									echo '<div class="col-md-4">';
-									echo $this->Form->input('cap',array('value' => $results['Supplier']['cap']));
-									echo '</div>';
-									echo '<div class="col-md-2">';
-									echo $this->Form->input('provincia',array('value' => $results['Supplier']['provincia']));
-									echo '</div>';
-									echo '</div>';
+            echo $this->Form->input('indirizzo', array('required' => false, 'value' => $results['Supplier']['indirizzo']));
+            echo $this->Form->input('localita', array('value' => $results['Supplier']['localita']));
 						
-                                    echo $this->Form->input('telefono', array('value' => $results['Supplier']['telefono']));
-                                    echo $this->Form->input('telefono2', array('value' => $results['Supplier']['telefono2']));
-                                    echo $this->Form->input('fax', array('value' => $results['Supplier']['fax']));
-                                    echo $this->Form->input('mail', array('value' => $results['Supplier']['mail']));
-                                    echo $this->Form->input('www', array('value' => $results['Supplier']['www']));
+						echo '<div class="row">';
+						echo '<div class="col-md-4">';
+						echo $this->Form->input('cap',array('value' => $results['Supplier']['cap']));
+						echo '</div>';
+						echo '<div class="col-md-2">';
+						echo $this->Form->input('provincia',array('value' => $results['Supplier']['provincia']));
+						echo '</div>';
+						echo '</div>';
+			
+            echo $this->Form->input('telefono', array('value' => $results['Supplier']['telefono']));
+            echo $this->Form->input('telefono2', array('value' => $results['Supplier']['telefono2']));
+            echo $this->Form->input('fax', array('value' => $results['Supplier']['fax']));
+            echo $this->Form->input('mail', array('value' => $results['Supplier']['mail']));
+            echo $this->Form->input('www', array('value' => $results['Supplier']['www']));
  echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-2">';
-                                    //echo $this->Form->input('nota', array('value' => $results['Supplier']['nota']));
-                                    echo $this->Form->input('cf', array('value' => $results['Supplier']['cf']));
-                                    echo $this->Form->input('piva', array('value' => $results['Supplier']['piva']));
-                                    echo $this->Form->input('conto', array('value' => $results['Supplier']['conto']));
-                                    echo $this->Form->input('delivery_type_id', array('value' => $results['Supplier']['delivery_type_id'], 'options' => $suppliersDeliveriesType, 'default' => 1, 'label' => __('SuppliersDeliveriesTypes'), 'escape' => false));
+            //echo $this->Form->input('nota', array('value' => $results['Supplier']['nota']));
+            echo $this->Form->input('cf', array('value' => $results['Supplier']['cf']));
+            echo $this->Form->input('piva', array('value' => $results['Supplier']['piva']));
+            echo $this->Form->input('conto', array('value' => $results['Supplier']['conto']));
+            echo $this->Form->input('delivery_type_id', array('value' => $results['Supplier']['delivery_type_id'], 'options' => $suppliersDeliveriesType, 'default' => 1, 'label' => __('SuppliersDeliveriesTypes'), 'escape' => false));
  echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-3">';
                         if(!empty($results['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$results['Supplier']['img1'])) {
@@ -85,24 +85,47 @@ if($results['SuppliersOrganization']['owner_articles']=='SUPPLIER')
 	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => "Gli articoli sono gestiti dal produttore"));
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-5">';
-            echo $this->App->drawFormRadio('SuppliersOrganization','mail_order_open',array('options' => $mail_order_open, 'value' => $results['SuppliersOrganization']['mail_order_open'], 'label'=>__('MailOrderOpen'), 'required'=>'required',
-                                                                                            'after'=>$this->App->drawTooltip(null,__('toolTipSupplierMailOrderOpen'),$type='HELP')));
 
-			echo $this->App->drawFormRadio('SuppliersOrganization','mail_order_close',array('options' => $mail_order_close, 'value' => $results['SuppliersOrganization']['mail_order_close'], 'label'=>__('MailOrderClose'), 'required'=>'required',
-                                                                                                'after'=>$this->App->drawTooltip(null,__('toolTipSupplierMailOrderClose'),$type='HELP')));
-			foreach($prod_gas_supplier_owner_articles as $key => $value)
-				$prod_gas_supplier_owner_articles[$key] = $this->App->traslateEnum('ProdGasSupplier'.$value);
-			echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_owner_articles',array('options' => $prod_gas_supplier_owner_articles, 'value' => $results['SuppliersOrganization']['owner_articles'], 'label'=>__('prod_gas_supplier_owner_articles'), 'disabled' => 'disabled',
-																							'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierOwnerArticles'),$type='HELP')));
-																							
-			echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_view_orders',array('options' => $prod_gas_supplier_can_view_orders, 'value' => $results['SuppliersOrganization']['can_view_orders'], 'label'=>__('prod_gas_supplier_can_view_orders'), 'required'=>'required',
-																							'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanViewOrders'),$type='HELP')));
-																							
-			echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_view_orders_users',array('options' => $prod_gas_supplier_can_view_orders_users, 'value' => $results['SuppliersOrganization']['can_view_orders_users'], 'label'=>__('prod_gas_supplier_can_view_orders_users'), 'required'=>'required',
-																							'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanViewOrdersUsers'),$type='HELP')));
+	/*
+	 * Invia mail all'apertura dell'ordine 
+	 */
+        echo $this->App->drawFormRadio('SuppliersOrganization','mail_order_open',array('options' => $mail_order_open, 'value' => $results['SuppliersOrganization']['mail_order_open'], 'label'=>__('MailOrderOpen'), 'required'=>'required', 
+            	'after'=>$this->App->drawTooltip(null,__('toolTipSupplierMailOrderOpen'),$type='HELP')));
 
-			echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_promotions',array('options' => $prod_gas_supplier_can_view_orders_users, 'value' => $results['SuppliersOrganization']['can_promotions'], 'label'=>__('prod_gas_supplier_can_promotions'), 'required'=>'required',
-																							'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanPromotions'),$type='HELP')));
+	/*
+	 * Invia mail alla chiusura dell'ordine 
+	 */
+	echo $this->App->drawFormRadio('SuppliersOrganization','mail_order_close',array('options' => $mail_order_close, 'value' => $results['SuppliersOrganization']['mail_order_close'], 'label'=>__('MailOrderClose'), 'required'=>'required', 
+		'after'=>$this->App->drawTooltip(null,__('toolTipSupplierMailOrderClose'),$type='HELP')));
+	
+	/*
+	 * Gestore del listino degli articoli
+	 */
+	foreach($prod_gas_supplier_owner_articles as $key => $value)
+		$prod_gas_supplier_owner_articles[$key] = $this->App->traslateEnum('ProdGasSupplier'.$value);
+
+	echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_owner_articles', ['options' => $prod_gas_supplier_owner_articles, 'value' => $results['SuppliersOrganization']['owner_articles'], 'label'=>__('prod_gas_supplier_owner_articles'), 'disabled' => 'disabled',
+		'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierOwnerArticles'),$type='HELP')]);
+	
+	echo $this->element('boxMsg', ['msg' => __('msg_supplier_owner_articles_stato_T')]);
+
+	/*
+	 * Può vedere gli ordini 
+	 */										
+	echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_view_orders',array('options' => $prod_gas_supplier_can_view_orders, 'value' => $results['SuppliersOrganization']['can_view_orders'], 'label'=>__('prod_gas_supplier_can_view_orders'), 'required'=>'required',
+		'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanViewOrders'),$type='HELP')));
+	
+	/*
+	 * Può vedere gli ordini e i nominativi dei gasisti 
+	 */
+	echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_view_orders_users',array('options' => $prod_gas_supplier_can_view_orders_users, 'value' => $results['SuppliersOrganization']['can_view_orders_users'], 'label'=>__('prod_gas_supplier_can_view_orders_users'), 'required'=>'required',
+		'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanViewOrdersUsers'),$type='HELP')));
+
+	/*
+	 * Può presentare promozioni al G.A.S. 
+	 */
+	echo $this->App->drawFormRadio('SuppliersOrganization','prod_gas_supplier_can_promotions',array('options' => $prod_gas_supplier_can_view_orders_users, 'value' => $results['SuppliersOrganization']['can_promotions'], 'label'=>__('prod_gas_supplier_can_promotions'), 'required'=>'required', 
+		'after'=>$this->App->drawTooltip(null,__('toolTipProdGasSupplierCanPromotions'),$type='HELP')));
 
 echo '</div>';
 echo '</div>'; // tab-content
