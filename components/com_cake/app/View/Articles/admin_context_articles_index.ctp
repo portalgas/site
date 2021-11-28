@@ -193,8 +193,12 @@ echo '</h2>';
 		
 		/*
 	     * ctrl se l'articolo e' presente tra gli articoli da ordinare
-		 */
+	     *
+	     * disabilitata la funzione di abilita / disabilita da qui: si puo' fare da edit perche' ho i diversi controlli
+	     * se e' a stato = N non e' + visibile a front-end ma anche stampe / rich pagamento etc 
 		echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="stato" class="articleUpdate stato_'.$this->App->traslateEnum($result['Article']['stato']).'" title="'.__('toolTipStato').'" ></td>';
+		 */
+		echo '<td class="articleUpdate stato_'.$this->App->traslateEnum($result['Article']['stato']).'" title="'.__('toolTipStato').'" ></td>';
 
 		echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="flag_presente_articlesorders" class="articleUpdate ';
 		if($result['Article']['flag_presente_articlesorders']=='Y') 

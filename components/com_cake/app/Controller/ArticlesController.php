@@ -849,7 +849,9 @@ class ArticlesController extends AppController {
 	 */
 	private function _admin_edit($context, $id, $article_organization_id) {
 		
-		self::d([$id, $article_organization_id], false);
+		$debug = false;
+		
+		if($debug) debug('article_id '.$id.' article_organization_id '.$article_organization_id);
 		
 		if (!$this->Article->exists($article_organization_id, $id)) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -871,9 +873,26 @@ class ArticlesController extends AppController {
 		$this->set('resultsAssociateArticlesOrder', $resultsAssociateArticlesOrder);
 
 		/*
- 		 * ctrl gli eventuali acquisti gia' effettuati
+ 		 * ctrl gli eventuali acquisti gia' effettuati, se true non posso cancellarlo
+ 		 * idem in delete()
 		 */
-		$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $id);
+		if($debug) debug('Organization.type '.$this->user->organization['Organization']['type']);
+		switch($this->user->organization['Organization']['type']) {
+			case 'PROD':
+			break;
+			case 'PRODGAS':        
+		        App::import('Model', 'ProdGasArticle');
+		        $ProdGasArticle = new ProdGasArticle;
+	        
+				$isArticleInCart = $ProdGasArticle->isArticleInCart($this->user, $article_organization_id, $id);
+			break;
+			case 'GAS':
+				$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $id);
+			break;
+			default:
+				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
+			break;
+		}
 		$this->set('isArticleInCart', $isArticleInCart);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -1188,7 +1207,7 @@ class ArticlesController extends AppController {
 	
 		$debug = false;
 		
-		self::d([$id, $article_organization_id], $debug);
+		if($debug) debug('article_id '.$id.' article_organization_id '.$article_organization_id);
 		
 		if (!$this->Article->exists($article_organization_id, $id)) {
 			$this->Session->setFlash(__('msg_error_params'));
@@ -1197,7 +1216,9 @@ class ArticlesController extends AppController {
 
 		/*
  		 * ctrl gli eventuali acquisti gia' effettuati, se true non posso cancellarlo
+ 		 * idem in edit() per Article.stato
 		 */
+		if($debug) debug('Organization.type '.$this->user->organization['Organization']['type']);
 		switch($this->user->organization['Organization']['type']) {
 			case 'PROD':
 			break;

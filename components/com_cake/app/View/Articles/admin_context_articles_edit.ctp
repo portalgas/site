@@ -61,8 +61,8 @@ else
 						
 					/*
 					 * stato
-					 */
-					echo $this->element('legendaArticleEditStato', array('context' => 'article', 'results' => $this->request->data, 'resultsAssociateArticlesOrder' => $resultsAssociateArticlesOrder, 'isArticleInCart' => $isArticleInCart, 'isUserPermissionArticlesOrder' => $this->App->isUserPermissionArticlesOrder($user)));
+					 */				
+					echo $this->element('legendaArticleEditStato', ['context' => 'article', 'results' => $this->request->data, 'resultsAssociateArticlesOrder' => $resultsAssociateArticlesOrder, 'isArticleInCart' => $isArticleInCart, 'isUserPermissionArticlesOrder' => $this->App->isUserPermissionArticlesOrder($user)]);
 
 					$options = array('options' => $stato, 'value'=>$this->Form->value('Article.stato'), 'label'=>__('Stato'), 'tabindex'=>($i+1), 'required'=>'false');
 					echo $this->App->drawFormRadio('Article','stato', $options);

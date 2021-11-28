@@ -4471,7 +4471,7 @@ msgstr "Devi rinnovare l'iscrizione al tuo G.A.S."
 # tooltip
 #
 msgid "toolTipStato"
-msgstr "Se è valorizzato a 'No' non sarà visibile nel front-end"
+msgstr "Se è valorizzato a 'No' non sarà visibile"
 
 msgid "toolTipStatoSupplier"
 msgstr "Se 'No' non sarà visibile nel front-end, se 'Temporaneo' è stato inserito dal referente"
