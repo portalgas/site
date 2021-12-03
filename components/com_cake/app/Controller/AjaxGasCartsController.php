@@ -407,7 +407,7 @@ class AjaxGasCartsController extends AppController {
     	}
     
     	$resultsJS = $this->AjaxGasCart->managementCart($this->user, $order_id, $article_organization_id, $article_id, $user_id, $qta, $backOffice=true);
-    	
+
     	/*
     	 * gestione JavaScript
     	 * */
@@ -472,25 +472,55 @@ class AjaxGasCartsController extends AppController {
 	   	*/
     	App::import('Model', 'ArticlesOrder');
     	$ArticlesOrder = new ArticlesOrder;
-    		
+    	
+    	$conditions = [];	
 	   	$conditions = ['Cart.user_id' => $user_id,
 						'Cart.order_id' => $order_id,
 						'Cart.article_organization_id' => $article_organization_id,
 						'Cart.article_id' => $article_id];
 	   	$results = $ArticlesOrder->getArticoliDellUtenteInOrdine($this->user ,$conditions);
-	   	$results = current($results);
 
-	   	/*
-	   	 * oggetto $order formattato per $this->RowEcomm->drawRowEcomm...
-	   	 * */
-	   	$order = ['Order' => $results['Order'],
-				   'ArticlesOrder' => $results['ArticlesOrder'],
-				   'Article' => $results['Article'],
-				   'Cart' => $results['Cart'],
-				   'User' => $results['User']];
-    	
-    	self::d($order, false);
-    	
+	   	if(!empty($results)) {
+
+		   	$results = current($results);
+
+		   	/*
+		   	 * oggetto $order formattato per $this->RowEcomm->drawRowEcomm...
+		   	 * */
+		   	$order = ['Order' => $results['Order'],
+					   'ArticlesOrder' => $results['ArticlesOrder'],
+					   'Article' => $results['Article'],
+					   'Cart' => $results['Cart'],
+					   'User' => $results['User']];
+	   	}
+	   	else {
+	   		/*
+	   		 * capita se l'acquisto e' nuovo ma non e' stato effettuato per limiti di cassa
+	   		 */
+	   		$conditions = ['ArticlesOrder.order_id' => $order_id,
+	   					   'Article.id' => $article_id,
+	   					   'Article.article_organization_id' => $article_organization_id];
+			$results = $ArticlesOrder->getArticlesOrdersInOrder($this->user ,$conditions);
+
+			$results = current($results);
+
+			App::import('Model', 'Order');
+			$Order = new Order;
+
+			$options = [];
+			$options['conditions'] = ['Order.id' => $order_id];
+			$options['recursive'] = -1;
+			$orderResults = $Order->find('first', $options);
+
+		   	$order = ['Order' => $orderResults['Order'],
+					   'ArticlesOrder' => $results['ArticlesOrder'],
+					   'Article' => $results['Article'],
+					   'Cart' => [],
+					   'User' => []];			
+	   	} // end if(!empty($results))
+		
+		// debug($order);   
+
     	return $order;
     }
 }  

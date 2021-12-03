@@ -698,7 +698,7 @@ class RowEcommHelper extends AppHelper {
 	public function drawBackOfficeReportUsers($user, $numArticlesOrder, $result, $permissions, $options=[]) {
 	
 		$rowId = $this->_getRowId($numArticlesOrder, $result);
-//debug($user->organization['Organization']);		
+		// debug($user->organization['Organization']);		
 		$tmp = "";
 		
 		$k=0;
