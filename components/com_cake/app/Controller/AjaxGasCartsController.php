@@ -386,6 +386,7 @@ class AjaxGasCartsController extends AppController {
      * richiamata da ecommRows.js back-office
      * reportOptions 		   report-users-cart (ALL oppure $user_id) report-users-all report-articles-details
      * reportOptionsSub     se report-users-cart = ALL 
+     * user_id utente della transazione 
      */
     public function admin_managementCart($rowId, $order_id, $article_organization_id, $article_id, $user_id=0, $qta=0, $reportOptions, $reportOptionsSub=null) {
    	 
@@ -394,6 +395,17 @@ class AjaxGasCartsController extends AppController {
     		$this->myRedirect(Configure::read('routes_msg_exclamation'));
     	}
 
+    	/*
+    	 * ridefinisco $this->user per i controlli dei limiti di cassa 
+    	 * se non prende quelli del referente che sta operando
+    	 */ 
+    	$old_user_id = 0;
+    	if(!empty($user_id)) {
+    		$old_user_id = $this->user->id;
+    		$this->user->id = $user_id;
+    		$this->user = $this->Users->setUserCash($this->user);
+    	}
+    
     	$resultsJS = $this->AjaxGasCart->managementCart($this->user, $order_id, $article_organization_id, $article_id, $user_id, $qta, $backOffice=true);
     	
     	/*
@@ -440,6 +452,14 @@ class AjaxGasCartsController extends AppController {
     	else 
     	if($reportOptions=='report-users-all')
     		$this->render('/Layouts/AjaxGas/rowecomm_backoffice_report_users');	 
+
+    	/*
+    	 * ridefinisco $this->user con i parametri del referente che sta operando
+    	 */ 
+    	if(!empty($old_user_id)) {
+    		$this->user->id = $old_user_id;
+    		$this->user = $this->Users->setUserCash($this->user);
+    	} 	
     }   
     
     /*
@@ -450,7 +470,9 @@ class AjaxGasCartsController extends AppController {
     	/*
 	   	 * rileggo la riga dal database aggiornata ([Order] [Article] [ArticlesOrder] [Cart] [User])
 	   	*/
-    	App::import('Model', 'ArticlesOrder');    	$ArticlesOrder = new ArticlesOrder;    		
+    	App::import('Model', 'ArticlesOrder');
+    	$ArticlesOrder = new ArticlesOrder;
+    		
 	   	$conditions = ['Cart.user_id' => $user_id,
 						'Cart.order_id' => $order_id,
 						'Cart.article_organization_id' => $article_organization_id,
