@@ -83,10 +83,11 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
             $options['conditions'] += ['ArticlesOrder.article_id' => $conditions['Article.id']];
         if (isset($conditions['Article.article_organization_id']))
             $options['conditions'] += ['ArticlesOrder.article_organization_id' => $conditions['Article.article_organization_id']];
-        if (isset($conditions['ArticlesOrder.id']))
+        if (isset($conditions['ArticlesOrder.order_id']))
             $options['conditions'] += ['ArticlesOrder.order_id' => $conditions['ArticlesOrder.order_id']];
         if (isset($conditions['Order.id']))
             $options['conditions'] += ['ArticlesOrder.order_id' => $conditions['Order.id']];
+        // debug($options['conditions']);
         $options['recursive'] = 1;
         $options['order'] = $order;
         $results = $this->find('all', $options);
