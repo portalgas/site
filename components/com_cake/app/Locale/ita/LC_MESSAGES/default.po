@@ -3314,10 +3314,10 @@ msgid "HasFieldArticleAlertToQta"
 msgstr "Ha il campo AVVISA RAGGIUNTA LA QTA per gli articoli"
 
 msgid "HasFieldPaymentPos"
-msgstr "Ha il campo importo POS"
+msgstr "Ha il campo importo POS / Satispay"
 
 msgid "Payment Pos"
-msgstr "Importo POS"
+msgstr "Importo POS / Satispay"
 
 msgid "payContatto"
 msgstr "Nominativo al quale sarà inviato il documento di pagamento"
@@ -3539,7 +3539,7 @@ msgid "to_delivery_cassiere_users_all_split"
 msgstr "Documenti di tutti gli ordini della consegna diviso per utente (per pagamento dell'utente): per <b>ogni utente</b> sarà creato un <b>documento</b>"
 
 msgid "to_cassiere_pos"
-msgstr "Documento con il prospetto di tutti le <b>commissioni</b> POS"
+msgstr "Documento con il prospetto di tutti le <b>commissioni</b> POS / Satispay"
 
 msgid "to_delivery_cassiere_user_one"
 msgstr "Documento di tutti gli ordini della consegna dell'utente (per pagamento dell'utente)"
