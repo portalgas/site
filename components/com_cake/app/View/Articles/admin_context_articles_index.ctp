@@ -33,10 +33,10 @@ echo '</h2>';
 		echo '<fieldset class="filter">';
 			echo '<legend>'.__('Filter Articles').'</legend>';
 			
-				if(!empty($FilterArticleOrderId)) {
+				if(!empty($FilterArticleOrderById)) {
 					echo '<div class="row">';
 					echo '<div class="col-md-12">';
-					echo $this->Form->input('order_id',array('label' => '&nbsp;', 'class' => 'form-control', 'empty' => Configure::read('option.empty'), 'name'=>'FilterArticleOrderId' ,'default' => $FilterArticleOrderId));
+					echo $this->Form->input('order_id',array('label' => '&nbsp;', 'class' => 'form-control', 'empty' => Configure::read('option.empty'), 'name'=>'FilterArticleOrderById' ,'default' => $FilterArticleOrderById));
 					echo '</div>';
 					echo '</div>';
 				}	
@@ -86,7 +86,7 @@ echo '</h2>';
 				echo $this->Form->input('um',array('label' => __('Um'), 'class' => 'form-control', 'options' => $um,'name'=>'FilterArticleUm','empty'=>'-----','default'=>$FilterArticleUm,'escape' => false)); 
 				echo '</div>';			
 				echo '<div class="col-md-2">';
-				echo $this->Form->input('stato',array('label' => __('Stato'), 'class' => 'form-control', 'options' => $stato,'name'=>'FilterArticleStato','default'=>$FilterArticleStato,'escape' => false)); 
+				echo $this->Form->input('stato', ['label' => __('Stato'), 'class' => 'form-control', 'options' => $stato, 'name' => 'FilterArticleStato', 'default' => $FilterArticleStato, 'escape' => false]); 
 				echo '</div>';	
 				echo '</div>';	
 				
@@ -96,10 +96,13 @@ echo '</h2>';
 									   Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteContextArticlesArticles_name&format=notmpl',
 										array('label' => 'Nome', 'class' => 'form-control', 'name'=>'FilterArticleName','value'=>$FilterArticleName,'escape' => false));
 				echo '</div>';
-				echo '<div class="col-md-2">';	
+				echo '<div class="col-md-2">';
+				echo $this->Form->input('orderby', ['label' => __('Sort'), 'class' => 'form-control', 'options' => $orderbys, 'name' => 'FilterArticleOrderBy', 'default' => $FilterArticleOrderBy, 'escape' => false]); 
+				echo '</div>';					
+				echo '<div class="col-md-1">';	
 				echo $this->Form->reset('Reset', array('value' => 'Reimposta','class' => 'reset')); 
 				echo '</div>';	
-				echo '<div class="col-md-2">';	
+				echo '<div class="col-md-1">';	
 				echo $this->Form->end(['label' => __('Filter'), 'class' => 'filter', 'div' => ['class' => 'submit filter', 'style' => 'display:none']]); 
 				echo '</div>';		
 				echo '</div>';

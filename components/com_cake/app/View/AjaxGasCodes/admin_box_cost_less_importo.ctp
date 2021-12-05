@@ -3,16 +3,21 @@ if($results['Order']['cost_less']>0) {
 	/*
 	 * update 
 	 */
-	$cost_less = number_format($results['Order']['cost_less'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));	?>
+	$cost_less = number_format($results['Order']['cost_less'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+	?>
 	 <div class="row">
-		<div class="col-md-6 form-inline">
+		<div class="col-md-4 form-inline">
+			<label class="control-label" for="tot_importo"><?php echo __('Importo totale ordine');?></label>
+			<input type="text" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>	
+		</div>		 	
+		<div class="col-md-4 form-inline">
 			<label class="control-label" for="cost_less"><?php echo __('CostLess');?></label>
 			<input type="text" value="<?php echo $cost_less;?>" name="cost_less" id="cost_less" class="importo double form-control" />&nbsp;<span>&euro;</span>			
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="submit"><input id="submitImportoDelete" type="submit" class="buttonBlu" value="<?php echo __('Submit Delete CostLess');?>" /></div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="submit"><input id="submitImportoUpdate" type="submit" value="<?php echo __('Submit Update CostLess');?>" /></div>
 		</div>
  	</div>
@@ -62,13 +67,15 @@ else {
 	$cost_less = '0,00'; 
    ?>
 	  <div class="row">
-		<div class="col-md-6 form-inline">
+		<div class="col-md-4 form-inline">
+			<label class="control-label" for="tot_importo"><?php echo __('Importo totale ordine');?></label>
+			<input type="text" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>		
+		</div>		  	
+		<div class="col-md-4 form-inline">
 			<label for="cost_less"><?php echo __('CostLess');?></label>
 			<input type="text" value="<?php echo $cost_less;?>" name="cost_less" id="cost_less" class="importo double form-control" />&nbsp;<span>&euro;</span>
 		</div>
-		<div class="col-md-3">
-		</div>
-		<div class="col-md-3">
+		<div class="col-md-4">
 			<div class="submit"><input id="submitImportoInsert" type="submit" value="<?php echo __('Submit CostLess');?>" /></div>
 		</div>
 	  </div>

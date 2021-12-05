@@ -8,14 +8,34 @@ class CartsController extends AppController {
    public function beforeFilter() {
    		parent::beforeFilter();
  
-   		$actionWithPermission = ['admin_managementCartsOne', 'admin_managementCartsGroupByUsers', 'admin_validationCarts', 'admin_trasport'];   		if (in_array($this->action, $actionWithPermission)) {
-	   		/*	   		 * ctrl che la consegna sia visibile in backoffice	   		*/	   		if(!empty($this->delivery_id)) {
-	   				   			App::import('Model', 'Delivery');	   			$Delivery = new Delivery;	   			$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
-	   			if($results['Delivery']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}  				   		}
+   		$actionWithPermission = ['admin_managementCartsOne', 'admin_managementCartsGroupByUsers', 'admin_validationCarts', 'admin_trasport'];
+   		if (in_array($this->action, $actionWithPermission)) {
+	   		/*
+	   		 * ctrl che la consegna sia visibile in backoffice
+	   		*/
+	   		if(!empty($this->delivery_id)) {
+	   			
+	   			App::import('Model', 'Delivery');
+	   			$Delivery = new Delivery;
+	   			$results = $Delivery->read($this->delivery_id, $this->user->organization['Organization']['id']);
+	   			if($results['Delivery']['isVisibleBackOffice']=='N') {
+	   				$this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
+	   				$this->myRedirect(Configure::read('routes_msg_stop'));
+	   			}  			
+	   		}
 	
-	   		/*	   		 * ctrl che l'ordine sia visibile in backoffice	   		*/
+	   		/*
+	   		 * ctrl che l'ordine sia visibile in backoffice
+	   		*/
 	   		if(!empty($this->order_id)) {
-	   				   			App::import('Model', 'Order');	   			$Order = new Order;	   			$results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);	   			if($results['Order']['isVisibleBackOffice']=='N') {	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));	   				$this->myRedirect(Configure::read('routes_msg_stop'));	   			}   			
+	   			
+	   			App::import('Model', 'Order');
+	   			$Order = new Order;
+	   			$results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
+	   			if($results['Order']['isVisibleBackOffice']=='N') {
+	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));
+	   				$this->myRedirect(Configure::read('routes_msg_stop'));
+	   			}   			
 	   		}
    		} // end if (in_array($this->action, $actionWithPermission)) 
    }
@@ -55,7 +75,10 @@ class CartsController extends AppController {
    	
    		$debug = false;
    	
-	   	if(empty($this->order_id) || empty($this->delivery_id)) {	   		$this->Session->setFlash(__('msg_error_params'));	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));	   	}
+	   	if(empty($this->order_id) || empty($this->delivery_id)) {
+	   		$this->Session->setFlash(__('msg_error_params'));
+	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
+	   	}
 	   	
         /*
          * D.E.S.
@@ -252,7 +275,10 @@ class CartsController extends AppController {
 
    		$debug = false;
    	
-   		if(empty($this->order_id) || empty($this->delivery_id)) {	   		$this->Session->setFlash(__('msg_error_params'));	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));	   	}
+   		if(empty($this->order_id) || empty($this->delivery_id)) {
+	   		$this->Session->setFlash(__('msg_error_params'));
+	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
+	   	}
 
         /*
          * D.E.S.
@@ -314,7 +340,17 @@ class CartsController extends AppController {
    	   		self::d($this->request->data, $debug); 
    	   		
    	   		if($this->user->organization['Organization']['hasStoreroom']=='Y') {
-   	   			/*   	   			 * ctrl se storeroom esiste   	   			* */   	   			App::import('Model', 'Storeroom');   	   			$Storeroom = new Storeroom;   	   			$storeroomUser = $Storeroom->getStoreroomUser($this->user);   	   			if(empty($storeroomUser)) {   	   				$this->Session->setFlash(__('StoreroomNotFound'));   	   				$this->myRedirect(Configure::read('routes_msg_exclamation'));   	   			} 
+   	   			/*
+   	   			 * ctrl se storeroom esiste
+   	   			* */
+   	   			App::import('Model', 'Storeroom');
+   	   			$Storeroom = new Storeroom;
+   	   			$storeroomUser = $Storeroom->getStoreroomUser($this->user);
+   	   			if(empty($storeroomUser)) {
+   	   				$this->Session->setFlash(__('StoreroomNotFound'));
+   	   				$this->myRedirect(Configure::read('routes_msg_exclamation'));
+   	   			}
+ 
 	   	   		App::import('Model', 'Cart');
 	   	   		$Cart = new Cart;
 				
@@ -374,7 +410,12 @@ class CartsController extends AppController {
 	   	   				
 						self::d($resultsJS, $debug);
 							   	   					   	   				
-	   	   				/*	   	   				 * gestione JavaScript	   	   				* */	   	   				$resultsJS = '<script type="text/javascript">'.sprintf($resultsJS,$rowId=0).'</script>';	   	   				$this->set('resultsJS',$resultsJS);	   	   				
+	   	   				/*
+	   	   				 * gestione JavaScript
+	   	   				* */
+	   	   				$resultsJS = '<script type="text/javascript">'.sprintf($resultsJS,$rowId=0).'</script>';
+	   	   				$this->set('resultsJS',$resultsJS);
+	   	   				
 	   	   			}  	   			
 	   	   		}
 
@@ -410,7 +451,8 @@ class CartsController extends AppController {
 	   		
 			self::d($this->request->data, $debug); 
 			
-	   		App::import('Model', 'AjaxGasCart');	   		$AjaxGasCart = new AjaxGasCart;
+	   		App::import('Model', 'AjaxGasCart');
+	   		$AjaxGasCart = new AjaxGasCart;
 	   		
 	   		App::import('Model', 'SummaryOrder');
 	   		
@@ -451,7 +493,11 @@ class CartsController extends AppController {
 							$resultsJS = $AjaxGasCart->managementCart($this->user, $order_id, $article_organization_id, $article_id, $user_id, $qta, $backOffice=true, $forzare_validazione=true);
 							if($debug) $resultsJS."</pre>";
 							
-							/*							 * gestione JavaScript							* */							$resultsJS = '<script type="text/javascript">'.sprintf($resultsJS,$rowId=0).'</script>';							$this->set('resultsJS',$resultsJS);
+							/*
+							 * gestione JavaScript
+							* */
+							$resultsJS = '<script type="text/javascript">'.sprintf($resultsJS,$rowId=0).'</script>';
+							$this->set('resultsJS',$resultsJS);
 							
 							$tot_modificati++;	
 
@@ -510,19 +556,41 @@ class CartsController extends AppController {
 	   		if(!$debug) $this->myRedirect(['action' => 'validationCarts']);
 	   	} // end if ($this->request->is('post') || $this->request->is('put')) 
 	   	else {
-	   		if(empty($delivery_id) || empty($order_id) || empty($article_organization_id) || empty($article_id)) {	   			$this->Session->setFlash(__('msg_error_params'));	   			$this->myRedirect(Configure::read('routes_msg_exclamation'));	   		}
+	   		if(empty($delivery_id) || empty($order_id) || empty($article_organization_id) || empty($article_id)) {
+	   			$this->Session->setFlash(__('msg_error_params'));
+	   			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+	   		}
 	   	}
 	   			
-		/*		 * estraggo i dati dell'articolo		 */		$results = $this->Cart->getCartToValidate($this->user, $delivery_id, $order_id, $article_organization_id, $article_id);
+		/*
+		 * estraggo i dati dell'articolo
+		 */
+		$results = $this->Cart->getCartToValidate($this->user, $delivery_id, $order_id, $article_organization_id, $article_id);
 		$this->set('articlesOrdesResults',current($results));
-	 		/*		 * stessa chiamata Ajax::admin_view_articles_order_carts simile		*/		
-		App::import('Model', 'Cart');		$Cart = new Cart();			
-		$options = [];		$options['conditions'] = ['Cart.organization_id' => $this->user->organization['Organization']['id'],				'Cart.order_id' => $order_id,
+	 
+		/*
+		 * stessa chiamata Ajax::admin_view_articles_order_carts simile
+		*/		
+		App::import('Model', 'Cart');
+		$Cart = new Cart();
+			
+		$options = [];
+		$options['conditions'] = ['Cart.organization_id' => $this->user->organization['Organization']['id'],
+				'Cart.order_id' => $order_id,
 				'Cart.article_organization_id' => $article_organization_id,
 				'Cart.article_id' => $article_id,
-				'Cart.deleteToReferent' => 'N'];		$options['recursive'] = 1;		$options['order'] = [Configure::read('orderUser')];		$results = $Cart->find('all', $options);		$this->set('results', $results);
+				'Cart.deleteToReferent' => 'N'];
+		$options['recursive'] = 1;
+		$options['order'] = [Configure::read('orderUser')];
+		$results = $Cart->find('all', $options);
+		$this->set('results', $results);
 		
-	   	/*	   	 * tutti i gruppi escluso gli users che hanno gia' effettuato acquisti	   	*/	   	App::import('Model', 'User');	   	$User = new User;	   	
+	   	/*
+	   	 * tutti i gruppi escluso gli users che hanno gia' effettuato acquisti
+	   	*/
+	   	App::import('Model', 'User');
+	   	$User = new User;
+	   	
 		$users = [];
 		if(!empty($results)) {
 			$user_ids_da_escludere = '';
@@ -533,9 +601,11 @@ class CartsController extends AppController {
 					
 				$conditions = [];
 				$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user'),
-							   ['NOT' => ['UserGroupMap.user_id' => $user_ids_da_escludere]]];				$users = $User->getUsersList($this->user, $conditions);
+							   ['NOT' => ['UserGroupMap.user_id' => $user_ids_da_escludere]]];
+				$users = $User->getUsersList($this->user, $conditions);
 			}
-		}		$this->set('users',$users);	   	
+		}
+		$this->set('users',$users);	   	
    }
 	
    public function admin_view($id = null) {
@@ -611,10 +681,13 @@ class CartsController extends AppController {
 	  *  actionSubmit = submitElabora		  salva per ogni utente la % di trasporto e aggiorna SummaryOrder
 	 */
     public function admin_trasport() {
-   
-   		$debug = false;
-   		
-	   	if(empty($this->order_id) || empty($this->delivery_id)) {	   		$this->Session->setFlash(__('msg_error_params'));	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));	   	}
+
+		$debug = false;
+		
+   	if(empty($this->order_id) || empty($this->delivery_id)) {
+   		$this->Session->setFlash(__('msg_error_params'));
+   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
+   	}
 	 
         /*
          * D.E.S.
@@ -632,37 +705,37 @@ class CartsController extends AppController {
 			$this->myRedirect(['controller' => 'Orders', 'action' => 'home', $this->order_id]);
 		}
 			   	
-	   	/*
-	   	 * ctrl configurazione Organization
-	   	*/
-	   	if($this->user->organization['Organization']['hasTrasport']=='N') {
-	   		$this->Session->setFlash(__('msg_not_organization_config'));
-	   		$this->myRedirect(Configure::read('routes_msg_stop'));
-	   	}
-	   	 
-	   	App::import('Model', 'Order');
-	   	$Order = new Order;
+   	/*
+   	 * ctrl configurazione Organization
+   	*/
+   	if($this->user->organization['Organization']['hasTrasport']=='N') {
+   		$this->Session->setFlash(__('msg_not_organization_config'));
+   		$this->myRedirect(Configure::read('routes_msg_stop'));
+   	}
+   	 
+   	App::import('Model', 'Order');
+   	$Order = new Order;
 
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
 								  'Order.id' => $this->order_id];
 		$options['recursive'] = -1;
 		$orderResults = $Order->find('first', $options);
-	   	if (empty($orderResults)) {
-	   		$this->Session->setFlash(__('msg_error_params'));
-	   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
-	   	}   	 
+   	if (empty($orderResults)) {
+   		$this->Session->setFlash(__('msg_error_params'));
+   		$this->myRedirect(Configure::read('routes_msg_exclamation'));
+   	}   	 
 	   	   	
-	   	/* ctrl ACL */
-	   	if($this->isSuperReferente()) {
-	   		 
-	   	}
-	   	else { 
-	   		if(!$this->isReferentGeneric() || !$Order->aclReferenteSupplierOrganization($this->user, $this->order_id)) {
-	   			$this->Session->setFlash(__('msg_not_permission'));
-	   			$this->myRedirect(Configure::read('routes_msg_stop'));
-	   		}
-	   	}
+   	/* ctrl ACL */
+   	if($this->isSuperReferente()) {
+   		 
+   	}
+   	else { 
+   		if(!$this->isReferentGeneric() || !$Order->aclReferenteSupplierOrganization($this->user, $this->order_id)) {
+   			$this->Session->setFlash(__('msg_not_permission'));
+   			$this->myRedirect(Configure::read('routes_msg_stop'));
+   		}
+   	}
    	    
   	 	if ($this->request->is('post') || $this->request->is('put')) {
 
@@ -684,7 +757,7 @@ class CartsController extends AppController {
 	    /*
 	     * legenda profilata
 	    */
-    	$group_id = $this->ActionsOrder->getGroupIdToReferente($this->user);
+    	 $group_id = $this->ActionsOrder->getGroupIdToReferente($this->user);
 	    $orderStatesToLegenda = $this->ActionsOrder->getOrderStatesToLegenda($this->user, $group_id);
 	    $this->set('orderStatesToLegenda', $orderStatesToLegenda);
    }
