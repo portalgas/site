@@ -43,6 +43,12 @@ msgstr "A-Z"
 msgid "OrderDesc"
 msgstr "Z-A"
 
+msgid "OrderNumAsc"
+msgstr "1-9"
+
+msgid "OrderNumDesc"
+msgstr "9-1"
+
 #
 # A C T I O N S
 #

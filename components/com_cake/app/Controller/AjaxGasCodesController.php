@@ -847,6 +847,12 @@ class AjaxGasCodesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
+        if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
+            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
+            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
+            $results['Order']['tot_importo'] = $tot_importo;
+        }
+
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -869,6 +875,11 @@ class AjaxGasCodesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
+        if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
+            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
+            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
+            $results['Order']['tot_importo'] = $tot_importo;
+        }        
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -889,6 +900,11 @@ class AjaxGasCodesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
+        if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
+            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
+            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
+            $results['Order']['tot_importo'] = $tot_importo;
+        }        
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
