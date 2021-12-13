@@ -214,8 +214,13 @@ class PagesController extends AppController {
                 $SuppliersOrganizationsReferentResults = $SuppliersOrganizationsReferent->getSuppliersOrganizationByReferent($this->user, $this->user->id);
 
                 $ids = '';
-                foreach ($SuppliersOrganizationsReferentResults as $SuppliersOrganizationsReferentResult)
-                    $ids .= $SuppliersOrganizationsReferentResult['SuppliersOrganization']['id'] . ',';
+                foreach ($SuppliersOrganizationsReferentResults as $SuppliersOrganizationsReferentResult) {
+                    /*
+                     * potrebbe essere un referente di un produttore che non esiste +
+                     */
+                    if(!empty($SuppliersOrganizationsReferentResult['SuppliersOrganization']['id']))
+                        $ids .= $SuppliersOrganizationsReferentResult['SuppliersOrganization']['id'] . ',';
+                }
 
                 if (!empty($ids)) {
                     $ids = substr($ids, 0, (strlen($ids) - 1));
