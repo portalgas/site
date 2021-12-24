@@ -251,18 +251,27 @@ class Cassiere extends AppModel {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 			
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-														'Order.isVisibleBackOffice != ' => 'N',
-														'(Order.state_code = \'PROCESSED-ON-DELIVERY\' OR Order.state_code = \'WAIT-PROCESSED-TESORIERE\' OR Order.state_code = \'PROCESSED-TESORIERE\' OR Order.state_code = \'TO-PAYMENT\' OR Order.state_code = \'CLOSE\')');
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
+		$Delivery->hasMany['Order']['conditions'] = [
+			'Order.organization_id' => $user->organization['Organization']['id'],
+			'Order.isVisibleBackOffice != ' => 'N',
+			"(Order.state_code = 'PROCESSED-ON-DELIVERY' OR 
+			  Order.state_code = 'WAIT-PROCESSED-TESORIERE' OR 
+			  Order.state_code = 'PROCESSED-TESORIERE' OR 
+			  Order.state_code = 'TO-PAYMENT' OR 
+			  Order.state_code = 'CLOSE')"];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
+		
 		$options = [];
-		$options['conditions'] = array('Delivery.id' => $delivery_id,
-										'Delivery.organization_id' => (int)$user->organization['Organization']['id'],
-										'Delivery.sys'=> 'N',
-										'Delivery.isVisibleBackOffice' => 'Y');
+		$options['conditions'] = [
+				'Delivery.id' => $delivery_id,
+				'Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+				'Delivery.sys'=> 'N',
+				'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
-		
+		// self::dd($options, $debug);
+		// self::dd($results, $debug);
+
 		$results = $this->_lists_users_delivery($user, $delivery_id, $results, $debug);
 		return $results;
 	}
@@ -275,15 +284,17 @@ class Cassiere extends AppModel {
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 	
-		$Delivery->hasMany['Order']['conditions'] = array('Order.organization_id' => $user->organization['Organization']['id'],
-														'Order.isVisibleBackOffice != ' => 'N',
-														'Order.state_code' => 'PROCESSED-ON-DELIVERY');
-		$Delivery->hasMany['Order']['order'] = array('Order.data_inizio', 'Order.data_fine');
+		$Delivery->hasMany['Order']['conditions'] = [
+			'Order.organization_id' => $user->organization['Organization']['id'],
+			'Order.isVisibleBackOffice != ' => 'N',
+			'Order.state_code' => 'PROCESSED-ON-DELIVERY'];
+		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		$options = [];
-		$options['conditions'] = array('Delivery.id' => $delivery_id,
-										'Delivery.organization_id' => (int)$user->organization['Organization']['id'],
-										'Delivery.sys'=> 'N',
-										'Delivery.isVisibleBackOffice' => 'Y');
+		$options['conditions'] = [
+			'Delivery.id' => $delivery_id,
+			'Delivery.organization_id' => (int)$user->organization['Organization']['id'],
+			'Delivery.sys'=> 'N',
+							'Delivery.isVisibleBackOffice' => 'Y'];
 		$options['recursive'] = 1;
 		$results = $Delivery->find('first', $options);
 		
@@ -293,11 +304,16 @@ class Cassiere extends AppModel {
 
 	private function _lists_users_delivery($user, $delivery_id, $results, $debug) {
 
-		$order_ids='';
+		$order_ids = '';
 		$newResults = [];
-		 
-		foreach ($results['Order'] as $numOrder => $order) 
-			$order_ids .= $order['Order']['id'].',';
+
+		foreach ($results['Order'] as $numOrder => $order) {
+			if(isset($order['Order']['id']))
+				$order_ids .= $order['Order']['id'].',';
+			else
+				$order_ids .= $order['id'].',';
+		}
+
 		if(!empty($order_ids)) {
 			$order_ids = substr($order_ids, 0, strlen($order_ids)-1);
 			
@@ -315,6 +331,7 @@ class Cassiere extends AppModel {
 						User.organization_id = ".(int)$user->organization['Organization']['id']." 
 						AND SummaryOrder.organization_id = ".(int)$user->organization['Organization']['id']." 
 						AND SummaryOrder.user_id = User.id
+						AND SummaryOrder.order_id IN (".$order_ids.")
 						AND User.block = 0 ";  // 0 attivo
 			$sql .= " GROUP BY User.id, User.name, User.username, User.email, Cash.importo, Cash.nota    
 					  ORDER BY ".$orderBy;
@@ -341,12 +358,8 @@ class Cassiere extends AppModel {
 			
 			}
 		}		
-		/*
-		echo "<pre>";
-		print_r($newResults);
-		echo "</pre>";
-		*/
+		self::d($sql, $debug);	
+
 		return $newResults;
-	}
-			
+	}		
 }
