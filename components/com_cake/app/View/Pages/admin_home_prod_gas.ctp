@@ -44,7 +44,25 @@
 					</div>	
 				</a>
 			</div>
-		</div>	
+		</div>
+		<?php
+		if(isset($user->organization['Organization']['hasArticlesGdxp']) && 
+		  $user->organization['Organization']['hasArticlesGdxp']=='Y') {
+		?>
+				<div class="col-xs-12 col-sm-4 col-md-3">
+					<div class="box-container">
+						<a href="/administrator/index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gdxps&a_to=articlesSendIndex">
+							<div class="box">
+								<span class="fa fa-3x fa-send"></span>
+								<h4>Trasmetti listino</h4>
+								<p>a <a target="_blank" href="https://www.economiasolidale.net">www.economiasolidale.net</a></p>
+							</div>	
+						</a>
+					</div>
+				</div>
+		<?php
+		  }
+		?>			
 		<div class="col-xs-12 col-sm-4 col-md-3">
 			<div class="box-container">
 				<a target="_blank" href="https://www.facebook.com/portalgas.it">
@@ -67,6 +85,17 @@
 				</a>
 			</div>
 		</div>
-		
+		<div class="col-xs-12 col-sm-4 col-md-3">
+			<div class="box-container">
+				<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">
+					<div class="box">
+						<span class="fa fa-3x fa-youtube"></span>
+						<h4>YouTube</h4>
+						<p>I video tutorial sul canale YouTube</p>
+					</div>	
+				</a>
+			</div>
+		</div>
+
 	</div>
 </div>
