@@ -43,10 +43,11 @@ class ConnectsController extends AppController {
    			return false;
 
 		$user_id = $this->user->id;
-		$user_organization_id =  $this->_getOrganizationById($this->user->id);
+		$user_organization_id =  $this->_getOrganizationById($this->user);
 		$organization_id = $this->user->organization['Organization']['id']; // gas scelto o gas dello user
 		
-		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];
+		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];debug($user);
+		
 		if($debug) debug($user);
 		$user = serialize($user);
 		
@@ -99,7 +100,7 @@ class ConnectsController extends AppController {
     * $this->user ha organization_id ma e' gestito a frontend
     * $this->user->organization['Organization'] e' l'organizzazione corrente
     */
-    private function _getOrganizationById($user_id) {
+    private function _getOrganizationById($user) {
 		
 		$organization_id = 0;
 
@@ -107,15 +108,21 @@ class ConnectsController extends AppController {
         $User = new User;
 
 		$options = [];
-		$options['conditions'] = ['User.id' => $user_id];
+		$options['conditions'] = ['User.id' => $user->id];
 		$options['fields'] = ['User.organization_id'];
 		$options['recursive'] = -1;
 		$usersResults = $User->find('first', $options);
 		// debug($options);
 		// debug($usersResults);
-		if(!empty($usersResults))
-			$organization_id = $usersResults['User']['organization_id'];
-
+		if(!empty($usersResults)) {
+			/*if(empty($usersResults['User']['organization_id'])) // root
+				$organization_id = $user->organization['Organization']['id'];
+			else*/
+				$organization_id = $usersResults['User']['organization_id'];
+		}
+		/*else
+			$organization_id = $user->organization['Organization']['id'];
+*/
 		return $organization_id;
     }	
 }
