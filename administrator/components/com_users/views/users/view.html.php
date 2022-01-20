@@ -68,7 +68,8 @@ class UsersViewUsers extends JViewLegacy
 		}
 
 		if ($canDo->get('core.delete')) {
-			JToolBarHelper::deleteList('', 'users.delete');
+			$msg = "Eliminando il gasista cancellerai anche tutti i suoi acquisti, sei sicuro?";
+			JToolBarHelper::deleteList($msg, 'users.delete');
 			JToolBarHelper::divider();
 		}
 
