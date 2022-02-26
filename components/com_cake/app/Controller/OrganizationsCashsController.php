@@ -154,6 +154,26 @@ class OrganizationsCashsController extends AppController {
 
 		$debug = false;
 
+        $FilterOrganizationsCashUserId = 0;
+
+        /* recupero dati dalla Session gestita in appController::beforeFilter */
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'UserId')) {
+            $FilterOrganizationsCashUserId = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'UserId');
+        }
+        /* filtro */
+        $this->set('FilterOrganizationsCashUserId', $FilterOrganizationsCashUserId);
+
+		/*
+		 * elenco utenti
+		 */
+		App::import('Model', 'User');
+		$User = new User;
+		
+		$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
+		$users = $User->getUsersList($this->user, $conditions);
+		$this->set('users',$users);
+
+        
 		App::import('Model', 'CashesUser');
 		$CashesUser = new CashesUser;
 		
@@ -161,14 +181,27 @@ class OrganizationsCashsController extends AppController {
 		$Cash = new Cash;
 				
 		/*
-		 * gestione user nuovi e onn ancora inseriti in CashesUser
+		 * gestione user nuovi e non ancora inseriti in CashesUser
 		 */
 		$this->_ctrlCashesUser($this->user, $this->user->organization['Organization']['id'], $debug);
 			
 		$options = [];
 		$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
+		if(!empty($FilterOrganizationsCashUserId)) {
+			$hasManyCashesUser = ['className' => 'CashesUser',
+								  'foreignKey' => 'organization_id',
+                    			  'conditions' => 'user_id = '.$FilterOrganizationsCashUserId];
+			$hasManyUser = ['className' => 'User',
+								  'foreignKey' => 'organization_id',
+                    			  'conditions' => 'id = '.$FilterOrganizationsCashUserId];
+			$this->OrganizationsCash->bindModel(['hasMany' => 
+				['CashesUser' => $hasManyCashesUser,
+				 'User' => $hasManyUser]
+			]);
+		}
 		$options['recursive'] = 1;
 		$results = $this->OrganizationsCash->find('first', $options);
+		// debug($results);
 		$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig'], true);		
 		$results['OrganizationsCash'] += $paramsConfig;
 		
@@ -245,7 +278,7 @@ class OrganizationsCashsController extends AppController {
 			 } // loop User
 		 }
 		
-		self::d($results, $debug);		
+		if($debug) debug($results);		
 			
 		App::import('Model', 'Organization');
 		$Organization = new Organization;

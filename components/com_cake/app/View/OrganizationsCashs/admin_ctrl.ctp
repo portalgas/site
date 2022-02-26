@@ -15,6 +15,27 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="organizations">';
 
+/*
+ * filters
+ */
+echo $this->Form->create('Filteruser', ['id'=>'formGasFilter','type'=>'get']);
+echo '<fieldset class="filter">';
+echo '<legend>'.__('Filter Users').'</legend>';
+
+echo '<div class="row">';
+echo '<div class="col-md-10">';
+echo $this->Form->input('users', ['label' => '&nbsp;', 'options' => $users, 
+		'empty' => 'Tutti gli utenti', 'name'=> 'FilterOrganizationsCashUserId', 
+		'default' => $FilterOrganizationsCashUserId, 'escape' => false, 
+		'class'=> 'selectpicker', 'data-live-search' => true]); 
+echo '</div>';
+echo '<div class="col-md-2">';
+echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'class' => 'filter','div' => array('class' => 'submit filter', 'style' => 'display:none')));
+echo '</div>';
+echo '</div>'; // row
+echo '</fieldset>';
+echo $this->Form->end();
+
 echo $this->Form->input('cashLimit',array('label' => __('CashLimit'), 'value' => __($results['OrganizationsCash']['cashLimit']), 'disabled' => 'disabled'));
 
 if($results['OrganizationsCash']['cashLimit']=='LIMIT-CASH-AFTER') {
