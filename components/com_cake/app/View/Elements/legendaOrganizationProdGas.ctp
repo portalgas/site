@@ -12,7 +12,7 @@ img1,paramsConfig,paramsFields,paramsPay,stato,created,modified) VALUES
 (<?php echo $max_id;?>,%NOME-PRODUTTORE%,'PRODGAS',
 '','','','','','','','','','','','','',0,0,'',
 'prodgas-<?php echo $max_id;?>.jpg',
- '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","hasPromotionGas":"N","hasPromotionGasUsers":"N"}','{"hasFieldArticleCodice":"Y","hasFieldArticleIngredienti":"Y","hasFieldArticleCategoryId":"Y","hasArticlesGdxp":"Y"}','{}',
+ '{"hasBookmarsArticles":"N","hasArticlesOrder":"Y","hasVisibility":"N","hasUsersRegistrationFE":"N","hasPromotionGas":"N","hasPromotionGasUsers":"N","hasArticlesGdxp":"Y"}','{"hasFieldArticleCodice":"Y","hasFieldArticleIngredienti":"Y","hasFieldArticleCategoryId":"Y"}','{}',
  'Y','<?php echo date("Y-m-d");?> 00:00:00','<?php echo date("Y-m-d");?> 00:00:00');
 </pre>
 
