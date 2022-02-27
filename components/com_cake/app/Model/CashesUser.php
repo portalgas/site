@@ -39,7 +39,7 @@ class CashesUser extends AppModel {
 		if($debug) debug($sql_supplier_organization_cash_excluded);
 
 		$sql = "SELECT
-					ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
+					`Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
 				FROM
 					".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
 					".Configure::read('DB.prefix')."carts as Cart
@@ -62,7 +62,13 @@ class CashesUser extends AppModel {
 		if($debug) debug($sql); 
 		$results = $this->query($sql);
 
+		/*
+		 * memorizzo tutti gli order_id per calcolare eventuali costi di trasporto / costi aggiuntivi / sconti
+		 */
+		$order_ids = [];
 		foreach($results as $numResult => $result) {
+
+			$order_ids[$result['Order']['id']] = $result['Order']['id'];
 
 			$prezzo = floatval($result['ArticlesOrder']['prezzo']);
 			$qta_forzato = floatval($result['Cart']['qta_forzato']);
@@ -91,7 +97,41 @@ class CashesUser extends AppModel {
 			if($debug) debug('CashesUser::getTotImportoAcquistato - tot_importo '.$tot_importo);
 		} // end foreach($results as $numResult => $result)
 				
-		if($debug) debug('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo);
+		// debug($order_ids);
+		if(!empty($order_ids)) {
+			foreach($order_ids as $order_id) {
+				
+				$importo_trasport = 0;
+				$importo_cost_less = 0;
+				$importo_cost_more = 0;
+
+				App::import('Model', 'SummaryOrderTrasport');
+				$SummaryOrderTrasport = new SummaryOrderTrasport;
+
+				$summaryOrderTrasportResults = $SummaryOrderTrasport->select_to_order($user, $order_id, $user_id, $debug);
+				if(!empty($summaryOrderTrasportResults)) 
+					$importo_trasport = $summaryOrderTrasportResults['SummaryOrderTrasport']['importo_trasport'];
+
+				App::import('Model', 'SummaryOrderCostLess');
+				$SummaryOrderCostLess = new SummaryOrderCostLess;
+
+				$summaryOrderCostLessResults = $SummaryOrderCostLess->select_to_order($user, $order_id, $user_id, $debug);
+				if(!empty($summaryOrderCostLessResults))
+					$importo_cost_less = $summaryOrderCostLessResults['SummaryOrderCostLess']['importo_cost_less'];
+
+				App::import('Model', 'SummaryOrderCostMore');
+				$SummaryOrderCostMore = new SummaryOrderCostMore;
+
+				$summaryOrderCostMoreResults = $SummaryOrderCostMore->select_to_order($user, $order_id, $user_id, $debug);
+				if(!empty($summaryOrderCostMoreResults))
+					$importo_cost_more = $summaryOrderCostMoreResults['SummaryOrderCostMore']['importo_cost_more'];
+
+				$tot_importo += ($importo_trasport + $importo_cost_less + $importo_cost_more);
+			}
+
+		} // if(!empty($order_ids))
+
+ 		if($debug) debug('CashesUser::getTotImportoAcquistato - RESULTS '.$tot_importo);
 
 		return floatval($tot_importo);
     }

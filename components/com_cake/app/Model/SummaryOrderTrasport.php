@@ -1,7 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
 
-
 class SummaryOrderTrasport extends AppModel {
   
 	/* 
@@ -25,8 +24,8 @@ class SummaryOrderTrasport extends AppModel {
 		try {
 			$result = $this->query($sql);
 			
-			if($user_id>0 && !empty($results))
-				$results = current($results);			
+			if($user_id>0 && !empty($result)) 
+				$result = current($result);
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
