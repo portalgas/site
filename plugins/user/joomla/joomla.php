@@ -161,6 +161,12 @@ class plgUserJoomla extends JPlugin
 			return false;
 		}
 
+		// fractis login can_login
+		if ($instance->get('can_login') == 0) {
+			JError::raiseWarning('SOME_ERROR_CODE', JText::_('JERROR_NOLOGIN_CAN_LOGIN'));
+			return false;
+		}
+
 		// Authorise the user based on the group information
 		if (!isset($options['group'])) {
 			$options['group'] = 'USERS';

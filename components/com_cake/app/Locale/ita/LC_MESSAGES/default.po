@@ -2155,6 +2155,12 @@ msgstr "Utente disattivato"
 msgid "Users Block"
 msgstr "Utenti disattivati"
 
+msgid "User Can Login"
+msgstr "Login utente"
+
+msgid "Usera Can Login"
+msgstr "Login utenti"
+
 msgid "UsersFlagPrivacyAndRegistrationExpire"
 msgstr "Gestione utenti per accettazione privacy e rinnovo"
 
@@ -2592,6 +2598,9 @@ msgstr "Descrizione"
 
 msgid "stato"
 msgstr "Attivo"
+
+msgid "CanLogin"
+msgstr "Può loggarsi"
 
 msgid "SupplierCanPromotions"
 msgstr "Può creare promozioni"
@@ -3309,6 +3318,12 @@ msgstr "E' attivo"
 
 msgid "HasUserBlockQuestionShort"
 msgstr "Attivato"
+
+msgid "HasUserCanLoginQuestion"
+msgstr "Può loggarsi"
+
+msgid "HasUserCanLoginQuestionShort"
+msgstr "Accede"
 
 msgid "HasFieldArticleCodice"
 msgstr "Ha il campo CODICE per gli articoli"
@@ -4609,6 +4624,9 @@ msgid "toolTipUserRegistrationExpire"
 msgstr "Se è valorizzato a 'Si' il gasista dovrà saldare il rinnovo dell'iscrizione"
 
 msgid "toolTipUserBlock"
+msgstr "Se disattivato non sarà più visibile (ex stampe, acquisti)"
+
+msgid "toolTipUserCanLogin"
 msgstr "Se disattivato non potrà più accedere a PortAlGas"
 
 msgid "toolTipIsToStoreroomPay"

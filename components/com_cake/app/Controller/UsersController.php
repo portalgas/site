@@ -18,6 +18,7 @@ class UsersController extends AppController {
         $FilterUserUsername = null;
         $FilterUserName = '';
         $FilterUserBlock = 'ALL';
+        $FilterUserCanLogin = 'ALL';
         $FilterUserSort = Configure::read('orderUser');	
 
         /*
@@ -75,7 +76,7 @@ class UsersController extends AppController {
             $conditions['UserGroup.group_id'] = $FilterUserUserGroups;
         }
 		
-		if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
             $FilterUserBlock = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Block');
             if ($FilterUserBlock != 'ALL')
                 $conditions['User.block'] = "User.block = $FilterUserBlock";  // 0 attivi / 1 disattivati
@@ -86,7 +87,21 @@ class UsersController extends AppController {
             $FilterUserBlock = 'ALL';
             $conditions['User.block'] = "User.block IN ('0','1')"; // di default li prende tutti
         }
-		
+        
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
+            $FilterUserCanLogin = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'CanLogin');
+            if ($FilterUserCanLogin != 'ALL')
+                $conditions['User.can_login'] = "User.can_login = $FilterUserCanLogin";  // 0 no login / 1 si login
+            else
+                $conditions['User.can_login'] = "User.can_login IN ('0','1')";
+        }
+        else {
+            $FilterUserCanLogin = 'ALL';
+            $conditions['User.can_login'] = "User.can_login IN ('0','1')"; // di default li prende tutti
+        }
+        
+        
+
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Sort')) 
             $FilterUserSort = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Sort');
         else 
@@ -108,9 +123,11 @@ class UsersController extends AppController {
         $this->set('FilterUserName', $FilterUserName);
         $this->set('FilterUserUserGroups', $FilterUserUserGroups);
         $this->set('FilterUserBlock', $FilterUserBlock);
+        $this->set('FilterUserCanLogin', $FilterUserCanLogin);
         $this->set('FilterUserSort', $FilterUserSort);
 		
-        $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];	
+        $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];
+        $can_logins = ['ALL' => 'Tutti', '0' => 'Possono loggarsi', '1' => 'Non possono loggarsi'];	
 		$sorts = [Configure::read('orderUser') => __('Name'), 
 				'User.registerDate' => __('registerDate'), 
 			   /* 'Profile.dataRichEnter' => __('dataRichEnter'), 
@@ -118,11 +135,12 @@ class UsersController extends AppController {
 				'Profile.dataRichExit' => __('dataRichExit'), 
 				'Profile.dataExit' => __('dataExit')*/
 			];
-        $this->set(compact('sorts', 'block'));
+        $this->set(compact('sorts', 'block', 'can_logins'));
 		
 		App::import('Model', 'Cart');
 		$Cart = new Cart;
 		
+        // debug($conditions);
         $userResults = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
 		if(!empty($userResults)) {
 			foreach($userResults as $numResult => $userResult) {
@@ -193,6 +211,7 @@ class UsersController extends AppController {
         $FilterUserName = '';
         $FilterUserProfileCF = '';
         $FilterUserBlock = 'ALL';
+        $FilterUserCanLogin = 'ALL';
         $FilterUserSort = Configure::read('orderUser');		
         $FilterUserHasUserFlagPrivacy = 'ALL';
         $FilterUserHasUserRegistrationExpire = 'ALL';
@@ -226,6 +245,19 @@ class UsersController extends AppController {
             $FilterUserBlock = 'ALL';
             $conditions['User.block'] = "User.block IN ('0','1')"; // di default li prende tutti
         }
+        
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
+            $FilterUserCanLogin = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'CanLogin');
+            if ($FilterUserCanLogin != 'ALL')
+                $conditions['User.can_login'] = "User.can_login = $FilterUserCanLogin";  // 0 no login / 1 si login
+            else
+                $conditions['User.can_login'] = "User.can_login IN ('0','1')";
+        }
+        else {
+            $FilterUserCanLogin = 'ALL';
+            $conditions['User.can_login'] = "User.can_login IN ('0','1')"; // di default li prende tutti
+        }
+
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserFlagPrivacy')) {
             $FilterUserHasUserFlagPrivacy = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'HasUserFlagPrivacy');
             $conditions['UserProfile.UserFlagPrivacy'] = $FilterUserHasUserFlagPrivacy;
@@ -245,14 +277,16 @@ class UsersController extends AppController {
         $this->set('FilterUserName', $FilterUserName);
         $this->set('FilterUserProfileCF', $FilterUserProfileCF);
         $this->set('FilterUserBlock', $FilterUserBlock);
+        $this->set('FilterUserCanLogin', $FilterUserCanLogin);
         $this->set('FilterUserHasUserFlagPrivacy', $FilterUserHasUserFlagPrivacy);
         $this->set('FilterUserHasUserRegistrationExpire', $FilterUserHasUserRegistrationExpire);
         $this->set('FilterUserSort', $FilterUserSort);
 
         $block = ['ALL' => 'Tutti', '0' => 'Attivi', '1' => 'Disattivi'];
+        $can_logins = ['ALL' => 'Tutti', '0' => 'Possono loggarsi', '1' => 'Non possono loggarsi']; 
         $hasUserFlagPrivacys = ['ALL' => 'Tutti', 'Y' => __('Y'), 'N' => __('No')];
         $hasUserRegistrationExpires = ['ALL' => 'Tutti', 'Y' => __('Y'), 'N' => __('No')];
-        $this->set(compact('block', 'hasUserFlagPrivacys', 'hasUserRegistrationExpires'));
+        $this->set(compact('block', 'hasUserFlagPrivacys', 'hasUserRegistrationExpires', 'can_logins'));
 
         $sorts = [Configure::read('orderUser') => __('Name'), 
                         'User.registerDate' => __('registerDate'), 

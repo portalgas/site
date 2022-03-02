@@ -35,6 +35,9 @@ echo '<td>';
 echo $this->Form->input('block', ['label' => __('Stato'), 'options' => $block, 'name' => 'FilterUserBlock', 'default' => $FilterUserBlock, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
+echo $this->Form->input(' can_login', ['label' => __('CanLogin'), 'options' => $can_logins, 'name' => 'FilterUserCanLogin', 'default' => $FilterUserCanLogin, 'escape' => false]); 
+echo '</td>'; 
+echo '<td>';
 if($user->organization['Organization']['hasUserFlagPrivacy']=='Y') 
   echo $this->Form->input('hasUserFlagPrivacy', ['label' => __('HasUserFlagPrivacy'), 'options' => $hasUserFlagPrivacys, 'name' => 'FilterUserHasUserFlagPrivacy', 'default' => $FilterUserHasUserFlagPrivacy, 'escape' => false]); 
 echo '</td>';	
