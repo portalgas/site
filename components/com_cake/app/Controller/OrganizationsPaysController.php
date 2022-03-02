@@ -14,6 +14,10 @@ class OrganizationsPaysController extends AppController {
 		/* ctrl ACL */
 	}
 
+	public function admin_mail() {
+
+	}
+	
 	public function admin_index() {
 	
 		$year = date('Y');
