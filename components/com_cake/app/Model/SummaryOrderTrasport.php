@@ -285,7 +285,7 @@ class SummaryOrderTrasport extends AppModel {
 											  'SummaryOrderTrasport.user_id' => $summaryCart['user_id']];
 					$options['recursive'] = -1;
 					$ctrlSummaryOrderTrasportResults = $this->find('first', $options);
-					if(empty($ctrlSummaryOrderTrasportResults)) {
+					if(empty($ctrlSummaryOrderTrasportResults) && !empty($summaryCart['importo'])) {
 						
 						$summaryOrderTrasportData['SummaryOrderTrasport']['organization_id'] = $user->organization['Organization']['id'];
 						$summaryOrderTrasportData['SummaryOrderTrasport']['order_id'] = $order_id;

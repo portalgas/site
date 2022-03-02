@@ -283,7 +283,7 @@ class SummaryOrderCostLess extends AppModel {
 											  'SummaryOrderCostLess.user_id' => $summaryCart['user_id']];
 					$options['recursive'] = -1;
 					$ctrlSummaryOrderCostLessResults = $this->find('first', $options);
-					if(empty($ctrlSummaryOrderCostLessResults)) {
+					if(empty($ctrlSummaryOrderCostLessResults) && !empty($summaryCart['importo'])) {
 						
 						$summaryOrderCostLessData['SummaryOrderCostLess']['organization_id'] = $user->organization['Organization']['id'];
 						$summaryOrderCostLessData['SummaryOrderCostLess']['order_id'] = $order_id;
