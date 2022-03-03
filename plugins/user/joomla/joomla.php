@@ -160,9 +160,10 @@ class plgUserJoomla extends JPlugin
 			JError::raiseWarning('SOME_ERROR_CODE', JText::_('JERROR_NOLOGIN_BLOCKED'));
 			return false;
 		}
-
+		
+		// echo "<pre>"; print_r($instance); echo "</pre>";
 		// fractis login can_login
-		if ($instance->get('can_login') == 0) {
+		if ($instance->get('can_login') == 1) {
 			JError::raiseWarning('SOME_ERROR_CODE', JText::_('JERROR_NOLOGIN_CAN_LOGIN'));
 			return false;
 		}

@@ -325,6 +325,23 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 				</p>
 				<p>Una volta creata potrà trasmetterla ai referenti del G.A.S. che valuteranno se creare un ordine con gli articoli in promozione per i propri gasisti</p>
 				
+
+				<h1 id="trasmissione" class="page-header">Trasmetti il tuo lisino articoli</h1>
+  
+				<p>Cliccando sul bottone che i presenta sulla vostra dashboard</p>
+
+
+				<p> 
+					<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/btn-trasmetti-economiasolidale.png" /></a>
+				</p>
+
+				<p>
+					potrete trasmettere il vostro listino articoli al sito <a href="https://economiasolidale.net" target="_blank">economiasolidale.net</a> per essere così presenti nel loro archivio e poter condividere i vostri articolo con altri gestionali GAS che partecipano al progetto di interaoperabilità di dati
+				</p>
+				<p>
+					Qui maggior dettagli <a href="https://economiasolidale.net/content/sviluppato-protocollo-gdxp-per-scambiare-listini-tra-gestionali-per-gas" target="_blank">https://economiasolidale.net/content/sviluppato-protocollo-gdxp-per-scambiare-listini-tra-gestionali-per-gas</a>
+				</p>
+
 				
 		</div> <!-- col-sm-8 -->
 		
@@ -359,6 +376,7 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 					
 					<li><a href="#elenco-gas-associati">Elenco G.A.S. associati</a></li>
 					<li><a href="#promozioni">Promozioni</a></li>
+					<li><a href="#trasmissione">Trasmetti il tuo lisino articoli</a></li>
 				</ul>
 		
 		
