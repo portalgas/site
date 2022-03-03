@@ -70,7 +70,7 @@ $loggeduser = JFactory::getUser();
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_USERNAME', 'a.username', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
-					Può loggarsi
+					Accede
 				</th>
 				<th class="nowrap" width="5%">
 					Attivato/Disattivato
