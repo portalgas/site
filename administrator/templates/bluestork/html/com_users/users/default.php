@@ -70,6 +70,9 @@ $loggeduser = JFactory::getUser();
 					<?php echo JHtml::_('grid.sort', 'JGLOBAL_USERNAME', 'a.username', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap" width="5%">
+					Può loggarsi
+				</th>
+				<th class="nowrap" width="5%">
 					Attivato/Disattivato
 				</th>
 				<th class="nowrap" width="5%">
@@ -145,7 +148,9 @@ $loggeduser = JFactory::getUser();
 				<td class="center">
 					<?php echo $this->escape($item->username); ?>
 				</td>
-
+				<td class="center">
+					<?php echo JText::_($item->can_login ? 'JNO' : 'JYES'); ?>
+				</td>
 				<td class="center">
 					<?php echo JText::_($item->block ? 'JNO' : 'JYES'); ?>
 				</td>
