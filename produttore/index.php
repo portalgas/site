@@ -332,7 +332,7 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 
 
 				<p> 
-					<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="https://www.portalgas.it/manuali/images/btn-trasmetti-economiasolidale.png" /></a>
+					<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/btn-trasmetti-economiasolidale.png" /></a>
 				</p>
 
 				<p>

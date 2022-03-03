@@ -61,6 +61,7 @@ class UsersController extends JControllerLegacy
 		$layout 	= JRequest::getCmd('layout', 'default');
 		$id			= JRequest::getInt('id');
 
+
 		if (!$this->canView($view)) {
 			JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 
