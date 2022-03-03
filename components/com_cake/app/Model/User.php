@@ -17,7 +17,8 @@ class User extends AppModel {
 		if(empty($orderBy)) $orderBy = Configure::read('orderUser');
 		
 		$sql = "SELECT 
-					User.organization_id, User.id, User.name, User.username, User.email, User.block, 
+					User.organization_id, User.id, User.name, User.username, User.email, 
+					User.block, User.can_login, 
 					User.activation, User.lastvisitDate, User.registerDate  
 				FROM 
 					".Configure::read('DB.portalPrefix')."users User,
@@ -34,6 +35,7 @@ class User extends AppModel {
 		else
 			$sql .= " AND User.block = 0 ";  // 0 attivo
 		
+		if(isset($conditions['User.can_login'])) $sql .= ' AND '.$conditions['User.can_login'];	
 		if(isset($conditions['User.id'])) $sql .= ' AND '.$conditions['User.id'];
 		if(isset($conditions['User.name'])) $sql .= ' AND '.$conditions['User.name'];
 		if(isset($conditions['User.username'])) $sql .= ' AND '.$conditions['User.username'];

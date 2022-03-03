@@ -35,14 +35,17 @@ echo $this->Ajax->autoComplete('FilterUserName',
 							array('label' => 'Nominativo','name'=>'FilterUserName','value'=>$FilterUserName,'size'=>'50','escape' => false));
 echo '</td>';
 echo '<td>';
-echo $this->Form->input('block', array('label' => __('Stato'), 'options' => $block, 'name' => 'FilterUserBlock', 'default' => $FilterUserBlock, 'escape' => false)); 
+echo $this->Form->input('block', ['label' => __('Stato'), 'options' => $block, 'name' => 'FilterUserBlock', 'default' => $FilterUserBlock, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
-echo $this->Form->input('sort', array('label' => __('Sort'), 'options' => $sorts, 'name' => 'FilterUserSort', 'default' => $FilterUserSort, 'escape' => false));  
+echo $this->Form->input('	can_login', ['label' => __('CanLogin'), 'options' => $can_logins, 'name' => 'FilterUserCanLogin', 'default' => $FilterUserCanLogin, 'escape' => false]); 
+echo '</td>';	
+echo '<td>';
+echo $this->Form->input('sort', ['label' => __('Sort'), 'options' => $sorts, 'name' => 'FilterUserSort', 'default' => $FilterUserSort, 'escape' => false]);  
 echo '</td>';
 
 echo '<td>';
-echo $this->Form->end(array('label' => __('Filter'), 'class' => 'filter', 'class' => 'filter','div' => array('class' => 'submit filter', 'style' => 'display:none')));
+echo $this->Form->end(['label' => __('Filter'), 'class' => 'filter', 'class' => 'filter','div' => ['class' => 'submit filter', 'style' => 'display:none']]);
 echo '</td>';
 echo '</tr>';
 echo '<tr>';
@@ -82,6 +85,9 @@ if(!empty($results)) {
 			echo '<th>'.__('HasUserBlockQuestionShort');
 			echo '<span style="float:right;">'.$this->App->drawTooltip(__('User Block'), __('toolTipUserBlock'), $type='INFO',$pos='LEFT').'</span>';
 			echo '</th>';	
+			echo '<th>'.__('HasUserCanLoginQuestionShort');
+			echo '<span style="float:right;">'.$this->App->drawTooltip(__('User Can Login'), __('toolTipUserCanLogin'), $type='INFO',$pos='LEFT').'</span>';
+			echo '</th>';	
 			/*
 			echo '<th>'.__('HasUserActivationQuestionShort');
 			echo '<span style="float:right;">'.$this->App->drawTooltip(__('User Activation'), __('toolTipUserActivation'), $type='INFO',$pos='LEFT').'</span>';
@@ -96,6 +102,9 @@ if(!empty($results)) {
 	foreach ($results as $numResult => $result):
 		
 		// debug($result);
+		$can_login = $result['User']['can_login'];
+		if($can_login) $can_login = 1; // sono invertiti
+		else $can_login = 0; 
 
 		if(!empty($result['User']['lastvisitDate']) && $result['User']['lastvisitDate']!=Configure::read('DB.field.datetime.empty')) 
 			$lastvisitDate = $this->Time->i18nFormat($result['User']['lastvisitDate'],"%e %b %Y");
@@ -151,6 +160,7 @@ if(!empty($results)) {
 			
 		if($isManager) {
 			echo '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-field="block" class="userUpdateNoDES stato_'.$this->App->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';
+			echo '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-field="can_login" class="userUpdateNoDES stato_'.$can_login.'" title="'.__('HasUserCanLoginQuestion').'" ></td>';
 	
 			/*
 			echo '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-field="activation" class="userUpdateNoDES stato_'.$this->App->traslateEnum($flag_activation).'" title="'.__('HasUserActivationQuestion').'" ></td>';
@@ -175,6 +185,7 @@ if(!empty($results)) {
 		}
 		else { // solo lettura
 			echo '<td class="stato_'.$this->App->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';
+			echo '<td class="stato_'.$this->App->traslateEnum($result['User']['can_login']).'" title="'.__('HasUserCanLoginQuestion').'" ></td>';
 			// echo '<td class="stato_'.$this->App->traslateEnum($flag_activation).'" title="'.__('HasUserActivationQuestion').'" ></td>';
 		}
 		?>		

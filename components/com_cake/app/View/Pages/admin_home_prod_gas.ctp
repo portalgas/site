@@ -55,7 +55,7 @@
 							<div class="box">
 								<span class="fa fa-3x fa-send"></span>
 								<h4>Trasmetti listino</h4>
-								<p>a <a target="_blank" href="https://www.economiasolidale.net">www.economiasolidale.net</a></p>
+								<p>a <a target="_blank" href="https://produttore.portalgas.it/#trasmissione">www.economiasolidale.net</a></p>
 							</div>	
 						</a>
 					</div>
@@ -74,17 +74,17 @@
 				</a>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-4 col-md-3">
-			<div class="box-container">
-				<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">
-					<div class="box">
-						<span class="fa fa-3x fa-youtube"></span>
-						<h4>YouTube</h4>
-						<p>I video tutorial sul canale YouTube</p>
-					</div>	
-				</a>
-			</div>
-		</div>
+    <div class="col-xs-12 col-sm-4 col-md-3">
+	    <div class="box-container">
+    		<a href="https://produttore.portalgas.it" target="_blank">
+	    		<div class="box">
+    		  		<span class="fa fa-3x fa-info-circle"></span>
+      				<h4>Manuale</h4>
+      				<p>Se alcuni passaggi non vi sono chiari</p>
+    			</div>	
+    		</a>
+    	</div>
+    </div>
 		<div class="col-xs-12 col-sm-4 col-md-3">
 			<div class="box-container">
 				<a target="_blank" href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA">

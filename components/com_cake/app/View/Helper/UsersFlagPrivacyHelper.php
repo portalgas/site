@@ -37,6 +37,9 @@ class UsersFlagPrivacyHelper extends AppHelper {
 				$str .= '<th>'.__('HasUserFlagPrivacyQuestionShort').'</th>';
 			if(!empty($user->organization['Organization']['hasUserRegistrationExpire']) && $user->organization['Organization']['hasUserRegistrationExpire']=='Y')
 				$str .= '<th>'.__('HasUserRegistrationExpireQuestionShort').'</th>';
+			$str .= '<th>'.__('HasUserCanLoginQuestionShort');
+			$str .= '<span style="float:right;">'.$this->drawTooltip(__('User Can Login'), __('toolTipUserCanLogin'),$type='INFO',$pos='LEFT').'</span>';
+			$str .= '</th>';
 			$str .= '<th>'.__('HasUserBlockQuestionShort');
 			$str .= '<span style="float:right;">'.$this->drawTooltip(__('User Block'), __('toolTipUserBlock'),$type='INFO',$pos='LEFT').'</span>';
 			$str .= '</th>';
@@ -54,7 +57,10 @@ class UsersFlagPrivacyHelper extends AppHelper {
 			
 			$i++;
 
-			// $this->dd($result);
+			// debug($result);
+			$can_login = $result['User']['can_login'];
+			if($can_login) $can_login = 'N'; // sono invertiti
+			else $can_login = 'Y';			
 			
 			if(!isset($result['Profile']['hasUserFlagPrivacy']))
 				$result['Profile']['hasUserFlagPrivacy'] = 'N';
@@ -145,7 +151,11 @@ class UsersFlagPrivacyHelper extends AppHelper {
 					$str .= '<td class="stato_'.$this->traslateEnum($result['Profile']['hasUserRegistrationExpire']).'" title="'.$title.'" ></td>';
 				}
 				*/
-				
+				if($aclAction)
+					$str .= '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-organization-id="'.$result['User']['organization_id'].'" data-attr-field="can_login" class="userUpdate stato_'.$this->traslateEnum($can_login).'" title="'.__('HasUserCanLoginQuestion').'" ></td>';
+				else  // solo lettura
+					$str .= '<td class="stato_'.$this->traslateEnum($can_login).'" title="'.__('HasUserCanLoginQuestion').'" ></td>';
+
 				if($aclAction)
 					$str .= '<td style="cursor:pointer;" data-attr-user-id="'.$result['User']['id'].'" data-attr-organization-id="'.$result['User']['organization_id'].'" data-attr-field="block" class="userUpdate stato_'.$this->traslateEnum($result['User']['block']).'" title="'.__('HasUserBlockQuestion').'" ></td>';
 				else  // solo lettura
