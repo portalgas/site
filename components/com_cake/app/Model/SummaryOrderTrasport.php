@@ -22,16 +22,16 @@ class SummaryOrderTrasport extends AppModel {
 		 $sql .= " ORDER BY SummaryOrderTrasport.user_id";
 		self::d($sql, $debug);
 		try {
-			$result = $this->query($sql);
+			$results = $this->query($sql);
 			
-			if($user_id>0 && !empty($result)) 
-				$result = current($result);
+			if($user_id>0) 
+				$results = current($result);
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
 			CakeLog::write('error',$e);
 		}
-		return $result;
+		return $results;
 	}
 
 	/*
@@ -150,7 +150,7 @@ class SummaryOrderTrasport extends AppModel {
 	 * 		- tutti gli acquisti di un ordine
 	 *      - eventuali aggregazioni SummaryOrderAggregate
 	 */
-	public function populate_to_order($user, $order_id, $debug= false) {
+	public function populate_to_order($user, $order_id, $debug=false) {
 
 		try {
 			App::import('Model', 'SummaryOrderAggregate');
@@ -190,7 +190,7 @@ class SummaryOrderTrasport extends AppModel {
 						$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id_old);
 						self::d($summaryOrderAggregateResults, $debug);
 						if(!empty($summaryOrderAggregateResults)) {
-							$importo = $summaryOrderAggregateResults[0]['SummaryOrderAggregate']['importo'];
+							$importo = $summaryOrderAggregateResults['SummaryOrderAggregate']['importo'];
 							if($debug) echo "<br />$i)     importo dell'utente ".$user_id_old." aggregato in SummaryOrderAggregate: $importo";
 						}
 										 	
@@ -255,7 +255,7 @@ class SummaryOrderTrasport extends AppModel {
 				$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id_old);
 				self::d($summaryOrderAggregateResults, $debug);
 				if(!empty($summaryOrderAggregateResults)) {
-					$importo = $summaryOrderAggregateResults[0]['SummaryOrderAggregate']['importo'];
+					$importo = $summaryOrderAggregateResults['SummaryOrderAggregate']['importo'];
 					if($debug) echo "<br />$i)     importo dell'utente ".$user_id_old." aggregato in SummaryOrderAggregate: $importo";
 				}
 								 	

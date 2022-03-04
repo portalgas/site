@@ -1843,8 +1843,7 @@ class AjaxGasCodesController extends AppController {
     public function admin_box_trasport($delivery_id, $order_id, $userOptions) {
 
         $debug = false;
-        if ($debug)
-            echo '<h2>admin_box_trasport()</h2>';
+        if ($debug) debug('admin_box_trasport()');
 
         if (empty($this->delivery_id) || empty($this->order_id) || $userOptions == null) {
             $this->Session->setFlash(__('msg_error_params'));

@@ -208,7 +208,7 @@ class AjaxGasCode extends AppModel {
 					$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $summaryOrderPlu[$model]['order_id'], $summaryOrderPlu['User']['id']);
 					self::d($summaryOrderAggregateResults, false);
 					if(!empty($summaryOrderAggregateResults)) {
-						$totImporto = $summaryOrderAggregateResults[0]['SummaryOrderAggregate']['importo'];
+						$totImporto = $summaryOrderAggregateResults['SummaryOrderAggregate']['importo'];
 					}
 					else {
 						$conditions = []; 
@@ -468,7 +468,7 @@ class AjaxGasCode extends AppModel {
 				$summaryOrderAggregateResults = $SummaryOrderAggregate->select_to_order($user, $modelResult[$model]['order_id'], $modelResult['User']['id']);
 				self::d($summaryOrderAggregateResults, false);
 				if(!empty($summaryOrderAggregateResults)) {
-					$totImporto = $summaryOrderAggregateResults[0]['SummaryOrderAggregate']['importo'];
+					$totImporto = $summaryOrderAggregateResults['SummaryOrderAggregate']['importo'];
 				}
 				else {
 					$conditions = []; 

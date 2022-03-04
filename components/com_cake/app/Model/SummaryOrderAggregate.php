@@ -26,16 +26,16 @@ class SummaryOrderAggregate extends AppModel {
 		$sql .= " ORDER BY SummaryOrderAggregate.user_id";
 		// if($debug) CakeLog::write('debug','SummaryOrderAggregate::select_to_order() '.$sql);
 		try {
-			$result = $this->query($sql);
-			
-			if($user_id>0 && !empty($result))
-				$result = current($result);			
+			$results = $this->query($sql);
+		
+			if($user_id>0)
+				$results = current($results);			
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
 			CakeLog::write('error',$e);
 		}
-		return $result;
+		return $results;
 	}
 
 	/*
