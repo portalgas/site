@@ -326,7 +326,7 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 				<p>Una volta creata potrà trasmetterla ai referenti del G.A.S. che valuteranno se creare un ordine con gli articoli in promozione per i propri gasisti</p>
 				
 
-				<h1 id="trasmissione" class="page-header">Trasmetti il tuo lisino articoli</h1>
+				<h1 id="trasmissione" class="page-header">Trasmetti il tuo listino articoli</h1>
   
 				<p>Cliccando sul bottone che i presenta sulla vostra dashboard</p>
 
@@ -376,7 +376,7 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 					
 					<li><a href="#elenco-gas-associati">Elenco G.A.S. associati</a></li>
 					<li><a href="#promozioni">Promozioni</a></li>
-					<li><a href="#trasmissione">Trasmetti il tuo lisino articoli</a></li>
+					<li><a href="#trasmissione">Trasmetti il tuo listino articoli</a></li>
 				</ul>
 		
 		
