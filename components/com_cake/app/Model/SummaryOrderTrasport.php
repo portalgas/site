@@ -25,7 +25,7 @@ class SummaryOrderTrasport extends AppModel {
 			$results = $this->query($sql);
 			
 			if($user_id>0) 
-				$results = current($result);
+				$results = current($results);
 		}
 		catch (Exception $e) {
 			CakeLog::write('error',$sql);
