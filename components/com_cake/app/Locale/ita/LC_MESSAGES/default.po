@@ -4329,6 +4329,9 @@ msgstr "Durante le date di apertura e chiusura,i G.A.S. potranno effettuare gli 
 msgid "msg_prodgaspromotion_gas_user_delivery"
 msgstr "Indica <b>dove</b> e <b>quando</b> il gasista può ritirare gli articoli prenotati e la <b>modalità di pagamento</b>"
 
+msgid "msg_select_multiple"
+msgstr "Per selezionare più elementi, selezionarli tenendo premuto il tasto CTRL"
+
 msgid "msg_prodgas_contact"
 msgstr "Indica i riferimenti per essere contatto dai G.A.S. per avere maggiori informazioni"
 

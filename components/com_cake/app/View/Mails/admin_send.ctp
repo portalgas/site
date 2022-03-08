@@ -33,6 +33,7 @@ if(!empty($ACLsuppliersOrganization)) {
 	$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
 	echo $this->Form->input('supplier_organization', ['label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true]);	
 }
+echo $this->element('boxMsg', ['msg' => __('msg_select_multiple')]);
 echo '</div>';
 				
 /*
@@ -52,6 +53,7 @@ echo '</div>';
 echo '<div id="userGroups" style="display:none;">';
 $label = __('Groups').'&nbsp;('.count($userGroups).')';
 echo $this->Form->input('usergroups', ['label' => $label,'options' => $userGroups,'escape' => false,'multiple' => true]);
+echo $this->element('boxMsg', ['msg' => __('msg_select_multiple')]);
 echo '</div>';
 		
 /*
@@ -64,6 +66,7 @@ echo '<label for="MailUser">'.$label.'</label> ';
 echo $this->Form->select('master_user_id', $users, ['label' => $label, 'multiple' => true, 'size' =>10]);
 echo $this->Form->select('user_id', [], ['multiple' => true, 'size' => 10, 'style' => 'min-width:300px']);					
 echo $this->Form->hidden('user_ids', ['id' => 'user_ids','value' => '']);
+echo $this->element('boxMsg', ['msg' => __('msg_select_multiple')]);
 echo '</div>';
 
 /*
@@ -76,6 +79,7 @@ echo '<label for="MailUser">'.$label.'</label> ';
 echo $this->Form->select('master_referente_id', $referenti,['label' => $label, 'multiple' => true, 'size' =>10]);
 echo $this->Form->select('referente_id', [], ['multiple' => true, 'size' => 10, 'style' => 'min-width:300px']);					
 echo $this->Form->hidden('referente_ids', ['id' => 'referente_ids', 'value' => '']);
+echo $this->element('boxMsg', ['msg' => __('msg_select_multiple')]);
 echo '</div>';
 
 echo $this->Form->input('subject');
