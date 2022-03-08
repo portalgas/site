@@ -381,9 +381,9 @@ class RequestPayment extends AppModel {
 					*/
 					$Delivery = new Delivery;
 					
-					$options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+					$options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
 							'articlesOrdersInOrderAndCartsAllUsers'=>true,  // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
-							'suppliers'=>true, 'referents'=>true);
+							'suppliers'=>true, 'referents'=>true];
 						
 					$conditionsLocal = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
 							'Delivery.id' => $delivery_id),
@@ -395,11 +395,11 @@ class RequestPayment extends AppModel {
 						
 					$tmpResults = $Delivery->getDataWithoutTabs($user, $conditionsLocal, $options, $orderBy);
 		
-
+					$resultsSummaryOrderAggregate = [];
 					$SummaryOrderAggregate = new SummaryOrderAggregate;
 					$resultsSummaryOrderAggregate = $SummaryOrderAggregate->select_to_order($user, $order_id, $user_id);
 						
-					$resultsSummaryOrderTrasport = [];					
+					$resultsSummaryOrderTrasport = [];		
 					if($result['Order']['hasTrasport']=='Y' && floatval($result['Order']['trasport']) > 0) {	
 						$SummaryOrderTrasport = new SummaryOrderTrasport;
 						$resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($user, $order_id);
@@ -410,7 +410,7 @@ class RequestPayment extends AppModel {
 						$SummaryOrderCostMore = new SummaryOrderCostMore;
 						$resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($user, $order_id);
                     }
-                             
+                       
 					$resultsSummaryOrderCostLess = [];
 					if($result['Order']['hasCostLess']=='Y' && floatval($result['Order']['cost_less']) > 0) {
 						$SummaryOrderCostLess = new SummaryOrderCostLess;

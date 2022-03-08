@@ -685,50 +685,72 @@ class ExportDoc extends AppModel {
 		/*
 		 * per l'UTENTE trattato ctrl se ci sono dati aggregati
 		*/ 
-		if(!empty($this->summaryOrderAggregateResults)) 
-		foreach($this->summaryOrderAggregateResults as $numResult => $summaryOrderAggregateResult) {
-			if($summaryOrderAggregateResult['SummaryOrderAggregate']['user_id']==$user_id) {
-				$summary_order_aggregate_tot_importo_single_user = $summaryOrderAggregateResult['SummaryOrderAggregate']['importo'];
-				unset($this->summaryOrderAggregateResults[$numResult]);
-				break;
+		if(!empty($this->summaryOrderAggregateResults)) {
+			if(isset($this->summaryOrderAggregateResults['SummaryOrderAggregate']) && $this->summaryOrderAggregateResults['User']['id']==$user_id)
+				$summary_order_aggregate_tot_importo_single_user = $this->summaryOrderAggregateResults['SummaryOrderAggregate']['importo'];
+			else {
+				foreach($this->summaryOrderAggregateResults as $numResult => $summaryOrderAggregateResult) {
+					if($summaryOrderAggregateResult['SummaryOrderAggregate']['user_id']==$user_id) {
+						$summary_order_aggregate_tot_importo_single_user = $summaryOrderAggregateResult['SummaryOrderAggregate']['importo'];
+						unset($this->summaryOrderAggregateResults[$numResult]);
+						break;
+					}
+				}	
 			}
 		}
-								
+					
 		/*
 		 * per l'UTENTE trattato ctrl se c'e' la spesa di trasporto
 		*/
-		if(!empty($this->summaryOrderTrasportResults)) 
-		foreach($this->summaryOrderTrasportResults as $numResult => $summaryOrderTrasportResult) {
-			if($summaryOrderTrasportResult['SummaryOrderTrasport']['user_id']==$user_id) {
-				$summary_order_trasport_tot_importo_single_user = $summaryOrderTrasportResult['SummaryOrderTrasport']['importo_trasport'];
-				unset($this->summaryOrderTrasportResults[$numResult]);
-				break;
-			}
+		if(!empty($this->summaryOrderTrasportResults)) {
+			if(isset($this->summaryOrderTrasportResults['SummaryOrderTrasport']) && $this->summaryOrderTrasportResults['User']['id']==$user_id)
+				$summary_order_trasport_tot_importo_single_user = $this->summaryOrderTrasportResults['SummaryOrderTrasport']['importo_trasport'];
+			else {			
+				foreach($this->summaryOrderTrasportResults as $numResult => $summaryOrderTrasportResult) {
+					if($summaryOrderTrasportResult['SummaryOrderTrasport']['user_id']==$user_id) {
+						$summary_order_trasport_tot_importo_single_user = $summaryOrderTrasportResult['SummaryOrderTrasport']['importo_trasport'];
+						unset($this->summaryOrderTrasportResults[$numResult]);
+						break;
+					}
+				}
+			}	
 		}
+
 
 		/*
 		 * per l'UTENTE trattato ctrl se c'e' il costo aggiuntivo
 		*/
-		if(!empty($this->summaryOrderCostMoreResults)) 
-		foreach($this->summaryOrderCostMoreResults as $numResult => $summaryOrderCostMoreResult) {
-			$summary_order_cost_more_tot_importo_single_user = 0;
-			if($summaryOrderCostMoreResult['SummaryOrderCostMore']['user_id']==$user_id) {
-				$summary_order_cost_more_tot_importo_single_user = $summaryOrderCostMoreResult['SummaryOrderCostMore']['importo_cost_more'];
-				unset($this->summaryOrderCostMoreResults[$numResult]);
-				break;
-			}
+		if(!empty($this->summaryOrderCostMoreResults)) {
+			if(isset($this->summaryOrderCostMoreResults['SummaryOrderCostMore']) && $this->summaryOrderCostMoreResults['User']['id']==$user_id)
+				$summary_order_cost_more_tot_importo_single_user = $this->summaryOrderCostMoreResults['SummaryOrderCostMore']['importo_cost_more'];
+			else {			
+				foreach($this->summaryOrderCostMoreResults as $numResult => $summaryOrderCostMoreResult) {
+					$summary_order_cost_more_tot_importo_single_user = 0;
+					if($summaryOrderCostMoreResult['SummaryOrderCostMore']['user_id']==$user_id) {
+						$summary_order_cost_more_tot_importo_single_user = $summaryOrderCostMoreResult['SummaryOrderCostMore']['importo_cost_more'];
+						unset($this->summaryOrderCostMoreResults[$numResult]);
+						break;
+					}
+				}
+			}		
 		}
+
 		
 		/*
 		 * per l'UTENTE trattato ctrl se c'e' lo sconto
 		*/
-		if(!empty($this->summaryOrderCostLessResults))
-		foreach($this->summaryOrderCostLessResults as $numResult => $summaryOrderCostLessResult) {
-			if($summaryOrderCostLessResult['SummaryOrderCostLess']['user_id']==$user_id) {
-				$summary_order_cost_less_tot_importo_single_user = $summaryOrderCostLessResult['SummaryOrderCostLess']['importo_cost_less'];
-				unset($this->summaryOrderCostLessResults[$numResult]);
-				break;
-			}
+		if(!empty($this->summaryOrderCostLessResults)) {
+			if(isset($this->summaryOrderCostLessResults['SummaryOrderCostLess']) && $this->summaryOrderCostLessResults['User']['id']==$user_id)
+				$summary_order_cost_less_tot_importo_single_user = $this->summaryOrderCostLessResults['SummaryOrderCostLess']['importo_cost_less'];
+			else {				
+				foreach($this->summaryOrderCostLessResults as $numResult => $summaryOrderCostLessResult) {
+					if($summaryOrderCostLessResult['SummaryOrderCostLess']['user_id']==$user_id) {
+						$summary_order_cost_less_tot_importo_single_user = $summaryOrderCostLessResult['SummaryOrderCostLess']['importo_cost_less'];
+						unset($this->summaryOrderCostLessResults[$numResult]);
+						break;
+					}
+				}
+			}			
 		}
 
 		
