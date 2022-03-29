@@ -1235,7 +1235,10 @@ class ArticlesOrdersController extends AppController {
             if ($previousResult['Article']['stato'] == 'Y') {
 
                 $data['Article'][$previousResult['Article']['id']] = [
-					'ArticlesOrderPrezzo' => $previousResult['ArticlesOrder']['prezzo_'],
+                    /*
+                     * prendo l'importo dall'articolo cosi' se e' stato aggiornato
+                     */
+					'ArticlesOrderPrezzo' => $previousResult['Article']['prezzo_'],
 					'ArticlesOrderPezziConfezione' => $previousResult['ArticlesOrder']['pezzi_confezione'],
 					'ArticlesOrderQtaMinima' => $previousResult['ArticlesOrder']['qta_minima'],
 					'ArticlesOrderQtaMassima' => $previousResult['ArticlesOrder']['qta_massima'],
