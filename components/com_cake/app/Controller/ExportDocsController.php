@@ -2981,7 +2981,6 @@ class ExportDocsController extends AppController {
         *       - costi aggiuntivi  (SummaryOrderCostMore)
         *       - sconti  (SummaryOrderCostLess)
         */
- 
         foreach ($results as $numResults => $result) {
     
             // debug($result);
@@ -3014,7 +3013,7 @@ class ExportDocsController extends AppController {
                         $resultsSummaryOrderTrasport = $SummaryOrderTrasport->select_to_order($this->user, $order_id, $user_id);
                         if(!empty($resultsSummaryOrderTrasport)) {
                             // debug($resultsSummaryOrderTrasport);
-                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport[0]['SummaryOrderTrasport']['importo_trasport'];
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderTrasport['SummaryOrderTrasport']['importo_trasport'];
                         }
                     }
                     if ($hasCostMore == 'Y' && $cost_more!=0.00) {
@@ -3023,7 +3022,7 @@ class ExportDocsController extends AppController {
 
                         $resultsSummaryOrderCostMore = $SummaryOrderCostMore->select_to_order($this->user, $order_id, $user_id);
                         if(!empty($resultsSummaryOrderCostMore))
-                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore[0]['SummaryOrderCostMore']['importo_cost_more'];
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostMore['SummaryOrderCostMore']['importo_cost_more'];
                     }
                     if ($hasCostLess == 'Y' && $cost_less!=0.00) {
                         App::import('Model', 'SummaryOrderCostLess');
@@ -3033,7 +3032,7 @@ class ExportDocsController extends AppController {
                         if(!empty($resultsSummaryOrderCostLess)) {
                             // debug('BEFORE '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
                             // debug('importo_cost_less '.$resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less']);
-                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostLess[0]['SummaryOrderCostLess']['importo_cost_less'];
+                            $results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo'] += $resultsSummaryOrderCostLess['SummaryOrderCostLess']['importo_cost_less'];
                             // debug('AFTER '.$results[$numResults]['Order'][$supplier_organization_id]['tot_user_importo']);
                         }
                     }   
