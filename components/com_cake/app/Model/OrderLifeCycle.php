@@ -1757,7 +1757,7 @@ class OrderLifeCycle extends AppModel {
 				}
 			}
 			else
-				$esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>cancellarlo</b></a>";
+				$esito = "L'ordine <b>non ha acquisti</b> da parte dei gasisti, clicca qui per <a href=\"".Configure::read('App.server')."/administrator/index.php?option=com_cake&controller=Orders&action=delete&delivery_id=".$orderResult['Order']['delivery_id']."&order_id=".$orderResult['Order']['id']."\"><b>cancellalo</b></a>";
 		}
 			
 		return $esito;
