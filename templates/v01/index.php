@@ -263,9 +263,15 @@ else {
 						</ul>	
 					<?php 
 					}
-					?>						
-										
-				</div>
+					?>
+
+                    <ul class="social">
+                        <li>
+                            <a href="/produttori/index.html" title="elenco di tutti i produttori di PortAlGas"> Produttori</a>
+                        </li>
+                    </ul>
+
+                </div>
 				
 				
 				<div class="footer-col col-md-3 col-xs-12 col-sm-6 text-right">

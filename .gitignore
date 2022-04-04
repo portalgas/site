@@ -5,11 +5,6 @@
 /googleeaef348e23b089bb.html
 /sitemap.xml
 
-configuration.php
-BingSiteAuth.xml
-googleeaef348e23b089bb.html
-sitemap.xml
-
 /_sql/*
 /logs/*
 /tmp/*
@@ -25,6 +20,7 @@ sitemap.xml
 /images/prod_gas_promotions/*
 /images/tesoriere/*
 /images/users/*
+/produttori/*
 /components/com_cake/app/Config/database.php
 /components/com_cake/app/Config/email.php
 /components/com_cake/app/Config/core.php
