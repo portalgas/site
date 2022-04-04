@@ -24,3 +24,5 @@ Disallow: /modules/
 Disallow: /plugins/
 Disallow: /tmp/
 
+Sitemap: https://www.portalgas.it/sitemap.xml
+
