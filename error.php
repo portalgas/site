@@ -680,7 +680,7 @@ button.btn, input.btn[type="submit"] {
 			<div id="content_inner">
 				
 				<div style="font-size:22px;height:350px;padding: 50px 0;">
-				Si &egrave; verificato un errore.<br>
+				Si &egrave; verificato un errore!<br>
 				<p style="font-size:16px;padding: 25px 0;">Contatta l'amministratore <a href="info@portalgas.it" title="info@portalgas.it">info@portalgas.it</a></p>
 				</div>
 				
@@ -697,7 +697,7 @@ button.btn, input.btn[type="submit"] {
 					<div class="wrapper">
 						<div>
 							<div class="">
-								<div class="copyright">Copyright © 2014 PortAlGas. All Rights Reserved.</div>
+								<div class="copyright">Copyright © <?echo date('Y');?>> PortAlGas. All Rights Reserved.</div>
 							</div>
 						</div>
 					</div>

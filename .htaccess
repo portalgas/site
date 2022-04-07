@@ -84,8 +84,8 @@ RewriteRule .* index.php [L]
 
 # (404,File Not Found) | (403,Forbidden) | (500,Internal Server Error)
 ErrorDocument 403 /error.php
-ErrorDocument 404 /error.php
 ErrorDocument 500 /error.php
+ErrorDocument 404 /produttori/index.html
 
 Redirect 301 /home-gas-bioce /home-gas-forimercato
 Redirect 301 /home-gas-bioce/consegne-gas-bioce /home-gas-forimercato/consegne-gas-forimercato
