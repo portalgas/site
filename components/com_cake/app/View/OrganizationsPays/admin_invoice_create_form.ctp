@@ -34,7 +34,7 @@ echo $this->Form->input('text',array('label' => __('Text'), 'type' => 'textarea'
 
 echo '<div id="importo-ritenuta">';
 $msg = 'Se <b>importo 100</b>: Compenso lordo 100&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 20&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 80<br />';
-$msg .= 'Se <b>importo 75</b>: Compenso lordo 75&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 15&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 60';
+$msg .= 'Se <b>importo 75</b>: Compenso lordo 75&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 15&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 60<br />';
 $msg .= 'Se <b>importo 50</b>: Compenso lordo 50&nbsp;&nbsp;-&nbsp;&nbsp;Ritenuta d’acconto 10&nbsp;&nbsp;-&nbsp;&nbsp;Netto da pagare 40';
 echo $this->element('boxMsg', ['msg' => $msg, 'class_msg' => 'info']);
 echo '</div>';

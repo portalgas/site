@@ -179,11 +179,7 @@ class OrganizationsPaysController extends AppController {
 			
 			Configure::write('debug', 0);
 			
-			/*
-			echo "<pre>";
-			debug($this->request->data);
-			echo "<pre>";
-			*/
+			// debug($this->request->data);
 
 			App::import('Model', 'Organization');
 			$Organization = new Organization;
@@ -234,11 +230,125 @@ class OrganizationsPaysController extends AppController {
 			*/
 			$this->layout = 'pdf';			
 		}
-	}	
+	}
 
-	/*
-	 * ajax con dato di dettaglio organization scelta
-	 */
+    public function admin_invoice_create_pdfs()
+    {
+        App::import('Model', 'Organization');
+        $Organization = new Organization;
+
+        $options = [];
+        $options['conditions'] = ['OrganizationsPay.year' => date('Y'),
+                                  'Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+        $options['order'] = ['Organization.name'];
+        $options['recursive'] = 0;
+        $organizationPayResults = $this->OrganizationsPay->find('all', $options);
+
+        $this->set('organizationPayResults', $organizationPayResults);
+    }
+
+    /*
+     * crea tutt i pdf
+     */
+    public function admin_ajax_invoice_create_pdf() {
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+
+            // debug($this->request->data);
+            $id = $this->request->data['id'];
+
+            Configure::write('debug', 0);
+
+            $results = [];
+
+            App::import('Model', 'Organization');
+            $Organization = new Organization;
+
+            $options = [];
+            $options['conditions'] = ['OrganizationsPay.year' => date('Y'),
+                                      'Organization.stato' => 'Y', 'Organization.type' => 'GAS',
+                                      'Organization.id' => $id];
+            $options['recursive'] = 0;
+            $organizationPayResult = $this->OrganizationsPay->find('first', $options);
+
+            if(!empty($organizationPayResult)) {
+
+                if(empty($organizationPayResult['Organization']['paramsPay'])) {
+                    $results['esito'] = false;
+                    $results['msg'] = "G.A.S. non ha configurato i dati del pagamento Organization.paramsPay";
+                }
+                else {
+
+                    $paramsPay = json_decode($organizationPayResult['Organization']['paramsPay'], true);
+                    // debug($paramsPay);
+                    // debug($organizationPayResult);
+                    $fileData['fileTitle'] = $organizationPayResult['Organization']['name'];
+                    /*
+                     * prendo solo l'id perche' lo gestisco con i msgText
+                    $fileData['fileName'] = strtolower(str_replace(" ","_",$organizationResults['Organization']['id'].'_'.$organizationResults['Organization']['name']));
+                    */
+                    $path = Configure::read('App.root') . DS . 'images' . DS . 'pays' . DS . date('Y');
+                    $fileData['fileName'] = $path . DS . $organizationPayResult['Organization']['id'];
+                    $this->set('fileData', $fileData);
+
+                    $importo_lordo = $organizationPayResult['OrganizationsPay']['importo'];
+                    $ritenuta = number_format(($importo_lordo / 100 * 20),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                    $importo_netto = number_format(($importo_lordo - $ritenuta),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+
+                    switch ($organizationPayResult['OrganizationsPay']['type_pay']) {
+                        case 'RICEVUTA':
+                            $title = "Nota di pagamento";
+                            $text = "";
+                            break;
+                        case 'RITENUTA':
+                            $title = "RICEVUTA per PRESTAZIONE di LAVORO AUTONOMO OCCASIONALE";
+                            $text = "Tale importo ha natura di compenso per lavoro autonomo occasionale e deriva dal seguente conteggio:<br /><br />".
+                                str_repeat("&nbsp;", 67)."Compenso lordo".str_repeat("&nbsp;", 18)."Euro %s<br />".
+                                str_repeat("&nbsp;", 67)."Ritenuta d’acconto 20&#37;".str_repeat("&nbsp;", 6)."Euro %s<br />".
+                                str_repeat("&nbsp;", 67)."Netto da pagare".str_repeat("&nbsp;", 19)."Euro %s<br />";
+
+                            $text = sprintf($text, $importo_lordo, $ritenuta, $importo_netto);
+                            break;
+                    }
+
+                    switch ($organizationPayResult['OrganizationsPay']['beneficiario_pay']) {
+                        case 'FRANCESCO':
+                            $intro = "Il sottoscritto Francesco Actis Grosso nato a Torino (TO), il 02/11/1973 codice fiscale CTSFNC73S02L219I residente a Torino in via Sant'Anselmo, 28<br /><br /> ".
+                                "dichiara di ricevere il pagamento del compenso lordo di %s &euro; relativo alla seguente prestazione: assistenza software fornita per la gestione del portale PG ".date('Y').", per un totale di giorni lavorativi inferiore a 30.<br /><br />";
+                            break;
+                        case 'MARCO':
+                            $intro = "Il sottoscritto Marco Siviero nato a Torino (TO), il 14/06/1965 codice fiscale SVRMRC65H14L219S residente a Torino in via Angelo Sismonda 10/4<br /><br /> ".
+                                "dichiara di ricevere il pagamento del compenso lordo di %s &euro; relativo alla seguente prestazione: assistenza software fornita per la gestione del portale PG ".date('Y').", per un totale di giorni lavorativi inferiore a 30.<br /><br />";
+                            break;
+                    }
+                    $intro = sprintf($intro, $importo_lordo);
+
+                    $nota = "La presente prestazione di lavoro autonomo occasionale è esclusa dal campo di applicazione IVA ai sensi degli art. 1 del D.P.R. 633/1972.<br /><br />Marca da bollo sull’originale € 2,00 se l’importo netto è superiore a Euro 77,47.";
+                    $nota2 = "Dichiaro di aver percepito fino ad oggi meno di 5.000 &euro;";
+
+                    $this->set('title', $title);
+                    $this->set('intro', $intro);
+                    $this->set('text', $text);
+                    $this->set('nota', $nota);
+                    $this->set('nota2', $nota2);
+
+                    $this->set('organizationResults', $organizationPayResult);
+
+                    $this->layout = 'pdf';
+
+                    $results['esito'] = true;
+                    $results['msg'] = $organizationPayResult['Organization']['name'].' ('.$organizationPayResult['Organization']['id'].') '.$fileData['fileName'].'.pdf';
+
+                } // end  if(empty($organizationPayResult['Organization']['paramsPay']))
+            } // end if(!empty($organizationPayResult))
+        } // end post
+
+        debug($results);
+    }
+
+    /*
+     * ajax con dato di dettaglio organization scelta
+     */
 	public function admin_organizationDetails($organization_id) {
 		
 		$year = date('Y');
