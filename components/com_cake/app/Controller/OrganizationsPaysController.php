@@ -280,6 +280,7 @@ class OrganizationsPaysController extends AppController {
                 else {
 
                     $paramsPay = json_decode($organizationPayResult['Organization']['paramsPay'], true);
+                    $organizationPayResult['Organization'] += $paramsPay;
                     // debug($paramsPay);
                     // debug($organizationPayResult);
                     $fileData['fileTitle'] = $organizationPayResult['Organization']['name'];
