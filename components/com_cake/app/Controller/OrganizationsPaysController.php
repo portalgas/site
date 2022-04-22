@@ -343,7 +343,9 @@ class OrganizationsPaysController extends AppController {
             } // end if(!empty($organizationPayResult))
         } // end post
 
-        debug($results);
+        echo "<pre>";
+        print_r($results);
+        echo "</pre>";
     }
 
     /*
