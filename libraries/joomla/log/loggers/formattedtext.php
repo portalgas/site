@@ -179,11 +179,15 @@ class JLoggerFormattedText extends JLogger
 			$line = str_replace('{' . $field . '}', (isset($tmp[$field])) ? $tmp[$field] : '-', $line);
 		}
 
-		// Write the new entry to the file.
-		if (!fputs($this->file, $line . "\n"))
-		{
-			throw new LogException;
-		}
+        /*
+         * PHP Warning:  fputs() expects parameter 1 to be resource, bool given in
+         */
+        if(!is_bool($this->file)) {
+            // Write the new entry to the file.
+            if (!fputs($this->file, $line . "\n")) {
+                throw new LogException;
+            }
+        }
 	}
 
 	/**
@@ -257,10 +261,15 @@ class JLoggerFormattedText extends JLogger
 		}
 		if ($head)
 		{
-			if (!fputs($this->file, $head))
-			{
-				throw new LogException;
-			}
+            /*
+             * PHP Warning:  fputs() expects parameter 1 to be resource, bool given in
+             */
+            if(!is_bool($this->file)) {
+                if (!fputs($this->file, $head))
+                {
+                    throw new LogException;
+                }
+            }
 		}
 	}
 

@@ -9,13 +9,24 @@
 			echo "<p>Non ci sono richieste di pagamento da pagare</p>";
 		else {		
 			foreach ($requestPaymentsResults as $requestPaymentsResult) {
-				echo '<p>';
+
+                /*
+                 * S U M M A R Y  P A Y M E N T S  +  C A S H
+                 *
+                 *   importo_dovuto
+                 *        +/- cassa
+                 *	 importo_richiesto
+                 */
+                // $delta_cassa = (-1 * (floatval($requestPaymentsResult['SummaryPayment']['importo_dovuto']) - floatval($requestPaymentsResult['SummaryPayment']['importo_richiesto'])));
+                // echo "<br />delta_cassa (importo_dovuto - importo_richiesto) => ".$results['SummaryPayment']['importo_dovuto']." - ".$results['SummaryPayment']['importo_richiesto']." = ".$delta_cassa;
+
+               	echo '<p>';
 				echo '<a target="_blank" ';
 				echo "href=\"/?option=com_cake&controller=ExportDocs&action=userRequestPayment&request_payment_id=".$requestPaymentsResult['RequestPayment']['id']."&doc_formato=PDF&format=notmpl\"";
 				echo ' id="userRequestPayment-PDF" style="cursor:pointer;" rel="nofollow" title="stampa la richiesta di pagamento '.__('formatFilePdf').'"><img alt="PDF" src="'.Configure::read('App.img.cake').'/minetypes/32x32/pdf.png" />';
 				echo '&nbsp;'.__('request_payment_num').' '.$requestPaymentsResult['RequestPayment']['num'];
 				echo ' di '.$this->Time->i18nFormat($requestPaymentsResult['RequestPayment']['data_send'],"%A %e %B %Y");
-				echo '</a>: '.$requestPaymentsResult['SummaryPayment']['importo_dovuto_e'];
+				echo '</a>: '.$requestPaymentsResult['SummaryPayment']['importo_richiesto_e'];
 				echo ' ('.$this->App->traslateEnum($requestPaymentsResult['SummaryPayment']['stato']).')';
 				echo '</p>'; 
 
