@@ -33,7 +33,7 @@ echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
 echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
-echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
+// echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 if(empty($des_order_id))
 	echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</a></li>';
 if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')
@@ -148,12 +148,12 @@ echo '<div class="tab-pane fade" id="tabs-1">';
         echo '<div id="mail_order_close_N">'.__('msg_mail_order_close_N').'</div>';
     
 echo '</div>';
-
+/*
 echo '<div class="tab-pane fade hidden-xs hidden-sm" id="tabs-2">';
 echo $this->element('boxOrdersTypeDraw', array('modalita' => 'EDIT', 'value' => $this->Form->value('Order.type_draw')));
 echo $this->Html->div('clearfix','');
 echo '</div>';
-
+*/
 if(empty($des_order_id))  {
 	echo '<div class="tab-pane fade" id="tabs-3">';
 
