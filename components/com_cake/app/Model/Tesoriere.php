@@ -129,9 +129,12 @@ class Tesoriere extends AppModel {
 		 *   ctrl che siano cambiati i dati
 		 */
 		 $sqlTmp = "";
-		 if($this->importoToDatabase($data['tesoriere_importo_pay']) != $data['tesoriere_importo_pay_old'])
-		 	$sqlTmp .= " tesoriere_importo_pay = ".$this->importoToDatabase($data['tesoriere_importo_pay']).',';
-		 	
+		 if($this->importoToDatabase($data['tesoriere_importo_pay']) != $data['tesoriere_importo_pay_old']) {
+             if(empty($data['tesoriere_importo_pay']))
+                 $data['tesoriere_importo_pay'] = 0;
+             $sqlTmp .= " tesoriere_importo_pay = ".$this->importoToDatabase($data['tesoriere_importo_pay']).',';
+         }
+
 		 if($data['tesoriere_data_pay_db'] != $data['tesoriere_data_pay_old'])
 		 	$sqlTmp .= " tesoriere_data_pay = '".$data['tesoriere_data_pay_db']."',";
 		 
