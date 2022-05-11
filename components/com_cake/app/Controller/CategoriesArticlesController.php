@@ -8,14 +8,23 @@ class CategoriesArticlesController extends AppController {
 	public function beforeFilter() {
 		 parent::beforeFilter();
 		 
-		 /* ctrl ACL */
-		 if(!$this->isManager()) {
+		 /*
+		    ctrl ACL
+		    il produttore e' isSuperReferente()
+		 */
+		 if(!$this->isManager() && !$this->isSuperReferente()) {
 			$this->Session->setFlash(__('msg_not_permission'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		 }
 		 /* ctrl ACL */
 		 
-		 /*		  * ctrl configurazione Organization		 */		 if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N') {		 	$this->Session->setFlash(__('msg_not_organization_config'));		 	$this->myRedirect(Configure::read('routes_msg_stop'));		 }		 
+		 /*
+		  * ctrl configurazione Organization
+		 */
+		 if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='N') {
+		 	$this->Session->setFlash(__('msg_not_organization_config'));
+		 	$this->myRedirect(Configure::read('routes_msg_stop'));
+		 }		 
 		 		
 	}
 
@@ -23,13 +32,52 @@ class CategoriesArticlesController extends AppController {
     	$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
         $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
         
-        $resultsTotArticle = [];        foreach ($results as $key => $value) {        	         	/*        	 * ottengo il totale degli articoli associati        	*/        	$sql = "SELECT        				count(Article.id) as totArticle         			FROM        				".Configure::read('DB.prefix')."categories_articles CategoriesArticle,        				".Configure::read('DB.prefix')."articles Article         			WHERE
+        $resultsTotArticle = [];
+        foreach ($results as $key => $value) {
+        	 
+        	/*
+        	 * ottengo il totale degli articoli associati
+        	*/
+        	$sql = "SELECT
+        				count(Article.id) as totArticle 
+        			FROM
+        				".Configure::read('DB.prefix')."categories_articles CategoriesArticle,
+        				".Configure::read('DB.prefix')."articles Article 
+        			WHERE
         				Article.organization_id = ".$this->user->organization['Organization']['id']." 
-        				AND CategoriesArticle.organization_id = ".$this->user->organization['Organization']['id']."		        				AND Article.category_article_id = CategoriesArticle.id        				AND CategoriesArticle.id = ".$key;        	self::d($sql, false);        	$totResults = $this->CategoriesArticle->query($sql);        	if(!empty($totResults)) {        		$totResults = current($totResults);        		$resultsTotArticle[$key]['totArticle'] = $totResults[0]['totArticle'];        	}        	else {        		$resultsTotArticle[$key]['totArticle'] = 0;        	}        }        
-        /*         * ottengo il totale degli articoli         */        $sql = "SELECT        				count(Article.id) as totArticle        			FROM        				".Configure::read('DB.prefix')."articles Article        			WHERE        				Article.organization_id = ".$this->user->organization['Organization']['id'];        self::d($sql, false);        $totResults = $this->CategoriesArticle->query($sql);        if(!empty($totResults)) {        	$totResults = current($totResults);        	$totArticles = $totResults[0]['totArticle'];        }
+        				AND CategoriesArticle.organization_id = ".$this->user->organization['Organization']['id']."		
+        				AND Article.category_article_id = CategoriesArticle.id
+        				AND CategoriesArticle.id = ".$key;
+        	self::d($sql, false);
+        	$totResults = $this->CategoriesArticle->query($sql);
+        	if(!empty($totResults)) {
+        		$totResults = current($totResults);
+        		$resultsTotArticle[$key]['totArticle'] = $totResults[0]['totArticle'];
+        	}
+        	else {
+        		$resultsTotArticle[$key]['totArticle'] = 0;
+        	}
+        }
+        
+        /*
+         * ottengo il totale degli articoli 
+        */
+        $sql = "SELECT
+        				count(Article.id) as totArticle
+        			FROM
+        				".Configure::read('DB.prefix')."articles Article
+        			WHERE
+        				Article.organization_id = ".$this->user->organization['Organization']['id'];
+        self::d($sql, false);
+        $totResults = $this->CategoriesArticle->query($sql);
+        if(!empty($totResults)) {
+        	$totResults = current($totResults);
+        	$totArticles = $totResults[0]['totArticle'];
+        }
         else 
         	$totArticles = 0;
-        	        $this->set('totArticles', $totArticles);
+        	
+        $this->set('totArticles', $totArticles);
         $this->set('resultsTotArticle', $resultsTotArticle);
         $this->set('results', $results);
     }
@@ -70,7 +118,8 @@ class CategoriesArticlesController extends AppController {
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
-			$this->request->data['CategoriesArticle']['organization_id'] = $this->user->organization['Organization']['id'];				
+			$this->request->data['CategoriesArticle']['organization_id'] = $this->user->organization['Organization']['id'];
+				
 			$this->CategoriesArticle->create();
 			if ($this->CategoriesArticle->save($this->request->data)) {
 				$this->Session->setFlash(__('The category has been saved'));
@@ -92,7 +141,10 @@ class CategoriesArticlesController extends AppController {
 	 * */
 	public function admin_delete($id=0) {
 	
-		if ($this->request->is('post') || $this->request->is('put'))			$id = $this->request->data['CategoryArticle']['id'];				$this->CategoriesArticle->id = $id;
+		if ($this->request->is('post') || $this->request->is('put'))
+			$id = $this->request->data['CategoryArticle']['id'];
+		
+		$this->CategoriesArticle->id = $id;
 		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -107,6 +159,9 @@ class CategoriesArticlesController extends AppController {
 		}
 	
 		$options['conditions'] = ['CategoriesArticle.organization_id' => $this->user->organization['Organization']['id'],
-								  'CategoriesArticle.id' => $id];		$options['recursive'] = 1;		$results = $this->CategoriesArticle->find('first', $options);		$this->set(compact('results'));
+								  'CategoriesArticle.id' => $id];
+		$options['recursive'] = 1;
+		$results = $this->CategoriesArticle->find('first', $options);
+		$this->set(compact('results'));
 	}		
 }
