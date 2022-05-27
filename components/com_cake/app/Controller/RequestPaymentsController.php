@@ -628,8 +628,16 @@ class RequestPaymentsController extends AppController {
 				
 			$order_id_selected = $this->request->data['RequestPayment']['order_id_selected'];
 				
-			self::l('order_id_selected '.$order_id_selected, $debug);	
-			
+			self::l('order_id_selected '.$order_id_selected, $debug);
+
+            /*
+             * estrae l'importo totale degli acquisti di un ordine e lo salvo sull'ordine
+             * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrderS)
+            */
+            App::import('Model', 'Order');
+            $Order = new Order;
+            $Order->setTotImporto($this->user, $order_id_selected);
+
 			/*
 			 * per ogni USER 
 			 * 		INSERT un occorrenza RequestPaymentsOrders con il totale da pagare
@@ -640,7 +648,7 @@ class RequestPaymentsController extends AppController {
 			*/
 			App::import('Model', 'SummaryPayment');
 			$SummaryPayment = new SummaryPayment;
-				
+
 			if(!empty($order_id_selected)) {
 				$sql = "SELECT sum(importo) as tot_importo, user_id
 						FROM ".Configure::read('DB.prefix')."summary_orders as SummaryOrder
@@ -649,7 +657,7 @@ class RequestPaymentsController extends AppController {
 							AND saldato_a is null
 						GROUP BY user_id ORDER BY user_id ";
 				self::l($sql, $debug);
-				$results = $SummaryPayment->query($sql);
+              	$results = $SummaryPayment->query($sql);
 				if(empty($results))
 					self::l('Nessun records trovato ', $debug);
 				foreach ($results as $result) {

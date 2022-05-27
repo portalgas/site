@@ -61,7 +61,7 @@ echo '<div class="contentMenuLaterale">';
 					echo '<th colspan="2">'.__('Supplier').'</th>';
 					echo '<th>'.__('OrderDate').'</th>';
 					echo '<th>'.__('Stato').'</th>';
-					echo '<th>'.__('Importo totale ordine').'</th>';
+					echo '<th  style="text-align:center;">'.__('Importo totale ordine').'</th>';
 					echo '<th>'.__('Suppliers Organizations Referents').'</th>';
 					echo '</tr>';
 					echo '</thead>';

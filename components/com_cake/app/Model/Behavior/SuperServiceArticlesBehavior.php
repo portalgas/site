@@ -79,7 +79,7 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 	 * SuppliersOrganization.owner_supplier_organization_id
 	 */	
 	public function getArticlesBySupplierOrganizationId(Model $Model, $user, $suppliersOrganizationResult, $opts=[], $debug=false) {
-	
+
 		$esito = [];
 
 		if(empty($suppliersOrganizationResult)) {
@@ -88,7 +88,7 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 			return $esito; 
 		}	
 
-		App::import('Model', 'SuppliersOrganization');
+		App::import('Model', 'SuppliersOrganizationOwnerArticles');
 		$SuppliersOrganization = new SuppliersOrganization;
 		
 		App::import('Model', 'Article');
@@ -105,17 +105,17 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 		if(!is_array($suppliersOrganizationResult))
 			$suppliersOrganizationResult = $Model->_getSuppliersOrganizationById($user, $suppliersOrganizationResult, $debug);
 	
-		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganization']['id']."] organization_id ".$user->organization['Organization']['id'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganization']['id']."] SuppliersOrganization.owner_articles ".$suppliersOrganizationResult['SuppliersOrganization']['owner_articles'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganization']['id']."] SuppliersOrganization.owner_organization_id ".$suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganization']['id']."] SuppliersOrganization.owner_supplier_organization_id ".$suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id'], $debug);
+		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['id']."] organization_id ".$user->organization['Organization']['id'], $debug);
+		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['id']."] SuppliersOrganization.owner_articles ".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_articles'], $debug);
+		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['id']."] SuppliersOrganization.owner_organization_id ".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'], $debug);
+		$Model::d("ServiceArticlesBehavior::getArticlesBySupplierOrganizationId supplier_organization_id [".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['id']."] SuppliersOrganization.owner_supplier_organization_id ".$suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id'], $debug);
 			
 		$options = [];
 		$options['conditions'] = [
-			'SuppliersOrganization.id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id'],
-			'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
-			'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_organization_id'],
-			'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['owner_supplier_organization_id']];
+			'SuppliersOrganization.id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id'],
+			'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
+			'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
+			'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id']];
 		$Model::d($opts, $debug);								  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  

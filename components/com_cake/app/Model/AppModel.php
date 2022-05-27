@@ -58,25 +58,53 @@ class AppModel extends Model {
 	    return $lastLog['query'];
 	}
 
-    public function _getOrderById($user, $order_id, $debug) {
+    public function _getOrderById($user, $order_id, $debug=false) {
 
 		/* 
 		 * importo un Model perche' se e' richiamato da un Model con public $useTable = false; error
 		 */
 		App::import('Model', 'Order');
 		$Order = new Order;
-				
+
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => (int)$user->organization['Organization']['id'], 'Order.id' => $order_id];
 		$options['recursive'] = 0;	
 		$orderResult = $Order->find('first', $options);
+
+        App::import('Model', 'Supplier');
+        $Supplier = new Supplier;
+
+        $options = [];
+        $options['conditions'] = ['Supplier.id' => $orderResult['SuppliersOrganization']['supplier_id']];
+        $options['fields'] = ['Supplier.img1'];
+        $options['recursive'] = -1;
+        $supplierResults = $Supplier->find('first', $options);
+        $orderResult['Supplier'] = $supplierResults['Supplier'];
+
+        /*
+         * estraggo chi gestisce il listino articoli
+         */
+        if($orderResult['Order']['owner_articles']!='REFERENT') {
+
+            App::import('Model', 'SuppliersOrganization');
+            $SuppliersOrganization = new SuppliersOrganization;
+
+            $options = [];
+            $options['conditions'] = ['organization_id' => $orderResult['Order']['owner_organization_id'], 'id' => $orderResult['Order']['owner_supplier_organization_id'], ];
+            $options['recursive'] = -1;
+            $results = $SuppliersOrganization->find('first', $options);
+            $orderResult['SuppliersOrganizationOwnerArticles'] = $results['SuppliersOrganization'];
+        }
+        else {
+            $orderResult['SuppliersOrganizationOwnerArticles'] = $orderResult['SuppliersOrganization'];
+        }
 
 		self::d([$options, $orderResult], false);
 		
 		return $orderResult;
 	}
 	
-	public function _getSuppliersOrganizationById($user, $supplier_organization_id, $debug) {
+	public function _getSuppliersOrganizationById($user, $supplier_organization_id, $debug=false) {
 	
 		/* 
 		 * importo un Model perche' se e' richiamato da un Model con public $useTable = false; error
@@ -88,6 +116,7 @@ class AppModel extends Model {
 		$options['conditions'] = ['SuppliersOrganization.organization_id' => (int)$user->organization['Organization']['id'], 'SuppliersOrganization.id' => $supplier_organization_id];
 		$options['recursive'] = 0;	
 		$suppliersOrganizationResult = $SuppliersOrganization->find('first', $options);
+        $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles'] = $suppliersOrganizationResult['SuppliersOrganization'];
 
 		self::d([$options, $suppliersOrganizationResult], false);
 		

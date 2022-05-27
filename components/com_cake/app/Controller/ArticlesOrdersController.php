@@ -40,11 +40,8 @@ class ArticlesOrdersController extends AppController {
          * ctrl che la consegna e l'ordine siano visibili in backoffice
          */
         if ($this->action != 'admin_order_choice') {
-            $options = [];
-            $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $order_id];
-            $options['recursive'] = 0;
-            $results = $Order->find('first', $options);
 
+            $results = $Order->_getOrderById($this->user, $order_id);
             if ($results['Delivery']['isVisibleBackOffice'] == 'N') {
                 $this->Session->setFlash(__('msg_delivery_not_visible_backoffice'));
                 $this->myRedirect(Configure::read('routes_msg_stop'));
@@ -53,20 +50,7 @@ class ArticlesOrdersController extends AppController {
                 $this->Session->setFlash(__('msg_order_not_visible_backoffice'));
                 $this->myRedirect(Configure::read('routes_msg_stop'));
             }
-            
-            /*
-             * Supplier.img1
-             */
-			App::import('Model', 'Supplier');
-			$Supplier = new Supplier;
-				
-			$options = [];
-			$options['conditions'] = ['Supplier.id' => $results['SuppliersOrganization']['supplier_id']];
-			$options['fields'] = ['Supplier.img1'];
-            $options['recursive'] = -1;
-			$supplierResults = $Supplier->find('first', $options);
-            $results['Supplier'] = $supplierResults['Supplier'];
-			
+
             $this->order = $results;
             $this->set('order', $this->order);
         } // if ($this->action != 'admin_order_choice') 
@@ -746,7 +730,7 @@ class ArticlesOrdersController extends AppController {
 			 
         } // end if ($this->request->is('post') || $this->request->is('put'))
 
-		self::d('Order.owner_articles '.$this->order['Order']['owner_articles'], $debug); 
+		self::d('Order.owner_articles '.$this->order['Order']['owner_articles'], $debug);
 		switch ($this->order['Order']['owner_articles']) {
 			case 'DES':
 				if($isTitolareDesSupplier) {

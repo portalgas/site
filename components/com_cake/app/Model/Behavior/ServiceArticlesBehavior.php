@@ -15,7 +15,7 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 	 * elenco articoli validi e non ancora associati all'ordine partendo dal produttore (quando sono in add con ArticlesOrder::add)
 	 */
 	public function getArticlesBySupplierOrganizationId_Ordinabili(Model $Model, $user, $orderResult, $opts=[], $debug=false) {
-	
+
 		if(!is_array($orderResult))
 			$orderResult = $Model->_getOrderById($user, $orderResult, $debug);
 		

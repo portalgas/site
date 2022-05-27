@@ -414,7 +414,37 @@ class Order extends AppModel {
 			$CartsSplit->delete_to_order($user, $results['Order']['id'], $debug);		
 		} 
 	}
-	
+
+    /*
+     * estrae l'importo totale degli acquisti di un ordine e lo salvo sull'ordine
+     * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrderS)
+    */
+    public function setTotImporto($user, $order_id, $debug=false) {
+
+        $tot_importo = $this->getTotImporto($user, $order_id, $debug);
+        if($tot_importo>0) {
+
+            $options = [];
+            $options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
+            $options['recursive'] = -1;
+
+            $results = [];
+            $results = $this->find('first', $options);
+            $results['Order']['nota'] = 'test';
+            $results['Order']['tot_importo'] = $tot_importo;
+
+            unset($results['Order']['data_inizio']);
+            unset($results['Order']['data_fine']);
+            unset($this->validate['data_inizio']);
+            unset($this->validate['data_fine']);
+            if(!$this->save($results)) {
+                CakeLog::write('error','Order::setTotImporto()');
+                CakeLog::write('error',$this->validationErrors);
+                // debug($this->validationErrors);
+            }
+        }
+    }
+
 	/*
 	 * estrae l'importo totale degli acquisti di un ordine
 	 * ctrl eventuali (come ExporDoc:getCartCompile() )

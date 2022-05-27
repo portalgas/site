@@ -57,7 +57,9 @@ class RequestPayment extends AppModel {
 	 *  - SUM() dispensa
 	*/
 	public  function getTotImporto($user, $request_payment_id, $debug=false) {
-		
+
+        // $debug=true;
+
 		$tot_importo_orders = 0;
 		$tot_importo_storerooms = 0;
 		$tot_importo_generics = 0;
@@ -77,7 +79,7 @@ class RequestPayment extends AppModel {
 					    and RequestPaymentsOrder.order_id = `Order`.id
 					    and `Order`.isVisibleBackOffice = 'Y'
 					    and RequestPaymentsOrder.request_payment_id = ".$request_payment_id;
-			self::d($sql, $debug);
+			if($debug) debug($sql);
 			$results = $this->query($sql);
 			$tot_importo_orders = $results[0][0]['tot_importo_orders'];
 						
@@ -127,7 +129,7 @@ class RequestPayment extends AppModel {
 					WHERE
 						RequestPaymentsOrdersGeneric.organization_id = ".(int)$user->organization['Organization']['id']."
 					    and RequestPaymentsOrdersGeneric.request_payment_id = ".$request_payment_id;
-			self::d($sql, $debug);
+            if($debug) debug($sql);
 			$results = $this->query($sql);
 			$tot_importo_generics = $results[0][0]['tot_importo_generics'];
 		}
