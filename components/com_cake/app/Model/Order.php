@@ -433,14 +433,9 @@ class Order extends AppModel {
             $results['Order']['nota'] = 'test';
             $results['Order']['tot_importo'] = $tot_importo;
 
-            unset($results['Order']['data_inizio']);
-            unset($results['Order']['data_fine']);
-            unset($this->validate['data_inizio']);
-            unset($this->validate['data_fine']);
             if(!$this->save($results)) {
                 CakeLog::write('error','Order::setTotImporto()');
                 CakeLog::write('error',$this->validationErrors);
-                // debug($this->validationErrors);
             }
         }
     }
@@ -951,17 +946,17 @@ class Order extends AppModel {
 	}
 	
 	public function beforeValidate($options = []) {
-		 
-		if (!empty($this->data['Order']['data_inizio']))
+
+		if (!empty($this->data['Order']['data_inizio']) && isset($this->data['Order']['data_inizio_db']))
 			$this->data['Order']['data_inizio'] = $this->data['Order']['data_inizio_db'];
 
-		if (!empty($this->data['Order']['data_fine']))
+		if (!empty($this->data['Order']['data_fine']) && isset($this->data['Order']['data_fine_db']))
 			$this->data['Order']['data_fine'] = $this->data['Order']['data_fine_db'];
 
-		if (!empty($this->data['Order']['data_fine_validation_db']))
+		if (isset($this->data['Order']['data_fine_validation_db']) && !empty($this->data['Order']['data_fine_validation_db']))
 			$this->data['Order']['data_fine_validation'] = $this->data['Order']['data_fine_validation_db'];
 		
-		if (!empty($this->data['Order']['tesoriere_data_pay_db']))
+		if (isset($this->data['Order']['tesoriere_data_pay_db']) && !empty($this->data['Order']['tesoriere_data_pay_db']))
 			$this->data['Order']['tesoriere_data_pay'] = $this->data['Order']['tesoriere_data_pay_db'];
 			
 		return true;

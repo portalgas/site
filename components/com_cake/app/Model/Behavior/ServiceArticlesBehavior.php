@@ -28,10 +28,10 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 			   					  
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
-
+;
 		if(isset($opts['order']))
 			$options['order'] = $opts['order'];		
-		$results = $this->getArticlesBySupplierOrganizationId($Model, $user, $orderResult['Order']['supplier_organization_id'], $options, $debug);
+		$results = $this->getArticlesByOrderSupplierOrganizationId($Model, $user, $orderResult, $options, $debug);
 
     	/*
     	 * escludo gli articoli gia' associati all'ordine 
@@ -145,7 +145,7 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 			$options['order'] = $opts['order'];
 		
 		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $owner_organization_id]);
-		$results = $this->getArticlesBySupplierOrganizationId($Model, $tmp_user, $owner_supplier_organization_id, $options, $debug);
+		$results = $this->getArticlesByOrderSupplierOrganizationId($Model, $tmp_user, $orderResult, $options, $debug);
 		
     	/*
     	 * escludo gli articoli gia' associati all'ordine 
@@ -257,7 +257,7 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 		if(isset($opts['order']))
 			$options['order'] = $opts['order'];
 		
-		$results = $this->getArticlesBySupplierOrganizationId($Model, $user, $orderResult, $options, $debug);		
+		$results = $this->getArticlesByOrderSupplierOrganizationId($Model, $user, $orderResult, $options, $debug);		
 
     	/*
     	 * escludo gli articoli gia' associati all'ordine 

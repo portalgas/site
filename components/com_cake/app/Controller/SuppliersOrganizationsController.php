@@ -138,31 +138,31 @@ class SuppliersOrganizationsController extends AppController {
 		$this->SuppliersOrganization->recursive = 0; 
         $this->paginate = ['conditions' => [$conditions], 'order' => ['SuppliersOrganization.name'], 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('SuppliersOrganization');
-		self::d($results);
+        self::d($results);
 		
 		foreach ($results as $i  => $result) {
 
-			/* 
-			 * SuppliersOrganizationsReferent 
-			 */
+            /*
+             * SuppliersOrganizationsReferent
+             */
 			$conditions = ['SuppliersOrganizationsReferent.supplier_organization_id'=>$result['SuppliersOrganization']['id'],
 							'SuppliersOrganizationsReferent.organization_id' => (int)$this->user->organization['Organization']['id']];
-			$suppliersOrganizationsReferents = $this->SuppliersOrganization->SuppliersOrganizationsReferent->find('all',array('conditions' => $conditions));
+            $suppliersOrganizationsReferents = $this->SuppliersOrganization->SuppliersOrganizationsReferent->find('all', ['conditions' => $conditions]);
 			if(!empty($suppliersOrganizationsReferents)) {
-				foreach ($suppliersOrganizationsReferents as $ii  => $suppliersOrganizationsReferent) {
+                foreach ($suppliersOrganizationsReferents as $ii  => $suppliersOrganizationsReferent) {
 					$results[$i]['SuppliersOrganizationsReferent'][$ii]['User'] = $suppliersOrganizationsReferent['User'];
 					$results[$i]['SuppliersOrganizationsReferent'][$ii]['SuppliersOrganizationsReferent'] = $suppliersOrganizationsReferent['SuppliersOrganizationsReferent'];
 				}
 			}
 			else 
 				$results[$i]['SuppliersOrganizationsReferent'] = null;
-			
-			/*
-			 * totale articoli
-			*/				
+
+            /*
+             * totale articoli
+            */
 			$opts = [];
 			$opts['conditions'] = ['Article.stato' => 'Y'];
-			$results[$i]['Articles']['totArticles'] = $this->SuppliersOrganization->getTotArticlesAttivi($this->user, $result['SuppliersOrganization']['id'], $opts);
+            $results[$i]['Articles']['totArticles'] = $this->SuppliersOrganization->getTotArticlesAttivi($this->user, $result['SuppliersOrganization']['id'], $opts);
 			
 			/*
 			 * ctrl se GAS e' DES
@@ -222,7 +222,7 @@ class SuppliersOrganizationsController extends AppController {
 			} 
 			else 
 				$results[$i]['OwnOrganization'] = null;
-			
+
 		} // end loops
 
 		$this->set('results', $results);
