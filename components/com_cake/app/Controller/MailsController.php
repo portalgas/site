@@ -1779,7 +1779,7 @@ class MailsController extends AppController {
 		
 		$debug = false;
 				
-		$results = $this->Mail->getArticlesByOrderId_ConAcquisti($this->user, $order_id, [], $debug); 
+		$results = $this->Mail->getArticlesByOrder_ConAcquisti($this->user, $order_id, [], $debug);
         self::d($results, $debug);
 
         $this->set(compact('results'));	

@@ -19,7 +19,15 @@ class ActionsDesOrderComponent extends Component {
 		
 		foreach($desResults['desOrdersResults']['DesOrdersOrganizations'] as $desOrdersOrganization) {
 			if($desOrdersOrganization['DesOrdersOrganization']['organization_id']==$desResults['desOrdersResults']['OwnOrganization']['id']) {
-				$titolareOrderResult['Order'] = $desOrdersOrganization['Order'];
+
+                App::import('Model', 'Order');
+                $Order = new Order();
+
+                $tmp_user = new \stdClass();
+                $tmp_user->organization = [];
+                $tmp_user->organization['Organization'] = ['id' => $desOrdersOrganization['Order']['organization_id']];
+                $order = $Order->_getOrderById($tmp_user, $desOrdersOrganization['Order']['id']);
+                $titolareOrderResult = $order;
 				break;
 			}
 		}

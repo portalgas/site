@@ -58,6 +58,9 @@ class AppModel extends Model {
 	    return $lastLog['query'];
 	}
 
+    /*
+     * SuppliersOrganizationOwnerArticles chi gestisce il listino in base a owner_articles
+     */
     public function _getOrderById($user, $order_id, $debug=false) {
 
 		/* 
@@ -68,8 +71,10 @@ class AppModel extends Model {
 
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => (int)$user->organization['Organization']['id'], 'Order.id' => $order_id];
-		$options['recursive'] = 0;	
+		$options['recursive'] = 0;
+        if($debug) debug($options);
 		$orderResult = $Order->find('first', $options);
+        if($debug) debug($orderResult);
 
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;

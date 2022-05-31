@@ -12,182 +12,96 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], (array)$settings);
 	}
 
-	/*
-	 * articoli associati ad un ordine
-	 * Order.owner_articles REFERENT / DES / SUPPLIER
-	 * Order.owner_organization_id
-	 * Order.owner_supplier_organization_id
-	 *
-	 * return ArticlesOrder / Article
-	 */
-	public function getArticlesByOrderId(Model $Model, $user, $orderResult, $opts=[], $debug=false) {
-	
-		$esito = [];
-
-		if(empty($orderResult)) {
-			$esito['CODE'] = "500";
-			$esito['MSG'] = "Parametri errati";
-			return $esito; 
-		}	
-
-		App::import('Model', 'Order');
-		$Order = new Order;
-		
-		App::import('Model', 'ArticlesOrder');
-		$ArticlesOrder = new ArticlesOrder;
-		
-		$ArticlesOrder->unbindModel(['belongsTo' => ['Order', 'Cart']]);
-
-		if(!is_array($orderResult))
-			$orderResult = $Model->_getOrderById($user, $orderResult, $debug);
-	
-		$Model::d("ServiceArticlesBehavior::getArticlesByOrderId order_id [".$orderResult['Order']['id']."] organization_id ".$user->organization['Organization']['id'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesByOrderId order_id [".$orderResult['Order']['id']."] Order.supplier_organization_id ".$orderResult['Order']['supplier_organization_id'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesByOrderId order_id [".$orderResult['Order']['id']."] Order.owner_articles ".$orderResult['Order']['owner_articles'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesByOrderId order_id [".$orderResult['Order']['id']."] Order.owner_organization_id ".$orderResult['Order']['owner_organization_id'], $debug);
-		$Model::d("ServiceArticlesBehavior::getArticlesByOrderId order_id [".$orderResult['Order']['id']."] Order.owner_supplier_organization_id ".$orderResult['Order']['owner_supplier_organization_id'], $debug);
-			
-		$options = [];
-		$options['conditions'] = ['Article.organization_id' => $orderResult['Order']['owner_organization_id'],
-				  'Article.supplier_organization_id' => $orderResult['Order']['owner_supplier_organization_id'],
-				  'ArticlesOrder.organization_id' => $orderResult['Order']['organization_id'],
-				  'ArticlesOrder.order_id' => $orderResult['Order']['id']];
-											  
-		if(isset($opts['conditions']))
-			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  
-		if(isset($opts['order']))
-			$options['order'] = $opts['order'];
-		else
-			$options['order'] = ['Article.name' => 'asc'];	
-	   	$options['recursive'] = 0;
-		$Model::d($options, $debug);
-
-		if (isset($opts['conditions']) && array_key_exists('Article.id', $opts['conditions']))
-			$results = $ArticlesOrder->find('first', $options);
-		else
-			$results = $ArticlesOrder->find('all', $options);
-			
-		$Model::d($results, $debug);
-		
-	   	return $results;
-	}	
-
-	/*
-	 * articoli associati ad un produttore
-	 * Order.owner_articles REFERENT / DES / SUPPLIER
-	 * SuppliersOrganization.owner_articles REFERENT / DES / SUPPLIER
-	 * SuppliersOrganization.owner_organization_id
-	 * SuppliersOrganization.owner_supplier_organization_id
-	 */	
-	public function getArticlesByOrderSupplierOrganizationId(Model $Model, $user, $orderResult, $opts=[], $debug=false) {
-
-		$esito = [];
-
-		if(empty($orderResult)) {
-			$esito['CODE'] = "500";
-			$esito['MSG'] = "Parametri errati";
-			return $esito; 
-		}	
-
-		App::import('Model', 'SuppliersOrganizationOwnerArticles');
-		$SuppliersOrganization = new SuppliersOrganization;
-		
-		App::import('Model', 'Article');
-		$Article = new Article;
-					
-	  	App::import('Model', 'ArticlesArticlesType');
-		$ArticlesArticlesType = new ArticlesArticlesType;
-
-		// $Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
-		$Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
-		$Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
-		$Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
-
- 		$options = [];
-        switch ($orderResult['Order']['owner_articles']) {
-            case 'REFERENT':
-                $options['conditions'] = [
-                    'Article.organization_id' =>$orderResult['Order']['owner_organization_id'],
-                    'Article.supplier_organization_id' => $orderResult['Order']['owner_supplier_organization_id']];
-                break;
-            case 'SUPPLIER':
-            case 'DES':
-            $options['conditions'] = [
-                'SuppliersOrganization.id' => $orderResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id'],
-                'SuppliersOrganization.organization_id' => $orderResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
-                'Article.organization_id' =>$orderResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
-                'Article.supplier_organization_id' => $orderResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id']];
-                break;
-        }
-
-		$Model::d($opts, $debug);
-		if(isset($opts['conditions']))
-			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	  
-		if(isset($opts['order']))
-			$options['order'] = $opts['order'];
-		else
-			$options['order'] = ['Article.name'];	
-	   	$options['recursive'] = 1;
-		$Model::d($options, $debug);
-
-		if (isset($opts['conditions']) && array_key_exists('Article.id', $opts['conditions']))
-			$results = $Article->find('first', $options);
-		else
-			$results = $Article->find('all', $options);
-
-		if(!empty($results))
-		foreach($results as $numResult => $result) {
-			$articlesTypeResults = $ArticlesArticlesType->getArticlesArticlesTypes($user, $result['Article']['organization_id'], $result['Article']['id']);
-			if(!empty($articlesTypeResults))
-				$results[$numResult]['ArticlesType'] = $articlesTypeResults;
-		}	
-		// $Model::d($results, $debug);
-
-	   	return $results;
-	}
-
-
     /*
-     * articoli associati ad un produttore
+     * articoli filtrati per ordine
+     *
      * Order.owner_articles REFERENT / DES / SUPPLIER
-     * SuppliersOrganization.owner_articles REFERENT / DES / SUPPLIER
-     * SuppliersOrganization.owner_organization_id
-     * SuppliersOrganization.owner_supplier_organization_id
+     * Order.owner_organization_id
+     * Order.owner_supplier_organization_id
+     *
+     * return ArticlesOrder / Article
      */
-    public function getArticlesBySupplierOrganizationId(Model $Model, $user, $suppliersOrganizationResult, $opts=[], $debug=false) {
-
+    public function getArticlesByOrder(Model $Model, $user, $order, $opts=[], $debug=false)
+    {
         $esito = [];
 
-        if(empty($orderResult)) {
+        if (empty($order)) {
             $esito['CODE'] = "500";
             $esito['MSG'] = "Parametri errati";
             return $esito;
         }
 
-        App::import('Model', 'SuppliersOrganizationOwnerArticles');
-        $SuppliersOrganization = new SuppliersOrganization;
+        if(!is_array($order))
+            $order = $Model->_getOrderById($user, $order, $debug);
 
-        if(!is_array($suppliersOrganizationResult))
-            $suppliersOrganizationResult = $Model->_getSuppliersOrganizationById($user, $suppliersOrganizationResult, $debug);
-
-        App::import('Model', 'Article');
-        $Article = new Article;
-
-        App::import('Model', 'ArticlesArticlesType');
-        $ArticlesArticlesType = new ArticlesArticlesType;
-
-        // $Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
-        $Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
-        $Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
-        $Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
-
+        /*
+         * conditions
+         */
         $options = [];
+        $options['conditions'] = ['Article.organization_id' => $order['Order']['owner_organization_id'],
+            'Article.supplier_organization_id' => $order['Order']['owner_supplier_organization_id'],
+           'ArticlesOrder.organization_id' => $order['Order']['organization_id'],
+           'ArticlesOrder.order_id' => $order['Order']['id']];
+
+        $Model::d($opts, $debug);
+        if(isset($opts['conditions']))
+            $options['conditions'] = array_merge($options['conditions'], $opts['conditions']);
+        if(isset($opts['order']))
+            $options['order'] = $opts['order'];
+        else
+            $options['order'] = ['Article.name'];
+        $options['recursive'] = 0;
+        $Model::d($options, $debug);
+
+        /*
+         * get ArticlesOrder
+         */
+        App::import('Model', 'ArticlesOrder');
+        $ArticlesOrder = new ArticlesOrder;
+        $ArticlesOrder->unbindModel(['belongsTo' => ['Order', 'Cart']]);
+
+        if (isset($opts['conditions']) && array_key_exists('Article.id', $opts['conditions']))
+            $results = $ArticlesOrder->find('first', $options);
+        else
+            $results = $ArticlesOrder->find('all', $options);
+
+        $Model::d($results, $debug);
+
+        return $results;
+    }
+
+    /*
+     * articoli filtrati per produttore
+     * quando associo articoli ad ordine nuovo
+     *
+     * SuppliersOrganization.owner_articles REFERENT / DES / SUPPLIER
+     * SuppliersOrganization.owner_organization_id
+     * SuppliersOrganization.owner_supplier_organization_id
+     *
+     * return Article
+     */
+    public function getArticlesBySuppliersOrganization(Model $Model, $user, $suppliersOrganization, $opts=[], $debug=false)
+    {
+        $esito = [];
+
+        if (empty($suppliersOrganization)) {
+            $esito['CODE'] = "500";
+            $esito['MSG'] = "Parametri errati";
+            return $esito;
+        }
+
+        if(!is_array($suppliersOrganization))
+            $suppliersOrganization = $Model->_getSuppliersOrganizationById($user, $suppliersOrganization, $debug);
+
+        /*
+         * conditions, includere anche SuppliersOrganization
+         */
         $options = [];
         $options['conditions'] = [
-            'SuppliersOrganization.id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id'],
-            'SuppliersOrganization.organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
-            'Article.organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'],
-            'Article.supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id']];
+            'SuppliersOrganization.id' => $suppliersOrganization['SuppliersOrganization']['owner_supplier_organization_id'],
+            'SuppliersOrganization.organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_organization_id'],
+            'Article.organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_organization_id'],
+            'Article.supplier_organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_supplier_organization_id']];
 
         $Model::d($opts, $debug);
         if(isset($opts['conditions']))
@@ -199,15 +113,29 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
         $options['recursive'] = 1;
         $Model::d($options, $debug);
 
+        /*
+         * get Articles
+        */
+        App::import('Model', 'ArticlesArticlesType');
+        $ArticlesArticlesType = new ArticlesArticlesType;
+
+        App::import('Model', 'Article');
+        $Article = new Article;
+        // $Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
+        $Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
+        $Article->unbindModel(['hasAndBelongsToMany' => ['Order', 'ArticlesType']]);
+
         if (isset($opts['conditions']) && array_key_exists('Article.id', $opts['conditions']))
             $results = $Article->find('first', $options);
         else
             $results = $Article->find('all', $options);
-
+        // debug($options);
+        // debug($results);
         if(!empty($results))
             foreach($results as $numResult => $result) {
                 $articlesTypeResults = $ArticlesArticlesType->getArticlesArticlesTypes($user, $result['Article']['organization_id'], $result['Article']['id']);
-                if(!empty($articlesTypeResults))
+                if (!empty($articlesTypeResults))
                     $results[$numResult]['ArticlesType'] = $articlesTypeResults;
             }
         // $Model::d($results, $debug);

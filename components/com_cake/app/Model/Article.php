@@ -1011,12 +1011,12 @@ class Article extends ArticleMultiKey {
 			'fields' => '',
 			'order' => ''
 		],
-			'CategoriesArticle' => [
-				'className' => 'CategoriesArticle',
-				'foreignKey' => 'category_article_id',
-				'conditions' =>  'CategoriesArticle.organization_id = Article.organization_id',
-				'fields' => '',
-				'order' => '',
+        'CategoriesArticle' => [
+            'className' => 'CategoriesArticle',
+            'foreignKey' => 'category_article_id',
+            'conditions' =>  'CategoriesArticle.organization_id = Article.organization_id',
+            'fields' => '',
+            'order' => '',
 		]
 	];
 
