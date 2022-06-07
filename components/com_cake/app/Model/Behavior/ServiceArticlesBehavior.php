@@ -86,7 +86,6 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
 			
 		$results = [];
-        // fractis $results = $this->getArticlesByOrderId($Model, $user, $orderResult, $options, $debug);
         $results = $this->getArticlesByOrder($Model, $user, $orderResult, $options, $debug);
 
         if(!empty($results)) {

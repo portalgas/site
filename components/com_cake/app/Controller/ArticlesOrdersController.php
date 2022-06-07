@@ -100,7 +100,7 @@ class ArticlesOrdersController extends AppController {
                  */
                 if(!empty($desResults['des_order_id'])) {
                     $titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
-                    $results = $this->ArticlesOrder->getArticlesByOrder($this->user, $titolareOrderResult, $opt, $debug);	// articoli del titolare da associare
+                    $results = $this->ArticlesOrder->getArticlesByOrder($this->user, $titolareOrderResult, [], $debug);	// articoli del titolare da associare
                 }
                 break;
             case 'REFERENT':
@@ -112,7 +112,7 @@ class ArticlesOrdersController extends AppController {
                  */
                 $suppliersOrganization['SuppliersOrganization'] = $this->order['SuppliersOrganizationOwnerArticles'];
                 // debug($suppliersOrganization['SuppliersOrganization']);
-                $results = $this->ArticlesOrder->getArticlesBySuppliersOrganization($this->user, $suppliersOrganization, $opt, $debug);	// articoli da associare
+                $results = $this->ArticlesOrder->getArticlesBySuppliersOrganization($this->user, $suppliersOrganization, [], $debug);	// articoli da associare
                 break;
             default:
                 self::x(__('msg_error_supplier_organization_owner_articles'));
@@ -715,9 +715,9 @@ class ArticlesOrdersController extends AppController {
                  * prendo il listino da titolare => Articles / ArticlesOrders
                  */
                 if(!empty($desResults['des_order_id'])) {
-                    $results = $this->ArticlesOrder->getArticlesByOrder($this->user, $this->order, $opt, $debug);	// articoli del titolare da associare
+                    $results = $this->ArticlesOrder->getArticlesByOrder($user, $this->order, [], $debug);	// articoli del titolare da associare
 
-                    $titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
+                    $titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($user, $desResults, $debug);
                     $articles = $this->ArticlesOrder->getArticlesByDesOrder_Ordinabili($user, $titolareOrderResult, $this->order, [], $debug);	// articoli da associare
                 }
             break;

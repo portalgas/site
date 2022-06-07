@@ -1,3 +1,13 @@
+<?php
+if($modalita=='ADD') {
+    isset($this->request->data['typeDelivery']) ? $typeDelivery = $this->request->data['typeDelivery']: $typeDelivery = 'select';
+}
+else
+if($modalita=='EDIT') {
+  if($this->request->data['Delivery']['sys']=='N') $typeDelivery = 'select';
+  else $typeDelivery = 'to_defined';
+}
+?>
 <div class="input required">
 
 	<label for=""><?php echo __('Delivery');?></label>
@@ -8,13 +18,7 @@
 			<tr>
 				<td>
 					<input type="radio" 
-					<?php
-					if($modalita=='ADD')
-						echo 'checked="checked"';
-					else
-					if($modalita=='EDIT' && $this->request->data['Delivery']['sys']=='N')
-						echo 'checked="checked"';
-					?> value="select" name="typeDelivery" />
+					<?php if($typeDelivery=='select') echo 'checked="checked"';?> value="select" name="typeDelivery" />
 				</td>
 				<td id="select_content">
 					<?php
@@ -29,7 +33,7 @@
 						if(empty($deliveries))
 							echo __('OrderNotFoundDeliveries');
 						else
-							echo $this->Form->input('delivery_id',array('label' => false, 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false'));
+							echo $this->Form->input('delivery_id', ['label' => false, 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false']);
 					}
 					?>
 				</td>
@@ -39,7 +43,9 @@
 			?>				
 				<tr>
 					<td>
-						<input type="radio" value="mail" name="typeDelivery" />
+						<input type="radio"
+                        <?php if($typeDelivery=='mail') echo 'checked="checked"';?>
+                        value="mail" name="typeDelivery" />
 					</td>
 					<td id="mail_content">
 						<div class="actions-img" style="float:left;">
@@ -67,11 +73,8 @@
 			?>			
 			<tr>
 				<td>
-					<input type="radio" 
-					<?php
-					if($modalita=='EDIT' && $this->request->data['Delivery']['sys']=='Y')
-						echo 'checked="checked"';
-					?> 					
+					<input type="radio"
+                    <?php if($typeDelivery=='to_defined') echo 'checked="checked"';?>
 					value="to_defined" name="typeDelivery" />
 				</td>
 				<td id="to_defined_content">
@@ -163,16 +166,7 @@ $(document).ready(function() {
 	});
 
 	<?php
-	if($modalita=='ADD') {
-		echo "gestTypeDelivery('select');";						
-	} 
-	else 
-	if($modalita=='EDIT') {
-		if($this->request->data['Delivery']['sys']=='Y')
-			echo "gestTypeDelivery('to_defined');";
-		else 
-			echo "gestTypeDelivery('select');";
-	}
+	echo "gestTypeDelivery('".$typeDelivery."');";
 	?>
 });
 </script>
