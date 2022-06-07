@@ -267,9 +267,8 @@ class SuppliersOrganization extends AppModel {
 	 * $opts['conditions'] = ['Article.stato' => 'Y'];
 	 */
 	public function getTotArticlesAttivi($user, $supplier_organization_id, $opts=[], $debug=false) {
-	
-		// fractis $articlesResults = $this->getArticlesBySupplierOrganizationId($user, $supplier_organization_id, $opts, $debug);
-        $articlesResults = $this->getArticlesBySupplierOrganization($user, $supplier_organization_id, $opts, $debug);
+
+        $articlesResults = $this->getArticlesBySuppliersOrganization($user, $supplier_organization_id, $opts, $debug);
 		$articlesCountResults = count($articlesResults);
 		self::d($articlesResults, $debug);	
 		self::d($articlesCountResults, $debug);	

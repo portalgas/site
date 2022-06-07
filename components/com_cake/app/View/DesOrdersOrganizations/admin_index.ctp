@@ -224,10 +224,9 @@ echo '<div class="orders">';
 			else
 				$this->App->d('isTitolareDesSupplier N', $debug);
 
-
 			if($desOrganizationsResult['Organization']['id']==$user->organization['Organization']['id']) {
 				if($acl_owner_articles!==true) {
-					switch ($acl_owner_articles['owner_articles']) {
+                    switch ($acl_owner_articles['owner_articles']) {
 						case 'REFERENT':
 							if($results['DesOrder']['state_code']=='OPEN') {
 								$label = __('DesOrderOrganizationSupplierOwnerArticlesError');
@@ -246,7 +245,7 @@ echo '<div class="orders">';
 						break;
 						case 'DES':
 						case 'SUPPLIER':
-							// e' corretto ma se lo user non e' titolare non puo' far nulla
+                            // e' corretto ma se lo user non e' titolare non puo' far nulla
 							echo '<span class="label label-info">'.__('DesOrderOrganizationNotIsTitolareDesSupplier').'</span>';
 						break;
 					}

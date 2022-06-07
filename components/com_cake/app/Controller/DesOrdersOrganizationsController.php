@@ -117,7 +117,7 @@ class DesOrdersOrganizationsController extends AppController {
 		 * non e' stato creato alcun ordine, solo il titolare puo'
 		 */
 		$isTitolareDesSupplier = $this->ActionsDesOrder->isTitolareDesSupplier($this->user, $des_order_id);	
-		self::dd($suppliersOrganizationResults, $debug);	
+		self::d($suppliersOrganizationResults, $debug);
 		$this->set(compact('isTitolareDesSupplier'));
 
 		/*

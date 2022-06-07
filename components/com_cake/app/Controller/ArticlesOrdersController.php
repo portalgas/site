@@ -91,48 +91,34 @@ class ArticlesOrdersController extends AppController {
 		}
 		
 	    self::d('Order.owner_articles '.$this->order['Order']['owner_articles'], $debug); 
-		$results = [];		
-		switch ($this->order['Order']['owner_articles']) {
-			case 'DES': 
-				if($isTitolareDesSupplier) {
-					self::d('Ordine DES - Sono isTitolareDesSupplier', $debug);
-					$results = $this->ArticlesOrder->getArticlesByOrderId_Ordinabili($this->user, $this->order, [], $debug); // articoli da associare
-				}
-				else { 
-					/*
-					 * ordine del titolare 
-					 */
-					if(!empty($desResults['des_order_id'])) { 
-						$titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
-						$results = $this->ArticlesOrder->getArticlesByOrder_Ordinabili($this->user, $this->order, $titolareOrderResult, [], $debug);	// articoli da associare		 
-					}
-					else {
-						/*
-						 * non e' un ordine DES e prendo il listino del Titolare (non legato ad un ordine DES)
-						 */
-                        $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $this->order['Order']['owner_organization_id']]);
-                        $results = $this->ArticlesOrder->getArticlesByOrder_Ordinabili($tmp_user, $this->order, [], $debug);
-                        // fractis $results = $this->ArticlesOrder->getArticlesDesTitolareBySupplierOrganizationId_Ordinabili($this->user, $this->order, [], $debug);
-					}
-				}			
-			break;
-			case 'REFERENT':
-				/*
-				 * prima volta ricerco partendo da SupplierOrganization, successivamente per Order 
-				 */
-				$results = $this->ArticlesOrder->getArticlesByOrder_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
-			break;
-			case 'SUPPLIER':	
-				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
-			break;
-			case 'PACT':	
-				$results = $this->ArticlesOrder->getArticlesSupplierByOrderId_Ordinabili($this->user, $this->order, [], $debug);	// articoli da associare
-			break;
-			default:
-				self::x(__('msg_error_supplier_organization_owner_articles'));
-			break;				
-		}
-		self::d($results, $debug);
+		$results = [];
+        switch ($this->order['Order']['owner_articles']) {
+            case 'DES':
+                /*
+                 * se DES non puo' essere titolare, il titolare prende il listino articolo da REFERENT o SUPPLIER
+                 * prendo il listino da titolare => Articles / ArticlesOrders
+                 */
+                if(!empty($desResults['des_order_id'])) {
+                    $titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
+                    $results = $this->ArticlesOrder->getArticlesByOrder($this->user, $titolareOrderResult, $opt, $debug);	// articoli del titolare da associare
+                }
+                break;
+            case 'REFERENT':
+            case 'SUPPLIER':
+            case 'PACT':
+                /*
+                 * prima volta ricerco partendo da SupplierOrganization => Articles
+                 * SuppliersOrganizationOwnerArticles creato in AppModel::_getOrderById() chi gestisce il listino
+                 */
+                $suppliersOrganization['SuppliersOrganization'] = $this->order['SuppliersOrganizationOwnerArticles'];
+                // debug($suppliersOrganization['SuppliersOrganization']);
+                $results = $this->ArticlesOrder->getArticlesBySuppliersOrganization($this->user, $suppliersOrganization, $opt, $debug);	// articoli da associare
+                break;
+            default:
+                self::x(__('msg_error_supplier_organization_owner_articles'));
+                break;
+        }
+        self::d($results, $debug);
 
         foreach ($results as $result) {
 			
@@ -258,7 +244,7 @@ class ArticlesOrdersController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
 
 			self::d($this->request->data, $debug);
-			
+
             $msg = "";
             /*
              * cancello eventuali doppioni
@@ -445,7 +431,7 @@ class ArticlesOrdersController extends AppController {
 			break;
 			default:
 				self::x(__('msg_error_supplier_organization_owner_articles'));
-			break;				
+			break;
 		}
 		self::d($results, $debug);  
 		$this->set(compact('results'));
@@ -732,7 +718,7 @@ class ArticlesOrdersController extends AppController {
                     $results = $this->ArticlesOrder->getArticlesByOrder($this->user, $this->order, $opt, $debug);	// articoli del titolare da associare
 
                     $titolareOrderResult = $this->ActionsDesOrder->getOrderTitolare($this->user, $desResults, $debug);
-                    $articles = $this->ArticlesOrder->getArticlesByDesOrder_Ordinabili($user, $titolareOrderResult, [], $debug);	// articoli da associare
+                    $articles = $this->ArticlesOrder->getArticlesByDesOrder_Ordinabili($user, $titolareOrderResult, $this->order, [], $debug);	// articoli da associare
                 }
             break;
 			case 'REFERENT':
@@ -740,7 +726,7 @@ class ArticlesOrdersController extends AppController {
             case 'PACT':
 				self::d('Ordine NON DES', $debug);
 				$results = $this->ArticlesOrder->getArticlesByOrder_ConAcquisti($user, $this->order, [], $debug);  // articoli gia associati
-				$articles = $this->ArticlesOrder->getArticlesByOrder_Ordinabili($user, $this->order, [], $debug);	// articoli da associare
+				$articles = $this->ArticlesOrder->getArticlesBySupplierOrganization_Ordinabili($user, $this->order, [], $debug);	// articoli da associare
 			break;
 			default:
 				self::x(__('msg_error_supplier_organization_owner_articles'));
@@ -1142,23 +1128,24 @@ class ArticlesOrdersController extends AppController {
 			$options = [];
 			$options['conditions'] = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'],
 									'Delivery.isVisibleBackOffice' => 'Y',
-									'DATE(Delivery.data) < CURDATE()',
+					                'DATE(Delivery.data) < CURDATE()',
 									'Order.isVisibleBackOffice' => 'Y',
 									'Order.supplier_organization_id' => $order['supplier_organization_id']];
 			$options['order'] = ['Delivery.data DESC'];
 			$results = $Order->find('first', $options);
-			self::d($options, $debug);
-			self::d($results, $debug);
+			if($debug) debug($options);
+            if($debug) debug($results);
 
 			/*
 			 * c'e' un ordine precedente, estraggo gli articoli non escludendoli dal precedente
 			 */
-			if (!empty($results)) {  
+			if (!empty($results)) {
+                $order = $Order->_getOrderById($user, $results['Order']['id'], $debug=false);  // nella struttura ho SuppliersOrganizationOwnerArticles
 				$opts = ['force' => 'NOT_EXCLUDE_ARTICLESORDERS'];
-				$previousResults = $this->ArticlesOrder->getArticlesByOrderId_Ordinabili($this->user, $results, $opts);
+				$previousResults = $this->ArticlesOrder->getArticlesByOrder_Ordinabili($user, $order, $opts);
 			}			
 		}
-		self::d($previousResults, $debug);
+        if($debug) debug($previousResults);
 		
         return $previousResults;
     }

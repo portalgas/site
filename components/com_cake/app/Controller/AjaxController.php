@@ -2155,7 +2155,33 @@ class AjaxController extends AppController {
         $this->layout = 'ajax';
         $this->render('/Ajax/admin_suppliers_organization_details');
     }
-	
+
+    public function admin_suppliersOrganizationOrderDetails($order_id, $des_order_id=0, $format='notmpl') {
+
+        $results = [];
+
+        App::import('Model', 'Order');
+        $Order = new Order;
+
+        $results = $Order->_getOrderById($this->user, $order_id);
+
+        if(!empty($des_order_id)) {
+            $results = $this->_suppliersOrganizationDetails($supplier_organization_id, $des_order_id, $debug = false);
+            $this->set(compact('results'));
+            $this->set('msgAlert', false);
+
+            $this->layout = 'ajax';
+            $this->render('/Ajax/admin_suppliers_organization_order_details');
+        }
+        else {
+            $this->set(compact('results'));
+            $this->set('msgAlert', false);
+
+            $this->layout = 'ajax';
+            $this->render('/Ajax/admin_suppliers_organization_order_details');
+        }
+    }
+
     public function admin_desSupplierDetails($des_supplier_id = 0, $format = 'notmpl') {
 
         $results = [];

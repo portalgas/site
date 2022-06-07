@@ -89,20 +89,22 @@ class AppModel extends Model {
         /*
          * estraggo chi gestisce il listino articoli
          */
-        if($orderResult['Order']['owner_articles']!='REFERENT') {
+        App::import('Model', 'SuppliersOrganization');
+        $SuppliersOrganization = new SuppliersOrganization;
 
-            App::import('Model', 'SuppliersOrganization');
-            $SuppliersOrganization = new SuppliersOrganization;
-
-            $options = [];
-            $options['conditions'] = ['organization_id' => $orderResult['Order']['owner_organization_id'], 'id' => $orderResult['Order']['owner_supplier_organization_id'], ];
-            $options['recursive'] = -1;
-            $results = $SuppliersOrganization->find('first', $options);
-            $orderResult['SuppliersOrganizationOwnerArticles'] = $results['SuppliersOrganization'];
-        }
-        else {
-            $orderResult['SuppliersOrganizationOwnerArticles'] = $orderResult['SuppliersOrganization'];
-        }
+        $options = [];
+        $options['conditions'] = ['organization_id' => $orderResult['Order']['owner_organization_id'],
+                                  'id' => $orderResult['Order']['owner_supplier_organization_id']];
+        $options['recursive'] = -1;
+        $results = $SuppliersOrganization->find('first', $options);
+        $orderResult['SuppliersOrganizationOwnerArticles'] = $results['SuppliersOrganization'];
+        /*
+         * faccio l'override di owner_articles / owner_organization_id / owner_supplier_organization_id con i dati dell'ordine
+         * nel caso dopo la creazione dell'ordine e' cambiata la configurazione del produttore
+         */
+        $orderResult['SuppliersOrganizationOwnerArticles']['owner_articles'] = $orderResult['Order']['owner_articles'];
+        $orderResult['SuppliersOrganizationOwnerArticles']['owner_organization_id'] = $orderResult['Order']['owner_organization_id'];
+        $orderResult['SuppliersOrganizationOwnerArticles']['owner_supplier_organization_id'] = $orderResult['Order']['owner_supplier_organization_id'];
 
 		self::d([$options, $orderResult], false);
 		

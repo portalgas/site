@@ -146,8 +146,11 @@ if(!empty($results)) {
 		}
 		echo '</td>';
 		echo '<td title="'.__('toolTipProdGasSupplierOwnerArticles').'">'.$this->App->traslateEnum('ProdGasSupplier'.$result['SuppliersOrganization']['owner_articles']).'</td>';
-		echo '<td title="'.__('toolTipProdGasSupplierCanViewOrders').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders']).'"></td>';
-		echo '<td title="'.__('toolTipStato').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['stato']).'"></td>';
+		if($result['SuppliersOrganization']['owner_articles']=='SUPPLIER')
+            echo '<td title="'.__('toolTipProdGasSupplierCanViewOrders').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['can_view_orders']).'"></td>';
+		else
+            echo '<td></td>';
+        echo '<td title="'.__('toolTipStato').'" class="stato_'.$this->App->traslateEnum($result['SuppliersOrganization']['stato']).'"></td>';
 		
 		if($result['Supplier']['stato']=='T') 
 			echo '<td title="'.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';

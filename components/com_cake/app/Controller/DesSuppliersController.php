@@ -103,45 +103,48 @@ class DesSuppliersController extends AppController {
 	}
 
 	public function admin_add() {
+
 		if ($this->request->is('post')) {
 			$this->DesSupplier->create();
 			
 			$this->request->data['DesSupplier']['des_id'] = $this->user->des_id;
 			$this->request->data['DesSupplier']['own_organization_id'] = 0;
-		
+
 			if ($this->DesSupplier->save($this->request->data)) {
 				$this->Session->setFlash(__('The des supplier has been saved'));
 				$this->myRedirect(['action' => 'index']);
 			} else {
 				$this->Session->setFlash(__('The des supplier could not be saved. Please, try again.'));
 			}
-		}
+		} // end if ($this->request->is('post'))
 		
-		$supplier_states = ['Y', 'T', 'PG'];
-		
-		$options = [];
-		$options['conditions'] = ['Supplier.stato' => $supplier_states];
-		$options['recursive'] = -1;
-		$options['order'] = ['Supplier.name'];
-		$suppliers = $this->DesSupplier->Supplier->find('list', $options);
-		self::d($options,false);
-		self::d($suppliers,false);
-		
+        $supplier_ids = [];
+
 		/*
-		 * escludo quelli gia' associati
+		 * estraggo quelli gia' associati per escluderli dalla lista
 		 */
    		$options = [];
    		$options['recursive'] = -1;
    		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id];
-   		$options['fields'] = ['DesSupplier.supplier_id', 'DesSupplier.supplier_id'];
+   		$options['fields'] = ['DesSupplier.supplier_id'];
    		$results = $this->DesSupplier->find('all', $options);
-		foreach($suppliers as $supplier_id => $supplier) {
-			if(in_array($supplier_id, $results))
-				unset($suppliers[$supplier_id]);
-		}
-		
-		self::d($suppliers,false);
-		
+        if(!empty($results))
+        foreach($results as $result) {
+            array_push($supplier_ids, $result['DesSupplier']['supplier_id']);
+        }
+
+        $supplier_states = ['Y', 'T', 'PG'];
+
+        $options = [];
+        $options['conditions'] = ['Supplier.stato' => $supplier_states];
+        if(!empty($supplier_ids))
+            $options['conditions'] += ['Supplier.id NOT IN ' => $supplier_ids];
+        $options['recursive'] = -1;
+        $options['order'] = ['Supplier.name'];
+        $suppliers = $this->DesSupplier->Supplier->find('list', $options);
+        self::d($options,false);
+        self::d($suppliers,false);
+
 		$this->set(compact('suppliers'));
 	}
 

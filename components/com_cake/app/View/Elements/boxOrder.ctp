@@ -1,5 +1,5 @@
 <?php 
-$this->App->d($results['Order']);
+// debug($results['Order']);
 
 if($results['Delivery']['sys']=='N')
 	$deliveryLabel = $results['Delivery']['luogoData'];
@@ -68,9 +68,9 @@ echo '<div class="col-md-6">';
 		echo $this->element('boxMsg',array('class_msg' => 'message nomargin','msg' => $results['msgExportDocs']));
 	?>
 	<script type="text/javascript">            
-	function suppliersOrganizationDetails(supplier_organization_id) {
-		if(supplier_organization_id!=undefined && supplier_organization_id!=0 && supplier_organization_id!='') {
-			var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationDetails&supplier_organization_id="+supplier_organization_id+"&des_order_id=<?php echo $results['SuppliersOrganization']['des_order_id'];?>&format=notmpl";
+	function suppliersOrganizationOrderDetails(order_id) {
+		if(order_id!=undefined && order_id!=0 && order_id!='') {
+			var url = "/administrator/index.php?option=com_cake&controller=Ajax&action=suppliersOrganizationOrderDetails&order_id="+order_id+"&des_order_id=<?php echo $results['SuppliersOrganization']['des_order_id'];?>&format=notmpl";
 			var idDivTarget = 'suppliers_organization_details';
 			ajaxCallBox(url, idDivTarget);		
 		}
@@ -83,7 +83,7 @@ echo '<div class="col-md-6">';
 				choiceOrderPermission();
 		}
 		
-		suppliersOrganizationDetails(<?php echo $results['SuppliersOrganization']['id'];?>);
+		suppliersOrganizationOrderDetails(<?php echo $results['Order']['id'];?>);
 	});
 	</script>
 

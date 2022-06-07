@@ -1006,8 +1006,8 @@ class Article extends ArticleMultiKey {
 	public $belongsTo = [
 		'SuppliersOrganization' => [
 			'className' => 'SuppliersOrganization',
-			'foreignKey' => '', // supplier_organization_id la key e' la conditions 
-			'conditions' => 'SuppliersOrganization.owner_supplier_organization_id = Article.supplier_organization_id and SuppliersOrganization.owner_organization_id = Article.organization_id', 
+			'foreignKey' => '', // supplier_organization_id la key e' la conditions
+			'conditions' => 'SuppliersOrganization.owner_supplier_organization_id = Article.supplier_organization_id and SuppliersOrganization.owner_organization_id = Article.organization_id',
 			'fields' => '',
 			'order' => ''
 		],

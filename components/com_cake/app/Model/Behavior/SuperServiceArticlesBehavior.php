@@ -121,6 +121,14 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
 
         App::import('Model', 'Article');
         $Article = new Article;
+        /*
+         * ricreo l'associzinoe con SuppliersOrganization perche' e'
+         * 'conditions' => 'SuppliersOrganization.owner_supplier_organization_id = Article.supplier_organization_id and SuppliersOrganization.owner_organization_id = Article.organization_id',
+         */
+        $Article->unbindModel(['belongsTo' => ['SuppliersOrganization']]);
+        $Article->bindModel(['belongsTo' => ['SuppliersOrganization' => ['className' => 'SuppliersOrganization',
+                                                                         'foreignKey' => '',
+                                                                         'conditions' => '']]]);
         // $Article->unbindModel(['belongsTo' => ['CategoriesArticle']]);
         $Article->unbindModel(['hasOne' => ['ArticlesOrder', 'ArticlesArticlesType']]);
         $Article->unbindModel(['hasMany' => ['ArticlesOrder', 'ArticlesArticlesType']]);
