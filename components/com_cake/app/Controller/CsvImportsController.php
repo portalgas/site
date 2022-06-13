@@ -622,10 +622,10 @@ class CsvImportsController extends AppController {
 	 * ctrl l'estensione del file CSV uplodato
 	 */
 	private function _ctrl_file_exstension($file1, $debug=false) {
-	
-		$esito = true;
-	
-		$path_upload = Configure::read('App.root').Configure::read('App.img.upload.tmp').DS;
+
+        $esito = true;
+
+        $path_upload = Configure::read('App.root').Configure::read('App.img.upload.tmp').DS;
 	
 		/*
 		 * ctrl exstension / content type
@@ -635,14 +635,14 @@ class CsvImportsController extends AppController {
 		$finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
 		$type = finfo_file ($finfo, $file1['tmp_name']);
 		finfo_close($finfo);
-	
+
 		self::d(["ext ".$ext, Configure::read('App.web.csv.upload.extension')], $debug);
 		self::d(["type ".$type, Configure::read('ContentType.csv')], $debug);
 
 		if(!in_array($ext, Configure::read('App.web.csv.upload.extension')) || !in_array($type, Configure::read('ContentType.csv'))) {
-			$esito = "Estensione .$ext non valida: si possono caricare file con l'estensione: ";
-			foreach ( Configure::read('App.web.csv.upload.extension') as $estensione)
-				$esito .= '.'.$estensione.'&nbsp;';
+			$esito = "Hai uplodato un file con estensione .$ext e tipologia $type: si possono caricare file con l'estensione: ";
+            foreach ( Configure::read('App.web.csv.upload.extension') as $estensione)
+                $esito .= '.'.$estensione.'&nbsp;';
 		}
 		
 		return $esito;
@@ -792,7 +792,6 @@ class CsvImportsController extends AppController {
 	
 	public function admin_articles_export($supplier_organization_id, $doc_options='export_file_csv', $doc_formato = 'CSV') {
 
-
         if ($supplier_organization_id == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -840,7 +839,7 @@ class CsvImportsController extends AppController {
 		
 		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
 		$this->set(compact('struttura_file'));	
-		
+
         switch ($doc_formato) {
             case 'CSV':
                 $this->layout = 'csv';
@@ -959,7 +958,7 @@ class CsvImportsController extends AppController {
 			App::import('Model', 'Article');
 			
 			foreach ($this->request->data['CsvImport'] as $result) {
-				
+
 				$rows = [];
 				
 				/*
@@ -973,9 +972,9 @@ class CsvImportsController extends AppController {
 					 * ricerco per evitare che modifiche article_id diversi
 					 */	
 					$options = []; 
-					$options['conditions'] = array('Article.organization_id' => $this->user->organization['Organization']['id'],
-												   'Article.id' => $result['id'],
-												   'Article.supplier_organization_id' => $supplier_organization_id);
+					$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'],
+											   'Article.id' => $result['id'],
+											   'Article.supplier_organization_id' => $supplier_organization_id];
 					$options['recursive'] = -1;
 					$articleResults = $Article->find('first', $options);
 
@@ -1004,12 +1003,14 @@ class CsvImportsController extends AppController {
 						$rows['Article']['qta_massima'] = $result['qta_massima'];
 						$rows['Article']['qta_minima_order'] = $result['qta_minima_order'];
 						$rows['Article']['qta_massima_order'] = $result['qta_massima_order'];
-						$rows['Article']['qta_multipli'] = $result['qta_multipli'];
-						if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N') 
+                        $rows['Article']['qta_multipli'] = $result['qta_multipli'];
+                        $rows['Article']['flag_presente_articlesorders'] = $result['flag_presente_articlesorders'];
+
+                        if($this->user->organization['Organization']['hasFieldArticleAlertToQta']=='N')
 							$rows['Article']['alert_to_qta'] = 0;
 
 						self::d($rows, $debug);
-						
+
 						/*
 						 * richiamo la validazione
 						*/

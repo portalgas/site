@@ -203,20 +203,36 @@ echo '</h2>';
 		 */
 		echo '<td class="articleUpdate stato_'.$this->App->traslateEnum($result['Article']['stato']).'" title="'.__('toolTipStato').'" ></td>';
 
-		echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="flag_presente_articlesorders" class="articleUpdate ';
-		if($result['Article']['flag_presente_articlesorders']=='Y') 
-			echo 'orderStatoPROCESSED-POST-DELIVERY" title="'.__('si').'" >';		
-		else
-			echo 'orderStatoCLOSE" title="'.__('no').'" >';		
+        if($result['Article']['owner']) { // gestisco il listino
+            echo '<td style="cursor:pointer;" data-attr-id="'.$result['Article']['id'].'" data-attr-organization-id="'.$result['Article']['organization_id'].'" data-attr-field="flag_presente_articlesorders" class="articleUpdate ';
+            if($result['Article']['flag_presente_articlesorders']=='Y')
+                echo 'orderStatoPROCESSED-POST-DELIVERY" title="'.__('si').'" >';
+            else
+                echo 'orderStatoCLOSE" title="'.__('no').'" >';
 
-		echo '<td id="'.$result['Article']['organization_id'].'-'.$result['Article']['id'].'" title="Articolo non presente tra quelli da ordinare" style="text-align:center;vertical-align: middle;';
-		if($result['Article']['flag_presente_articlesorders']=='N' || $result['Article']['stato']=='N') 
-			echo 'background-color:red;"';
-		else
-			echo 'background-color:white;"';
-		echo '>';
-		echo '</td>';
-		
+            echo '<td id="'.$result['Article']['organization_id'].'-'.$result['Article']['id'].'" title="Articolo non presente tra quelli da ordinare" style="text-align:center;vertical-align: middle;';
+            if($result['Article']['flag_presente_articlesorders']=='N' || $result['Article']['stato']=='N')
+                echo 'background-color:red;"';
+            else
+                echo 'background-color:white;"';
+            echo '>';
+            echo '</td>';
+        }
+        else {
+            echo '<td class=" ';
+            if($result['Article']['flag_presente_articlesorders']=='Y')
+                echo 'orderStatoPROCESSED-POST-DELIVERY" title="'.__('si').'" >';
+            else
+                echo 'orderStatoCLOSE" title="'.__('no').'" >';
+
+            echo '<td title="Articolo non presente tra quelli da ordinare" style="text-align:center;vertical-align: middle;';
+            if($result['Article']['flag_presente_articlesorders']=='N' || $result['Article']['stato']=='N')
+                echo 'background-color:red;"';
+            else
+                echo 'background-color:white;"';
+            echo '>';
+            echo '</td>';
+        } // if($result['Article']['owner'])
 
 		/*
 		 * TODO 
@@ -234,7 +250,7 @@ echo '</h2>';
 			 *  ad admin_edit passo i parametri della ricerca, ordinamento e paginazione
 			 * 	cosi' quando ritorno ad admin_index mantengo i filtri
 			 */
-			if($result['Article']['owner']) {
+			if($result['Article']['owner']) { // gestisco il listino
 				echo $this->Html->link(null, ['action' => 'context_articles_edit', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id'],  
 														'sort:'.$sort,'direction:'.$direction,'page:'.$page]
 														,['class' => 'action actionEdit','title' => __('Edit')]); 

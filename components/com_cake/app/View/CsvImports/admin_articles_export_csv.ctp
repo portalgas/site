@@ -31,9 +31,11 @@ if(isset($results) && !empty($results)) {
 				$value = $result['Article'][$field['INPUT_NAME']];
 			
 			$value = str_replace('"', "'", $value);
-			$value = str_replace(array("\n","\r"), "", $value);
-			
-			$data[$numResult]['csv'] += array($field['INPUT_NAME'] => $value);
+			$value = str_replace(["\n","\r"], "", $value);
+
+            $value = htmlentities($value); // converto eventuale HTML (ex ingredienti) se no in mimetype e' text\html
+
+            $data[$numResult]['csv'] += [$field['INPUT_NAME'] => $value];
 		}
 	}
 }
