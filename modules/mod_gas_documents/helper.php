@@ -80,7 +80,7 @@ class modGasDocumentsHelper
 				FROM
 					documents Document
 				WHERE
-					Document.is_active = 1 
+					Document.is_active = 1 and Document.organization_id = ".(int)$organization_id."
 				ORDER BY Document.sort";
 		//echo '<br />'.$sql;
 		$db->setQuery($sql);
