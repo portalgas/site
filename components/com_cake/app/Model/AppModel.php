@@ -384,6 +384,9 @@ class AppModel extends Model {
             return false;
     } 
 
+    /*
+     * Warning: Warning (2): openssl_decrypt(): IV passed is only 15 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0
+     */
 	protected function _decoding($value, $debug=false) {
 
 		$results = '';
