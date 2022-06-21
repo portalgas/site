@@ -1668,9 +1668,11 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
             /* 'User.block'=> 0, */
-            'lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+            'lower(User.username) LIKE' => '%' . $q . '%'];
 
         $this->set('results', $User->find('all', ['conditions' => $conditions, 'fields' => ['User.username']]));
 
@@ -1682,9 +1684,11 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
             /* 'User.block'=> 0, */
-            'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+            'lower(User.name) LIKE' => '%' . $q . '%'];
 
         $this->set('results', $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]));
 
@@ -1729,10 +1733,12 @@ class AjaxController extends AppController {
 			foreach ($desOrganizationsResults as $desOrganizationsResult) {    
 				array_push($organization_ids, $desOrganizationsResult['Organization']['id']);
 			}
-			
+
+            $q = $this->_queryAutocompleteDecodate($q);
+
 			$conditions = ['User.organization_id IN ' => $organization_ids,
 							/* 'User.block'=> 0, */
-							'lower(User.username) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+							'lower(User.username) LIKE' => '%' . $q . '%'];
 
 			$results = $User->find('all', ['conditions' => $conditions, 'fields' => ['User.username']]);			
 		}
@@ -1779,10 +1785,12 @@ class AjaxController extends AppController {
 			foreach ($desOrganizationsResults as $desOrganizationsResult) {    
 				array_push($organization_ids, $desOrganizationsResult['Organization']['id']);
 			}
-			
+
+            $q = $this->_queryAutocompleteDecodate($q);
+
 			$conditions = ['User.organization_id IN ' => $organization_ids,
 							/* 'User.block'=> 0, */
-							'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+							'lower(User.name) LIKE' => '%' . $q . '%'];
 
 			$results = $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]);
 		}
@@ -1796,9 +1804,11 @@ class AjaxController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $conditions = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
             /* 'User.block'=> 0, */
-            'lower(User.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+            'lower(User.name) LIKE' => '%' . $q . '%'];
 
         $this->set('results', $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]));
 
@@ -1810,8 +1820,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $options = [];
-        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . $q . '%',
             'Article.organization_id' => $this->user->organization['Organization']['id'],
             'Article.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')'];
         $options['fields'] = ['Article.name'];
@@ -1827,9 +1839,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
+        $q = $this->_queryAutocompleteDecodate($q);
 
         $options = [];
-        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . $q . '%',
             'Article.organization_id' => $this->user->organization['Organization']['id'],
             'Article.supplier_organization_id' => $supplier_organization_id];
         $options['fields'] = ['Article.name'];
@@ -1849,8 +1862,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Article');
         $Article = new Article;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $options = [];
-        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+        $options['conditions'] = ['lower(Article.name) LIKE' => '%' . $q . '%',
             'Article.supplier_organization_id' => $supplier_organization_id,
             'Article.stato' => 'Y'];
         $options['fields'] = ['Article.name'];
@@ -1866,8 +1881,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $options = [];
-        $options['conditions'] = ['lower(Supplier.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+        $options['conditions'] = ['lower(Supplier.name) LIKE' => '%' . $q . '%',
 								  'Supplier.stato != ' => 'N'];
         $options['fields'] = ['Supplier.name'];
         $options['recursive'] = -1;
@@ -1885,8 +1902,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Supplier');
         $Supplier = new Supplier;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $options = [];
-        $options['conditions'] = ['lower(Supplier.name) LIKE' => '%' . strtolower(addslashes($q)) . '%'];
+        $options['conditions'] = ['lower(Supplier.name) LIKE' => '%' . $q . '%'];
         $options['fields'] = ['Supplier.name'];
         $options['recursive'] = -1;
         $this->set('results', $Supplier->find('all', $options));
@@ -1899,8 +1918,10 @@ class AjaxController extends AppController {
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+
         $options = [];
-        $options['conditions'] = ['lower(SuppliersOrganization.name) LIKE' => '%' . strtolower(addslashes($q)) . '%',
+        $options['conditions'] = ['lower(SuppliersOrganization.name) LIKE' => '%' . $q . '%',
 								  'SuppliersOrganization.organization_id' => (int) $this->user->organization['Organization']['id']];
 		$options['fields'] = ['SuppliersOrganization.name'];
 		$options['recursive'] = -1;		

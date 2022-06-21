@@ -1293,4 +1293,8 @@ class AppController extends Controller {
 				
 		return $organization_id;
 	}
+
+    protected function _queryAutocompleteDecodate($q) {
+        return strtolower(addslashes(trim($q)));
+    }
 }
