@@ -20,7 +20,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->ProdGasPromotion->canPromotions($this->user)) {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}		
 		/* ctrl ACL */ 
    }
@@ -52,7 +52,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}	
 
 	   	/*
@@ -118,7 +118,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 	   	/*
@@ -163,7 +163,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		$msg = "";
@@ -477,7 +477,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		/*
@@ -761,7 +761,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		if (empty($prod_gas_promotion_id)) {
@@ -1190,7 +1190,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGasUsers']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		if (empty($prod_gas_promotion_id)) {
@@ -1589,7 +1589,7 @@ class ProdGasPromotionsController extends AppController {
 		
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		if (empty($prod_gas_promotion_id)) {
@@ -1662,7 +1662,7 @@ class ProdGasPromotionsController extends AppController {
 		
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		if (empty($prod_gas_promotion_id)) {
@@ -1762,7 +1762,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		$debug = false;
@@ -1846,7 +1846,7 @@ class ProdGasPromotionsController extends AppController {
 
 		if(!$this->user->organization['Organization']['hasPromotionGas']=='Y') {
 			$this->Session->setFlash(__('msg_prodgas_promotion_acl_no'));
-			$this->myRedirect(Configure::read('routes_msg_stop'));		
+			$this->myRedirect(Configure::read('routes_msg_question'));
 		}
 
 		if($debug) debug($this->request->data);

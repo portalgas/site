@@ -42,7 +42,8 @@ if(!empty($results)) {
 			echo '<input type="hidden" name="data[CsvImport]['.$numResult.']['.$row['INPUT_NAME'].']" value="'.$row['VALUE'].'" />';
 	
 			echo $row['VALUE'];
-			if($row['ESITO']!='OK') echo '<span class="esito_no">'.$this->App->traslateEnum($row['ESITO']).'</span>';
+            if($row['ESITO']!='OK') echo '<span class="esito_no">'.$this->App->traslateEnum($row['ESITO']).'</span>';
+            if(isset($row['MSG']) && !empty($row['MSG'])) echo '<span class="esito_no">'.$row['MSG'].'</span>';
 			echo '</td>';
 		}
 		echo '</tr>';	

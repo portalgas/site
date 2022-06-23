@@ -197,7 +197,29 @@ class CsvImportsController extends AppController {
 			$result = $this->_readFileSend($file1, $deliminatore, 'COMPLETE', false, 0, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
-			
+
+            /*
+             * ctrl se mail esiste gia'
+             */
+            App::import('Model', 'User');
+            $User = new User;
+
+            foreach ($results as $numResult => $result) {
+                $mail = $result['Row'][2]['VALUE'];
+                if(!empty($mail)) {
+                    $options = [];
+                    $options['conditions'] = ['User.email' => $mail];
+                    $options['recursive'] = 0;
+                    $User->bindModel(['belongsTo' => ['Organization' => ['className' => 'Organization']]]);
+                    $ctrl_user = $User->find('first', $options);
+                    if(!empty($ctrl_user)) {
+                        $results[$numResult]['Row'][2]['ESITO'] = 'KO';
+                        $results[$numResult]['Row'][2]['MSG'] = "Gia' in uso ".$ctrl_user['Organization']['name'];
+                        $results[$numResult]['ESITO'] = 'KO';
+                    }
+                }
+            }
+
 			if($esito!==true) {
 				$this->Session->setFlash($esito);
 				$this->myRedirect(array('action' => 'users'));

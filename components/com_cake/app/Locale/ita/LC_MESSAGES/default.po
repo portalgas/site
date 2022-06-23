@@ -4405,7 +4405,7 @@ msgid "msg_site_offline"
 msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
 
 msgid "msg_prodgas_promotion_acl_no"
-msgstr "Non sei abilitato alla gestione delle promozioni.<br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
+msgstr "<p>Non sei abilitato alla gestione delle promozioni.</p><p>Contattaci all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a> per avere maggior informazioni.</p>"
 
 msgid "msg_error_org_type"
 msgstr "Errore nella tipologia di organizzazione!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
