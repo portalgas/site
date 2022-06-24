@@ -633,10 +633,17 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         $Cart = new Cart();
 
         $Cart->unbindModel(['belongsTo' => ['Order']]);
-        $options['conditions'] = ['Cart.organization_id' => $user->organization['Organization']['id'],
-                                    'ArticlesOrder.stato != ' => 'N',
-                                    'Article.stato' => 'Y'];
-            
+        $options['conditions'] = ['ArticlesOrder.stato != ' => 'N',
+                                  'Article.stato' => 'Y'];
+        if($user->organization['Organization']['id']==Configure::read('public_organization_id')) {
+            $Cart->bindModel(['belongsTo' => ['User' => ['className' => 'User',
+                                                         'foreignKey' => 'user_id',
+                                                         'conditions' => '']]]);
+        }
+        else {
+            $options['conditions'] += ['Cart.organization_id' => $user->organization['Organization']['id']];
+        }
+
         if (isset($conditions['ArticlesOrder.order_id']))
             $options['conditions'] += ['Cart.order_id' => $conditions['ArticlesOrder.order_id']];
         if (isset($conditions['Order.id']))

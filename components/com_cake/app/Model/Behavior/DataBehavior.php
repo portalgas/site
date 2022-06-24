@@ -278,7 +278,7 @@ class DataBehavior extends ModelBehavior {
 		/*
 		 * prendo solo OrderState
 		*/
-		$Order->unbindModel(array('belongsTo' => array('Delivery')));
+		$Order->unbindModel(['belongsTo' => ['Delivery']]);
 		$orderResults = $Order->find('all',['conditions' => $conditionsLocal,
 											'order' => $orderLocal,
 											'recursive' => 0]);
