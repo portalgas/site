@@ -51,10 +51,10 @@ class OrganizationsPaymentsController extends AppController {
 		$options['recursive'] = 1;
 	
         $this->request->data = $this->OrganizationsPayment->find('first', $options);
-		
+
 		$paramsPay = json_decode($this->request->data['OrganizationsPayment']['paramsPay'], true);
 		$this->request->data['OrganizationsPayment'] += $paramsPay;
-		
+
 		App::import('Model', 'Template');
         $Template = new Template;
 		
@@ -62,7 +62,7 @@ class OrganizationsPaymentsController extends AppController {
 		$options['conditions'] = ['Template.id' => $this->request->data['OrganizationsPayment']['template_id']];
 		$options['recursive'] = -1;
         $templateResults = $Template->find('first', $options);
-		
+
 		$this->request->data += $templateResults;
 				
 		self::d($this->request->data, $debug);

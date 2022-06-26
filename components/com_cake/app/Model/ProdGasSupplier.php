@@ -73,7 +73,7 @@ class ProdGasSupplier extends AppModel {
 			 */
 			$options = [];
 			$options['conditions'] = ['Organization.stato' => 'Y',
-									  'Organization.type' => 'GAS', 
+									  'Organization.type IN ' => ['GAS', 'SOCIALMARKET'],
 									  'SuppliersOrganization.supplier_id' => $results['Supplier']['id'],
 									  'SuppliersOrganization.organization_id != ' => $organization_id];
 			if(isset($filters['ownerArticles']))
@@ -466,7 +466,7 @@ class ProdGasSupplier extends AppModel {
 				$Organization = new Organization;
 				
 				$options = [];
-				$options['conditions'] = ['Organization.type' => 'GAS', 
+				$options['conditions'] = ['Organization.type IN ' => ['GAS', 'SOCIALMARKET'],
 										  'Organization.stato' => 'Y'];
 				if(!empty($organization_ids))							   
 					$options['conditions'] += ['NOT' => ['Organization.id' => explode(',', $organization_ids)]];												

@@ -137,6 +137,7 @@ class PagesController extends AppController {
 
 		switch ($this->user->organization['Organization']['type']) {
 			case 'GAS':
+            case 'SOCIALMARKET':
 				$this->_admin_home_gas();
             break;
             case 'PRODGAS':

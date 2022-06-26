@@ -632,6 +632,7 @@ class Article extends ArticleMultiKey {
 							$isArticleInCart = $ProdGasArticle->isArticleInCart($user, $article_organization_id, $article_id);
 						break;
 						case 'GAS':
+                        case 'SOCIALMARKET':
 							$isArticleInCart = $this->isArticleInCart($user, $article_organization_id, $article_id);
 						break;
 						default:

@@ -185,8 +185,11 @@ if($componentIsComCake) {
 	$_menus_definitivo = [];
 
 	switch($organization_type) {
-		case 'GAS':
-			require (dirname(__FILE__).'/default_enabled_com_cake_gas.php');
+        case 'GAS':
+            require (dirname(__FILE__).'/default_enabled_com_cake_gas.php');
+        break;
+        case 'SOCIALMARKET':
+			require (dirname(__FILE__).'/default_enabled_com_cake_socialmarket.php');
 		break;
 		case 'PRODGAS':
 			require (dirname(__FILE__).'/default_enabled_com_cake_prod_gas_supplier.php');

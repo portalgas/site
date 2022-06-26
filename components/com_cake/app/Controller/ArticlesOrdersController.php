@@ -890,7 +890,8 @@ class ArticlesOrdersController extends AppController {
 							case 'PRODGAS':
         		                $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'prodgas_index', 'organization_id' => $organization_id, 'order_id' => $order_id]);
 							break;
-							case 'GAS':      				
+							case 'GAS':
+                            case 'SOCIALMARKET':
 		                        $this->myRedirect(['controller' => 'ArticlesOrders','action' => 'index', 'order_id' => $order_id]);
 							break;
 							case 'PROD':

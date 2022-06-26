@@ -194,7 +194,8 @@ class AppController extends Controller {
              * */
 			switch($this->user->organization['Organization']['type']) {
 				case 'GAS':
-				case 'PRODGAS':
+                case 'SOCIALMARKET':
+                case 'PRODGAS':
 					/*
 					 * precedenza a dati in POST per gasista che ha 2 tab aperti
 					 */				

@@ -31,6 +31,11 @@ class OrganizationsController extends AppController {
             $this->myRedirect(Configure::read('routes_default'));
         } else {
             $options = [];
+            $options['conditions'] = ['Organization.type' => 'SOCIALMARKET'];
+            $options['order'] = ['Organization.name'];
+            $socialmarketResults = $this->Organization->find('all', $options);
+
+            $options = [];
             $options['conditions'] = ['Organization.type' => 'GAS'];
             $options['order'] = ['Organization.name'];
             $gasResults = $this->Organization->find('all', $options);
@@ -44,6 +49,16 @@ class OrganizationsController extends AppController {
             $options['conditions'] = ['Organization.type' => 'PACT'];
             $options['order'] = ['Organization.name'];
             $pactResults = $this->Organization->find('all', $options);
+
+            $socialmarketResultsTmp = [];
+            foreach ($socialmarketResults as $result) {
+
+                $label = $result['Organization']['name'];
+
+                if ($result['Organization']['stato'] == 'N')
+                    $label .= " - NON ATTIVA";
+                $socialmarketResultsTmp[$result['Organization']['id']] = $label;
+            }
 
             $gasTmp = [];
             foreach ($gasResults as $result) {
@@ -83,6 +98,7 @@ class OrganizationsController extends AppController {
             }
 			
             $organizations = [0 => 'Nessuna organizzazione',
+                              'SOCIALMARKET' => $socialmarketResultsTmp,
 							  'GAS' => $gasTmp,
 							  'PRODGAS' => $prodgasTmp,
 							  'PACT' => $pactTmp];

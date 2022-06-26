@@ -68,6 +68,7 @@ else {
 
 			break;
 			case 'GAS':
+            case 'SOCIALMARKET':
 				echo '<div class="table-responsive"><table class="table table-hover">';
 				echo '	<tr>';
 				echo '		<th>'.__('N').'</th>';

@@ -152,6 +152,7 @@ echo '</h2>';
 				echo '<a action="prodgas_article_carts-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 			break;
 			case 'GAS':
+            case 'SOCIALMARKET':
 				echo '<a action="article_carts-0_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 			break;
 		}

@@ -25,6 +25,7 @@ switch($user->organization['Organization']['type']) {
 		echo $this->Html->getCrumbList(array('class'=>'crumbs'));			
 	break;
 	case 'GAS':
+    case 'SOCIALMARKET':
 		$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 		$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 		if(isset($order['Order']['id']) && !empty($order['Order']['id']))
@@ -131,6 +132,7 @@ echo $this->element('boxOrder', ['results' => $order]);
 							$edit_link = $this->Html->link(null, ['action' => 'prodgas_edit', null, 'organization_id='.$result['ArticlesOrder']['organization_id'].'&order_id='.$result['ArticlesOrder']['order_id'], 'article_organization_id='.$result['ArticlesOrder']['article_organization_id'], 'article_id='.$result['ArticlesOrder']['article_id']], ['class' => 'action actionEdit','title' => __('Edit')]);
 						break;
 						case 'GAS':
+                        case 'SOCIALMARKET':
 							$box_detail_link = '<a action="articles_order_carts-'.$order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a>';
 							$box_detail_id = $order['Order']['id'].'_'.$result['Article']['organization_id'].'_'.$result['Article']['id'];
 							// if($canEdit)  il ctrl lo faccio dopo perche' alcuni campi sono modificabili

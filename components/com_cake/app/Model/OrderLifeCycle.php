@@ -31,6 +31,8 @@ class OrderLifeCycle extends AppModel {
 
 		if(isset($orderResult['Order']['des_order_id']) && !empty($orderResult['Order']['des_order_id']))
 			$type = Configure::read('Order.type.des');
+        elseif ($user->organization['Organization']['id']==Configure::read('social_market_organization_id'))
+            $type = Configure::read('Order.type.socialmarket');
 
 		return $type;
 	}

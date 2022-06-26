@@ -1135,7 +1135,7 @@ class UtilsCrons {
 
     public function articlesBio($organization_id) {
 
-        $user = $this->_getObjUserLocal($organization_id, ['GAS', 'PRODGAS']);
+        $user = $this->_getObjUserLocal($organization_id, ['GAS', 'PRODGAS', 'SOCIALMARKET']);
         if(empty($user)) 
             return; 
         
@@ -1509,9 +1509,13 @@ class UtilsCrons {
      * $order_id  se valorizzato setta lo stato_elaborazione di quell'ordine
      */
     public function ordersStatoElaborazione($organization_id, $debug = true, $order_id = 0) {
-        
-        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
-        if(empty($user)) 
+
+        if($organization_id==Configure::read('social_market_organization_id'))
+            $type = ['SOCIALMARKET'];
+        else
+            $type = ['GAS'];
+        $user = $this->_getObjUserLocal($organization_id, $type);
+        if(empty($user))
             return; 
         
         App::import('Model', 'StatoElaborazione');
@@ -1670,7 +1674,7 @@ class UtilsCrons {
 
         $options = [];
         $options['conditions'] = ['Organization.id' => (int) $organization_id,
-                                  'Organization.type' => $type];        
+                                  'Organization.type' => $type];
         $options['recursive'] = 0;
 
         $results = $Organization->find('first', $options);

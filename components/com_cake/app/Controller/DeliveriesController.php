@@ -30,7 +30,8 @@ class DeliveriesController extends AppController {
             }
         }
         
-		if($this->user->organization['Organization']['type']!='GAS') {
+		if($this->user->organization['Organization']['type']!='GAS' &&
+            $this->user->organization['Organization']['type']!='SOCIALMARKET') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}	        

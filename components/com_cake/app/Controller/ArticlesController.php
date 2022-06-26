@@ -71,7 +71,8 @@ class ArticlesController extends AppController {
 				$supplier_organization_id = $this->user->organization['Supplier']['SuppliersOrganization']['id'];
 				$this->Session->write(Configure::read('Filter.prefix').$this->modelClass.'SupplierId', $supplier_organization_id);
 			break;
-			case 'GAS':
+            case 'GAS':
+            case 'SOCIALMARKET':
 				$supplier_organization_id = null;
 			break;
 			default:
@@ -250,6 +251,7 @@ class ArticlesController extends AppController {
 				$FilterArticleSupplierId = $this->user->organization['Supplier']['SuppliersOrganization']['id'];
 			break;
 			case 'GAS':
+            case 'SOCIALMARKET':
 			break;
 			default:
 				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
@@ -302,6 +304,7 @@ class ArticlesController extends AppController {
 								$isArticleInCart = $ProdGasArticle->isArticleInCart($this->user, $article_organization_id, $article_id);
 							break;
 							case 'GAS':
+                            case 'SOCIALMARKET':
 								$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $article_id);
 							break;
 							default:
@@ -425,6 +428,7 @@ class ArticlesController extends AppController {
 				$FilterArticleSupplierId = $this->user->organization['Supplier']['SuppliersOrganization']['id'];
 			break;
 			case 'GAS':
+            case 'SOCIALMARKET':
 			break;
 			default:
 				self::x(__('msg_error_org_type').' ['.$this->user->organization['Organization']['type'].']');
@@ -796,7 +800,7 @@ class ArticlesController extends AppController {
 		/*
 		 * recupero il produttore se ho "salvato + continua ad inserire"
 		 */
-		if($this->user->organization['Organization']['type']=='GAS') {
+		if($this->user->organization['Organization']['type']=='GAS' || $this->user->organization['Organization']['type']=='SOCIALMARKET') {
 			if(isset($this->request->pass['supplier_organization_id'])) 
 				$supplier_organization_id = $this->request->pass['supplier_organization_id'];
 			$this->set('supplier_organization_id',$supplier_organization_id);
@@ -892,6 +896,7 @@ class ArticlesController extends AppController {
 				$isArticleInCart = $ProdGasArticle->isArticleInCart($this->user, $article_organization_id, $id);
 			break;
 			case 'GAS':
+            case 'SOCIALMARKET':
 				$isArticleInCart = $this->Article->isArticleInCart($this->user, $article_organization_id, $id);
 			break;
 			default:
