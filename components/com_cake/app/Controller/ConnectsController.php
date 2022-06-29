@@ -46,8 +46,8 @@ class ConnectsController extends AppController {
 		$user_organization_id =  $this->_getOrganizationById($this->user);
 		$organization_id = $this->user->organization['Organization']['id']; // gas scelto o gas dello user
 		
-		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];debug($user);
-		
+		$user = ['user_id' => $user_id, 'user_organization_id' => $user_organization_id, 'organization_id' => $organization_id];
+
 		if($debug) debug($user);
 		$user = serialize($user);
 		

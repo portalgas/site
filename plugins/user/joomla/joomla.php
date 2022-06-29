@@ -252,9 +252,13 @@ class plgUserJoomla extends JPlugin
 				$j_seo = $results->j_seo;
 				$type = $results->type;
 				$paramsConfig = json_decode($results->paramsConfig, true);
-				if($type!='GAS') {
-					$urlRedirect = 'organization.prodgas.home';
-				}
+                if($type=='SOCIALMARKET') {
+                    $urlRedirect = 'organization.socialmarket.home';
+                }
+                else
+                if($type!='GAS') {
+                    $urlRedirect = 'organization.prodgas.home';
+                }
 				else {
 					$urlRedirectUserFlagPrivacy = $this->_hasUserFlagPrivacy($organization_id, $paramsConfig, $user_id, $debug);
 					if(!empty($urlRedirectUserFlagPrivacy))
@@ -276,7 +280,10 @@ class plgUserJoomla extends JPlugin
 						break; 		
 					case "organization.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
-						break;	
+						break;
+                    case "organization.socialmarket.home":
+                        $app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=social-market');
+                        break;
 					case "organization.prodgas.home":
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST']);
 						break;

@@ -219,7 +219,7 @@ class JUser extends JObject
 	public $org_id; // indica l'organization di navigazione del front-end
 
 	public $supplier_id = 0;
-	public $supplier = array();	
+	public $supplier = [];
 	// fractis
 
 	
