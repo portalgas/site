@@ -73,7 +73,13 @@ class ProdGasOrdersController extends AppController {
 		$options = [];
 		$options['conditions'] = array('Organization.id' => $organization_id);
 		$organizations = $Organization->find('first', $options);
-		$this->set(compact('organizations'));		 		
+		$this->set(compact('organizations'));
+
+
+        $is_social_market = false;
+        if($organization_id==Configure::read('social_market_organization_id'))
+            $is_social_market = true;
+        $this->set(compact('is_social_market'));
 	}	
 	
 	public function admin_print($organization_id=0, $order_id=0) { 

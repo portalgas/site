@@ -87,9 +87,12 @@ if(!empty($results)) {
 		echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Order']['created']).'</td>';
 		
 		echo '<td class="actions-table-img">';
+        if($is_social_market) {
+            echo $this->Html->link(null, ['controller' => 'Connects','action' => 'index', 'c_to' => 'admin/socialmarketCarts', 'a_to' => 'carts'], ['class' => 'action actionEdit','title' => __('Edit')]);
+        }
 		if($currentOrganization['SuppliersOrganization']['can_view_orders']=='Y' || $currentOrganization['SuppliersOrganization']['can_view_orders_users']=='Y') {
 			/*
-			 * il produttore non gestisce + li articoli associati agli ordini del GAS
+			 * il produttore non gestisce + gli articoli associati agli ordini del GAS
 			 * echo $this->Html->link(null, ['controller' => 'ArticlesOrders','action' => 'prodgas_index', null, 'organization_id='.$result['Order']['organization_id'].'&order_id='.$result['Order']['id']], ['class' => 'action actionEditCart','title' => __('Edit ArticlesOrder')]);
 			 */
 			echo $this->Html->link(null, ['controller' => 'Docs','action' => 'prodGasSupplierDocsExport', null, 'organization_id='.$result['Order']['organization_id'].'&delivery_id='.$result['Order']['delivery_id'].'&order_id='.$result['Order']['id']], ['class' => 'action actionPrinter','title' => __('Print Order')]);

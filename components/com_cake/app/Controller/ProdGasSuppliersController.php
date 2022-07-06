@@ -27,7 +27,8 @@ class ProdGasSuppliersController extends AppController {
 		
 		self::d($results, $debug);
 
-		$this->set(compact('results'));	}
+		$this->set(compact('results'));
+	}
 	
 	/*
 	 * estraggo tutti gli ordini di un GAS
