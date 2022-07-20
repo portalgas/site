@@ -254,25 +254,25 @@ else {
 						<li>
 							<a target="_blank" href="https://github.com/portalgas/site"><img border="0" src="/images/cake/ico-github.png" alt="il codice di PortAlGas disponibile per chi desidera partecipare" title="il codice di PortAlGas disponibile per chi desidera partecipare"> GitHub</a>
 						</li>
-					</ul>	
+					</ul>
+
+                    <?php
+                    if($organizationSEO!='portale') {
+                        ?>
+                        <ul class="social">
+                            <li>
+                                <a target="_blank" href="/rss/gas-<?php echo $organizationSEO;?>.rss"><img border="0" src="/images/cake/ico-rss.png" alt="rimani aggiornato con gli Rss di PortAlGas" title="rimani aggiornato con gli Rss di PortAlGas"> Rss per produttore</a>
+                            </li>
+                            <li>
+                                <a target="_blank" href="/rss/gas-<?php echo $organizationSEO;?>2.rss"><img border="0" src="/images/cake/ico-rss.png" alt="rimani aggiornato con gli Rss di PortAlGas" title="rimani aggiornato con gli Rss di PortAlGas"> Rss per consegna</a>
+                            </li>
+                        </ul>
+                        <?php
+                    }
+                    ?>
 
 				</div>				
 				<div class="footer-col col-md-3 col-xs-12 col-sm-6">
-
-					<?php 
-					if($organizationSEO!='portale') {
-					?>
-						<ul class="social">
-							<li>
-								<a target="_blank" href="/rss/gas-<?php echo $organizationSEO;?>.rss"><img border="0" src="/images/cake/ico-rss.png" alt="rimani aggiornato con gli Rss di PortAlGas" title="rimani aggiornato con gli Rss di PortAlGas"> Rss per produttore</a>
-							</li>
-							<li>
-								<a target="_blank" href="/rss/gas-<?php echo $organizationSEO;?>2.rss"><img border="0" src="/images/cake/ico-rss.png" alt="rimani aggiornato con gli Rss di PortAlGas" title="rimani aggiornato con gli Rss di PortAlGas"> Rss per consegna</a>
-							</li>
-						</ul>	
-					<?php 
-					}
-					?>
 
                     <ul class="social">
                         <li>
