@@ -276,6 +276,12 @@ else {
 
                     <ul class="social">
                         <li>
+                            <a href="/gestionale-web-gas" title="Presentazione"> Gestionale web G.A.S.</a>
+                        </li>
+                        <li>
+                            <a href="/gestisci-i-tuoi-ordini-con-portalgas-in-4-semplici-punti" title="Gestisci i tuoi ordini in 4 semplici punti"> Apri un G.A.S. in 4 semplici punti</a>
+                        </li>
+                        <li>
                             <a href="/produttori/index.html" title="elenco di tutti i produttori di PortAlGas"> Produttori</a>
                         </li>
                     </ul>
