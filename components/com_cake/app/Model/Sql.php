@@ -18,7 +18,7 @@ class Sql extends AppModel {
         $results[$i]['params'] = [];
         $i++;
         $results[$i]['name'] = "Elenco produttori che gestiscono il listino e totale GAS associati";
-        $results[$i]['sql'] = "SELECT count(*) totGasAssociati, so.name as produttore FROM ".Configure::read('DB.prefix')."suppliers_organizations so INNER JOIN ".Configure::read('DB.prefix')."organizations oso on (oso.id = so.owner_organization_id and so.owner_articles='SUPPLIER'), ".Configure::read('DB.prefix')."organizations o WHERE so.supplier_id>0 and o.id = so.organization_id and o.stato = 'Y' and so.stato = 'Y' GROUP BY so.supplier_id, so.name, so.supplier_id ORDER BY totGasAssociati desc;";
+        $results[$i]['sql'] = "SELECT count(*) totGasAssociati, so.name as produttore, s.mail, s.localita, s.provincia FROM ".Configure::read('DB.prefix')."suppliers_organizations so INNER JOIN ".Configure::read('DB.prefix')."organizations oso on (oso.id = so.owner_organization_id and so.owner_articles='SUPPLIER'), ".Configure::read('DB.prefix')."organizations o, ".Configure::read('DB.prefix')."suppliers s WHERE so.supplier_id>0 and o.id = so.organization_id and o.stato = 'Y' and so.stato = 'Y' and so.supplier_id = s.id GROUP BY so.supplier_id, so.name, so.supplier_id, s.mail, s.localita, s.provincia ORDER BY totGasAssociati desc;";
         $results[$i]['params'] = [];
         $i++;
         $results[$i]['name'] = "Elenco produttori che gestiscono il listino e GAS associati";
