@@ -19,7 +19,8 @@ if($this->layout=='ajax') {
 
 /*
  * escludo le consegne senza ordini con acquisti
- */ 
+ */
+if(isset($results['RequestPaymentsOrder']))
 foreach($results['RequestPaymentsOrder'] as $numRequestPaymentsOrder => $results2)
 foreach($results2['Delivery'] as $numDelivery => $result) {
 
@@ -37,7 +38,8 @@ foreach($results2['Delivery'] as $numDelivery => $result) {
 /*
  * R E Q U E S T P A Y M E N T S - O R D E R 
  */
- $delivery_id_old = 0;
+$delivery_id_old = 0;
+if(isset($results['RequestPaymentsOrder']))
 foreach($results['RequestPaymentsOrder'] as $numRequestPaymentsOrder => $requestPaymentsOrderResults) {
 foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 	

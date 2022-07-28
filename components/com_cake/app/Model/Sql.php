@@ -22,7 +22,7 @@ class Sql extends AppModel {
         $results[$i]['params'] = [];
         $i++;
         $results[$i]['name'] = "Elenco produttori che gestiscono il listino e GAS associati";
-        $results[$i]['sql'] = "SELECT so.name as produttore, s.localita as localitaProduttore, o.name as gas, o.localita as gasLocalita, so.supplier_id as idProduttore , so.id as idGas FROM k_suppliers_organizations so, k_suppliers s, k_organizations oso, k_organizations o WHERE oso.id = so.owner_organization_id and so.owner_articles='SUPPLIER' and so.supplier_id = s.id and so.supplier_id>0 and o.id = so.organization_id and o.stato = 'Y' and so.stato = 'Y' ORDER BY so.name;";
+        $results[$i]['sql'] = "SELECT so.name as produttore, s.mail as mailProduttore, s.localita as localitaProduttore, s.provincia as provProduttore, o.name as gas, o.localita as gasLocalita, o.provincia as gasProv, so.supplier_id as idProduttore , so.id as idSupplierOrg FROM ".Configure::read('DB.prefix')."suppliers_organizations so, ".Configure::read('DB.prefix')."suppliers s, ".Configure::read('DB.prefix')."organizations oso, ".Configure::read('DB.prefix')."organizations o WHERE oso.id = so.owner_organization_id and so.owner_articles='SUPPLIER' and so.supplier_id = s.id and so.supplier_id>0 and o.id = so.organization_id and o.stato = 'Y' and so.stato = 'Y' ORDER BY so.name;";
         $results[$i]['params'] = [];
 		$i++;
 		$results[$i]['name'] = "Produttore scelto e dettaglio GAS associati";
@@ -66,7 +66,7 @@ class Sql extends AppModel {
 		$results[$i]['params'] = [];
 		$i++;
 		$results[$i]['name'] = "Ultimi articoli modificati di un produttore";
-		$results[$i]['sql'] = "SELECT o.name, s.name, s.owner_articles, s.owner_organization_id, s.owner_organization_id, s.owner_supplier_organization_id, a.name, a.modified FROM `k_suppliers_organizations` s, k_articles a , k_organizations o WHERE supplier_id = %s and s.id = a.supplier_organization_id and s.organization_id = o.id order by a.modified DESC;";
+		$results[$i]['sql'] = "SELECT o.name, s.name, s.owner_articles, s.owner_organization_id, s.owner_organization_id, s.owner_supplier_organization_id, a.name, a.modified FROM ".Configure::read('DB.prefix')."suppliers_organizations s, ".Configure::read('DB.prefix')."articles a , ".Configure::read('DB.prefix')."organizations o WHERE supplier_id = %s and s.id = a.supplier_organization_id and s.organization_id = o.id order by a.modified DESC;";
 		$results[$i]['params'] = ['supplier_id' => 'ProduttoreId'];
 		$i++;
 		$results[$i]['name'] = "Invio mail a tutti con totali utenti";
@@ -74,12 +74,24 @@ class Sql extends AppModel {
 		$results[$i]['params'] = ['year' => 'AnnoMailSend'];
 		$i++;
 		$results[$i]['name'] = "Ctrl - Ordini DES senza + ordine, se si trovano eliminarli da k_des_orders_organizations";
-		$results[$i]['sql'] = "SELECT organization_id, order_id FROM k_des_orders_organizations WHERE  order_id NOT IN (SELECT ID FROM k_orders);";
+		$results[$i]['sql'] = "SELECT organization_id, order_id FROM ".Configure::read('DB.prefix')."des_orders_organizations WHERE  order_id NOT IN (SELECT ID FROM k_orders);";
 		$results[$i]['params'] = [];
-		$i++;
-		$results[$i]['name'] = "Ordini raggruppati per anno di creazione";
-		$results[$i]['sql'] = "SELECT count(id), year(created) FROM k_orders GROUP BY year(created) ORDER BY year(created) ASC;";
-		$results[$i]['params'] = [];
+        $i++;
+        $results[$i]['name'] = "Ordini raggruppati per anno di creazione";
+        $results[$i]['sql'] = "SELECT count(id), year(created) FROM ".Configure::read('DB.prefix')."orders GROUP BY year(created) ORDER BY year(created) ASC;";
+        $results[$i]['params'] = [];
+        $i++;
+        $results[$i]['name'] = "SocialMarket - Produttori in socialmarket";
+        $results[$i]['sql'] = "SELECT id, supplier_id, name, owner_articles, owner_organization_id, owner_supplier_organization_id FROM ".Configure::read('DB.prefix')."suppliers_organizations where organization_id = 142 and stato = 'Y' order by name;";
+        $results[$i]['params'] = [];
+        $i++;
+        $results[$i]['name'] = "SocialMarket - G.A.S. per socialmarket";
+        $results[$i]['sql'] = "SELECT id, name, indirizzo, localita, cap, provincia, telefono, mail FROM ".Configure::read('DB.prefix')."organizations where stato = 'Y' and type = 'GAS' order by name;";
+        $results[$i]['params'] = [];
+        $i++;
+        $results[$i]['name'] = "SocialMarket - Produttori abilitati per i G.A.S. (sono gia' esclusi quelli associati al G.A.S.)";
+        $results[$i]['sql'] = "SELECT s.localita as supplierLocalita, s.provincia as supplierProv, so.name as supplierName, o.name, o.localita as gasLocalita, o.provincia as gasProv FROM socialmarket_organizations, ".Configure::read('DB.prefix')."suppliers_organizations as so, ".Configure::read('DB.prefix')."suppliers as s, ".Configure::read('DB.prefix')."organizations as o where socialmarket_organizations.supplier_organization_id = so.id and socialmarket_organizations.organization_id = o.id and s.id = so.supplier_id;";
+        $results[$i]['params'] = [];
 
 		return $results;
 	}
