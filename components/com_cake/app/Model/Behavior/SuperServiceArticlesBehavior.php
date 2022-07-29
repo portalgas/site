@@ -41,7 +41,9 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
         $options['conditions'] = ['Article.organization_id' => $order['Order']['owner_organization_id'],
             'Article.supplier_organization_id' => $order['Order']['owner_supplier_organization_id'],
            'ArticlesOrder.organization_id' => $order['Order']['organization_id'],
-           'ArticlesOrder.order_id' => $order['Order']['id']];
+           'ArticlesOrder.order_id' => $order['Order']['id'],
+            'Article.stato' => 'Y',
+            'Article.flag_presente_articlesorders' => 'Y'];
 
         $Model::d($opts, $debug);
         if(isset($opts['conditions']))
@@ -101,7 +103,9 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
             'SuppliersOrganization.id' => $suppliersOrganization['SuppliersOrganization']['owner_supplier_organization_id'],
             'SuppliersOrganization.organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_organization_id'],
             'Article.organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_organization_id'],
-            'Article.supplier_organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_supplier_organization_id']];
+            'Article.supplier_organization_id' => $suppliersOrganization['SuppliersOrganization']['owner_supplier_organization_id'],
+            'Article.stato' => 'Y',
+            'Article.flag_presente_articlesorders' => 'Y'];
 
         $Model::d($opts, $debug);
         if(isset($opts['conditions']))
