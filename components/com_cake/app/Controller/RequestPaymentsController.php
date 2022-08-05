@@ -625,18 +625,12 @@ class RequestPaymentsController extends AppController {
 		}	
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
-				
+
 			$order_id_selected = $this->request->data['RequestPayment']['order_id_selected'];
-				
+
 			self::l('order_id_selected '.$order_id_selected, $debug);
 
-            /*
-             * estrae l'importo totale degli acquisti di un ordine e lo salvo sull'ordine
-             * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrderS)
-            */
-            App::import('Model', 'Order');
-            $Order = new Order;
-            $Order->setTotImporto($this->user, $order_id_selected);
+            $this->_ordersSetTotImporto($this->user, $order_id_selected);
 
 			/*
 			 * per ogni USER 
@@ -795,7 +789,26 @@ class RequestPaymentsController extends AppController {
 		$results = $Delivery->getDataTabs($this->user,$conditions,$options);
 		$this->set(compact('results'));
 	}
-	
+
+    /*
+     * estrae l'importo totale degli acquisti di un ordine e lo salvo sull'ordine
+     * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrderS)
+    */
+    private function _ordersSetTotImporto($user, $order_id_selected) {
+
+        App::import('Model', 'Order');
+        $Order = new Order;
+        $ids = [];
+        if(strpos($order_id_selected, ',')!==true)
+            $ids = explode(',', $order_id_selected);
+        else
+            $ids[] = $order_id_selected;
+
+        foreach($ids as $id) {
+            $Order->setTotImporto($user, $id);
+        }
+    }
+
 	public function admin_add_storeroom() {
 		
 		$id = $this->request->pass['id']; // lo ricavo cosi' perche' nella queryString ho FilterStoreroomDeliveryId
