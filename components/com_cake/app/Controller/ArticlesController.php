@@ -166,7 +166,7 @@ class ArticlesController extends AppController {
 			$fields = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name,ArticlesArticlesType.article_type_id'];
 		else
 			$fields = ['Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name'];
-	   
+
 		$this->paginate = ['conditions' => $conditions,
 					       'fields' => $fields,
 					       'group' => 'Article.id,Article.organization_id,Article.supplier_organization_id,Article.category_article_id,Article.name,Article.codice,Article.nota,Article.ingredienti,Article.prezzo,Article.qta,Article.um,Article.um_riferimento,Article.pezzi_confezione,Article.qta_minima,Article.qta_massima,Article.qta_minima_order,Article.qta_massima_order,Article.qta_multipli,Article.alert_to_qta,Article.bio,Article.img1,Article.stato,Article.created,Article.modified,Article.flag_presente_articlesorders,SuppliersOrganization.id,SuppliersOrganization.owner_organization_id,SuppliersOrganization.owner_supplier_organization_id,SuppliersOrganization.name,SuppliersOrganization.owner_articles,CategoriesArticle.name',
@@ -1395,6 +1395,10 @@ class ArticlesController extends AppController {
 		return $results;
 	}
 
+    /*
+     * $FilterArticleOrderBy valore per il select options
+     * $orders valore per la query
+    */
 	private function _admin_index_sql_order($organization_id) {
 
 		$orders = [];
@@ -1405,15 +1409,17 @@ class ArticlesController extends AppController {
 			$orders = ['SuppliersOrganization.name ASC'];
 		}
      	*/
+        // $this->Session->delete(Configure::read('Filter.prefix').$this->modelClass.'OrderBy');
 
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'OrderBy')) {
+            list($field, $sort) = explode(' ',$this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrderBy') );
+            $orders[$field] = $sort;
 			$FilterArticleOrderBy = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'OrderBy');
-			
 		}
 		else {
 			$FilterArticleOrderBy = 'Article.name ASC';
+            $orders['Article.name'] = 'ASC';
 		}
-		$orders[] = $FilterArticleOrderBy;
 
 		$this->set('FilterArticleOrderBy', $FilterArticleOrderBy);
 		
@@ -1650,8 +1656,8 @@ class ArticlesController extends AppController {
 		$stato = ['Y' => __('StatoY'), 'N' => __('StatoN'), 'ALL' => __('ALL')];
 		$this->set(compact('stato'));
 
-		$orderbys = ['Article.code ASC' => __('Code').' ('.__('OrderAsc').')', 
-					 'Article.code DESC' => __('Code').' ('.__('OrderDesc').')', 
+		$orderbys = ['Article.codice ASC' => __('Code').' ('.__('OrderAsc').')',
+					 'Article.codice DESC' => __('Code').' ('.__('OrderDesc').')',
 					 'Article.name ASC' => __('Name').' ('.__('OrderAsc').')',
 					 'Article.name DESC' => __('Name').' ('.__('OrderDesc').')',
 					 'CategoriesSupplier.name ASC' => __('Category').' ('.__('OrderAsc').')',
@@ -1883,7 +1889,7 @@ class ArticlesController extends AppController {
 					$sorts = ['CategoriesSupplier.name' => $direction, 'Article.name' => $direction];
 				break;
 				case 'codice':
-					$sorts = ['Article.code' => $direction];
+					$sorts = ['Article.codice' => $direction];
 				break;
 				case 'name':
 					$sorts = ['Article.name' => $direction];

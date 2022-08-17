@@ -40,7 +40,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 			echo $this->Form->input('category_article_id', ['id' => 'category_article_id', 'options' => $categories, 'empty' => Configure::read('option.empty'),'tabindex'=>($i+1),'required' => false, 'escape' => false]);
 		
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-			echo $this->Form->input('codice', ['style' => 'width:75px','tabindex'=>($i+1), 'required'=>'false']);
+			echo $this->Form->input('codice', ['style' => 'width:125px','tabindex'=>($i+1), 'required'=>'false']);
 			
 		echo $this->Form->input('name', ['id' => 'name','tabindex'=>($i+1),  'required' => 'false']);
 
@@ -49,10 +49,16 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 			
 		echo $this->Form->input('nota', ['tabindex'=>($i+1), 'class' => 'noeditor', 'cols' => '75', 'required' => 'false']);
 
-		echo $this->Form->drawFormCheckbox('Article', 'article_type_id', ['options' => $ArticlesTypeResults, 'selected'=> '', 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false']);		
-		/*		 * stato		*/
+		echo $this->Form->drawFormCheckbox('Article', 'article_type_id', ['options' => $ArticlesTypeResults, 'selected'=> '', 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false']);
+		
+		/*
+		 * stato
+		*/
 		echo $this->element('legendaArticleAddStato', ['context' => 'article', 'results' => $this->request->data, 'isUserPermissionArticlesOrder' => $this->App->isUserPermissionArticlesOrder($user)]);
-				$options = ['options' => $stato, 'value' => 'Y', 'label'=>__('Stato'), 'tabindex'=>($i+1), 'required'=>'false'];		echo $this->App->drawFormRadio('Article','stato', $options);						
+		
+		$options = ['options' => $stato, 'value' => 'Y', 'label'=>__('Stato'), 'tabindex'=>($i+1), 'required'=>'false'];
+		echo $this->App->drawFormRadio('Article','stato', $options);
+						
 		$options = ['options' => $flag_presente_articlesorders, 'value' => 'Y', 'label'=>__('FlagPresenteArticlesorders'), 'tabindex'=>($i+1), 'required'=>'false'];
 		echo $this->App->drawFormRadio('Article','flag_presente_articlesorders', $options);
 

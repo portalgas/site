@@ -48,7 +48,7 @@ else
 						echo $this->Form->input('category_article_id', array('id' => 'category_article_id', 'options' => $categories, 'empty' => Configure::read('option.empty'),'tabindex'=>($i+1),'required' => false,'escape' => false));
 					
 					if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
-						echo $this->Form->input('codice',array('id' => 'codice','style' => 'width:75px;','tabindex'=>($i+1), 'required' => 'false'));
+						echo $this->Form->input('codice', ['id' => 'codice','style' => 'width:125px;','tabindex'=>($i+1), 'required' => 'false']);
 						
 					echo $this->Form->input('name',array('id' => 'name','tabindex'=>($i+1), 'required' => 'false'));
 
