@@ -3,19 +3,19 @@ App::uses('AppModel', 'Model');
 
 class SocialmarketOrganization extends AppModel {
 
-    public $useTable = 'suppliers_organizations';
+    public $tablePrefix = false;
 
     public $belongsTo = array(
-        'Supplier' => array(
-            'className' => 'Supplier',
-            'foreignKey' => 'supplier_id',
+        'Organization' => array(
+            'className' => 'Organization',
+            'foreignKey' => 'organization_id',
             'conditions' => '',
             'fields' => '',
             'order' => ''
         ),
-        'CategoriesSupplier' => array(
-            'className' => 'CategoriesSupplier',
-            'foreignKey' => 'category_supplier_id',
+        'SuppliersOrganization' => array(
+            'className' => 'SuppliersOrganization',
+            'foreignKey' => 'supplier_organization_id',
             'conditions' => '',
             'fields' => '',
             'order' => ''
@@ -35,18 +35,19 @@ class SocialmarketOrganization extends AppModel {
          * tutti i produttori associati all'organization SocialMarket
          */
         $options = [];
-        $options['conditions'] = ['SocialmarketOrganization.organization_id' => Configure::read('social_market_organization_id')];
-        $options['order'] = ['SocialmarketOrganization.name'];
+        $options['conditions'] = ['SuppliersOrganization.organization_id' => Configure::read('social_market_organization_id')];
+        $options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = 1;
         // debug($options);
-        $socialmarketOrganizationResults = $this->find('all', $options);
+        $SuppliersOrganization = new SuppliersOrganization;
+        $suppliersOrganizationResults = $SuppliersOrganization->find('all', $options);
 
-        foreach($socialmarketOrganizationResults as $numResult => $socialmarketOrganizationResult) {
+        foreach($suppliersOrganizationResults as $numResult => $suppliersOrganizationResult) {
 
             /*
              * dati Organization associato al produttore, il produttore ha un account da produttore
              */
-            $owner_organization_id = $socialmarketOrganizationResult['Supplier']['owner_organization_id'];
+            $owner_organization_id = $suppliersOrganizationResult['Supplier']['owner_organization_id'];
 
             $options = [];
             $options['conditions'] = ['Organization.id' => $owner_organization_id];
@@ -55,13 +56,13 @@ class SocialmarketOrganization extends AppModel {
             $Organization = new Organization;
             $organizationResults = $Organization->find('first', $options);
 
-            $socialmarketOrganizationResults[$numResult]['Supplier']['Organization'] = $organizationResults['Organization'];
+            $suppliersOrganizationResults[$numResult]['Supplier']['Organization'] = $organizationResults['Organization'];
 
             /*
-             * GAS assocati al produttore
+             * GAS gia' assocati al produttore => non saranno in SocialMarket per conflitti d'interesse
              */
             $options = [];
-            $options['conditions'] = ['SuppliersOrganization.supplier_id' => $socialmarketOrganizationResult['Supplier']['id'],
+            $options['conditions'] = ['SuppliersOrganization.supplier_id' => $suppliersOrganizationResult['Supplier']['id'],
                'NOT' => ['SuppliersOrganization.organization_id' => [Configure::read('social_market_organization_id'), $organizationResults['Organization']['id']]]
                                     ];
             $options['recursive'] = 0;
@@ -70,10 +71,21 @@ class SocialmarketOrganization extends AppModel {
             $SuppliersOrganization->unbindModel(['belongsTo' => ['Supplier', 'CategoriesSupplier']]);
             $suppliersOrganizationResults = $SuppliersOrganization->find('all', $options);
 
-            $socialmarketOrganizationResults[$numResult]['Organization'] = $suppliersOrganizationResults;
+            $suppliersOrganizationResults[$numResult]['Organization'] = $suppliersOrganizationResults;
+
+            /*
+             * GAS assocati al SocialMarket (in base alla modalita' di consegna)
+             */
+            $options = [];
+            $options['conditions'] = ['supplier_organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['id']];
+            $options['recursive'] = 0;
+
+            $socialmarketOrganizationResults = $this->find('all', $options);
+
+            $suppliersOrganizationResults[$numResult]['SocialmarketOrganization'] = $socialmarketOrganizationResults;
 
         } // end foreach($socialmarketOrganizationResults as $numResult => $socialmarketOrganizationResult)
 
-        return $socialmarketOrganizationResults;
+        return $suppliersOrganizationResults;
     }
 }
