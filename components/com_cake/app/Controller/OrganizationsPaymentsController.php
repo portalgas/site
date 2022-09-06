@@ -53,7 +53,8 @@ class OrganizationsPaymentsController extends AppController {
         $this->request->data = $this->OrganizationsPayment->find('first', $options);
 
 		$paramsPay = json_decode($this->request->data['OrganizationsPayment']['paramsPay'], true);
-		$this->request->data['OrganizationsPayment'] += $paramsPay;
+        if(!empty($paramsPay))
+    		$this->request->data['OrganizationsPayment'] += $paramsPay;
 
 		App::import('Model', 'Template');
         $Template = new Template;
