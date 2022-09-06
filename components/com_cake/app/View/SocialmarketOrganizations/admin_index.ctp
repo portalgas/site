@@ -102,19 +102,18 @@ foreach($results as $numResult => $result) {
 
         echo '<td></td>';
         echo '<td></td>';
-        echo '<td>';
+        echo '<td colspan="3">';
         foreach($result['Organization'] as $organization) {
+            echo '<div style="float: left; min-height: 50px; padding: 0 5px">';
             echo '<img width="50" src="' . Configure::read('App.web.img.upload.content') . '/' . $organization['Organization']['img1'] . '"  alt="' . $organization['Organization']['name'] . '" />';
             echo ' ' . $organization['Organization']['name'] . ' (' . $organization['Organization']['id'] . ') ';
             if($organization['SuppliersOrganization']['owner_articles']=='SUPPLIER')
                 echo '<label class="btn btn-info">'.$this->App->traslateEnum('ProdGasSupplier'.$organization['SuppliersOrganization']['owner_articles']).'</label>';
             else
                 echo $this->App->traslateEnum('ProdGasSupplier'.$organization['SuppliersOrganization']['owner_articles']);
+            echo '</div>';
         }
         echo '</td>';
-        echo '<td>';
-        echo '</td>';
-        echo '<td></td>';
         echo '</tr>';
 	} // end if(!isset($result['Supplier']['Supplier']['Organization']))
 
@@ -141,14 +140,14 @@ foreach($results as $numResult => $result) {
         echo '<tr class="">';
         echo '<td></td>';
         echo '<td></td>';
-        echo '<td>';
+        echo '<td colspan="3">';
         foreach($result['SocialmarketOrganization'] as $organization) {
+            echo '<div style="float: left; min-height: 50px; padding: 0 5px">';
             echo '<img width="50" src="' . Configure::read('App.web.img.upload.content') . '/' . $organization['Organization']['img1'] . '"  alt="' . $organization['Organization']['name'] . '" />';
-            echo ' ' . $organization['Organization']['name'] . ' (' . $organization['Organization']['id'] . ') ';
+            echo ' ' . $organization['Organization']['name'] . ' (' . $organization['Organization']['id'] . ')';
+            echo '</div>';
         }
         echo '</td>';
-        echo '<td></td>';
-        echo '<td></td>';
         echo '</tr>';
 
     } // end if(!isset($result['Supplier']['Supplier']['Organization']))
