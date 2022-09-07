@@ -557,9 +557,27 @@ alert('Gas Register del GAS');
 	</tr>
 	
 </table>
-</div>	
-	
-<h2>pulire cache in joomla</h2>
+</div>
+
+
+<!--  			socialmarket			 -->
+<!--  			socialmarket			 -->
+<!--  			socialmarket			 -->
+<h1 class="header" id="header-socialmarket">SocialMarket</h1>
+<div class="contenuto" id="contenuto-socialmarket" style="display:none;">
+    <table class="table table-bordered table-hover">
+        <tr>
+            <td>
+                <b>Creare ambiente</b>
+            </td>
+            <td>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+    <h2>pulire cache in joomla</h2>
 
 <p>(*) vedere Help</p>
 </div>

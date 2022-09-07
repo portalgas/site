@@ -22,7 +22,7 @@ echo '<h3>'.__('SuppliersOrganization').'</h3>';
             <li>Punti di ritiro (ex mercati, botteghe)</li>
         </ul>
     </li>
-        <li>in SocialMarket apro l'<b>ordine</b> con "consegna da definire"</li>
+        <li>in SocialMarket apro l'<b>ordine</b> con "consegna da definire" / note con spese di spedizione, luogo consegna</li>
     </ul>
 
 <h3>Modalità consegna</h3>
@@ -73,8 +73,7 @@ foreach($results as $numResult => $result) {
     echo 'supplier_id '.$result['Supplier']['id'].'<br />';
     echo 'supplier_organization_id associato all\'organization SocialMarket '.$result['SuppliersOrganization']['id'].' (database.socialmarket_organizations)';
     echo '</td>';;
-    echo '<td>INSERT into socialmarket_organizations (supplier_organization_id, organization_id) VALUES ('.$result['SuppliersOrganization']['id'].', 0);';
-    echo '<br /><b>escludo</b> organization_id dei G.A.S. già associati';
+    echo '<td><b>escludo</b> organization_id dei G.A.S. già associati';
     echo '</td>';
 	echo '</tr>';
 	
@@ -150,8 +149,34 @@ foreach($results as $numResult => $result) {
         echo '</td>';
         echo '</tr>';
 
+        echo '<tr>';
+        echo '<td></td>';
+        echo '<td></td>';
+        echo '<td colspan="3">';
+        echo 'Totale G.A.S. '.count($organization_ids);
+        echo '<pre class="shell" style="height: 150px;">';
+        echo "INSERT into socialmarket_organizations (supplier_organization_id, organization_id) VALUES \r\n";
+        foreach($organization_ids as $organization_id) {
+
+            $sql_insert = true;
+
+            foreach($result['Organization'] as $numResult => $organization) {
+                if ($organization['Organization']['id'] == $organization_id) {
+                    unset($result['Organization'][$numResult]);
+                    $sql_insert = false;
+                    break;
+                }
+            }
+
+            if($sql_insert)
+                echo "(".$organization['SuppliersOrganization']['id'].", ".$organization_id."), \r\n";
+        }
+        echo '</pre>';
+        echo '</td>';
+        echo '</tr>';
+
     } // end if(!isset($result['Supplier']['Supplier']['Organization']))
 }
-echo '</table></div>';			
+echo '</table></div>';
 
 echo '</div>';
