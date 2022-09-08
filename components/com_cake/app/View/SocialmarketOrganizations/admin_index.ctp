@@ -59,7 +59,7 @@ echo '</tr>';
 foreach($results as $numResult => $result) {
 
 	$this->App->d($result, false);
-	
+
 	echo '<tr>';
 	echo '<td>'.((int)$numResult+1).'</td>';
 	echo '<td>';
