@@ -169,7 +169,7 @@ foreach($results as $numResult => $result) {
             }
 
             if($sql_insert)
-                echo "(".$organization['SuppliersOrganization']['id'].", ".$organization_id."), \r\n";
+                echo "(".$result['SuppliersOrganization']['id'].", ".$organization_id."), \r\n";
         }
         echo '</pre>';
         echo '</td>';
