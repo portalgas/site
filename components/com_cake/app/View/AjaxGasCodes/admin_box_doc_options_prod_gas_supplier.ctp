@@ -1,53 +1,45 @@
 <?php 
 if(!empty($results))
 	echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => __('OrderToValidateError')));
+
+echo '<div class="col-md-7">';
+echo '<label class="control-label">Opzioni</label>';
+// il produttore puo' sempre if($can_view_orders_users=='Y') {
+    echo '<div class="radio">';
+    echo '<label><input type="radio" name="doc_options" id="to-users" value="to-users" />'.__('to_users').'</label>';
+    echo '</div>';
+// }
+
+/*
+ *  per report to-articles-monitoring
+ *      Order.state_code = 'OPEN' OR Order.state_code = 'PROCESSED-BEFORE-DELIVERY'
+if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) {
 ?>
-<div class="col-md-7">
-<label class="control-label">Opzioni</label>
+    <div class="radio">
+        <label><input type="radio" name="doc_options" id="to-articles-monitoring" value="to-articles-monitoring" /><?php echo __('to_articles_monitoring');?></label>
+    </div>
+<?php
+}
+*/
 
-	<?php
-	if($can_view_orders_users=='Y') {
-	?>
-		<div class="radio">
-			<label><input type="radio" name="doc_options" id="to-users" value="to-users" /><?php echo __('to_users');?></label>
-		</div>
-	<?php 
-	}
+echo '<div class="radio">';
+echo '<label><input type="radio" name="doc_options" id="to-articles" value="to-articles" />'.__('to_articles').'</label>';
+echo '</div>';
 
-	/*
-	 *  per report to-articles-monitoring 
-	 *      Order.state_code = 'OPEN' OR Order.state_code = 'PROCESSED-BEFORE-DELIVERY'
-	 */
-	if($isToValidate || $toQtaMassima || $toQtaMinimaOrder) { 
-	?>
-		<div class="radio">
-			<label><input type="radio" name="doc_options" id="to-articles-monitoring" value="to-articles-monitoring" /><?php echo __('to_articles_monitoring');?></label>
-		</div>	
-	<?php
-	}	
-	?>
-		<div class="radio">
-			<label><input type="radio" name="doc_options" id="to-articles" value="to-articles" /><?php echo __('to_articles');?></label>
-		</div>	
-	<?php
-	if($can_view_orders_users=='Y') {	
-	?>
-		<div class="radio">
-			<label><input type="radio" name="doc_options" id="to-articles-details" value="to-articles-details" /><?php echo __('to_articles_details');?></label>
-		</div>	
-	<?php
-	}
-	?>
-	<!--
-	<p>
-		<input type="radio" name="doc_options" id="to-articles-weight" value="to-articles-weight" /><label for="to-articles-weight"><?php echo __('to_articles_weight');?></label>
-	</p>
-	-->
-</div>
-<div class="col-md-5">
+// il produttore puo' sempre if($can_view_orders_users=='Y') {
+    echo '<div class="radio">';
+    echo '<label><input type="radio" name="doc_options" id="to-articles-details" value="to-articles-details" />'.__('to_articles_details').'</label>';
+    echo '</div>';
+// }
+/*
+<p>
+    <input type="radio" name="doc_options" id="to-articles-weight" value="to-articles-weight" /><label for="to-articles-weight"><?php echo __('to_articles_weight');?></label>
+</p>
+*/
+echo '</div>';
+echo '<div class="col-md-5">';
 
-		<?php
-	echo '<div id="setting-to-users" class="box-options">';		
+	echo '<div id="setting-to-users" class="box-options">';
 
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
 			$id = '2';
@@ -70,8 +62,8 @@ if(!empty($results))
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_N" value="N" />No</label>
+			<label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_Y" value="Y" checked />Si</label>
 		</div>		
 		<div class="doc-options">
 			<label class="control-label">Visualizzo il <b>totale</b> per ogni utente</label>
