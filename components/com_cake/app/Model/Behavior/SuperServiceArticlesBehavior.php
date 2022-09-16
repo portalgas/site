@@ -48,6 +48,17 @@ class SuperServiceArticlesBehavior extends ModelBehavior {
         $Model::d($opts, $debug);
         if(isset($opts['conditions']))
             $options['conditions'] = array_merge($options['conditions'], $opts['conditions']);
+
+        /*
+         * elimino eventuali condizione (ex in getArticlesByOrder_ConAcquisti tolgo Article.flag_presente_articlesorders nell'elenco di quelli gia' associati devo avere entrambi)
+         */
+        if(isset($opts['conditions_exclude'])) {
+            foreach($opts['conditions_exclude'] as $conditions_exclud) {
+                if(isset($options['conditions'][$conditions_exclud]))
+                    unset($options['conditions'][$conditions_exclud]);
+            }
+        }
+
         if(isset($opts['order']))
             $options['order'] = $opts['order'];
         else

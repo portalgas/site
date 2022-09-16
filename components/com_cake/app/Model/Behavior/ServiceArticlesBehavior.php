@@ -68,6 +68,9 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
         return $this->_excludeJustAssociate($Model, $user, $results, $orderResult, $opts);
     }
 
+    /*
+     * elenco articoli gia' associati ad un ordine
+     */
 	public function getArticlesByOrder_ConAcquisti(Model $Model, $user, $orderResult, $opts=[], $debug=false) {
 
 		if(!is_array($orderResult))
@@ -80,8 +83,12 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 		$Cart = new Cart();
 
 		$options = [];
-		$options['conditions'] = ['Article.stato' => 'Y'];	
-			   					  
+		$options['conditions'] = ['Article.stato' => 'Y'];
+        /*
+         * in getArticlesByOrder 'Article.flag_presente_articlesorders' => 'Y' ma nell'elenco di quelli gia' associati devo avere entrambi
+         */
+        $options['conditions_exclude'] = ['Article.flag_presente_articlesorders'];
+
 		if(isset($opts['conditions']))
 			$options['conditions'] = array_merge($options['conditions'], $opts['conditions']);	
 			
