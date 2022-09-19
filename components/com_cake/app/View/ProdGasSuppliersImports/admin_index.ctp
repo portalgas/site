@@ -78,7 +78,7 @@ foreach($results as $numResult => $result) {
 	echo '<td>'.((int)$numResult+1).'</td>';
 	echo '<td>';
 	echo ' <img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.web.img.upload.content').'/'.$result['Organization']['img1'].'" alt="'.$result['Organization']['name'].'" /> ';
-    echo '<br /><a target="_blank" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'">site/produttore/'.$result['Supplier']['slug'].'</a>';
+    echo '<br /><a target="_blank" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['Supplier']['slug'].'">site/produttore/'.$result['Supplier']['Supplier']['slug'].'</a>';
 	echo '</td>';	
 	echo '<td>'.$result['Organization']['name'].' ('.$result['Organization']['id'].')</td>';
 	if(!isset($result['Supplier']['SuppliersOrganization'])) { 
