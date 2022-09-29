@@ -91,7 +91,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
         if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
             echo '<th>'.$this->Paginator->sort('codice').'</th>';
         ?>
-        <th><?php echo $this->Paginator->sort('name','Nome prodotto');?></th>
+        <th colspan="2"><?php echo $this->Paginator->sort('name','Nome prodotto');?></th>
         <th><?php echo $this->Paginator->sort('Prezzo');?></th>
         <th>Diminuzione %</th>
         <th>Aumento %</th>
@@ -109,6 +109,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
             if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
                 echo '<td>'.$result['Article']['codice'].'</td>';
+            echo '<td>';
+            if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
+                echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
+            }
+            echo '</td>';
             echo '<td>';
             echo $result['Article']['name'];
             echo '</td>';

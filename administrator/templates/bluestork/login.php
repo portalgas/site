@@ -19,7 +19,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
     <meta name="description" content="">
     <meta name="author" content="">
     <jdoc:include type="head" />
-    
+
 	<style>
 	.logo {
 	    background: url("/images/cake/loghi/0/150h50.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
@@ -29,7 +29,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	.navbar-barra {
 		background: none repeat scroll 0 0 #0A659E;
 		height: 35px;
-	} 	
+	}
 	.navbar-barra .container {
 		padding-top: 5px;
 	}
@@ -56,7 +56,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	}
 	.footer a:hover {
 		color:#fff;
-	}	
+	}
 	.footer {
 		position: fixed;
 		bottom: 0;
@@ -71,21 +71,21 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	   padding:0px;
 	   margin-bottom: 20px;
 	}
-	
+
 	.error h2 {
 	        color:#000 !important;
 	        font-size:1.4em !important;
 	        text-transform:uppercase;
 	        padding:0 0 0 0px !important
 	}
-	
+
 	#system-message
 	{
 		margin:10px 0 20px 0;
 		border-left:0;
 		border-right:0;
 	}
-	
+
 	#system-message dt
 	{
 		font-weight: bold;
@@ -108,7 +108,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	{
 		line-height:1.5em
 	}
-	
+
 	/* System Standard Messages */
 	#system-message dt.message
 	{
@@ -119,7 +119,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	#system-message dd.message ul {
 	    background: url("/images/cake/system-message-green.jpg") no-repeat scroll 0 50% #3FB724;
 	}
-	
+
 	#system-message dt.error
 	{
 		position:absolute;
@@ -133,7 +133,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 		left:-3000px;
 	}
 	#system-message dd.notice ul { color: #000;margin:10px 0 }
-	
+
 	#system-message
 	{
 	    margin-bottom: 0px;
@@ -178,7 +178,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-        
+
   </head>
 
   <body>
@@ -191,10 +191,10 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	    <div class="navbar-barra">
 	    	<div class="container visible-lg visible-md visible-sm">
 	    		<div style="font-size: 19px; color: #fff;">Gestionale web per Gruppi d'acquisto solidale e D.E.S.</div>
-	    	</div>	
+	    	</div>
 	    </div>
     </nav>
-    
+
     <div class="container">
 		<div class="main-login main-center">
 			<jdoc:include type="message" />
@@ -205,7 +205,7 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
     <footer class="footer">
 		<div class="container">
 			<div class="col-md-6">
-				<a href="/12-portalgas/2-termini-di-utilizzo" target="_blank" title="Leggi le condizioni di utilizzo di PortAlGas">Termini di utilizzo</a> 
+				<a href="/12-portalgas/2-termini-di-utilizzo" target="_blank" title="Leggi le condizioni di utilizzo di PortAlGas">Termini di utilizzo</a>
 				&nbsp;|&nbsp;
 				<a href="/12-portalgas/103-bilancio" target="_blank" title="Leggi il bilancio di PortAlGas">Bilancio</a>
 			</div>
@@ -216,6 +216,6 @@ $doc->addStyleSheet('templates/'.$this->template.'/css/bootstrap.min.css');
 	<noscript>
 		<?php echo JText::_('JGLOBAL_WARNJAVASCRIPT') ?>
 	</noscript>
-	
+
   </body>
 </html>
