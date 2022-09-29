@@ -372,16 +372,16 @@ if(!empty($organization_id)) {
 		$_menus[$i]['level'] = 0;
 		$_menus[$i]['label'] = "Utility";
 		$_menus[$i]['url'] = "#";
-		$i++;
-		$_menus[$i]['level'] = 1;
-		$_menus[$i]['label'] = "Generali";
-		$_menus[$i]['url'] = "index.php?option=com_cake&controller=Utilities&action=index";
-		/*
-		$i++;
-		$_menus[$i]['level'] = 1;
-		$_menus[$i]['label'] = "Il mio profilo";
-		$_menus[$i]['url'] = "index.php?option=com_admin&task=profile.edit&id=".$user->get('id');
-		*/
+        /*
+        $i++;
+        $_menus[$i]['level'] = 1;
+        $_menus[$i]['label'] = "Generali";
+        $_menus[$i]['url'] = "index.php?option=com_cake&controller=Utilities&action=index";
+        $i++;
+        $_menus[$i]['level'] = 1;
+        $_menus[$i]['label'] = "Il mio profilo";
+        $_menus[$i]['url'] = "index.php?option=com_admin&task=profile.edit&id=".$user->get('id');
+        */
 		$i++;
 		$_menus[$i]['level'] = 1;
 		$_menus[$i]['label'] = "Stampa documenti";

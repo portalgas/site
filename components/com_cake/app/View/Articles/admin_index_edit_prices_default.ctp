@@ -67,7 +67,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '</tr>';
 
 		foreach ($results as $numResult => $result) {
-		
+
 			echo '<tr class="view">';
 			echo '<td><a action="articles-'.$result['Article']['organization_id'].'_'.$result['Article']['id'].'" class="actionTrView openTrView" href="#" title="'.__('Href_title_expand').'"></a></td>';
 			echo '<td>'.((int)$numResult+1).'</td>';
@@ -83,16 +83,17 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			echo '</td>';		
 			echo '<td>'.$result['Article']['name'].'</td>';
 			echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
-			echo '<td>'.$result['Article']['prezzo_'].'&nbsp;&euro;</td>';
+			echo '<td>'.$result['Article']['prezzo_e'].'</td>';
 			echo '<td style="white-space: nowrap;">';
 				
-				if($result['Article']['owner']) {
-					   echo '<input class="double" type="hidden" name="data[Article][prezzo_old]['.$result['Article']['id'].']" value="'.$result['Article']['prezzo_'].'" />';
-					   echo '<input class="double form-control" type="text" tabindex="'.($i+1).'" name="data[Article][prezzo]['.$result['Article']['id'].']" value="'.$result['Article']['prezzo_'].'" style="display:inline" />&nbsp;&euro;';
-				   }
-				 else
-					 echo $result['Article']['prezzo_e'];
-				
+            if($result['Article']['owner']) {
+                   echo '<input class="double" type="hidden" name="data[Article][prezzo_old]['.$result['Article']['id'].']" value="'.$result['Article']['prezzo_'].'" />';
+                   echo '<input class="double form-control" type="text" tabindex="'.($i+1).'" name="data[Article][prezzo]['.$result['Article']['id'].']" value="'.$result['Article']['prezzo_'].'" style="display:inline" />&nbsp;&euro;';
+               }
+             else {
+                 echo '<span class="label label-info">'.__('OwnerArticle').' '.__('ArticlesOwnerSUPPLIER').'</span>';
+                 // echo $result['Article']['prezzo_e'];
+             }
 			echo '</td>';
 			echo '<td title="'.__('toolTipStato').'" class="stato_'.$this->App->traslateEnum($result['Article']['stato']).'"></td>';
 			echo '</tr>';

@@ -20,7 +20,7 @@ class ArticlesOrdersController extends AppController {
 		else				
 		if(isset($this->request->params['pass']['order_id']))
 			$order_id = $this->request->params['pass']['order_id'];
-		
+
 		/* ctrl ACL */
         $actionWithPermission = ['admin_add', 'admin_index'];
         if (in_array($this->action, $actionWithPermission)) {
@@ -543,8 +543,8 @@ class ArticlesOrdersController extends AppController {
 		$this->set('summaryDesOrderResults', $desResults['summaryDesOrderResults']);
 				
 		$canEdit = $ArticlesOrderLifeCycle->canEdit($user, $this->order, $isTitolareDesSupplier, $debug);
-		$this->set('canEdit', $canEdit);		
-		
+		$this->set('canEdit', $canEdit);
+
         if ($this->request->is('post') || $this->request->is('put')) {
 
 			self::d($this->request->data, $debug);
@@ -729,7 +729,7 @@ class ArticlesOrdersController extends AppController {
 				$articles = $this->ArticlesOrder->getArticlesBySupplierOrganization_Ordinabili($user, $this->order, [], $debug);	// articoli da associare
 			break;
 			default:
-				self::x(__('msg_error_supplier_organization_owner_articles'));
+				self::x(__('msg_error_supplier_organization_owner_articles').' ['.$this->order['Order']['owner_articles'].']');
 			break;				
 		}
 		$this->set(compact('results', 'articles'));
@@ -1024,7 +1024,7 @@ class ArticlesOrdersController extends AppController {
 
             if ($order_valido) {
                 unset($_REQUEST['_method']); // se no passava a index (_method, order_id)
-                $this->myRedirect(['controller' => 'ArticlesOrders', 'action' => 'index', 'id' => $this->order_id]);
+                $this->myRedirect(['controller' => 'ArticlesOrders', 'action' => 'index', 'order_id' => $this->order_id]);
             }
         } // end if(!empty($this->delivery_id) && !empty($this->order_id))
 

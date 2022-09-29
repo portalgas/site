@@ -549,87 +549,97 @@ class ArticlesController extends AppController {
 	function admin_index_edit_prices_default() {
 		
 		$debug = false;
-		
-		App::import('Model', 'SiteLifeCyle');
-		$SiteLifeCyle = new SiteLifeCyle;
 									
 		if ($this->request->is('post') || $this->request->is('put')) {
-			
-			self::d($this->request->data, $debug);
-			
-			$msg = '';
-			if(isset($this->request->data['Article']['prezzo'])) {
-				foreach ($this->request->data['Article']['prezzo'] as $key => $value) {
-					$article_id = $key;
-					
-					self::d('tratto article '.$article_id.' con valore '.$value, $debug);
-					
-					if($value != $this->request->data['Article']['prezzo_old'][$article_id]) {
-	
-						if (!$this->Article->exists($this->user->organization['Organization']['id'], $article_id)) {
-							$msg .= "<br />articolo ".$article_id." non esiste!";
-						}
-						
-						$options = [];
-						$options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 'Article.id' => $article_id];
-						$options['recursive'] = -1;							  
-						$row = $this->Article->find('first', $options);
-						
-						$row['Article']['prezzo'] = $value;
-
-						self::d($row, $debug);						
-				
-						$this->Article->create();
-						if (!$this->Article->save($row)) {
-							$msg .= "<br />articolo ".$article_id." errore!";
-						}
-						else {
-							
-							/*
-							 * se non ho attivato il modulo hasArticlesOrder 
-							 * aggiorno sempre gli articoli associati agli ordini (con stato_elaborazione != CLOSE) 
-							 */ 
-							if(!$this->isUserPermissionArticlesOrder($this->user)) 
-								$this->request->data['Article']['updateArticlesOrder']='Y';
-							
-							/*
-							 * aggiorno gli articoli associati agli ordini
-							 */ 
-							if($this->request->data['Article']['updateArticlesOrder']=='Y') {
-								
-									$options = [];
-									$options['isUserPermissionArticlesOrder'] = $this->isUserPermissionArticlesOrder($this->user);
-									$esito .= $SiteLifeCyle->changeArticle($this->user, $row, 'EDIT_PRICE', $options);
-									if(isset($esito['CODE']) && $esito['CODE']==200)
-										$msg .= $esito['MSG'];
-							} // end if($this->request->data['Article']['updateArticlesOrder']=='Y')
-						}
-						
-					}
-				} // loop articles
-			}
-			else {
-				$msg = "Nessun articolo presente da poter aggiornare";
-			}
-			
-			if(!empty($msg))
-				$this->Session->setFlash($msg);
-			else
-				$this->Session->setFlash(__('The price to articles order has been saved'));
-			
+			$this->_index_edit_prices_post($this->request, $debug);
 		} // end if ($this->request->is('post') || $this->request->is('put')) 
 		
 		$this->_index_edit_prices();
 	}
 
 	function admin_index_edit_prices_percentuale() {
+
+        $debug=false;
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $this->_index_edit_prices_post($this->request, $debug);
+        } // end if ($this->request->is('post') || $this->request->is('put'))
+
 		$this->_index_edit_prices();
 		
 		$stato = ClassRegistry::init('Article')->enumOptions('stato');
 		$stato['ALL'] = 'Tutti';
 		$this->set(compact('stato'));
 	}
-	
+
+    private function _index_edit_prices_post($request, $debug=false) {
+
+        if($debug) debug($request->data);
+
+        App::import('Model', 'SiteLifeCyle');
+        $SiteLifeCyle = new SiteLifeCyle;
+
+        $msg = '';
+        if(isset($request->data['Article']['prezzo'])) {
+            foreach ($request->data['Article']['prezzo'] as $key => $value) {
+                $article_id = $key;
+
+                if($debug) debug('tratto article '.$article_id.' con valore '.$value);
+
+                if(!empty($value) && $value!=='0,00' && $value!=='0.00' && $value != $request->data['Article']['prezzo_old'][$article_id]) {
+
+                    if (!$this->Article->exists($this->user->organization['Organization']['id'], $article_id)) {
+                        $msg .= "<br />articolo ".$article_id." non esiste!";
+                    }
+
+                    $options = [];
+                    $options['conditions'] = ['Article.organization_id' => $this->user->organization['Organization']['id'], 'Article.id' => $article_id];
+                    $options['recursive'] = -1;
+                    $row = $this->Article->find('first', $options);
+
+                    $row['Article']['prezzo'] = $value;
+
+                    if($debug) debug($row);
+
+                    $this->Article->create();
+                    if (!$this->Article->save($row)) {
+                        $msg .= "<br />articolo ".$article_id." errore!";
+                    }
+                    else {
+
+                        /*
+                         * se non ho attivato il modulo hasArticlesOrder
+                         * aggiorno sempre gli articoli associati agli ordini (con stato_elaborazione != CLOSE)
+                         */
+                        if(!$this->isUserPermissionArticlesOrder($this->user))
+                            $request->data['Article']['updateArticlesOrder']='Y';
+
+                        /*
+                         * aggiorno gli articoli associati agli ordini
+                         */
+                        if($request->data['Article']['updateArticlesOrder']=='Y') {
+
+                            $options = [];
+                            $options['isUserPermissionArticlesOrder'] = $this->isUserPermissionArticlesOrder($this->user);
+                            $esito .= $SiteLifeCyle->changeArticle($this->user, $row, 'EDIT_PRICE', $options);
+                            if(isset($esito['CODE']) && $esito['CODE']==200)
+                                $msg .= $esito['MSG'];
+                        } // end if($request->data['Article']['updateArticlesOrder']=='Y')
+                    }
+
+                }
+            } // loop articles
+        }
+        else {
+            $msg = "Nessun articolo presente da poter aggiornare";
+        }
+
+        if(!empty($msg))
+            $this->Session->setFlash($msg);
+        else
+            $this->Session->setFlash(__('The price to articles order has been saved'));
+    }
+
 	private function _index_edit_prices() {
 		
 		$SqlLimit = 2000;
@@ -1130,9 +1140,7 @@ class ArticlesController extends AppController {
 	
 	public function admin_context_articles_copy($id) {
 		$this->_admin_copy('articles', $id, $this->user->organization['Organization']['id']); // article_organization_id e' quello del ORG perche' solo lui puo' modificare
-		
-		$this->Session->setFlash(__(Configure::read('sys_function_not_implement')));
-		$this->myRedirect(['action' => 'context_articles_index']);
+        $this->myRedirect(['action' => 'context_articles_index']);
 	}
 	
 	private function _admin_copy($context, $id=0, $article_organization_id=0) {

@@ -4154,6 +4154,12 @@ msgstr "Non tutti gli ordini sono chiusi"
 #
 # O W N E R - L I S T I N O
 #
+msgid "OwnerArticles"
+msgstr "Gestore articoli"
+
+msgid "OwnerArticle"
+msgstr "Gestore articolo"
+
 msgid "ArticlesOwnerSUPPLIER"
 msgstr "produttore"
 
