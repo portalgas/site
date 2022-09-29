@@ -122,11 +122,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
             echo '</td>';
             echo '<td>';
             if($result['Article']['owner'])
-                echo '<input type="text" data-attr-id="'.$result['Article']['id'].'" class="perc-less double form-control" tabindex="'.$tabindex++.'" name="prezzo_diminuzione['.$result['Article']['id'].']" value="" />';
+                echo '<input type="number" min="0" max="99" data-attr-id="'.$result['Article']['id'].'" class="perc-less double form-control" tabindex="'.$tabindex++.'" name="prezzo_diminuzione['.$result['Article']['id'].']" value="" />';
             echo '</td>';
             echo '<td>';
             if($result['Article']['owner'])
-                echo '<input type="text" data-attr-id="'.$result['Article']['id'].'" class="perc-more double form-control" tabindex="'.$tabindex++.'" name="prezzo_aumento['.$result['Article']['id'].']" value="" />';
+                echo '<input type="number" min="0" data-attr-id="'.$result['Article']['id'].'" class="perc-more double form-control" tabindex="'.$tabindex++.'" name="prezzo_aumento['.$result['Article']['id'].']" value="" />';
             echo '</td>';
             echo '<td><div class="percentuale-'.$result['Article']['id'].'"></div></td>';
             echo '<td style="white-space: nowrap;">';
