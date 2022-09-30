@@ -52,7 +52,7 @@ echo $this->Session->flash();
 echo $this->fetch('content');
 
 echo '<div id="footer">';
-if(Configure::read('developer.mode')) echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => __('developer.mode'))); 
+if(Configure::read('developer.mode')) echo $this->element('boxMsg', ['class_msg' => 'notice', 'msg' => __('developer.mode')]);
 echo '</div>';
 			
 echo '<div id="help">';

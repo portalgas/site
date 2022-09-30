@@ -2506,6 +2506,9 @@ msgstr "Importo precedente"
 msgid "importo_change"
 msgstr "Importo modificato"
 
+msgid "Percentuale"
+msgstr "Percentuale"
+
 msgid "importo_scontato"
 msgstr "Importo scontato"
 

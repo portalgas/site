@@ -74,11 +74,17 @@ class MenuOrdersHelper extends AppHelper {
 			$html .= '</h2>';
 		}
 
-		if($optLinkListOrders)
+        if($optLinkListOrders)
 			$html .= '<li>'.$this->Html->link('<span class="desc animate"> '.__('List Orders').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionReload"></span>', array('controller' => 'Orders', 'action' => 'index'), ['class' => 'animate', 'escape' => false]).'</li>';
-		
+/*
+        $html .= '<li>';
+        $html .= '<a class="animate">';
+        $html .= '<span class="desc animate"> '.__('Importo totale ordine').' </span>';
+        $html .= '<span style="float: right;display: inline-block;">'.number_format($results['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</span></a>';
+        $html .= '</li>';
+*/
 		foreach($orderActions as $orderAction) {
-			
+			//debug($orderAction);exit;
 			$label = __($orderAction['OrdersAction']['label']);
 			/*
 			 * dettaglio importo trasport, cost_more, cost_less

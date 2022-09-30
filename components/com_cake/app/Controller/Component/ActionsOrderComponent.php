@@ -221,14 +221,17 @@ class ActionsOrderComponent extends Component {
 			return $orderActions;
 		}
 
+        $orderResults['Order']['tot_importo'] = $Order->getTotImporto($user, $order_id, $debug);
+
 		/*
 		 * home order di default
 		 */
 	    $orderActions[0]['OrdersAction']['id'] = '0';
 	    $orderActions[0]['OrdersAction']['controller'] = 'Orders';
 	    $orderActions[0]['OrdersAction']['action'] = 'home';
-	    $orderActions[0]['OrdersAction']['label'] = 'Order home';
-	    $orderActions[0]['OrdersAction']['label_more'] = '';
+        $orderActions[0]['OrdersAction']['label'] = 'Order home';
+        $orderActions[0]['OrdersAction']['label'] = __('Order home').'<br /> - <small>'.__('Importo_totale').' '.number_format($orderResults['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).' €</small>';
+        $orderActions[0]['OrdersAction']['label_more'] = '';
 	    $orderActions[0]['OrdersAction']['css_class'] = 'actionWorkflow';
 	    $orderActions[0]['OrdersAction']['img'] = '';
 	    $orderActions[0]['OrdersAction']['url'] = 'controller=Orders&action=home&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$order_id;
@@ -263,7 +266,7 @@ class ActionsOrderComponent extends Component {
 		 * ctrl per ogni action OrdersAction.permission e OrdersAction.permission_or
 		 */
 		$orderActions += $this->_ctrlACLOrdersAction($user, $orderResults, $results, $debug);
-		
+
 		return $orderActions;
 	}	
 
@@ -352,8 +355,6 @@ class ActionsOrderComponent extends Component {
 					$orderActionOk = true;
 				
 			} // if(!empty($result['OrdersAction']['permission_or']))
-
-
 
 			if($orderActionOk) {
 	

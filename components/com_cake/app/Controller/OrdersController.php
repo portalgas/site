@@ -2063,9 +2063,9 @@ class OrdersController extends AppController {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-				
-		$this->set(compact('results'));
-		
+
+        $this->set(compact('results'));
+
 		$group_id = $this->ActionsOrder->getGroupIdToReferente($user);
 		$orderActions = $this->ActionsOrder->getOrderActionsToMenu($user, $group_id, $results['Order']['id'], $debug);
 		$this->set('orderActions', $orderActions);

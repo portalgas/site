@@ -68,15 +68,19 @@ else {
    ?>
 
 	  <div class="row">
-		<div class="col-md-4 form-inline">
+		<div class="col-md-3 form-inline">
 			<label class="control-label" for="tot_importo"><?php echo __('Importo totale ordine');?></label>
 			<input type="text" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>		
-		</div>	  	
-		<div class="col-md-4 form-inline">
-			<label for="trasporto"><?php echo __('Trasport');?></label>
-			<input type="text" value="<?php echo $trasport;?>" name="trasport" id="trasport" class="importo double form-control" />&nbsp;<span>&euro;</span>		
 		</div>
-		<div class="col-md-4">
+        <div class="col-md-3 form-inline">
+          <label for="trasporto"><?php echo __('Percentuale');?></label>
+          <input type="number" min="0" value="" name="perc" id="perc" class="perc form-control" />
+        </div>
+        <div class="col-md-3 form-inline">
+          <label for="trasporto"><?php echo __('Trasport');?></label>
+          <input type="text" value="<?php echo $trasport;?>" name="trasport" id="trasport" class="importo double form-control" />&nbsp;<span>&euro;</span>
+        </div>
+		<div class="col-md-3">
 			<div class="submit"><input id="submitImportoInsert" type="submit" value="<?php echo __('Submit Trasport');?>" /></div>
 		</div>
 	  </div>
@@ -91,7 +95,15 @@ else {
 				validateNumberField(this,'importo trasporto');});
 				$('.double').focusout(function() {validateNumberField(this,'importo trasporto');
 			});
-		
+
+            $('.perc').change(function() {
+                let perc = Number($(this).val());
+                let tot_importo = numberToJs($('input[name="tot_importo"').val());
+                tot_importo = Number(tot_importo);
+                let tot_importo_perc = (tot_importo / 100 * perc);
+                $('#trasport').val(number_format(tot_importo_perc,2,',','.'));
+            });
+
 			var order_id = $("#order_id").val();
 			if(order_id>0)	choiceOptions();
 		

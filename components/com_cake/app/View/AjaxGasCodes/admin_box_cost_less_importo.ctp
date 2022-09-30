@@ -31,7 +31,7 @@ if($results['Order']['cost_less']>0) {
 				validateNumberField(this,'importo sconto');});
 				$('.double').focusout(function() {validateNumberField(this,'importo sconto');
 			});
-		
+
 			$('#submitImportoUpdate').click(function() {
 		
 				var delivery_id = $('#delivery_id').val();
@@ -67,15 +67,19 @@ else {
 	$cost_less = '0,00'; 
    ?>
 	  <div class="row">
-		<div class="col-md-4 form-inline">
+		<div class="col-md-3 form-inline">
 			<label class="control-label" for="tot_importo"><?php echo __('Importo totale ordine');?></label>
 			<input type="text" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>		
-		</div>		  	
-		<div class="col-md-4 form-inline">
+		</div>
+          <div class="col-md-3 form-inline">
+              <label for="trasporto"><?php echo __('Percentuale');?></label>
+              <input type="number" min="0" value="" name="perc" id="perc" class="perc form-control" />
+          </div>
+		<div class="col-md-3 form-inline">
 			<label for="cost_less"><?php echo __('CostLess');?></label>
 			<input type="text" value="<?php echo $cost_less;?>" name="cost_less" id="cost_less" class="importo double form-control" />&nbsp;<span>&euro;</span>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<div class="submit"><input id="submitImportoInsert" type="submit" value="<?php echo __('Submit CostLess');?>" /></div>
 		</div>
 	  </div>
@@ -89,7 +93,15 @@ else {
 				validateNumberField(this,'importo sconto');});
 				$('.double').focusout(function() {validateNumberField(this,'importo sconto');
 			});
-		
+
+            $('.perc').change(function() {
+                let perc = Number($(this).val());
+                let tot_importo = numberToJs($('input[name="tot_importo"').val());
+                tot_importo = Number(tot_importo);
+                let tot_importo_perc = (tot_importo / 100 * perc);
+                $('#cost_less').val(number_format(tot_importo_perc,2,',','.'));
+            });
+
 			var order_id = $("#order_id").val();
 			if(order_id>0)	choiceOptions();
 		
