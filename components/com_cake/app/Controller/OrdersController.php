@@ -232,8 +232,10 @@ class OrdersController extends AppController {
 			if($this->user->organization['Template']['payToDelivery'] == 'POST' || $this->user->organization['Template']['payToDelivery']=='ON-POST') {
 				$results[$numResult]['Order']['request_payment_num'] = $RequestPayment->getRequestPaymentNumByOrderId($this->user, $result['Order']['id']);
 				$results[$numResult]['Order']['request_payment_id'] = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $result['Order']['id']);
-			} 
-			  
+			}
+
+            // totale ordine
+            $results[$numResult]['Order']['tot_importo'] = $this->Order->getTotImporto($this->user, $result['Order']['id'], $debug);
 		} // loop Orders
  
 		$this->set(compact('results'));
@@ -358,7 +360,9 @@ class OrdersController extends AppController {
 			 $results[$numResult]['Order']['can_state_code_to_close'] = $OrderLifeCycle->canStateCodeToClose($this->user, $result, $debug);
 			 
 			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
-			 
+
+            // totale ordine
+            $results[$numResult]['Order']['tot_importo'] = $this->Order->getTotImporto($this->user, $result['Order']['id'], $debug);             
 		}
 		
 		$this->set('isRoot', $this->isRoot());

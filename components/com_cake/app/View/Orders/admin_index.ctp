@@ -123,10 +123,10 @@ if(!empty($results)) {
 	echo '	<td>';
 	
 	// echo $this->Html->link($result['SuppliersOrganization']['name'], array('controller' => 'suppliersOrganizations', 'action' => 'edit', $result['SuppliersOrganization']['id']),array('title' => "Clicca per modificare i dati anagrafici del produttore ".$result['SuppliersOrganization']['name'])); 
-			
-	echo $result['SuppliersOrganization']['name'];
-	
-	
+
+    echo $result['SuppliersOrganization']['name'];
+    echo '<br /><small>'.__('Importo_totale').' '.number_format($result['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</small>';
+
 	if($user->organization['Organization']['hasDes']=='Y' && !empty($result['DesOrdersOrganization'])) {
 		if($result['DesOrdersOrganization']['des_id']==$user->des_id) {
 			echo '<a title="" href="/administrator/index.php?option=com_cake&amp;controller=DesOrdersOrganizations&amp;action=index&amp;des_order_id='.$result['DesOrdersOrganization']['des_order_id'].'">';

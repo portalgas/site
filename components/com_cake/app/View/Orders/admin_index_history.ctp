@@ -65,7 +65,8 @@ if(!empty($results)) {
 			echo '</td>';
 			echo '<td>';
 			echo $result['SuppliersOrganization']['name'];
-			echo '</td>';
+            echo '<br /><small>'.__('Importo_totale').' '.number_format($result['Order']['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;</small>';
+            echo '</td>';
 			echo '<td style="white-space:nowrap;">';
 			echo $this->Time->i18nFormat($result['Order']['data_inizio'],"%A %e %B %Y");
 			echo '<br />';
