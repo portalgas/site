@@ -900,7 +900,6 @@ class AjaxController extends AppController {
         } // DES
         $this->set(compact('des_order_id', 'isReferentDesAllGasDesSupplier'));
 
-        
         App::import('Model', 'ArticlesOrder');
         $ArticlesOrder = new ArticlesOrder();
         if (!$ArticlesOrder->exists($this->user->organization['Organization']['id'], $order_id, $article_organization_id, $article_id)) {

@@ -362,7 +362,7 @@ class OrdersController extends AppController {
 			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
 
             // totale ordine
-            $results[$numResult]['Order']['tot_importo'] = $this->Order->getTotImporto($this->user, $result['Order']['id'], $debug);             
+            $results[$numResult]['Order']['tot_importo'] = $this->Order->getTotImporto($this->user, $result['Order']['id'], $debug);
 		}
 		
 		$this->set('isRoot', $this->isRoot());
