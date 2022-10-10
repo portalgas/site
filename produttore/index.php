@@ -342,7 +342,36 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 					Qui maggior dettagli <a href="https://economiasolidale.net/content/sviluppato-protocollo-gdxp-per-scambiare-listini-tra-gestionali-per-gas" target="_blank">https://economiasolidale.net/content/sviluppato-protocollo-gdxp-per-scambiare-listini-tra-gestionali-per-gas</a>
 				</p>
 
-				
+
+            <h1 id="socialMarket" class="page-header">SocialMarket</h1>
+
+            <p>PortAlGas ha attivato una nuova modalità per presentare i tuoi articoli ad altri gasisti che fanno parte a G.A.S. con i quali non collabori.</p>
+
+            <p>
+                <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/socialmarket-tab.png" /></a>
+            </p>
+
+            <p>I gasisti prenotato, attraverso PortAlGas, gli articoli che desiderano; sarà cura del produttore contattarli per definire la modalità di consegna.</p>
+
+            <h2 id="socialMarket-monitorare" class="page-header">Monitorare gli acquisti</h2>
+
+            <p>Per monitorare gli eventuali acquisti effettuati da parte degli utenti, autenticarsi con le proprie credenziali <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a></p>
+            <p>Una volta autenticato, cliccare sulla voce di menù "Elenco G.A.S."</p>
+            <p>comparirà la riga con indicato "SocialMarket"</p>
+
+            <p>
+                <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/socialmarket-elencogas.png" /></a>
+            </p>
+
+            <p>cliccando sull'icona <img src="https://www.portalgas.it/images/cake/apps/32x32/cards.png" /> si accederà al dettaglio del ordine dove si potranno effettuare le seguenti operazioni</p>
+
+            <p><ul>
+                <li><img src="https://www.portalgas.it/images/cake/actions/32x32/edit.png" /> gestire i singoli acquisti</li>
+                <li><img src="https://www.portalgas.it/images/cake/apps/32x32/printer.png" /> stampare i dettagli dell'ordine</li>
+                </ul>
+            </p>
+
+            <p></p>
 		</div> <!-- col-sm-8 -->
 		
 		<div class="col-sm-3" role="complementary">
@@ -372,11 +401,14 @@ In base alla condizione dell'articolo, associato ad un ordine o acquistato, si p
 					<li><a href="#modifica-prezzo-degli-articolo-associati-agli-ordini">Modifica prezzo degli articolo associati agli ordini</a></li>
 					<li><a href="#importa-articoli">Importa articoli</a></li>
 					<li><a href="#gestione-visibilita-degli-articoli">Gestione visibilità degli articoli</a></li>
-					
-					
 					<li><a href="#elenco-gas-associati">Elenco G.A.S. associati</a></li>
 					<li><a href="#promozioni">Promozioni</a></li>
-					<li><a href="#trasmissione">Trasmetti il tuo listino articoli</a></li>
+                    <li><a href="#trasmissione">Trasmetti il tuo listino articoli</a></li>
+                    <li><a href="#socialMarket">SocialMarket</a>
+                        <ul class="nav">
+                            <li><a href="#socialMarket-monitorare">Monitorare gli acquisti</a></li>
+                        </ul>
+                    </li>
 				</ul>
 		
 		
