@@ -1367,9 +1367,6 @@ msgstr "Gli articoli associati all'ordine sono stati aggiornati"
 msgid "The prodGasArticleSyncronizeArticlesOrdersDelete has been saved"
 msgstr "L'articolo  associato all'ordine è stato eliminato"
 
-
-prodGasArticleSyncronizeArticlesOrdersDelete
-
 msgid "The docsCreates has been saved"
 msgstr "Il documento è stato salvato"
 
@@ -3896,7 +3893,7 @@ msgstr "In carico al tesoriere per associarlo ad una richiesta il pagamento"
 msgid "TO-PAYMENT-intro"
 msgstr "Possibilità di richiederne il pagamento"
 
-msgid PRODGASPROMOTION-GAS-WORKING-intro"
+msgid "PRODGASPROMOTION-GAS-WORKING-intro"
 msgstr "In lavorazione, non visibile ai G.A.S."
 
 msgid "PRODGASPROMOTION-GAS-USERS-WORKING-intro"
@@ -4411,7 +4408,7 @@ msgid "msg_error_params"
 msgstr "Errore nel passaggio dei parametri!<br /><br />Contatta l'amministratore del sistema all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a>."
 
 msgid "msg_site_offline"
-msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget="_blank" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
+msgstr "Il sito è offline per lavori di manutenzione, clicca qui per maggior dettagli <a taeget=\"_blank\" href='https://facebook.com/portalgas.it'>https://facebook.com/portalgas.it</a>."
 
 msgid "msg_prodgas_promotion_acl_no"
 msgstr "<p>Non sei abilitato alla gestione delle promozioni.</p><p>Contattaci all'indirizzo <a title='Scrivi a contatti@portalgas.it' href='mailto:contatti@portalgas.it'>contatti@portalgas.it</a> per avere maggior informazioni.</p>"

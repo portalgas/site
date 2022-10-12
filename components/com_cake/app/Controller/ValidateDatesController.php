@@ -225,5 +225,5 @@ class ValidateDatesController extends AppController {
 			$orderResults['Order']['delta'] = $delta;
 		
 		return $orderResults;
-	}	
+	}
 }

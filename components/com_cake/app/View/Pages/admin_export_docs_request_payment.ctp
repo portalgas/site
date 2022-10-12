@@ -56,6 +56,19 @@ echo '<div class="contentMenuLaterale form">';
                 ?>
             </td>
         </tr>
+        <tr>
+            <td>Esportazione per controllo <b>totali</b></td>
+            <td></td>
+            <td></td>
+            <td>
+                <?php
+                if(Configure::read('developer.mode'))
+                    echo 'No in developer mode';
+                else
+                    echo '<a class="tesoriere_request_payment_ctrl_totali" id="tesoriere_request_payment_ctrl_totali-EXCEL" style="cursor:pointer;" rel="nofollow" title="stampa la richiesta di pagamento '.__('formatFileExcel').'"><img alt="EXCEL" src="'.Configure::read('App.img.cake').'/minetypes/32x32/vcalendar.png"></a>';
+                ?>
+            </td>
+        </tr>
 	<tr>
 		<td>Stato <b>pagamenti</b></td>
 		<td></td>
@@ -126,7 +139,18 @@ $(document).ready(function() {
         url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&request_payment_id=<?php echo $requestPaymentResults['RequestPayment']['id'];?>&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
         window.open(url);
     });
-	
+
+
+    $('.tesoriere_request_payment_ctrl_totali').click(function() {
+        var id =  $(this).attr('id');
+        idArray = id.split('-');
+        var action      = idArray[0];
+        var doc_formato = idArray[1];
+
+        url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&request_payment_id=<?php echo $requestPaymentResults['RequestPayment']['id'];?>&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no';
+        window.open(url);
+    });
+
 	$('.tesoriere_request_payment_pagamenti').click(function() {	
 		var id =  $(this).attr('id');
 		idArray = id.split('-');

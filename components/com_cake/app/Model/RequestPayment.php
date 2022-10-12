@@ -172,7 +172,7 @@ class RequestPayment extends AppModel {
 			$sql = "SELECT
 						Delivery.id, Delivery.organization_id, Delivery.luogo, Delivery.data,
 						`Order`.id, `Order`.supplier_organization_id, `Order`.tot_importo, `Order`.tesoriere_nota, `Order`.tesoriere_doc1, `Order`.tesoriere_fattura_importo, `Order`.state_code,  
-						SuppliersOrganization.name, Supplier.img1, RequestPaymentsOrder.id
+						SuppliersOrganization.id, SuppliersOrganization.name, Supplier.img1, RequestPaymentsOrder.id
 					FROM
 						".Configure::read('DB.prefix')."request_payments_orders as RequestPaymentsOrder,
 						".Configure::read('DB.prefix')."deliveries as Delivery,
