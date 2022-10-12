@@ -317,7 +317,7 @@ class RequestPaymentsController extends AppController {
 		else {	
 
 			self::d('RequestPayment.stato_elaborazione '.$results['RequestPayment']['stato_elaborazione']);
-			
+
 			switch ($results['RequestPayment']['stato_elaborazione']) {
 				case 'WAIT':
 					$this->render('admin_edit_wait');  // In lavorazione

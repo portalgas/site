@@ -1,6 +1,6 @@
 <?php
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List Articles'),'context_articles_index');
+$this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
 $this->Html->addCrumb(__('Edit Articles Prices'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>

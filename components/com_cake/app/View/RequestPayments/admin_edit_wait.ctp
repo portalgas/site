@@ -17,6 +17,8 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="contentMenuLaterale">';
 
+    $tot_importo = number_format($tot_importo,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+
 	echo '<h2 class="ico-pay">';
 	echo __('request_payment_num').' '.$requestPaymentResults['RequestPayment']['num'].' di '.$tot_importo.' &euro; ('.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['created'],"%A %e %B %Y").')';
 	echo '<span style="float:right;">';
