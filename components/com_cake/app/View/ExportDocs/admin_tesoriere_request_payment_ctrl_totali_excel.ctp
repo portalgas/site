@@ -20,7 +20,8 @@ if(count($results['Order'])>0) {
 		$table[] =	['label' => 'N', 'width' => 'auto', 'wrap' => true, 'filter' => false];
 		$table[] =	['label' =>  __('Delivery'), 'width' => 'auto'];
 		$table[] = ['label' => __('Supplier'), 'width' => 'auto', 'filter' => false];
-		$table[] = ['label' => __('Importo totale ordine').' calcolato quando l\'ordine passa al tesoriere', 'width' => 'auto', 'filter' => false];
+        $table[] = ['label' => __('Importo totale ordine').' calcolato quando l\'ordine passa al tesoriere', 'width' => 'auto', 'filter' => false];
+        $table[] = ['label' => __('Importo totale ordine').' calcolato ora', 'width' => 'auto', 'filter' => false];
         $table[] = ['label' => __('Importo totale calcolato su tutti gli acquisti calcolato ora'), 'width' => 'auto', 'filter' => false];
         // $table[] = ['label' => __('Differenza'), 'width' => 'auto', 'filter' => false];
         $table[] = ['label' => __('Tesoriere fattura importo'), 'width' => 'auto', 'filter' => false];
@@ -44,6 +45,7 @@ if(count($results['Order'])>0) {
             foreach ($acquisti_totali as $order_id => $acquisto_totali) {
                 if($order_id==$result['Order']['id']) {
                     $totale = $acquisto_totali['totale'];
+                    $rows[] = ''.$acquisto_totali['tot_importo'];
                     $rows[] = ''.$totale;
                     unset($acquisti_totali[$order_id]);
                     break;

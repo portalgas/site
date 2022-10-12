@@ -1393,6 +1393,9 @@ class ExportDocsController extends AppController {
         App::import('Model', 'RequestPayment');
         $RequestPayment = new RequestPayment;
 
+        App::import('Model', 'Order');
+        $Order = new Order;
+
         /*
          * estraggo i dettagli di una richiesta di pagamento
          *  - ordini associati
@@ -1484,6 +1487,7 @@ class ExportDocsController extends AppController {
                                     $acquisti_totali[$order['Order']['id']] = [];
                                     $acquisti_totali[$order['Order']['id']]['Delivery'] = $delivery;
                                     $acquisti_totali[$order['Order']['id']]['SuppliersOrganization'] = $suppliers_organization;
+                                    $acquisti_totali[$order['Order']['id']]['tot_importo'] = $Order->getTotImporto($this->user, $order['Order']['id']);
                                     $acquisti_totali[$order['Order']['id']]['totale'] = 0;
                                 }
 
