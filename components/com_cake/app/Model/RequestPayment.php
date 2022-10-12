@@ -329,7 +329,7 @@ class RequestPayment extends AppModel {
 	 * call ExportDoc::admin_userRequestPayment($request_payment_id, $doc_formato) 				 - pdf per l'utente lato backoffice
 	 * call ExportDoc::userRequestPayment($request_payment_id, $doc_formato)                     - pdf per l'utente lato frontend
 	 * */
-	public function userRequestPayment($user, $user_id, $request_payment_id, $doc_formato, $debug=false) {
+	public function userRequestPayment($user, $user_id, $request_payment_id, $doc_formato=null, $debug=false) {
 		
 		$results = [];
 		try {

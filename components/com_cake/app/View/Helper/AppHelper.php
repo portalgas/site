@@ -74,7 +74,11 @@ class AppHelper extends Helper {
 	public function traslateQtaImportoModificati($value) {
 		if($value) return '<span>*</span>';
 	}
-	
+
+    public function traslateQtaImportoModificatiDescri($value) {
+        if($value) return 'Modificato dal referente';
+    }
+
 	public function traslateEnum($str) {
 
 		return $this->utilsCommons->traslateEnum($str);

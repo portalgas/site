@@ -1255,11 +1255,241 @@ class ExportDocsController extends AppController {
         $this->ctrlHttpReferer();
 
         $this->_tesoriere_request_payment($request_payment_id, $doc_formato);
-        
+
         switch ($doc_formato) {
             case 'EXCEL':
                 $this->layout = 'excel';
                 $this->render('tesoriere_request_payment_excel');
+                break;
+        }
+    }
+
+    public function admin_tesoriere_request_payment_detail_orders($request_payment_id = 0, $doc_formato = null) {
+
+        $debug=false;
+
+        $this->ctrlHttpReferer();
+
+        /* ctrl ACL */
+        if ($this->user->organization['Template']['payToDelivery'] != 'POST' &&
+            $this->user->organization['Template']['payToDelivery'] == 'ON-POST' &&
+            !$this->isTesoriereGeneric()) {
+
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+        /* ctrl ACL */
+
+        Configure::write('debug', 0);
+
+        if (empty($request_payment_id)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        /*
+         * R e q u e s t P a y m e n t
+         */
+        App::import('Model', 'RequestPayment');
+        $RequestPayment = new RequestPayment;
+
+        /*
+         * estraggo i dettagli di una richiesta di pagamento
+         *  - ordini associati
+         *  - voci di spesa generica
+         *  - dispensa
+         */
+        $conditions = [];
+        $results = $RequestPayment->getAllDetails($this->user, $request_payment_id, $conditions);
+
+        /*
+         * dettaglio ordini
+         * dati cassa per l'utente
+         */
+        App::import('Model', 'Cash');
+        foreach ($results['SummaryPayment'] as $numResult => $result) {
+
+            /*
+             * dettaglio ordini per l'utente
+             */
+            $userResults = $RequestPayment->userRequestPayment($this->user, $result['User']['id'], $request_payment_id, null, $debug);
+            /*
+             * escludo le consegne senza ordini con acquisti
+             */
+            if(isset($userResults['RequestPaymentsOrder']))
+                foreach($userResults['RequestPaymentsOrder'] as $numRequestPaymentsOrder => $results2)
+                    foreach($results2['Delivery'] as $numDelivery => $result) {
+
+                        $found_order=false;
+                        foreach($result['Order'] as $numOrder => $order) {
+                            if(!empty($order['ExportRows']))
+                                $found_order=true;
+                        }
+
+                        if(!$found_order)
+                            unset($userResults['RequestPaymentsOrder'][$numRequestPaymentsOrder]['Delivery'][$numDelivery]);
+                    }
+
+            $results['SummaryPayment'][$numResult] += $userResults;
+            // self::d($results, true); exit;
+
+            /*
+             * dati cassa per l'utente
+             */
+            $Cash = new Cash;
+
+            $options = [];
+            $options['conditions'] = ['Cash.organization_id' => $this->user->organization['Organization']['id'],
+                'Cash.user_id' => $result['User']['id']];
+            $options['recursive'] = -1;
+            $cashResults = $Cash->find('first', $options);
+            if (empty($cashResults)) {
+                $cashResults['Cash']['importo'] = '0.00';
+                $cashResults['Cash']['importo_'] = '0,00';
+                $cashResults['Cash']['importo_e'] = '0,00 &euro;';
+            }
+            $results['SummaryPayment'][$numResult]['Cash'] = $cashResults['Cash'];
+        }
+
+
+        $html = '<table>';
+        if(1==2)
+        foreach($results['SummaryPayment'] as $num => $summaryPayment) {
+
+            /*
+             * R E Q U E S T P A Y M E N T S - O R D E R
+             */
+            $delivery_id_old = 0;
+            if(isset($summaryPayment['RequestPaymentsOrder']))
+                foreach($summaryPayment['RequestPaymentsOrder'] as $numRequestPaymentsOrder => $requestPaymentsOrderResults) {
+                    foreach ($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
+
+                        /*
+                         * lo commento se no mi escludo gli eventuali dati inseriti ex-novo da SummaryOrder
+                         * if($result['totOrders']>0 && $result['totArticlesOrder']>0) {
+                         */
+                        foreach ($result['Order'] as $numOrder => $order) {
+
+                            if (!empty($order['ExportRows'])) {
+
+                                foreach ($order['ExportRows'] as $rows) {
+
+                                    $user_id = current(array_keys($rows));
+                                    $rows = current(array_values($rows));
+
+                                    $html .= '<tr>';
+
+                                    foreach ($rows as $typeRow => $cols) {
+
+                                        switch ($typeRow) {
+                                            case 'TRGROUP':
+                                                if (($order['Order']['hasTrasport'] == 'Y' && $order['Order']['trasport'] != '0.00') ||
+                                                    ($order['Order']['hasCostMore'] == 'Y' && $order['Order']['cost_more'] != '0.00') ||
+                                                    ($order['Order']['hasCostLess'] == 'Y' && $order['Order']['cost_less'] != '0.00'))
+                                                    $colspan = '7';
+                                                else
+                                                    $colspan = '5';
+                                                $html .= '<td colspan="' . $colspan . '" >' . $cols['LABEL'] . '</td>';
+                                                break;
+                                            case 'TRSUBTOT':
+                                                $html .= '<td colspan="3" style="text-align:right;">Totale&nbsp;dell\'utente&nbsp;</td>';
+                                                $html .= '<td style="text-align:center;">&nbsp;' . $cols['QTA'] . '</td>';
+//                                                $html .= '<td style="text-align:right;">' . $cols['IMPORTO_E'] . $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']) . '</td>';
+                                                  $html .= '<td style="text-align:right;">' . $cols['IMPORTO_E'] . '</td>';
+                                              if (($order['Order']['hasTrasport'] == 'Y' && $order['Order']['trasport'] != '0.00') ||
+                                                    ($order['Order']['hasCostMore'] == 'Y' && $order['Order']['cost_more'] != '0.00') ||
+                                                    ($order['Order']['hasCostLess'] == 'Y' && $order['Order']['cost_less'] != '0.00')) {
+
+                                                    $html .= '<td style="text-align:right;">';
+                                                    if ($order['Order']['hasTrasport'] == 'Y' && $order['Order']['trasport'] != '0.00') $html .= __('TrasportShort') . ' ' . $cols['IMPORTO_TRASPORTO_E'] . '<br />';
+                                                    if ($order['Order']['hasCostMore'] == 'Y' && $order['Order']['cost_more'] != '0.00') $html .= __('CostMoreShort') . ' ' . $cols['IMPORTO_COST_MORE_E'] . '<br />';
+                                                    if ($order['Order']['hasCostLess'] == 'Y' && $order['Order']['cost_less'] != '0.00') $html .= __('CostLessShort') . ' ' . $cols['IMPORTO_COST_LESS_E'];
+                                                    $html .= '</td>';
+
+                                                    $html .= '<td style="text-align:right;">';
+                                                    $html .= $cols['IMPORTO_COMPLETO_E'];
+                                                    $html .= '</td>';
+                                                }
+                                                break;
+                                            case 'TRTOT':
+                                                /*
+                                                    $html .= '<td colspan="3" style="text-align:right;">'.__('qta_tot').'&nbsp;</td>';
+                                                    $html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH50().'">'.$cols['QTA'].'</td>';
+                                                    $html .= '<td style="text-align:right;">&nbsp;'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+                                                    if(($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
+                                                        ($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') ||
+                                                        ($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00')) {
+
+                                                        $html .= '<td style="text-align:right;">';
+                                                        if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') $html .= __('TrasportShort').' '.$cols['IMPORTO_TRASPORTO_E'].'<br />';
+                                                        if($order['Order']['hasCostMore']=='Y' && $order['Order']['cost_more']!='0.00') $html .= __('CostMoreShort').' '.$cols['IMPORTO_COST_MORE_E'].'<br />';
+                                                        if($order['Order']['hasCostLess']=='Y' && $order['Order']['cost_less']!='0.00') $html .= __('CostLessShort').' '.$cols['IMPORTO_COST_LESS_E'];
+                                                        $html .= '</td>';
+
+                                                        $html .= '<td style="text-align:right;">';
+                                                        $html .= $cols['IMPORTO_COMPLETO_E'];
+                                                        $html .= '</td>';
+                                                    }
+                                                */
+                                                break;
+                                            case 'TRDATA':
+
+                                                $name = $cols['NAME'] . ' '; //  . $this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
+
+                                                if (($order['Order']['hasTrasport'] == 'Y' && $order['Order']['trasport'] != '0.00') ||
+                                                    ($order['Order']['hasCostMore'] == 'Y' && $order['Order']['cost_more'] != '0.00') ||
+                                                    ($order['Order']['hasCostLess'] == 'Y' && $order['Order']['cost_less'] != '0.00')) {
+
+                                                    //$html .= '<td width="'.$output->getCELLWIDTH20().'">'.$cols['NUM'].'</td>';
+                                                    $html .= '<td >' . $name . '</td>';
+                                                    $html .= '<td >' . $cols['PREZZO_E'] . '</td>';
+                                                    $html .= '<td>' . $cols['PREZZO_UMRIF'] . '</td>';
+                                                    $html .= '<td >' . $cols['QTA'] . '</td>';
+                                                    $html .= '<td >' . $cols['IMPORTO_E']  . '</td>';
+                                                    $html .= '<td colspan="2" style="text-align:right;">&nbsp;</td>';
+                                                } else {
+                                                    //$html .= '<td width="'.$output->getCELLWIDTH20().'">'.$cols['NUM'].'</td>';
+                                                    $html .= '<td>' . $name . '</td>';
+                                                    $html .= '<td>' . $cols['PREZZO_E'] . '</td>';
+                                                    $html .= '<td>' . $cols['PREZZO_UMRIF'] . '</td>';
+                                                    $html .= '<td >' . $cols['QTA'] . '</td>';
+                                                    $html .= '<td >' . $cols['IMPORTO_E'] . '</td>';
+                                                }
+                                                break;
+                                            case 'TRDATABIS':
+                                                if (($order['Order']['hasTrasport'] == 'Y' && $order['Order']['trasport'] != '0.00') ||
+                                                    ($order['Order']['hasCostMore'] == 'Y' && $order['Order']['cost_more'] != '0.00') ||
+                                                    ($order['Order']['hasCostLess'] == 'Y' && $order['Order']['cost_less'] != '0.00'))
+                                                    $colspan = '6';
+                                                else
+                                                    $colspan = '4';
+
+                                                //$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
+                                                $html .= '<td colspan="' . $colspan . '">NOTA: ' . $cols['NOTA'] . '</td>';
+                                                break;
+                                        }
+                                    } // end foreach ($rows as $typeRow => $cols)
+
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+        $html .= '</table>';
+        // self::d($html, true); exit;
+
+        // self::d($results, $debug);
+
+        $this->set(compact('results'));
+
+        $params = ['request_payment_num' => $results['RequestPayment']['num']];
+        $this->set('fileData', $this->utilsCommons->getFileData($this->user, 'to-tesoriere-request-payment', $params, $user_target = 'TESORIERE'));
+
+        switch ($doc_formato) {
+            case 'EXCEL':
+                $this->layout = 'excel';
+                $this->render('tesoriere_request_payment_detail_orders_excel');
                 break;
         }
     }
@@ -1299,7 +1529,7 @@ class ExportDocsController extends AppController {
         }
 
         /*
-         * D E L I V E R Y
+         * R e q u e s t P a y m e n t
          */
         App::import('Model', 'RequestPayment');
         $RequestPayment = new RequestPayment;
@@ -1312,7 +1542,7 @@ class ExportDocsController extends AppController {
          */
         $conditions = [];
         $results = $RequestPayment->getAllDetails($this->user, $request_payment_id, $conditions);
-        
+
         /*
          * dati cassa per l'utente
          */
@@ -1337,15 +1567,13 @@ class ExportDocsController extends AppController {
         
         $this->set(compact('results'));
 
-
         $params = ['request_payment_num' => $results['RequestPayment']['num']];
         $this->set('fileData', $this->utilsCommons->getFileData($this->user, 'to-tesoriere-request-payment', $params, $user_target = 'TESORIERE'));
     }
-    
+
     /*
      * stampa il carrello dell'utente passato
      */
-
     public function admin_userOtherRequestPayment($request_payment_id, $user_id, $doc_formato) {
 
         if ($this->user->organization['Template']['payToDelivery'] != 'POST' && $this->user->organization['Template']['payToDelivery'] != 'ON-POST') {

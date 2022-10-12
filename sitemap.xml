@@ -13045,5 +13045,14 @@
     <changefreq>yearly</changefreq>
     <lastmod>2022-07-20</lastmod>
 </url>
-
+<url>
+    <loc>https://www.portalgas.it/home-gas-gasattivospoleto</loc>
+    <lastmod>2022-10-11</lastmod>
+    <changefreq>yearly</changefreq>
+</url>
+<url>
+    <loc>https://www.portalgas.it/home-gas-gasattivospoleto/consegne-gas-gasattivospoleto</loc>
+    <lastmod>2022-10-11</lastmod>
+    <changefreq>yearly</changefreq>
+</url>
 </urlset>
