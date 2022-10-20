@@ -128,6 +128,9 @@ else
 
 
 
+$tot_summaryOrderPaid = 0;
+if(!empty($summaryOrderPaid)) 
+	$tot_summaryOrderPaid = count($summaryOrderPaid);
 
 echo '</div>';
 echo '</div>';
@@ -135,7 +138,7 @@ echo '</div>';
 echo '<div class="panel panel-primary">';
 echo '<div class="panel-heading">';
 echo '<h4 class="panel-title">';
-echo '<a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><i class="fa fa-lg fa-plus" aria-hidden="true"></i> '.__('OrderLifeCyclesSummaryOrderPaid').' ('.count($summaryOrderPaid).')</a>';
+echo '<a data-toggle="collapse" data-parent="#accordion" href="#collapse2"><i class="fa fa-lg fa-plus" aria-hidden="true"></i> '.__('OrderLifeCyclesSummaryOrderPaid').' ('.$tot_summaryOrderPaid.')</a>';
 echo '</h4>';
 echo '</div>';
 echo '<div id="collapse2" class="panel-collapse collapse">';
