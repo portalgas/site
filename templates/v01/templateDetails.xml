@@ -124,6 +124,7 @@
 					<option value="34">gasvercelli (id 34)</option>
 					<option value="91">gasvillasanta (id 91)</option>
 					<option value="95">gasvitalearcore (id 95)</option>
+					<option value="150">libarsatuttogas (id 150)</option>
 					<option value="35">lisoladiamantani (id 35)</option>
 					<option value="25">madrisiogas (id 25)</option>
 					<option value="2">oca sansalvario (id 2)</option>
@@ -214,6 +215,7 @@
 					<option value="gasvitalearcore">gasvitalearcore</option>
 					<option value="ocasansalvario">ocasansalvario</option>
 					<option value="pastamadristiromani">pastamadristiromani</option>
+					<option value="libarsatuttogas">libarsatuttogas</option>
 					<option value="lisoladiamantani">lisoladiamantani</option>
 					<option value="madrisiogas">madrisiogas</option>
 					<option value="remolonsgas">remolonsgas</option>
