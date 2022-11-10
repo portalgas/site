@@ -1198,7 +1198,7 @@ class UtilsCrons {
             echo "<pre>";
             print_r($userProfile);
             echo "</pre>";
-            */
+            */ 
             $lat = $this->_getProfileUserValue($userProfile, 'profile.lat');
             $lng = $this->_getProfileUserValue($userProfile, 'profile.lng');
             $address = $this->_getProfileUserValue($userProfile, 'profile.address');
@@ -1214,7 +1214,6 @@ class UtilsCrons {
                 $lng_action = 'insert';
 
             // echo "\n Tratto lo user ".$result['User']['id'].' '.$result['User']['username'].' coordinate '.$lat.' '.$lng.' - address '.$address.' '.$city;
-
             if ($tot_user_elaborati <= 10 && $lat == '' && $lng == '') {
 
                 if ($address != '' && $city != '') {
@@ -1244,14 +1243,14 @@ class UtilsCrons {
                         $lat = str_replace(",", ".", $coordinate['lat']);
                         $lng = str_replace(",", ".", $coordinate['lng']);
 
-                        if($lat=='insert')
+                        if($lat_action=='insert')
                             $sql = 'INSERT INTO ' . Configure::read('DB.portalPrefix') . 'user_profiles VALUES (' . $result['User']['id'] . ', "profile.lat", "\"' . $lat . '\"" , 10 )';
                         else
                             $sql = 'UPDATE '.Configure::read('DB.portalPrefix').'user_profiles set profile_value = "\"'.$lat.'\"" WHERE user_id =  '.$result['User']['id'].' and profile_key ="profile.lat"';
                         echo "\n " . $sql;
                         $executeInsert = $User->query($sql);
 
-                        if($lat=='insert')
+                        if($lng_action=='insert')
                             $sql = 'INSERT INTO ' . Configure::read('DB.portalPrefix') . 'user_profiles VALUES (' . $result['User']['id'] . ', "profile.lng", "\"' . $lng . '\"" , 11 )';
                         else
                             $sql = 'UPDATE '.Configure::read('DB.portalPrefix').'user_profiles set profile_value = "\"'.$lng.'\"" WHERE user_id =  '.$result['User']['id'].' and profile_key ="profile.lng"';                        
