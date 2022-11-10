@@ -1204,14 +1204,6 @@ class UtilsCrons {
             $address = $this->_getProfileUserValue($userProfile, 'profile.address');
             $city = $this->_getProfileUserValue($userProfile, 'profile.city');
             $cap = $this->_getProfileUserValue($userProfile, 'profile.postal_code');
-            if(isset($userProfile['profile.lat']))
-                $lat_action = 'update';
-            else 
-                $lat_action = 'insert';
-            if(isset($userProfile['profile.lng']))
-                $lng_action = 'update';
-            else 
-                $lng_action = 'insert';
 
             // echo "\n Tratto lo user ".$result['User']['id'].' '.$result['User']['username'].' coordinate '.$lat.' '.$lng.' - address '.$address.' '.$city;
             if ($tot_user_elaborati <= 10 && $lat == '' && $lng == '') {
@@ -1243,14 +1235,24 @@ class UtilsCrons {
                         $lat = str_replace(",", ".", $coordinate['lat']);
                         $lng = str_replace(",", ".", $coordinate['lng']);
 
-                        if($lat_action=='insert')
+                        /*
+                         * ctrl se esiste gia' lat
+                         * */
+                        $sql = 'select user_id from ' . Configure::read('DB.portalPrefix') . 'user_profiles where user_id = ' . $result['User']['id'] . ' and profile_key = "profile.lat"';
+                        $ctrl = $User->query($sql);
+                        if(empty($ctrl))
                             $sql = 'INSERT INTO ' . Configure::read('DB.portalPrefix') . 'user_profiles VALUES (' . $result['User']['id'] . ', "profile.lat", "\"' . $lat . '\"" , 10 )';
                         else
                             $sql = 'UPDATE '.Configure::read('DB.portalPrefix').'user_profiles set profile_value = "\"'.$lat.'\"" WHERE user_id =  '.$result['User']['id'].' and profile_key ="profile.lat"';
                         echo "\n " . $sql;
                         $executeInsert = $User->query($sql);
 
-                        if($lng_action=='insert')
+                        /*
+                         * ctrl se esiste gia' lng
+                         * */
+                        $sql = 'select user_id from ' . Configure::read('DB.portalPrefix') . 'user_profiles where user_id = ' . $result['User']['id'] . ' and profile_key = "profile.lng"';
+                        $ctrl = $User->query($sql);
+                        if(empty($ctrl))
                             $sql = 'INSERT INTO ' . Configure::read('DB.portalPrefix') . 'user_profiles VALUES (' . $result['User']['id'] . ', "profile.lng", "\"' . $lng . '\"" , 11 )';
                         else
                             $sql = 'UPDATE '.Configure::read('DB.portalPrefix').'user_profiles set profile_value = "\"'.$lng.'\"" WHERE user_id =  '.$result['User']['id'].' and profile_key ="profile.lng"';                        
