@@ -915,7 +915,7 @@ class RowEcommHelper extends AppHelper {
 		   $result['Order']['permissionToEditCassiere'] && $permissions['isCassiereGeneric'] ||
 		   $result['Order']['permissionToEditTesoriere'] && $permissions['isTesoriereGeneric']) {
 			$tmp  .= $this->_ordineModificabileBackOffice($rowId, $result);
-				
+			
 			if(!isset($options['tr.no_display'])) {
 				$tmp  .= '</tr>';
 					
@@ -928,7 +928,7 @@ class RowEcommHelper extends AppHelper {
 		}
 		else {
 			$tmp  .= $this->_ordineNonModificabileBackOffice($rowId, $result); // ordine non modificabile (scaduto)
-				
+					
 			if(!isset($options['tr.no_display'])) {
 				$tmp  .= '</tr>';
 					

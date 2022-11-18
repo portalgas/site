@@ -25,22 +25,33 @@ class Order extends AppModel {
 			return true;
 	}
 	
-	public function getOrderPermissionToEditUtente($order) {
+	public function getOrderPermissionToEditUtente($order, $desOrderStateCode) {
 		if($order['state_code']=='OPEN' || $order['state_code']=='RI-OPEN-VALIDATE')
 			return true; 
 		else
 			return false;
 	}
 
-	public function getOrderPermissionToEditReferente($order) {
+	public function getOrderPermissionToEditReferente($order, $desOrderStateCode) {
 
-		if($order['state_code']=='PROCESSED-BEFORE-DELIVERY' || $order['state_code']=='PROCESSED-POST-DELIVERY' || $order['state_code']=='INCOMING-ORDER')
-			return true;
+		$permission_oks = ['PROCESSED-BEFORE-DELIVERY', 'PROCESSED-POST-DELIVERY', 'INCOMING-ORDER'];
+		$permission_des_oks = ['BEFORE-TRASMISSION', 'REFERENT-WORKING'];
+
+		if (in_array($order['state_code'], $permission_oks)) {
+			if(empty($desOrderStateCode))
+				return true;
+			else {
+				if (in_array($desOrderStateCode, $permission_des_oks)) 
+					return true;
+				else
+					return false;
+			}
+		}
 		else
 			return false;
 	}
 	
-	public function getOrderPermissionToEditCassiere($order) {
+	public function getOrderPermissionToEditCassiere($order, $desOrderStateCode) {
 		
 		if($order['state_code']=='PROCESSED-ON-DELIVERY')
 			return true; 
@@ -48,7 +59,7 @@ class Order extends AppModel {
 			return false;
 	}
 	
-	public function getOrderPermissionToEditTesoriere($order) {
+	public function getOrderPermissionToEditTesoriere($order, $desOrderStateCode) {
 		if($order['state_code']=='PROCESSED-TESORIERE')
 			return true; 
 		else
@@ -807,6 +818,8 @@ class Order extends AppModel {
 
 	public function afterFind($results, $primary = true) {
 		
+		App::import('Model', 'DesOrder');
+
 		foreach ($results as $key => $val) {
 
 			if(!empty($val)) {
@@ -816,12 +829,27 @@ class Order extends AppModel {
 						$results[$key]['Order']['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['Order']['data_fine_validation']);
 					else
 						$results[$key]['Order']['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['Order']['data_fine']);
-					
-					$results[$key]['Order']['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val['Order']);
-					$results[$key]['Order']['permissionToEditReferente'] = $this->getOrderPermissionToEditReferente($val['Order']);
-					$results[$key]['Order']['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val['Order']);
-					$results[$key]['Order']['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val['Order']);
-					
+
+					/* 
+					 * estraggo stato dell'ordine DES
+					 * */
+					$desOrderStateCode = '';
+					if(!empty($results[$key]['Order']['des_order_id'])) {
+						$DesOrder = new DesOrder;
+						$options = [];
+						$options['fields'] = ['state_code'];
+						$options['conditions'] = ['id' => $results[$key]['Order']['des_order_id']];
+						$options['recursive'] = -1;
+						$desOrderStateCode = $DesOrder->find('first', $options);
+						if(!empty($desOrderStateCode))
+							$desOrderStateCode = $desOrderStateCode['DesOrder']['state_code'];
+					}
+											
+					$results[$key]['Order']['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val['Order'], $desOrderStateCode);
+					$results[$key]['Order']['permissionToEditReferente'] = $this->getOrderPermissionToEditReferente($val['Order'], $desOrderStateCode);
+					$results[$key]['Order']['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val['Order'], $desOrderStateCode);
+					$results[$key]['Order']['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val['Order'], $desOrderStateCode);
+
 					$results[$key]['Order']['data_inizio_'] = date('d',strtotime($val['Order']['data_inizio'])).'/'.date('n',strtotime($val['Order']['data_inizio'])).'/'.date('Y',strtotime($val['Order']['data_inizio']));
 					$results[$key]['Order']['data_fine_'] = date('d',strtotime($val['Order']['data_fine'])).'/'.date('n',strtotime($val['Order']['data_fine'])).'/'.date('Y',strtotime($val['Order']['data_fine']));
 					$results[$key]['Order']['data_fine_validation_'] = date('d',strtotime($val['Order']['data_fine_validation'])).'/'.date('n',strtotime($val['Order']['data_fine_validation'])).'/'.date('Y',strtotime($val['Order']['data_fine_validation']));
@@ -859,10 +887,25 @@ class Order extends AppModel {
 					else
 						$results[$key]['dayDiffToDateFine']   = $this->utilsCommons->dayDiffToDate($val['data_fine']);
 						
-					$results[$key]['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val);
-					$results[$key]['permissionToEditReferente'] = $this->getOrderPermissionToEditReferente($val);
-					$results[$key]['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val);
-					$results[$key]['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val);
+					/* 
+					 * estraggo stato dell'ordine DES
+					 * */
+					$desOrderStateCode = '';
+					if(!empty($val['des_order_id'])) {
+						$DesOrder = new DesOrder;
+						$options = [];
+						$options['fields'] = ['state_code'];
+						$options['conditions'] = ['id' => $val['des_order_id']];
+						$options['recursive'] = -1;
+						$desOrderStateCode = $DesOrder->find('first', $options);
+						if(!empty($desOrderStateCode))
+							$desOrderStateCode = $desOrderStateCode['DesOrder']['state_code'];
+					}
+
+					$results[$key]['permissionToEditUtente']    = $this->getOrderPermissionToEditUtente($val, $desOrderStateCode);
+					$results[$key]['permissionToEditReferente'] = $this->getOrderPermissionToEditReferente($val, $desOrderStateCode);
+					$results[$key]['permissionToEditCassiere'] = $this->getOrderPermissionToEditCassiere($val, $desOrderStateCode);
+					$results[$key]['permissionToEditTesoriere'] = $this->getOrderPermissionToEditTesoriere($val, $desOrderStateCode);
 						
 					$results[$key]['data_inizio_'] = date('d',strtotime($val['data_inizio'])).'/'.date('n',strtotime($val['data_inizio'])).'/'.date('Y',strtotime($val['data_inizio']));
 					$results[$key]['data_fine_'] = date('d',strtotime($val['data_fine'])).'/'.date('n',strtotime($val['data_fine'])).'/'.date('Y',strtotime($val['data_fine']));
