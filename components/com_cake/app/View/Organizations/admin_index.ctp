@@ -130,6 +130,7 @@
 					echo '<div title="'.__('toolTipHasDes').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDes']).'_int">'.__('HasDes').'</div> <br />';
 					echo '<div title="'.__('toolTipHasDesReferentAllGas').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDesReferentAllGas']).'_int">'.__('HasDesReferentAllGas').'</div> <br />';
 					echo '<div title="'.__('toolTipHasDesUserManager').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDesUserManager']).'_int">'.__('HasDesUserManager').'</div> <br />';
+					echo '<div title="'.__('toolTipHasGasGroups').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasGasGroups']).'_int">'.__('HasGasGroups').'</div> <br />';
 					echo '<div title="'.__('toolTipHasUsersRegistrationFE').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasUsersRegistrationFE']).'_int">'.__('HasUsersRegistrationFE').'</div> <br />';
 					
 					echo '<div title="'.__('toolTipUserFlagPrivacy').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasUserFlagPrivacy']).'_int">'.__('HasUserFlagPrivacy').'</div> <br />';

@@ -3280,6 +3280,9 @@ msgstr "Ha il referente D.E.S. per tutti i G.A.S."
 msgid "HasDesUserManager"
 msgstr "Ha il manager dei gasisti per tutti i G.A.S. del  D.E.S."
 
+msgid "HasGasGroups"
+msgstr "Ha la gestione dei gruppi del G.A.S. per creare sotto-ordini"
+
 msgid "HasUserFlagPrivacy"
 msgstr "Flag privacy"
 
@@ -4616,6 +4619,10 @@ msgstr "Se è valorizzato a 'Si' avrà il Referente D.E.S. per tutti i G.A.S."
 
 msgid "toolTipHasDesUserManager"
 msgstr "Se è valorizzato a 'Si' gestirà i gasisti dei G.A.S. facenti parte del D.E.S."
+
+msgid "toolTipHasGasGroups"
+msgstr "Se è valorizzato a 'Si' gestirà la gestione dei gruppi del G.A.S. per creare sotto-ordini"
+
 
 msgid "toolTipProdSupplierOrganizationId"
 msgstr "Produttore associato all'organizzazione di tipo PROD"

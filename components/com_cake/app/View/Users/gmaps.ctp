@@ -1,7 +1,7 @@
 <?php
 $this->App->d($results);
 ?>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleKey');?>&sensor=false&v=3.exp"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<?php echo Configure::read('GoogleApiKey');?>&sensor=false&v=3.exp"></script>
 
 <script type="text/javascript">
 var marker = new Array();

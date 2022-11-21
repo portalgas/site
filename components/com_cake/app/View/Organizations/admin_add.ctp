@@ -152,6 +152,8 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->App->drawFormRadio('Organization','hasDesReferentAllGas',array('options' => $hasDesReferentAllGas, 'value'=>'N', 'label'=>__('HasDesReferentAllGas'), 'required'=>'required'));			
 	echo $this->App->drawFormRadio('Organization','hasDesUserManager',array('options' => $hasDesUserManager, 'value'=>'N', 'label'=>__('HasDesUserManager'), 'required'=>'required'));
 	
+	echo '<h3>Gruppi dale G.A.S.</h3>';
+	echo $this->App->drawFormRadio('Organization','hasGasGroups',array('options' => $hasGasGroups, 'value' => 'N', 'label'=>__('HasGasGroups'), 'required'=>'required'));
 
 	echo '<h3>GDXP</h3>';
 	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=>'N', 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));

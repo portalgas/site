@@ -161,7 +161,9 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->App->drawFormRadio('Organization','hasDesReferentAllGas',array('options' => $hasDesReferentAllGas, 'value'=> $this->Form->value('Organization.hasDesReferentAllGas'), 'label'=>__('HasDesReferentAllGas'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasDesUserManager',array('options' => $hasDesUserManager, 'value'=> $this->Form->value('Organization.hasDesUserManager'), 'label'=>__('HasDesUserManager'), 'required'=>'required'));
 	
-
+	echo '<h3>Gruppi dale G.A.S.</h3>';
+	echo $this->App->drawFormRadio('Organization','hasGasGroups',array('options' => $hasGasGroups, 'value'=>$this->Form->value('Organization.hasGasGroups'), 'label'=>__('HasGasGroups'), 'required'=>'required'));
+	
 	echo '<h3>GDXP</h3>';
 	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=> $this->Form->value('Organization.hasArticlesGdxp'), 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasOrdersGdxp',array('options' => $hasOrdersGdxp, 'value'=>$this->Form->value('Organization.hasOrdersGdxp'), 'label'=>__('HasOrdersGdxp'), 'required'=>'required'));

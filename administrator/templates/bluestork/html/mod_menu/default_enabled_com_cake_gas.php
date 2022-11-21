@@ -5,8 +5,6 @@ defined('_JEXEC') or die;
 /* @var $menu JAdminCSSMenu */
 $shownew = (boolean)$params->get('shownew', 1);
 
-
-
 $i=-1;
 
 /*
@@ -467,7 +465,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['url'] = "#";				
 				$i++;
 				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Ordini";
+				$_menus[$i]['label'] = "Elenco ordini";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=index";				
 				$i++;
 				$_menus[$i]['level'] = 2;
@@ -477,6 +475,9 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Aggiungi un nuovo ordine (modalità semplificata)";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=easy_add";			
+				$i++;
+				$_menus[$i]['separator'] = true;
+
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Ordini storici";
@@ -501,6 +502,20 @@ if(!empty($organization_id)) {
 				$_menus[$i]['label'] = "Controlli dati aggregati sugli ordini";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SummaryOrders&action=orders_validate";			
 				*/
+				if(1==2 && in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
+					$i++;
+					$_menus[$i]['level'] = 1;
+					$_menus[$i]['label'] = "Sotto ordini <label class='label label-success'>new</label>";
+					$_menus[$i]['url'] = "#";
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Elenco ordini";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index";
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Aggiungi un nuovo ordine";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add";
+				}				
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Invia mail";

@@ -54,6 +54,9 @@ define('group_pact_supplier_manager',84);        // manager pact
 // calendar events gasEvents
 define('group_id_events',65);
 
+// gas groups
+define('group_id_gas_groups_manager_consegne',120);
+define('group_id_gas_groups_manager_orders', 121);
 
 /*
  * find se in uso il componente com_cake
