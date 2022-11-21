@@ -25,14 +25,14 @@ class Order extends AppModel {
 			return true;
 	}
 	
-	public function getOrderPermissionToEditUtente($order, $desOrderStateCode) {
+	public function getOrderPermissionToEditUtente($order, $desOrderStateCode=null) {
 		if($order['state_code']=='OPEN' || $order['state_code']=='RI-OPEN-VALIDATE')
 			return true; 
 		else
 			return false;
 	}
 
-	public function getOrderPermissionToEditReferente($order, $desOrderStateCode) {
+	public function getOrderPermissionToEditReferente($order, $desOrderStateCode=null) {
 
 		$permission_oks = ['PROCESSED-BEFORE-DELIVERY', 'PROCESSED-POST-DELIVERY', 'INCOMING-ORDER'];
 		$permission_des_oks = ['BEFORE-TRASMISSION', 'REFERENT-WORKING'];
@@ -51,7 +51,7 @@ class Order extends AppModel {
 			return false;
 	}
 	
-	public function getOrderPermissionToEditCassiere($order, $desOrderStateCode) {
+	public function getOrderPermissionToEditCassiere($order, $desOrderStateCode=null) {
 		
 		if($order['state_code']=='PROCESSED-ON-DELIVERY')
 			return true; 
@@ -59,7 +59,7 @@ class Order extends AppModel {
 			return false;
 	}
 	
-	public function getOrderPermissionToEditTesoriere($order, $desOrderStateCode) {
+	public function getOrderPermissionToEditTesoriere($order, $desOrderStateCode=null) {
 		if($order['state_code']=='PROCESSED-TESORIERE')
 			return true; 
 		else
