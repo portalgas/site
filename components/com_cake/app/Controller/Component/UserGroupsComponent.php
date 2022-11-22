@@ -204,6 +204,24 @@ class UserGroupsComponent extends Component {
 			$userGroups[Configure::read('group_id_user_flag_privacy')]['type'] = 'GAS';				
 		}
 		
+		if(isset($user->organization['Organization']) && $user->organization['Organization']['hasGasGroups'] && $user->organization['Organization']['hasGasGroups']=='Y') {
+			$userGroups[Configure::read('group_id_gas_groups_manager_groups')]['id'] = Configure::read('group_id_gas_groups_manager_groups');
+			$userGroups[Configure::read('group_id_gas_groups_manager_groups')]['name'] = __('UserGroupsGasGroupsGroups');
+			$userGroups[Configure::read('group_id_gas_groups_manager_groups')]['descri'] = __('HasUserGroupsGasGroupsGroups');
+			$userGroups[Configure::read('group_id_gas_groups_manager_groups')]['join'] = '';
+			$userGroups[Configure::read('group_id_gas_groups_manager_groups')]['type'] = 'GAS-GROUPS';
+			$userGroups[Configure::read('group_id_gas_groups_manager_consegne')]['id'] = Configure::read('group_id_gas_groups_manager_consegne');
+			$userGroups[Configure::read('group_id_gas_groups_manager_consegne')]['name'] = __('UserGroupsGasGroupsDeliveries');
+			$userGroups[Configure::read('group_id_gas_groups_manager_consegne')]['descri'] = __('HasUserGroupsGasGroupsDeliveries');
+			$userGroups[Configure::read('group_id_gas_groups_manager_consegne')]['join'] = '';
+			$userGroups[Configure::read('group_id_gas_groups_manager_consegne')]['type'] = 'GAS-GROUPS';
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['id'] = Configure::read('group_id_gas_groups_manager_orders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['name'] = __('UserGroupsGasGroupsOrders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['descri'] = __('HasUserGroupsGasGroupsOrders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['join'] = '';
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['type'] = 'GAS-GROUPS';				
+		}
+
 		$controllerLog::d($userGroups, $debug);
 		
 		return $userGroups;

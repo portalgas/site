@@ -55,6 +55,7 @@ define('group_pact_supplier_manager',84);        // manager pact
 define('group_id_events',65);
 
 // gas groups
+define('group_id_gas_groups_manager_groups', 122);
 define('group_id_gas_groups_manager_consegne',120);
 define('group_id_gas_groups_manager_orders', 121);
 
@@ -127,6 +128,7 @@ if($componentIsComCake) {
 		$hasStoreroomFrontEnd = $paramsConfig['hasStoreroomFrontEnd'];
 		$hasUserFlagPrivacy = $paramsConfig['hasUserFlagPrivacy'];
 		$hasUserRegistrationExpire = $paramsConfig['hasUserRegistrationExpire'];
+		$hasGasGroups = $paramsConfig['hasGasGroups'];
 		$hasCashFilterSupplier = $paramsConfig['hasCashFilterSupplier'];
 		$hasFieldArticleCategoryId = $paramsFields['hasFieldArticleCategoryId'];
 
@@ -174,6 +176,7 @@ if($componentIsComCake) {
 		$hasStoreroomFrontEnd = 'N';
 		$hasUserFlagPrivacy = 'N';
 		$hasUserRegistrationExpire = 'N';
+		$hasGasGroups = 'N';
 		$hasFieldArticleCategoryId = 'N';
 		$hasRolesCassiere = 'N';
 		$hasRolesReferentTesoriere = 'N';

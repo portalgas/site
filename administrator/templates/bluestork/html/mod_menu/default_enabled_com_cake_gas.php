@@ -502,7 +502,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['label'] = "Controlli dati aggregati sugli ordini";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SummaryOrders&action=orders_validate";			
 				*/
-				if(1==2 && in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
+				if($hasGasGroups=='Y' && in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
 					$i++;
 					$_menus[$i]['level'] = 1;
 					$_menus[$i]['label'] = "Sotto ordini <label class='label label-success'>new</label>";
