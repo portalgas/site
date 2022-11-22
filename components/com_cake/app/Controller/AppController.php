@@ -470,7 +470,6 @@ class AppController extends Controller {
     /*
      * manager
      */
-
     public function isManager() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_manager'), $this->user->getAuthorisedGroups()))
             return true;
@@ -488,7 +487,6 @@ class AppController extends Controller {
     /*
      * referente
      */
-
     public function isReferente() {
         if ($this->user->get('id') != 0) {
             if (Configure::read('developer.mode'))
@@ -503,7 +501,6 @@ class AppController extends Controller {
     /*
      * super-referente, gestisce tutti i produttori 
      */
-
     public function isSuperReferente() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_super_referent'), $this->user->getAuthorisedGroups())) 
 			return true;
@@ -514,7 +511,6 @@ class AppController extends Controller {
     /*
      * referente cassa (pagamento degli utenti alla consegna)
      */
-
     public function isCassiere() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_cassiere'), $this->user->getAuthorisedGroups()))
             return true;
@@ -525,7 +521,6 @@ class AppController extends Controller {
     /*
      * referente cassa (pagamento degli utenti alla consegna) dei produttori di cui e' referente
      */
-
     public function isReferentCassiere() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_referent_cassiere'), $this->user->getAuthorisedGroups()))
             return true;
@@ -537,14 +532,12 @@ class AppController extends Controller {
      * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
      * 		gestisce anche il pagamento del suo produttore
      */
-
     public function isReferentTesoriere() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_referent_tesoriere'), $this->user->getAuthorisedGroups()))
             return true;
         else
             return 0;
     }
-
     public function isReferentGeneric() {
         if ($this->user->get('id') != 0 && (
                 in_array(Configure::read('group_id_referent'), $this->user->getAuthorisedGroups()) ||
@@ -569,7 +562,6 @@ class AppController extends Controller {
     /*
      *  pagamento ai fornitori
      */
-
     public function isTesoriere() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_tesoriere'), $this->user->getAuthorisedGroups()))
             return true;
@@ -594,10 +586,33 @@ class AppController extends Controller {
             return 0;
     }
 
+    /* 
+     * gas-groups (sotto gruppi)
+     */
+    public function isGasGropusManagerGroups() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_groups'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+
+    public function isGasGropusManagerDelivery() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_consegne'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+
+    public function isGasGropusManagerOrders() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_orders'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+        
     /*
      * DES
      */
-
     public function isDes() {
         if ($this->user->get('id') != 0 && (
                 in_array(Configure::read('group_id_manager_des'), $this->user->getAuthorisedGroups()) ||
@@ -667,7 +682,6 @@ class AppController extends Controller {
     /*
      * gestisce i calendar events
      */
-
     public function isManagerEvents() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_events'), $this->user->getAuthorisedGroups()))
             return true;

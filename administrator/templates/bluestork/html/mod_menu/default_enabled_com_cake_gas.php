@@ -194,6 +194,38 @@ if(!empty($organization_id)) {
 		} // end group_id_manager  
 		
 		/*
+		 * sotto-gruppi 
+		 * */
+		if($hasGasGroups=='Y') {
+			$i++;
+			$_menus[$i]['level'] = 0;
+			$_menus[$i]['label'] = "Sotto Gruppi <label class='label label-success'>new</label>";
+			$_menus[$i]['url'] = "#";			
+			if(in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Gruppi";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-groups&a_to=/index";
+			}
+			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne sotto-ordini";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=/index";
+			}
+			if(in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Elenco ordini";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index";
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Aggiungi un nuovo ordine";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add";
+			}			
+		}	
+
+		/*
 		 * D. E. S.
 		*/
 		if($hasDes=='Y' && ( 
@@ -287,6 +319,12 @@ if(!empty($organization_id)) {
 					$_menus[$i]['level'] = 1;
 					$_menus[$i]['label'] = "Consegne storiche";
 					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index_history";
+					if($hasGasGroups=='Y' && in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
+						$i++;
+						$_menus[$i]['level'] = 1;
+						$_menus[$i]['label'] = "Consegne sotto-ordini <label class='label label-success'>new</label>";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=/index";
+					}						
 					$i++;
 					$_menus[$i]['level'] = 1;
 					$_menus[$i]['label'] = "Ricorsione delle consegne";

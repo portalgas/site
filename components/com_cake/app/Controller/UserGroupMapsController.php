@@ -7,7 +7,7 @@ class UserGroupMapsController extends AppController {
 	   parent::beforeFilter();
 	   
 	   /* ctrl ACL */
-	   if(!$this->isManager()) {
+	   if(!$this->isManager() && !$this->isGasGropusManagerGroups()) {
    			$this->Session->setFlash(__('msg_not_permission'));
    			$this->myRedirect(Configure::read('routes_msg_stop'));
    		}
@@ -21,6 +21,20 @@ class UserGroupMapsController extends AppController {
 				unset($this->userGroups[$group_id]);
 		}
 	   
+		if(!$this->isGasGropusManagerGroups()) {
+			foreach ($this->userGroups as $group_id => $data) {
+				if($data['type']=='GAS-GROUPS')	
+					unset($this->userGroups[$group_id]);
+			}			
+		}
+
+		if(!$this->isManager()) {
+			foreach ($this->userGroups as $group_id => $data) {
+				if($data['type']=='GAS')	
+					unset($this->userGroups[$group_id]);
+			}			
+		}
+
 	   $this->set('userGroups',$this->userGroups);
 	}
 
