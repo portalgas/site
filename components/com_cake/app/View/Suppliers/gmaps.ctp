@@ -29,7 +29,7 @@ $(document).ready(function () {
 	<?php
 	foreach ($results as $numResult => $result) {	
 	
-		$name = str_replace("'", "", $result['Supplier']['name']);
+		$name = str_replace("'", " ", $result['Supplier']['name']);
 		$indirizzo = str_replace("'", "", $result['Supplier']['indirizzo']);
 		$localita = str_replace("'", "", $result['Supplier']['localita']);
 		$categoria = str_replace("'", "", $result['CategoriesSupplier']['name']);
@@ -59,7 +59,7 @@ $(document).ready(function () {
 		*/
 		if(!empty($result['Supplier']['slug'])) {
 			$url = "https://neo.portalgas.it/site/produttore/".$result['Supplier']['slug'];
-			echo "contentString".$result['Supplier']['id']." += '<p><a target=\"_blank\" href=\"".$url."\" title=\"".$result['Supplier']['name']."\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>';";
+			echo "contentString".$result['Supplier']['id']." += '<p><a target=\"_blank\" href=\"".$url."\" title=\"".$name."\"><img border=\"0\" alt=\"Leggi la scheda del produttore\" src=\"".Configure::read('App.img.cake')."/apps/32x32/kontact.png\" /> Leggi la scheda del produttore</a></p>';";
 		}
 
 		if(isset($result['SuppliersOrganizationsReferent']) && !empty($result['SuppliersOrganizationsReferent'])) {
