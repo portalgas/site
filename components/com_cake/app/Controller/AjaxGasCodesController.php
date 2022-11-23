@@ -346,11 +346,11 @@ class AjaxGasCodesController extends AppController {
         $Order->unbindModel(array('belongsTo' => array('Delivery')));
 
         $options = [];
-        $options['conditions'] = array('Order.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Order.delivery_id' => $delivery_id,
-            'Order.isVisibleBackOffice' => 'Y');
+        $options['conditions'] = ['Order.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                'Order.delivery_id' => $delivery_id,
+                                'Order.isVisibleBackOffice' => 'Y'];
         if (!empty($order_id) && $order_id > 0)
-            $options['conditions'] += array('Order.id' => (int) $order_id);
+            $options['conditions'] += ['Order.id' => (int) $order_id];
         $options['order'] = 'Order.data_inizio ASC';
         $options['recursive'] = 0;
 
@@ -363,8 +363,8 @@ class AjaxGasCodesController extends AppController {
         foreach ($orderResults as $numResult => $orderResult) {
 
             $conditions = [];
-            $conditions = array('Cart.user_id' => $user_id,
-                'Cart.order_id' => $orderResult['Order']['id']);
+            $conditions = ['Cart.user_id' => $user_id,
+                            'Cart.order_id' => $orderResult['Order']['id']];
 
             $ArticlesOrder = new ArticlesOrder;
             $articlesOrderResults = $ArticlesOrder->getArticoliDellUtenteInOrdine($this->user, $conditions);
@@ -377,10 +377,7 @@ class AjaxGasCodesController extends AppController {
             }
         } // end foreach ($orderResults as $orderResult)
 
-        $this->set(compact('results'));
-
-        $this->set('delivery_id', $delivery_id);
-        $this->set('user_id', $user_id);
+        $this->set(compact('results', 'delivery_id', 'user_id'));
 
         $this->layout = 'ajax';
     }

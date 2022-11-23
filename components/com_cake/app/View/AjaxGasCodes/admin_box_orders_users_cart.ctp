@@ -27,8 +27,10 @@ if(!empty($results)) {
 				echo '  </th>';
 				
 				echo '<th>';	
-		
+	
 				if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST') {
+					/*
+						disabilito le azioni sull'ordine da parte del tesoriere
 					echo '<ul>';
 					echo '<li style="float: left;">';
 					echo '<a style="height: 32px;padding-left: 35px;" class="box-cart actionEdit" action="readCartsUsers">';
@@ -40,6 +42,7 @@ if(!empty($results)) {
 					echo __('Management Carts One Short');
 					echo '</a>';
 					echo '</li>';
+					*/
 					if($result['Order']['typeGest']=='AGGREGATE') {
 						echo '<li style="float: left;">';
 						echo '<a style="height: 32px;padding-left: 35px;" class="box-cart actionEditDbGroupByUsersWF" action="managementCartsUsers">';
