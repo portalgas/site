@@ -145,11 +145,12 @@ class OrdersController extends AppController {
 		$this->set('orders',$orders);
 		   
 		$SqlLimit = 75;
-		$conditions += ['Delivery.organization_id'=>$this->user->organization['Organization']['id'],
-						  'Order.organization_id'=>$this->user->organization['Organization']['id'],
-						  'Delivery.isVisibleBackOffice'=>'Y',
-						  'Delivery.stato_elaborazione'=>'OPEN',
-						  'SuppliersOrganization.stato' => 'Y'];
+		$conditions += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+						'Order.organization_id' => $this->user->organization['Organization']['id'],
+						// 'Order.order_type_id != ' => Configure::read('Order.type.gas_groups'),
+						'Delivery.isVisibleBackOffice' => 'Y',
+						'Delivery.stato_elaborazione' => 'OPEN',
+						'SuppliersOrganization.stato' => 'Y'];
 					
 		if(!$this->isSuperReferente()) {
 			$conditions += ['Order.supplier_organization_id IN ('.$this->user->get('ACLsuppliersIdsOrganization').')'];
