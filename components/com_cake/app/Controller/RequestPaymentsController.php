@@ -1774,6 +1774,7 @@ class RequestPaymentsController extends AppController {
 				$data_cash['Cash']['user_id'] = $user_id;
 				$data_cash['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
 				$data_cash['Cash']['importo'] = $delta_cassa;
+				$data_cash['Cash']['nota'] = "Richiesta di pagamento num ".$data['RequestPayment']['num'];
 			
 				self::d($data_cash, $debug);									   	
 				$Cash->create();

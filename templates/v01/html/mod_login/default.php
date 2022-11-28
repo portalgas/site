@@ -156,9 +156,9 @@ else {
     <?php endif; ?>         
                     <div class="content-btn">
 
-                        <div style="float: left; clear: both; margin: 0px; ">
+                        <!-- div style="float: left; clear: both; margin: 0px; ">
                             <img width="100" height="39" src="https://www.google.com/intl/it/images/logos/mail_logo.png" title="fai login con il tuo account GMail" />
-                        </div>
+                        </div -->
 
 
                         <input type="submit" name="Submit" class="btn btn-success pull-right" value="<?php echo JText::_('JLOGIN') ?>" />
