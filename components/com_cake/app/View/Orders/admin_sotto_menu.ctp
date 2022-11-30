@@ -18,6 +18,12 @@ if(!empty($des_order_id)) {
 	echo '</h2>';
 }
 
+if(!empty($results['Order']['gas_group_id'])) {
+	echo '<h2>';
+	echo __('Gas Group Orders').' '.$gasGroup['GasGroup']['name'];
+	echo '</h2>';
+}
+
 /*
  * menu Orders::index $position_img=='bgLeft'
  */
@@ -36,6 +42,8 @@ foreach($orderActions as $orderAction) {
 	if(!empty($orderAction['OrdersAction']['label_more']))
 		$label = $label.' ('.$results['Order'][$orderAction['OrdersAction']['label_more']].' €)';
 
+	$title = strip_tags(__($orderAction['OrdersAction']['label']));
+
 	echo "\r\n";
 	echo '<li>';
 	if(empty($orderAction['OrdersAction']['url']))
@@ -44,7 +52,7 @@ foreach($orderActions as $orderAction) {
 		echo $this->Html->link($label,
 				$urlBase.$orderAction['OrdersAction']['url'],
 				array('class' => $position_img.' '.$orderAction['OrdersAction']['css_class'],
-						'title' => __($orderAction['OrdersAction']['label']))
+						'title' => $title)
 		);
 	echo '</li>';
 } // end for foreach($orderActions as $orderAction)

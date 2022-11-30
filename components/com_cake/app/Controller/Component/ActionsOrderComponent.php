@@ -497,6 +497,17 @@ class ActionsOrderComponent extends Component {
 		return $esito;			
 	}
 
+	private function orgHasGasGroups($user, $results, $value_da_verificare) {
+		$esito = false;
+		
+		if($user->organization['Organization']['hasGasGroups']==$value_da_verificare)
+			$esito = true;
+		else
+			$esito = false;
+		
+		return $esito;
+	}
+
 	/*
 	 * Controlli su User
 	*/

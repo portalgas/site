@@ -3782,7 +3782,6 @@ msgstr "Il referente titolare del tuo G.A.S. può aprire l'ordine"
 msgid "DesOrderOrganizationSupplierOwnerArticlesMsg"
 msgstr "Per gestire un ordine D.E.S. configura il produttore la \"Gestore del listino degli articoli\"  al \"Titolare D.E.S. del produttore\""
 
-
 #
 # O R D E R - S T A T E S
 #
@@ -4876,3 +4875,30 @@ msgstr "Limite superato credito in cassa di"
 
 msgid "LIMIT-CASH-USER"
 msgstr "Limite per ogni gasista"
+
+# 
+# Gas Groups
+# 
+msgid "Gas Groups"
+msgstr "Gruppi dei G.A.S."
+
+msgid "Gas Group"
+msgstr "Gruppo dei G.A.S."
+
+msgid "Gas Group Users"
+msgstr "Gruppi e utenti"
+
+msgid "Gas Group Users Management"
+msgstr "Gestione gasisti"
+
+msgid "Gas Group Orders"
+msgstr "Ordini per i gruppi"
+
+msgid "Gas Group Orders"
+msgstr "Ordine per il gruppo"
+
+msgid "Gas Group Delivery"
+msgstr "Consegna per i gruppi"
+
+msgid "Gas Group Deliveries"
+msgstr "Consegne per i gruppi"

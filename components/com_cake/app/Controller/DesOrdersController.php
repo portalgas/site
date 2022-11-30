@@ -611,7 +611,7 @@ class DesOrdersController extends AppController {
    
 	/*
 	 * dal link del menu' passo des_order_id
-	 *	redirect a ORder::add con altri parametri (supplier_organization_id)
+	 *	redirect a Order::add con altri parametri (supplier_organization_id)
 	 */
 	public function admin_prepare_order_add($des_order_id) {
 
@@ -620,7 +620,7 @@ class DesOrdersController extends AppController {
 		 */
 		App::import('Model', 'DesOrder');
 		$DesOrder = new DesOrder();
-		$DesOrder->unbindModel(array('belongsTo' => array('De', 'DesOrder')));
+		$DesOrder->unbindModel(['belongsTo' => ['De', 'DesOrder']]);
 		
 		$options = [];
 		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,

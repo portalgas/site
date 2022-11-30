@@ -164,8 +164,26 @@ class OrdersController extends AppController {
 	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
+		if($this->user->organization['Organization']['hasGasGroups']=='Y') {
+			App::import('Model', 'GasGroup');
+			$GasGroup = new GasGroup;	
+			$gas_groups = $GasGroup->getsByIdsUser($this->user, $this->user->organization['Organization']['id'], $this->user->id);
+		}
+
 		foreach($results as $numResult => $result) {
 	
+			/* 
+			 * ctrl se e' un ordine di gruppo e se appartiene al gruppo del referente 
+			 */   
+			if($this->user->organization['Organization']['hasGasGroups']=='Y') {
+				if(!empty($result['Order']['gas_group_id'])) {
+					if(!in_array($result['Order']['gas_group_id'], $gas_groups)) {
+						unset($results[$numResult]);
+						continue;
+					}
+				}
+			}
+
 			/*
 			 * Suppliers per l'immagine
 			 * */
@@ -2092,10 +2110,21 @@ class OrdersController extends AppController {
 		/*
          *  ctrl se e' una promozione
 		 */
-		if($results['Order']['prod_gas_promotion_id']>0) {
+		if(!empty($results['Order']['prod_gas_promotion_id'])) {
 			
 		}
+
+		/*
+         *  ctrl se e' un ordine per gruppi
+		 */
+		if(!empty($results['Order']['gas_group_id'])) {
+			App::import('Model', 'GasGroup');
+			$GasGroup = new GasGroup;	
+			$gasGroup = $GasGroup->getsById($this->user, $this->user->organization['Organization']['id'], $results['Order']['gas_group_id']);
+			$this->set(compact('gasGroup'));
+		}
 			
+
 		/*
 		 * $pageCurrent = ['controller' => '', 'action' => ''];
 		 * mi serve per non rendere cliccabile il link corrente nel menu laterale
@@ -2104,6 +2133,64 @@ class OrdersController extends AppController {
 		$this->set('pageCurrent', $pageCurrent);
 		
 		$this->layout = 'ajax';
+	}
+
+	/*
+	 * dal link del menu' 
+	 *	redirect a Order::add o se gas_group_id se neo
+	 */
+	public function admin_prepare_order_add($order_id) {
+exit;
+		/*
+		 * recupero $supplier_organization_id
+		 */
+		App::import('Model', 'DesOrder');
+		$DesOrder = new DesOrder();
+		$DesOrder->unbindModel(['belongsTo' => ['De', 'DesOrder']]);
+		
+		$options = [];
+		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,
+									   'DesOrder.id' => $des_order_id];
+		$options['fields'] = ['DesSupplier.supplier_id'];
+		$options['recursive'] = 1;
+		$results = $DesOrder->find('first', $options);
+				
+		$supplier_id = $results['DesSupplier']['supplier_id'];
+		
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization();
+
+		$options = [];
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'], 'SuppliersOrganization.supplier_id' => $supplier_id];
+		$options['fields'] = ['SuppliersOrganization.id', 'SuppliersOrganization.stato'];
+		$options['recursive'] = -1;
+		
+		$results = $SuppliersOrganization->find('first', $options);
+		 
+		if(empty($results)) {
+			$this->Session->setFlash("Il produttore non compare nella lista dei produttori associati al tuo GAS!");
+
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
+			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;				
+		}
+		else 
+		if($results['SuppliersOrganization']['stato']=='N') {
+			$this->Session->setFlash("Il produttore ha lo stato disabilitato!");
+
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
+			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;			
+		}
+		else {
+			$supplier_organization_id = $results['SuppliersOrganization']['id'];
+			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
+			$url .= '&controller=Orders&action=add';
+			$url .= '&delivery_id=0&order_id=0';
+			$url .= '&supplier_organization_id='.$supplier_organization_id.'&des_order_id='.$des_order_id;			
+		}
+	
+		// echo '<br />'.$url;
+
+		$this->myRedirect($url);
 	}
 
 	/*
