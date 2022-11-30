@@ -2,16 +2,16 @@
 App::uses('AppController', 'Controller');
 
 /*
- * options = array(
-* 				  'orders'=>true, 		 ORDINI
-* 				  'storerooms' => true, DISPENSA
-* 				  'summaryOrders' => true, per Tesoriere
+ * options = [
+* 	  'orders'=>true, 		 ORDINI
+* 	  'storerooms' => true, DISPENSA
+* 	  'summaryOrders' => true, per Tesoriere
 *
-* 				  'articoliEventualiAcquistiNoFilterInOrdine'=>true   estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI Cart di un utente
-* 				  'articlesOrdersInOrder'=>true              estraggo tutti gli articoli in base all'ordine
-* 				  'articoliDellUtenteInOrdine'=>true,     estraggo SOLO gli articoli acquistati da un utente in base all'ordine
+*	  'articoliEventualiAcquistiNoFilterInOrdine'=>true   estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI Cart di un utente
+* 	  'articlesOrdersInOrder'=>true              estraggo tutti gli articoli in base all'ordine
+* 	  'articoliDellUtenteInOrdine'=>true,     estraggo SOLO gli articoli acquistati da un utente in base all'ordine
 * 
-* 				  'suppliers'=>true, 'referents'=>true);
+* 	  'suppliers'=>true, 'referents'=>true);
  */
 
 class DeliveriesController extends AppController {
@@ -112,28 +112,28 @@ class DeliveriesController extends AppController {
         }
 
         if (!empty($this->user->id) && $this->user->get('org_id') == $this->user->organization['Organization']['id'])
-            $options = array('articlesOrders' => true, 'carts' => true);
+            $options = ['articlesOrders' => true, 'carts' => true];
         else
-            $options = array('articlesOrders' => false, 'carts' => false);
+            $options = ['articlesOrders' => false, 'carts' => false];
 
-        $options += array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
-            'suppliers' => true, 'referents' => true);
+        $options += ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+                     'suppliers' => true, 'referents' => true];
 
         if (!empty($this->user->id) && $this->user->get('org_id') == $this->user->organization['Organization']['id'])
             $options += ['articoliEventualiAcquistiNoFilterInOrdine' => true];  // estraggo tutti gli articoli acquistati in base all'ordine ed EVENTUALI Cart di un utente
         else
             $options += ['articlesOrdersInOrder' => false];  // NON estraggo gli articoli dell'ordine
 
-        $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
+        $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN',
-                'Delivery.data' => $deliveryData),
-            'Order' => array('Order.state_code != ' => 'CREATE-INCOMPLETE'),
-            'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+                'Delivery.data' => $deliveryData],
+            'Order' => ['Order.state_code != ' => 'CREATE-INCOMPLETE'],
+            'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
         if (!empty($this->user->id) && $this->user->get('org_id') == $this->user->organization['Organization']['id'])
-            $conditions += array('Cart' => array('Cart.user_id' => (int) $this->user->id,
-                    'Cart.deleteToReferent' => 'N'));
+            $conditions += ['Cart' => ['Cart.user_id' => (int) $this->user->id,
+                    'Cart.deleteToReferent' => 'N']];
 
-        $orderBy = array('Order' => 'Order.data_fine');
+        $orderBy = ['Order' => 'Order.data_fine'];
         $results = $this->Delivery->getDataTabs($tmp_user, $conditions, $options, $orderBy);
 
         /*
@@ -1310,6 +1310,7 @@ class DeliveriesController extends AppController {
 		$conditions = []; 
         $conditions = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 			            'Delivery.stato_elaborazione' => 'OPEN',
+                        'Delivery.type' => 'GAS',
 			            'Delivery.sys' => 'N'];
         $SqlLimit = 20;
 
@@ -1326,6 +1327,7 @@ class DeliveriesController extends AppController {
 		$conditions = [];
         $conditions = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 			            'Delivery.stato_elaborazione' => 'CLOSE',
+                        'Delivery.type' => 'GAS',
 			            'Delivery.sys' => 'N'];
         $SqlLimit = 20;
 
@@ -1347,6 +1349,7 @@ class DeliveriesController extends AppController {
 		$conditions = []; 
         $conditions = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 			            'Delivery.stato_elaborazione' => 'OPEN',
+                        'Delivery.type' => 'GAS',
 			            'Delivery.sys' => 'N'];
         $SqlLimit = 20;
 
@@ -1399,6 +1402,7 @@ class DeliveriesController extends AppController {
             $this->request->data['Delivery']['data'] = $this->request->data['Delivery']['data_db'];
             $this->request->data['Delivery']['stato_elaborazione'] = 'OPEN';
             $this->request->data['Delivery']['isToStoreroomPay'] = 'N';
+            $this->request->data['Delivery']['type'] = 'GAS';
 
             if ($this->user->organization['Organization']['hasStoreroom'] == 'N' || $this->user->organization['Organization']['hasStoreroomFrontEnd'] == 'N') {
                 $this->request->data['Delivery']['isToStoreroom'] = 'N';
@@ -1477,6 +1481,7 @@ class DeliveriesController extends AppController {
 
             $this->request->data['Delivery']['organization_id'] = $this->user->organization['Organization']['id'];
             $this->request->data['Delivery']['data'] = $this->request->data['Delivery']['data_db'];
+            $this->request->data['Delivery']['type'] = 'GAS';
 
             if ($this->user->organization['Organization']['hasStoreroom'] == 'N' || $this->user->organization['Organization']['hasStoreroomFrontEnd'] == 'N') {
                 $this->request->data['Delivery']['isToStoreroom'] = 'N';
@@ -1638,6 +1643,7 @@ class DeliveriesController extends AppController {
         }
 
         $results['Delivery']['id'] = null;
+        $results['Delivery']['type'] = 'GAS';
         if ($this->user->organization['Organization']['hasVisibility'] == 'Y') {
             $results['Delivery']['isVisibleFrontEnd'] = 'N';
             $results['Delivery']['isVisibleBackOffice'] = 'N';
@@ -1651,7 +1657,7 @@ class DeliveriesController extends AppController {
         }
 
         $this->Delivery->create();
-        if ($this->Delivery->save($results['Delivery'], array('validate' => false))) {
+        if ($this->Delivery->save($results['Delivery'], ['validate' => false])) {
             $this->Session->setFlash(__('The delivery has been copied'));
             $this->delivery_id = $this->Delivery->getLastInsertID();
             $this->myRedirect(Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Deliveries&action=edit&delivery_id=' . $this->delivery_id);
@@ -1782,8 +1788,9 @@ class DeliveriesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $conditions = array('Delivery' => array('Delivery.isVisibleBackOffice' => 'Y',
-                'Delivery.id' => (int) $delivery_id),
+        $conditions = array('Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
+                'Delivery.type' => 'GAS',
+                'Delivery.id' => (int) $delivery_id],
             'Order' => array('Order.state_code != ' => 'CREATE-INCOMPLETE'),
             'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
 

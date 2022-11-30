@@ -204,11 +204,11 @@ class SuppliersOrganization extends AppModel {
 	public function getSuppliersOrganizationIds($user) {
 
 		$options = [];
-		$options['conditions'] = array('SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
-									   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')");
+		$options['conditions'] = ['SuppliersOrganization.organization_id' => $user->organization['Organization']['id'],
+								   "(Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')"];
 		$options['recursive'] = 1;
-		$options['fields'] = array('id');
-		$options['order_by'] = array('id');
+		$options['fields'] = ['id'];
+		$options['order_by'] = ['id'];
 		
 		$this->unBindModel(array('belongsTo' => array('Organization', 'CategoriesSupplier')));
 		$results = $this->find('list', $options);

@@ -196,10 +196,10 @@ if(!empty($organization_id)) {
 		/*
 		 * sotto-gruppi 
 		 * */
-		if($hasGasGroups=='Y' && 
+		if($hasGasGroups=='Y' && (
 			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
 			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups()) 
+			in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) 
 		    ) {
 			$i++;
 			$_menus[$i]['level'] = 0;
@@ -215,7 +215,7 @@ if(!empty($organization_id)) {
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Consegne";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index&type=GAS-GROUPS";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
 			}
 			if(in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
 				$i++;
@@ -327,7 +327,7 @@ if(!empty($organization_id)) {
 						$i++;
 						$_menus[$i]['level'] = 1;
 						$_menus[$i]['label'] = "Consegne a gruppi G.A.S. <label class='label label-success'>new</label>";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index&type=GAS-GROUPS";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
 					}						
 					$i++;
 					$_menus[$i]['level'] = 1;
@@ -543,7 +543,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Controlli dati aggregati sugli ordini";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SummaryOrders&action=orders_validate";			
-				*/
+				*/				
 				if($hasGasGroups=='Y' && in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
 					$i++;
 					$_menus[$i]['level'] = 1;

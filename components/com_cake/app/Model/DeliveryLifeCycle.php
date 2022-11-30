@@ -41,6 +41,7 @@ class DeliveryLifeCycle extends AppModel {
 	
 		$options = [];
 		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+								 'Delivery.type' => 'GAS',
 								 'Delivery.sys' => 'N',
 								 'Delivery.isVisibleFrontEnd' => 'Y',
 								 'Delivery.isVisibleFrontEnd' => 'Y',
@@ -87,8 +88,9 @@ class DeliveryLifeCycle extends AppModel {
 		if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y') {
 
 			$options = [];
-			$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
-									 'Delivery.sys' => 'N',
+			$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],						 
+									'Delivery.type' => 'GAS',
+									'Delivery.sys' => 'N',
 									 'Delivery.isVisibleFrontEnd' => 'Y',
 									 'Delivery.isVisibleFrontEnd' => 'Y',
 									 'Delivery.isToStoreroom' => 'Y', 
@@ -172,6 +174,7 @@ class DeliveryLifeCycle extends AppModel {
 						Delivery.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND `Order`.organization_id = " . (int) $user->organization['Organization']['id'] . "
 						AND Delivery.stato_elaborazione = 'OPEN' 
+						AND Delivery.type = 'GAS' 
 						AND Delivery.sys = 'N' 
 						AND `Order`.delivery_id = Delivery.id 
 						and `Order`.isVisibleFrontEnd = 'Y'  and Delivery.isVisibleFrontEnd = 'Y' ";
@@ -324,6 +327,7 @@ class DeliveryLifeCycle extends AppModel {
          $options = [];
          $options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
 					               'Delivery.stato_elaborazione' => 'CLOSE', 
+					               'Delivery.type' => 'GAS',  
 					               'Delivery.sys' => 'N', 
 					               'Delivery.isVisibleFrontEnd' => 'Y'];
         if ($user->organization['Organization']['hasStoreroom'] == 'Y' && $user->organization['Organization']['hasStoreroomFrontEnd'] == 'Y')

@@ -141,8 +141,9 @@ class Delivery extends AppModel {
 	public function getDeliverySys($user) {
 
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => $user->organization['Organization']['id'],
-									   'Delivery.sys' => 'Y');
+		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+									'Delivery.type' => 'GAS',
+									'Delivery.sys' => 'Y'];
 		$options['recursive'] = -1;
 		$results = $this->find('first', $options);
 		

@@ -851,7 +851,6 @@ class AppController extends Controller {
 	 *
 	 * posso filtrare per SuppliersOrganization.owner_articles = REFERENT/SUPPLIER, in Article::add escludo i produttori NON gestiti dal GAS
 	 */
-
     public function getACLsuppliersOrganization($owner_articles='') {
 
         App::import('Model', 'SuppliersOrganization');
