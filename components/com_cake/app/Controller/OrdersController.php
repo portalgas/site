@@ -2137,55 +2137,31 @@ class OrdersController extends AppController {
 
 	/*
 	 * dal link del menu' 
-	 *	redirect a Order::add o se gas_group_id se neo
+	 *	redirect a Order::edit o se gas_group_id se neo
 	 */
-	public function admin_prepare_order_add($order_id) {
-exit;
-		/*
-		 * recupero $supplier_organization_id
-		 */
-		App::import('Model', 'DesOrder');
-		$DesOrder = new DesOrder();
-		$DesOrder->unbindModel(['belongsTo' => ['De', 'DesOrder']]);
-		
-		$options = [];
-		$options['conditions'] = ['DesOrder.des_id' => $this->user->des_id,
-									   'DesOrder.id' => $des_order_id];
-		$options['fields'] = ['DesSupplier.supplier_id'];
-		$options['recursive'] = 1;
-		$results = $DesOrder->find('first', $options);
-				
-		$supplier_id = $results['DesSupplier']['supplier_id'];
-		
-		App::import('Model', 'SuppliersOrganization');
-		$SuppliersOrganization = new SuppliersOrganization();
+	public function admin_prepare_order_edit($delivery_id, $order_id) {
 
 		$options = [];
-		$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'], 'SuppliersOrganization.supplier_id' => $supplier_id];
-		$options['fields'] = ['SuppliersOrganization.id', 'SuppliersOrganization.stato'];
+		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 
+								'Order.id' => $order_id];
 		$options['recursive'] = -1;
-		
-		$results = $SuppliersOrganization->find('first', $options);
-		 
-		if(empty($results)) {
-			$this->Session->setFlash("Il produttore non compare nella lista dei produttori associati al tuo GAS!");
-
-			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;				
+		$orderResult = $this->Order->find('first', $options);
+		// if($debug) debug($orderResult); 
+		if (empty($orderResult)) {
+			$this->Session->setFlash(__('msg_error_params'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
-		else 
-		if($results['SuppliersOrganization']['stato']=='N') {
-			$this->Session->setFlash("Il produttore ha lo stato disabilitato!");
 
-			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-			$url .= '&controller=DesOrdersOrganizations&action=index&id='.$des_order_id;			
+		if(!empty($orderResult['Order']['gas_group_id']) &&
+			$orderResult['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+			$params = ['order_id' => $orderResult['Order']['id'],
+					   'order_type_id' => Configure::read('Order.type.gas_groups')];
+			$url = $this->Connects->createUrlBo('admin/orders', 'edit', $params);
 		}
 		else {
-			$supplier_organization_id = $results['SuppliersOrganization']['id'];
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
-			$url .= '&controller=Orders&action=add';
-			$url .= '&delivery_id=0&order_id=0';
-			$url .= '&supplier_organization_id='.$supplier_organization_id.'&des_order_id='.$des_order_id;			
+			$url .= '&controller=Orders&action=edit';
+			$url .= '&delivery_id='.$orderResult['Order']['delivery_id'].'&order_id='.$orderResult['Order']['id'];	
 		}
 	
 		// echo '<br />'.$url;
