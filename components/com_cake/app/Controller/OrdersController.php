@@ -39,6 +39,19 @@ class OrdersController extends AppController {
 		}	   		   	
    		/* ctrl ACL */  
 
+		/* 
+		 * ordine per gruppi
+		 */
+		if(in_array($this->action, ['admin_edit'])) {	
+		   $results = $this->Order->read($this->order_id, $this->user->organization['Organization']['id']);	
+		   if(!empty($results['Order']['gas_group_id']) &&
+		   	   $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+				$params = ['order_id' => $results['Order']['id'],
+							'order_type_id' => Configure::read('Order.type.gas_groups')];
+				$url = $this->Connects->createUrlBo('admin/orders', 'edit', $params);
+				$this->myRedirect($url);
+			}
+	    }
 
    		$actionWithPermission = ['admin_home'];
    		if(in_array($this->action, $actionWithPermission)) {
@@ -64,6 +77,7 @@ class OrdersController extends AppController {
    				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));
    				$this->myRedirect(Configure::read('routes_msg_stop'));
    			}
+			
    		} // end if (in_array($this->action, $actionWithPermission))
    			
    		/*
@@ -164,6 +178,7 @@ class OrdersController extends AppController {
 	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
+		$gas_groups = [];
 		if($this->user->organization['Organization']['hasGasGroups']=='Y') {
 			App::import('Model', 'GasGroup');
 			$GasGroup = new GasGroup;	
@@ -2138,6 +2153,7 @@ class OrdersController extends AppController {
 	/*
 	 * dal link del menu' 
 	 *	redirect a Order::edit o se gas_group_id se neo
+	 * non utilizzato, ora redirect in admin_edit
 	 */
 	public function admin_prepare_order_edit($delivery_id, $order_id) {
 

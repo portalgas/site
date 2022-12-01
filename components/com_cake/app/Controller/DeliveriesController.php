@@ -1631,10 +1631,11 @@ class DeliveriesController extends AppController {
         }
 
         $options = [];
-        $options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
+        $options['conditions'] = [
+            'Delivery.organization_id' => $this->user->organization['Organization']['id'],
             'Delivery.id' => $this->delivery_id,
             'Delivery.sys' => 'N'
-        );
+        ];
         $options['recursive'] = 1;
         $results = $this->Delivery->find('first', $options);
         if (empty($results)) {
@@ -1644,6 +1645,8 @@ class DeliveriesController extends AppController {
 
         $results['Delivery']['id'] = null;
         $results['Delivery']['type'] = 'GAS';
+        $results['Delivery']['created'] = null;
+        $results['Delivery']['modified'] = null;
         if ($this->user->organization['Organization']['hasVisibility'] == 'Y') {
             $results['Delivery']['isVisibleFrontEnd'] = 'N';
             $results['Delivery']['isVisibleBackOffice'] = 'N';
