@@ -1641,7 +1641,7 @@ class RequestPaymentsController extends AppController {
 		$SummaryPayment = new SummaryPayment;
 			
 		App::import('Model', 'Cash');
-				
+			
 		if(isset($data['RequestPayment']['importo_pagato']))		
 		foreach ($data['RequestPayment']['importo_pagato'] as $summary_payment_id => $importo) {
 				
@@ -1699,7 +1699,7 @@ class RequestPaymentsController extends AppController {
 								  'SummaryPayment.id' => $summary_payment_id,
 								  'SummaryPayment.user_id' => $data['RequestPayment']['user_id'][$summary_payment_id],
 								  'SummaryPayment.request_payment_id' => $data['RequestPayment']['request_payment_id']];
-		$options['recursive'] = -1;
+		$options['recursive'] = 0;
 		$summaryPaymentResults = $SummaryPayment->find('first', $options);
 		self::d($options, $debug);
 		self::d($summaryPaymentResults, $debug);
@@ -1774,7 +1774,7 @@ class RequestPaymentsController extends AppController {
 				$data_cash['Cash']['user_id'] = $user_id;
 				$data_cash['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
 				$data_cash['Cash']['importo'] = $delta_cassa;
-				$data_cash['Cash']['nota'] = "Richiesta di pagamento num ".$data['RequestPayment']['num'];
+				$data_cash['Cash']['nota'] = "Richiesta di pagamento num ".$summaryPaymentResults['RequestPayment']['num'];
 			
 				self::d($data_cash, $debug);									   	
 				$Cash->create();
@@ -1806,7 +1806,8 @@ class RequestPaymentsController extends AppController {
 				 * UPDATE CASH
 				 */
 				$cashResults['Cash']['importo'] = $new_importo_cash;	
-						
+				$cashResults['Cash']['nota'] = "Richiesta di pagamento num ".$summaryPaymentResults['RequestPayment']['num'];
+
 				self::d($data_cash, $debug);
 				$Cash->create();
 				if(!$Cash->save($cashResults)) 

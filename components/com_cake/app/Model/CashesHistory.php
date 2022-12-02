@@ -12,8 +12,8 @@ class CashesHistory extends AppModel {
 	    $Cash = new Cash;
 		
 	    $options = [];
-	    $options['conditions'] = array('Cash.organization_id' => (int) $user->organization['Organization']['id'],
-								            'Cash.id' => $cash_id);
+	    $options['conditions'] = ['Cash.organization_id' => (int) $user->organization['Organization']['id'],
+								  'Cash.id' => $cash_id];
 		$options['recursive'] = -1;
 		$previuosCash = $this->Cash->find('first', $options);
 		
@@ -26,6 +26,8 @@ class CashesHistory extends AppModel {
         $cashesHistory['CashesHistory'] = $previuosCash['Cash'];
         $cashesHistory['CashesHistory']['id'] = null;
         $cashesHistory['CashesHistory']['cash_id'] = $cash_id;
+        $cashesHistory['CashesHistory']['created'] = null;
+        $cashesHistory['CashesHistory']['modified'] = null;
 
 		if($debug) {
 		  echo "<pre>CashesHistory::previousCashSave() \n ";
