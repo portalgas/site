@@ -610,6 +610,9 @@ msgstr "Modifica la consegna"
 msgid "Edit Cash"
 msgstr "Modifica la voce di cassa"
 
+msgid "Edit Cash History"
+msgstr "Modifica la voce di cassa storica"
+
 msgid "Edit User Cash"
 msgstr "Modifica la voce di cassa"
 

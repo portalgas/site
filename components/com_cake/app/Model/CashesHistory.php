@@ -47,9 +47,10 @@ class CashesHistory extends AppModel {
 	 */	 
 	public function getListCashHistoryByUser($user, $results) {
 		
+		$tot_histories = count($results);
 		$importo = 0;
 		$importo_old = 0;
-		
+	//	debug($results);
 		/*
 		 * calcolo dai saldi alle operazioni
 		 */
@@ -67,7 +68,7 @@ class CashesHistory extends AppModel {
 				$results[$numResult-1]['CashesHistory']['created'] = $results[$numResult-1]['CashesHistory']['created'];
 			}	
 		}
-	
+		//debug($results);
 		$results[$numResult]['CashesHistory']['operazione'] = '';
 		$results[$numResult]['CashesHistory']['operazione_'] = '';
 		$results[$numResult]['CashesHistory']['operazione_e'] = '';		
@@ -87,6 +88,8 @@ class CashesHistory extends AppModel {
 			$newResults[0]['CashesHistory']['importo_'] = '0,00';
 			$newResults[0]['CashesHistory']['importo_e'] = '0,00 &euro;';
 
+			if($tot_histories>1)
+				$newResults[0]['CashesHistory']['id'] = $results[0]['CashesHistory']['id'];
 			$newResults[0]['CashesHistory']['nota'] = $results[0]['CashesHistory']['nota'];
 			$newResults[0]['CashesHistory']['modified'] = $results[0]['CashesHistory']['modified'];
 				
@@ -98,10 +101,20 @@ class CashesHistory extends AppModel {
 				$newResults[((int)$numResult+1)] = $result;
 				
 				if(isset($results[((int)$numResult+1)])) {
-					$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = $results[((int)$numResult+1)]['CashesHistory']['nota'];
+					
+					/* 
+					 * se $tot_histories = 1 non lo posso modificare perche' è la voce di cassa corrente 
+					 */
+					if($tot_histories>1 && ($numResult+2)<count($results))	
+						$newResults[((int)$numResult+1)]['CashesHistory']['id'] = $results[((int)$numResult+1)]['CashesHistory']['id'];
+					else
+						$newResults[((int)$numResult+1)]['CashesHistory']['id'] = 0;
+
+						$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = $results[((int)$numResult+1)]['CashesHistory']['nota'];
 					$newResults[((int)$numResult+1)]['CashesHistory']['modified'] = $results[((int)$numResult+1)]['CashesHistory']['modified'];
 				}
 				else {
+					$newResults[((int)$numResult+1)]['CashesHistory']['id'] = 0;
 					$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = "";					
 				}
 			}

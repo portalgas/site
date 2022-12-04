@@ -284,6 +284,54 @@ class CashsController extends AppController {
         } // if ($this->request->is('post') || $this->request->is('put'))
     }
 
+    
+    /*
+     * modifica voce di cassa storica dell'utente , solo campo NOTE
+     */
+    public function admin_history_edit($id=0) {
+
+        $debug = false;
+
+        App::import('Model', 'CashesHistory');
+    	$CashesHistory = new CashesHistory;
+
+        $options = [];
+        $options['conditions'] = ['CashesHistory.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                  'CashesHistory.id' => $id];
+        $options['recursive'] = 2;
+        $results = $CashesHistory->find('first', $options);
+        /*debug($results);
+        debug($options);exit;
+        */
+        if(empty($results)) {
+            $this->Session->setFlash(__('msg_error_params'));
+            $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        if($debug) debug($results);
+        $this->set(compact('results'));
+
+        $results = $this->Cash->getTotaleCash($this->user);
+        $totale_importo = $results['totale_importo'];
+        $this->set('totale_importo', $totale_importo);
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+
+            $options = [];
+            $options['conditions'] = ['CashesHistory.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                      'CashesHistory.id' => $id];
+            $options['recursive'] = -1;
+            $results = $CashesHistory->find('first', $options);
+            $results['CashesHistory']['nota'] = $this->request->data['CashesHistory']['nota'];
+            if ($CashesHistory->save($results)) {
+                $this->Session->setFlash(__('The cash has been saved'));
+                $this->myRedirect(['action' => 'index']);
+            } else {
+                $this->Session->setFlash(__('The cash could not be saved. Please, try again.'));
+            }
+        } // if ($this->request->is('post') || $this->request->is('put'))
+    }
+    
     public function admin_edit_by_user_id($user_id=0) {
 
        if (empty($user_id)) {
