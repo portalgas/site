@@ -3158,13 +3158,16 @@ msgid "UserGroupsUserFlagPrivacy"
 msgstr "Titolare Trattamento Privacy"
 
 msgid "UserGroupsGasGroupsGroups"
-msgstr "Gestore dei sotto gruppi"
+msgstr "Gestore dei gruppi"
 
 msgid "UserGroupsGasGroupsDeliveries"
-msgstr "Gestore consegne per i sotto gruppi"
+msgstr "Gestore consegne per i gruppi"
 
 msgid "UserGroupsGasGroupsOrders"
-msgstr "Gestore ordini per i sotto gruppi"
+msgstr "Gestore ordini per i gruppi"
+
+msgid "UserGroupsGasGroupsParentOrders"
+msgstr "Gestore ordini per gli ordini i gruppi"
 
 msgid "HasUserGroupsRootSupplier"
 msgstr "Ha la gestione dei produttori"
@@ -3233,14 +3236,16 @@ msgid "HasUserGroupsUserFlagPrivacy"
 msgstr "E' il titolare del trattamento dei dati per la privacy"
 
 msgid "HasUserGroupsGasGroupsGroups"
-msgstr "Gestisce i sotto gruppi"
+msgstr "Gestisce i gruppi"
 
 msgid "HasUserGroupsGasGroupsDeliveries"
-msgstr "Gestisce le consegne per i sotto gruppi"
+msgstr "Gestisce le consegne per i gruppi"
 
 msgid "HasUserGroupsGasGroupsOrders"
-msgstr "Gestisce gli ordini per i sotto gruppi"
+msgstr "Gestisce gli ordini per i gruppi"
 
+msgid "HasUserGroupsGasGroupsParentOrders"
+msgstr "Gestisce gli ordini per gli ordini dei gruppi"
 
 msgid "OrderCycleLife"
 msgstr "Ciclo dell'ordine"
@@ -3303,7 +3308,7 @@ msgid "HasDesUserManager"
 msgstr "Ha il manager dei gasisti per tutti i G.A.S. del  D.E.S."
 
 msgid "HasGasGroups"
-msgstr "Ha la gestione dei gruppi del G.A.S. per creare sotto-ordini"
+msgstr "Ha la gestione dei gruppi del G.A.S. per creare ordini"
 
 msgid "HasUserFlagPrivacy"
 msgstr "Flag privacy"
@@ -4642,7 +4647,7 @@ msgid "toolTipHasDesUserManager"
 msgstr "Se è valorizzato a 'Si' gestirà i gasisti dei G.A.S. facenti parte del D.E.S."
 
 msgid "toolTipHasGasGroups"
-msgstr "Se è valorizzato a 'Si' gestirà la gestione dei gruppi del G.A.S. per creare sotto-ordini"
+msgstr "Se è valorizzato a 'Si' gestirà la gestione dei gruppi del G.A.S. per creare ordini"
 
 
 msgid "toolTipProdSupplierOrganizationId"

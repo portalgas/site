@@ -219,7 +219,12 @@ class UserGroupsComponent extends Component {
 			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['name'] = __('UserGroupsGasGroupsOrders');
 			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['descri'] = __('HasUserGroupsGasGroupsOrders');
 			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['join'] = '';
-			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['type'] = 'GAS-GROUPS';				
+			$userGroups[Configure::read('group_id_gas_groups_manager_orders')]['type'] = 'GAS-GROUPS';	
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['id'] = Configure::read('group_id_gas_groups_manager_parent_orders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['name'] = __('UserGroupsGasGroupsParentOrders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['descri'] = __('HasUserGroupsGasGroupsParentOrders');
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['join'] = '';
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['type'] = 'GAS-GROUPS';				
 		}
 
 		$controllerLog::d($userGroups, $debug);
