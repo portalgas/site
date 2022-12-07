@@ -44,10 +44,10 @@ class OrdersController extends AppController {
 		 */
 		if(in_array($this->action, ['admin_edit'])) {	
 		   $results = $this->Order->read($this->order_id, $this->user->organization['Organization']['id']);	
-		   if(!empty($results['Order']['gas_group_id']) &&
-		   	   $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
-				$params = ['order_id' => $results['Order']['id'],
-							'order_type_id' => Configure::read('Order.type.gas_groups')];
+		   if($results['Order']['order_type_id']==Configure::read('Order.type.gas_parent_groups') || 
+			  $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+				$params = ['order_type_id' => $results['Order']['order_type_id'],
+						   'order_id' => $results['Order']['id']];
 				$url = $this->Connects->createUrlBo('admin/orders', 'edit', $params);
 				$this->myRedirect($url);
 			}

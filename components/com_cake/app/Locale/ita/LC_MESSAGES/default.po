@@ -2708,10 +2708,10 @@ msgid "order_importo_massimo"
 msgstr "Importo massimo"
 
 msgid "order_qta_massima_help"
-msgstr "Quanto il peso totale espresso nell'unità di misura indicata raggiungerà la quantità indicata, verrà inviata una mail ai referenti e chiuso l'ordine"
+msgstr "Quando il peso totale espresso nell'unità di misura indicata raggiungerà la quantità indicata, verrà inviata una mail ai referenti e chiuso l'ordine"
 
 msgid "order_importo_massimo_help"
-msgstr "Quanto il totale degli acquisti raggiungerà l'importo indicato, verrà inviata una mail ai referenti e chiuso l'ordine"
+msgstr "Quando il totale degli acquisti raggiungerà l'importo indicato, verrà inviata una mail ai referenti e chiuso l'ordine"
 
 msgid "order_just_pay"
 msgstr "Considero l'ordine già pagato al produttore"
