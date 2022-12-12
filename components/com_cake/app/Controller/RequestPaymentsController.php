@@ -1684,7 +1684,7 @@ class RequestPaymentsController extends AppController {
 	private function _edit_open_stato_PAGATO($summary_payment_id, $data, $debug) {
  
 		$msg = '';
-
+		$debug=true;
 		$user_id = $data['RequestPayment']['user_id'][$summary_payment_id];
 		$importo_dovuto = $data['RequestPayment']['importo_dovuto'][$summary_payment_id];
 		$importo_richiesto = $data['RequestPayment']['importo_richiesto'][$summary_payment_id];
@@ -1800,26 +1800,31 @@ class RequestPaymentsController extends AppController {
 			else {
 			*
 			*/
-				self::d("UPDATE CASH with user_id $user_id importo da ".$cashResults['Cash']['importo']." a ".$new_importo_cash, $debug);
 															
 				/*
 				 * UPDATE CASH
+				 * ctrl se sono diversi per evitare bug
 				 */
-				$cashResults['Cash']['importo'] = $new_importo_cash;	
-				$cashResults['Cash']['nota'] = "Richiesta di pagamento num ".$summaryPaymentResults['RequestPayment']['num'];
-
-				self::d($data_cash, $debug);
-				$Cash->create();
-				if(!$Cash->save($cashResults)) 
-					$msg .= "<br />UPDATE CASH with user_id $user_id importo da ".$cashResults['Cash']['importo']." a ".$new_importo_cash." ERROR";
+				if($cashResults['Cash']['importo']!=$new_importo_cash) {
 					
-				/*
-				 * dati Cash precedenti in CashesHistory
-				 */
-				App::import('Model', 'CashesHistory');
-		        $CashesHistory = new CashesHistory;
+					self::d("UPDATE CASH with user_id $user_id importo da ".$cashResults['Cash']['importo']." a ".$new_importo_cash, $debug);
 				
-				$CashesHistory->previousCashSave($this->user, $cashResults['Cash']['id']);
+					$cashResults['Cash']['importo'] = $new_importo_cash;	
+					$cashResults['Cash']['nota'] = "Richiesta di pagamento num ".$summaryPaymentResults['RequestPayment']['num'];
+	
+					self::d($cashResults, $debug);
+					$Cash->create();
+					if(!$Cash->save($cashResults)) 
+						$msg .= "<br />UPDATE CASH with user_id $user_id importo da ".$cashResults['Cash']['importo']." a ".$new_importo_cash." ERROR";
+						
+					/*
+					 * dati Cash precedenti in CashesHistory
+					 */
+					App::import('Model', 'CashesHistory');
+					$CashesHistory = new CashesHistory;
+					
+					$CashesHistory->previousCashSave($this->user, $cashResults['Cash']['id']);	
+				}
 		        									 		
 			// } // end if(empty($cashResults))
 				
