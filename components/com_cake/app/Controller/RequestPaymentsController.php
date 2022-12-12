@@ -1684,7 +1684,7 @@ class RequestPaymentsController extends AppController {
 	private function _edit_open_stato_PAGATO($summary_payment_id, $data, $debug) {
  
 		$msg = '';
-		$debug=true;
+
 		$user_id = $data['RequestPayment']['user_id'][$summary_payment_id];
 		$importo_dovuto = $data['RequestPayment']['importo_dovuto'][$summary_payment_id];
 		$importo_richiesto = $data['RequestPayment']['importo_richiesto'][$summary_payment_id];
