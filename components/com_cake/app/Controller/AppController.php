@@ -75,7 +75,6 @@ class AppController extends Controller {
 	}
 		
     public function beforeFilter() {
-  
         $debug = false;
 
         date_default_timezone_set('Europe/Rome');
