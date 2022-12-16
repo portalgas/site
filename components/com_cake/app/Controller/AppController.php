@@ -75,7 +75,7 @@ class AppController extends Controller {
 	}
 		
     public function beforeFilter() {
-
+  
         $debug = false;
 
         date_default_timezone_set('Europe/Rome');
@@ -109,7 +109,6 @@ class AppController extends Controller {
         $this->userGroups = $this->UserGroups->getUserGroups($this->user);
         if (!$this->isRoot())
             unset($this->userGroups[Configure::read('group_id_root_supplier')]);
-
 
         if($debug) debug("------- BEFORE APPController ---------");
         if($debug) debug($this->user);

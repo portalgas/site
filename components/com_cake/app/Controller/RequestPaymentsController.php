@@ -516,8 +516,12 @@ class RequestPaymentsController extends AppController {
 							$importo_richiesto = $summaryPaymentResult['SummaryPayment']['importo_richiesto'];
 							$importo_richiesto = number_format($importo_richiesto,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 							
-							if(!empty($mail)) {
-									
+							/*
+							 * non invio se importo_richiesto = 0 perchè pagate con la cassa
+							 * però se non viene inviata la mail il gasista non ha il dettaglio di quello che ha acquistato e pagato con la cassa, 
+							 * if(!empty($mail) && ($importo_richiesto>0 && $importo_richiesto!='0,00' && $importo_richiesto!='0' && $importo_richiesto!='0.00')) {
+							 */		
+							if(!empty($mail)) {							
 								$body_mail = "c'è una nuova <b>richiesta di pagamento</b> (la numero $request_payment_num) di ".$importo_richiesto.'&nbsp;&euro;.';
 								
 								$body_mail .= "<br /><br />Collegati ";

@@ -83,9 +83,9 @@ if($tot_articles>0) {
 	echo '<th></th>';
 	echo '<th>'.__('Prezzo').'</th>';
 	echo '<th style="padding-left:15px">'.__('pezzi_confezione').'</th>';
+	echo '<th>'.__('qta_multipli').'</th>';
 	echo '<th>'.__('qta_minima_short').'</th>';
 	echo '<th>'.__('qta_massima_short').'</th>';
-	echo '<th>'.__('qta_multipli').'</th>';
 	echo '<th>'.__('qta_minima_order_short').'</th>';
 	echo '<th>'.__('qta_massima_order_short').'</th>';
 	if($user->organization['Organization']['hasFieldArticleAlertToQta']=='Y') 
@@ -149,6 +149,21 @@ if($tot_articles>0) {
 		 	echo '<td>'.$this->Form->input('pezzi_confezione', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderPezziConfezione]','value' => $pezzi_confezione, 'tabindex'=>((int)$numResult+1), 'id' => 'ArticlesOrderPezziConfezione-'.$result['Article']['id']], $noOwnerOpts)).'</td>';
 		 }
 		
+		if(!$canEdit && !empty($des_order_id)) 
+			$qta_multipli = $result['ArticlesOrder']['qta_multipli']; // lo prendo dall'articolo associato all'ordine del titolare DES
+		else	
+			$qta_multipli = $result['Article']['qta_multipli'];
+		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
+			echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'id' => 'ArticlesOrderQtaMultipli-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
+		}
+		else {
+			echo '<td><div class="btn btn-value-edit" 
+						data-attr-model="Article"
+						data-attr-id-name="ArticlesOrderQtaMultipli"
+						data-attr-id="'.$result['Article']['id'].'"
+						data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';	
+		}
+				
 		/*
 		 * campi gestiti anche da chi non e' proprietario dell'articolo
 		 */
@@ -181,21 +196,6 @@ if($tot_articles>0) {
 				 	    data-attr-id-name="ArticlesOrderQtaMassima"
 				 	    data-attr-id="'.$result['Article']['id'].'"
 				 	    data-attr-value="'.$qta_massima.'">'.$qta_massima.'</div></td>';		 
-		}
-
-		if(!$canEdit && !empty($des_order_id)) 
-		 	$qta_multipli = $result['ArticlesOrder']['qta_multipli']; // lo prendo dall'articolo associato all'ordine del titolare DES
-		else	
-		 	$qta_multipli = $result['Article']['qta_multipli'];
-		if($tot_articles<=Configure::read('ArticlesOrdersEditFields')) { 
-			echo '<td>'.$this->Form->input('qta_multipli', array_merge(['name'=>'data[Article]['.$result['Article']['id'].'][ArticlesOrderQtaMultipli]', 'value' => $qta_multipli, 'id' => 'ArticlesOrderQtaMultipli-'.$result['Article']['id'], 'tabindex'=>((int)$numResult+1)], $opts)).'</td>';
-	 	}
-	 	else {
-	 		echo '<td><div class="btn btn-value-edit" 
-				 		data-attr-model="Article"
-				 	    data-attr-id-name="ArticlesOrderQtaMultipli"
-				 	    data-attr-id="'.$result['Article']['id'].'"
-				 	    data-attr-value="'.$qta_multipli.'">'.$qta_multipli.'</div></td>';	
 		}
 
 		if(!$canEdit && !empty($des_order_id)) 
