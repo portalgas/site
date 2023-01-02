@@ -105,7 +105,7 @@ if(isset($hasUserRegistrationExpire) && $hasUserRegistrationExpire=='N') {
 		html += "<?php echo __('msg_fe_user_registration_expire_modal');?>";
 		html += '</div>';
 		html += '<div class="modal-footer">';
-		html += '<button type="button" class="btn btn-warning" data-dismiss="modal"><?php echo __('close');?></button>'; 
+		html += '<button type="button" class="btn btn-warning" data-dismiss="modal"><?php echo __('Chiudi');?></button>'; 
 		html += '</div>'; 
 		html += '</div>'; 
 		

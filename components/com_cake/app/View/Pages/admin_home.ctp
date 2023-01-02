@@ -8,7 +8,7 @@ if(!empty($prodGasPromotionsOrganizationsresults) && ($isManager || $isSuperRefe
 echo '<div class="container-fluid text-center">';
 echo '  <div class="row">';
 
-echo $this->element('carousel');
+// echo $this->element('carousel');
 
 if($isReferentGeneric) {
 ?>

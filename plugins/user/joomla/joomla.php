@@ -220,12 +220,35 @@ class plgUserJoomla extends JPlugin
 			$organization_id = $instance->get('organization_id');
 			$user_id = $instance->get('id');
 
+			/* 
+			 * dati organization 
+			 */
+			$j_seo = '';
+			$type = '';
+			$paramsConfig = '';
+			if($instance->get('organization_id')>0) {
+				$sql = "SELECT
+						Organization.j_seo, Organization.type, Organization.paramsConfig
+					FROM
+						k_organizations as Organization 
+					WHERE
+						Organization.id = ".(int)$organization_id;
+				if($debug) echo '<br />'.$sql;
+				$db->setQuery($sql);
+				$results = $db->loadObject();
+				$j_seo = $results->j_seo;
+				$type = $results->type;
+				$paramsConfig = json_decode($results->paramsConfig, true);
+			}
+
 			if(empty($urlRedirect))
-				$urlRedirect = $this->_hasEvents($organization_id, $user_id, $debug);
+			$urlRedirect = $this->_hasUserRegistrationExpire($organization_id, $paramsConfig, $user_id, $debug);
 			if(empty($urlRedirect))
-				$urlRedirect = $this->_hasRequestPayments($organization_id, $user_id, $debug);
+				$urlRedirect = $this->_hasEvents($organization_id, $paramsConfig, $user_id, $debug);
 			if(empty($urlRedirect))
-				$urlRedirect = $this->_hasGasUserPromotions($organization_id, $debug);
+				$urlRedirect = $this->_hasRequestPayments($organization_id, $paramsConfig, $user_id, $debug);
+			if(empty($urlRedirect))
+				$urlRedirect = $this->_hasGasUserPromotions($organization_id, $paramsConfig, $debug);
 			if(empty($urlRedirect))
 				$urlRedirect = "acquista"; // default
 
@@ -240,18 +263,6 @@ class plgUserJoomla extends JPlugin
 			 * redirect 
 			 */
 			if($instance->get('organization_id')>0) {
-				$sql = "SELECT
-						Organization.j_seo, Organization.type, Organization.paramsConfig
-					FROM
-						k_organizations as Organization 
-					WHERE
-						Organization.id = ".(int)$organization_id;
-				if(!$debug) echo '<br />'.$sql;
-				$db->setQuery($sql);
-				$results = $db->loadObject();
-				$j_seo = $results->j_seo;
-				$type = $results->type;
-				$paramsConfig = json_decode($results->paramsConfig, true);
                 if($type=='SOCIALMARKET') {
                     $urlRedirect = 'organization.socialmarket.home';
                 }
@@ -405,9 +416,38 @@ class plgUserJoomla extends JPlugin
 	}
 
 	/*
+	 * ctrl se lo user ha la registrazione scaduta
+	 */
+	private function _hasUserRegistrationExpire($organization_id, $paramsConfig, $user_id, $debug=false) {
+
+		$urlRedirect = '';
+		/*
+		echo "<pre>";
+		print_r($paramsConfig);
+		echo "</pre>";
+		*/
+		if(!isset($paramsConfig['hasUserRegistrationExpire']) || $paramsConfig['hasUserRegistrationExpire']=='N') 
+			return $urlRedirect;
+		
+		$db = JFactory::getDBO();
+
+		$sql = "SELECT profile_value FROM j_user_profiles 
+				WHERE profile_key = 'profile.hasUserRegistrationExpire'
+				AND user_id = ".$user_id;
+		if($debug) echo '<br />'.$sql;
+		$db->setQuery($sql);
+		$resultsProfile = $db->loadObject();
+		$profile_value = $resultsProfile->profile_value;
+		if($profile_value=='"N"') 
+			$urlRedirect = 'organization.home';
+		
+		return $urlRedirect;
+	}
+
+	/*
 	 * ctrl se lo user e' associato ad eventi
 	 */
-	private function _hasEvents($organization_id, $user_id, $debug=false) {
+	private function _hasEvents($organization_id, $paramsConfig, $user_id, $debug=false) {
 
 		$db = JFactory::getDBO();
 
@@ -455,7 +495,7 @@ class plgUserJoomla extends JPlugin
 	/*
 	 * ctrl se l'utente ha delle richieste di pagamento
 	*/
-	private function _hasRequestPayments($organization_id, $user_id, $debug=false) {
+	private function _hasRequestPayments($organization_id, $paramsConfig, $user_id, $debug=false) {
 
 		$db = JFactory::getDBO();
 
@@ -495,7 +535,7 @@ class plgUserJoomla extends JPlugin
 	/*
 	 * ctrl se l'utente promozioni type GAS-USERS
 	*/
-	private function _hasGasUserPromotions($organization_id, $debug=false) {
+	private function _hasGasUserPromotions($organization_id, $paramsConfig, $debug=false) {
 
 		$db = JFactory::getDBO();
 
