@@ -1436,7 +1436,7 @@ class DeliveriesController extends AppController {
 	                        echo "</pre>";
 	                }
 	
-	                $this->delivery_id = $this->Delivery->getLastInsertId();		
+	                $this->delivery_id = $this->Delivery->getLastInsertID();		
 	                $this->myRedirect(Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Deliveries&action=index&delivery_id=' . $this->delivery_id);
 	              }
 	              else

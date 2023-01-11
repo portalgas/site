@@ -21,6 +21,7 @@
 			<th></th>
 			<th colspan="2">Ricorrenza</th>
 			<th><?php echo __('Created'); ?></th>
+			<th><?php echo __('Delivery'); ?> creata</th>
 			<th>Utente</th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
@@ -78,6 +79,10 @@
 	 
 		echo '</td>';
 		echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['LoopsDelivery']['created']).'</td>';
+		echo '<td>';
+		if(!empty($result['Delivery']))
+			echo $this->Html->link($result['Delivery']['luogoData'], ['controller' => 'deliveries', 'action' => 'edit', null, 'delivery_id='.$result['Delivery']['id']]);
+		echo '</td>';
 		echo '<td>'.$result['User']['name'].'</td>';
 		if($isRoot) {
 			echo '<td class="actions-table-img-3">';

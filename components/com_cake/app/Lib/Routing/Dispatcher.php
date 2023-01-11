@@ -190,7 +190,7 @@ class Dispatcher implements CakeEventListener {
 	protected function _invoke(Controller $controller, CakeRequest $request) {
 		$controller->constructClasses();
 		$controller->startupProcess();
-
+		
 		$response = $controller->response;
 		$render = true;
 		$result = $controller->invokeAction($request);
@@ -408,7 +408,6 @@ class Dispatcher implements CakeEventListener {
 			echo '</table>';
 		}
 		
-		
 		//exit;
 	
 		/*
@@ -568,7 +567,6 @@ class Dispatcher implements CakeEventListener {
 
 		return $isValide;
 	}
-	
 	/*
 	 * fractis custom END
 	 */	

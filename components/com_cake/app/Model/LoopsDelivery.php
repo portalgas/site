@@ -383,10 +383,12 @@ class LoopsDelivery extends AppModel {
 
         self::d(['Nuova consegna', $row], $debug);
 
+		$delivery_id = 0;
         if($create) {
 	        $Delivery->create();
 	        $saveResults = $Delivery->save($row);
 	        if ($saveResults) {
+				$delivery_id = $Delivery->getLastInsertID();		
 	            echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " creata";
 	        } else {
 	            echo "\r\n consegna per il " . $row['Delivery']['data'] . " a " . $row['Delivery']['luogo'] . " NON creata";
@@ -414,6 +416,7 @@ class LoopsDelivery extends AppModel {
         $row1['LoopsDelivery']['organization_id'] = $user->organization['Organization']['id'];
         $row1['LoopsDelivery']['data_master'] = $loopsDeliveryResults['LoopsDelivery']['data_copy'];
         $row1['LoopsDelivery']['data_master_reale'] = $loopsDeliveryResults['LoopsDelivery']['data_copy_reale'];
+		$row1['LoopsDelivery']['delivery_id'] = $delivery_id;
 
         $data_copy = $this->get_data_copy($loopsDeliveryResults['LoopsDelivery']['data_copy'], $loopsDeliveryResults, $debug);
 
@@ -426,7 +429,7 @@ class LoopsDelivery extends AppModel {
         	$this->create();
 	        $saveResults = $this->save($row1); 
 	        if ($saveResults) {
-	            echo "\r\n consegna ricorsiva creata con data $data_copy";
+	            echo "\r\n consegna ricorsiva creata (".$delivery_id.") con data $data_copy";
 	        } else {
 	            echo "\r\n consegna ricorsiva NON creata con data $data_copy";
 	        }
@@ -498,11 +501,11 @@ class LoopsDelivery extends AppModel {
 		'user_id' => array(
 			'numeric' => array(
 				'rule' => ['numeric'],
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'delivery_id' => array(
+			'numeric' => array(
+				'rule' => ['numeric'],
 			),
 		),
 		'luogo' => array(
@@ -519,13 +522,20 @@ class LoopsDelivery extends AppModel {
 		),			
 	);
 
-	public $belongsTo = array(
-		'User' => array(
+	public $belongsTo = [
+		'User' => [
 			'className' => 'User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
-	);
+		],
+		'Delivery' => [
+			'className' => 'Delivery',
+			'foreignKey' => 'delivery_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		],
+	];
 }

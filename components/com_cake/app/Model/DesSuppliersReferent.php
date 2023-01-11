@@ -181,7 +181,8 @@ class DesSuppliersReferent extends DesSuppliersReferentMultiKey {
 								   'DesSupplier.own_organization_id' => $user->organization['Organization']['id']];
 		$options['recursive'] = 1;
 		$ACLDesSuppliersResults = $DesSuppliersReferent->find('all', $options);
-		
+
+		// debug($options['conditions']);
 		$i=0;
 		foreach($ACLDesSuppliersResults as $ACLDesSuppliersResult) {
 			
