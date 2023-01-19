@@ -540,8 +540,8 @@ if(!empty($organization_id)) {
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Ricorsione  <label class='label label-success'>new</label>";
-				// $_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsOrders&action=index";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/loops_orders&a_to=/index";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsOrders&action=index";
+				// $_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/loops_orders&a_to=/index";
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Monitoraggio Ordini";
