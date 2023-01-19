@@ -39,7 +39,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			if(!empty($order['ExportRows'])) { // lo user non ha effettuato acquisti sull'ordine legato alla consegna
 				$html = '';
-				$html .= '<br />';
+				// $html .= '<br />';
 				$html .= $this->ExportDocs->suppliersOrganization($order['SuppliersOrganization']);
 				$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 			}
