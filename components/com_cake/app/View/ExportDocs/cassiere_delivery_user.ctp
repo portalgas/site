@@ -4,6 +4,7 @@
  *   Documento della consegna completa diviso per utente (per pagamento dell'utente) 
  */
 
+ $new_line=false; // workaround per togliere spazi nel pdf
 
 if($this->layout=='pdf') {
 	App::import('Vendor','xtcpdf');
@@ -29,8 +30,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	$html = '';
 	$html = $this->ExportDocs->delivery($result['Delivery']);
-	$html .= '<hr />';
-	$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+	// $html .= '<hr />';
+	$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 	
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
 
@@ -40,7 +41,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html = '';
 				$html .= '<br />';
 				$html .= $this->ExportDocs->suppliersOrganization($order['SuppliersOrganization']);
-				$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+				$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 			}
 
 
@@ -52,7 +53,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$rows = current(array_values($rows));
 
 				foreach ($rows as $typeRow => $cols) {
-						
+
 					switch ($typeRow) {
 						case 'TRGROUP':
 						
@@ -64,7 +65,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$colspan = '4';
 							
 							$html .= '<br />';
-							$html .= '	<table cellpadding="0" cellspacing="0">';
+							$html .= '	<table cellpadding="0" cellspacing="0" border="0">';
 							$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 							$html .= '<tr>';
 							$html .= '<td colspan="'.$colspan.'" style="text-align:center;">';
@@ -72,7 +73,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 							if($user_avatar=='Y')
 								$html .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
-							
+
 							$html .= $cols['LABEL'];
 							
 							if($user_phone=='Y')
@@ -171,24 +172,24 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							
 			} // end foreach ($exportRows as $rows)
 			
-			$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+			$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 
 			if(!empty($order['ExportRows'])) { // lo user non ha effettuato acquisti sull'ordine legato alla consegna
 				$html = '';
 				$html = $this->ExportDocs->suppliersOrganizationsReferent($order['SuppliersOrganizationsReferent']);
-				$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+				$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 			}
 			
 		}  // end foreach($result['Delivery']['Order'] as $numOrder => $order)
 			
 		$html = '';
 		$html = $output->getLegenda();
-		$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+		$output->writeHTML($css.$html, $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 		
 	}
 	else {
 		$html = $this->ExportDocs->suppliersOrganization($result['Delivery']['Order'][0]['SuppliersOrganization']);
-		$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+		$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 		
 		$html = '<div class="h4PdfNotFound">'.__('export_docs_not_found').'</div>';
 		$output->writeHTMLCell(0,0,15,40, $css.$html, $border=0, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
@@ -314,8 +315,9 @@ if($importo_completo_all_orders>0) {
 			$html .= '<br />'.sprintf(Configure::read('label_payment_pos'), $summaryDeliveriesPosResults['SummaryDeliveriesPos']['importo_e']);		
 		}
 	}
-	$html .= '</div><br />';
+	$html .= '</div>';
 	
+	$html .= '<div class="h4Pdf">';
 	if(!empty($organizationResults['Organization']['banca_iban']))
 		$html .= 'IBAN:&nbsp;'.$organizationResults['Organization']['banca_iban'].'<br />';
 	
@@ -326,9 +328,11 @@ if($importo_completo_all_orders>0) {
 	if(!empty($organizationResults['Organization']['cf']))
 		$html .= 'Codice Fiscale:&nbsp;'.$organizationResults['Organization']['cf'].'&nbsp;-&nbsp;';
 	if(!empty($organizationResults['Organization']['piva']))
-		$html .= 'Partita IVA:&nbsp;'.$organizationResults['Organization']['piva'].'<br />';
+		$html .= 'Partita IVA:&nbsp;'.$organizationResults['Organization']['piva'];
 	$html .= '</div>';
-	$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
+
+	$html .= '</div>';
+	$output->writeHTML($css.$html, $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 }
 
 

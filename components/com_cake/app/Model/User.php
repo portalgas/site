@@ -526,7 +526,8 @@ class User extends AppModel {
  					and ArticlesOrder.stato != 'N'
  					and ArticlesOrder.order_id = Cart.order_id
  					and ArticlesOrder.article_id = Cart.article_id
- 					and  Cart.user_id = User.id 
+ 					and Cart.user_id = User.id 
+					and User.block = 0 
 	 				and ArticlesOrder.order_id = `Order`.id
 					and `Order`.delivery_id = Delivery.id ";
  		if(isset($conditions['Delivery.id']))   $sql .= " and Delivery.id = ".$conditions['Delivery.id'];
@@ -559,6 +560,7 @@ class User extends AppModel {
  							AND SuppliersOrganizationsReferent.user_id = User.id
  							AND SuppliersOrganizationsReferent.supplier_organization_id = SuppliersOrganization.id
  							AND User.id = ".$result['User']['id']."
+							and User.block = 0
 						ORDER BY SuppliersOrganization.name ";
 	 			self::d($sql, $debug);
 	 			$supplierResults = $this->query($sql);
@@ -617,7 +619,8 @@ class User extends AppModel {
  					and ArticlesOrder.stato != 'N'
  					and ArticlesOrder.order_id = Cart.order_id
  					and ArticlesOrder.article_id = Cart.article_id
- 					and  Cart.user_id = User.id 
+ 					and  Cart.user_id = User.id
+					and User.block = 0 
 	 				and ArticlesOrder.order_id = `Order`.id
 					and `Order`.delivery_id = Delivery.id 
 					and `Order`.supplier_organization_id = SuppliersOrganization.id 
@@ -651,6 +654,7 @@ class User extends AppModel {
  							AND SuppliersOrganizationsReferent.user_id = User.id
  							AND SuppliersOrganizationsReferent.supplier_organization_id = SuppliersOrganization.id
  							AND User.id = ".$result['User']['id']."
+							and User.block = 0
 						ORDER BY SuppliersOrganization.name ";
 	 			self::d($sql, $debug);
 	 			$supplierResults = $this->query($sql);

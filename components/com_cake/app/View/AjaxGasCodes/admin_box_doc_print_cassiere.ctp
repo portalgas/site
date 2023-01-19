@@ -54,6 +54,7 @@ $(document).ready(function() {
 					
 						var user_id = this.value;
 		    			if(user_id!='' && user_id!='ALL') {
+						// if(user_id==827) {		
 		    				url = '/administrator/index.php?option=com_cake&controller=ExportDocs&action=exportToCassiere&delivery_id='+delivery_id+'&user_id='+user_id+'&doc_options='+doc_options+'&doc_formato='+doc_formato+'&format=notmpl';
 		    				/* console.log(url); */ 
 		    				window.open(url,'win'+user_id,'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=300,height=200,directories=no,location=no'); 

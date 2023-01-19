@@ -523,6 +523,8 @@ class ExportDocsController extends AppController {
 
     public function admin_exportToCassiereAllDelivery($delivery_id = 0, $doc_options = null, $doc_formato = null) {
 
+        $debug = false;
+        
         if ($delivery_id == 0 || $doc_options == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -622,7 +624,6 @@ class ExportDocsController extends AppController {
      * $doc_options = to-delivery-cassiere-users-all-split / to-delivery-cassiere-user-one
      * $doc_formato = PREVIEW, PDF
      */
-
     public function admin_exportToCassiere($delivery_id = 0, $user_id = 0, $doc_options = null, $doc_formato = null) {
 
         if ($delivery_id == 0 || $doc_options == null || $doc_formato == null) {
