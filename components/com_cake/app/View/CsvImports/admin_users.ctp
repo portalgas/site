@@ -17,6 +17,7 @@ echo $this->Form->input('deliminatore', array('label' => 'Delimitatore', 'id' =>
 echo $this->Form->input('Document.file1', array(
 	'between' => '<br />',
 	'type' => 'file',
+	'accept' => '.csv',
 	'label' => 'Carica il file CSV da importare'
 ));
 

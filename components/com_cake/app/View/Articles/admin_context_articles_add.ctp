@@ -166,6 +166,7 @@ echo '<div class="tab-pane fade" id="tabs-3">';
 		echo $this->Form->input('Document.img1', [
 			'between' => '<br />',
 			'type' => 'file',
+			'accept' => '.jpg, .jpeg, .gif, .png',
 			 'label' => 'Carica una nuova immagine', 'tabindex'=>($i+1)
 		]);
 			

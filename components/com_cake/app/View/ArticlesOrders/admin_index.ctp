@@ -482,7 +482,7 @@ $(document).ready(function() {
 		}
 		
 		if(articleJustInCart>0) {
-			if(!confirm("Alcuni articoli che hai scelto di cancellare sono già stati acquistati:\nconfermi la cancellazione degli articoli e gli acquisti associati?"))	return false;
+			if(!confirm("Alcuni articoli che hai scelto di cancellare sono già stati acquistati:\nconfermi la cancellazione dall'ordine degli articoli e degli acquisti associati?"))	return false;
 		}
 		
 		if(article_order_key_selected!='') {

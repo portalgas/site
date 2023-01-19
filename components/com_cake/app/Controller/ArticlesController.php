@@ -1716,7 +1716,7 @@ class ArticlesController extends AppController {
 	}
 	
 	private function _upload_img($article_id, $article_organization_id, $debug=false) {
-		
+	
 		self::d($this->request->data['Document'], $debug);
 		
 		$esito = true;
@@ -1768,6 +1768,7 @@ class ArticlesController extends AppController {
 			}
 
 			$fileNewName = $article_id.'.'.$ext;
+			$fileNewName = uniqid($article_id.'-').'.'.$ext;
 			self::d("path_upload ".$path_upload, $debug);
 			self::d("ext ".$ext, $debug);
 			self::d("fileNewName ".$fileNewName, $debug);

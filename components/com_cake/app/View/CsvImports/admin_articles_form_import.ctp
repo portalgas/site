@@ -30,6 +30,7 @@ echo $this->Form->input('supplier_organization_id', $options);
 echo $this->Form->input('Document.file1', [
 	'between' => '<br />',
 	'type' => 'file',
+	'accept' => '.csv',
 	'label' => 'Carica il file CSV da importare']);
 
 echo $this->element('legendaCsvExportImport');

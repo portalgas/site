@@ -58,7 +58,8 @@ else
 						
 					echo $this->Form->input('nota',array('tabindex'=>($i+1), 'class' => 'noeditor','cols' => '75', 'required' => 'false'));
 					
-					echo $this->Form->drawFormCheckbox('Article', 'article_type_id', array('options' => $ArticlesTypeResults, 'selected'=> $this->request->data['ArticlesType'], 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false'));						
+					echo $this->Form->drawFormCheckbox('Article', 'article_type_id', array('options' => $ArticlesTypeResults, 'selected'=> $this->request->data['ArticlesType'], 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false'));
+						
 					/*
 					 * stato
 					 */
@@ -137,6 +138,7 @@ else
 						echo $this->Form->input('Document.img1', array(
 						    'between' => '<br />',
 						    'type' => 'file',
+							'accept' => '.jpg, .jpeg, .gif, .png',
 						     'label' => 'Carica una nuova immagine', 'tabindex'=>($i+1)
 						));
 						

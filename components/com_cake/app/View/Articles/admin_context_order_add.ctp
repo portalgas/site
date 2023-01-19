@@ -44,9 +44,13 @@ echo $this->Form->create('Article',array('id'=>'formGas','enctype' => 'multipart
 						
 					echo $this->Form->input('nota',array('tabindex'=>($i+1),  'class' => 'noeditor', 'cols' => '75', 'required' => 'false'));
 
-					echo $this->Form->drawFormCheckbox('Article', 'article_type_id', array('options' => $ArticlesTypeResults, 'selected'=> '', 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false'));						
-					/*					 * stato, un articolo se associato ad un ordine puo' solo essere a Y					*/
-					echo $this->Form->hidden('stato', array('value' => 'Y'));			
+					echo $this->Form->drawFormCheckbox('Article', 'article_type_id', array('options' => $ArticlesTypeResults, 'selected'=> '', 'label'=>__('Type'), 'tabindex'=>($i+1), 'required'=>'false'));
+						
+					/*
+					 * stato, un articolo se associato ad un ordine puo' solo essere a Y
+					*/
+					echo $this->Form->hidden('stato', array('value' => 'Y'));
+			
 			echo '</div>';
 			echo '<div class="tab-pane fade" id="tabs-1">';
 			
@@ -108,6 +112,7 @@ echo $this->Form->create('Article',array('id'=>'formGas','enctype' => 'multipart
 					echo $this->Form->input('Document.img1', array(
 					    'between' => '<br />',
 					    'type' => 'file',
+						'accept' => '.jpg, .jpeg, .gif, .png',
 					     'label' => 'Carica una nuova immagine', 'tabindex'=>($i+1)
 					));
 						

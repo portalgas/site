@@ -156,6 +156,7 @@ else
 						echo $this->Form->input('Document.img1', array(
 						    'between' => '<br />',
 						    'type' => 'file',
+							'accept' => '.jpg, .jpeg, .gif, .png',
 						     'label' => 'Carica una nuova immagine', 'tabindex'=>($i+1)
 						));
 						

@@ -1,7 +1,12 @@
 <?php
 echo $this->Html->script('indexRows.min');
 
-if($order['Order']['order_state_id'] >= Configure::read('OPEN')) {	$label = __('Edit ArticlesOrder OPEN');}else {	$label = __('Edit ArticlesOrder OPEN-NEXT');}
+if($order['Order']['order_state_id'] >= Configure::read('OPEN')) {
+	$label = __('Edit ArticlesOrder OPEN');
+}
+else {
+	$label = __('Edit ArticlesOrder OPEN-NEXT');
+}
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
@@ -322,7 +327,7 @@ $(document).ready(function() {
 		}
 		
 		if(articleJustInCart>0) {
-			if(!confirm("Alcuni articoli che hai scelto di cancellare sono già stati acquistati:\nconfermi la cancellazione degli articoli e gli acquisti associati?"))	return false;
+			if(!confirm("Alcuni articoli che hai scelto di cancellare sono già stati acquistati:\nconfermi la cancellazione dall'ordine degli articoli e degli acquisti associati?"))	return false;
 		}
 		
 		if(article_order_key_selected!='') {

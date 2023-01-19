@@ -1940,7 +1940,7 @@ class AjaxController extends AppController {
 	 * des_order_id vale 9999 in Order:view / view_public cosi' salto il ctrl
 	 */
     private function _suppliersOrganizationDetails($supplier_organization_id, $des_order_id, $debug = false) {
-		
+        // $debug = true;	
         $results = [];
 
         if (!empty($supplier_organization_id)) {
@@ -1982,7 +1982,7 @@ class AjaxController extends AppController {
 					/*
 					 * non ho scelto il DES
 					 */ 
-					if(empty($this->user->des_id))	{
+					if(empty($this->user->des_id)) {
 							
 						self::d('Non ho ancora scelto il mio DES', $debug);
 			            
@@ -2020,15 +2020,13 @@ class AjaxController extends AppController {
 				            $desSupplierResults = $DesSupplier->find('first', $options);
 							if(!empty($desSupplierResults)) {
 								$isOwnGasTitolareDes = true;
-								self::d('il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS e\' titolare del produttore', $debug);
+								self::d('il GAS e\' associato a + DES => NON posso ricavare des_id ma il suo GAS e\' titolare del produttore', $debug);
 							}
 							else {
-								self::d('il GAS e\' associato ad + DES => NON posso ricavare des_id ma il suo GAS NON e\' titolare del produttore', $debug);
-							
-							}
-							
+								self::d('il GAS e\' associato a + DES => NON posso ricavare des_id ma il suo GAS NON e\' titolare del produttore', $debug);
+							}	
 						}
-					}
+					} // end if(empty($this->user->des_id)) 
 					
 					
 					if(!empty($this->user->des_id))	{
