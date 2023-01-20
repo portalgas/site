@@ -6,9 +6,8 @@ class AjaxController extends AppController {
     public $components = ['ActionsDesOrder'];
     
     public function beforeFilter() {
-        $this->ctrlHttpReferer();
-
         parent::beforeFilter();
+        // if($this->_scope!='neo') $this->ctrlHttpReferer($considera_IE='N');
     }
 
     /*

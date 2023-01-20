@@ -15,9 +15,9 @@ class ExportDocsController extends AppController {
     
     public function beforeFilter() {
 
-        // if($this->_scope!='neo') $this->ctrlHttpReferer($considera_IE='N');
-
         parent::beforeFilter();
+
+        // if($this->_scope!='neo') $this->ctrlHttpReferer($considera_IE='N');
 
         /* ctrl ACL */
         if (in_array($this->action, ['admin_exportToReferent', 'admin_exportToArticlesWeight'])) {
