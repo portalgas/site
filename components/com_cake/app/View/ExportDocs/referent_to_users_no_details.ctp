@@ -43,15 +43,21 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			
 			$html = '';
-			$html .= '	<table cellpadding="0" cellspacing="0">';			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella			$html .= '		<tr>';				
+			$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
+			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+			$html .= '		<tr>';
+				
 			if($trasportAndCost=='Y') {
 				$html .= '			<th colspan="2" width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH60()+$output->getCELLWIDTH70()).'">'.__('Name').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';				
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';				
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
 			} 
-			else {				$html .= '			<th colspan="2" width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'">'.__('Name').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';				
+			else {
+				$html .= '			<th colspan="2" width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'">'.__('Name').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';				
 			} // end if($trasportAndCost=='Y')
 			$html .= '		</tr>';				
 			$html .= '	</thead><tbody>';
@@ -59,7 +65,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			foreach ($order['ExportRows'] as $rows) {
 			
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));				
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
 				$html .= '<tr>';
 			
 				foreach ($rows as $typeRow => $cols) {
@@ -163,7 +171,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 						break;
 						case 'TRDATABIS':
-							if($trasportAndCost=='Y') 								$colspan = '5';							else								$colspan = '3';
+							if($trasportAndCost=='Y') 
+								$colspan = '5';
+							else
+								$colspan = '3';
 							$html .= '<td width="'.$output->getCELLWIDTH20().'"></td>';
 							$html .= '<td colspan="'.$colspan.'" width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH300()+$output->getCELLWIDTH10()).'">NOTA: '.$cols['NOTA'].'</td>';
 						break;

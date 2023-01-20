@@ -54,7 +54,7 @@ foreach($results as $deliveryResults) {
 
 				
 				$html = '';	
-				$html = '	<table cellpadding="0" cellspacing="0">';						
+				$html = '	<table class="table table-hover" cellpadding="0" cellspacing="0">';						
 				foreach ($order['ExportRows'] as $rows) {
 					
 					$user_id_local = current(array_keys($rows));
@@ -221,7 +221,7 @@ foreach($results as $deliveryResults) {
 
 
                 $html = '';
-                $html .= '	<table cellpadding="0" cellspacing="0">';
+                $html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
                 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
                 $html .= '		<tr>';
                // $html .= '			<th width="' . $output->getCELLWIDTH20() . '">' . __('N') . '</th>';

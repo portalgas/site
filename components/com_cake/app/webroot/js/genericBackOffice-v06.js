@@ -72,22 +72,22 @@ My.prototype = {
 		})
 		
 		/*
-		 * gestione btm con menu profilato (ex ordini)
+		 * gestione btn con menu profilato (ex ordini)
 		 */
 		$('.btn-menu').click(function(event) {
 		
 			event.preventDefault();
 			
-		    var url = $(this).attr("data-attr-url");
+		    let url = $(this).attr("data-attr-url");
 		
-			var header = $(this).attr("data-attr-header");
-			var size = $(this).attr("data-attr-size");
+			let header = $(this).attr("data-attr-header");
+			let size = $(this).attr("data-attr-size");
 			
-			var opts = new Array();
+			let opts = new Array();
 			opts = {"header": header , "size": size};
 		
 			if (typeof url == 'undefined' || url == '') 
-				console.log("error - url undefined!");
+				console.error("error - url undefined!");
 			else
 				apriPopUpBootstrap(url, opts);
 				

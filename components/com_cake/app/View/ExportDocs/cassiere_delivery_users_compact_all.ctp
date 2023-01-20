@@ -35,7 +35,7 @@ $html = $this->ExportDocs->delivery($resultDelivery['Delivery']);
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 
 $html = '';		
-$html = '<table cellpadding="0" cellspacing="0">';	
+$html = '<table class="table table-hover" cellpadding="0" cellspacing="0">';	
 $html .= '<thead><tr>';
 if($trasportAndCost=='Y') {
 	$html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH30().'">'.__('qta').'</th>';

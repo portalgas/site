@@ -23,7 +23,7 @@ if($this->layout=='ajax') {
 }
 	
 $html = '';
-$html .= '	<table cellpadding="0" cellspacing="0">';
+$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '		<tr>';
 $html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -45,7 +45,10 @@ foreach($results as $numUser => $result) {
 	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
 	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['email'].'</td>';
 		
-	$html .= '<td width="'.$output->getCELLWIDTH80().'">';	if(!empty($result['Profile']['phone'])) $html .= $result['Profile']['phone'].'<br />';	if(!empty($result['Profile']['phone2'])) $html .= $result['Profile']['phone2'];	$html .= '</td>';
+	$html .= '<td width="'.$output->getCELLWIDTH80().'">';
+	if(!empty($result['Profile']['phone'])) $html .= $result['Profile']['phone'].'<br />';
+	if(!empty($result['Profile']['phone2'])) $html .= $result['Profile']['phone2'];
+	$html .= '</td>';
 	
 	$html .= '<td width="'.$output->getCELLWIDTH80().'">';
 	if(!empty($result['Profile']['address'])) $html .= $result['Profile']['address'];
@@ -53,7 +56,18 @@ foreach($results as $numUser => $result) {
 
 	$html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">'.$result['User']['cart_qta_tot'].'</td>';
 
-	if(isset($result['SuppliersOrganization'])) {		$html .= '<td width="'.$output->getCELLWIDTH150().'">';		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) {			$html .= $suppliersOrganization['name'].' ';			$html .= $result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];			if($numSuppliersOrganization < (count($result['SuppliersOrganization'])-1)) $html .= '<br />';		}		$html .= '</td>';	}	else		$html .= '<td width="'.$output->getCELLWIDTH150().'"></td>';	
+	if(isset($result['SuppliersOrganization'])) {
+		$html .= '<td width="'.$output->getCELLWIDTH150().'">';
+		foreach($result['SuppliersOrganization'] as $numSuppliersOrganization => $suppliersOrganization) {
+			$html .= $suppliersOrganization['name'].' ';
+			$html .= $result['SuppliersOrganizationsReferent'][$numSuppliersOrganization]['type'];
+			if($numSuppliersOrganization < (count($result['SuppliersOrganization'])-1)) $html .= '<br />';
+		}
+		$html .= '</td>';
+	}
+	else
+		$html .= '<td width="'.$output->getCELLWIDTH150().'"></td>';
+	
 	$html .= '</tr>';	
 }
 $html .= '</tbody></table>';

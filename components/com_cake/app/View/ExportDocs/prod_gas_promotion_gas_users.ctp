@@ -38,7 +38,7 @@ if (!empty($results)) {
 
         if(!empty($prodGasPromotionsOrganization['Cart'])) {
 
-			$html .= '	<table cellpadding="0" cellspacing="0">';
+			$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 			$html .= '		<tr>';
 			

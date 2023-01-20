@@ -21,7 +21,7 @@ $html = '';
 
 if (!empty($results['Order'])) {
 
-		$html .= '<table cellpadding="0" cellspacing="0">';
+		$html .= '<table class="table table-hover" cellpadding="0" cellspacing="0">';
 		$html .= '<tbody>'; 
 
 		$tot_importo_delivery = 0;

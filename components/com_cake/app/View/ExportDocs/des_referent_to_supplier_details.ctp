@@ -24,7 +24,7 @@ $html = '';
 if(isset($desOrdersResults['Supplier']))
 	$html = $this->ExportDocs->desSupplier($desOrdersResults['Supplier']);
 	
-$html .= '	<table cellpadding="0" cellspacing="0">';
+$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '		<tr>';
 $html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -153,7 +153,7 @@ $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true,
 				$html = '';
 				$html .= '<h2>Indicazioni per la consegna</h2>';
 				
-				$html .= '<table cellpadding="0" cellspacing="0">';
+				$html .= '<table class="table table-hover" cellpadding="0" cellspacing="0">';
 				$html .= '<thead><tr>';
 				$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('G.A.S.').'</th>';
 				$html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'">'.__('Delivery').'</th>';

@@ -41,7 +41,7 @@ if (isset($results['Delivery']))
 
 
                 $html = '';
-                $html .= '	<table cellpadding="0" cellspacing="0">';
+                $html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
                 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
                 $html .= '		<tr>';
                // $html .= '			<th width="' . $output->getCELLWIDTH20() . '">' . __('N') . '</th>';
@@ -133,7 +133,7 @@ if (isset($results['Delivery']))
                     $output->writeHTML($css . $html, $ln = false, $fill = false, $reseth = true, $cell = true, $align = '');
 
                     $html = '';
-                    $html .= '	<table cellpadding="0" cellspacing="0">';
+                    $html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
                     $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
                     $html .= '		<tr>';
                     //$html .= '			<th width="' . $output->getCELLWIDTH20() . '">' . __('N') . '</th>';
@@ -320,7 +320,7 @@ if (isset($results['Delivery']))
                 $msg = sprintf(__('TotaleConfirmCassiere'), number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia')) . '&nbsp;&euro;');
 
             $html = '';
-            $html .= '	<table cellpadding="0" cellspacing="0">';
+            $html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
             $html .= '	<tbody>';
             $html .= '<tr>';
             $html .= '	<td colspan="6"></td>';
@@ -364,7 +364,7 @@ if (!empty($arrayDistances)) {
         if ($percentuale == 0)
             $percentuale = 1;
 
-        $html .= '	<table cellpadding="0" cellspacing="0">';
+        $html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
         $html .= '		<tr>';
         $html .= '			<td style="border-bottom:0px solid #fff;">' . $arrayDistance['supplierName'] . ' da ' . $arrayDistance['supplierLocalita'] . ' ha percorso ' . $arrayDistance['distance'] . ' Km</td>';
         $html .= '		</tr>';

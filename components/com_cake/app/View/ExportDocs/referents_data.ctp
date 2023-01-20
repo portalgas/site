@@ -23,13 +23,16 @@ if($this->layout=='ajax') {
 }
 	
 $html = '';
-$html .= '	<table cellpadding="0" cellspacing="0">';
+$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 $html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '		<tr>';
 $html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
 $html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Suppliers').'</th>';
 $html .= '			<th width="'.$output->getCELLWIDTH80().'">'.__('Frequenza').'</th>';
-$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('Code').'</th>';$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Mail').'</th>';$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Phone').'</th>';
+$html .= '			<th width="'.$output->getCELLWIDTH50().'">'.__('Code').'</th>';
+$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
+$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Mail').'</th>';
+$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Phone').'</th>';
 $html .= '			<th width="'.$output->getCELLWIDTH80().'">'.__('Type').'</th>';
 $html .= '	</tr>';
 $html .= '	</thead><tbody>';
@@ -40,7 +43,8 @@ foreach($results as $numUser => $result) {
 	$html .= '	<td width="'.$output->getCELLWIDTH20().'">'.($numUser+1).'</td>';
 	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['SuppliersOrganization']['name'].'</td>';
 	$html .= '<td width="'.$output->getCELLWIDTH80().'">'.$result['SuppliersOrganization']['frequenza'].'</td>';
-	$html .= '<td width="'.$output->getCELLWIDTH50().'">'.$result['Profile']['codice'].'</td>';	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
+	$html .= '<td width="'.$output->getCELLWIDTH50().'">'.$result['Profile']['codice'].'</td>';
+	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['name'].'</td>';
 	$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$result['User']['email'].'</td>';	
 	$html .= '<td width="'.$output->getCELLWIDTH100().'">';
 	if(!empty($result['Profile']['phone'])) $html .= $result['Profile']['phone'].'<br />';

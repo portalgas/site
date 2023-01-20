@@ -100,3 +100,12 @@ Redirect 301 /home-gas-bioce/my-profile /home-gas-forimercato/my-profile
 Redirect 301 /home-gas-bioce/gmaps /home-gas-forimercato/gmaps
 Redirect 301 /home-gas-bioce/bookmarks-mails /home-gas-forimercato/bookmarks-mails
 Redirect 301 /home-gas-bioce/carts-history /home-gas-forimercato/carts-history
+
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(www\.)?(neo.portalgas.it|neotest.portalgas.it|neonext.portalgas.it|neo.portalgas.local)$" AccessControlAllowOrigin=$0
+    Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header merge Vary Origin
+    Header set Access-Control-Allow-Headers "*"
+    Header set Access-Control-Allow-Methods "*"
+    Header set Access-Control-Allow-Credentials true
+</IfModule>

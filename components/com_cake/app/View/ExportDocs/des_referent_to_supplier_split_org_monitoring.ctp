@@ -70,7 +70,7 @@ foreach($newResults as $resultOrg) {
 	$html .= $resultOrg['Organization']['name'];
 	$html .= '</div>';
 	
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '		<tr>';
 	$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -229,7 +229,7 @@ foreach($desOrdersResults['DesOrdersOrganizations'] as $desOrdersOrganization) {
 			   $html = '';
 			   $html .= '<h2>Indicazioni per la consegna</h2>';
 			   
-			   $html .= '<table cellpadding="0" cellspacing="0">';
+			   $html .= '<table class="table table-hover" cellpadding="0" cellspacing="0">';
 			   $html .= '<thead><tr>';
 			   $html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('G.A.S.').'</th>';
 			   $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'">'.__('Delivery').'</th>';

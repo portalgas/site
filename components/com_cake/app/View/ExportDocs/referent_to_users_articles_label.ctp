@@ -44,11 +44,13 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 			$html = '';
 			$html_header = '';
-										foreach ($order['ExportRows'] as $rows) {
+							
+			foreach ($order['ExportRows'] as $rows) {
 				
 				$user_id = current(array_keys($rows));
 				$rows = current(array_values($rows));
-				foreach ($rows as $typeRow => $cols) {
+
+				foreach ($rows as $typeRow => $cols) {
 						
 					switch ($typeRow) {
 						case 'TRGROUP':
@@ -56,9 +58,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$colspan = '6'; 
 							else
 								$colspan = '4';
-							
+							<table class="table table-hover" cellpadding="0" cellspacing="0">
 							$html_header .= '	<br /><br />';
-							$html_header .= '	<table cellpadding="0" cellspacing="0">';							$html_header .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+							$html_header .= '	<table cellpadding="0" cellspacing="0">';
+							$html_header .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 							$html_header .= '<tr>';
 							$html_header .= '<td colspan="'.$colspan.'" style="text-align:center;">';
 							$html_header .= '<h3>';
@@ -79,7 +82,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							 * estraggo il totale di un utente 
 							 */
 							foreach ($order['ExportRows'] as $rows2) {
-								$user_id2 = current(array_keys($rows2));								$rows2 = current(array_values($rows2));								foreach ($rows2 as $typeRow2 => $cols2) 
+								$user_id2 = current(array_keys($rows2));
+								$rows2 = current(array_values($rows2));
+								foreach ($rows2 as $typeRow2 => $cols2) 
 									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
 										if($trasportAndCost=='Y') {
 											$totale += $cols2['IMPORTO_COMPLETO'];
@@ -89,12 +94,29 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 											$totale += $cols2['IMPORTO'];
 											$html_header .= ' - Totale: '.$cols2['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
 										}
-									}							}
+									}
+							}
 							$html_header .= '</h3></td>';
-							$html_header .= '</tr>';								
-							$html_header .= '		<tr>';							if($trasportAndCost=='Y') {								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
-								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';							}							else {								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
-								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'">'.__('PrezzoUnita').'</th>';								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('Importo').'</th>';							} // end if($trasportAndCost=='Y')							$html_header .= '		</tr>';							$html_header .= '	</thead><tbody>';															
+							$html_header .= '</tr>';
+								
+							$html_header .= '		<tr>';
+							if($trasportAndCost=='Y') {
+								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
+								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
+							}
+							else {
+								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
+								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'">'.__('PrezzoUnita').'</th>';
+								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('Importo').'</th>';
+							} // end if($trasportAndCost=='Y')
+							$html_header .= '		</tr>';
+							$html_header .= '	</thead><tbody>';
+															
 						break;
 						case 'TRSUBTOT':
 							/*
@@ -135,18 +157,27 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
 								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'" ';
 								if($cols['DELETE_TO_REFERENT']=='Y') $html .= ' style="text-decoration: line-through;"';
-								$html .= '>'.$name.'</td>';								$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_E'].'</td>';								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">';
+								$html .= '>'.$name.'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'">'.$cols['PREZZO_E'].'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">';
 								if($cols['DELETE_TO_REFERENT']=='Y') 
 									$html .= '0,00&nbsp;&euro;';
 								else
 									$html .= $cols['IMPORTO_E'];
 								$html .= $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']);
-								$html .= '</td>';								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';							}							else {																$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
-								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'" ';
+								$html .= '</td>';
+								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'"  colspan="2" style="text-align:right;">&nbsp;</td>';
+							}
+							else {								
+								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
+								$html<table class="table table-hover" cellpadding="0" cellspacing="0">H200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'" ';
 								if($cols['DELETE_TO_REFERENT']=='Y') $html .= ' style="text-decoration: line-through;"';
-								$html .= '>'.$name.'</td>';								$html .= '<td width="'.$output->getCELLWIDTH90().'">'.$cols['PREZZO_E'].'</td>';								$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+								$html .= '>'.$name.'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH90().'">'.$cols['PREZZO_E'].'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 							} // end if($trasportAndCost=='Y')
-							$html .= '</tr>';						break;
+							$html .= '</tr>';
+						break;
 						case 'TRDATABIS':
 							$html .= '<tr>';
 							$html .= '<td colspan="'.$colspan.'">NOTA: '.$cols['NOTA'].'</td>';

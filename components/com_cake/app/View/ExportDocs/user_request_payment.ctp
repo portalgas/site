@@ -62,7 +62,7 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 	
 				
 				$html = '';
-				$html .= '	<table cellpadding="0" cellspacing="0">';
+				$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 				$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 				$html .= '		<tr>';
 				if(($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00') ||
@@ -239,7 +239,7 @@ if(!empty($results['RequestPaymentsStoreroom'])) {
 	$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '		<tr>';
 	$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -285,7 +285,7 @@ if(!empty($results['RequestPaymentsGeneric'])) {
 	$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '		<tr>';
 	$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -322,7 +322,7 @@ if(!empty($results['RequestPaymentsGeneric'])) {
  *	 importo_richiesto
  */
 $html = '';
-$html .= '	<table cellpadding="0" cellspacing="0">';
+$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 $html .= '	<tbody>'; 
 
 $delta_cassa = (-1 * (floatval($results['SummaryPayment']['importo_dovuto']) - floatval($results['SummaryPayment']['importo_richiesto'])));

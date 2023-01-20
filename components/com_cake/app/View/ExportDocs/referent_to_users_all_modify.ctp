@@ -43,7 +43,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			
 			$html = '';
-			$html .= '	<table cellpadding="0" cellspacing="0">';
+			$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 			$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 			$html .= '		<tr>';
 			$html .= '			<th rowspan="2" width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -72,7 +72,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			foreach ($order['ExportRows'] as $rows) {
 			
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));				
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
 				$html .= '<tr>';
 			
 				foreach ($rows as $typeRow => $cols) {

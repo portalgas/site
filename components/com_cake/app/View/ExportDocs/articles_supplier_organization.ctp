@@ -37,7 +37,7 @@ $output->writeHTML($css.$html , $ln=false, $fill=false, $reseth=true, $cell=true
 if(!empty($results)) {
 	
 $html = '';
-$html .= '	<table cellpadding="0" cellspacing="0">';
+$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 $html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 $html .= '<tr>';
 $html .= '<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -97,10 +97,12 @@ else  {
 		}
 	}
 	else {
-		if($isReferenteSupplierOrganization) { // ho il campo STATO in +			if($filterType=='Y')
+		if($isReferenteSupplierOrganization) { // ho il campo STATO in +
+			if($filterType=='Y')
 				$html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH40()).'">'.__('Name').'</th>';
 			else
-				$html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH40()+$output->getCELLWIDTH100()).'">'.__('Name').'</th>';		}
+				$html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH40()+$output->getCELLWIDTH100()).'">'.__('Name').'</th>';
+		}
 		else {
 			if($filterType=='Y')
 				$html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH80()).'">'.__('Name').'</th>';
@@ -113,7 +115,8 @@ $html .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH50().'
 $html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
 $html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('Prezzo/UM').'</th>';
 
-if($isReferenteSupplierOrganization)	$html .= '			<th width="'.$output->getCELLWIDTH40().'">Visibile</th>';
+if($isReferenteSupplierOrganization)
+	$html .= '			<th width="'.$output->getCELLWIDTH40().'">Visibile</th>';
 
 $html .= '	</tr>';
 $html .= '	</thead><tbody>';
@@ -129,12 +132,17 @@ foreach($results as $numArticle => $result) {
 	$html .= '<tr>';
 	$html .= '	<td width="'.$output->getCELLWIDTH20().'">'.($numArticle+1).'</td>';
 	$html .= '	<td width="'.$output->getCELLWIDTH30().'">';
-	if($result['Article']['bio']=='Y') $html .= 'Bio';	$html .= '</td>';
+	if($result['Article']['bio']=='Y') $html .= 'Bio';
+	$html .= '</td>';
 
 	if($filterType=='Y') {
 		$html .= ' <td width="'.$output->getCELLWIDTH100().'">';
-		if(!empty($result['ArticlesType'])) {			foreach($result['ArticlesType'] as $articlesType)				$html .= $articlesType['ArticlesType']['descrizione'].'<br />';		}
-		$html .= '</td>';	}
+		if(!empty($result['ArticlesType'])) {
+			foreach($result['ArticlesType'] as $articlesType)
+				$html .= $articlesType['ArticlesType']['descrizione'].'<br />';
+		}
+		$html .= '</td>';
+	}
 		
 	if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y' && $filterCategory=='Y') {
 		

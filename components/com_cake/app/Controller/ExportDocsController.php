@@ -12,10 +12,10 @@ class ExportDocsController extends AppController {
                         'ExportDocs',
                         'PhpExcel'];
     private $tmp_user;
-
+    
     public function beforeFilter() {
 
-        // $this->ctrlHttpReferer($considera_IE='N');
+        // if($this->_scope!='neo') $this->ctrlHttpReferer($considera_IE='N');
 
         parent::beforeFilter();
 
@@ -157,7 +157,7 @@ class ExportDocsController extends AppController {
         self::d('h '.$h, $debug);
         self::d('i '.$i, $debug);
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         if ($doc_options == null || $doc_formato == null) {
             $this->Session->setFlash(__('msg_error_params'));
@@ -531,7 +531,7 @@ class ExportDocsController extends AppController {
         }
 
         $users = [];
-        // $this->ctrlHttpReferer();
+        // if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 
@@ -631,7 +631,7 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 
@@ -709,7 +709,7 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         if(!$debug) Configure::write('debug', 0);
 
@@ -859,7 +859,7 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 
@@ -902,7 +902,7 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 
@@ -949,7 +949,7 @@ class ExportDocsController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 
@@ -1111,7 +1111,7 @@ class ExportDocsController extends AppController {
 
     public function admin_exportToTesoriere($delivery_id = 0, $order_id_selected = null, $doc_options = null, $doc_formato = null) {
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         /* ctrl ACL */
         $acl_continue = false;
@@ -1253,7 +1253,7 @@ class ExportDocsController extends AppController {
 
     public function admin_tesoriere_request_payment($request_payment_id = 0, $doc_formato = null) {
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         $this->_tesoriere_request_payment($request_payment_id, $doc_formato);
 
@@ -1269,7 +1269,7 @@ class ExportDocsController extends AppController {
 
         $debug=false;
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         /* ctrl ACL */
         if ($this->user->organization['Template']['payToDelivery'] != 'POST' &&
@@ -1369,7 +1369,7 @@ class ExportDocsController extends AppController {
 
         $debug=false;
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         /* ctrl ACL */
         if ($this->user->organization['Template']['payToDelivery'] != 'POST' &&
@@ -1532,7 +1532,7 @@ class ExportDocsController extends AppController {
 
     public function admin_tesoriere_request_payment_pagamenti($request_payment_id = 0, $doc_formato = null) {
         
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         $this->_tesoriere_request_payment($request_payment_id, $doc_formato);
         
@@ -3499,7 +3499,7 @@ class ExportDocsController extends AppController {
     
     public function admin_exportToArticlesWeight($delivery_id = 0, $order_id = 0, $doc_options = null, $doc_formato = null) {
 
-        $this->ctrlHttpReferer();
+        if($this->_scope!='neo') $this->ctrlHttpReferer();
 
         Configure::write('debug', 0);
 

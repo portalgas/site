@@ -38,6 +38,8 @@ class AppController extends Controller {
     public $des_supplier_id;
     public $des_id;
 
+    protected $_scope = 'portalgas'; // per le chiamata da neo vale neo
+
 	public static function d($var, $debug=false) { // idem in AppController / AppModel / AppHelper
 		if($debug) {		
 			if(is_array ($var)) {
@@ -81,6 +83,8 @@ class AppController extends Controller {
 		setlocale(LC_ALL,  'it_IT', 'it', 'it_IT.utf8', 'it_IT.iso88591');
 		// self::d(localeconv());
 		
+        (isset($this->request->pass['scope'])) ? $this->_scope =  $this->request->pass['scope']: $this->_scope = 'portalgas';
+
 		/*
 		 * gestione sito offline
 		 */

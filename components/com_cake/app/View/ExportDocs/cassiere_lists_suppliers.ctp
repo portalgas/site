@@ -26,7 +26,7 @@ $this->App->d($results);
 if(!empty($results)) {
 	
 	$html = '';
-	$html .= '<table cellpadding="0" cellspacing="0">';
+	$html .= '<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '<tbody>'; 
 
 	$html .= '<tr>';

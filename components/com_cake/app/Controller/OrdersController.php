@@ -16,7 +16,7 @@ class OrdersController extends AppController {
 		else	
 		if(isset($this->request->params['pass']['order_id']))
 			$this->order_id = $this->request->params['pass']['order_id'];
-		
+			
    		/* ctrl ACL */
 	   	$actionWithPermission = ['admin_home', 'admin_edit', 'admin_delete', 'admin_close', 'admin_sotto_menu', 'admin_sotto_menu_bootstrap', 'admin_edit_validation_cart', 'admin_delivery_change', 'admin_mail_supplier'];
 	   	if (in_array($this->action, $actionWithPermission)) {
@@ -2081,7 +2081,7 @@ class OrdersController extends AppController {
 	 *  position_img, le backgroung-img e' a Dx o Sn
 	 */
 	public function admin_sotto_menu($order_id=0, $position_img) {
-
+		
 		$this->_sotto_menu($this->user, $order_id);
 		
 		$this->set('position_img', $position_img);
@@ -2089,7 +2089,7 @@ class OrdersController extends AppController {
 	
 	private function _sotto_menu($user, $order_id) {
 
-		$this->ctrlHttpReferer();
+		if($this->_scope!='neo') $this->ctrlHttpReferer();
 		
 		$debug = false;
 		

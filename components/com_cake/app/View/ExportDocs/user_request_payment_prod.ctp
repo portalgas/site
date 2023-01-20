@@ -60,7 +60,7 @@ foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 	
 				
 				$html = '';
-				$html .= '	<table cellpadding="0" cellspacing="0">';
+				$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 				$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 				$html .= '		<tr>';
 				if($order['Order']['hasTrasport']=='Y') {
@@ -217,7 +217,7 @@ if(!empty($results['RequestPaymentsStoreroom'])) {
 	$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '		<tr>';
 	$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -263,7 +263,7 @@ if(!empty($results['RequestPaymentsGeneric'])) {
 	$output->writeHTML($css.$html, $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 	$html .= '		<tr>';
 	$html .= '			<th width="'.$output->getCELLWIDTH20().'">'.__('N').'</th>';
@@ -298,7 +298,7 @@ if(!empty($results['RequestPaymentsGeneric'])) {
  */
 //if($results['SummaryPayment']['stato'] == 'PAGATO' ) {
 	$html = '';
-	$html .= '	<table cellpadding="0" cellspacing="0">';
+	$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 	$html .= '	<tbody>'; 
 
 	$delta_cassa = (floatval($results['SummaryPayment']['importo_pagato']) - floatval($results['SummaryPayment']['importo_dovuto']));

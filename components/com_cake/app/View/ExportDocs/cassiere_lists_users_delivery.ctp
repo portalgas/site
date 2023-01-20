@@ -21,7 +21,7 @@ $html = '';
 
 if (!empty($results)) {
 
-		$html .= '<table cellpadding="0" cellspacing="0">';
+		$html .= '<table class="table table-hover" cellpadding="0" cellspacing="0">';
 		$html .= '<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 		$html .= '<tr>';		
 		$html .= '<th width="'.$output->getCELLWIDTH30().'">N.</th>';

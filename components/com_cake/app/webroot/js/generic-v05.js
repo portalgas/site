@@ -338,7 +338,7 @@ function number_format( number, decimals, dec_point, thousands_sep ) {
 function apriPopUpBootstrap(url, opts) {
 
 	if (typeof url == 'undefined' || url=='') {
-		console.log("error - url undefined!");
+		console.error("error - url undefined!");
 		return;
 	}
 		
