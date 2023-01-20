@@ -318,6 +318,7 @@ if($importo_completo_all_orders>0) {
 	$html .= '</div>';
 	
 	$html .= '<div class="h4Pdf">';
+	// $html .= 'G.A.S. '.$organizationResults['Organization']['name'].'<br />';
 	if(!empty($organizationResults['Organization']['banca_iban']))
 		$html .= 'IBAN:&nbsp;'.$organizationResults['Organization']['banca_iban'].'<br />';
 	
