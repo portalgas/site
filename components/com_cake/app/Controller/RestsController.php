@@ -12,12 +12,34 @@ class RestsController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
-		$this->response->header('Access-Control-Allow-Origin', '*');
-		
+		// in .htaccess $this->response->header('Access-Control-Allow-Origin', '*');
+	
 		/*
 		debug($_REQUEST);
 		*/
 	}
+
+    // servizio chiamato da neo per mantenere la sessione 
+    public function ping_session() {
+
+		$response = ['code' => 200];
+	    $json = json_encode($response);
+		$this->set('json', $json); 
+		
+		$this->layout = 'json';
+		$this->render('/Rests/index');	   
+    }
+
+    // servizio chiamato da neo per mantenere la sessione 
+    public function admin_ping_session() {
+
+		$response = ['code' => 200];
+	    $json = json_encode($response);
+		$this->set('json', $json); 
+		
+		$this->layout = 'json';
+		$this->render('/Rests/index');	   
+    }
 
    /*
     * da NEO => OLD
