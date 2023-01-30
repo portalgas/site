@@ -19,6 +19,108 @@ class RestsController extends AppController {
 		*/
 	}
 
+	/*
+	 *  i valori arrivano in GET per RewriteRule in api/.htaccess 
+	 * 
+	 *  richiamato da \administrator\templates\bluestork\html\com_login\login\notmpl.php 
+	 * per login da neo per scadenza session 
+	 */
+	public function autentication() {
+
+		$results = [];
+
+		$username = '';
+		$password = '';
+		if(isset($this->request->data['username']))
+			$username = $this->request->data['username'];
+		if(isset($this->request->data['password']))
+			$password = $this->request->data['password'];
+
+	   /*
+	    * curl_setopt(): CURLOPT_FOLLOWLOCATION cannot be activated when an open_basedir is set [/plugins/authentication/gmail/gmail.php, line 84]
+		*/
+	   ini_set('safe_mode', false);
+		
+       if (($username == '') || ($password == ''))
+       {
+           // header('HTTP/1.1 400 Bad Request', true, 400);
+           // jexit();
+		   $results['esito'] = false;
+		   $results['msg'] = 'Username e password obbligatori!';
+       }
+	   else {
+			/*
+			 * login FE
+			 */
+			jimport( 'joomla.user.authentication');
+			$auth = & JAuthentication::getInstance();
+			$credentials = ['username' => $username, 'password' => $password];
+			$options = [];
+			$response = $auth->authenticate($credentials, $options);
+	 
+			if(isset($response->password))
+				 $response->password = '*****';
+			 
+			$response->token = JSession::getFormToken();
+			 
+			/*
+			 * login BO
+			 */
+			$app = JFactory::getApplication('administrator');
+			// passo a \plugins\user\joomla\joomla.php loginNeo=false se no viene fatto il redirect
+			$response = $app->login($credentials, ['action' => false, 'loginNeo' => false]);
+
+	   } // end if (($username == '') || ($password == ''))
+				 
+	   /*
+		JAuthenticationResponse Object
+		(
+			[status] => 1
+			[type] => GMail Joomla
+			[error_message] => 
+			[username] => francesco.actis@gmail.com
+			[email] => francesco.actis@gmail.com
+			[fullname] => francesco.actis@gmail.com
+			[birthdate] => 
+			[gender] => 
+			[postcode] => 
+			[country] => 
+			[language] => 
+			[timezone] => 
+			[_errors:protected] => Array
+				(
+				)
+
+		)
+		
+		echo "<pre>";
+		print_r($response);
+		echo "</pre>";	
+		*/			
+
+       if ($response->status == JAUTHENTICATE_STATUS_SUCCESS || $response)
+       {
+			$user = JFactory::getUser();
+			/*
+			echo "<pre>";
+			print_r($user);
+			echo "</pre>";			
+			*/
+			$results['esito'] = true;
+			$results['msg'] = '';			
+       }
+	   else {
+			$results['esito'] = false;
+			$results['msg'] = 'Username e password non sono corretti!';		
+	   }
+       
+	    $json = json_encode($results);
+		$this->set('json', $json); 
+		
+		$this->layout = 'json';
+		$this->render('/Rests/index');	   
+	}
+		
     // servizio chiamato da neo per mantenere la sessione 
     public function ping_session() {
 
@@ -156,84 +258,6 @@ class RestsController extends AppController {
 
    		exit;
     }
-
-	/*
-	 *  i valori arrivano in GET per RewriteRule in api/.htaccess 
-	 */
-	public function autentication() {
-
-		if(isset($this->request->data['username']))
-			$username = $this->request->data['username'];
-		if(isset($this->request->data['password']))
-			$password = $this->request->data['password'];
-
-	   /*
-	    * curl_setopt(): CURLOPT_FOLLOWLOCATION cannot be activated when an open_basedir is set [/plugins/authentication/gmail/gmail.php, line 84]
-		*/
-	   ini_set('safe_mode', false);
-		
-       if (($username == '') || ($password == ''))
-       {
-           header('HTTP/1.1 400 Bad Request', true, 400);
-           jexit();
-       }
-
-       jimport( 'joomla.user.authentication');
-       $auth = & JAuthentication::getInstance();
-       $credentials = ['username' => $username, 'password' => $password];
-       $options = [];
-       $response = $auth->authenticate($credentials, $options);
-
-	   if(isset($response->password))
-			$response->password = '*****';
-		
-		$response->token = JSession::getFormToken();
-			
-		$app = JFactory::getApplication('administrator');
-		$response = $app->login($credentials);
-				 
-	   /*
-		JAuthenticationResponse Object
-		(
-			[status] => 1
-			[type] => GMail Joomla
-			[error_message] => 
-			[username] => francesco.actis@gmail.com
-			[email] => francesco.actis@gmail.com
-			[fullname] => francesco.actis@gmail.com
-			[birthdate] => 
-			[gender] => 
-			[postcode] => 
-			[country] => 
-			[language] => 
-			[timezone] => 
-			[_errors:protected] => Array
-				(
-				)
-
-		)
-		
-		echo "<pre>";
-		print_r($response);
-		echo "</pre>";	
-		*/			
-
-       if ($response->status == JAUTHENTICATE_STATUS_SUCCESS)
-       {
-			$user = JFactory::getUser();
-			/*
-			echo "<pre>";
-			print_r($user);
-			echo "</pre>";			
-			*/
-       }
-       
-	    $json = json_encode($response);
-		$this->set('json', $json); 
-		
-		$this->layout = 'json';
-		$this->render('/Rests/index');	   
-	}
 	
 	/*
 	 * /?option=com_cake&controller=Rests&action=organizations&format=notmpl

@@ -143,10 +143,15 @@ class plgUserJoomla extends JPlugin
 	 *
 	 * @return	boolean	True on success
 	 * @since	1.5
+	 * 
+	 * $options['loginNeo'] = false \components\com_cake\app\Controller\RestsController.php 
+	 * 	per non fare il redirect
 	 */
 	public function onUserLogin($user, $options = array())
 	{
 		$debug = false;
+
+		isset($options['loginNeo']) ? $loginNeo = $options['loginNeo']: $loginNeo = true;
 
 		$instance = $this->_getUser($user, $options);
 
@@ -207,7 +212,10 @@ class plgUserJoomla extends JPlugin
 		// Hit the user last visit field
 		$instance->setLastVisit();
 
-			if($options['action'] == 'core.login.site') {
+		if(!$loginNeo)
+			return true;
+
+		if($options['action'] == 'core.login.site') {
 			/*
 			 * front-end login fractis => redirect 
 			*/
