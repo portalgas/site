@@ -31,7 +31,7 @@ class OrdersController extends AppController {
 		  		}
 	   		}
    		}
-   		
+   
 		if($this->user->organization['Organization']['type']!='GAS' &&
             $this->user->organization['Organization']['type']!='SOCIALMARKET') {
 			$this->Session->setFlash(__('msg_not_organization_config'));
@@ -79,7 +79,7 @@ class OrdersController extends AppController {
    			}
 			
    		} // end if (in_array($this->action, $actionWithPermission))
-   			
+		   
    		/*
 		 * ctrl referentTesoriere
 		*/
@@ -257,7 +257,7 @@ class OrdersController extends AppController {
 			 $results[$numResult]['Order']['can_state_code_to_close'] = $OrderLifeCycle->canStateCodeToClose($this->user, $result, $debug);
 			 
 			 $results[$numResult]['Order']['msgGgArchiveStatics'] = $OrderLifeCycle->msgGgArchiveStatics($this->user, $result, $debug);
-			 
+		
 			 /*
 			  * recupero richiesta di pagamento 
 			  */ 
@@ -267,7 +267,7 @@ class OrdersController extends AppController {
 				$results[$numResult]['Order']['request_payment_num'] = $RequestPayment->getRequestPaymentNumByOrderId($this->user, $result['Order']['id']);
 				$results[$numResult]['Order']['request_payment_id'] = $RequestPayment->getRequestPaymentIdByOrderId($this->user, $result['Order']['id']);
 			}
-
+			
             // totale ordine
             $results[$numResult]['Order']['tot_importo'] = $this->Order->getTotImporto($this->user, $result['Order']['id'], $debug);
 		} // loop Orders
@@ -2088,7 +2088,7 @@ class OrdersController extends AppController {
 	}
 	
 	private function _sotto_menu($user, $order_id) {
-
+		
 		if($this->_scope!='neo') $this->ctrlHttpReferer();
 		
 		$debug = false;
@@ -2097,6 +2097,7 @@ class OrdersController extends AppController {
 		$options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'], 'Order.id' => $this->order_id];
 		$options['recursive'] = 0;
 		$results = $this->Order->find('first', $options);
+		
 		if (empty($results)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));

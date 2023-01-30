@@ -12,6 +12,14 @@ defined('_JEXEC') or die;
  * @package		Joomla.Administrator
  * @subpackage	com_login
  * @since		1.5
+ * 
+ * fractis notmpl per le chiamate ajax con sessione scaduta
+ * administrator\components\com_login\views\login\view.notmpl.php
+ *     public function display($tpl = null) {
+ *     	self::setLayout('notmpl');           
+ *      parent::display();
+ * administrator\templates\bluestork\html\com_login\login\notmpl.php
+ *		html 
  */
 class LoginController extends JControllerLegacy
 {

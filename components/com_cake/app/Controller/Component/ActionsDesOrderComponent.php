@@ -66,7 +66,7 @@ class ActionsDesOrderComponent extends Component {
 					App::import('Model', 'DesOrder');
 					$DesOrder = new DesOrder();
 					$desOrdersResults = $DesOrder->getDesOrder($user, $des_order_id, $debug);
-					
+				
 					/*
 					 * ctrl eventuali occorrenze di SummaryDesOrder
 					 */

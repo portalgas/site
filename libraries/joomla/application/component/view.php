@@ -596,10 +596,10 @@ class JView extends JObject
 		$template = JFactory::getApplication()->getTemplate();
 		$layout = $this->getLayout();
 		$layoutTemplate = $this->getLayoutTemplate();
-
+	
 		// Create the template file name based on the layout
 		$file = isset($tpl) ? $layout . '_' . $tpl : $layout;
-
+		
 		// Clean the file name
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $file);
 		$tpl = isset($tpl) ? preg_replace('/[^A-Z0-9_\.-]/i', '', $tpl) : $tpl;
@@ -608,7 +608,7 @@ class JView extends JObject
 		$lang = JFactory::getLanguage();
 			$lang->load('tpl_' . $template, JPATH_BASE, null, false, true)
 		||	$lang->load('tpl_' . $template, JPATH_THEMES . "/$template", null, false, true);
-
+		
 		// Change the template folder if alternative layout is in different template
 		if (isset($layoutTemplate) && $layoutTemplate != '_' && $layoutTemplate != $template)
 		{
@@ -619,7 +619,7 @@ class JView extends JObject
 		jimport('joomla.filesystem.path');
 		$filetofind = $this->_createFileName('template', array('name' => $file));
 		$this->_template = JPath::find($this->_path['template'], $filetofind);
-
+		
 		// If alternate layout can't be found, fall back to default layout
 		if ($this->_template == false)
 		{
@@ -672,7 +672,7 @@ class JView extends JObject
 	{
 		// Clean the file name
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
-
+		
 		// Load the template script
 		jimport('joomla.filesystem.path');
 		$helper = JPath::find($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
@@ -704,7 +704,7 @@ class JView extends JObject
 
 		// Actually add the user-specified directories
 		$this->_addPath($type, $path);
-
+		
 		// Always add the fallback directories as last resort
 		switch (strtolower($type))
 		{

@@ -30,22 +30,28 @@ class RequestPayment extends AppModel {
 		$options['recursive'] = 1;
 		$requestPaymentsOrderResults = $RequestPaymentsOrder->find('first', $options);		
 		self::d($requestPaymentsOrderResults, $debug);
-		
+
 		return $requestPaymentsOrderResults;
 	}
 	
 	public  function getRequestPaymentIdByOrderId($user, $order_id, $debug=false) {
         
-		$requestPaymentsOrderResults = $this->getRequestPaymentByOrderId($user, $order_id, $debug);		
-		$request_payment_id = $requestPaymentsOrderResults['RequestPayment']['id'];
+		$request_payment_id = 0;
+
+		$requestPaymentsOrderResults = $this->getRequestPaymentByOrderId($user, $order_id, $debug);
+		if(isset($requestPaymentsOrderResults['RequestPayment']))		
+			$request_payment_id = $requestPaymentsOrderResults['RequestPayment']['id'];
 
 		return $request_payment_id;
 	}
 	
 	public  function getRequestPaymentNumByOrderId($user, $order_id, $debug=false) {
         
-		$requestPaymentsOrderResults = $this->getRequestPaymentByOrderId($user, $order_id, $debug);		
-		$request_payment_num = $requestPaymentsOrderResults['RequestPayment']['num'];
+		$request_payment_num = '';
+
+		$requestPaymentsOrderResults = $this->getRequestPaymentByOrderId($user, $order_id, $debug);
+		if(isset($requestPaymentsOrderResults['RequestPayment']))		
+			$request_payment_num = $requestPaymentsOrderResults['RequestPayment']['num'];
 
 		return $request_payment_num;
 	}

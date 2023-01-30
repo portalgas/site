@@ -161,19 +161,18 @@ class RestsController extends AppController {
 	 *  i valori arrivano in GET per RewriteRule in api/.htaccess 
 	 */
 	public function autentication() {
-	
-		exit;
-		
+
+		if(isset($this->request->data['username']))
+			$username = $this->request->data['username'];
+		if(isset($this->request->data['password']))
+			$password = $this->request->data['password'];
+
 	   /*
 	    * curl_setopt(): CURLOPT_FOLLOWLOCATION cannot be activated when an open_basedir is set [/plugins/authentication/gmail/gmail.php, line 84]
 		*/
 	   ini_set('safe_mode', false);
 		
-       $jinput = JFactory::getApplication()->input;
-       $username = $jinput->get('username', '', 'STRING');
-       $password = $jinput->get('password', '', 'STRING');
-		
-       if (($username == '') ||    ($password == ''))
+       if (($username == '') || ($password == ''))
        {
            header('HTTP/1.1 400 Bad Request', true, 400);
            jexit();
@@ -181,7 +180,7 @@ class RestsController extends AppController {
 
        jimport( 'joomla.user.authentication');
        $auth = & JAuthentication::getInstance();
-       $credentials = array( 'username' => $username, 'password' => $password );
+       $credentials = ['username' => $username, 'password' => $password];
        $options = [];
        $response = $auth->authenticate($credentials, $options);
 
@@ -189,7 +188,10 @@ class RestsController extends AppController {
 			$response->password = '*****';
 		
 		$response->token = JSession::getFormToken();
-					
+			
+		$app = JFactory::getApplication('administrator');
+		$response = $app->login($credentials);
+				 
 	   /*
 		JAuthenticationResponse Object
 		(
@@ -197,7 +199,6 @@ class RestsController extends AppController {
 			[type] => GMail Joomla
 			[error_message] => 
 			[username] => francesco.actis@gmail.com
-			[password] => Barrett
 			[email] => francesco.actis@gmail.com
 			[fullname] => francesco.actis@gmail.com
 			[birthdate] => 
@@ -214,11 +215,9 @@ class RestsController extends AppController {
 		
 		echo "<pre>";
 		print_r($response);
-		echo "</pre>";
-		
+		echo "</pre>";	
 		*/			
 
-	   
        if ($response->status == JAUTHENTICATE_STATUS_SUCCESS)
        {
 			$user = JFactory::getUser();
@@ -237,7 +236,8 @@ class RestsController extends AppController {
 	}
 	
 	/*
-	 *  /api/organizations?format=notmpl
+	 * /?option=com_cake&controller=Rests&action=organizations&format=notmpl
+	 * /api/organizations?format=notmpl
 	 */
 	public function organizations() {
 	

@@ -673,9 +673,9 @@ class JController extends JObject
 		$viewType = $document->getType();
 		$viewName = JRequest::getCmd('view', $this->default_view);
 		$viewLayout = JRequest::getString('layout', 'default');
-
+		
 		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath, 'layout' => $viewLayout));
-
+		
 		// Get/Create the model
 		if ($model = $this->getModel($viewName))
 		{
@@ -686,7 +686,7 @@ class JController extends JObject
 		$view->assignRef('document', $document);
 
 		$conf = JFactory::getConfig();
-
+		
 		// Display the view
 		if ($cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
 		{
@@ -714,7 +714,7 @@ class JController extends JObject
 
 				$app->registeredurlparams = $registeredurlparams;
 			}
-
+			
 			$cache->get($view, 'display');
 		}
 		else
@@ -751,10 +751,10 @@ class JController extends JObject
 		{
 			return JError::raiseError(404, JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task));
 		}
-
+		
 		// Record the actual task being fired
 		$this->doTask = $doTask;
-
+		
 		// Make sure we have access
 		if ($this->authorise($doTask))
 		{
@@ -891,7 +891,7 @@ class JController extends JObject
 		{
 			$prefix = $this->getName() . 'View';
 		}
-
+		
 		if (empty($views[$name]))
 		{
 			if ($view = $this->createView($name, $prefix, $type, $config))

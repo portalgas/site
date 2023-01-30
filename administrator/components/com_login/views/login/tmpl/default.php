@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 // in your layout override.
 
 $loginmodule =LoginModelLogin::getLoginModule('mod_login');
-	echo JModuleHelper::renderModule($loginmodule, array('style' => 'rounded', 'id' => 'section-box'));
+echo JModuleHelper::renderModule($loginmodule, array('style' => 'rounded', 'id' => 'section-box'));
 
 
 //Get any other modules in the login position.

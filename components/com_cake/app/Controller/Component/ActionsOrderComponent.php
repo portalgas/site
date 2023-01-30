@@ -357,10 +357,10 @@ class ActionsOrderComponent extends Component {
 			} // if(!empty($result['OrdersAction']['permission_or']))
 
 			if($orderActionOk) {
-	
+				
 				$orderActions[$i]['OrdersAction'] = $result['OrdersAction'];
-				$orderActions[$i]['OrdersAction']['url'] = $urlBase.'controller='.$result['OrdersAction']['controller'].'&action='.$result['OrdersAction']['action'].'&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$orderResults['Order']['id'];
-	
+				$orderActions[$i]['OrdersAction']['url'] = 'controller='.$result['OrdersAction']['controller'].'&action='.$result['OrdersAction']['action'].'&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$orderResults['Order']['id'];
+			
 				if(!empty($result['OrdersAction']['query_string'])) {
 						
 					switch ($result['OrdersAction']['query_string']) {
@@ -710,14 +710,14 @@ class ActionsOrderComponent extends Component {
 		$DesOrdersOrganization = new DesOrdersOrganization();
 
 		$options = [];
-		$options['conditions'] = array(// 'DesOrdersOrganization.des_id' => $user->des_id,  potrebbe non averlo valorizzato
-										'DesOrdersOrganization.organization_id' => $results['Order']['organization_id'],
-										'DesOrdersOrganization.order_id' => $results['Order']['id']);
+		$options['conditions'] = [// 'DesOrdersOrganization.des_id' => $user->des_id,  potrebbe non averlo valorizzato
+								'DesOrdersOrganization.organization_id' => $results['Order']['organization_id'],
+								'DesOrdersOrganization.order_id' => $results['Order']['id']];
 		$options['recursive'] = -1;								
 		$desOrdersOrganizationResults = $DesOrdersOrganization->find('first', $options);
 
 		if(!empty($desOrdersOrganizationResults)) {
-			$des_id = $desOrdersOrganizationResults['DesOrder']['des_id'];
+			$des_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_id'];
 			$user->des_id = $des_id;
 			
 			if($this->ActionsDesOrder->isTitolareDesSupplier($user, $desOrdersOrganizationResults))
@@ -795,7 +795,7 @@ class ActionsOrderComponent extends Component {
 								   'TemplatesOrdersState.group_id' => $group_id,
 								   'TemplatesOrdersState.flag_menu' => 'Y'];
 		
-		$options['order'] = array('TemplatesOrdersState.sort');
+		$options['order'] = ['TemplatesOrdersState.sort'];
 		$options['recursive'] = -1;
 		$orderStates = $TemplatesOrdersState->find('all', $options);
 		

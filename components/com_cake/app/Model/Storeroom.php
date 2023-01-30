@@ -175,6 +175,7 @@ class Storeroom extends AppModel {
 			
 		return $results;
 	}
+
 	/*
 	 * ottieni lo user che gestisce la dispensa
 	 * dev'essere solo 1

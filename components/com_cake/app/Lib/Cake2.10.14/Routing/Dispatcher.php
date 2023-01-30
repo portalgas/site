@@ -497,7 +497,7 @@ class Dispatcher implements CakeEventListener {
 				}
 				
 				/*
-				 * se e' un URL di tipo SEO e inivia per 
+				 * se e' un URL di tipo SEO e invia per 
 				 */
 				foreach($values as $key => $value) {
 					if(isset($values['SEO']) && $this->__string_starts_with($SEO, $values['SEO'])) {

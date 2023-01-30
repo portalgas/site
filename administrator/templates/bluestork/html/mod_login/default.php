@@ -6,6 +6,8 @@
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+$scope = $_GET['scope'];
+
 // No direct access.
 defined('_JEXEC') or die;
 JHtml::_('behavior.keepalive');

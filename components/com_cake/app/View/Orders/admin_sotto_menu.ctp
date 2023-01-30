@@ -39,7 +39,7 @@ foreach($orderActions as $orderAction) {
 	/*
 	 * dettaglio importo trasport, cost_more, cost_less
 	 */
-	if(!empty($orderAction['OrdersAction']['label_more']))
+	if(!empty($orderAction['OrdersAction']['label_more'])) 
 		$label = $label.' ('.$results['Order'][$orderAction['OrdersAction']['label_more']].' €)';
 
 	$title = strip_tags(__($orderAction['OrdersAction']['label']));

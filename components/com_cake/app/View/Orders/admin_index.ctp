@@ -50,27 +50,27 @@ if(!empty($results)) {
 
 	echo '<div class="table-responsive"><table class="table table-hover">';
 	echo '<tr>';
-	echo '	<th class="hidden-xs hidden-sm"></th>';
-	echo '	<th class="hidden-xs hidden-sm">'.__('N').'</th>';
-	echo '	<th colspan="2">'.$this->Paginator->sort('supplier_organization_id').'</th>';
-	echo '	<th class="hidden-xs hidden-sm">';
+	echo '	<th scope="col" class="hidden-xs hidden-sm"></th>';
+	echo '	<th scope="col" class="hidden-xs hidden-sm">'.__('N').'</th>';
+	echo '	<th scope="col" colspan="2">'.$this->Paginator->sort('supplier_organization_id').'</th>';
+	echo '	<th scope="col" class="hidden-xs hidden-sm">';
 	echo 		__('DataInizio');
 	echo '		<br />';
 	echo 		__('DataFine');
 	echo '	</th>';
-	echo '	<th class="hidden-xs">'.__('OpenClose').'</th>';
-	echo '	<th class="hidden-xs">'.$this->Paginator->sort('nota').'</th>';
-	echo '  <th class="hidden-xs">'.__('StatoElaborazione').'</th>';
+	echo '	<th scope="col" class="hidden-xs">'.__('OpenClose').'</th>';
+	echo '	<th scope="col" class="hidden-xs">'.$this->Paginator->sort('nota').'</th>';
+	echo '  <th scope="col" class="hidden-xs">'.__('StatoElaborazione').'</th>';
 		
 	if($user->organization['Organization']['hasVisibility']=='Y') {			
-		echo '<th class="hidden-xs">'.$this->Paginator->sort('isVisibleFrontEnd',__('isVisibleFrontEnd')).'</th>';
-		echo '<th class="hidden-xs">'.$this->Paginator->sort('isVisibleBackOffice',__('isVisibleBackOffice')).'</th>';
+		echo '<th scope="col" class="hidden-xs">'.$this->Paginator->sort('isVisibleFrontEnd',__('isVisibleFrontEnd')).'</th>';
+		echo '<th scope="col" class="hidden-xs">'.$this->Paginator->sort('isVisibleBackOffice',__('isVisibleBackOffice')).'</th>';
 	}
 
-	echo '	<th class="hidden-xs hidden-sm">';
+	echo '	<th scope="col" class="hidden-xs hidden-sm">';
 	// $this->Paginator->sort('Created');
 	echo '  </th>';
-	echo '	<th class="actions" style="min-width: 125px;">'.__('Actions').'</th>';
+	echo '	<th scope="col" class="actions" style="min-width: 125px;">'.__('Actions').'</th>';
 	echo '</tr>';
 	
 	$delivery_id_old = 0;

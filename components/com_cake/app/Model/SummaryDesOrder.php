@@ -19,7 +19,7 @@ class SummaryDesOrder extends AppModel {
 		$options['order'] = array('Organization.name');
 
 		$results = $this->find('all', $options);
-		if( $debug) {
+		if($debug) {
 			echo "<pre>SummaryDesOrder::select_to_des_order() - cerco eventuali SummaryDesOrder \r ";
 			print_r($options);
 			print_r($results);
