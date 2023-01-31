@@ -13,6 +13,8 @@ JHtml::_('behavior.keepalive');
 $app = JFactory::getApplication('site');
 $neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 // echo 'neo_portalgas_url '.$neo_portalgas_url;
+
+$uuid = uniqid();
 ?>
 <!-- 
  pagina gia' inclusa in neo 
@@ -27,18 +29,18 @@ $neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 -->
 
 <div class="container">
-	<div id="boxLogin">
+	<div id="boxLogin-<?php echo $uuid;?>">
 		<h2 class="form-signin-heading visible-lg visible-md visible-sm">Richiesta d'identificazione</h2>
 
-		<div id="loginEsito" class="alert alert-danger" style="display:none;"></div>
+		<div id="loginEsito-<?php echo $uuid;?>" class="alert alert-danger" style="display:none;"></div>
 
-		<form id="formAuthJ" class="form-inline" action="/action_page.php" method="post">
+		<form id="formAuthJ-<?php echo $uuid;?>" class="form-inline" action="/action_page.php" method="post">
 			<fieldset>
 				<div class="form-group">
 					<div class="col-12">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>
-							<input class="form-control" type="text" class="form-control" name="username" id="mod-login-username" placeholder="Username" required>
+							<input class="form-control" type="text" class="form-control" name="username" placeholder="Username" required>
 						</div>
 					</div>
 				</div>
@@ -46,15 +48,15 @@ $neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 					<div class="col-12">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-lock" aria-hidden="true"></i></span>
-							<input type="password" class="form-control" name="passwd" id="mod-login-password" placeholder="Password" required>
+							<input type="password" class="form-control" name="password" placeholder="Password" required>
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-12">
-						<button id="sumbitAuthJ" class="btn btn-lg btn-primary btn-block" type="button">Autenticati</button>
+						<button id="sumbitAuthJ-<?php echo $uuid;?>" class="btn btn-lg btn-primary btn-block" type="button">Autenticati</button>
 
-						<input type="hidden" name="lang" id="lang" value="it-IT" />
+						<input type="hidden" name="lang" value="it-IT" />
 						<input type="hidden" name="option" value="com_login" />
 						<input type="hidden" name="task" value="login" />
 						<input type="hidden" name="return" value="" />
@@ -65,7 +67,7 @@ $neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 			</fieldset>
 		</form>
 	</div>
-	<div id="boxAfterLogin" style="display: none">
+	<div id="boxAfterLogin-<?php echo $uuid;?>" style="display: none">
 		<div class="alert alert-info">
 			Autenticazione avvenuta con successo: effettua nuovamente l'operazione
 		</div>
@@ -74,25 +76,25 @@ $neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 
 <script>
 $(function () {
-    $('#sumbitAuthJ').on('click', function (e) {
+    $('#sumbitAuthJ-<?php echo $uuid;?>').on('click', function (e) {
 		e.preventDefault();
 
-		let username = $('#mod-login-username').val();
-		let password = $('#mod-login-password').val();
+		let username = $("input[name='username']").val();
+		let password = $("input[name='password']").val();
 		if(typeof username === 'undefined' || username=='' || password=='' || typeof password === 'undefined') {
 			alert("Username e password obbligatori!");
 			return false;
 		}
 
 
-		$('#loginEsito').hide();
-		$('#loginEsito').html('');
+		$('#loginEsito-<?php echo $uuid;?>').hide();
+		$('#loginEsito-<?php echo $uuid;?>').html('');
 
 		let params = {
 			username: username,
 			password: password,
 		}
-		let ajaxUrl = '/?option=com_cake&controller=Rests&action=autentication&format=notmpl';
+		let ajaxUrl = '<?php echo !empty($_SERVER['HTTPS']) ? 'https': 'http' . '://'.$_SERVER['SERVER_NAME'];?>/?option=com_cake&controller=Rests&action=autentication&format=notmpl';
 		/* console.log(ajaxUrl, 'ajaxUrl'); */
 		
 		$.ajax({url: ajaxUrl,
@@ -103,14 +105,14 @@ $(function () {
 	        success: function (response) {
     	        console.log(response, 'responseText');
 				if(response.esito)	{
-					$('#boxLogin').hide();
-					$('#boxAfterLogin').show();
+					$('#boxLogin-<?php echo $uuid;?>').hide();
+					$('#boxAfterLogin-<?php echo $uuid;?>').show();
 				}
 				else {
-					$('#boxLogin').show();
-					$('#boxAfterLoginhide').hide();	
-					$('#loginEsito').show();
-					$('#loginEsito').html(response.msg);
+					$('#boxLogin-<?php echo $uuid;?>').show();
+					$('#boxAfterLoginhide-<?php echo $uuid;?>').hide();	
+					$('#loginEsito-<?php echo $uuid;?>').show();
+					$('#loginEsito-<?php echo $uuid;?>').html(response.msg);
 				}
 			},
 			error: function (e) {
