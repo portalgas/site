@@ -62,7 +62,7 @@ class RestsController extends AppController {
 				 $response->password = '*****';
 			 
 			$response->token = JSession::getFormToken();
-			 
+
 			/*
 			 * login BO
 			 */
@@ -96,8 +96,8 @@ class RestsController extends AppController {
 		echo "<pre>";
 		print_r($response);
 		echo "</pre>";	
-		*/			
-
+		*/		
+		
        if ($response->status == JAUTHENTICATE_STATUS_SUCCESS || $response)
        {
 			$user = JFactory::getUser();
@@ -107,7 +107,13 @@ class RestsController extends AppController {
 			echo "</pre>";			
 			*/
 			$results['esito'] = true;
-			$results['msg'] = '';			
+			$results['msg'] = $response;
+			$results['user'] = [];
+			// $results['user']['id'] = $user->id;
+			$results['user']['organization_id'] = $user->organization_id;
+			$results['user']['name'] = $user->name;
+			$results['user']['username'] = $user->username;
+			$results['user']['email'] = $user->email;
        }
 	   else {
 			$results['esito'] = false;

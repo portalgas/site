@@ -816,7 +816,7 @@ class SuppliersOrganizationsController extends AppController {
 					
 					$Email = $Mail->getMailSystem($this->user);
 					
-					$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_root_supplier'));
+					$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_root_supplier')); // chi gestisce i produttori
 					$userResults = $User->getUsersNoOrganization($conditions);
 										
 					$subject_mail = "Inserito nuovo produttore";
