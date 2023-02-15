@@ -444,7 +444,11 @@ class ReferenteController extends AppController {
 		if($this->isReferentTesoriere())
 			$isReferenteTesoriere = true;
 		else
-			$isReferenteTesoriere = false;		if(!$isReferenteTesoriere) {			$this->Session->setFlash(__('msg_not_permission'));			$this->myRedirect(Configure::read('routes_msg_stop'));		}
+			$isReferenteTesoriere = false;
+		if(!$isReferenteTesoriere) {
+			$this->Session->setFlash(__('msg_not_permission'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
 		
 		App::import('Model', 'Order');
 		$Order = new Order;
@@ -455,8 +459,23 @@ class ReferenteController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 		$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
-						App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],						'Delivery.isVisibleBackOffice' => 'Y',
-						'Delivery.sys' => 'N',						'Delivery.stato_elaborazione' => 'OPEN'];					$deliveries = $Delivery->find('list', ['fields' => ['id', 'luogoData'], 'conditions' => $conditions, 'order' => 'data ASC', 'recursive' => -1]);		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
+				
+		App::import('Model', 'Delivery');
+		$Delivery = new Delivery;
+		
+		$conditions = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+						'Delivery.isVisibleBackOffice' => 'Y',
+						'Delivery.sys' => 'N',
+						'Delivery.type'=> 'GAS', // GAS-GROUP
+						'Delivery.stato_elaborazione' => 'OPEN'];
+			
+		$deliveries = $Delivery->find('list', ['fields' => ['id', 'luogoData'], 'conditions' => $conditions, 'order' => 'data ASC', 'recursive' => -1]);
+		if(empty($deliveries)) {
+			$this->Session->setFlash(__('NotFoundDeliveries'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		$this->set(compact('deliveries'));
+		
 		
 		/*
 		 * aggiorno stato ORDER

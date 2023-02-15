@@ -303,6 +303,7 @@ class Storeroom extends AppModel {
 								'Delivery.isToStoreroom' => 'Y',
 								'Delivery.isToStoreroomPay' => 'N',
 								'Delivery.sys' => 'N',
+								'Delivery.type'=> 'GAS', // GAS-GROUP
 								'Delivery.stato_elaborazione' => 'OPEN',
 								'DATE(Delivery.data) < CURDATE()'];
 		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
@@ -333,6 +334,7 @@ class Storeroom extends AppModel {
 								'Delivery.isToStoreroom' => 'Y',
 								'Delivery.isVisibleBackOffice' => 'Y',
 								'Delivery.sys'=> 'N',
+								'Delivery.type'=> 'GAS', // GAS-GROUP
 								'Delivery.stato_elaborazione' => 'OPEN'];
 		$options['fields'] = ['Delivery.id', 'luogoData'];
 		$options['order'] = ['data ASC'];
@@ -359,6 +361,7 @@ class Storeroom extends AppModel {
 								'Delivery.isToStoreroom' => 'Y',
 								'Delivery.isVisibleBackOffice' => 'Y',
 								'Delivery.sys'=> 'N',
+								'Delivery.type'=> 'GAS', // GAS-GROUP
 								'Delivery.stato_elaborazione' => 'OPEN'];
 		$options['fields'] = ['Delivery.id', 'luogoData'];
 		$options['order'] = ['data ASC'];

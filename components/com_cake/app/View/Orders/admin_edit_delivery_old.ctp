@@ -5,8 +5,8 @@ $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'h
 $this->Html->addCrumb(__('Edit Order Delivery Old'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
-echo '<div class="contentMenuLaterale">';
-echo $this->Form->create('Order',array('id' => 'formGas'));
+echo '<div class="contentMenuLaterale" style="width: 82%;">';
+echo $this->Form->create('Order', ['id' => 'formGas']);
 echo '<fieldset>';
 
 echo '<legend>'.__('Edit Order Delivery Old').'</legend>';

@@ -54,6 +54,7 @@ class TesoriereController extends AppController {
 								   'Delivery.isVisibleBackOffice' => 'Y',
 								   'Delivery.stato_elaborazione' => 'OPEN',
 								   'Delivery.sys'=> 'N',
+								   'Delivery.type'=> 'GAS', // GAS-GROUP
 								   'DATE(Delivery.data) <= CURDATE()'];
 		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data' => 'asc'];
@@ -712,6 +713,7 @@ class TesoriereController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									'Delivery.isVisibleBackOffice' => 'Y',
 									'Delivery.sys'=> 'N',
+									'Delivery.type'=> 'GAS', // GAS-GROUP
 									'Delivery.stato_elaborazione' => 'CLOSE'];
 		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data' => 'asc'];
@@ -1001,6 +1003,7 @@ class TesoriereController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
 								   'Delivery.isVisibleBackOffice' => 'Y',
 								   'Delivery.sys'=> 'N',
+								   'Delivery.type' => 'GAS',  // GAS-GROUP
 								   'Delivery.stato_elaborazione' => 'OPEN'];
 		// $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data' => 'asc'];

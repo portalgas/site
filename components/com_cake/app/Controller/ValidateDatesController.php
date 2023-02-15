@@ -55,10 +55,11 @@ class ValidateDatesController extends AppController {
 		$Organization = new Organization;
 		
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'Delivery.sys'=> 'N');	
-		$options['fields'] = array('id', 'luogoData');
+		$options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+								'Delivery.isVisibleBackOffice' => 'Y',
+								'Delivery.sys'=> 'N',
+								'Delivery.type'=> 'GAS']; // GAS-GROUP;	
+		$options['fields'] = ['id', 'luogoData'];
 		$options['order'] = array('Delivery.data DESC');
 		$options['recursive'] = -1;
 		$results = $Delivery->find('list', $options);

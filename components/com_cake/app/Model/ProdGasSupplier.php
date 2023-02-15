@@ -371,6 +371,7 @@ class ProdGasSupplier extends AppModel {
 					$options['conditions'] = ['Delivery.organization_id' => (int)$result['Organization']['id'],
 											'Delivery.isVisibleBackOffice' => 'Y',
 											'Delivery.sys' => 'N',
+											'Delivery.type'=> 'GAS', // GAS-GROUP
 											'Delivery.stato_elaborazione' => 'OPEN',
 											'DATE(Delivery.data) >= CURDATE()'];
 					$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];

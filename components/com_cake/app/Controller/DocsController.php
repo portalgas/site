@@ -220,6 +220,7 @@ class DocsController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 									'Delivery.isVisibleBackOffice' => 'Y',
 									'Delivery.sys' => 'N',
+                                    'Delivery.type'=> 'GAS', // GAS-GROUP
 									'Delivery.stato_elaborazione' => 'OPEN'];
 		$options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data' => 'asc'];

@@ -121,6 +121,7 @@ class Google extends AppModel {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
 								  'Delivery.stato_elaborazione'=> 'OPEN',
 								  'Delivery.sys'=> 'N',
+								  'Delivery.type' => 'GAS',  // GAS-GROUP
 								  'DATE(Delivery.data) >= CURDATE()',
 								  'Delivery.gcalendar_event_id' => null];
 		$options['recursive'] = -1;
@@ -242,6 +243,7 @@ class Google extends AppModel {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
 								  'DATE(Delivery.data) = CURDATE() + INTERVAL '.Configure::read('GGEventGCalendarToAlertDeliveryOn').' DAY ', 
 								  'Delivery.sys'=> 'N',
+								  'Delivery.type' => 'GAS',  // GAS-GROUP
 								  'DATE(Delivery.data) >= CURDATE()',
 								  'Delivery.gcalendar_event_id IS NOT null'];
 		$options['recursive'] = -1;

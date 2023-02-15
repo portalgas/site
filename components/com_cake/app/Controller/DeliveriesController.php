@@ -126,8 +126,12 @@ class DeliveriesController extends AppController {
 
         $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN',
+                'Delivery.type' => 'GAS',  // GAS-GROUP
                 'Delivery.data' => $deliveryData],
-            'Order' => ['Order.state_code != ' => 'CREATE-INCOMPLETE'],
+            'Order' => [
+                'Order.state_code != ' => 'CREATE-INCOMPLETE',
+                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')]
+            ],
             'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
         if (!empty($this->user->id) && $this->user->get('org_id') == $this->user->organization['Organization']['id'])
             $conditions += ['Cart' => ['Cart.user_id' => (int) $this->user->id,
@@ -149,6 +153,7 @@ class DeliveriesController extends AppController {
                 'Delivery.organization_id = ' . (int) $tmp_user->organization['Organization']['id'],
                 'Delivery.isToStoreroom' => 'Y',
                 'Delivery.isVisibleFrontEnd' => 'Y',
+                'Delivery.type' => 'GAS',  // GAS-GROUP
                 'Delivery.stato_elaborazione' => 'OPEN');
             $storeroomResults = $this->Delivery->find('all', array('fields' => array('Delivery.id', 'data'),
                 'conditions' => $conditions,
@@ -310,6 +315,7 @@ class DeliveriesController extends AppController {
         $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
 									'Delivery.stato_elaborazione' => 'OPEN',
 									'Delivery.sys' => 'N',
+                                    'Delivery.type' => 'GAS',  // GAS-GROUP
 									'DATE(Delivery.data) >= CURDATE()']];
 
         $results = $this->Delivery->getTabsToDeliveriesData($this->user, $conditions['Delivery']);
@@ -349,6 +355,7 @@ class DeliveriesController extends AppController {
         $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
 									'Delivery.stato_elaborazione' => 'OPEN',
 									'Delivery.sys' => 'N',
+                                    'Delivery.type' => 'GAS',  // GAS-GROUP
 									'DATE(Delivery.data) >= CURDATE()']];
 
         $results = $this->Delivery->getTabsToDeliveriesGasProdPromotionsData($this->user, $conditions['Delivery']);
@@ -382,10 +389,12 @@ class DeliveriesController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
 									'Delivery.isVisibleFrontEnd' => 'Y',
 									'Delivery.stato_elaborazione' => 'OPEN',
+                                    'Delivery.type' => 'GAS',  // GAS-GROUP
 									'DATE(Delivery.data) >= CURDATE()',
 									'Order.organization_id' => $this->user->organization['Organization']['id'],
 									'Order.isVisibleBackOffice' => 'Y',
-									'Order.state_code' => 'OPEN'];
+									'Order.state_code' => 'OPEN',
+                                    'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')]];
         $options['order'] = ['SuppliersOrganization.name'];
         $allOrdersResults = $Order->find('all', $options);
 		
@@ -417,9 +426,11 @@ class DeliveriesController extends AppController {
 									'Delivery.isVisibleFrontEnd' => 'Y',
 									'Delivery.stato_elaborazione' => 'OPEN',
 									'DATE(Delivery.data) >= CURDATE()',
+                                    'Delivery.type' => 'GAS',  // GAS-GROUP
 									'Order.organization_id' => $this->user->organization['Organization']['id'],
 									'Order.isVisibleBackOffice' => 'Y',
-									'Order.state_code' => 'RI-OPEN-VALIDATE'];
+									'Order.state_code' => 'RI-OPEN-VALIDATE',
+                                    'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')]];
         $options['order'] = ['Order.data_fine'];
         $allOrdersResults = $Order->find('all', $options);
 
@@ -466,6 +477,7 @@ class DeliveriesController extends AppController {
         $conditions = ['Delivery.isVisibleFrontEnd' => 'Y',
 						'Delivery.stato_elaborazione' => 'OPEN',
 						'DATE(Delivery.data) >= CURDATE()',
+						'Delivery.type' => 'GAS',  // GAS-GROUP
 						'Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						'Delivery.data' => $deliveryData];
 
@@ -494,6 +506,7 @@ class DeliveriesController extends AppController {
 						AND Delivery.isVisibleFrontEnd = 'Y'
 						AND `Order`.isVisibleBackOffice = 'Y'
 						AND `Order`.state_code = 'OPEN'  
+                        AND `Order`.order_type_id NOT IN (".Configure::read('Order.type.gas_parent_groups').", ".Configure::read('Order.type.gas_groups').")
 						AND `Order`.supplier_organization_id = SuppliersOrganization.id
 						AND SuppliersOrganization.supplier_id = Supplier.id				 
 						AND SuppliersOrganization.stato = 'Y'
@@ -525,10 +538,12 @@ class DeliveriesController extends AppController {
 						AND SuppliersOrganization.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
 						AND Delivery.id = `Order`.delivery_id
 						AND Delivery.isVisibleFrontEnd = 'Y'
+						AND Delivery.type = 'GAS'
 						AND `Order`.isVisibleBackOffice = 'Y'
 						AND `Order`.state_code = 'RI-OPEN-VALIDATE' 
 						AND (`Order`.data_fine_validation != '" . Configure::read('DB.field.date.empty') . "' && DATE(`Order`.data_fine_validation) >= CURDATE()) 
 						AND `Order`.supplier_organization_id = SuppliersOrganization.id
+                        AND `Order`.order_type_id NOT IN (".Configure::read('Order.type.gas_parent_groups').", ".Configure::read('Order.type.gas_groups').")
 						AND SuppliersOrganization.supplier_id = Supplier.id
 						AND SuppliersOrganization.stato = 'Y'
 						AND (Supplier.stato = 'Y' or Supplier.stato = 'T' or Supplier.stato = 'PG')
@@ -566,6 +581,7 @@ class DeliveriesController extends AppController {
         $conditions = ['Delivery.isVisibleFrontEnd' => 'Y',
 						'Delivery.stato_elaborazione' => 'OPEN',
 						'DATE(Delivery.data) >= CURDATE()',
+                        'Delivery.type' => 'GAS',  // GAS-GROUP
 						'Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						'Delivery.data' => $deliveryData];
 
@@ -592,9 +608,10 @@ class DeliveriesController extends AppController {
 						AND SuppliersOrganization.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
 						AND Delivery.id = `Order`.delivery_id
 						AND Delivery.isVisibleFrontEnd = 'Y'
+						AND Delivery.type = 'GAS'
 						AND `Order`.isVisibleBackOffice = 'Y'
 						AND `Order`.state_code = 'OPEN' 
-
+                        AND `Order`.order_type_id NOT IN (".Configure::read('Order.type.gas_parent_groups').", ".Configure::read('Order.type.gas_groups').")
 						AND `Order`.prod_gas_promotion_id != 0 
 						
 						AND `Order`.supplier_organization_id = SuppliersOrganization.id
@@ -641,6 +658,7 @@ class DeliveriesController extends AppController {
         $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
 									'Order.id' => $order_id,
 									'Order.delivery_id' => $delivery_id,
+                                    'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
 									'Order.state_code' => 'OPEN'];
         $options['recursive'] = 0;
         // $Order->unbindModel(array('belongsTo' => array('Delivery')));
@@ -805,6 +823,7 @@ class DeliveriesController extends AppController {
         $options['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
 					            'Order.id' => $order_id,
 					            'Order.delivery_id' => $delivery_id,
+                                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
 					            'Order.state_code' => 'RI-OPEN-VALIDATE'];
         $options['recursive'] = 0;
         $order = $Order->find('first', $options);
@@ -871,7 +890,9 @@ class DeliveriesController extends AppController {
 					AND User.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
 					AND Delivery.id = `Order`.delivery_id
 				    AND Delivery.isVisibleFrontEnd = 'Y'
+				    AND Delivery.type = 'GAS'
 					AND `Order`.isVisibleBackOffice = 'Y'
+                    AND `Order`.order_type_id NOT IN (".Configure::read('Order.type.gas_parent_groups').", ".Configure::read('Order.type.gas_groups').")
 					AND ArticlesOrder.order_id = `Order`.id
 					AND ArticlesOrder.order_id = Cart.order_id
 					AND ArticlesOrder.article_id = Cart.article_id
@@ -899,6 +920,7 @@ class DeliveriesController extends AppController {
 						AND User.organization_id = " . (int) $this->user->organization['Organization']['id'] . "
 						AND Delivery.isVisibleFrontEnd = 'Y'
 						AND Delivery.isToStoreroom = 'Y'
+                        AND Delivery.type = 'GAS'
 						AND Storeroom.user_id = User.id
 						AND Storeroom.user_id = " . $this->user->id . "
 						AND User.id = " . $this->user->id . "
@@ -981,10 +1003,11 @@ class DeliveriesController extends AppController {
          * la leggo sempre nel caso non ho acquisti
          */
         $options = [];
-        $options['conditions'] = array('Delivery.organization_id' => $this->user->organization['Organization']['id'],
+        $options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
             'Delivery.isVisibleFrontEnd' => 'Y',
             'Delivery.stato_elaborazione' => 'OPEN',
-            'Delivery.id' => $delivery_id);
+            'Delivery.type' => 'GAS',
+            'Delivery.id' => $delivery_id];
         $options['recursive'] = -1;
         $deliveryResults = $this->Delivery->find('first', $options);
         if (empty($deliveryResults)) {
@@ -995,17 +1018,24 @@ class DeliveriesController extends AppController {
         /*
          * carrello
          */
-        $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
+        $conditions = ['Delivery' => [
+                'Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN',
-                'Delivery.id' => $delivery_id),
-            'Cart' => array('Cart.user_id' => (int) $user_id,
-                'Cart.deleteToReferent' => 'N'),
-            'Order' => array("Order.state_code != 'CREATE-INCOMPLETE'"),
-            'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+                'Delivery.type' => 'GAS',
+                'Delivery.id' => $delivery_id
+            ],
+            'Cart' => [
+                'Cart.user_id' => (int) $user_id,
+                'Cart.deleteToReferent' => 'N'],
+            'Order' => [
+                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
+                'Order.state_code != ' => 'CREATE-INCOMPLETE'],
+            'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']
+        ];
 
-        $options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+        $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
             'articoliDellUtenteInOrdine' => true, // estraggo SOLO gli articoli acquistati da un utente in base all'ordine
-            'suppliers' => true, 'referents' => false);
+            'suppliers' => true, 'referents' => false];
 
         $results = $this->Delivery->getDataTabs($userPreview, $conditions, $options);
         $this->set(compact('results'));
@@ -1077,12 +1107,13 @@ class DeliveriesController extends AppController {
                 'suppliers' => true, 'referents' => false);
 
 			$conditions = [];
-            $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
+            $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
+                    'Delivery.type' => 'GAS',
                     'Delivery.stato_elaborazione' => 'OPEN',
                     'DATE(Delivery.data) >= CURDATE()',
-                    'Delivery.data' => $deliveryData),
-                'Storeroom' => array('Storeroom.user_id' => (int) $user_id),
-                'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+                    'Delivery.data' => $deliveryData],
+                'Storeroom' => ['Storeroom.user_id' => (int) $user_id],
+                'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
             $orderBy = null;
             $storeroomResults = $this->Delivery->getDataTabs($userPreview, $conditions, $options, $orderBy);
         }
@@ -1115,11 +1146,15 @@ class DeliveriesController extends AppController {
 		$conditions = []; 
         $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
                 //  'Delivery.stato_elaborzione'=> 'OPEN',
+                'Delivery.type'=> 'GAS',
                 'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY ',
                 'Delivery.data' => $deliveryData],
             'Cart' => ['Cart.user_id' => (int) $this->user->id,
                 'Cart.deleteToReferent' => 'N'],
-            'Order' => ['Order.state_code != ' => 'CREATE-INCOMPLETE'],
+            'Order' => [
+                'Order.state_code != ' => 'CREATE-INCOMPLETE',
+                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')]
+            ],
             'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
 	
 	    $options = []; 
@@ -1196,12 +1231,13 @@ class DeliveriesController extends AppController {
                 'suppliers' => true, 'referents' => false);
 
 			$conditions = []; 
-            $conditions = array('Delivery' => array('Delivery.isVisibleFrontEnd' => 'Y',
+            $conditions = ['Delivery' => ['Delivery.isVisibleFrontEnd' => 'Y',
                     'Delivery.stato_elaborazione' => 'OPEN',
+                    'Delivery.type' => 'GAS',
                     'DATE(Delivery.data) >= CURDATE()',
-                    'Delivery.data' => $deliveryData),
-                'Storeroom' => array('Storeroom.user_id' => (int) $this->user->id),
-                'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+                    'Delivery.data' => $deliveryData],
+                'Storeroom' => ['Storeroom.user_id' => (int) $this->user->id],
+                'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
             $orderBy = null;
             $storeroomResults = $this->Delivery->getDataTabs($this->user, $conditions, $options, $orderBy);
         }
@@ -1530,10 +1566,9 @@ class DeliveriesController extends AppController {
         }
 
         $options = [];
-        $options['conditions'] = array('Delivery.id' => $this->delivery_id,
-            'Delivery.organization_id' => $this->user->organization['Organization']['id'],
-            'Delivery.sys' => 'N'
-        );
+        $options['conditions'] = ['Delivery.id' => $this->delivery_id,
+                                'Delivery.organization_id' => $this->user->organization['Organization']['id'],
+                                'Delivery.sys' => 'N'];
         $options['recursive'] = -1;
         $this->request->data = $this->Delivery->find('first', $options);
         if (empty($this->request->data)) {
@@ -1791,18 +1826,22 @@ class DeliveriesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
-        $conditions = array('Delivery' => ['Delivery.isVisibleBackOffice' => 'Y',
+        $conditions = ['Delivery' => [
+                'Delivery.isVisibleBackOffice' => 'Y',
                 'Delivery.type' => 'GAS',
                 'Delivery.id' => (int) $delivery_id],
-            'Order' => array('Order.state_code != ' => 'CREATE-INCOMPLETE'),
-            'SuppliersOrganization' => array('SuppliersOrganization.stato' => 'Y'));
+            'Order' => [
+                'Order.state_code != ' => 'CREATE-INCOMPLETE',
+                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')]
+            ],
+            'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']];
 
-        $orderBy = array('Order' => 'Order.data_inizio asc, Order.data_fine asc');
+        $orderBy = ['Order' => 'Order.data_inizio asc, Order.data_fine asc'];
 
-        $options = array('orders' => true, 'storerooms' => false, 'summaryOrders' => false,
-            'suppliers' => true, 'referents' => true);
+        $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
+            'suppliers' => true, 'referents' => true];
 
-        $options += array('articlesOrdersInOrder' => false);  // NON estraggo gli articoli dell'ordine
+        $options += ['articlesOrdersInOrder' => false];  // NON estraggo gli articoli dell'ordine
 
         $results = $this->Delivery->getDataWithoutTabs($this->user, $conditions, $options, $orderBy);
 

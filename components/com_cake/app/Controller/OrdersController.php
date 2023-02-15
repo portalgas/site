@@ -41,6 +41,7 @@ class OrdersController extends AppController {
 
 		/* 
 		 * ordine per gruppi
+		 * e' solo gestito in neo, qui gli ordini di gruppo sono esclusi
 		 */
 		if(in_array($this->action, ['admin_edit'])) {	
 		   $results = $this->Order->read($this->order_id, $this->user->organization['Organization']['id']);	
@@ -52,6 +53,7 @@ class OrdersController extends AppController {
 				$this->myRedirect($url);
 			}
 	    }
+		
 
    		$actionWithPermission = ['admin_home'];
    		if(in_array($this->action, $actionWithPermission)) {
@@ -161,7 +163,7 @@ class OrdersController extends AppController {
 		$SqlLimit = 75;
 		$conditions += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						'Order.organization_id' => $this->user->organization['Organization']['id'],
-						// 'Order.order_type_id != ' => Configure::read('Order.type.gas_groups'),
+						'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
 						'Delivery.isVisibleBackOffice' => 'Y',
 						'Delivery.stato_elaborazione' => 'OPEN',
 						'SuppliersOrganization.stato' => 'Y'];
@@ -178,18 +180,20 @@ class OrdersController extends AppController {
 	    $this->paginate = ['conditions' => $conditions, 'order' => $order, 'maxLimit' => $SqlLimit, 'limit' => $SqlLimit];
 		$results = $this->paginate('Order');
 
+		/*
+		 * e' solo gestito in neo, qui gli ordini di gruppo sono esclusi
 		$gas_groups = [];
 		if($this->user->organization['Organization']['hasGasGroups']=='Y') {
 			App::import('Model', 'GasGroup');
 			$GasGroup = new GasGroup;	
 			$gas_groups = $GasGroup->getsByIdsUser($this->user, $this->user->organization['Organization']['id'], $this->user->id);
 		}
+		*/
 
 		foreach($results as $numResult => $result) {
 	
 			/* 
-			 * ctrl se e' un ordine di gruppo e se appartiene al gruppo del referente 
-			 */   
+			 * ctrl se e' un ordine di gruppo e se appartiene al gruppo del referente   
 			if($this->user->organization['Organization']['hasGasGroups']=='Y') {
 				if(!empty($result['Order']['gas_group_id'])) {
 					if(!in_array($result['Order']['gas_group_id'], $gas_groups)) {
@@ -198,6 +202,7 @@ class OrdersController extends AppController {
 					}
 				}
 			}
+			*/ 
 
 			/*
 			 * Suppliers per l'immagine
@@ -544,7 +549,8 @@ class OrdersController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 								'Delivery.isVisibleBackOffice' => 'Y',
 								'Delivery.stato_elaborazione' => 'OPEN',
-								'Delivery.sys'=>'N',
+								'Delivery.sys'=> 'N',
+								'Delivery.type'=> 'GAS', // GAS-GROUP
 								'DATE(Delivery.data) >= CURDATE()'];
 		$options['fields'] = ['Delivery.id', 'luogoData'];
 		$options['order'] = ['Delivery.data ASC'];
@@ -678,7 +684,8 @@ class OrdersController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
 										'Delivery.stato_elaborazione' => 'OPEN',
-									    'Delivery.sys'=>'N',
+									    'Delivery.sys'=> 'N',
+										'Delivery.type'=> 'GAS', // GAS-GROUP
 										'DATE(Delivery.data) >= CURDATE()'];
 		$options['fields'] = ['Delivery.id', 'luogoData'];
 		$options['order'] = ['Delivery.data ASC'];
@@ -1230,11 +1237,13 @@ class OrdersController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									'Delivery.isVisibleBackOffice' => 'Y',
 									'DATE(Delivery.data) >= CURDATE()',
-									'Delivery.sys'=>'N',
+									'Delivery.sys'=> 'N',
+									'Delivery.type'=> 'GAS', // GAS-GROUP
 									'Delivery.stato_elaborazione' => 'OPEN'];
 		$options['fields'] = ['Delivery.id', 'luogoData'];
 		$options['order'] = ['Delivery.data ASC'];
 		$deliveries = $this->Order->Delivery->find('list', $options);
+		
 		/*
 		 * non piu' perche' ho Delivery.sys = Y
 		if(empty($deliveries)) {
@@ -2169,6 +2178,8 @@ class OrdersController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 
+		/* 
+		 * e' solo gestito in neo, qui gli ordini di gruppo sono esclusi
 		if(!empty($orderResult['Order']['gas_group_id']) &&
 			$orderResult['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
 			$params = ['order_id' => $orderResult['Order']['id'],
@@ -2176,10 +2187,11 @@ class OrdersController extends AppController {
 			$url = $this->Connects->createUrlBo('admin/orders', 'edit', $params);
 		}
 		else {
+		*/
 			$url = Configure::read('App.server').'/administrator/index.php?option=com_cake';
 			$url .= '&controller=Orders&action=edit';
 			$url .= '&delivery_id='.$orderResult['Order']['delivery_id'].'&order_id='.$orderResult['Order']['id'];	
-		}
+		// }
 	
 		// echo '<br />'.$url;
 
@@ -2237,6 +2249,7 @@ class OrdersController extends AppController {
 								   'Delivery.isVisibleBackOffice' => 'Y',
 								   'Delivery.stato_elaborazione' => 'OPEN',
 								   'Delivery.sys' => 'N', 
+								   'Delivery.type'=> 'GAS', // GAS-GROUP
 								   'DATE(Delivery.data) < CURDATE()'];
 		$options['order'] = ['Delivery.data' => 'asc'];
 		$options['recursive'] = -1;

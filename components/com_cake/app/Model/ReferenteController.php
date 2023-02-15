@@ -380,7 +380,11 @@ class ReferenteController extends AppController {
 		if($this->isReferentTesoriere())
 			$isReferenteTesoriere = true;
 		else
-			$isReferenteTesoriere = false;		if(!$isReferenteTesoriere) {			$this->Session->setFlash(__('msg_not_permission'));			$this->myRedirect(Configure::read('routes_msg_stop'));		}
+			$isReferenteTesoriere = false;
+		if(!$isReferenteTesoriere) {
+			$this->Session->setFlash(__('msg_not_permission'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));
+		}
 		
 		App::import('Model', 'Order');
 		$Order = new Order;
@@ -392,9 +396,33 @@ class ReferenteController extends AppController {
 		}
 		$order = $Order->read($this->user->organization['Organization']['id'], null, $this->order_id);
 		
-		/*		 * ctrl eventuali occorrenze di SummaryOrder		* 		se il referenteTesoriere non e' mai passato da Carts::managementCartsGroupByUsers e' vuoto		*/
-		App::import('Model', 'SummaryOrder');		$SummaryOrder = new SummaryOrder;				$results = $SummaryOrder->select_to_order($this->user, $this->order_id);		if(empty($results))			$SummaryOrder->populate_to_order($this->user, $this->order_id);				App::import('Model', 'Delivery');		$Delivery = new Delivery;				$conditions = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],							'Delivery.isVisibleBackOffice' => 'Y',
-							'Delivery.sys' => 'N',							'Delivery.stato_elaborazione' => 'OPEN');					$deliveries = $Delivery->find('list',array('fields'=>array('id', 'luogoData'),'conditions'=>$conditions,'order'=>'data ASC','recursive'=>-1));		if(empty($deliveries)) {			$this->Session->setFlash(__('NotFoundDeliveries'));			$this->myRedirect(Configure::read('routes_msg_exclamation'));		}		$this->set(compact('deliveries'));		
+		/*
+		 * ctrl eventuali occorrenze di SummaryOrder
+		* 		se il referenteTesoriere non e' mai passato da Carts::managementCartsGroupByUsers e' vuoto
+		*/
+		App::import('Model', 'SummaryOrder');
+		$SummaryOrder = new SummaryOrder;
+		
+		$results = $SummaryOrder->select_to_order($this->user, $this->order_id);
+		if(empty($results))
+			$SummaryOrder->populate_to_order($this->user, $this->order_id);
+		
+		App::import('Model', 'Delivery');
+		$Delivery = new Delivery;
+		
+		$conditions = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+						'Delivery.isVisibleBackOffice' => 'Y',
+						'Delivery.sys' => 'N',
+						'Delivery.type'=> 'GAS', // GAS-GROUP
+						'Delivery.stato_elaborazione' => 'OPEN'];
+			
+		$deliveries = $Delivery->find('list', ['fields' => ['id', 'luogoData'], 'conditions' => $conditions, 'order' => 'data ASC', 'recursive' => -1]);
+		if(empty($deliveries)) {
+			$this->Session->setFlash(__('NotFoundDeliveries'));
+			$this->myRedirect(Configure::read('routes_msg_exclamation'));
+		}
+		$this->set(compact('deliveries'));
+		
 		
 		/*
 		 * aggiorno stato ORDER

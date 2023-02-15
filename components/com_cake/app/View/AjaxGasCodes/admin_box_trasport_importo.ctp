@@ -8,7 +8,7 @@ if($results['Order']['trasport']>0) {
 	 <div class="row">
 		<div class="col-md-4 form-inline">
 			<label class="control-label" for="tot_importo"><?php echo __('Importo totale ordine');?></label>
-			<input type="text" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>	
+			<input type="number" value="<?php echo $results['Order']['tot_importo'];?>" name="tot_importo" disabled class="form-control" />&nbsp;<span>&euro;</span>	
 		</div>	
 		<div class="col-md-4 form-inline">
 			<label class="control-label" for="trasporto"><?php echo __('Trasport');?></label>

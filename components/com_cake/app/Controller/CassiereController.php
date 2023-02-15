@@ -110,6 +110,7 @@ class CassiereController extends AppController {
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 									   'Delivery.isVisibleBackOffice' => 'Y',
 									   'Delivery.sys'=> 'N',
+									   'Delivery.type'=> 'GAS', // GAS-GROUP
 									   'Delivery.stato_elaborazione' => 'OPEN');
 		$options['fields'] = array('id', 'luogoData');
 		$options['order'] = 'data ASC';
@@ -243,11 +244,12 @@ class CassiereController extends AppController {
 		$Delivery = new Delivery;
 	
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 				'Delivery.isVisibleBackOffice' => 'Y',
 				'Delivery.sys'=> 'N',
-				'Delivery.stato_elaborazione' => 'CLOSE');
-		$options['fields'] = array('id', 'luogoData');
+				'Delivery.type'=> 'GAS', // GAS-GROUP
+				'Delivery.stato_elaborazione' => 'CLOSE'];
+		$options['fields'] = ['id', 'luogoData'];
 		$options['order'] = 'data ASC';
 		$options['recursive'] = -1;
 		$deliveries = $Delivery->find('list', $options);

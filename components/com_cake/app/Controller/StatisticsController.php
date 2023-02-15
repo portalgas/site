@@ -32,7 +32,8 @@ class StatisticsController extends AppController {
 		$Delivery = new Delivery;
 		
 		$options = [];
-		$options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'], 'Delivery.id' => $delivery_id];
+		$options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'], 
+                                  'Delivery.id' => $delivery_id];
         $options['recursive'] = 0; 
         $results = $Delivery->find('all', $options);
 		if(empty($results)) {

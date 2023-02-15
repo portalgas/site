@@ -661,6 +661,7 @@ class PagesController extends AppController {
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
             'Delivery.isVisibleBackOffice' => 'Y',
             'Delivery.sys' => 'N',
+            'Delivery.type'=> 'GAS', // GAS-GROUP
             'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '];
         $options['order'] = ['Delivery.data' => 'asc'];
         $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
@@ -673,6 +674,7 @@ class PagesController extends AppController {
         $options = [];
         $options['conditions'] = ['Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 						            'Delivery.isVisibleBackOffice' => 'Y',
+                                    'Delivery.type' => 'GAS',  // GAS-GROUP
 						            'Delivery.sys' => 'Y'];
         $options['order'] = ['Delivery.data ASC'];
         //$options['fields'] = ['id', 'luogoData'];
@@ -1126,6 +1128,7 @@ class PagesController extends AppController {
 									  'Delivery.isVisibleBackOffice' => 'Y',
 									  'Delivery.isToStoreroom' => 'Y',
  									  'Delivery.sys'=> 'N',
+									   'Delivery.type'=> 'GAS', // GAS-GROUP
 									  'Delivery.stato_elaborazione' => 'OPEN'];
         $options['fields'] = ['id', 'luogoData'];
 		$options['order'] = 'data ASC';
@@ -1142,6 +1145,7 @@ class PagesController extends AppController {
 	        $options['conditions'] = array('Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 	            'Delivery.isVisibleBackOffice' => 'Y',
 	            'Delivery.sys' => 'N',
+                'Delivery.type'=> 'GAS', // GAS-GROUP
 	            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesInTabs') . ' DAY ');
 	        $options['order'] = ['Delivery.data' => 'asc'];
 	        $options['fields'] = array('Delivery.id', 'Delivery.luogoData');
@@ -1154,6 +1158,7 @@ class PagesController extends AppController {
 	        $options = [];
 	        $options['conditions'] = array('Delivery.organization_id' => (int) $this->user->organization['Organization']['id'],
 	            'Delivery.isVisibleBackOffice' => 'Y',
+                'Delivery.type' => 'GAS',  // GAS-GROUP
 	            'Delivery.sys' => 'Y');
 	        $options['order'] = array('data ASC');
 	        //$options['fields'] = array('id', 'luogoData');

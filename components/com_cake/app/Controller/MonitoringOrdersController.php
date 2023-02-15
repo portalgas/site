@@ -151,11 +151,12 @@ class MonitoringOrdersController extends AppController {
 		$Delivery = new Delivery;
 	
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-										'Delivery.isVisibleBackOffice' => 'Y',
-										'Delivery.sys'=> 'N',
-										'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('id', 'luogoData');
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'Delivery.isVisibleBackOffice' => 'Y',
+									'Delivery.sys'=> 'N',
+									'Delivery.type'=> 'GAS', // GAS-GROUP
+									'Delivery.stato_elaborazione' => 'OPEN'];
+		$options['fields'] = ['id', 'luogoData'];
 		$options['order'] = 'data ASC';
 		$options['recursive'] = -1;
 		$deliveries = $Delivery->find('list', $options);
@@ -166,6 +167,7 @@ class MonitoringOrdersController extends AppController {
 		$options = [];
 		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
 										'Delivery.isVisibleBackOffice' => 'Y',
+										'Delivery.type' => 'GAS',  // GAS-GROUP
 										'Delivery.sys' => 'Y');
 		$options['order'] = array('data ASC');
 		//$options['fields'] = array('id', 'luogoData');

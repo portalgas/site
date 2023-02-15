@@ -9,15 +9,15 @@ class Mail extends AppModel {
 	 */
 	 public function getMailSystem($user) {
 		$Email = new CakeEmail(Configure::read('EmailConfig'));
-		$Email->helpers(array('Html', 'Text'));
+		$Email->helpers(['Html', 'Text']);
 		$Email->template('default');
 		$Email->emailFormat('html');
 	
 		$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
-		$Email->from(array(Configure::read('SOC.mail') => Configure::read('SOC.name')));
+		$Email->from([Configure::read('SOC.mail') => Configure::read('SOC.name')]);
 		$Email->sender(Configure::read('SOC.mail'), Configure::read('SOC.name'));
 	
-		$Email->viewVars(array('header' => $this->drawLogo($user->organization)));
+		$Email->viewVars(['header' => $this->drawLogo($user->organization)]);
 		
 		return $Email;
 	}

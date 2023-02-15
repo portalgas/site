@@ -132,6 +132,7 @@ class StoreroomsController extends AppController {
 								  'Delivery.isVisibleBackOffice' => 'Y',
 								  'Delivery.isToStoreroom' => 'Y',
 								  'Delivery.sys'=> 'N',
+								  'Delivery.type'=> 'GAS', // GAS-GROUP
 								  'Delivery.stato_elaborazione' => 'OPEN'];
 		$conditionsDeliveries['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$conditionsDeliveries['order'] = ['Delivery.data ASC'];

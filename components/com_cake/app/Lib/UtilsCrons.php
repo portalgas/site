@@ -64,6 +64,7 @@ class UtilsCrons {
         $options['conditions'] = ['Delivery.organization_id' => (int) $user->organization['Organization']['id'],
                                 'Delivery.isVisibleFrontEnd' => 'Y',
                                 'Delivery.stato_elaborazione' => 'OPEN',
+                                'Delivery.type' => 'GAS',  // GAS-GROUP
                                 'DATE(Delivery.data) = CURDATE() + INTERVAL ' . Configure::read('GGMailToAlertDeliveryOn') . ' DAY '];
         $options['recursive'] = -1;
         $deliveryResults = $Delivery->find('all', $options);
