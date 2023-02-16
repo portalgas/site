@@ -650,6 +650,32 @@ class ActionsOrderComponent extends Component {
 			return false;
 	}
 	
+	/*
+	 * controllo la tipologia di ordine
+		Configure::write('Order.type.gas', 1);
+		Configure::write('Order.type.des', 2);
+		Configure::write('Order.type.des_titolare', 3);
+		Configure::write('Order.type.promotion', 4);
+		Configure::write('Order.type.pact_pre', 5); 
+		Configure::write('Order.type.pact', 6);  
+		Configure::write('Order.type.supplier', 7);
+		Configure::write('Order.type.promotion_gas_users', 8);
+		Configure::write('Order.type.socialmarket', 9);
+		Configure::write('Order.type.gas_groups', 10);
+		Configure::write('Order.type.gas_parent_groups', 11);
+	*/
+	private function isOrderTypes($user, $results, $value_da_verificare) {
+		$esito = false;
+
+		$order_type_ids = explode(',', $value_da_verificare);
+		if(in_array($results['Order']['order_type_id'], $order_type_ids))
+			$esito = true;
+		else
+			$esito = false;			
+			
+		return $esito;
+	}
+
 	private function isProdGasPromotion($user, $results, $value_da_verificare) {
 		$esito = false;
 		$isProdGasPromotion = "N";

@@ -15,6 +15,8 @@ class MailsSend extends AppModel {
 	*/
 	public function mailUsersOrdersOpen($organization_id, $user, $debug=false) {
 
+		$debug = true;
+
 			date_default_timezone_set('Europe/Rome');
 
             try {
@@ -218,9 +220,9 @@ class MailsSend extends AppModel {
 								 */
 								$body_mail_final = str_replace("{u}", urlencode($User->getUsernameCrypted($username)), $body_mail);
 								
-								if($debug && $numResult==1) echo $body_mail_final;
+								if($debug && $numResult==1) echo $body_mail_final ."\n";
 
-								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
+								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, false);
 
 							}   
 							else {
@@ -256,6 +258,8 @@ class MailsSend extends AppModel {
 
 	public function mailUsersOrdersClose($organization_id, $user, $debug=false) {
 		
+		$debug = true;
+
             date_default_timezone_set('Europe/Rome');
 
             try {
@@ -444,9 +448,9 @@ class MailsSend extends AppModel {
 								 */
 								$body_mail_final = str_replace("{u}", urlencode($User->getUsernameCrypted($username)), $body_mail);
 
-								if($debug && $numResult==1) echo $body_mail_final; 
+								if($debug && $numResult==1) echo $body_mail_final."\n"; 
 
-								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, $debug);
+								$mailResults = $Mail->send($Email, [$mail2, $mail], $body_mail_final, false);
 							}   
 							else { 
 							   if($debug)
