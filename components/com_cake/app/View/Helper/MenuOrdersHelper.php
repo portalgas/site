@@ -93,7 +93,11 @@ class MenuOrdersHelper extends AppHelper {
 				$label = $label.' ('.$results['Order'][$orderAction['OrdersAction']['label_more']].' €)';
 			
 			$html .=  '		<li>';
-			$html .=  $this->Html->link('<span class="desc animate"> '.$label .' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="'.$orderAction['OrdersAction']['css_class'].'"></span>',  
+
+			if(!empty($orderAction['OrdersAction']['neo_url']))
+				$html .= '<a title="'.$orderAction['OrdersAction']['title'].'" href="'.$orderAction['OrdersAction']['neo_url'].'"><span class="desc animate"> '.$label .' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="'.$orderAction['OrdersAction']['css_class'].'"></span></a>';
+			else
+				$html .=  $this->Html->link('<span class="desc animate"> '.$label .' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="'.$orderAction['OrdersAction']['css_class'].'"></span>',  
 								  $urlBase.$orderAction['OrdersAction']['url'], 
 								  ['class' => 'animate', 'escape' => false]);
 			$html .=  '		</li>';

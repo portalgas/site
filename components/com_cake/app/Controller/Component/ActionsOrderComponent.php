@@ -78,7 +78,8 @@ class ActionsOrderComponent extends Component {
 		
 		$options = [];
 		$options['conditions'] = ['Order.organization_id' => $user->organization['Organization']['id'], 'Order.id' => $order_id];
-		$options['fields'] = ['Order.organization_id', 'Order.id', 'Order.delivery_id', 'Order.supplier_organization_id', 'Order.prod_gas_promotion_id', 'Order.state_code', 
+		$options['fields'] = ['Order.organization_id', 'Order.id', 'Order.delivery_id', 'Order.supplier_organization_id', 'Order.prod_gas_promotion_id', 
+							   'Order.state_code', 'Order.order_type_id',  
 							   'Order.hasTrasport', 'Order.hasCostMore', 'Order.hasCostLess', 'Order.typeGest'];
 		$options['recursive'] = -1;
 		$orderResults = $Order->find('first', $options);
@@ -360,7 +361,16 @@ class ActionsOrderComponent extends Component {
 				
 				$orderActions[$i]['OrdersAction'] = $result['OrdersAction'];
 				$orderActions[$i]['OrdersAction']['url'] = 'controller='.$result['OrdersAction']['controller'].'&action='.$result['OrdersAction']['action'].'&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$orderResults['Order']['id'];
-			
+				if(!empty($result['OrdersAction']['neo_url'])) {
+					$neo_url = $result['OrdersAction']['neo_url'];
+					$neo_url = str_replace('{order_type_id}', $orderResults['Order']['order_type_id'], $neo_url);
+					$neo_url = str_replace('{delivery_id}', $orderResults['Order']['delivery_id'], $neo_url);
+					$neo_url = str_replace('{order_id}', $orderResults['Order']['id'], $neo_url);
+					$neo_url = str_replace('{parent_id}', $orderResults['Order']['parent_id'], $neo_url);
+	
+					$orderActions[$i]['OrdersAction']['neo_url'] = Configure::read('Neo.portalgas.url').$neo_url;
+				}
+
 				if(!empty($result['OrdersAction']['query_string'])) {
 						
 					switch ($result['OrdersAction']['query_string']) {
@@ -373,7 +383,7 @@ class ActionsOrderComponent extends Component {
 			}
 	
 		}
-	
+
 		$controllerLog::l($orderActions, $debug);
 	
 		return $orderActions;

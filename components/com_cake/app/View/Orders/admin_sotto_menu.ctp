@@ -46,6 +46,9 @@ foreach($orderActions as $orderAction) {
 
 	echo "\r\n";
 	echo '<li>';
+	if(!empty($orderAction['OrdersAction']['neo_url']))
+		echo '<a title="'.$orderAction['OrdersAction']['title'].'" class="'.$position_img.' '.$orderAction['OrdersAction']['css_class'].'" href="'.$orderAction['OrdersAction']['neo_url'].'">'.$label.'</a>';
+	else		
 	if(empty($orderAction['OrdersAction']['url']))
 		echo '<div style="font-weight:bold;color:#003D4C;" title="'.__($orderAction['OrdersAction']['label']).'" class="'.$position_img.' '.$orderAction['OrdersAction']['css_class'].'" >'.$label.'</div>';
 	else

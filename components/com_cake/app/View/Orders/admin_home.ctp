@@ -60,7 +60,11 @@ if(!empty($raggruppamentoOrderActions))  {
 			if($orderAction['OrdersAction']['controller']==$raggruppamentoOrderAction['controller']) {
 				echo "\r\n";
 				echo '<li>';
-				echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$urlBase.$orderAction['OrdersAction']['url'].'">';
+				if(!empty($orderAction['OrdersAction']['neo_url']))
+					echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$orderAction['OrdersAction']['neo_url'].'">';
+				else
+					echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$urlBase.$orderAction['OrdersAction']['url'].'">';
+
 				echo '<img alt="'.__($orderAction['OrdersAction']['label']).'" src="'.Configure::read('App.img.cake').'/help-online/'.$orderAction['OrdersAction']['img'].'" />';
 				echo '</a>';
 				echo '</li>';
@@ -81,7 +85,10 @@ else {
 	foreach($orderActions as $orderAction) {	
 		echo "\r\n";
 		echo '<li>';
-		echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$urlBase.$orderAction['OrdersAction']['url'].'">';
+		if(!empty($orderAction['OrdersAction']['neo_url']))
+			echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$orderAction['OrdersAction']['neo_url'].'">';
+		else
+			echo '<a title="'.__($orderAction['OrdersAction']['label']).'" href="'.$urlBase.$orderAction['OrdersAction']['url'].'">';
 		echo '<img alt="'.__($orderAction['OrdersAction']['label']).'" src="'.Configure::read('App.img.cake').'/help-online/'.$orderAction['OrdersAction']['img'].'" />';
 		echo '</a>';
 		echo '</li>';

@@ -673,6 +673,9 @@ msgstr "Aggiungi una nuova consegna"
 msgid "Add Order"
 msgstr "Aggiungi un nuovo ordine"
 
+msgid "Add Order-10"
+msgstr "Aggiungi un nuovo ordine di gruppo dall'ordine titolare"
+
 msgid "Add DesOrder"
 msgstr "Aggiungi un nuovo ordine condiviso"
 
