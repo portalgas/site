@@ -221,11 +221,11 @@ if(!empty($organization_id)) {
 			if(in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups())) {
 				$i++;
 				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Elenco ordini per i gruppi";
+				$_menus[$i]['label'] = "Elenco ordini titolari per gruppi ";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index&q=11";
 				$i++;
 				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Aggiungi un nuovo ordine per i gruppi";
+				$_menus[$i]['label'] = "Aggiungi un nuovo ordine titolare per i gruppi";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=11";
 				$i++;
 				$_menus[$i]['separator'] = true;				

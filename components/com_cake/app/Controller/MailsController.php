@@ -199,16 +199,16 @@ class MailsController extends AppController {
 					 * dati produttore
 					*/
 					$options = [];
-					$options['conditions'] = array('Supplier.id' => $pass_id);
+					$options['conditions'] = ['Supplier.id' => $pass_id];
 					$options['recursive'] = -1;
 					$supplierResults = $Supplier->find('first', $options);
 							
 					App::import('Model', 'User');
 					$User = new User;
 				
-					$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_root_supplier'));
+					$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_root_supplier')];
 					$results = $User->getUsersNoOrganization($conditions);
-						
+				
 					$subject_mail = "Richiesta di modifica dei dati del produttore ".$supplierResults['Supplier']['name'];
 						
 					$tmp = "Richiesta di modifica dei dati del produttore ".$supplierResults['Supplier']['name']." (".$supplierResults['Supplier']['id'].") <br />";
@@ -234,7 +234,7 @@ class MailsController extends AppController {
 						else
 							$Email->viewVars(['body_footer_simple' => sprintf(Configure::read('Mail.body_footer'))]);
 
-						$mailResults = $Mail->send($Email, $mail, $body_mail, $debug);
+						$mailResults = $Mail->send($Email, $mail, $body_mail, true);
 						if(isset($mailResults['OK'])) {
 							$tot_ok++;
 							$msg_ok .= $mailResults['OK'].'<br />';							

@@ -244,7 +244,7 @@ class MailsSend extends AppModel {
                                     organization_id = $organization_id
                                     and id = ".$orderCtrlResult['Order']['id'];
                             self::d($sql, $debug);
-                            if(!$debug) $Order->query($sql);
+                            $Order->query($sql);
                         }
                         
                     } // end if(!empty($orderCtrlResults))
@@ -468,7 +468,7 @@ class MailsSend extends AppModel {
                                   SET mail_close_data = '".date('Y-m-d H:i:s')."'
                                   WHERE organization_id = $organization_id and id = ".$orderCtrlResult['Order']['id'];
                             self::d($sql, $debug);
-                            if(!$debug) $Order->query($sql);
+                            $Order->query($sql);
                         }
                         
                     } // end if(!empty($orderCtrlResults))
