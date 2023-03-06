@@ -189,7 +189,15 @@ echo $this->element('boxOrder', ['results' => $order]);
 						echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';	
 					}
 					echo '</td>';
-					echo '<td nowrap>'.$result['ArticlesOrder']['prezzo_e'].'</td>';
+					echo '<td nowrap>';
+					echo $result['ArticlesOrder']['prezzo_e'];
+					if($result['Article']['prezzo']!=$result['ArticlesOrder']['prezzo']) {
+						$label = '<br /><div class="label label-warning">nel listino ora è '.$result['Article']['prezzo_e'].'</div>';
+						echo $this->Html->link($label, ['controller' => 'Articles', 
+													 'action' => 'context_articles_view', $result['Article']['id'], 'article_organization_id' => $result['Article']['organization_id']],
+													 ['title' => __('View'), 'style' => 'margin-top:5px', 'escape' => false]); 
+					}
+					echo '</td>';
 					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
 					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_multipli'].'</td>';
 					echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_minima'].'</td>';

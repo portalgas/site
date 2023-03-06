@@ -1800,7 +1800,7 @@ class ExportDocsController extends AppController {
                     if ($result['Delivery']['totOrders'] > 0 && $result['Delivery']['totArticlesOrder'] > 0) {
 
                         foreach ($result['Delivery']['Order'] as $numOrder => $order) {
-
+                            
                             /*
                              * aggiunge ad un ordine le eventuali 
                              *  SummaryOrder 
@@ -1816,7 +1816,7 @@ class ExportDocsController extends AppController {
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderTrasport'] = $resultsSummaryOrderPlus['SummaryOrderTrasport'];
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderCostMore'] = $resultsSummaryOrderPlus['SummaryOrderCostMore'];
                                 $resultsWithModifies[$order['Order']['id']]['SummaryOrderCostLess'] = $resultsSummaryOrderPlus['SummaryOrderCostLess'];
-
+                                
                                 // $results = $this->ExportDoc->getCartCompliteOrder($order_id, $results, $resultsSummaryOrderAggregate, $resultsSummaryOrderTrasport, $resultsSummaryOrderCostMore, $resultsSummaryOrderCostLess, $debug);                 
                             }  // if($result['Order']['state_code']=='PROCESSED-ON-DELIVERY')
                         } // loops Orders

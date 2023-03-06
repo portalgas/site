@@ -115,13 +115,21 @@ class ActionsOrderComponent extends Component {
 		
 	}
 	
+	/*
+	 * gestisco solo referente perche' ha i medesimi permessi
+	 */	
 	public function getGroupIdToReferente($user, $debug=false) {
 		$group_id = 0;
 	
+		/*
 		if(in_array(Configure::read('group_id_referent'), $user->getAuthorisedGroups())) $group_id = Configure::read('group_id_referent');
 		else
 		if(in_array(Configure::read('group_id_super_referent'), $user->getAuthorisedGroups())) $group_id = Configure::read('group_id_super_referent');
-	
+		*/ 
+		if(in_array(Configure::read('group_id_referent'), $user->getAuthorisedGroups()) || 
+		in_array(Configure::read('group_id_super_referent'), $user->getAuthorisedGroups()))
+			$group_id = Configure::read('group_id_referent');
+
 		return $group_id;
 	}
 

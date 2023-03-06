@@ -215,7 +215,7 @@ if (isset($results['Delivery']))
                      * SummaryOrderCostMore
                      * SummaryOrderCostLess
                      *
-                     * $resultsWithModifies[order_id][SummaryOrder][0][SummaryOrder][importo] e' la somma di SummaryOrderTrasport + SummaryOrderCostMore + SummaryOrderCostLess
+                     * $resultsWithModifies[order_id][SummaryOrder][SummaryOrder][importo] e' la somma di SummaryOrderTrasport + SummaryOrderCostMore + SummaryOrderCostLess
                      */
                     if (array_key_exists($order['Order']['id'], $resultsWithModifies)) {
 
@@ -225,9 +225,9 @@ if (isset($results['Delivery']))
                           print_r($resultsWithModifiesOrder);
                           echo "</pre>";
                          */
-                        if (isset($resultsWithModifiesOrder['SummaryOrderTrasport'][0])) {
+                        if (isset($resultsWithModifiesOrder['SummaryOrderTrasport'])) {
 
-                            $importo_trasport = $resultsWithModifiesOrder['SummaryOrderTrasport'][0]['SummaryOrderTrasport']['importo_trasport'];
+                            $importo_trasport = $resultsWithModifiesOrder['SummaryOrderTrasport']['SummaryOrderTrasport']['importo_trasport'];
                             // echo '<br />importo_trasport '.$importo_trasport;
 
                             if ($importo_trasport > 0) {
@@ -242,9 +242,9 @@ if (isset($results['Delivery']))
                             $tot_importo_trasport += $importo_trasport;
                             // echo '<br />tot_importo_trasport '.$tot_importo_trasport;
                         }
-                        if (isset($resultsWithModifiesOrder['SummaryOrderCostMore'][0])) {
+                        if (isset($resultsWithModifiesOrder['SummaryOrderCostMore'])) {
 
-                            $importo_cost_more = $resultsWithModifiesOrder['SummaryOrderCostMore'][0]['SummaryOrderCostMore']['importo_cost_more'];
+                            $importo_cost_more = $resultsWithModifiesOrder['SummaryOrderCostMore']['SummaryOrderCostMore']['importo_cost_more'];
 
                             if ($importo_cost_more > 0) {
                                 $html .= '<tr>';
@@ -257,9 +257,9 @@ if (isset($results['Delivery']))
 
                             $tot_importo_cost_more += $importo_cost_more;
                         }
-                        if (isset($resultsWithModifiesOrder['SummaryOrderCostLess'][0])) {
+                        if (isset($resultsWithModifiesOrder['SummaryOrderCostLess'])) {
 
-                            $importo_cost_less = $resultsWithModifiesOrder['SummaryOrderCostLess'][0]['SummaryOrderCostLess']['importo_cost_less'];
+                            $importo_cost_less = $resultsWithModifiesOrder['SummaryOrderCostLess']['SummaryOrderCostLess']['importo_cost_less'];
 
                             if ($importo_cost_less != 0) {
                                 $html .= '<tr>';
@@ -273,9 +273,9 @@ if (isset($results['Delivery']))
                             $tot_importo_cost_less += $importo_cost_less;
                         }
 
-                        if (isset($resultsWithModifiesOrder['SummaryOrder'][0])) {
+                        if (isset($resultsWithModifiesOrder['SummaryOrder'])) {
 
-                            $importo = $resultsWithModifiesOrder['SummaryOrder'][0]['SummaryOrder']['importo'];
+                            $importo = $resultsWithModifiesOrder['SummaryOrder']['SummaryOrder']['importo'];
                             // echo '<br />importo '.$importo;
 
                             if ($importo > 0) {
