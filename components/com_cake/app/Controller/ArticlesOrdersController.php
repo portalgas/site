@@ -708,6 +708,9 @@ class ArticlesOrdersController extends AppController {
         } // end if ($this->request->is('post') || $this->request->is('put'))
 
 		self::d('Order.owner_articles '.$this->order['Order']['owner_articles'], $debug);
+
+        $results = [];
+        $articles = [];
 		switch ($this->order['Order']['owner_articles']) {
             case 'DES':
                 /*

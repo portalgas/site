@@ -58,9 +58,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$colspan = '6'; 
 							else
 								$colspan = '4';
-							<table class="table table-hover" cellpadding="0" cellspacing="0">
+							
+																						   
 							$html_header .= '	<br /><br />';
-							$html_header .= '	<table cellpadding="0" cellspacing="0">';
+							$html_header .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 							$html_header .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
 							$html_header .= '<tr>';
 							$html_header .= '<td colspan="'.$colspan.'" style="text-align:center;">';
@@ -145,7 +146,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						break;								
 						case 'TRDATA':
 							
-							$html .= $html_header;
+							$html .= $html_header.'</table>';
 							
 							if($codice=='Y' && $user->organization['Organization']['hasFieldArticleCodice']=='Y')		
 								$name = $cols['CODICE'].' '.$cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);
@@ -170,7 +171,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							}
 							else {								
 								$html .= '<td style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.$cols['QTA'].$this->App->traslateQtaImportoModificati($cols['ISQTAMOD']).'</td>';
-								$html<table class="table table-hover" cellpadding="0" cellspacing="0">H200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'" ';
+								$html .= '<td width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'" ';
 								if($cols['DELETE_TO_REFERENT']=='Y') $html .= ' style="text-decoration: line-through;"';
 								$html .= '>'.$name.'</td>';
 								$html .= '<td width="'.$output->getCELLWIDTH90().'">'.$cols['PREZZO_E'].'</td>';
@@ -201,7 +202,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 		 */		
 		$html = '';
 		$html .= '	<br />';
-		$html .= '	<table cellpadding="0" cellspacing="0">';
+		$html .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
 		$html .= '	<tbody>';
 		$html .= '<tr>';
 		$html .= '<td colspan="'.$colspan.'" style="text-align:center;">';

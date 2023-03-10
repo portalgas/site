@@ -55,7 +55,6 @@ class ActionsDesOrderComponent extends Component {
 			$DesOrdersOrganization = new DesOrdersOrganization();
 
 			$desOrdersOrganizationResults = $DesOrdersOrganization->getDesOrdersOrganization($user, $order_id, $debug);
-							
 			if (!empty($desOrdersOrganizationResults)) {
 
 				$des_order_id = $desOrdersOrganizationResults['DesOrdersOrganization']['des_order_id'];

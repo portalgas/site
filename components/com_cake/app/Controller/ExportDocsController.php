@@ -187,7 +187,7 @@ class ExportDocsController extends AppController {
         $options = ['orders' => true, 'storerooms' => false, 'summaryOrders' => false,
                             'articlesOrdersInOrderAndCartsAllUsers' => true, // estraggo SOLO gli articoli acquistati da TUTTI gli utente in base all'ordine
                             'suppliers' => true, 'referents' => true];
-
+                            
         /*
          * CONDITIONS
          */
@@ -331,7 +331,7 @@ class ExportDocsController extends AppController {
         $params = ['delivery_id' => $delivery_id, 'order_id' => $order_id];
         $this->set('fileData', $this->utilsCommons->getFileData($this->tmp_user, $doc_options, $params, $user_target = 'REFERENTE'));
         $this->set('organization', $this->tmp_user->organization);
-
+      
         if ($doc_options == 'to-articles-monitoring') {
 
             App::import('Model', 'Order');
@@ -408,7 +408,7 @@ class ExportDocsController extends AppController {
                 $this->set('codice', $e);
                 break;
         }
-
+       
         switch ($doc_formato) {
             case 'PREVIEW':
                 $this->layout = 'ajax';

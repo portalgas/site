@@ -161,6 +161,9 @@ class OrdersController extends AppController {
 		$this->set('orders',$orders);
 		   
 		$SqlLimit = 75;
+		/* 
+         * escludo gli rodini di gruppo
+		 */
 		$conditions += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						'Order.organization_id' => $this->user->organization['Organization']['id'],
 						'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
