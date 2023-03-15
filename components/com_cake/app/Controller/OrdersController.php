@@ -162,7 +162,7 @@ class OrdersController extends AppController {
 		   
 		$SqlLimit = 75;
 		/* 
-         * escludo gli rodini di gruppo
+         * escludo gli ordini di gruppo
 		 */
 		$conditions += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						'Order.organization_id' => $this->user->organization['Organization']['id'],
