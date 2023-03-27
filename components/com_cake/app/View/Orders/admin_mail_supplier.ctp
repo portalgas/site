@@ -29,7 +29,7 @@ echo '<legend>'.__('OrderMailSupplier').'</legend>';
 
 		echo '<div class="input text">';
 		echo '<label for="OrderDeliveryId">'.__('Email').'</label> ';
-		echo '<a href="'.$supplierResults['Supplier']['mail'].'" target="_blank">'.$supplierResults['Supplier']['mail'].'</a>';
+		echo '<a href="mailto:'.$supplierResults['Supplier']['mail'].'" target="_blank">'.$supplierResults['Supplier']['mail'].'</a>';
 		echo '</div>';
 		
 		echo '<div class="input text">';

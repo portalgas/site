@@ -13686,5 +13686,14 @@
 <changefreq>yearly</changefreq>
 <lastmod>2021-08-19</lastmod>
 </url>
-
+  <url>
+    <loc>https://www.portalgas.it/home-gas-gasdelgarda</loc>
+    <lastmod>2023-03-24</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-gasdelgarda/consegne-gas-gasdelgarda</loc>
+    <lastmod>2023-03-24</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
 </urlset>

@@ -568,9 +568,24 @@ alert('Gas Register del GAS');
     <table class="table table-bordered table-hover">
         <tr>
             <td>
-                <b>Creare ambiente</b>
+                <b>Inserire il nuovo GAS con i produttori che consegnano in tutta Italia</b>
             </td>
             <td>
+<pre class="shell">
+SELECT supplier_organization_id, count(supplier_organization_id) FROM `socialmarket_organizations` group by supplier_organization_id order by count(supplier_organization_id) desc
+</pre>				
+            </td>
+            <td>
+				inserisci i produttori con un numoero alto
+<pre class="shell">
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(..., <?php echo $max_id;?>);
+
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3078, <?php echo $max_id;?>);
+ insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3123, <?php echo $max_id;?>);
+ insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3090, <?php echo $max_id;?>);
+ insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3080, <?php echo $max_id;?>);
+ insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3191, <?php echo $max_id;?>);
+</pre>				
             </td>
         </tr>
     </table>

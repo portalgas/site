@@ -88,6 +88,7 @@
 					<option value="31">gasamunì (id 31)</option>
 					<option value="23">gasati (id 23)</option>
 					<option value="148">gasattivospoleto (id 148)</option>
+					<option value="154">gasdelgarda (id 154)</option> 
 					<option value="127">gasiamovaldayas (id 127)</option>
 					<option value="7">gasavigliana (id 7)</option>
 					<option value="16">gasbarga (id 16)</option>
@@ -184,6 +185,7 @@
 					<option value="gascaneva">gascaneva</option>
 					<option value="gascassina">gascassina</option>
 					<option value="gasconsumattorigiussano">gasconsumattorigiussano</option>
+					<option value="gasdelgarda">gasdelgarda</option> 
 					<option value="gasdorabaltea">gasdorabaltea</option>
 					<option value="gasbuttigliera">gasbuttigliera</option>
 					<option value="gasfiordirobinia">gasfiordirobinia</option>
