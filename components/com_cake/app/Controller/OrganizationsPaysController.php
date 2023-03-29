@@ -248,7 +248,8 @@ class OrganizationsPaysController extends AppController {
     }
 
     /*
-     * crea tutt i pdf
+     * crea tutt i pdf in 
+	 * Configure::read('App.root') . DS . 'images' . DS . 'pays' . DS . date('Y');
      */
     public function admin_ajax_invoice_create_pdf() {
 
