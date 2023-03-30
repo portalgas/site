@@ -28,6 +28,7 @@ class CashsController extends AppController {
         $this->paginate = ['maxLimit' => $SqlLimit, 'limit' => $SqlLimit, 'conditions' => $conditions, 'order' => Configure::read('orderUser')];
         $results = $this->paginate('Cash');
         foreach ($results as $numResult => $result) {
+   
             /*
              * user disabilitati
              */
@@ -36,14 +37,19 @@ class CashsController extends AppController {
 
                 $options = [];
                 $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
-                                          'User.id' => $result['Cash']['user_id']];
+                                          'User.id' => $result['Cash']['user_id'],
+                                          'User.username NOT LIKE' => '%portalgas.it'];
 
                 $options['recursive'] = -1;
                 $userResults = $User->find('first', $options);  
+                if(!empty($userResults)) {
+                    $results[$numResult]['User']['name'] = $userResults['User']['name'];
+                    $results[$numResult]['User']['email'] = $userResults['User']['email'];
+                    $results[$numResult]['User']['block'] = $userResults['User']['block'];    
+                }
+                else 
+                    unset($results[$numResult]);
 
-                $results[$numResult]['User']['name'] = $userResults['User']['name'];
-                $results[$numResult]['User']['email'] = $userResults['User']['email'];
-                $results[$numResult]['User']['block'] = $userResults['User']['block'];                      
             }
         }
         $this->set(compact('results'));
@@ -225,7 +231,8 @@ class CashsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-                                  'User.block' => 0];
+                                  'User.block' => 0,
+                                  'User.username NOT LIKE' => '%portalgas.it'];
 
         if (!empty($user_ids)) {
             $user_ids = substr($user_ids, 0, (strlen($user_ids) - 1));
@@ -397,7 +404,8 @@ class CashsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.block' => 0];
+                                    'User.block' => 0,
+                                    'User.username NOT LIKE' => '%portalgas.it'];
         $options['fields'] = ['id', 'name'];
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
@@ -425,7 +433,7 @@ class CashsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'User.id' => $this->request->data['Cash']['user_id']];
+                                  'User.id' => $this->request->data['Cash']['user_id']];
         $options['recursive'] = -1;
         $utente = $User->find('first', $options);
 
