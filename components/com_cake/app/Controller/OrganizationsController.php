@@ -379,6 +379,7 @@ class OrganizationsController extends AppController {
             $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
             $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
             $paramsConfig += ['canOrdersDelete' => $this->request->data['Organization']['canOrdersDelete']];
+            $paramsConfig += ['ggArchiveStatics' => $this->request->data['Organization']['ggArchiveStatics']];
             $paramsConfig += ['cashLimit' => $this->request->data['Organization']['cashLimit']];
             $paramsConfig += ['limitCashAfter' => $this->request->data['Organization']['limitCashAfter']];
             $paramsConfig += ['hasDes' => $this->request->data['Organization']['hasDes']];
@@ -458,6 +459,7 @@ class OrganizationsController extends AppController {
         $this->request->data['Organization']['hasUserGroupsStoreroom'] = 'N';
         $this->request->data['Organization']['canOrdersClose'] = 'ALL';
         $this->request->data['Organization']['canOrdersDelete'] = 'ALL';
+        $this->request->data['Organization']['ggArchiveStatics'] = Configure::read('GGArchiveStatics');
         $this->request->data['Organization']['cashLimit'] = 'LIMIT-NO';
 		$this->request->data['Organization']['limitCashAfter'] = '0.00';
 		
@@ -564,6 +566,7 @@ class OrganizationsController extends AppController {
             $paramsConfig += ['hasStoreroomFrontEnd' => $this->request->data['Organization']['hasStoreroomFrontEnd']];
             $paramsConfig += ['canOrdersClose' => $this->request->data['Organization']['canOrdersClose']];
             $paramsConfig += ['canOrdersDelete' => $this->request->data['Organization']['canOrdersDelete']];
+            $paramsConfig += ['ggArchiveStatics' => $this->request->data['Organization']['ggArchiveStatics']];
             $paramsConfig += ['cashLimit' => $this->request->data['Organization']['cashLimit']];
             $paramsConfig += ['limitCashAfter' => $this->request->data['Organization']['limitCashAfter']];
             $paramsConfig += ['hasDes' => $this->request->data['Organization']['hasDes']];

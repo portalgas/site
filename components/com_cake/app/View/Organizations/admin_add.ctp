@@ -120,7 +120,7 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo '<h3>'.__('Storeroom').'</h3>';
 	echo $this->App->drawFormRadio('Organization','hasStoreroom',array('options' => $hasStoreroom, 'value'=>'Y', 'label'=>__('HasStoreroom'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasStoreroomFrontEnd',array('options' => $hasStoreroomFrontEnd, 'value'=>'N', 'label'=>__('HasStoreroomFrontEnd'), 'required'=>'required',
-		'after'=>$this->App->drawTooltip(null,__('toolTipHasStoreroomFrontEnd'),$type='HELP')));
+		'after'=>$this->App->drawTooltip(null,__('toolTipGgArchiveStatics'),$type='HELP')));
 	/*
 	echo $this->App->drawFormRadio('Organization','payToDelivery',array('options' => $payToDelivery, 'value' => $this->request->data['Template']['payToDelivery'], 'label'=>__('PayToDelivery'), 'required'=>'required'));
 	
@@ -129,13 +129,14 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	
 	echo '<h3>'.__('OrganizationsCash').'</h3>';					
 	echo $this->App->drawFormRadio('Organization','cashLimit',array('options' => $cashLimit, 'value'=> $this->request->data['Organization']['cashLimit'], 'label'=>__('CashLimit'), 'required'=>'required'));
-	echo $this->Form->input('limitCashAfter',array('label' => __('LimitCashAfter'),'value' => $this->request->data['Organization']['limitCashAfter'],'required' => 'required', 'after' => $this->App->drawTooltip(null,__('tooLimitCashAfter'),$type='HELP')));
+	echo $this->Form->input('limitCashAfter', ['label' => __('LimitCashAfter'),'value' => $this->request->data['Organization']['limitCashAfter'],'required' => 'required', 'after' => $this->App->drawTooltip(null,__('tooLimitCashAfter'),$type='HELP')]);
 	echo $this->App->drawFormRadio('Organization','hasCashFilterSupplier',array('options' => $hasCashFilterSupplier, 'value'=>'N', 'label'=>__('HasCashFilterSupplier'), 'required'=>'required'));
 
 
 	echo '<h3>'.__('OrderLifeCycle').'</h3>';						
 	echo $this->App->drawFormRadio('Organization','canOrdersClose', ['options' => $canOrdersClose, 'value'=> $this->request->data['Organization']['canOrdersClose'], 'label'=>__('CanOrdersClose'), 'required'=>'required']);
 	echo $this->App->drawFormRadio('Organization','canOrdersDelete', ['options' => $canOrdersDelete, 'value'=> $this->request->data['Organization']['canOrdersDelete'], 'label'=>__('CanOrdersDelete'), 'required'=>'required']);
+	echo $this->Form->input('ggArchiveStatics', ['value' => $this->request->data['Organization']['ggArchiveStatics'], 'required'=>'required', 'after' => $this->App->drawTooltip(null,__('tooltipGgArchiveStatics'), $type='INFO')]);
 
 
 	echo '<h3>'.__('Users').'</h3>';

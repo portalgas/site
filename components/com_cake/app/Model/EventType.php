@@ -1,7 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
 
- 
 class EventType extends AppModel {
 	var $name = 'EventType';
 	var $displayField = 'name';

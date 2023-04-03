@@ -141,10 +141,10 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->Form->input('limitCashAfter',array('label' => __('LimitCashAfter'),'value' => $this->request->data['Organization']['limitCashAfter'],'required' => 'required', 'after' => $this->App->drawTooltip(null,__('tooLimitCashAfter'),$type='HELP')));
 	echo $this->App->drawFormRadio('Organization','hasCashFilterSupplier',array('options' => $hasCashFilterSupplier, 'value'=>  $this->request->data['Organization']['hasCashFilterSupplier'], 'label'=>__('HasCashFilterSupplier'), 'required'=>'required'));
 
-
 	echo '<h3>'.__('OrderLifeCycle').'</h3>';					
 	echo $this->App->drawFormRadio('Organization','canOrdersClose', ['options' => $canOrdersClose, 'value'=> $this->request->data['Organization']['canOrdersClose'], 'label'=>__('CanOrdersClose'), 'required'=>'required']);
 	echo $this->App->drawFormRadio('Organization','canOrdersDelete', ['options' => $canOrdersDelete, 'value'=> $this->request->data['Organization']['canOrdersDelete'], 'label'=>__('CanOrdersDelete'), 'required'=>'required']);
+	echo $this->Form->input('ggArchiveStatics', ['value' => $this->request->data['Organization']['ggArchiveStatics'], 'required'=>'required', 'after' => $this->App->drawTooltip(null,__('tooltipGgArchiveStatics'), $type='INFO')]);
 	
 
 	echo '<h3>'.__('Users').'</h3>';

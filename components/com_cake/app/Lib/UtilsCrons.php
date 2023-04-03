@@ -1694,7 +1694,7 @@ class UtilsCrons {
             $paramsConfig['orderForceClose'] = $results['Template']['orderForceClose'];
             $paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
             $paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
-            $paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
+            // non + ora dall'organization $paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
 
             $user->organization['Organization'] += $paramsConfig;
             $user->organization['Organization'] += $paramsFields;

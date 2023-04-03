@@ -126,7 +126,7 @@ class Tesoriere extends AppModel {
 	public function updateFromModulo($user, $order_id, $data, $debug=false) {
 
 		/*
-		 *   ctrl che siano cambiati i dati
+		 * ctrl che siano cambiati i dati
 		 */
 		 $sqlTmp = "";
 		 if($this->importoToDatabase($data['tesoriere_importo_pay']) != $data['tesoriere_importo_pay_old']) {
@@ -163,6 +163,13 @@ class Tesoriere extends AppModel {
 							and id = ".(int)$order_id;
 				self::d($sql, $debug);
 				$resultUpdate = $this->query($sql);
+
+				/* 
+				 * creo movimento di cassa
+				 */
+				App::import('Model', 'Movement');
+				$Movement = new Movement;	
+				$Movement->insertByOrderId($user, $user->organization['Organization']['id'], $order_id, $data);			
 			}
 			catch (Exception $e) {
 				CakeLog::write('error',$sql);

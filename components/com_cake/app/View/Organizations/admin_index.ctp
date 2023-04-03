@@ -126,6 +126,7 @@
 					// echo '<div title="'.__('toolTipOrderLifeCycleEnd').'">'.__('OrderLifeCycleEnd').'<br /> '.$orderLifeCycleEnds[$result['Organization']['orderLifeCycleEnd']].'</div> <br />';
 					echo '<div title="'.__('toolTipCanOrdersClose').'">'.__('CanOrdersClose').' '.$result['Organization']['canOrdersClose'].'</div> <br />';
 					echo '<div title="'.__('toolTipCanOrdersDelete').'">'.__('CanOrdersDelete').' '.$result['Organization']['canOrdersDelete'].'</div> <br />';
+					echo '<div title="'.__('toolTipGgArchiveStatics').'">'.__('ggArchiveStatics').' '.$result['Organization']['ggArchiveStatics'].'</div> <br />';
 					echo '<div title="'.__('toolTipCashLimit').'">'.__('CashLimit').' '.__($result['Organization']['cashLimit']).' - '.$result['Organization']['limitCashAfter'].'</div> <br />';
 					echo '<div title="'.__('toolTipHasDes').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDes']).'_int">'.__('HasDes').'</div> <br />';
 					echo '<div title="'.__('toolTipHasDesReferentAllGas').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasDesReferentAllGas']).'_int">'.__('HasDesReferentAllGas').'</div> <br />';

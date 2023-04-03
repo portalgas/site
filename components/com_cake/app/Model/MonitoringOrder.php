@@ -1,7 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
 
-
 class MonitoringOrder extends AppModel {
 
 	public function delete_to_order($user, $order_id, $debug = false) {
