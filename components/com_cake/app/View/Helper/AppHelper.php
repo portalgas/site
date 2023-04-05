@@ -361,8 +361,8 @@ class AppHelper extends Helper {
 		$estensione = '';
 
 		if(strpos($file_name,'.')!==false)
-			$estensione = substr($file_name, strpos($file_name,'.')+1, strlen($file_name));
-		
+			$estensione = strtolower(substr($file_name, strrpos($file_name, '.')+1, strlen($file_name)));
+	
 		switch ($estensione) {
 			case "pdf":
 				$ico = 'pdf.png';

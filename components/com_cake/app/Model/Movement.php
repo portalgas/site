@@ -8,6 +8,9 @@ class Movement extends AppModel {
 	var $name = 'Movement';
 	var $displayField = 'name';
 	
+	private $_movement_type_invoice = 5;    // INVOICE Pagamento fattura a fornitore
+	private $_movement_type_userimport = 8; // USERSIMPORT Saldo movimento di cassa
+
 	/*
 	 * creo un movimento di cassa al pagamento di una fattura
 	 * verifici se per l'anno corrente esiste gia'
@@ -18,15 +21,15 @@ class Movement extends AppModel {
 	 * 	tesoriere_data_pay_db
 	 *  tesoriere_stato_pay
 	 */
-	public function insertByOrderId($user, $organization_id, $order_id, $data) {
+	public function insert($user, $organization_id, $order_id, $data) {
 
 		isset($data['tesoriere_stato_pay']) ? $tesoriere_stato_pay = $data['tesoriere_stato_pay']: $tesoriere_stato_pay = 'N';
 		if($tesoriere_stato_pay=='N')
 			return;
 
 		/*
-			* dati ordine
-			*/
+		* dati ordine
+		*/
 		App::import('Model', 'Order');
 		$Order = new Order;		
 
@@ -50,8 +53,7 @@ class Movement extends AppModel {
 		$options = [];
 		$options['conditions'] = ['organization_id' => $organization_id,
 								'order_id' => $order_id,
-								'movement_type_id' => 5 // INVOICE Pagamento fattura a fornitore
-								];
+								'movement_type_id' => $this->_movement_type_invoice];
 		$movement = $this->find('first', $options);
 		// debug($movement);
 
@@ -60,7 +62,8 @@ class Movement extends AppModel {
 		$datas['movement_type_id'] = 5;
 		$datas['order_id'] = $order_id;
 		$datas['year'] = $year;
-		$datas['importo'] = $this->importoToDatabase($tesoriere_importo_pay);
+		// importo negativo perche' pagamento di una fattura
+		$datas['importo'] = (-1) * $this->importoToDatabase($tesoriere_importo_pay);
 		$datas['date'] = $tesoriere_data_pay_db;
 		$datas['payment_type'] = 'ALTRO';
 		$datas['is_active'] = 1;
@@ -87,4 +90,38 @@ class Movement extends AppModel {
 
 		return true;
 	} 
+
+	/*
+	 * aggiorno il movimento di cassa da order_id a stat_order_id
+	 */
+	public function update($user, $organization_id, $order_id, $stat_order_id, $debug=false) {
+
+		/* 
+		 * controllo se esiste gia' un pagamento sull'ordine
+		 */ 
+		$options = [];
+		$options['conditions'] = ['organization_id' => $organization_id,
+								'order_id' => $order_id];
+		$movement = $this->find('first', $options);
+		// debug($movement);
+
+		$movement['Movement']['order_id'] = null;
+		$movement['Movement']['stat_order_id'] = $stat_order_id;
+		self::d($movement, $debug);
+		
+		$this->set($movement);
+		if (!$this->validates()) {
+			self::d($this->validationErrors, $debug);
+			return false;
+		} 
+					
+		$this->create();
+		if (!$this->save($movement)) {
+			// debug($this->validationErrors);
+			self::d($this->validationErrors, $debug);
+			return false;
+		}
+
+		return true;
+	} 	
 }

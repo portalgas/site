@@ -169,7 +169,7 @@ class Tesoriere extends AppModel {
 				 */
 				App::import('Model', 'Movement');
 				$Movement = new Movement;	
-				$Movement->insertByOrderId($user, $user->organization['Organization']['id'], $order_id, $data);			
+				$Movement->insert($user, $user->organization['Organization']['id'], $order_id, $data);			
 			}
 			catch (Exception $e) {
 				CakeLog::write('error',$sql);

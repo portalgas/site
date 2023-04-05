@@ -45,7 +45,8 @@
 				</a>
 			</div>
 		</div>
-		<?php
+		<?php 
+		/*
 		if(isset($user->organization['Organization']['hasArticlesGdxp']) && 
 		  $user->organization['Organization']['hasArticlesGdxp']=='Y') {
 		?>
@@ -62,6 +63,7 @@
 				</div>
 		<?php
 		  }
+		  */
 		?>			
 		<div class="col-xs-12 col-sm-4 col-md-3">
 			<div class="box-container">

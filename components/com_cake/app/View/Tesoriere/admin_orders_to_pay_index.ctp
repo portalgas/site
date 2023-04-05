@@ -61,6 +61,7 @@ if (!empty($results['Order'])):
 	echo '<th>'.__('StatoElaborazione').'</th>';
 	echo '<th colspan="2">'.__('Supplier').'</th>';
 	echo '<th>'.__('Importo totale ordine').'</th>';
+	echo '<th></th>';
 	echo '<th colspan="2">'.__('Tesoriere fattura importo').'</th>';
 	echo '<th style="min-width:100px;">'.__('Tesoriere Importo Pay').'</th>';
 	echo '<th style="min-width:200px;">'.__('Tesoriere Data Pay').'</th>';
@@ -89,6 +90,12 @@ if (!empty($results['Order'])):
 		echo '<td>'.$result['SuppliersOrganization']['name'].'</td>';
 		echo '<td>';
 		echo number_format($result['tot_importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia')).'&nbsp;&euro;';
+		echo '</td>';
+		echo '<td>';
+		if(!empty($result['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$result['tesoriere_doc1'])) {
+			$ico = $this->App->drawDocumentIco($result['tesoriere_doc1']);
+			echo '<a alt="Scarica il documento" title="Scarica il documento" href="'.Configure::read('App.server').Configure::read('App.web.doc.upload.tesoriere').'/'.$user->organization['Organization']['id'].'/'.$result['tesoriere_doc1'].'" target="_blank"><img src="'.$ico.'" /></a>';
+		}
 		echo '</td>';
 		echo '<td>';
 		echo $result['tesoriere_fattura_importo_e'];

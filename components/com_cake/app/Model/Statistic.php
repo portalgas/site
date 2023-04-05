@@ -35,7 +35,7 @@ class Statistic extends AppModel {
 
             if (!empty($orderResults))
                 foreach ($orderResults as $numResult => $orderResult) {
-
+                    
                     self::d("Tratto consegna " . $orderResult['Delivery']['id'], $debug);
 
                     /*
@@ -246,7 +246,15 @@ class Statistic extends AppModel {
 					self::d("ERRORE StatOrder::save()", $debug);
 					return;
 				} else
-					self::d("INSERT StatOrder " . $orderResults['Order']['id'] . " - data ini " . $orderResults['Order']['data_inizio'] . " e data fine " . $orderResults['Order']['data_fine'] . ", produttore " . $supplier_organization_name . " (" . $orderResults['Order']['supplier_organization_id'] . ") con importo totale " . $dataOrder['StatOrder']['importo'] . ", fattura " . $dataOrder['StatOrder']['tesoriere_doc1'], $debug);
+                    $stat_order_id = $StatOrder->getLastInsertId();    
+                    self::d("INSERT StatOrder " . $orderResults['Order']['id'] . " - data ini " . $orderResults['Order']['data_inizio'] . " e data fine " . $orderResults['Order']['data_fine'] . ", produttore " . $supplier_organization_name . " (" . $orderResults['Order']['supplier_organization_id'] . ") con importo totale " . $dataOrder['StatOrder']['importo'] . ", fattura " . $dataOrder['StatOrder']['tesoriere_doc1'].' stat_order_id '.$stat_order_id, $debug);
+
+                    /* 
+                    * aggiorno movimento di cassa, da order_id a stat_order_id
+                    */          
+                    App::import('Model', 'Movement');
+                    $Movement = new Movement;	
+                    $Movement->update($user, $user->organization['Organization']['id'], $orderResults['Order']['id'], $stat_order_id, $debug);
 			}
 			else {
 					self::d("INSERT StatOrder " . $orderResults['Order']['id'] . " - data ini " . $orderResults['Order']['data_inizio'] . " e data fine " . $orderResults['Order']['data_fine'] . ", produttore " . $supplier_organization_name . " (" . $orderResults['Order']['supplier_organization_id'] . ") con importo totale " . $dataOrder['StatOrder']['importo'] . ", fattura " . $dataOrder['StatOrder']['tesoriere_doc1'], $debug);				

@@ -1242,6 +1242,8 @@ class AppController extends Controller {
 			$paramsConfig['orderUserPaid'] = $results['Template']['orderUserPaid'];
 			$paramsConfig['orderSupplierPaid'] = $results['Template']['orderSupplierPaid'];
 			// non + ora dall'organization $paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
+            if(!isset($paramsConfig['ggArchiveStatics']))
+                $paramsConfig['ggArchiveStatics'] = $results['Template']['ggArchiveStatics'];
 
             $results['Organization'] += $paramsConfig;
             $results['Organization'] += $paramsFields;
