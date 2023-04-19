@@ -22,6 +22,16 @@ echo '</ul>';
 echo '<div class="tab-content">';
 
 echo '<div class="tab-pane fade active in" id="tabs-0">';
+
+// pdf
+if(!empty($pdf_url)) {
+	echo '<p>
+	<a href="'.$pdf_url.'" target="_blank" title="scarica documento di spesa">
+		<img alt="PDF" src="/images/cake/minetypes/32x32/pdf.png"></a>
+	Scarica	'.$pdf_label.'
+		</p>';
+}
+
 echo $this->Form->input('payContatto', array('id' => 'payContatto', 'label' => __('payContatto')));
 echo $this->Form->input('payMail', array('id' => 'payMail', 'label' => __('payMail')));
 echo $this->Form->input('payIntestatario', array('id' => 'payIntestatario', 'label' => __('payIntestatario')));

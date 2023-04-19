@@ -77,7 +77,26 @@ class OrganizationsPaymentsController extends AppController {
 		$table_plan_return  = $table_plan->load(array('id'=>103));
 		$this->set('table_plan', $table_plan);
 	//	echo $table_plan->intro_text;
-	//	echo $table_plan->full_text;		
+	//	echo $table_plan->full_text;
+	
+		// pdf
+		$pdf_url = '';
+		$pdf_label = 'documento canone annuale relativo all\'anno ';
+		$year = date('Y'); 
+		if(file_exists(Configure::read('App.root').Configure::read('App.doc.upload.organizations.pays').DS.$year.DS.$this->user->organization['Organization']['id'].'.pdf')) {
+			$pdf_url = '/images/pays/'.$year.'/'.$this->user->organization['Organization']['id'].'.pdf';
+			$pdf_label = $pdf_label.$year;
+		}
+		
+		if(empty($pdf_url)) {
+			$year--;; 
+			if(file_exists(Configure::read('App.root').Configure::read('App.doc.upload.organizations.pays').DS.$year.DS.$this->user->organization['Organization']['id'].'.pdf')) {
+				$pdf_url = '/images/pays/'.$year.'/'.$this->user->organization['Organization']['id'].'.pdf';
+				$pdf_label = $pdf_label.$year;
+			}	
+		}
+				
+		$this->set(compact('pdf_url', 'pdf_label'));
 	}
 	
 	/*
