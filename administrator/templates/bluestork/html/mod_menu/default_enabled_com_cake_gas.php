@@ -193,62 +193,6 @@ if(!empty($organization_id)) {
 			$_menus[$i]['label'] = "Esporta";
 			$_menus[$i]['url'] = "index.php?option=com_cake&controller=Statistics&action=export";
 		} // end group_id_manager  
-		
-		/*
-		 * gruppi 
-		 * */
-		if($hasGasGroups=='Y' && (
-			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) 
-		    ) {
-			$i++;
-			$_menus[$i]['level'] = 0;
-			$_menus[$i]['label'] = "Gruppi <label class='label label-success'>new</label>";
-			$_menus[$i]['url'] = "#";			
-			if(in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups())) {
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Gruppi e utenti";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-groups&a_to=/index";
-				$_menus[$i]['target'] = "_blank";
-			}
-			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Consegne";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
-				$_menus[$i]['target'] = "_blank";
-			}
-			if(in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups())) {
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Elenco ordini titolari per gruppi ";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index&q=11";
-				$_menus[$i]['target'] = "_blank";
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Aggiungi un nuovo ordine titolare per i gruppi";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=11";
-				$_menus[$i]['target'] = "_blank";
-				$i++;
-				$_menus[$i]['separator'] = true;				
-			}
-			if(in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Elenco ordini dei gruppi";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index&q=10";
-				$_menus[$i]['target'] = "_blank";
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Aggiungi un nuovo ordine dei gruppi";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=10";
-				$_menus[$i]['target'] = "_blank";
-			}			
-		}	
-
 		/*
 		 * D. E. S.
 		*/
@@ -396,6 +340,35 @@ if(!empty($organization_id)) {
 		} // end Deliveries
 		   
 		/*
+		 * gruppi 
+		 * */
+		if($hasGasGroups=='Y' && (
+			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
+			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()) ||
+			in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups()) ||
+			in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) 
+		    ) {
+			$i++;
+			$_menus[$i]['level'] = 0;
+			$_menus[$i]['label'] = "Gruppi";
+			$_menus[$i]['url'] = "#";			
+			if(in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Gruppi e utenti";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-groups&a_to=/index";
+				$_menus[$i]['target'] = "_blank";
+			}
+			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
+				$_menus[$i]['target'] = "_blank";
+			}			
+		}	
+
+		/*
 		 * R E F E R E N T I
 		 */
 		if(in_array(group_id_referent, $user->getAuthorisedGroups()) || 
@@ -521,43 +494,85 @@ if(!empty($organization_id)) {
 				$_menus[$i]['label'] = "Importa articoli da esportazione precedente";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=CsvImports&action=articles_form_import";	
 											
-				/*
-				 *  O R D E R S
-				 */					
-				$i++;
-				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Ordini";
-				$_menus[$i]['url'] = "#";				
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Elenco ordini";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=index";				
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Aggiungi un nuovo ordine";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=add";			
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Aggiungi un nuovo ordine (modalità semplificata)";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=easy_add";			
-				$i++;
-				$_menus[$i]['separator'] = true;
 
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Ordini storici";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=index_history";			
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Ricorsione";
-				// $_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsOrders&action=index";
-				$_menus[$i]['label'] = "Ricorsione  <label class='label label-success'>new</label>";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/loops_orders&a_to=/index";
-				$_menus[$i]['target'] = "_blank";
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Monitoraggio Ordini";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=MonitoringOrders&action=home";	
+				if($hasGasGroups=='Y') {
+					/*
+					*  O R D E R S - G R U P P I
+					*/	
+
+					$i++;
+					$_menus[$i]['level'] = 1;
+					$_menus[$i]['label'] = "Ordini";
+					$_menus[$i]['url'] = "#";					
+					if(in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups())) {
+						$i++;
+						$_menus[$i]['level'] = 2;
+						$_menus[$i]['label'] = "Elenco ordini titolari per gruppi ";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index&q=11";
+						$_menus[$i]['target'] = "_blank";
+						$i++;
+						$_menus[$i]['level'] = 2;
+						$_menus[$i]['label'] = "Aggiungi un nuovo ordine titolare per i gruppi";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=11";
+						$_menus[$i]['target'] = "_blank";
+						$i++;
+						$_menus[$i]['separator'] = true;				
+					}
+					if(in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
+						$i++;
+						$_menus[$i]['level'] = 2;
+						$_menus[$i]['label'] = "Elenco ordini dei gruppi";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index&q=10";
+						$_menus[$i]['target'] = "_blank";
+						$i++;
+						$_menus[$i]['level'] = 2;
+						$_menus[$i]['label'] = "Aggiungi un nuovo ordine dei gruppi";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=10";
+						$_menus[$i]['target'] = "_blank";
+					}			
+				}	
+				else {
+					/*
+					*  O R D E R S
+					*/						
+				
+					$i++;
+					$_menus[$i]['level'] = 1;
+					$_menus[$i]['label'] = "Ordini";
+					$_menus[$i]['url'] = "#";				
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Elenco ordini";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=index";				
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Aggiungi un nuovo ordine";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=add";			
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Aggiungi un nuovo ordine (modalità semplificata)";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=easy_add";			
+					$i++;
+					$_menus[$i]['separator'] = true;
+
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Ordini storici";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Orders&action=index_history";			
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Ricorsione";
+					// $_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsOrders&action=index";
+					$_menus[$i]['label'] = "Ricorsione  <label class='label label-success'>new</label>";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/loops_orders&a_to=/index";
+					$_menus[$i]['target'] = "_blank";
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Monitoraggio Ordini";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=MonitoringOrders&action=home";		
+				} // end if($hasGasGroups=='Y')
+				
+				
 				if(in_array(group_id_root,$user->getAuthorisedGroups())) {
 					$i++;
 					$_menus[$i]['level'] = 2;
@@ -569,26 +584,12 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Controlli dati aggregati sugli ordini";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SummaryOrders&action=orders_validate";			
-				*/				
-				if($hasGasGroups=='Y' && in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
-					$i++;
-					$_menus[$i]['level'] = 1;
-					$_menus[$i]['label'] = "Ordini dei gruppi <label class='label label-success'>new</label>";
-					$_menus[$i]['url'] = "#";
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Elenco ordini";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/index";
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Aggiungi un nuovo ordine";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add";
-					$_menus[$i]['target'] = "_blank";
-				}				
+				*/			
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Invia mail";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Mails&action=send";	
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Mails&action=send";
+
 		} // end referents						
 
 

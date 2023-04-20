@@ -605,6 +605,13 @@ class AppController extends Controller {
             return 0;
     }
 
+    public function isGasGropusManagerParentOrders() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_parent_orders'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }
+
     public function isGasGropusManagerOrders() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_orders'), $this->user->getAuthorisedGroups()))
             return true;
@@ -612,6 +619,7 @@ class AppController extends Controller {
             return 0;
     }
         
+    
     /*
      * DES
      */

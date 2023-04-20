@@ -183,7 +183,14 @@ class PagesController extends AppController {
         $this->set('isTesoriereGeneric', $this->isTesoriereGeneric());
         $this->set('isCassiere', $this->isCassiereGeneric());
         $this->set('isStoreroom', $this->isStoreroom());
-
+        /* 
+        * gas-groups (sotto gruppi)
+        */        
+        $this->set('isGasGropusManagerGroups', $this->isGasGropusManagerGroups());
+        $this->set('isGasGropusManagerDelivery', $this->isGasGropusManagerDelivery());
+        $this->set('isGasGropusManagerParentOrders', $this->isGasGropusManagerParentOrders());
+        $this->set('isGasGropusManagerOrders', $this->isGasGropusManagerOrders());
+        
         $this->set('userGroups', $this->userGroups);
 
 		/*
@@ -346,8 +353,11 @@ class PagesController extends AppController {
             $this->set('user_userGroups', $user_userGroups);
         }
         */
-         
-        $this->render('admin_home');
+        
+        if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y')
+        $this->render('admin_home_gas_groups');
+        else
+            $this->render('admin_home');
     }
 
     private function _admin_home_prod_gas() {
