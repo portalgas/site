@@ -1,17 +1,6 @@
 <?php require('_inc_header.php');?>
   
-    <div class="container">
-      
-
-	  
-
-
-
-	
-	  
-	
-							
-
+    <div class="container">      
 
         <div class="col-sm-8 cakeContainer" role="main">
 

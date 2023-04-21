@@ -209,7 +209,61 @@
 				
 				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/prepagato/prospetto_users.png"></a></p>
 				
+
+				<h1 id="movimenti-di-cassa" class="page-header">Movimenti di cassa</h1>	 
 				
+				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/mov-cassa-menu.jpg"></a></p>
+				
+				<p>Nella sezione "movimenti di cassa" di posso gestire tutt i movimenti di cassa del G.A.S.</p>
+				<p>
+					questi si dividono in 2 differenti tipologie 
+					<p>
+						<ul>
+							<li>movimenti <b>creati in automatico</b> dell'applicativo<br/>
+									questi si suddividono in
+								<ul>
+									<li>Saldo movimento di cassa</li>
+									<li>Pagamento fattura a fornitore</li>
+								</ul>
+							</li>
+							<li>movimenti <b>creati dal cassiere</b><br/>
+								questi si suddividono in
+								<ul>
+									<li>Spesa del G.A.S.</li>
+									<li>Entrata del G.A.S.</li>
+									<li>Sconto al fornitore</li>
+									<li>Accredito dal fornitore</li>
+									<li>Rimborso Gasista</li>
+									<li>Movimento di cassa</li>
+								</ul>
+							</li>
+						</ul>
+					</p>
+				</p>
+				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/mov-cassa-index.jpg"></a></p>
+
+				<h2 id="saldo-movimento-di-cassa">Saldo movimento di cassa</h2>
+				
+				<p>
+					I saldi di cassa dei gasisti, positivi o negativi, vengono riportati nei movimenti di cassa nell'anno corrente 
+				</p>
+				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/mov-cassa-cassa.jpg"></a></p>
+
+				<h2 id="pagamento-fattura-a-fornitore">Pagamento fattura a fornitore</h2>
+				
+				<p>
+					Il pagamento di una fattura da parte del tesoriere viene riportato come movimento di cassa nell'anno corrente 
+				</p>
+				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/mov-cassa-fatture.jpg"></a></p>
+
+				<h2 id="movimenti-creati-dal-cassiere">Movimenti creati dal cassiere</h2>
+
+				<p>
+					Il cassiere può creare differenti movimenti di cassa
+				</p>
+				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/mov-cassa-edit.jpg"></a></p>
+
+
 				
 				<h1 id="moduli-di-stampe-x-il-cassiere" class="page-header">Moduli di stampe x il cassiere</h1>	 
 				<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/cassiere/8_Stampe_Cassiere_1.png"></a></p>
@@ -232,6 +286,13 @@
 					<li><a href="#passa-gli-ordini-al-tesoriere">Passa gli ordini al Tesoriere</a></li>
 					<li><a href="#gestione-consegne">Gestisci le consegne</a></li> 
 					<li><a href="#gestione-il-prepagato">Gestisci il prepagato</a></li> 
+					<li><a href="#movimenti-di-cassa">Movimenti di cassa</a>
+						<ul class="nav">
+							<li><a href="#saldo-movimento-di-cassa">Saldo movimento di cassa</a></li>
+							<li><a href="#pagamento-fattura-a-fornitore">Pagamento fattura a fornitore</a></li>
+							<li><a href="#movimenti-creati-dal-cassiere">Movimenti creati dal cassiere</a></li>
+						</ul>
+					</li> 
 					<li><a href="#moduli-di-stampe-x-il-cassiere">Moduli di stampe x il cassiere</a></li>
 					<li><a href="#utility-cassiere">Utility x Cassiere</a></li>
 				</ul>
