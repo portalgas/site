@@ -266,45 +266,49 @@ if(!empty($organization_id)) {
 		/*
 		 * M A N A G E R 	/ 	M A N A G E R _ D E L I V E R Y / F L A G _ P R I V A C Y
 		*/
-		if(in_array(group_id_manager_delivery, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_referent, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_super_referent, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_referent_tesoriere, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_events, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_user_flag_privacy, $user->getAuthorisedGroups())
-		   ) {
-
+		$i++;
+		$_menus[$i]['level'] = 0;
+		$_menus[$i]['label'] = "G.A.S.";
+		$_menus[$i]['url'] = "#";		
+		if($hasGasGroups=='Y') {
+			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
 				$i++;
-				$_menus[$i]['level'] = 0;
-				$_menus[$i]['label'] = "G.A.S.";
-				$_menus[$i]['url'] = "#";
-				if(in_array(group_id_manager_delivery, $user->getAuthorisedGroups())) {
-					$i++;
-					$_menus[$i]['level'] = 1;
-					$_menus[$i]['label'] = "Consegne";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index";
-					$i++;
-					$_menus[$i]['level'] = 1;
-					$_menus[$i]['label'] = "Consegne storiche";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index_history";
-					if($hasGasGroups=='Y' && in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Consegne a gruppi G.A.S. <label class='label label-success'>new</label>";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
-						$_menus[$i]['target'] = "_blank";
-					}						
-					$i++;
-					$_menus[$i]['level'] = 1;
-					$_menus[$i]['label'] = "Ricorsione delle consegne";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsDeliveries&action=index";
-				}
-				else {	
-					$i++;
-					$_menus[$i]['level'] = 1;
-					$_menus[$i]['label'] = "Consegne";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=view";
-				}
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne a gruppi G.A.S. <label class='label label-success'>new</label>";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-group-deliveries&a_to=index";
+				$_menus[$i]['target'] = "_blank";
+			}
+		}
+		else {
+			if(in_array(group_id_manager_delivery, $user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index";
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne storiche";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=index_history";						
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Ricorsione delle consegne";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=LoopsDeliveries&action=index";
+			}
+			else {	
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Consegne";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=view";
+			}
+		} // end if($hasGasGroups=='Y')
+
+		if(
+			in_array(group_id_referent, $user->getAuthorisedGroups()) || 
+			in_array(group_id_super_referent, $user->getAuthorisedGroups()) || 
+			in_array(group_id_referent_tesoriere, $user->getAuthorisedGroups()) || 
+			in_array(group_id_events, $user->getAuthorisedGroups()) || 
+			in_array(group_id_user_flag_privacy, $user->getAuthorisedGroups())
+			) {
 
 				if(in_array(group_id_user_flag_privacy, $user->getAuthorisedGroups())) {
 					if($hasUserFlagPrivacy == 'Y' || $hasUserRegistrationExpire == 'Y') {

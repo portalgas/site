@@ -60,7 +60,7 @@ class ArticlesOrdersController extends AppController {
                 if (!$debug)
                     $this->myRedirect(Configure::read('routes_msg_stop'));
             }
-        }
+        }      
     }
 
     /*

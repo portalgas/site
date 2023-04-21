@@ -93,6 +93,15 @@ class OrdersController extends AppController {
     */
    public function admin_index() {
 
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		$debug = false;
 		
 	   	App::import('Model', 'Supplier');
@@ -312,6 +321,15 @@ class OrdersController extends AppController {
 	 */
 	public function admin_index_history() {
 	
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 
@@ -420,6 +438,15 @@ class OrdersController extends AppController {
 	 */
 	public function admin_add($delivery_id=0, $order_id=0, $supplier_organization_id=0, $des_order_id=0) {
 	
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		$debug=false;
 
 		/*
@@ -640,6 +667,15 @@ class OrdersController extends AppController {
 
 	public function admin_easy_add() {
 	
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		$debug=false;
 		
 		$msg = "";
@@ -907,6 +943,15 @@ class OrdersController extends AppController {
 
 	public function admin_home() {
 	
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		$debug = false;
 	
         /*
@@ -976,6 +1021,15 @@ class OrdersController extends AppController {
 
 	public function admin_edit() {
 	
+		/*
+		 * disabilito l'accesso a OrderGroups
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+		$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->Session->setFlash(__('msg_not_organization_config'));
+			$this->myRedirect(Configure::read('routes_msg_stop'));			
+		}
+
 		$debug = false;
 		$continua = true;
 		
@@ -1906,7 +1960,18 @@ class OrdersController extends AppController {
 			setcookie('order_id', '', time() - 42000, Configure::read('App.server'));
 			$this->Session->delete('order_id');
 			
-			$this->myRedirect(['action' => 'index']);
+			/*
+			* redirect a OrderGroups
+			*/
+			if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+			$this->user->organization['Organization']['hasGasGroups']=='Y') {
+				$params = ['q' => 10];
+				$url = $this->Connects->createUrlBo('admin/orders', 'index', $params);
+				$this->myRedirect($url);				
+			} 
+			else 
+				$this->myRedirect(['action' => 'index']);
+			
 		} // end POST
 			
 		App::import('Model', 'ArticlesOrder');
