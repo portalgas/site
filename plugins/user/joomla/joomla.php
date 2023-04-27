@@ -198,6 +198,8 @@ class plgUserJoomla extends JPlugin
 		// Check to see the the session already exists.
 		$app = JFactory::getApplication();
 		$app->checkSession();
+		$neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
+		// echo 'neo_portalgas_url '.$neo_portalgas_url;
 
 		// Update the user related fields for the Joomla sessions table.
 		$db->setQuery(
@@ -298,7 +300,10 @@ class plgUserJoomla extends JPlugin
 						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=promozioni');
 						break; 		
 					case "organization.home":
-						$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						if(isset($paramsConfig['hasGasGroups']) && $paramsConfig['hasGasGroups']=='Y') 	
+							$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa');
+						else 
+							$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
 						break;
                     case "organization.socialmarket.home":
                         $app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=social-market');

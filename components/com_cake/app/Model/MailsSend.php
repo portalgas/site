@@ -59,8 +59,7 @@ class MailsSend extends AppModel {
                                 and Supplier.id = SupplierOrganization.supplier_id 
                                 and SupplierOrganization.stato = 'Y'
                                 and SupplierOrganization.mail_order_open = 'Y'
-                                and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
-                                and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
+                                and `Order`.isVisibleFrontEnd = 'Y'  and Delivery.isVisibleFrontEnd = 'Y' 
                                 and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
                                 and (`Order`.data_inizio = CURDATE() - INTERVAL ".Configure::read('GGMailToAlertOrderOpen')." DAY OR `Order`.mail_open_send = 'Y')	
                                 order by Delivery.data, Supplier.name ";
@@ -114,8 +113,7 @@ class MailsSend extends AppModel {
 										and Supplier.id = SupplierOrganization.supplier_id 
 										and SupplierOrganization.stato = 'Y'
 										and SupplierOrganization.mail_order_open = 'Y'
-										and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
-										and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
+										and `Order`.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y' 
 										and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE' 
 										and (`Order`.data_inizio = CURDATE() - INTERVAL ".Configure::read('GGMailToAlertOrderOpen')." DAY OR `Order`.mail_open_send = 'Y')
 

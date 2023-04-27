@@ -39,6 +39,10 @@ class UtilsCrons {
         if(empty($user)) 
             return;
 
+        // escludo i GasGroup
+        if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y')
+            return;
+
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail agli utenti con dettaglio consegna \n";
         
         App::import('Model', 'Delivery');
@@ -244,13 +248,16 @@ class UtilsCrons {
      *      ctrl data_inizio con data_oggi
      *      mail_open_send = Y (perche' in Order::add data_inizio = data_oggi)
      */
-
     public function mailUsersOrdersOpen($organization_id, $debug = false) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
         if(empty($user)) 
             return; 
-
+        
+        // escludo i GasGroup
+        if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y')
+            return;
+        
         App::import('Model', 'MailsSend');
         $MailsSend = new MailsSend;
 
@@ -272,12 +279,15 @@ class UtilsCrons {
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log
      */
-
     public function mailUsersOrdersClose($organization_id, $debug=true) {
 
         $user = $this->_getObjUserLocal($organization_id, ['GAS']);
         if(empty($user)) 
             return; 
+
+        // escludo i GasGroup
+        if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y')
+            return;
 
         App::import('Model', 'MailsSend');
         $MailsSend = new MailsSend;

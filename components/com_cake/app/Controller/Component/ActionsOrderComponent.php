@@ -3,7 +3,7 @@ App::uses('Component', 'Controller');
 
 class ActionsOrderComponent extends Component {
 
-    public $components = array('ActionsDesOrder');
+    public $components = ['ActionsDesOrder'];
 
 	private $isToValidate = false;
 	private $isCartToStoreroom = false;
@@ -23,7 +23,7 @@ class ActionsOrderComponent extends Component {
 	 * 		Action     (edit)
 	 */
 	public function isACL($user, $group_id, $order_id, $controller, $action, $debug=false) {
-
+		
 		$controllerLog = $this->Controller;
 	
 		$controller = ucfirst(strtolower($controller));  
