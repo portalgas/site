@@ -115,7 +115,6 @@ class Movement extends AppModel {
 			return false;
 		} 
 					
-		$this->create();
 		if (!$this->save($movement)) {
 			// debug($this->validationErrors);
 			self::d($this->validationErrors, $debug);

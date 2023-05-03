@@ -79,6 +79,7 @@
 					<option value="101">desaltrotirreno (id 101)</option>
 					<option value="100">desmodena (id 100)</option>
 					<option value="96">equigaslissone (id 96)</option>
+					<option value="157">ergas (id 157)</option> 
 					<option value="24">felettogas (id 24)</option>
 					<option value="27">fiordigas (id 27)</option>
 					<option value="13">galligas (id 13)</option>
@@ -171,6 +172,7 @@
 					<option value="desmodena">desmodena</option>
 					<option value="desaltrotirreno">desaltrotirreno</option>
 					<option value="equigaslissone">equigaslissone</option>
+					<option value="ergas">ergas</option>
 					<option value="felettogas">felettogas</option>
 					<option value="fiordigas">fiordigas</option>
 					<option value="galligas">galligas</option>

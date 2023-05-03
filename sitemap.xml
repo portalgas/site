@@ -13705,5 +13705,15 @@
     <loc>https://www.portalgas.it/home-gas-gaslegiare/consegne-gas-gaslegiare</loc>
     <lastmod>2023-04-20</lastmod>
     <changefreq>yearly</changefreq>
-  </url>  
+  </url> 
+  <url>
+    <loc>https://www.portalgas.it/home-gas-ergas</loc>
+    <lastmod>2023-04-28</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.portalgas.it/home-gas-ergas/consegne-gas-ergas</loc>
+    <lastmod>2023-04-28</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>   
 </urlset>
