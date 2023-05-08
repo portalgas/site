@@ -809,7 +809,7 @@ class User extends AppModel {
 	 }
 	 
 	 /*
-	  * call Delibveries::tabsUserCartPreview()
+	  * call Deliveries::tabsUserCartPreview()
 	  */
 	 public function getUsernameToUsernameCrypted($usernameCrypted) {
 	 	 
@@ -848,7 +848,7 @@ class User extends AppModel {
 	 	$D = '';
 	 	$org_id = '';
 	 	
-	 	$E = $this->utilsCommons->random_string($length=5);
+	 	$E = $this->utilsCommons->randomString($length=5);
 	 	
 	 	$O = rand (10, 99).$user->organization['Organization']['id'];
 	 	
@@ -877,7 +877,7 @@ class User extends AppModel {
 	 	$D = '';
 	 	$org_id = '';
 	 	 
-	 	$E = $this->utilsCommons->random_string($length=5);
+	 	$E = $this->utilsCommons->randomString($length=5);
 	 	 
 	 	$O = rand (10, 99).$user->organization['Organization']['id'];
 	 	 

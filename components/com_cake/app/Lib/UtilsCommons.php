@@ -16,7 +16,7 @@ class UtilsCommons {
     }
 
     // genera una stringa casuale della lunghezza desiderata
-    public function random_string($length) {
+    public function randomString($length) {
         $string = "";
 
         // genera una stringa casuale che ha lunghezza
