@@ -395,23 +395,45 @@ class AjaxGasCodesController extends AppController {
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
 
+        App::import('Model', 'Order');
+        $Order = new Order;
+
+        $order = $Order->read($order_id, $this->user->organization['Organization']['id']);
+
         App::import('Model', 'User');
         $User = new User;
 
         if ($reportOptions == 'report-users-all') {
-            $conditions = [];
-            $conditions = array('User.organization_id' => (int) $this->user->organization['Organization']['id'],
-                'User.block' => 0);
-            $users = $User->find('list', array('conditions' => $conditions, 'fields' => array('id', 'name'),
-                'order' => Configure::read('orderUser'), 'recursive' => -1));
+
+            if($this->user->organization['Organization']['hasGasGroups'] && 
+            $this->user->organization['Organization']['hasGasGroups']=='Y') {
+                /* 
+                 * GasGroups
+                 */
+                App::import('Model', 'GasGroupUser');
+                $GasGroupUser = new GasGroupUser;
+                $users = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $order['Order']['gas_group_id']);
+            }
+            else {
+                /* 
+                 * Gas
+                 */
+                $options = [];
+                $options['conditions'] = ['User.organization_id' => (int) $this->user->organization['Organization']['id'],
+                                            'User.block' => 0];
+                $options['fields'] = ['id', 'name'];
+                $options['order'] = Configure::read('orderUser');
+                $options['recursive'] = -1;
+                $users = $User->find('list', $options);                    
+            }
         } else
         if ($reportOptions == 'report-users-cart') {
             $conditions = [];
-            $conditions = array('ArticlesOrder.order_id' => $order_id);
+            $conditions = ['ArticlesOrder.order_id' => $order_id];
             $results = $User->getUserWithCartByOrder($this->user, $conditions);
 
             $users = [];
-            $users += array('ALL' => 'Tutti gli utenti che hanno effettuato acquisti');
+            $users += ['ALL' => 'Tutti gli utenti che hanno effettuato acquisti'];
             foreach ($results as $key => $results2)
                 $users[$results2['User']['id']] = $results2['User']['name'];
         }
@@ -490,7 +512,7 @@ class AjaxGasCodesController extends AppController {
          */
         App::import('Model', 'Order');
         $Order = new Order;
-        $Order->unbindModel(array('belongsTo' => array('Delivery')));
+        $Order->unbindModel(['belongsTo' => ['Delivery']]);
 
         $options = [];
         $options['conditions'] = array('Order.organization_id' => (int) $this->user->organization['Organization']['id'],
