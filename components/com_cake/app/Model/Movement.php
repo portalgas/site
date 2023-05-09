@@ -103,6 +103,8 @@ class Movement extends AppModel {
 		$options['conditions'] = ['organization_id' => $organization_id,
 								'order_id' => $order_id];
 		$movement = $this->find('first', $options);
+		if(empty($movement))
+			return true;
 		// debug($movement);
 
 		$movement['Movement']['order_id'] = null;
