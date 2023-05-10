@@ -8,6 +8,15 @@ class CartsController extends AppController {
    public function beforeFilter() {
    		parent::beforeFilter();
  
+		if(!empty($this->order_id)) {
+	   			
+			App::import('Model', 'Order');
+			$Order = new Order;
+			$order = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
+		 	$this->set('order', $order);   			
+		}
+
+
    		$actionWithPermission = ['admin_managementCartsOne', 'admin_managementCartsGroupByUsers', 'admin_validationCarts', 'admin_trasport'];
    		if (in_array($this->action, $actionWithPermission)) {
 	   		/*
@@ -28,14 +37,10 @@ class CartsController extends AppController {
 	   		 * ctrl che l'ordine sia visibile in backoffice
 	   		*/
 	   		if(!empty($this->order_id)) {
-	   			
-	   			App::import('Model', 'Order');
-	   			$Order = new Order;
-	   			$results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
-	   			if($results['Order']['isVisibleBackOffice']=='N') {
-	   				$this->Session->setFlash(__('msg_order_not_visible_backoffice'));
-	   				$this->myRedirect(Configure::read('routes_msg_stop'));
-	   			}   			
+				if($order['Order']['isVisibleBackOffice']=='N') {
+					$this->Session->setFlash(__('msg_order_not_visible_backoffice'));
+					$this->myRedirect(Configure::read('routes_msg_stop'));
+				}			
 	   		}
    		} // end if (in_array($this->action, $actionWithPermission)) 
    }

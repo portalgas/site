@@ -210,7 +210,10 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdateNowReferentWorking');
 		
 		$this->Session->setFlash($msg);
-		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		else		
+			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 	
 	/*
@@ -252,7 +255,10 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdate');
 		
 		$this->Session->setFlash($msg);
-		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		else
+			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);	
 	}
 
 	/*
@@ -293,7 +299,10 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdate');
 			
 		$this->Session->setFlash($msg);
-		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		else		
+			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 		
 	/*
@@ -387,7 +396,10 @@ class ReferenteController extends AppController {
 				
 			if(empty($msg)) {
 				$this->Session->setFlash(__('OrderStateCodeUpdate'));
-				$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
+				if(isset($results['Order']) && $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+					$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$results['Order']['order_type_id'].'/'.$results['Order']['id']);
+				else
+					$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 			}
 			else {
 				$this->Session->setFlash($msg);
@@ -486,6 +498,9 @@ class ReferenteController extends AppController {
 		$OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'TO-REQUEST-PAYMENT');
 					
 		$this->Session->setFlash('OrderStateCodeUpdateNowRequestPayment');
-		$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		else		
+			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
 }

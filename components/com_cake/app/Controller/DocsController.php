@@ -37,6 +37,7 @@ class DocsController extends AppController {
                     $this->Session->setFlash(__('msg_order_not_visible_backoffice'));
                     $this->myRedirect(Configure::read('routes_msg_stop'));
                 }
+                $this->set('order', $results);
             }
         } // end if (in_array($this->action, $actionWithPermission))		
     }

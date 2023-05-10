@@ -27,7 +27,6 @@ class MenuHelper extends AppHelper {
 		$html .= '	</ul>';
 		$html .= '</nav>'; 
 
-
 		return $html;		
 	}	  
 }

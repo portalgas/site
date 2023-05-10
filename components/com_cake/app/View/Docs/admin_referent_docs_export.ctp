@@ -1,10 +1,18 @@
 <?php
-$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
-if(isset($order_id) && !empty($order_id))
-	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
-$this->Html->addCrumb(__('Export Docs to order'));
-echo $this->Html->getCrumbList(array('class'=>'crumbs'));
+if(isset($results['Order']) && $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+	$this->Html->addCrumb(__('List Orders'), Configure::read('Neo.portalgas.url').'admin/orders/index/'.$results['Order']['order_type_id']);
+	$this->Html->addCrumb(__('Order home'), Configure::read('Neo.portalgas.url').'admin/orders/home/'.$results['Order']['order_type_id'].'/'.$results['Order']['id']);
+	$this->Html->addCrumb(__('Export Docs to order'));	
+}
+else {
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+	$this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
+	if(isset($order_id) && !empty($order_id))
+		$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
+	$this->Html->addCrumb(__('Export Docs to order'));	
+}
+echo $this->Html->getCrumbList(['class'=>'crumbs']);
 ?>
 <script type="text/javascript">
 var debugLocal = false;

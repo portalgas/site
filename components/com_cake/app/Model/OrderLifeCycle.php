@@ -1704,7 +1704,10 @@ class OrderLifeCycle extends AppModel {
 			
 			if($orderResult['Order']['state_code']!='PROCESSED-ON-DELIVERY') {
 				$esito['actions'][0]['msg'] = "Oppure non desideri più gestirlo, clicca qui per modificare l'anagrafica dell'ordine";
-				$esito['actions'][0]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$orderResult['Order']['delivery_id'].'&order_id='.$orderResult['Order']['id'];
+				if($orderResult['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
+					$esito['actions'][0]['url'] = Configure::read('Neo.portalgas.url').'admin/orders/edit/'.$orderResult['Order']['order_type_id'].'/'.$orderResult['Order']['id'].'/'.$orderResult['Order']['parent_id'];
+				else
+					$esito['actions'][0]['url'] = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=edit&delivery_id='.$orderResult['Order']['delivery_id'].'&order_id='.$orderResult['Order']['id'];
 				$esito['actions'][0]['action_class'] = 'actionEdit';
 				$esito['actions'][0]['action_label'] = __('Edit Order');
 			}

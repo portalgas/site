@@ -27,6 +27,20 @@ class GasGroupUser extends AppModel {
 		$options['recursive'] = 0;
 		$results = $this->find('all', $options);
 		
+		/*
+		 * aggiungo il proprietatio del gruppo
+		 */
+		App::import('Model', 'GasGroup');
+		$GasGroup = new GasGroup;		
+
+		$options = [];
+		$options['conditions'] = ['GasGroup.organization_id' => $organization_id,
+								'GasGroup.id' => $gas_group_id];
+		$GasGroup->unbindModel(['belongsTo' => ['Organization']]);
+		$options['recursive'] = 0;
+		$gas_group = $GasGroup->find('first', $options);
+		$results[] = $gas_group;
+	
 		return $results;
 	}
 
@@ -41,7 +55,7 @@ class GasGroupUser extends AppModel {
 		$options['recursive'] = -1;
 
 		$results = $this->find('all', $options);
-	
+
 	    return $results;		
 	}
 

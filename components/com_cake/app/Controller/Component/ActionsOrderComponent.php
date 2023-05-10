@@ -243,8 +243,19 @@ class ActionsOrderComponent extends Component {
         $orderActions[0]['OrdersAction']['label_more'] = '';
 	    $orderActions[0]['OrdersAction']['css_class'] = 'actionWorkflow';
 	    $orderActions[0]['OrdersAction']['img'] = '';
-	    $orderActions[0]['OrdersAction']['url'] = 'controller=Orders&action=home&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$order_id;
-                		 
+		if($orderResults['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+			/*
+			* home order GasGroup
+			*/
+			$orderActions[0]['OrdersAction']['neo_url'] = Configure::read('Neo.portalgas.url').'admin/orders/home/'.$orderResults['Order']['order_type_id'].'/'.$orderResults['Order']['id'];
+		}
+		else {
+			/*
+			* home order GAS di default
+			*/
+			$orderActions[0]['OrdersAction']['url'] = 'controller=Orders&action=home&delivery_id='.$orderResults['Order']['delivery_id'].'&order_id='.$order_id;
+        }
+	            		 
 		 /*
 		  * per i TEST
 		$orderResults['Order']['state_code'] = 'PROCESSED-TESORIERE';

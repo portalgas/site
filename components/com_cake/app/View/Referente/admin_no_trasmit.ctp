@@ -1,17 +1,29 @@
 <?php
 $this->App->d($this->request->data);
 
-$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
-$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
-
-if($this->request->data['Order']['state_code']=='PROCESSED-POST-DELIVERY')
-	$this->Html->addCrumb(__('OrdersReferenteInProcessedPostDelivery'));  /* tesoriere */
-else
-if($this->request->data['Order']['state_code']=='INCOMING-ORDER')  /* cassiere */
-	$this->Html->addCrumb(__('OrdersReferenteInProcessedOnDelivery'));
-
-echo $this->Html->getCrumbList(array('class'=>'crumbs'));
+if($results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+	$this->Html->addCrumb(__('List Orders'), Configure::read('Neo.portalgas.url').'admin/orders/index/'.$results['Order']['order_type_id']);
+	$this->Html->addCrumb(__('Order home'), Configure::read('Neo.portalgas.url').'admin/orders/home/'.$results['Order']['order_type_id'].'/'.$results['Order']['id']);
+	
+	if($this->request->data['Order']['state_code']=='PROCESSED-POST-DELIVERY')
+		$this->Html->addCrumb(__('OrdersReferenteInProcessedPostDelivery'));  /* tesoriere */
+	else
+	if($this->request->data['Order']['state_code']=='INCOMING-ORDER')  /* cassiere */
+		$this->Html->addCrumb(__('OrdersReferenteInProcessedOnDelivery'));
+}
+else {
+	$this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
+	$this->Html->addCrumb(__('List Orders'), array('controller' => 'Orders', 'action' => 'index'));
+	$this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$this->Form->value('Order.id')));
+	
+	if($this->request->data['Order']['state_code']=='PROCESSED-POST-DELIVERY')
+		$this->Html->addCrumb(__('OrdersReferenteInProcessedPostDelivery'));  /* tesoriere */
+	else
+	if($this->request->data['Order']['state_code']=='INCOMING-ORDER')  /* cassiere */
+		$this->Html->addCrumb(__('OrdersReferenteInProcessedOnDelivery'));	
+}
+echo $this->Html->getCrumbList(['class'=>'crumbs']);
 
 echo '<div class="contentMenuLaterale">';
 
@@ -29,7 +41,7 @@ echo $this->App->drawOrdersStateDiv($this->request->data).'&nbsp;'.__($this->req
 echo '</tr>';
 echo '</table></div>';
 
-echo $this->Form->create('Order',array('id' => 'formGas'));
+echo $this->Form->create('Order', ['id' => 'formGas']);
 echo '<fieldset>';
 echo '<legend></legend>';
 
