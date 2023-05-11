@@ -1965,7 +1965,7 @@ class OrdersController extends AppController {
 			*/
 			if(isset($this->user->organization['Organization']['hasGasGroups']) && 
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
-				$params = ['q' => 10];
+				$params = ['q' => Configure::read('Order.type.gas_groups')];
 				$url = $this->Connects->createUrlBo('admin/orders', 'index', $params);
 				$this->myRedirect($url);				
 			} 
@@ -2054,7 +2054,7 @@ class OrdersController extends AppController {
 	public function admin_close() {
 
 		$debug = false;
-		
+	
 		self::d($this->request->data, $debug);
 	
 		$this->Order->id = $this->order_id;
@@ -2141,8 +2141,15 @@ class OrdersController extends AppController {
             else {
 				$msg = __('OrderStateCodeUpdate');
 				$this->Session->setFlash($msg);
-				if(!$debug)
-					$this->myRedirect(['controller' => 'Orders', 'action' => 'index']);
+				if(!$debug) {
+					if(isset($results['Order']) && $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+						$params = ['q' => Configure::read('Order.type.gas_groups')];
+						$url = $this->Connects->createUrlBo('admin/orders', 'index', $params);
+						$this->myRedirect($url);
+					}
+					else
+						$this->myRedirect(['controller' => 'Orders', 'action' => 'index']);
+				}
             } 
 
 		} // end POST

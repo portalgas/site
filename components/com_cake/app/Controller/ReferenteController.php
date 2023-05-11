@@ -3,8 +3,8 @@ App::uses('AppController', 'Controller');
 
 class ReferenteController extends AppController {
 
-    public $components = ['Documents'];
-							   
+    public $components = ['Documents', 'Connects']; 
+	
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
@@ -210,8 +210,12 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdateNowReferentWorking');
 		
 		$this->Session->setFlash($msg);
-		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
-			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+			$params = ['order_type_id' => $order['Order']['order_type_id'],
+					    'order_id' => $order['Order']['id']];			
+			$url = $this->Connects->createUrlBo('admin/orders', 'home', $params);
+			$this->myRedirect($url);
+		}
 		else		
 			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
@@ -255,8 +259,12 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdate');
 		
 		$this->Session->setFlash($msg);
-		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
-			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+			$params = ['order_type_id' => $order['Order']['order_type_id'],
+					    'order_id' => $order['Order']['id']];			
+			$url = $this->Connects->createUrlBo('admin/orders', 'home', $params);
+			$this->myRedirect($url);			
+		}
 		else
 			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);	
 	}
@@ -299,8 +307,12 @@ class ReferenteController extends AppController {
 			$msg = __('OrderStateCodeUpdate');
 			
 		$this->Session->setFlash($msg);
-		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
-			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+			$params = ['order_type_id' => $order['Order']['order_type_id'],
+					    'order_id' => $order['Order']['id']];			
+			$url = $this->Connects->createUrlBo('admin/orders', 'home', $params);
+			$this->myRedirect($url);			
+		}
 		else		
 			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
@@ -396,8 +408,12 @@ class ReferenteController extends AppController {
 				
 			if(empty($msg)) {
 				$this->Session->setFlash(__('OrderStateCodeUpdate'));
-				if(isset($results['Order']) && $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
-					$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$results['Order']['order_type_id'].'/'.$results['Order']['id']);
+				if(isset($results['Order']) && $results['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
+					$params = ['order_type_id' => $results['Order']['order_type_id'],
+								'order_id' => $results['Order']['id']];						
+					$url = $this->Connects->createUrlBo('admin/orders', 'home', $params);
+					$this->myRedirect($url);			
+				}
 				else
 					$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 			}
@@ -498,8 +514,12 @@ class ReferenteController extends AppController {
 		$OrderLifeCycle->stateCodeUpdate($this->user, $this->order_id, 'TO-REQUEST-PAYMENT');
 					
 		$this->Session->setFlash('OrderStateCodeUpdateNowRequestPayment');
-		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) 
-			$this->myRedirect(Configure::read('Neo.portalgas.url').'admin/orders/home/'.$order['Order']['order_type_id'].'/'.$order['Order']['id']);
+		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups'))  {
+			$params = ['order_type_id' => $order['Order']['order_type_id'],
+						'order_id' => $order['Order']['id']];						
+			$url = $this->Connects->createUrlBo('admin/orders', 'home', $params);
+			$this->myRedirect($url);			
+		}
 		else		
 			$this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id='.$this->delivery_id.'&order_id='.$this->order_id);
 	}
