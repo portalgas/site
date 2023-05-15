@@ -3168,7 +3168,7 @@ msgid "UserGroupsGasGroupsOrders"
 msgstr "Gestore ordini per i gruppi"
 
 msgid "UserGroupsGasGroupsParentOrders"
-msgstr "Gestore ordini per gli ordini i gruppi"
+msgstr "Gestore ordini titolari"
 
 msgid "HasUserGroupsRootSupplier"
 msgstr "Ha la gestione dei produttori"
@@ -3246,7 +3246,7 @@ msgid "HasUserGroupsGasGroupsOrders"
 msgstr "Gestisce gli ordini per i gruppi"
 
 msgid "HasUserGroupsGasGroupsParentOrders"
-msgstr "Gestisce gli ordini per gli ordini dei gruppi"
+msgstr "Gestisce gli ordini titolari necessari per gli ordini dei gruppi"
 
 msgid "OrderCycleLife"
 msgstr "Ciclo dell'ordine"

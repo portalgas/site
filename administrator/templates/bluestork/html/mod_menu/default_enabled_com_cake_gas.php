@@ -265,13 +265,13 @@ if(!empty($organization_id)) {
 			
 		/*
 		 * M A N A G E R 	/ 	M A N A G E R _ D E L I V E R Y / F L A G _ P R I V A C Y
-		*/
-		$i++;
-		$_menus[$i]['level'] = 0;
-		$_menus[$i]['label'] = "G.A.S.";
-		$_menus[$i]['url'] = "#";		
+		*/		
 		if($hasGasGroups=='Y') {
 			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
+				$i++;
+				$_menus[$i]['level'] = 0;
+				$_menus[$i]['label'] = "G.A.S.";
+				$_menus[$i]['url'] = "#";
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Consegne a gruppi G.A.S. <label class='label label-success'>new</label>";
@@ -280,6 +280,10 @@ if(!empty($organization_id)) {
 			}
 		}
 		else {
+			$i++;
+			$_menus[$i]['level'] = 0;
+			$_menus[$i]['label'] = "G.A.S.";
+			$_menus[$i]['url'] = "#";			
 			if(in_array(group_id_manager_delivery, $user->getAuthorisedGroups())) {
 				$i++;
 				$_menus[$i]['level'] = 1;
@@ -348,10 +352,8 @@ if(!empty($organization_id)) {
 		 * */
 		if($hasGasGroups=='Y' && (
 			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_parent_orders,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) 
-		    ) {
+			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()))
+		) {
 			$i++;
 			$_menus[$i]['level'] = 0;
 			$_menus[$i]['label'] = "Gruppi";
