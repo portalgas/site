@@ -4512,6 +4512,9 @@ msgstr "Non sei referente produttore dell'ordine!"
 msgid "msg_organization_payment_incomplete"
 msgstr "Completa i dati per il pagamento del canone annuo di PortAlGas"
 
+msgid "msg_gas_groups_not_found"
+msgstr "Non sono stati trovati gruppi che gestisci"
+
 msgid "export_docs_not_found"
 msgstr "Non ci sono acquisti."
 

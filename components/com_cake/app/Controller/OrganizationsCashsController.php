@@ -3,6 +3,9 @@ App::uses('AppController', 'Controller');
 
 class OrganizationsCashsController extends AppController {
 	
+	private $_gas_group_id = 0;
+	private $_gas_group_user_ids = []; // ids_user del gruppo  
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 
@@ -23,6 +26,20 @@ class OrganizationsCashsController extends AppController {
 			}
 		}		
 		/* ctrl ACL */
+
+		/*
+		 * GasGroup
+		 * gas_group_id scelto e messo in session in GasGroupsController::admin_choice
+		 */
+		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
+			$this->user->organization['Organization']['hasGasGroups']=='Y') {
+			$this->_gas_group_id = $this->Session->read('gas_group_id');
+
+			App::import('Model', 'GasGroupUser');
+			$GasGroupUser = new GasGroupUser;				
+			$this->_gas_group_user_ids = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $this->_gas_group_id);
+			// debug($this->_gas_group_user_ids);
+		}
 	}
 
 	public function admin_index() {
@@ -44,7 +61,6 @@ class OrganizationsCashsController extends AppController {
 			$paramsConfig['cashLimit'] = $this->request->data['OrganizationsCash']['cashLimit'];
 			$paramsConfig['limitCashAfter'] = $this->request->data['OrganizationsCash']['limitCashAfter'];
 			$results['OrganizationsCash']['paramsConfig'] = json_encode($paramsConfig);
-
 
 			$this->OrganizationsCash->create();
 			if ($this->OrganizationsCash->save($results)) {
@@ -68,6 +84,26 @@ class OrganizationsCashsController extends AppController {
 		$options = [];
 		$options['conditions'] = ['OrganizationsCash.id' => $this->user->organization['Organization']['id']];
 		$options['recursive'] = 1;
+
+		/*
+		* filtro per gli utenti associati al gruppo 
+		*/
+		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
+			$this->user->organization['Organization']['hasGasGroups']=='Y') {
+				
+			if(empty($this->_gas_group_user_ids))
+				$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
+			else 
+				$ids = array_keys($this->_gas_group_user_ids);
+				
+			$this->OrganizationsCash->bindModel(['hasMany' => 
+				['User' => ['className' => 'User',
+							'foreignKey' => 'organization_id',
+							'conditions' => ['User.id IN ' => $ids],
+							'order' => Configure::read('orderUser')]]
+						]);
+		}
+
 		$results = $this->OrganizationsCash->find('first', $options);
 		$paramsConfig = json_decode($results['OrganizationsCash']['paramsConfig'], true);		
 		$results['OrganizationsCash'] += $paramsConfig;
@@ -89,7 +125,7 @@ class OrganizationsCashsController extends AppController {
 				 }
 			 }
 		 }
-			 
+	
 		self::d($results, $debug);
 			
 		$limit_type = ClassRegistry::init('CashesUser')->enumOptions('limit_type');
@@ -124,8 +160,26 @@ class OrganizationsCashsController extends AppController {
 		$limit_after = $paramsConfig->limitCashAfter;
 		$limit_type = $paramsConfig->cashLimit;
 
+		/*
+		* filtro per gli utenti associati al gruppo 
+		*/
+		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
+			$this->user->organization['Organization']['hasGasGroups']=='Y') {
+				
+			if(empty($this->_gas_group_user_ids))
+				$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
+			else 
+				$ids = array_keys($this->_gas_group_user_ids);
+				
+			$this->OrganizationsCash->bindModel(['hasMany' => 
+				['User' => ['className' => 'User',
+							'foreignKey' => 'organization_id',
+							'conditions' => ['User.id IN ' => $ids],
+							'order' => Configure::read('orderUser')]]
+						]);
+		}
+
 		if(!empty($results['CashesUser'])) {
-			
 			foreach($results['User'] as $utente) {
 
 				/*
@@ -166,14 +220,22 @@ class OrganizationsCashsController extends AppController {
 		/*
 		 * elenco utenti
 		 */
-		App::import('Model', 'User');
-		$User = new User;
-		
-		$conditions = array('UserGroupMap.group_id' => Configure::read('group_id_user'));
-		$users = $User->getUsersList($this->user, $conditions);
+		/*
+		* filtro per gli utenti associati al gruppo 
+		*/
+		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
+			$this->user->organization['Organization']['hasGasGroups']=='Y') {
+				$users = $this->_gas_group_user_ids;
+		}
+		else {
+			App::import('Model', 'User');
+			$User = new User;
+			
+			$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
+			$users = $User->getUsersList($this->user, $conditions);	
+		}
 		$this->set('users',$users);
 
-        
 		App::import('Model', 'CashesUser');
 		$CashesUser = new CashesUser;
 		

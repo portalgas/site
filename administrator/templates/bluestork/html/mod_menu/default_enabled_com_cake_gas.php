@@ -80,14 +80,27 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Gestione prepagato";
 				$_menus[$i]['url'] = "#";
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Configura";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
-				$i++;
-				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Prospetto utenti";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";
+				if($hasGasGroups=='Y') {
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Configura";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=index";
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Prospetto utenti";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=ctrl";	
+				}
+				else {
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Configura";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
+					$i++;
+					$_menus[$i]['level'] = 2;
+					$_menus[$i]['label'] = "Prospetto utenti";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";	
+				}
+
 				if($hasCashFilterSupplier=='Y') {
 					$i++;
 					$_menus[$i]['level'] = 2;

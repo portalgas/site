@@ -5,6 +5,9 @@ class GasGroupUser extends AppModel {
 	
 	public $tablePrefix = false;
 
+	/*
+	 * estraggo in lista gli utenti di un gruppo
+	 */	
 	public function getsListUserByGasGroupId($user, $organization_id, $gas_group_id) {
 
 		$results = [];
@@ -18,17 +21,24 @@ class GasGroupUser extends AppModel {
 	    return $results;		
 	}
 
+	/*
+	 * estraggo gli utenti di un gruppo
+	 */
 	public function getsUserByGasGroupId($user, $organization_id, $gas_group_id) {
 		
 		$options = [];
 		$options['conditions'] = ['GasGroupUser.organization_id' => $organization_id,
-							'GasGroupUser.gas_group_id' => $gas_group_id];
+								'GasGroupUser.gas_group_id' => $gas_group_id,
+								'User.organization_id' => $organization_id,
+								'User.block' => 0,
+								'User.username NOT LIKE' => 'dispensa@%'];
+		$options['order'] = Configure::read('orderUser');
 		$this->unbindModel(['belongsTo' => ['Organization']]);
 		$options['recursive'] = 0;
 		$results = $this->find('all', $options);
-		
+	
 		/*
-		 * aggiungo il proprietatio del gruppo
+		 * aggiungo il proprietario del gruppo
 		 */
 		App::import('Model', 'GasGroup');
 		$GasGroup = new GasGroup;		

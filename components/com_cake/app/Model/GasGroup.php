@@ -9,7 +9,8 @@ class GasGroup extends AppModel {
 
 		  $options = [];
 		  $options['conditions'] = ['GasGroup.organization_id' => $organization_id,
-								  'GasGroup.id' => $gas_group_id];
+								  'GasGroup.id' => $gas_group_id,
+								  'GasGroup.is_active' => true];
 		  $options['recursive'] = -1;
   
 		  $results = $this->find('first', $options);
@@ -17,6 +18,9 @@ class GasGroup extends AppModel {
 	    return $results;		
 	}
 
+	/* 
+	 * gruppi creati dall'utente
+	 */
 	public function getsByUser($user, $organization_id, $user_id) {
 
 		if($user->organization['Organization']['hasGasGroups']=='N')
@@ -24,10 +28,28 @@ class GasGroup extends AppModel {
 
 		$options = [];
 		$options['conditions'] = ['GasGroup.organization_id' => $organization_id,
-								'GasGroup.user_id' => $user_id];
+								'GasGroup.user_id' => $user_id,
+								'GasGroup.is_active' => true];
+		$options['order'] = ['GasGroup.name'];
 		$options['recursive'] = -1;
 
 		$results = $this->find('all', $options);
+	
+	    return $results;		
+	}
+
+	public function getsByUserList($user, $organization_id, $user_id) {
+
+		$results = [];
+
+		if($user->organization['Organization']['hasGasGroups']=='N')
+		  return [];
+
+		$gas_groups = $this->getsByUser($user, $organization_id, $user_id);
+		if(!empty($gas_groups))
+		foreach($gas_groups as $gas_group) {
+			$results[$gas_group['GasGroup']['id']] = $gas_group['GasGroup']['name'];
+		}
 	
 	    return $results;		
 	}

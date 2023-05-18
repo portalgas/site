@@ -1,6 +1,6 @@
 <?php 
 echo '<div class="organizations form" style="min-height:350px;">';
-echo $this->Form->create('Organization',array( 'id' => 'formGas'));
+echo $this->Form->create('Organization', ['id' => 'formGas']);
 echo '<fieldset>';
 echo '<legend>'.__('Scegli l\'organizzazione').'</legend>';
 	
