@@ -260,6 +260,7 @@ class ArticlesController extends AppController {
 		
 		$results = [];
 		$FilterArticleName = null;
+		$FilterArticleCodice = null;
 		$FilterArticleStato = 'Y';
 		$SqlLimit = 1000;
 		
@@ -269,7 +270,10 @@ class ArticlesController extends AppController {
 				$FilterArticleSupplierId = $this->user->organization['Organization']['prodSupplierOrganizationId'];
 			else if(isset($this->request->data['ArticlesOrder']['FilterArticleSupplierId']))
 				$FilterArticleSupplierId = $this->request->data['ArticlesOrder']['FilterArticleSupplierId'];
-			
+
+			if(isset($this->request->data['ArticlesOrder']['FilterArticleCodice']))
+				$FilterArticleCodice = $this->request->data['ArticlesOrder']['FilterArticleCodice'];
+				
 			if(isset($this->request->data['ArticlesOrder']['FilterArticleName']))
 				$FilterArticleName = $this->request->data['ArticlesOrder']['FilterArticleName'];
 				
@@ -354,6 +358,10 @@ class ArticlesController extends AppController {
 
 		if(!empty($FilterArticleSupplierId)) {
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
+			if(!empty($this->request->params['pass']['FilterArticleCodice'])) {
+				$FilterArticleCodice = $this->request->params['pass']['FilterArticleCodice'];
+				$conditions[] = ['Article.codice LIKE '=>'%'.addslashes($FilterArticleCodice).'%'];
+			}			
 			if(!empty($this->request->params['pass']['FilterArticleName'])) {
 				$FilterArticleName = $this->request->params['pass']['FilterArticleName'];
 				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];
@@ -398,6 +406,7 @@ class ArticlesController extends AppController {
 
 		/* filtro */
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
+		$this->set('FilterArticleCodice', $FilterArticleCodice);
 		$this->set('FilterArticleName', $FilterArticleName);
 		$this->set('FilterArticleStato', $FilterArticleStato);
 	
@@ -436,6 +445,7 @@ class ArticlesController extends AppController {
 		}		
 	
 		$results = [];
+		$FilterArticleCodice = null;
 		$FilterArticleName = null;
 		$SqlLimit = 1000;
 	
@@ -448,6 +458,9 @@ class ArticlesController extends AppController {
 			else if(isset($this->request->data['Article']['FilterArticleSupplierId']))
 				$FilterArticleSupplierId = $this->request->data['Article']['FilterArticleSupplierId'];
 				
+			if(isset($this->request->data['Article']['FilterArticleCodice']))
+				$FilterArticleCodice = $this->request->data['Article']['FilterArticleCodice'];
+					
 			if(isset($this->request->data['Article']['FilterArticleName']))
 				$FilterArticleName = $this->request->data['Article']['FilterArticleName'];
 	
@@ -496,6 +509,10 @@ class ArticlesController extends AppController {
 		if(!empty($FilterArticleSupplierId)) {
 	
 			$conditions[] = ['SuppliersOrganization.id' => $FilterArticleSupplierId];
+			if(!empty($this->request->params['pass']['FilterArticleCodice'])) {
+				$FilterArticleCodice = $this->request->params['pass']['FilterArticleCodice'];
+				$conditions[] = ['Article.codice LIKE '=>'%'.addslashes($FilterArticleCodice).'%'];
+			}			
 			if(!empty($this->request->params['pass']['FilterArticleName'])) {
 				$FilterArticleName = $this->request->params['pass']['FilterArticleName'];
 				$conditions[] = ['Article.name LIKE '=>'%'.addslashes($FilterArticleName).'%'];
@@ -540,6 +557,7 @@ class ArticlesController extends AppController {
 		
 		/* filtro */
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
+		$this->set('FilterArticleCodice', $FilterArticleCodice);
 		$this->set('FilterArticleName', $FilterArticleName);
 	
 		$this->set('results', $results);
@@ -1444,6 +1462,7 @@ class ArticlesController extends AppController {
 	private function _admin_index_sql_conditions($organization_id, $context, $FilterArticleSupplierId) {
 	
 		$FilterArticleCategoryArticleId = null;
+		$FilterArticleCodice = null;
 		$FilterArticleName = null;
 		$FilterArticleOrderById = 0;
 		$FilterArticleArticleIds = null;
@@ -1478,6 +1497,10 @@ class ArticlesController extends AppController {
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId')) {
 			$FilterArticleCategoryArticleId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'CategoryArticleId');
 			$conditions[] = ['Article.category_article_id' => $FilterArticleCategoryArticleId];
+		}
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Codice')) {
+			$FilterArticleCodice = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Codice');
+			$conditions[] = ['Article.codice LIKE '=>'%'.$FilterArticleCodice.'%'];
 		}
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'Name')) {
 			$FilterArticleName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Name');
@@ -1581,6 +1604,7 @@ class ArticlesController extends AppController {
 		
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
 		$this->set('FilterArticleCategoryArticleId', $FilterArticleCategoryArticleId);
+		$this->set('FilterArticleCodice', $FilterArticleCodice);
 		$this->set('FilterArticleName', $FilterArticleName);
 		$this->set('FilterArticleOrderById', $FilterArticleOrderById);
 		$this->set('FilterArticleArticleIds', $FilterArticleArticleIds);

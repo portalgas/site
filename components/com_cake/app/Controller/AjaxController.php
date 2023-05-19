@@ -1814,6 +1814,25 @@ class AjaxController extends AppController {
         $this->render('/Ajax/autocomplete_users_name');
     }
 
+    public function admin_autoCompleteContextArticlesArticles_codice($format = 'notmpl', $q) {
+        App::import('Model', 'Article');
+        $Article = new Article;
+
+        $q = $this->_queryAutocompleteDecodate($q);
+
+        $options = [];
+        $options['conditions'] = ['lower(Article.codice) LIKE' => '%' . $q . '%',
+            'Article.organization_id' => $this->user->organization['Organization']['id'],
+            'Article.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')']; 
+        $options['fields'] = ['Article.codice'];
+        $options['recursive'] = -1;
+        $results = $Article->find('all', $options);
+
+        $this->set(compact('results'));
+        $this->layout = 'ajax';
+        $this->render('/Ajax/autocomplete_article_codice');
+    }
+
     public function admin_autoCompleteContextArticlesArticles_name($format = 'notmpl', $q) {
         App::import('Model', 'Article');
         $Article = new Article;

@@ -189,23 +189,23 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	var $editorOptions = array(
+	var $editorOptions = [
         'method', 'callback', 'name', 'id', 'submitdata', 'type', 'rows', 'cols', 'height', 
         'width', 'loadurl', 'loadtype', 'loadtext', 'loaddata', 'data', 'indicator', 'tooltip', 
         'event', 'submit', 'cancel', 'cssclass', 'style', 'select', 'placeholder', 'onblur', 
         'onsubmit', 'onreset', 'onerror', 'ajaxoptions'
-	);
+	];
 /**
  * Options for auto-complete editor.
  *
  * @var array
  */
-	var $autoCompleteOptions = array(
-	    'autoFill', 'cacheLength', 'delay', 'extraParams', 'formatItem', 'formatMatch', 
+	var $autoCompleteOptions = [
+		'autoFill', 'cacheLength', 'delay', 'extraParams', 'formatItem', 'formatMatch', 
 	    'formatResult', 'highlight', 'matchCase', 'matchContains', 'matchSubset', 'max', 
 	    'minChars', 'multiple', 'multipleSeparator', 'mustMatch', 'scroll', 'scrollHeight', 
 	    'selectFirst', 'width'
-	);
+	];
 /**
  * Output buffer for Ajax update content
  *
@@ -529,7 +529,8 @@ class AjaxHelper extends AppHelper {
  * @return string Ajax script
  * check out http://docs.jquery.com/Plugins/Autocomplete
  */
-	function autoComplete($field, $url = array(), $options = array()) {
+	function autoComplete($field, $url = [], $options = []) {
+		
 		$var = '';
 		if (isset($options['var'])) {
 			$var = 'var ' . $options['var'] . ' = ';
@@ -540,6 +541,7 @@ class AjaxHelper extends AppHelper {
 			$options['id'] = Inflector::camelize(str_replace(".", "_", $field));
 		}
 
+
 		$htmlOptions = $this->__getHtmlOptions($options);
 		$htmlOptions['autocomplete'] = "off";
 
@@ -547,8 +549,8 @@ class AjaxHelper extends AppHelper {
 			unset($htmlOptions[$opt]);
 		}
 
-		$options = $this->_optionsToString($options, array('multipleSeparator'));
-		$callbacks = array('formatItem', 'formatMatch', 'formatResult', 'highlight');
+		$options = $this->_optionsToString($options, ['multipleSeparator']);
+		$callbacks = ['formatItem', 'formatMatch', 'formatResult', 'highlight'];
 		
 		foreach ($callbacks as $callback) {
 		    if (isset($options[$callback])) {
@@ -588,7 +590,8 @@ class AjaxHelper extends AppHelper {
 			);";
 		
 		 */
-		$script = "{$var} jQuery('#{$htmlOptions['id']}').autocomplete({source:\"".$this->url($url)."\",minLength: 2})";				
+		$script = "{$var} jQuery('#{$htmlOptions['id']}').autocomplete({source:\"".$this->url($url)."\",minLength: 2})";
+				
 		/*
 		 * fractis
 		 * i & gli arrivavano in &amp; e la chiamata andava in errore
