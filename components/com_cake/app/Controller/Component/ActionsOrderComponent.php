@@ -538,6 +538,21 @@ class ActionsOrderComponent extends Component {
 	}
 
 	/*
+	 * controllo che l'utente appartenga ala gruppo GasGroups
+	 */
+	private function userIsGasGroupsManagerOrders($user, $results, $value_da_verificare) {
+		$esito = false;
+
+		// todo copiato da neo, qui non serve
+		if($user->acl['isGasGroupsManagerOrders'] && $value_da_verificare=='Y')
+			$esito = true;
+		else
+			$esito = false;
+		
+		return $esito;
+	}
+		
+	/*
 	 * Controlli su User
 	*/
 	private function userHasArticlesOrder($user, $results, $value_da_verificare) {

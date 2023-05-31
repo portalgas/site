@@ -590,7 +590,31 @@ class AjaxHelper extends AppHelper {
 			);";
 		
 		 */
-		$script = "{$var} jQuery('#{$htmlOptions['id']}').autocomplete({source:\"".$this->url($url)."\",minLength: 2})";
+		
+		$uuid = uniqid();
+		$script = "mySource".$uuid." = function(request,response) {
+			let filterArticleSupplierOrganizationId = jQuery('#FilterArticleSupplierOrganizationId').val();
+			// console.log(filterArticleSupplierOrganizationId, 'filterArticleSupplierOrganizationId');
+			let url = '';
+			if(typeof filterArticleSupplierOrganizationId==='undefined' || filterArticleSupplierOrganizationId==0)
+				url = '".$this->url($url)."&q='+request.term;
+			else 
+				url = '".$this->url($url)."&q='+request.term+'&filterArticleSupplierOrganizationId='+filterArticleSupplierOrganizationId;
+			// console.log(url, 'url');
+			
+			$.ajax({
+				url: url,
+				type: 'get',
+				dataType: 'json',
+				success: function( data ) {
+					console.log(data, 'autocomplete');
+					response( data );
+				}
+		    });
+		}			
+		";
+
+		$script .= "{$var} jQuery('#{$htmlOptions['id']}').autocomplete({source:mySource".$uuid.",minLength: 2})";
 				
 		/*
 		 * fractis
