@@ -533,9 +533,7 @@ if(!empty($organization_id)) {
 						$_menus[$i]['level'] = 2;
 						$_menus[$i]['label'] = "Aggiungi un nuovo ordine titolare per i gruppi";
 						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=11";
-						$_menus[$i]['target'] = "_blank";
-						$i++;
-						$_menus[$i]['separator'] = true;				
+						$_menus[$i]['target'] = "_blank";				
 					}
 					if(in_array(group_id_gas_groups_manager_orders,$user->getAuthorisedGroups())) {
 						$i++;
