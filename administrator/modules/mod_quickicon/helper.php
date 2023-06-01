@@ -21,7 +21,7 @@ abstract class modQuickIconHelper
 	 *
 	 * @since	1.6
 	 */
-	protected static $buttons = array();
+	protected static $buttons = [];
 
 	/**
 	 * Helper method to return button list.
@@ -122,41 +122,39 @@ abstract class modQuickIconHelper
 							'image' => 'header/icon-48-user-profile.png',
 							'text' => JText::_('MOD_QUICKICON_PROFILE'),
 							'access' => true
-						),
+						));
 							
-							
+						if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='N') {
+							self::$buttons[$key][] = array(
+									'link' => JRoute::_('index.php?option=com_cake&controller=Deliveries&action=index'),
+									'image' => 'header/cake/calendar_date.png',
+									'text' => "Consegne",
+									'access' => true);
 
-						array(
-								'link' => JRoute::_('index.php?option=com_cake&controller=Deliveries&action=index'),
-								'image' => 'header/cake/calendar_date.png',
-								'text' => "Consegne",
-								'access' => true
-						),
-						array(
-								'link' => JRoute::_('index.php?option=com_cake&controller=SuppliersOrganizations&action=index'),
-								'image' => 'header/cake/users.png',
-								'text' => "Fornitori",
-								'access' => true
-						),
-						array(
-								'link' => JRoute::_('index.php?option=com_cake&controller=Articles&action=context_articles_index'),
-								'image' => 'header/cake/kcmdf.png',
-								'text' => "Articoli",
-								'access' => true
-						),
-						array(
-								'link' => JRoute::_('index.php?option=com_cake&controller=Orders&action=index'),
-								'image' => 'header/cake/office_folders.png',
-								'text' => "Ordini",
-								'access' => true
-						),
-						array(
-								'link' => JRoute::_('index.php?option=com_cake&controller=ArticlesOrders&action=order_choice'),
-								'image' => 'header/cake/folder.png',
-								'text' => "Articoli associati all'ordine",
-								'access' => true
-						),	
-					);
+							self::$buttons[$key][] = array(
+										'link' => JRoute::_('index.php?option=com_cake&controller=Orders&action=index'),
+										'image' => 'header/cake/office_folders.png',
+										'text' => "Ordini",
+										'access' => true);
+
+							self::$buttons[$key][] = array(
+										'link' => JRoute::_('index.php?option=com_cake&controller=ArticlesOrders&action=order_choice'),
+										'image' => 'header/cake/folder.png',
+										'text' => "Articoli associati all'ordine",
+										'access' => true);
+						} // end if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='N')
+
+						self::$buttons[$key][] = array(
+									'link' => JRoute::_('index.php?option=com_cake&controller=SuppliersOrganizations&action=index'),
+									'image' => 'header/cake/users.png',
+									'text' => "Fornitori",
+									'access' => true);
+
+						self::$buttons[$key][] = array(
+									'link' => JRoute::_('index.php?option=com_cake&controller=Articles&action=context_articles_index'),
+									'image' => 'header/cake/kcmdf.png',
+									'text' => "Articoli",
+									'access' => true);							
 				}
 				else
 				if(isset($user->supplier['Supplier'])) {
