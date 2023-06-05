@@ -867,11 +867,9 @@ class AjaxGasCodesController extends AppController {
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
-            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
-            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-            $results['Order']['tot_importo'] = $tot_importo;
+            $results['Order']['tot_importo'] = $Order->getTotImporto($this->user, $this->order_id);
         }
-
+        $results['Order']['tot_importo'] = number_format($results['Order']['tot_importo'], 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));       
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -895,10 +893,9 @@ class AjaxGasCodesController extends AppController {
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
-            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
-            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-            $results['Order']['tot_importo'] = $tot_importo;
-        }        
+            $results['Order']['tot_importo'] = $Order->getTotImporto($this->user, $this->order_id);
+        }
+        $results['Order']['tot_importo'] = number_format($results['Order']['tot_importo'], 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));       
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
@@ -920,10 +917,9 @@ class AjaxGasCodesController extends AppController {
         }
         $results = $Order->read($this->order_id, $this->user->organization['Organization']['id']);
         if(empty($results['Order']['tot_importo']) || $results['Order']['tot_importo']==0) {
-            $tot_importo = $Order->getTotImporto($this->user, $this->order_id);
-            $tot_importo = number_format($tot_importo, 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));
-            $results['Order']['tot_importo'] = $tot_importo;
-        }        
+            $results['Order']['tot_importo'] = $Order->getTotImporto($this->user, $this->order_id);
+        }
+        $results['Order']['tot_importo'] = number_format($results['Order']['tot_importo'], 2, Configure::read('separatoreDecimali'), Configure::read('separatoreMigliaia'));       
         $this->set(compact('results', $results));
 
         $this->layout = 'ajax';
