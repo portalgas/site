@@ -365,20 +365,21 @@ if(!empty($organization_id)) {
 		 * */
 		if($hasGasGroups=='Y' && (
 			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
-			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()))
+			in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups()) || 
+			in_array(group_id_manager, $user->getAuthorisedGroups()))
 		) {
 			$i++;
 			$_menus[$i]['level'] = 0;
 			$_menus[$i]['label'] = "Gruppi";
 			$_menus[$i]['url'] = "#";			
-			if(in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups())) {
+			if(in_array(group_id_manager, $user->getAuthorisedGroups()) || in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups())) {
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Gruppi e utenti";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-groups&a_to=/index";
 				$_menus[$i]['target'] = "_blank";
 			}
-			if(in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
+			if(in_array(group_id_manager, $user->getAuthorisedGroups()) || in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Consegne";

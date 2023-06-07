@@ -80,7 +80,7 @@ if($isReferentGeneric) {
 ?>
 	
 	<?php
-	if($isGasGropusManagerDelivery) {
+	if($isRoot || $isManager || $isGasGropusManagerDelivery) {
 		$url = "index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/gas-group-deliveries&amp;a_to=index";
 	?>	
     <div class="col-xs-12 col-sm-4 col-md-3">
