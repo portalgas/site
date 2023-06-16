@@ -2,7 +2,7 @@
 $id = ucfirst($id);
 ?>
 
-<form action="" class="dropzone" id="myDropzone<?php echo $id;?>"></form>
+<form action="" class="dropzone" id="my-dropzone<?php echo $id;?>"></form>
 
 <script>
   Dropzone.options.myDropzone<?php echo $id;?> = { // camelized version of the `id`
@@ -20,10 +20,21 @@ $id = ucfirst($id);
 			this.removeFile(this.files[0]);
 			}
 		});
+
+		<?php 
+		if(!empty($img1) && 
+		   file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$organization_id.DS.$img1)) {
+		?>			
+			let myDropzone = this;
+			let mockFile = { name: "Foto articolo", size: 1234 };
+			myDropzone.displayExistingFile(mockFile, "<?php echo Configure::read('App.server');?>/images/articles/<?php echo $organization_id;?>/<?php echo $img1;?>");
+		<?php 
+  		}
+		?>
 	},
     accept: function(file, done) {
       if (file.name == "justinbieber.jpg") {
-        done("Naha, you don't.");
+        done("dropzone eseguito");
       }
       else { done(); }
     }

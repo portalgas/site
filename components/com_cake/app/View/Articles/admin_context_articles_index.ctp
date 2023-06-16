@@ -98,7 +98,7 @@ foreach ($results as $numResults => $result) {
 	if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
 		echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 	}
-	// echo $this->element('dropzone', ['id' => $result['Article']['id']]);
+	// echo $this->element('dropzone', ['organization_id' => $result['Article']['organization_id'], 'id' => $result['Article']['id'], 'img1' => $result['Article']['img1']]);
 	echo '</td>';
 	
 	echo '<td>'.$result['Article']['name'].'&nbsp;';
