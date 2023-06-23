@@ -39,8 +39,8 @@ if(!empty($results)) {
 	if($isSupplierOrganizationDesTitolare)
 		echo $this->element('boxArticleOwnOrganization',array('ownOrganizationResults' => $ownOrganizationResults));
 	
-	echo $this->Form->create('Article',array('id' => 'formGas'));
-	echo $this->Form->hidden('articles_in_articlesorders',array('id' =>'articles_in_articlesorders', 'value'=>''));
+	// ho il form d dropzone echo $this->Form->create('Article', ['id' => 'formGas']);
+	echo $this->Form->hidden('articles_in_articlesorders', ['id' => 'articles_in_articlesorders', 'value'=>'']);
 
 	echo '<div class="table-responsive"><table class="table table-hover">';	
 	echo '<tr>';	
@@ -95,10 +95,12 @@ foreach ($results as $numResults => $result) {
 		echo '<td>'.$result['Article']['codice'].'</td>';
 	
 	echo '<td>';
+	/*
 	if(!empty($result['Article']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.article').DS.$result['Article']['organization_id'].DS.$result['Article']['img1'])) {
 		echo '<img width="50" class="img-responsive-disabled userAvatar" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.article').'/'.$result['Article']['organization_id'].'/'.$result['Article']['img1'].'" />';
 	}
-	// echo $this->element('dropzone', ['organization_id' => $result['Article']['organization_id'], 'id' => $result['Article']['id'], 'img1' => $result['Article']['img1']]);
+	*/
+	echo $this->element('dropzone', ['organization_id' => $result['Article']['organization_id'], 'id' => $result['Article']['id'], 'img1' => $result['Article']['img1']]);
 	echo '</td>';
 	
 	echo '<td>'.$result['Article']['name'].'&nbsp;';
@@ -109,7 +111,7 @@ foreach ($results as $numResults => $result) {
 	echo '<td>'.$this->App->getArticlePrezzoUM($result['Article']['prezzo'], $result['Article']['qta'], $result['Article']['um'], $result['Article']['um_riferimento']).'</td>';
 		
 	/*
-		* qui calcolo runtime se e' bio, se no prendo il campo article.bio
+	 * qui calcolo runtime se e' bio, se no prendo il campo article.bio
 	*/		
 	echo '<td>';
 	if($this->App->isArticlesTypeBio($result['ArticlesType'])) 
@@ -218,9 +220,9 @@ echo '<div class="paging">';
 
 	echo '</div>';
 	
-	echo '</fieldset>';
+	// echo '</fieldset>';
 	
-	echo $this->Form->end();
+	//echo $this->Form->end();
 
 	echo $this->element('legendaArticlesPresentiInArticlesOrder');
 	

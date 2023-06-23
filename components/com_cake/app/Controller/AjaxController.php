@@ -1690,7 +1690,7 @@ class AjaxController extends AppController {
 
         $results = $User->find('all', ['conditions' => $conditions, 'fields' => ['User.name']]);
         // debug($results);
-        $this->set('results', $results);
+        $this->set(compact('results'));
 
         $this->layout = 'ajax';
         $this->render('/Ajax/autocomplete_users_name');

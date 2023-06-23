@@ -3,8 +3,8 @@ App::uses('AppController', 'Controller');
 App::import('Vendor', 'ImageTool');
 
 class ArticlesController extends AppController {
-				
-	public $components = ['Paginator'];
+	
+	public $components = ['Paginator', 'RequestHandler'];
 	public $helpers = ['Javascript', 'Tabs', 'Image'];
 	private $context;
 	private $article_organization_id = 0;
@@ -811,10 +811,10 @@ class ArticlesController extends AppController {
 						*/
 						if(!empty($this->request->data['Document']['img1']['name'])) {
 							$esito_upload = $this->_upload_img($id, $this->user->organization['Organization']['id']);
-							if($esito_upload===true)
+							if($esito_upload['esito']===true)
 								$msg .= "<br />e l'immagine caricata";
 							else
-								$msg .= "<br />ma l'immagine non è caricata per un errore:<br/>$esito_upload";
+								$msg .= "<br />ma l'immagine non è caricata per un errore:<br/>".$esito_upload['error'];
 						}
 					
 						$this->Session->setFlash($msg);
@@ -1000,10 +1000,10 @@ class ArticlesController extends AppController {
 					*/
 					if(!empty($this->request->data['Document']['img1']['name'])) {
 						$esito_upload = $this->_upload_img($id, $article_organization_id);
-						if($esito_upload===true)
+						if($esito_upload['esito']===true)
 							$msg .= "<br />e l'immagine caricata";
 						else
-							$msg .= "<br />ma l'immagine non è caricata per un errore:<br />$esito_upload";
+							$msg .= "<br />ma l'immagine non è caricata per un errore:<br />".$esito_upload['error'];
 					}
 										
 					$this->Session->setFlash($msg);
@@ -1743,8 +1743,11 @@ class ArticlesController extends AppController {
 	
 		self::d($this->request->data['Document'], $debug);
 		
-		$esito = true;
-		
+		$results = [];
+		$results['esito'] = true;
+		$results['error'] = '';
+		$results['file_name'] = '';
+
 		/*
 		 * 	$img1 = array(
 		 		* 		'name' => 'immagine.jpg',
@@ -1764,91 +1767,159 @@ class ArticlesController extends AppController {
 		$img1 = $this->request->data['Document']['img1'];
 		self::d($img1, $debug);
 		
-		if($img1['error'] == UPLOAD_ERR_OK && is_uploaded_file($img1['tmp_name']))	{
+		try {
+			if($img1['error'] == UPLOAD_ERR_OK && @is_uploaded_file($img1['tmp_name']))	{
 	
-			$path_upload = Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article_organization_id.DS;
+				$path_upload = Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article_organization_id.DS;
 
-			/*
-			 * ctrl exstension / content type
-			*/
-			$ext = strtolower(pathinfo($img1['name'], PATHINFO_EXTENSION));
-			
-			$finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-			$type = finfo_file ($finfo, $img1['tmp_name']);
-			finfo_close($finfo);
-					
-       		if(!in_array($ext, Configure::read('App.web.img.upload.extension')) || !in_array($type, Configure::read('ContentType.img'))) {
-       			$esito = "Estensione .$ext non valida: si possono caricare file con la seguente estensione ";
-       			foreach ( Configure::read('App.web.img.upload.extension') as $estensione) 
-       				$esito .= '.'.$estensione.'&nbsp;';	
-       			
-       			if($debug) {
-       				echo "<br />ext ".$ext;
-       				echo "<br />type ".$type;       				
-       				echo "<br />esito ".$esito;
-       				exit;
-       			}
-       			return $esito;
-			}
-
-			$fileNewName = $article_id.'.'.$ext;
-			$fileNewName = uniqid($article_id.'-').'.'.$ext;
-			self::d("path_upload ".$path_upload, $debug);
-			self::d("ext ".$ext, $debug);
-			self::d("fileNewName ".$fileNewName, $debug);
-			
-			if(move_uploaded_file($img1['tmp_name'], $path_upload.$fileNewName)) {
-				
-				$info = getimagesize($path_upload.$fileNewName);
-				$width = $info[0];
-				$height = $info[1];
-				
-				self::d($info, $debug);
-					
 				/*
-				 * ridimensiona img
-				 */
-				if($width > Configure::read('App.web.img.upload.width.article')) {
-					$status = ImageTool::resize(array(
-							'input' => $path_upload.$fileNewName,
-							'output' => $path_upload.$fileNewName,
-							'width' => Configure::read('App.web.img.upload.width.article'),
-							'height' => ''
-					));
+				* ctrl exstension / content type
+				*/
+				$ext = strtolower(pathinfo($img1['name'], PATHINFO_EXTENSION));
+				
+				$finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+				$type = finfo_file ($finfo, $img1['tmp_name']);
+				finfo_close($finfo);
 					
-					self::d("ridimensiono ".$status, $debug);
+				if(!in_array($ext, Configure::read('App.web.img.upload.extension')) || !in_array($type, Configure::read('ContentType.img'))) {
+					$results['esito'] = false;
+					$results['error'] = "Estensione .$ext non valida: si possono caricare file con la seguente estensione ";
+					foreach ( Configure::read('App.web.img.upload.extension') as $estensione) 
+					$results['error'] .= '.'.$estensione.'&nbsp;';	
+					
+					if($debug) {
+						echo "<br />ext ".$ext;
+						echo "<br />type ".$type;       				
+						debug($results);
+						exit;
+					}
+					return $results;
 				}
-										
-				/*
-				 * update database
-				 */
-				$sql = "UPDATE
-							".Configure::read('DB.prefix')."articles
-						SET img1 = '".$fileNewName."' 
-						WHERE
-							organization_id = ".$article_organization_id."
-							AND id = ".$article_id;
-				try {
+
+				$fileNewName = $article_id.'.'.$ext;
+				$fileNewName = uniqid($article_id.'-').'.'.$ext;
+				$results['file_name'] = $fileNewName;
+
+				self::d("path_upload ".$path_upload, $debug);
+				self::d("ext ".$ext, $debug);
+				self::d("fileNewName ".$fileNewName, $debug);
+			
+				if(@move_uploaded_file($img1['tmp_name'], $path_upload.$fileNewName)) {
+					
+					$info = getimagesize($path_upload.$fileNewName);
+					$width = $info[0];
+					$height = $info[1];
+					
+					self::d($info, $debug);
+						
+					/*
+					* ridimensiona img
+					*/
+					if($width > Configure::read('App.web.img.upload.width.article')) {
+						$status = ImageTool::resize([
+								'input' => $path_upload.$fileNewName,
+								'output' => $path_upload.$fileNewName,
+								'width' => Configure::read('App.web.img.upload.width.article'),
+								'height' => ''
+						]);
+						
+						self::d("ridimensiono ".$status, $debug);
+					}						
+					/*
+					* update database
+					*/
+					$sql = "UPDATE
+								".Configure::read('DB.prefix')."articles
+							SET img1 = '".$fileNewName."' 
+							WHERE
+								organization_id = ".$article_organization_id."
+								AND id = ".$article_id;
 					$this->Article->query($sql);
+				}	
+				else {
+					$results['esito'] = false;
+			    	(!empty($img1['error'])) ? $error = $img1['error']: $error = "Errore nel caricamento del file!";
+					$results['error'] = $error;
+					CakeLog::write('error upload ',$e);
 				}
-				catch (Exception $e) {
-					CakeLog::write('error',$sql);
-					CakeLog::write('error',$e);
-				}
-			}	
-			else
-				$esito = $img1['error'];
+			} // end if($img1['error'] == UPLOAD_ERR_OK && @is_uploaded_file($img1['tmp_name']))	
 		}
-		else
-			$esito = $img1['error'];
-		
+		catch(Exception $e) {
+			$results['esito'] = false;
+			$results['error'] = $e->getMessage();
+			CakeLog::write('error upload ', $e->getMessage());
+		}
+
 		if($debug) {
-			echo "<br />esito ".$esito;
+			debug($results);
 			exit;
 		}
-		return $esito;
+
+		return $results;
 	}
 	
+	/*
+	 * richiamato da dropzone
+	 * $this->request->params['form']['img1'] = [
+		'name' => 'nomefile.jpg',
+		'type' => 'image/jpeg',
+		'tmp_name' => '/tmp/phprukwns',
+		'error' => (int) 0,
+		'size' => (int) 10331]
+	 * 
+	 * 	$this->request->data['Document']['img1']
+	 * 		'name' => 'nomefile.jpg',
+	 * 		'type' => 'image/jpeg',
+	 * 		'tmp_name' => /tmp/phpsNYCIB',
+	 * 		'error' => 0,
+	 *		'size' => 41737,
+	 *
+	 */
+	public function admin_upload($article_id, $article_organization_id) {
+		$this->request->data['Document'] = [];
+		$this->request->data['Document'] = $this->request->params['form'];
+
+		$results = $this->_upload_img($article_id, $article_organization_id);
+		
+		($results['esito']) ? $code = 200: $code = 500;
+		$this->response->type('json');
+        $this->response->statusCode($code);
+        $this->response->body(json_encode($results));
+        $this->response->send();
+        $this->_stop();
+	}
+
+	public function admin_uploadRemove($article_id, $article_organization_id) {
+
+        $options = [];
+        $options['conditions'] = ['Article.organization_id' => $article_organization_id,
+								  'Article.id' => $article_id];
+        $options['recursive'] = -1;
+        $article = $this->Article->find('first', $options);
+		$file_name = $article['Article']['img1'];
+
+		if(!empty($file_name)) {
+			$article['Article']['img1'] = '';
+			$this->Article->save($article);
+			
+			$path_upload = Configure::read('App.root').Configure::read('App.img.upload.article').DS.$article_organization_id.DS.$file_name;
+			if(file_exists($path_upload))
+				unlink($path_upload);
+	
+			$results = ['esito' => true, 'msg' => "eliminato il file $file_name"];
+		}
+		else {
+			$results = ['esito' => true, 'msg' => "eliminato il file"];
+		} // end if(!empty($file_name))
+
+
+		$this->response->type('json');
+        $this->response->statusCode(200);
+        $this->response->body(json_encode($results));
+        $this->response->send();
+        $this->_stop();		
+	}
+
 	/* 
 	 * passato un campo stato / flag_presente_articlesorders inverte il valore Y => N
 	 */
