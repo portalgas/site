@@ -249,6 +249,7 @@ class PagesController extends AppController {
 
             $options['conditions'] += ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
 						                'Order.organization_id' => $this->user->organization['Organization']['id'],
+                                        'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
 						                '1' => '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')',
 						                'Delivery.isVisibleBackOffice' => 'Y',
 						                'Delivery.stato_elaborazione' => 'OPEN'];

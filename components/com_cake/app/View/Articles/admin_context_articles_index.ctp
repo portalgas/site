@@ -39,7 +39,7 @@ if(!empty($results)) {
 	if($isSupplierOrganizationDesTitolare)
 		echo $this->element('boxArticleOwnOrganization',array('ownOrganizationResults' => $ownOrganizationResults));
 	
-	// ho il form d dropzone echo $this->Form->create('Article', ['id' => 'formGas']);
+	// ho il form di dropzone echo $this->Form->create('Article', ['id' => 'formGas']);
 	echo $this->Form->hidden('articles_in_articlesorders', ['id' => 'articles_in_articlesorders', 'value'=>'']);
 
 	echo '<div class="table-responsive"><table class="table table-hover">';	
