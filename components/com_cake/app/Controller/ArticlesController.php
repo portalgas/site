@@ -293,7 +293,7 @@ class ArticlesController extends AppController {
 						
 						$article_organization_id = $articleResults['Article']['organization_id'];
 						$article_id = $articleResults['Article']['id'];
-						$name = $articleResults['Article']['name'];
+						$name = trim($articleResults['Article']['name']);
 						 
 						/*
 						 * ctrl gli eventuali acquisti gia' effettuati, se true non posso cancellarlo
@@ -789,6 +789,7 @@ class ArticlesController extends AppController {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.').'<br />'.$msg_errors);
 			}
 			else {
+					$this->request->data['Article']['name'] = trim($this->request->data['Article']['name']);
 					self::d($this->request->data, $debug);
 						 
 					$this->Article->create();
@@ -968,7 +969,8 @@ class ArticlesController extends AppController {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.').'<br />'.$msg_errors);
 			}
 			else {			
-						 
+				$this->request->data['Article']['name'] = trim($this->request->data['Article']['name']);
+					 
 				$this->Article->create();
 				if($this->Article->save($this->request->data)) {
 				

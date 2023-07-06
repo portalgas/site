@@ -33,14 +33,14 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			<th><?php echo $this->Paginator->sort('num', __('request_payment_num_short')); ?></th>
 			<th><?php echo $this->Paginator->sort('user_id','Creata da'); ?></th>
 			<th>Nota</th>
-			<th style="text-align:center;"><?php echo __('Importo_totale');?></th>
+			<th style="text-align:center;">Importo totale da saldare</th>
 			<th style="text-align:center;"><?php echo __('TotaleUsers');?></th>
-			<th style="text-align:center;"><?php echo __('TotaleOrders');?></th>
+			<th style="text-align:center;">Totale ordini da saldare</th>
 			<?php 
 			if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y')
-				echo '<th style="text-align:center;">'.__('TotaleStorerooms').'</th>';
+				echo '<th style="text-align:center;">Totale dispensa da saldare</th>';
 			?>				
-			<th style="text-align:center;"><?php echo __('TotaleRequestPaymentGenerics');?></th>
+			<th style="text-align:center;">Totale voci generiche da saldare</th>
 			<th colspan="2"><?php echo $this->Paginator->sort('StatoElaborazione'); ?></th>
 			<th><?php echo $this->Paginator->sort('data_send', __('DataSend')); ?></th>
 			<th><?php echo $this->Paginator->sort('Created'); ?></th>
