@@ -262,8 +262,8 @@ class SuppliersOrganizationsController extends AppController {
 		$Supplier = new Supplier;
 			
 		if ($this->request->is('post') || $this->request->is('put')) {
-		
-			self::d($this->request->data, $debug);
+			
+			if($debug) debug($this->request->data);
 
 			$supplier_id = $this->request->data['supplier_id'];
 			$Supplier->id = $supplier_id;
@@ -277,7 +277,7 @@ class SuppliersOrganizationsController extends AppController {
 			$options['recursive'] = -1;
 			$results = $Supplier->find('first', $options);
 			
-			self::d($results, $debug);
+			if($debug) debug($results);
 
 			$data = [];
 			$data['SuppliersOrganization']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -337,7 +337,7 @@ class SuppliersOrganizationsController extends AppController {
 					if ($this->SuppliersOrganization->save($dataProd)) {
 						$supplier_organization_id = $this->SuppliersOrganization->id;
 						
-						self::d("Inserito SuppliersOrganization.id [$supplier_organization_id] associato all'organization del PRODUTTORE", $debug);
+						if($debug) debug("Inserito SuppliersOrganization.id [$supplier_organization_id] associato all'organization del PRODUTTORE");
 						
 						$dataProd['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;
 						$data['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;	
@@ -355,8 +355,8 @@ class SuppliersOrganizationsController extends AppController {
 
 			$this->SuppliersOrganization->create();
 			
-			self::d('Dati produttore SLAVE', $debug);
-			self::d($data, $debug); 
+			if($debug) debug('Dati produttore SLAVE');
+			if($debug) debug($data); 
 
 			if ($this->SuppliersOrganization->save($data)) {
 				
@@ -366,7 +366,7 @@ class SuppliersOrganizationsController extends AppController {
 				*/
 				$supplier_organization_id = $this->SuppliersOrganization->id;
 				
-				self::d("Inserito SuppliersOrganization.id [$supplier_organization_id]", $debug);
+				if($debug) debug("Inserito SuppliersOrganization.id [$supplier_organization_id]");
 				
 				if($data['SuppliersOrganization']['owner_supplier_organization_id'] == 0 && $data['SuppliersOrganization']['owner_organization_id'] == 0) {
 					/* 
@@ -380,7 +380,7 @@ class SuppliersOrganizationsController extends AppController {
 					
 					$suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'] = $supplier_organization_id;
 					$suppliersOrganizationResults['SuppliersOrganization']['owner_organization_id'] = $this->user->organization['Organization']['id'];
-					self::d($suppliersOrganizationResults, $debug);
+					if($debug) debug($suppliersOrganizationResults);
 					
 					if (!$this->SuppliersOrganization->save($suppliersOrganizationResults)) {
 						$this->Session->setFlash(__('The supplier could not be saved. Please, try again.'));
@@ -432,11 +432,18 @@ class SuppliersOrganizationsController extends AppController {
 						$articleCopy['Article']['organization_id'] = $this->user->organization['Organization']['id'];
 						$articleCopy['Article']['supplier_organization_id'] = $supplier_organization_id;
 						
+						/* 
+						 * categoria, setto quella di default
+						 */						
+						App::import('Model', 'CategoriesArticle');
+						$CategoriesArticle = new CategoriesArticle;							
+						$articleCopy['Article']['category_article_id'] = $CategoriesArticle->getIsSystemId($this->user, $this->user->organization['Organization']['id']);
+
 						$articleCopy = $Article->copy_img($this->user, $user->organization['Organization']['id'], $articleCopy, $debugArticleCopy);
 						$articleCopy = $Article->copy_article_type($this->user, $articleCopy, $debugArticleCopy);
 						
-						self::d('articolo SLAVE (nuovo dalla copia del MASTER)', $debug);
-						self::d($articleCopy, $debug);
+						if($debug) debug('articolo SLAVE (nuovo dalla copia del MASTER)');
+						if($debug) debug($articleCopy);
 						
 						$Article->create();
 						$Article->save($articleCopy['Article'], ['validate' => false]);	

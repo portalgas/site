@@ -439,6 +439,11 @@ if(!empty($organization_id)) {
 				$_menus[$i]['url'] = "#";
 				$i++;
 				$_menus[$i]['level'] = 2;
+				$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>beta</label>";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick";
+				$_menus[$i]['target'] = "_blank";
+				$i++;
+				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Elenco Articoli";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=context_articles_index";
 				if($hasArticlesOrder=='Y' && $user->user['User']['hasArticlesOrder']=='Y') {
@@ -446,13 +451,6 @@ if(!empty($organization_id)) {
 					$_menus[$i]['level'] = 2;
 					$_menus[$i]['label'] = "Modifica Rapida Articoli";
 					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=context_articles_index_quick";
-					/*
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Modifica Rapida Articoli <label class='label label-success'>new</label>";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick";
-					$_menus[$i]['target'] = "_blank";
-					*/
 				}
 				$i++;
 				$_menus[$i]['level'] = 2;
@@ -652,7 +650,7 @@ if(!empty($organization_id)) {
 							$_menus[$i]['target'] = "_blank";
 							$i++;
 							$_menus[$i]['level'] = 1;
-							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-warning'>beta</label>";
+							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
 							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";
 							$_menus[$i]['target'] = "_blank";
 						}
@@ -792,7 +790,7 @@ if(!empty($organization_id)) {
 						$_menus[$i]['target'] = "_blank";
 						$i++;
 						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-warning'>beta</label>";
+						$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
 						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";					
 						$_menus[$i]['target'] = "_blank";
 						$i++;
@@ -840,7 +838,7 @@ if(!empty($organization_id)) {
 							$_menus[$i]['target'] = "_blank";
 							$i++;
 							$_menus[$i]['level'] = 1;
-							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-warning'>beta</label>";
+							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
 							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";
 							$_menus[$i]['target'] = "_blank";
 						}

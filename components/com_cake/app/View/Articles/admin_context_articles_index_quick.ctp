@@ -3,7 +3,7 @@
 		<?php echo __('Articles quick');?>
 	<div class="actions-img">
 		<ul>
-			<li><?php echo $this->Html->link(__('List Articles'), array('action' => 'context_articles_index'),array('class' => 'action actionList','title' => __('List Articles'))); ?></li>
+			<li><?php echo $this->Html->link(__('List Articles'), ['controller' => 'Connects','action' => 'index', 'c_to' => 'admin/articles', 'a_to' => 'index-quick'], ['class' => 'action actionList','title' => __('List Articles')]);?></li>
 		</ul>
 	</div>
 	</h2>

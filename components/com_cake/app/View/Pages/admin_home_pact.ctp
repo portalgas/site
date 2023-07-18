@@ -3,7 +3,7 @@
 
 		<div class="col-xs-12 col-sm-4 col-md-3">
 			<div class="box-container">
-				<a href="/administrator/index.php?option=com_cake&amp;controller=Articles&amp;action=context_articles_index">
+				<a href="/administrator/index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick">
 					<div class="box">
 						<span class="fa fa-3x fa-cubes"></span>
 						<h4>Articoli</h4>
