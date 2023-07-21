@@ -28,8 +28,14 @@
 					<?php echo $resultsTotArticle[$key]['totArticle']; ?>
 				</td>				
 				<td class="actions-table-img">
-					<?php echo $this->Html->link(null, array('action' => 'edit', $key),array('class' => 'action actionEdit','title' => __('Edit'))); ?>
-					<?php echo $this->Html->link(null, array('action' => 'delete', $key),array('class' => 'action actionDelete','title' => __('Delete'))); ?>
+					<?php 
+					if(strtolower($value)=='generale')
+						echo '<label class="label label-primary">Categoria di default</label>';
+					else {
+						echo $this->Html->link(null, array('action' => 'edit', $key),array('class' => 'action actionEdit','title' => __('Edit')));
+						echo $this->Html->link(null, array('action' => 'delete', $key),array('class' => 'action actionDelete','title' => __('Delete')));	
+					}
+					?>
 				</td>
 			</tr>
 		<?php endforeach; 

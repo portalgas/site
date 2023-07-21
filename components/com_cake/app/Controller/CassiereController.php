@@ -3,7 +3,7 @@ App::uses('AppController', 'Controller');
 
 class CassiereController extends AppController {
 	
-	public $components = array('Documents');
+	public $components = ['Documents'];
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -107,12 +107,12 @@ class CassiereController extends AppController {
 		$Delivery = new Delivery;
 		
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
-									   'Delivery.isVisibleBackOffice' => 'Y',
-									   'Delivery.sys'=> 'N',
-									   'Delivery.type'=> 'GAS', // GAS-GROUP
-									   'Delivery.stato_elaborazione' => 'OPEN');
-		$options['fields'] = array('id', 'luogoData');
+		$options['conditions'] = ['Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
+								'Delivery.isVisibleBackOffice' => 'Y',
+								'Delivery.sys'=> 'N',
+								'Delivery.type'=> 'GAS', // GAS-GROUP
+								'Delivery.stato_elaborazione' => 'OPEN'];
+		$options['fields'] = ['id', 'luogoData'];
 		$options['order'] = 'data ASC';
 		$options['recursive'] = -1;
 		$deliveries = $Delivery->find('list', $options);

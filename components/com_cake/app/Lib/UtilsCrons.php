@@ -1713,7 +1713,7 @@ class UtilsCrons {
         }
         
         return $user;
-    }    
+    }
 }
 
 class UserLocal {

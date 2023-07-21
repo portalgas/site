@@ -29,6 +29,7 @@ class CategoriesArticlesController extends AppController {
 	}
 
     public function admin_index() {
+
     	$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
         $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
         
@@ -111,11 +112,18 @@ class CategoriesArticlesController extends AppController {
 	}
 
 	public function admin_edit($id = null) {
-		$this->CategoriesArticle->id = $id;
-		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
+
+		$options = [];
+		$options['conditions'] = ['CategoriesArticle.organization_id' => (int)$this->user->organization['Organization']['id'],
+								  'CategoriesArticle.id'=> $id,
+								 'CategoriesArticle.is_system' => false];
+		$options['recursive'] = -1;
+		$categories_article = $this->CategoriesArticle->find('first', $options);
+		if (empty($categories_article)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
+
 		if ($this->request->is('post') || $this->request->is('put')) {
 			
 			$this->request->data['CategoriesArticle']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -143,9 +151,14 @@ class CategoriesArticlesController extends AppController {
 	
 		if ($this->request->is('post') || $this->request->is('put'))
 			$id = $this->request->data['CategoryArticle']['id'];
-		
-		$this->CategoriesArticle->id = $id;
-		if (!$this->CategoriesArticle->exists($this->CategoriesArticle->id, $this->user->organization['Organization']['id'])) {
+	
+		$options = [];
+		$options['conditions'] = ['CategoriesArticle.organization_id' => (int)$this->user->organization['Organization']['id'],
+									'CategoriesArticle.id'=> $id,
+									'CategoriesArticle.is_system' => false];
+		$options['recursive'] = -1;
+		$categories_article = $this->CategoriesArticle->find('first', $options);
+		if (empty($categories_article)) {
 			$this->Session->setFlash(__('msg_error_params'));
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
@@ -159,7 +172,8 @@ class CategoriesArticlesController extends AppController {
 		}
 	
 		$options['conditions'] = ['CategoriesArticle.organization_id' => $this->user->organization['Organization']['id'],
-								  'CategoriesArticle.id' => $id];
+								  'CategoriesArticle.id' => $id,
+								  'CategoriesArticle.is_system' => false];
 		$options['recursive'] = 1;
 		$results = $this->CategoriesArticle->find('first', $options);
 		$this->set(compact('results'));
