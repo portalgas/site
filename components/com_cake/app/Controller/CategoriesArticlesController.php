@@ -7,7 +7,7 @@ class CategoriesArticlesController extends AppController {
 
 	public function beforeFilter() {
 		 parent::beforeFilter();
-		 
+
 		 /*
 		    ctrl ACL
 		    il produttore e' isSuperReferente()
