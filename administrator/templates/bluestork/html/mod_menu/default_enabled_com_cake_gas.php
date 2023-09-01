@@ -439,7 +439,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['url'] = "#";
 				$i++;
 				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>beta</label>";
+				$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>new</label>";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick";
 				$_menus[$i]['target'] = "_blank";
 				$i++;
@@ -508,7 +508,7 @@ if(!empty($organization_id)) {
 				}
 				$i++;
 				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Esporta articoli <label class='label label-success'>beta</label>";
+				$_menus[$i]['label'] = "Esporta articoli <label class='label label-success'>new</label>";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=export";
 				$_menus[$i]['target'] = "_blank";
 				$i++;

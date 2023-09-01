@@ -70,7 +70,7 @@ class LoopsDeliveriesController extends AppController {
 			
 			self::d($this->request->data,$debug);
 			
-			$data_copy = $this->LoopsDelivery->get_data_copy($data_master_db, $this->request->data, $debug);
+			$data_copy = $this->LoopsDelivery->getDataCopy($data_master_db, $this->request->data, $debug);
 				
 			if(empty($data_copy)) {
 					$this->Session->setFlash(__('I dati per creare la consegna ricorsiva non sono corretti'));

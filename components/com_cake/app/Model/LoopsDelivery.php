@@ -6,10 +6,10 @@ class LoopsDelivery extends AppModel {
 	/*
 	 * da una data di partenza (data_master) e dei filtri di ricorsione ($data) ottengo la nuova data di ricorsione
 	*/
-	public function get_data_copy($data_master, $data, $debug=false) {
+	public function getDataCopy($data_master, $data, $debug=false) {
 	
 		if($debug) {
-			echo '<h2>__get_data_copy</h2>';
+			echo '<h2>__getDataCopy</h2>';
 			echo 'data_master '.$data_master;
 		}
 	
@@ -28,16 +28,44 @@ class LoopsDelivery extends AppModel {
 						$month1_day = $data['LoopsDelivery']['month1_day'];
 						$month1_every_month = $data['LoopsDelivery']['month1_every_month'];
 							
-						if($debug) echo '<br />nuova copia: il giorno '.$month1_day.' ogni '.$month1_every_month.' mese/i';
+						/*
+						 * gestione per il fine mese
+						 * per i mese con 2023-08-31 gg creava 2023-10-01
+						 */
+						if($month1_day==31) {
+							list($year, $month, $day) = explode('-', $data_master);
+							switch($month) {
+								case '01':
+									$data_copy = date('Y-m-d', strtotime('+28 days', strtotime($data_master)));
+								break;
+								case '02':
+								case '04':
+								case '06':
+								case '07':
+								case '09':
+								case '11':
+								case '12':
+									$data_copy = date('Y-m-d', strtotime('+31 days', strtotime($data_master)));
+								break;
+								case '03':
+								case '05':
+								case '08':
+								case '10':
+									$data_copy = date('Y-m-d', strtotime('+30 days', strtotime($data_master)));
+								break;
+							}
+						}
+						else {
+							if($debug) echo '<br />nuova copia: il giorno '.$month1_day.' ogni '.$month1_every_month.' mese/i';
 							
-						$data_copy = date('Y-m-d', strtotime('+'.$month1_every_month.' months', strtotime($data_master)));
-						$data_copy = date('Y', strtotime($data_copy)).'-'.date('m', strtotime($data_copy)).'-'.$month1_day;
-							
-						$giorni_mese = date('t', strtotime($data_copy));
-						if($debug) echo '<br />ctrl se il giorno nel mese ('.$month1_day.') esiste: totale giorni del mese '.$giorni_mese;
-						if($month1_day > $giorni_mese)
-							$data_copy = date('Y', strtotime($data_copy)).'-'.date('m', strtotime($data_copy)).'-'.$giorni_mese;
-	
+							$data_copy = date('Y-m-d', strtotime('+'.$month1_every_month.' months', strtotime($data_master)));
+							$data_copy = date('Y', strtotime($data_copy)).'-'.date('m', strtotime($data_copy)).'-'.$month1_day;
+								
+							$giorni_mese = date('t', strtotime($data_copy));
+							if($debug) echo '<br />ctrl se il giorno nel mese ('.$month1_day.') esiste: totale giorni del mese '.$giorni_mese;
+							if($month1_day > $giorni_mese)
+								$data_copy = date('Y', strtotime($data_copy)).'-'.date('m', strtotime($data_copy)).'-'.$giorni_mese;	
+						}
 						break;
 					case 'MONTH2':
 						$month2_every_type = $data['LoopsDelivery']['month2_every_type'];
@@ -254,7 +282,7 @@ class LoopsDelivery extends AppModel {
                 $row1['LoopsDelivery']['data_master'] = $loopsDeliveryResult['LoopsDelivery']['data_copy'];
                 $row1['LoopsDelivery']['data_master_reale'] = $loopsDeliveryResult['LoopsDelivery']['data_copy_reale'];
 
-                $data_copy = $this->get_data_copy($loopsDeliveryResult['LoopsDelivery']['data_copy'], $loopsDeliveryResult, $debug);
+                $data_copy = $this->getDataCopy($loopsDeliveryResult['LoopsDelivery']['data_copy'], $loopsDeliveryResult, $debug);
 
                 $row1['LoopsDelivery']['data_copy'] = $data_copy;
                 $row1['LoopsDelivery']['data_copy_reale'] = $data_copy;
@@ -418,7 +446,7 @@ class LoopsDelivery extends AppModel {
         $row1['LoopsDelivery']['data_master_reale'] = $loopsDeliveryResults['LoopsDelivery']['data_copy_reale'];
 		$row1['LoopsDelivery']['delivery_id'] = $delivery_id;
 
-        $data_copy = $this->get_data_copy($loopsDeliveryResults['LoopsDelivery']['data_copy'], $loopsDeliveryResults, $debug);
+        $data_copy = $this->getDataCopy($loopsDeliveryResults['LoopsDelivery']['data_copy'], $loopsDeliveryResults, $debug);
 
         $row1['LoopsDelivery']['data_copy'] = $data_copy;
         $row1['LoopsDelivery']['data_copy_reale'] = $data_copy;
