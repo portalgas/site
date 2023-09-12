@@ -728,7 +728,7 @@ class AppController extends Controller {
         if(isset($this->user->organization['Organization']['hasGasGroups']) && 
         $this->user->organization['Organization']['hasGasGroups']=='Y') {
             // ctrl che il redirect fosse sulla home
-            if(strpos($url, 'controller=Orders&action=home')!==false) {
+            if(!is_array($url) && strpos($url, 'controller=Orders&action=home')!==false) {
                 if(!empty($this->order_id)) {
                     $order_type = Configure::read('Order.type.gas_groups');
                     $url = $this->Connects->createUrlBo('admin/orders', 'home/'.$order_type.'/'.$this->order_id);

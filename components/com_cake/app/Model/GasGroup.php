@@ -25,7 +25,7 @@ class GasGroup extends AppModel {
 
 		if($user->organization['Organization']['hasGasGroups']=='N')
 		  return [];
-
+		  
 		$options = [];
 		$options['conditions'] = ['GasGroup.organization_id' => $organization_id,
 								'GasGroup.user_id' => $user_id,
