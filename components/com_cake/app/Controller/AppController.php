@@ -10,7 +10,7 @@ class AppController extends Controller {
         'ActionsOrder',
         'ActionsProdDelivery',
         'Users',
-        'UserGroups'];
+        'UserGroups', 'Connects'];
 		
     public $helpers = ['App',
         'Html',
@@ -722,6 +722,26 @@ class AppController extends Controller {
      * */
     public function myRedirect($url, $status = null, $exit = true) {
 
+        /*
+         * redirect per GasGroups alla home dell'ordine
+         */
+        if(isset($this->user->organization['Organization']['hasGasGroups']) && 
+        $this->user->organization['Organization']['hasGasGroups']=='Y') {
+            // ctrl che il redirect fosse sulla home
+            if(strpos($url, 'controller=Orders&action=home')!==false) {
+                if(!empty($this->order_id)) {
+                    $order_type = Configure::read('Order.type.gas_groups');
+                    $url = $this->Connects->createUrlBo('admin/orders', 'home/'.$order_type.'/'.$this->order_id);
+                } 
+                else {
+                    $params = ['q' => Configure::read('Order.type.gas_groups')];
+                    $url = $this->Connects->createUrlBo('admin/orders', 'home', $params);    
+                }
+                header("Location: $url");
+                exit;				    
+            }
+        } 
+            
         /*
          * non tratto gli indirizzi assoluti
          */
