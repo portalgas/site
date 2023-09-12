@@ -36,7 +36,7 @@ class GasGroupUser extends AppModel {
 		$this->unbindModel(['belongsTo' => ['Organization']]);
 		$options['recursive'] = 0;
 		$results = $this->find('all', $options);
-	
+		
 		/*
 		 * aggiungo il proprietario del gruppo
 		 */
@@ -49,7 +49,8 @@ class GasGroupUser extends AppModel {
 		$GasGroup->unbindModel(['belongsTo' => ['Organization']]);
 		$options['recursive'] = 0;
 		$gas_group = $GasGroup->find('first', $options);
-		$results[] = $gas_group;
+		if(!empty($gas_group))
+			$results[] = $gas_group;
 	
 		return $results;
 	}
