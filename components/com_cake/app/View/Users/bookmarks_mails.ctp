@@ -15,9 +15,21 @@ if(!empty($results)) {
 	echo '<th></th>';
 	echo '<th>Ragione sociale</th>';
 	echo '<th>Frequenza</th>';
-	echo '<th>Mail all\'apertura dell\'ordine</th>';
+	echo '<th>
+            Mail all\'apertura dell\'ordine
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="order_open_all" name="order_open_all" value="1" />
+                <label class="form-check-label">Sel./desel. tutti</label>
+            </div>         
+        </th>';
 	echo '<th style="width:75px;"></th>';
-	echo '<th>Mail alla chiusura dell\'ordine</th>';
+	echo '<th>
+            Mail alla chiusura dell\'ordine
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="order_close_all" name="order_close_all" value="1" />
+                <label class="form-check-label">Sel./desel. tutti</label>
+            </div>             
+        </th>';
 	echo '</tr>';
 	
 	$i=0;
@@ -127,7 +139,29 @@ function updateDb(supplier_organization_id, field, value) {
 }
 
 $(document).ready(function() {
-    $("input[name=order_open]").click(function() {
+    $("#order_open_all").click(function() {
+        $("input[name='order_open']").each(function() {
+            /*
+            if($(this).prop('checked'))
+                $(this).prop('checked', false);
+            else  
+                $(this).prop('checked', true);
+            */
+            $(this).trigger('click');
+        });    
+    });
+    $("#order_close_all").click(function() {
+        $("input[name='order_close']").each(function() {
+            /*
+            if($(this).prop('checked'))
+                $(this).prop('checked', false);
+            else  
+                $(this).prop('checked', true);
+            */
+            $(this).trigger('click');
+        });    
+    });
+    $("input[name='order_open']").click(function() {
         var value = 'Y';
         if(this.checked)
             value = 'Y';
@@ -144,7 +178,7 @@ $(document).ready(function() {
             $(this).parent().parent().parent().addClass('mail_no');
     });
     
-    $("input[name=order_close]").click(function() {
+    $("input[name='order_close']").click(function() {
         var value = 'Y';
         if(this.checked)
             value = 'Y';
