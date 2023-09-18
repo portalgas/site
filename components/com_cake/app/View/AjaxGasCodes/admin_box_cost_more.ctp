@@ -3,7 +3,7 @@ $model = 'SummaryOrderCostMore';
 
 $tmp = '';
 
-$tmp .= $this->ExportDocs->delivery($results['Delivery'][0]);
+$tmp .= $this->ExportDocs->delivery($user, $results['Delivery'][0]);
 
 $tmp .= '<div class="clearfix"></div>';
 	

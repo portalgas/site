@@ -22,7 +22,7 @@ else
 	$css = $output->getCss();
 }
 
-$html = $this->ExportDocs->delivery($resultDelivery['Delivery']);
+$html = $this->ExportDocs->delivery($user, $resultDelivery['Delivery']);
 $output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 
 	

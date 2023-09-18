@@ -56,11 +56,24 @@ class Cassiere extends AppModel {
 		self::d($sql, $debug); 
 		$results = $this->query($sql);	
 			
+		if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y') {
+			App::import('Model', 'GasGroupDelivery');
+			$GasGroupDelivery = new GasGroupDelivery;
+		}
+
 		if(!empty($results))
                 foreach ($results as $result) {
-                    // $DeliveryData = date('d', strtotime($result['Delivery']['data'])) . '/' . date('n', strtotime($result['Delivery']['data'])) . '/' . date('Y', strtotime($result['Delivery']['data']));
-                    $DeliveryData = CakeTime::format($result['Delivery']['data'], "%A %e %B %Y");
-                    $deliveries[$result['Delivery']['id']] = $result['Delivery']['luogo'].' - '.$DeliveryData;
+
+					if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y') {	
+						$gasGroupDeliveryLabel = $GasGroupDelivery->getLabel($user, $user->organization['Organization']['id'], $result['Delivery']['id']);
+						if($gasGroupDeliveryLabel!==false)
+							$deliveries[$result['Delivery']['id']] = $gasGroupDeliveryLabel;
+					}
+					else {
+						// $DeliveryData = date('d', strtotime($result['Delivery']['data'])) . '/' . date('n', strtotime($result['Delivery']['data'])) . '/' . date('Y', strtotime($result['Delivery']['data']));
+						$DeliveryData = CakeTime::format($result['Delivery']['data'], "%A %e %B %Y");
+						$deliveries[$result['Delivery']['id']] = $result['Delivery']['luogo'].' - '.$DeliveryData;
+					}
                 }
 
 		return $deliveries;

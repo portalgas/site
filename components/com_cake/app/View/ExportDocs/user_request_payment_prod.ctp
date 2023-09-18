@@ -42,7 +42,7 @@ foreach($results['RequestPaymentsOrder'] as $numRequestPaymentsOrder => $request
 foreach($requestPaymentsOrderResults['Delivery'] as $numDelivery => $result) {
 	
 	if($delivery_id_old==0 || $delivery_id_old!=$result['id']) {
-		$html = $this->ExportDocs->delivery($result);
+		$html = $this->ExportDocs->delivery($user, $result);
 		$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 	}
 	

@@ -29,7 +29,7 @@ $user_label = '';
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 	$html = '';
-	$html = $this->ExportDocs->delivery($result['Delivery']);
+	$html = $this->ExportDocs->delivery($user, $result['Delivery']);
 	// $html .= '<hr />';
 	$output->writeHTML($css.$html , $ln=$new_line, $fill=false, $reseth=true, $cell=true, $align='');
 	

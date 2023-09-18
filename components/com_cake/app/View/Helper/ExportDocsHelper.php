@@ -44,16 +44,33 @@ class ExportDocsHelper extends AppHelper {
 	/*
 	 * D E L I V E R Y
 	*/
-	public function delivery($delivery) {
-		
+	public function delivery($user, $delivery) {
+
+		$delivery_label = '';
+		if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y') {
+			App::import('Model', 'GasGroupDelivery');
+			$GasGroupDelivery = new GasGroupDelivery;
+			$gasGroupDeliveryLabel = $GasGroupDelivery->getLabel($user, $user->organization['Organization']['id'], $delivery['id']);
+			if($gasGroupDeliveryLabel!==false) {
+				$delivery_label = $delivery['luogoData'] = $gasGroupDeliveryLabel;
+
+			}
+		}
+		else {
+			if($delivery['sys']=='N')
+				$delivery_label = $delivery['luogoData'];
+			else
+				$delivery_label = $delivery['luogo'];
+		}
+
 		$tmp  = '';
-		$tmp .= '<div class="h1Pdf">';
-		$tmp .=  __('Delivery').' ';
-		if($delivery['sys']=='N')
-			$tmp .= $delivery['luogoData'];
-		else
-			$tmp .= $delivery['luogo'];
-		$tmp .= '</div>';
+		if(!empty($delivery_label)) {
+			$tmp .= '<div class="h1Pdf">';
+			$tmp .=  __('Delivery').' ';
+			$tmp .= $delivery_label;
+			$tmp .= '</div>';	
+	
+		}
 
 		return $tmp;
 	}		

@@ -36,7 +36,7 @@ foreach($results as $deliveryResults) {
 
 		if(!$print_delivery) {
 			$html = '';
-			$html = $this->ExportDocs->delivery($delivery);
+			$html = $this->ExportDocs->delivery($user, $delivery);
 			$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 			$print_delivery = true;
 		}

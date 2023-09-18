@@ -19,7 +19,7 @@ if($this->layout=='ajax') {
 $this->App->d($results);
 
 $html = '';
-$html = $this->ExportDocs->delivery($delivery);
+$html = $this->ExportDocs->delivery($user, $delivery);
 $html .= '<hr />';
 
 if (!empty($results)) {

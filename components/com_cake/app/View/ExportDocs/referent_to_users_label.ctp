@@ -28,7 +28,7 @@ if($this->layout=='ajax') {
 $totale = 0;
 foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
-	$html = $this->ExportDocs->delivery($result['Delivery']);
+	$html = $this->ExportDocs->delivery($user, $result['Delivery']);
 	$output->writeHTML($css.$html , $ln=true, $fill=false, $reseth=true, $cell=true, $align='');
 
 	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {

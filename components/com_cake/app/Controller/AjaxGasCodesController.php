@@ -59,8 +59,8 @@ class AjaxGasCodesController extends AppController {
         $Order = new Order;
 
         $conditions = array('Order.organization_id' => (int) $this->user->organization['Organization']['id'],
-            'Order.delivery_id' => $delivery_id,
-            'Order.isVisibleBackOffice' => 'Y');
+                            'Order.delivery_id' => $delivery_id,
+                            'Order.isVisibleBackOffice' => 'Y');
         if (!$this->isSuperReferente())
             $conditions += array('Order.supplier_organization_id IN (' . $this->user->get('ACLsuppliersIdsOrganization') . ')');
 
@@ -74,17 +74,30 @@ class AjaxGasCodesController extends AppController {
 
         $orders = [];
         if (!empty($results)) {
+
+            if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+                App::import('Model', 'GasGroupOrder');
+                $GasGroupOrder = new GasGroupOrder;
+            }
+
             foreach ($results as $result) {
 
                 if ($order_id == $result['Order']['id'])
                     $order_id_associato_delivery = true;
 
-                if ($result['Order']['data_fine_validation'] != Configure::read('DB.field.date.empty'))
-                    $data_fine = $result['Order']['data_fine_validation_'];
-                else
-                    $data_fine = $result['Order']['data_fine_'];
-
-                $orders[$result['Order']['id']] = $result['SuppliersOrganization']['name'] . ' - dal ' . $result['Order']['data_inizio_'] . ' al ' . $data_fine;
+                if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+                    $gasGroupOrderLabel = $GasGroupOrder->getLabel($this->user, $this->user->organization['Organization']['id'], $result['Order']['id']);
+                    if($gasGroupOrderLabel!==false)
+                        $orders[$result['Order']['id']] = $gasGroupOrderLabel;
+                }
+                else {
+                    if ($result['Order']['data_fine_validation'] != Configure::read('DB.field.date.empty'))
+                        $data_fine = $result['Order']['data_fine_validation_'];
+                    else
+                        $data_fine = $result['Order']['data_fine_'];
+                        
+                    $orders[$result['Order']['id']] = $result['SuppliersOrganization']['name'] . ' - dal ' . $result['Order']['data_inizio_'] . ' al ' . $data_fine;
+                }
             }
         } else
             $order_id = 0; // lo setto a 0 cosi' il dettaglio dell'ordine non viene eseguito

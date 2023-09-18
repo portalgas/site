@@ -846,6 +846,18 @@ class TesoriereController extends AppController {
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);
 		
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+			App::import('Model', 'GasGroupDelivery');
+			$GasGroupDelivery = new GasGroupDelivery;
+
+			foreach($results as $numResult => $result) {
+
+				$gasGroupDeliveryLabel = $GasGroupDelivery->getLabel($this->user, $this->user->organization['Organization']['id'], $result['Delivery']['id']);
+				if($gasGroupDeliveryLabel!==false)
+					$results[$numResult]['Delivery']['luogoData'] = $gasGroupDeliveryLabel;
+			}
+		} // end if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') 
+
 		self::d([$options,$results], $debug);
 		
 		$this->set('results', $results);
@@ -1003,8 +1015,16 @@ class TesoriereController extends AppController {
 		$options['conditions'] = ['Delivery.organization_id' => (int)$user->organization['Organization']['id'],
 								   'Delivery.isVisibleBackOffice' => 'Y',
 								   'Delivery.sys'=> 'N',
-								   'Delivery.type' => 'GAS',  // GAS-GROUP
 								   'Delivery.stato_elaborazione' => 'OPEN'];
+		if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y') {
+			$options['conditions'] += ['Delivery.type' => 'GAS-GROUP'];
+
+			App::import('Model', 'GasGroupDelivery');
+			$GasGroupDelivery = new GasGroupDelivery;			
+		}	
+		else 
+			$options['conditions'] += ['Delivery.type' => 'GAS'];
+		
 		// $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
 		$options['order'] = ['Delivery.data' => 'asc'];
 		$options['recursive'] = -1;
@@ -1016,10 +1036,24 @@ class TesoriereController extends AppController {
 		}
 		else {
 			foreach($results as $result) {
-				if(isset($result['Delivery']['luogoData']))	
-					$deliveries[$result['Delivery']['id']] = $result['Delivery']['luogoData'];
-				else
-					$deliveries[$result['Delivery']['id']] = $result[0]['Delivery__luogoData'];
+
+				if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y') {	
+					$gasGroupDeliveryLabel = $GasGroupDelivery->getLabel($user, $user->organization['Organization']['id'], $result['Delivery']['id']);
+					if($gasGroupDeliveryLabel!==false)
+						$deliveries[$result['Delivery']['id']] = $gasGroupDeliveryLabel;
+					else {
+						if(isset($result['Delivery']['luogoData']))	
+							$deliveries[$result['Delivery']['id']] = $result['Delivery']['luogoData'];
+						else
+							$deliveries[$result['Delivery']['id']] = $result[0]['Delivery__luogoData'];						
+					}
+				}
+				else {
+					if(isset($result['Delivery']['luogoData']))	
+						$deliveries[$result['Delivery']['id']] = $result['Delivery']['luogoData'];
+					else
+						$deliveries[$result['Delivery']['id']] = $result[0]['Delivery__luogoData'];
+				}
 			}
 			
 		}
