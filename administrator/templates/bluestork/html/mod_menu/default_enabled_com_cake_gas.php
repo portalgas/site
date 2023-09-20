@@ -442,9 +442,10 @@ if(!empty($organization_id)) {
 				$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>new</label>";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick";
 				$_menus[$i]['target'] = "_blank";
+				/*
 				$i++;
 				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Elenco Articoli";
+				$_menus[$i]['label'] = "Elenco Articoli <label class='label label-warning'>old</label>";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=context_articles_index";
 				if($hasArticlesOrder=='Y' && $user->user['User']['hasArticlesOrder']=='Y') {
 					$i++;
@@ -452,6 +453,7 @@ if(!empty($organization_id)) {
 					$_menus[$i]['label'] = "Modifica Rapida Articoli";
 					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=context_articles_index_quick";
 				}
+				*/
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Stampa articoli";

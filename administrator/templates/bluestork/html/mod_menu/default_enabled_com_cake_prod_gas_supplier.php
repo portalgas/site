@@ -45,12 +45,13 @@ if(!empty($organization_id)) {
 	$_menus[$i]['url'] = "#";
 	$i++;
 	$_menus[$i]['level'] = 1;
-	$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>beta</label>";
+	$_menus[$i]['label'] = "Gestione completa <label class='label label-success'>new</label>";
 	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick";
 	$_menus[$i]['target'] = "_blank";	
+	/*
 	$i++;
 	$_menus[$i]['level'] = 1;
-	$_menus[$i]['label'] = "Elenco articoli";
+	$_menus[$i]['label'] = "Elenco articoli <label class='label label-warning'>old</label>";
 	// $_menus[$i]['url'] = 'index.php?option=com_cake&controller=ProdGasArticles&action=index';
 	$_menus[$i]['url'] = 'index.php?option=com_cake&controller=Articles&action=context_articles_index';
 
@@ -60,6 +61,7 @@ if(!empty($organization_id)) {
 		$_menus[$i]['label'] = "Modifica Rapida Articoli";
 		$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=context_articles_index_quick";
 	}
+	*/
 	$i++;
 	$_menus[$i]['level'] = 1;
 	$_menus[$i]['label'] = "Stampa articoli";
@@ -80,6 +82,7 @@ if(!empty($organization_id)) {
 	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Articles&action=index_edit_prices_percentuale"; 
 	$i++;
 	$_menus[$i]['separator'] = true;
+	/*
 	$i++;
 	$_menus[$i]['level'] = 1;
 	$_menus[$i]['label'] = "Importa articoli";
@@ -92,7 +95,18 @@ if(!empty($organization_id)) {
 	$_menus[$i]['level'] = 1;
 	$_menus[$i]['label'] = "Importa articoli da esportazione precedente";
 	$_menus[$i]['url'] = "index.php?option=com_cake&controller=CsvImports&action=articles_form_import";	
-			
+	*/
+	$i++;
+	$_menus[$i]['level'] = 1;
+	$_menus[$i]['label'] = "Esporta articoli in EXCEL <label class='label label-success'>new</label>";
+	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=export";
+	$_menus[$i]['target'] = "_blank";
+	$i++;
+	$_menus[$i]['level'] = 1;
+	$_menus[$i]['label'] = "Importa articoli da EXCEL <label class='label label-warning'>beta</label>";
+	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=import";
+	$_menus[$i]['target'] = "_blank";
+
 	/*
 	 * promotions
 	 */
