@@ -80,26 +80,14 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Gestione prepagato";
 				$_menus[$i]['url'] = "#";
-				if($hasGasGroups=='Y') {
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Configura";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=index";
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Prospetto utenti";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=ctrl";	
-				}
-				else {
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Configura";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
-					$i++;
-					$_menus[$i]['level'] = 2;
-					$_menus[$i]['label'] = "Prospetto utenti";
-					$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";	
-				}
+				$i++;
+				$_menus[$i]['level'] = 2;
+				$_menus[$i]['label'] = "Configura";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
+				$i++;
+				$_menus[$i]['level'] = 2;
+				$_menus[$i]['label'] = "Prospetto utenti";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";	
 
 				if($hasCashFilterSupplier=='Y') {
 					$i++;
@@ -361,7 +349,7 @@ if(!empty($organization_id)) {
 		} // end Deliveries
 		   
 		/*
-		 * gruppi 
+		 * gruppi e prepagato
 		 * */
 		if($hasGasGroups=='Y' && (
 			in_array(group_id_gas_groups_manager_groups,$user->getAuthorisedGroups()) ||
@@ -378,6 +366,20 @@ if(!empty($organization_id)) {
 				$_menus[$i]['label'] = "Gruppi e utenti";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/gas-groups&a_to=/index";
 				$_menus[$i]['target'] = "_blank";
+
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Gestione prepagato";
+				$_menus[$i]['url'] = "#";
+				$i++;
+				$_menus[$i]['level'] = 2;
+				$_menus[$i]['label'] = "Configura";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
+				$i++;
+				$_menus[$i]['level'] = 2;
+				$_menus[$i]['label'] = "Prospetto utenti";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";	
+
 			}
 			if(in_array(group_id_manager, $user->getAuthorisedGroups()) || in_array(group_id_gas_groups_manager_consegne,$user->getAuthorisedGroups())) {
 				$i++;

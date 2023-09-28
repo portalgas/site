@@ -48,6 +48,5 @@ class GasGroupsController extends AppController {
 
 		$this->set(compact('gasGroups', 'gas_group_id'));
 		$this->set(compact('dest_controller', 'dest_action'));
-
 	}
 }

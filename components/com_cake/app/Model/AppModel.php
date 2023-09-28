@@ -414,10 +414,12 @@ class AppModel extends Model {
 					debug($results);
 				}			    
 	        } catch (Exception $e) {
+				/*
 	            CakeLog::write('error', '_decoding '.$value);
 	            CakeLog::write('error', '_decoding '.base64_decode($value));
 	            CakeLog::write('error', '_decoding '.$encryption_key);
 	            CakeLog::write('error', $e);
+				*/
 	        }
 		}
 

@@ -28,7 +28,7 @@ if(!empty($gasGroups)) {
 
     <?php 
     if(count($gasGroups)==1) {
-        echo "let gas_group_id = $(obj).val();";
+        echo "let gas_group_id = $('#OrganizationsCashGasGroupId').val();";
         echo "if(gas_group_id!='') $('#frmGasGroup').submit();";
     }
     ?>
