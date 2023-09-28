@@ -9,40 +9,68 @@ class OrganizationsCashsController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 
-		/* ctrl ACL */
-	   	$actionWithPermission = ['admin_index'];
-	   	if (in_array($this->action, $actionWithPermission)) {
-			if(!$this->isManager()) {
-				$this->Session->setFlash(__('msg_not_permission'));
-				$this->myRedirect(Configure::read('routes_msg_stop'));
-			}
-		}
-		
-		$actionWithPermission = ['admin_ctrl'];
-	   	if (in_array($this->action, $actionWithPermission)) {
-			if(!$this->isManager() && !$this->isCassiere()) {
-				$this->Session->setFlash(__('msg_not_permission'));
-				$this->myRedirect(Configure::read('routes_msg_stop'));
-			}
-		}		
-		/* ctrl ACL */
-
-		/*
-		 * GasGroup
-		 * gas_group_id scelto e messo in session in GasGroupsController::admin_choice
-		 */
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
 			
-			if(!$this->isRoot() && !$this->isManager()) {
-				$this->_gas_group_id = $this->Session->read('gas_group_id');
+				/*
+				 * gestione GAS GROUPS
+				 */
 
-				App::import('Model', 'GasGroupUser');
-				$GasGroupUser = new GasGroupUser;				
-				$this->_gas_group_user_ids = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $this->_gas_group_id);
-				// debug($this->_gas_group_user_ids);	
+				/* ctrl ACL */
+				$actionWithPermission = ['admin_index'];
+				if (in_array($this->action, $actionWithPermission)) {
+					if(!$this->isRoot() && !$this->isManager() && !$this->isGasGropusManagerGroups()) {
+						$this->Session->setFlash(__('msg_not_permission'));
+						$this->myRedirect(Configure::read('routes_msg_stop'));
+					}
+				}
+			
+				$actionWithPermission = ['admin_ctrl'];
+					if (in_array($this->action, $actionWithPermission)) {
+					if(!$this->isRoot() && !$this->isManager() && !$this->isCassiere() && !$this->isGasGropusManagerGroups()) {
+						$this->Session->setFlash(__('msg_not_permission'));
+						$this->myRedirect(Configure::read('routes_msg_stop'));
+					}
+				}		
+				/* ctrl ACL */				
+
+				/*
+				* GasGroup
+				* gas_group_id scelto e messo in session in GasGroupsController::admin_choice
+				*/
+				if(!$this->isRoot() && !$this->isManager()) {
+					$this->_gas_group_id = $this->Session->read('gas_group_id');
+
+					App::import('Model', 'GasGroupUser');
+					$GasGroupUser = new GasGroupUser;				
+					$this->_gas_group_user_ids = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $this->_gas_group_id);
+					// debug($this->_gas_group_user_ids);	
+				}				
 			}
-		}
+			else {
+			
+				/*
+				 * gestione GAS 
+				 * */
+
+				/* ctrl ACL */
+				$actionWithPermission = ['admin_index'];
+				if (in_array($this->action, $actionWithPermission)) {
+				if(!$this->isRoot() && !$this->isManager()) {
+					$this->Session->setFlash(__('msg_not_permission'));
+					$this->myRedirect(Configure::read('routes_msg_stop'));
+				}
+			}
+			
+			$actionWithPermission = ['admin_ctrl'];
+				if (in_array($this->action, $actionWithPermission)) {
+				if(!$this->isRoot() && !$this->isManager() && !$this->isCassiere()) {
+					$this->Session->setFlash(__('msg_not_permission'));
+					$this->myRedirect(Configure::read('routes_msg_stop'));
+				}
+			}		
+			/* ctrl ACL */				
+			}
 	}
 
 	public function admin_index() {
@@ -253,7 +281,7 @@ class OrganizationsCashsController extends AppController {
 		*/
 		App::import('Model', 'User');
 		$User = new User;
-		
+
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
 				

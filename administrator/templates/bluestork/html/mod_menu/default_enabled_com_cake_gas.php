@@ -83,11 +83,11 @@ if(!empty($organization_id)) {
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Configura";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=index";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=index";
 				$i++;
 				$_menus[$i]['level'] = 2;
 				$_menus[$i]['label'] = "Prospetto utenti";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";	
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=GasGroups&action=choice&dest_controller=OrganizationsCashs&dest_action=ctrl";
 
 				if($hasCashFilterSupplier=='Y') {
 					$i++;
