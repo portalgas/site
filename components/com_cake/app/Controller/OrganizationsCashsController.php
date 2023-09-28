@@ -33,12 +33,15 @@ class OrganizationsCashsController extends AppController {
 		 */
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
-			$this->_gas_group_id = $this->Session->read('gas_group_id');
+			
+			if(!$this->isRoot() && !$this->isManager()) {
+				$this->_gas_group_id = $this->Session->read('gas_group_id');
 
-			App::import('Model', 'GasGroupUser');
-			$GasGroupUser = new GasGroupUser;				
-			$this->_gas_group_user_ids = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $this->_gas_group_id);
-			// debug($this->_gas_group_user_ids);
+				App::import('Model', 'GasGroupUser');
+				$GasGroupUser = new GasGroupUser;				
+				$this->_gas_group_user_ids = $GasGroupUser->getsListUserByGasGroupId($this->user, $this->user->organization['Organization']['id'], $this->_gas_group_id);
+				// debug($this->_gas_group_user_ids);	
+			}
 		}
 	}
 
@@ -91,17 +94,27 @@ class OrganizationsCashsController extends AppController {
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
 				
-			if(empty($this->_gas_group_user_ids))
+			if(!$this->isRoot() && !$this->isManager()) { 
+				if(empty($this->_gas_group_user_ids))
 				$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
-			else 
-				$ids = array_keys($this->_gas_group_user_ids);
-				
-			$this->OrganizationsCash->bindModel(['hasMany' => 
-				['User' => ['className' => 'User',
-							'foreignKey' => 'organization_id',
-							'conditions' => ['User.id IN ' => $ids],
-							'order' => Configure::read('orderUser')]]
-						]);
+				else 
+					$ids = array_keys($this->_gas_group_user_ids);
+					
+				$this->OrganizationsCash->bindModel(['hasMany' => 
+					['User' => ['className' => 'User',
+								'foreignKey' => 'organization_id',
+								'conditions' => ['User.id IN ' => $ids],
+								'order' => Configure::read('orderUser')]]
+							]);			
+			}
+			else {
+				$this->OrganizationsCash->bindModel(['hasMany' => 
+					['User' => ['className' => 'User',
+								'foreignKey' => 'organization_id',
+								'order' => Configure::read('orderUser')]]
+							]);					
+			}
+			
 		}
 
 		$results = $this->OrganizationsCash->find('first', $options);
@@ -166,17 +179,32 @@ class OrganizationsCashsController extends AppController {
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
 				
-			if(empty($this->_gas_group_user_ids))
-				$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
-			else 
-				$ids = array_keys($this->_gas_group_user_ids);
-				
-			$this->OrganizationsCash->bindModel(['hasMany' => 
-				['User' => ['className' => 'User',
-							'foreignKey' => 'organization_id',
-							'conditions' => ['User.id IN ' => $ids],
-							'order' => Configure::read('orderUser')]]
+			if(!$this->isRoot() && !$this->isManager()) { 
+				if(empty($this->_gas_group_user_ids))
+					$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
+				else 
+					$ids = array_keys($this->_gas_group_user_ids);
+					
+				$this->OrganizationsCash->bindModel(['hasMany' => 
+					['User' => ['className' => 'User',
+								'foreignKey' => 'organization_id',
+								'conditions' => ['User.id IN ' => $ids],
+								'order' => Configure::read('orderUser')]]
+							]);
+			
+			}
+			else {
+				if(empty($this->_gas_group_user_ids))
+					$ids = [0 => 0, 1 => 0]; // gruppo senza utenti => invaldo l'sql per non avere risultati
+				else 
+					$ids = array_keys($this->_gas_group_user_ids);
+					
+				$this->OrganizationsCash->bindModel(['hasMany' => 
+					['User' => ['className' => 'User',
+								'foreignKey' => 'organization_id',
+								'order' => Configure::read('orderUser')]]
 						]);
+			}
 		}
 
 		if(!empty($results['CashesUser'])) {
@@ -223,14 +251,21 @@ class OrganizationsCashsController extends AppController {
 		/*
 		* filtro per gli utenti associati al gruppo 
 		*/
+		App::import('Model', 'User');
+		$User = new User;
+		
 		if(isset($this->user->organization['Organization']['hasGasGroups']) &&
 			$this->user->organization['Organization']['hasGasGroups']=='Y') {
-				$users = $this->_gas_group_user_ids;
+				
+				if(!$this->isRoot() && !$this->isManager()) { 				
+					$users = $this->_gas_group_user_ids;
+				}
+				else {
+					$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
+					$users = $User->getUsersList($this->user, $conditions);						
+				}
 		}
 		else {
-			App::import('Model', 'User');
-			$User = new User;
-			
 			$conditions = ['UserGroupMap.group_id' => Configure::read('group_id_user')];
 			$users = $User->getUsersList($this->user, $conditions);	
 		}
