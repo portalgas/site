@@ -2,7 +2,8 @@
 echo $this->Html->script('moduleCtrlArticle-v02.min');
 
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
+// $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
+$this->Html->addCrumb(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'));
 $this->Html->addCrumb(__('Add Article'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 

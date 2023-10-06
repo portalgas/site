@@ -4,7 +4,8 @@ if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 else
 	$colspan = 7;
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
+// $this->Html->addCrumb(__('List Articles'), array('controller' => 'Articles', 'action' => 'context_articles_index'));
+$this->Html->addCrumb(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'));
 $this->Html->addCrumb(__('Edit Articles Prices Rate'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
