@@ -562,7 +562,7 @@ if(!empty($organization_id)) {
 						$i++;
 						$_menus[$i]['level'] = 2;
 						$_menus[$i]['label'] = "Aggiungi un nuovo ordine dei gruppi";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add&q=10";
+						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/orders&a_to=/add-to-parent&q=10";
 						$_menus[$i]['target'] = "_blank";
 					}			
 				}	
