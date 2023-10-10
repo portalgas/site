@@ -610,8 +610,12 @@ class TesoriereController extends AppController {
 													  'Order.isVisibleBackOffice != ' => 'N',
 													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
 													  'Order.tesoriere_stato_pay' => 'N'];
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+			// escludo gli ordini di gruppo titolare
+			$Delivery->hasMany['Order']['conditions'] += ['Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')];
+		}									
 		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
-		
+	
 		$options = [];
 		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
 								   'Delivery.organization_id' => (int)$this->user->organization['Organization']['id'],
@@ -655,6 +659,10 @@ class TesoriereController extends AppController {
 													  'Order.isVisibleBackOffice != ' => 'N',
 													  'Order.state_code != ' => 'CREATE-INCOMPLETE',
 													  'Order.tesoriere_stato_pay' => 'Y'];
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+			// escludo gli ordini di gruppo titolare
+			$Delivery->hasMany['Order']['conditions'] += ['Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')];
+		}														  
 		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		$options = [];
 		$options['conditions'] =  ['Delivery.id' => $this->delivery_id,
@@ -747,6 +755,10 @@ class TesoriereController extends AppController {
 		$Delivery->hasMany['Order']['conditions'] = ['Order.organization_id' => $this->user->organization['Organization']['id'],
 													'Order.isVisibleBackOffice != ' => 'N',
 													'Order.state_code != ' => 'CREATE-INCOMPLETE'];
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+			// escludo gli ordini di gruppo titolare
+			$Delivery->hasMany['Order']['conditions'] += ['Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')];
+		}														
 		$Delivery->hasMany['Order']['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		$options = [];
 		$options['conditions'] = ['Delivery.id' => $this->delivery_id,
@@ -842,6 +854,10 @@ class TesoriereController extends AppController {
 								'Order.isVisibleBackOffice != ' => 'N',
 								'Order.state_code != ' => 'CREATE-INCOMPLETE',
 								'Order.supplier_organization_id' => $supplier_organization_id];
+		if(isset($this->user->organization['Organization']['hasGasGroups']) && $this->user->organization['Organization']['hasGasGroups']=='Y') {
+			// escludo gli ordini di gruppo titolare
+			$options['conditions'] += ['Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups')];
+		}									
 		$options['order'] = ['Order.data_inizio', 'Order.data_fine'];
 		$options['recursive'] = 1;
 		$results = $Order->find('all', $options);
