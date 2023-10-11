@@ -171,7 +171,7 @@ function setArticlePrezzoUmRiferimento(um, um_riferimento) {
 
             str += '<input class="nospace" type="radio" ';
             (um_riferimento == 'HG') ? str += 'checked="checked" ' : str += ' ';
-            str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento / 100, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
+            str += 'value="HG" id="ArticleUmRiferimentoHG" name="data[Article][um_riferimento]">&nbsp;&nbsp;<label class="nospace" for="ArticleUmRiferimentoHG">' + number_format(prezzo_um_riferimento / 10, 2, ',', '.') + '&nbsp;&euro;&nbsp;al&nbsp;Ettogrammo</label></br>';
 
             str += '<input class="nospace" type="radio" ';
             (um_riferimento == 'KG') ? str += 'checked="checked" ' : str += ' ';
