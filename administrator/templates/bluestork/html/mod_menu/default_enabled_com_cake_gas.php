@@ -520,7 +520,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['target'] = "_blank";
 				$i++;
 				$_menus[$i]['level'] = 2;
-				$_menus[$i]['label'] = "Importa articoli da EXCEL <label class='label label-warning'>new</label>";
+				$_menus[$i]['label'] = "Importa articoli da EXCEL <label class='label label-success'>new</label>";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=import";
 				$_menus[$i]['target'] = "_blank";
 				$i++;
