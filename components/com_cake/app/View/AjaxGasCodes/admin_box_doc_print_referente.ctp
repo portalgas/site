@@ -4,8 +4,7 @@ echo __('Print Doc');
 echo '<div class="actions-img">';
 echo '<ul>';
 echo '<li>';
-echo $this->App->drawFormRadio('Doc','doc_formato',array('options' => $options, 
-										'value'=> 'PDF', 'label' => false));			
+echo $this->App->drawFormRadio('Doc','doc_formato', ['options' => $options, 'value'=> 'PDF', 'label' => false]);
 echo '</li>';
 echo '<li style="padding-left:25px;">';
 echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc')));

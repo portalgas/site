@@ -43,8 +43,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 			
 			$html = '';
-			$html_header = '';
-							
+			$html_header = [];
+					
+			if(!empty($order['ExportRows']))
 			foreach ($order['ExportRows'] as $rows) {
 				
 				$user_id = current(array_keys($rows));
@@ -59,68 +60,71 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							else
 								$colspan = '4';
 							
-																						   
-							$html_header .= '	<br /><br />';
-							$html_header .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
-							$html_header .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
-							$html_header .= '<tr>';
-							$html_header .= '<td colspan="'.$colspan.'" style="text-align:center;">';
-							$html_header .= '<h3>';
+							if(!isset($html_header[$user_id])) {
 
-							if($user_avatar=='Y')
-								$html_header .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
-							
-							$html_header .= $cols['LABEL'];
-							
-							if($user_phone=='Y')
-								$html_header .=  ' '.$cols['LABEL_PHONE'];
-							if($user_email=='Y')
-								$html_header .=  ' '.$cols['LABEL_EMAIL'];
-							if($user_address=='Y')
-								$html_header .=  ' '.$cols['LABEL_ADDRESS'];
+								$html_header[$user_id] = '';
+
+								$html_header[$user_id] .= '	<br /><br />';
+								$html_header[$user_id] .= '	<table class="table table-hover" cellpadding="0" cellspacing="0">';
+								$html_header[$user_id] .= '	<thead>'; // con questo TAG mi ripete l'intestazione della tabella
+								$html_header[$user_id] .= '<tr>';
+								$html_header[$user_id] .= '<td colspan="'.$colspan.'" style="text-align:center;">';
+								$html_header[$user_id] .= '<h3>';
+
+								if($user_avatar=='Y')
+									$html_header[$user_id] .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
 								
-							/*
-							 * estraggo il totale di un utente 
-							 */
-							foreach ($order['ExportRows'] as $rows2) {
-								$user_id2 = current(array_keys($rows2));
-								$rows2 = current(array_values($rows2));
-								foreach ($rows2 as $typeRow2 => $cols2) 
-									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
-										if($trasportAndCost=='Y') {
-											$totale += $cols2['IMPORTO_COMPLETO'];
-											$html_header .= ' - Totale: '.$cols2['IMPORTO_COMPLETO_E'];
-										}
-										else {
-											$totale += $cols2['IMPORTO'];
-											$html_header .= ' - Totale: '.$cols2['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
-										}
-									}
-							}
-							$html_header .= '</h3></td>';
-							$html_header .= '</tr>';
+								$html_header[$user_id] .= $cols['LABEL'];
+							
+								if($user_phone=='Y')
+									$html_header[$user_id] .=  ' '.$cols['LABEL_PHONE'];
+								if($user_email=='Y')
+									$html_header[$user_id] .=  ' '.$cols['LABEL_EMAIL'];
+								if($user_address=='Y')
+									$html_header[$user_id] .=  ' '.$cols['LABEL_ADDRESS'];
 								
-							$html_header .= '		<tr>';
-							if($trasportAndCost=='Y') {
-								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
-								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
-							}
-							else {
-								$html_header .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
-								$html_header .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'">'.__('PrezzoUnita').'</th>';
-								$html_header .= '			<th width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('Importo').'</th>';
-							} // end if($trasportAndCost=='Y')
-							$html_header .= '		</tr>';
-							$html_header .= '	</thead><tbody>';
-															
+								/*
+								* estraggo il totale di un utente 
+								*/
+								foreach ($order['ExportRows'] as $rows2) {
+									$user_id2 = current(array_keys($rows2));
+									$rows2 = current(array_values($rows2));
+									foreach ($rows2 as $typeRow2 => $cols2) 
+										if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
+											if($trasportAndCost=='Y') {
+												$totale += $cols2['IMPORTO_COMPLETO'];
+												$html_header[$user_id] .= ' - Totale: '.$cols2['IMPORTO_COMPLETO_E'];
+											}
+											else {
+												$totale += $cols2['IMPORTO'];
+												$html_header[$user_id] .= ' - Totale: '.$cols2['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols2['ISIMPORTOMOD']);
+											}
+										}
+								}
+								$html_header[$user_id] .= '</h3></td>';
+								$html_header[$user_id] .= '</tr>';
+									
+								$html_header[$user_id] .= '		<tr>';
+								if($trasportAndCost=='Y') {
+									$html_header[$user_id] .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
+									$html_header[$user_id] .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('PrezzoUnita').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('TrasportAndCost').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Totale').'</th>';
+								}
+								else {
+									$html_header[$user_id] .= '			<th style="text-align:center;" width="'.$output->getCELLWIDTH60().'">'.__('qta').'</th>';
+									$html_header[$user_id] .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH100()+$output->getCELLWIDTH90()).'">'.__('Name').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH90().'">'.__('PrezzoUnita').'</th>';
+									$html_header[$user_id] .= '			<th width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.__('Importo').'</th>';
+								} // end if($trasportAndCost=='Y')
+								$html_header[$user_id] .= '		</tr>';
+								$html_header[$user_id] .= '	</thead><tbody>';
+							} // end if(!isset($html_header[$user_id]))															
 						break;
 						case 'TRSUBTOT':
-							/*
+							
 							$html .= '<tr>';
 							$html .= '<td style="text-align:center;">'.$cols['QTA'].'</td>';
 							$html .= '<td colspan="2" style="text-align:right;">Totale&nbsp;dell\'utente&nbsp;</td>';
@@ -137,16 +141,21 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$html .= '</td>';
 							}
 							$html .= '</tr>';
-							*/
+							
 							$html .= '</tbody></table>';
 							
-							$html_header = '';
+							unset($html_header[$user_id]);
 						break;
 						case 'TRTOT':
 						break;								
 						case 'TRDATA':
 							
-							$html .= $html_header.'</table>';
+							if(isset($html_header[$user_id]) && $html_header[$user_id]!==false) {
+								// intestazione del gasista
+								$html .= $html_header[$user_id];
+								// lo setto a false cosi' l'intestazione del gasista e' solo la prima volta
+								$html_header[$user_id] = false;
+							}
 							
 							if($codice=='Y' && $user->organization['Organization']['hasFieldArticleCodice']=='Y')		
 								$name = $cols['CODICE'].' '.$cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM']);

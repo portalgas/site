@@ -43,7 +43,6 @@ if(!empty($results))
 			echo '<div id="setting-to-users-all-modify" class="box-options">';
 			
 			$id = '1';
-			
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
@@ -127,41 +126,41 @@ if(!empty($results))
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_Y" value="Y" ';
 			if($trasport!='0.00' || $cost_more!='0.00' || $cost_less!='0.00') echo 'checked';
 			echo '/>Si</label> ';
-			echo '</div>';
+			echo '</div>';			
 		}
 		?>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_N" value="N" />No</label>
-			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_Y" value="Y" checked />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_N" value="N" />No</label>
+			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_Y" value="Y" checked />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_email<?php echo $id;?>" id="user_email<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_email<?php echo $id;?>" id="user_email<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo l'<b>indirizzo</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_address<?php echo $id;?>" id="user_address<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_address<?php echo $id;?>" id="user_address<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>foto</b> dell'utente</label>
-			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar<?php echo $id;?>" id="user_avatar<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar<?php echo $id;?>" id="user_avatar<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo gli articoli <b>cancellati</b></label>
-			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_N" value="N" checked/>No</label>
-			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent<?php echo $id;?>" id="delete_to_referent<?php echo $id;?>_N" value="N" checked/>No</label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent<?php echo $id;?>" id="delete_to_referent<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>	
 		<?php
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
 		?>
 			<div class="doc-options">
 				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>
-				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_N" value="N" checked />No</label>
-				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_Y" value="Y" />Si</label>
+				<label class="radio-inline"><input type="radio" name="codice<?php echo $id;?>" id="codice<?php echo $id;?>_N" value="N" checked />No</label>
+				<label class="radio-inline"><input type="radio" name="codice<?php echo $id;?>" id="codice<?php echo $id;?>_Y" value="Y" />Si</label>
 			</div>
 		<?php
 		}
@@ -171,7 +170,7 @@ if(!empty($results))
 	<div id="setting-to-users-articles-label" class="box-options">
 		<?php
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '3';
+			$id = '30';
 				
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
@@ -186,36 +185,36 @@ if(!empty($results))
 		?>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_N" value="N" />No</label>
-			<label class="radio-inline"><input type="radio" name="user_phone" id="user_phone_Y" value="Y" checked />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_N" value="N" />No</label>
+			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_Y" value="Y" checked />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_email" id="user_email_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_email<?php echo $id;?>" id="user_email<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_email<?php echo $id;?>" id="user_email<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo l'<b>indirizzo</b> degli utenti</label>
-			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_address" id="user_address_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_address<?php echo $id;?>" id="user_address<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_address<?php echo $id;?>" id="user_address<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>foto</b> dell'utente</label>
-			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_N" value="N" checked />No</label>
-			<label class="radio-inline"><input type="radio" name="user_avatar2" id="user_avatar2_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar<?php echo $id;?>" id="user_avatar<?php echo $id;?>_N" value="N" checked />No</label>
+			<label class="radio-inline"><input type="radio" name="user_avatar<?php echo $id;?>" id="user_avatar<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo gli articoli <b>cancellati</b></label>
-			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_N" value="N" checked/>No</label>
-			<label class="radio-inline"><input type="radio" name="delete_to_referent2" id="delete_to_referent2_Y" value="Y" />Si</label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent<?php echo $id;?>" id="delete_to_referent<?php echo $id;?>_N" value="N" checked/>No</label>
+			<label class="radio-inline"><input type="radio" name="delete_to_referent<?php echo $id;?>" id="delete_to_referent<?php echo $id;?>_Y" value="Y" />Si</label>
 		</div>	
 		<?php
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y') {
 		?>
 			<div class="doc-options">
 				<label class="control-label">Visualizzo il <b>codice</b> dell'articolo</label>
-				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_N" value="N" checked />No</label>
-				<label class="radio-inline"><input type="radio" name="codice3" id="codice3_Y" value="Y" />Si</label>
+				<label class="radio-inline"><input type="radio" name="codice<?php echo $id;?>" id="codice<?php echo $id;?>_N" value="N" checked />No</label>
+				<label class="radio-inline"><input type="radio" name="codice<?php echo $id;?>" id="codice<?php echo $id;?>_Y" value="Y" />Si</label>
 			</div>
 		<?php
 		}
@@ -372,13 +371,22 @@ $(document).ready(function() {
 	$("input[name='user_address1']").change(function() {			
 		choiceDocOptions();
 	});
-	$("input[name='user_phone']").change(function() {			
+	$("input[name='user_phone3']").change(function() {			
 		choiceDocOptions();
 	});
-	$("input[name='user_email']").change(function() {			
+	$("input[name='user_phone30']").change(function() {			
 		choiceDocOptions();
 	});
-	$("input[name='user_address']").change(function() {			
+	$("input[name='user_email3']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_email30']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_address3']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_address30']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='user_avatar1']").change(function() {			
@@ -387,7 +395,19 @@ $(document).ready(function() {
 	$("input[name='user_avatar2']").change(function() {			
 		choiceDocOptions();
 	});
+	$("input[name='user_avatar3']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_avatar30']").change(function() {			
+		choiceDocOptions();
+	});
 	$("input[name='delete_to_referent2']").change(function() {			
+		choiceDocOptions();
+	});	
+	$("input[name='delete_to_referent3']").change(function() {			
+		choiceDocOptions();
+	});	
+	$("input[name='delete_to_referent30']").change(function() {			
 		choiceDocOptions();
 	});	
 	$("input[name='acquistato_il']").change(function() {			
@@ -403,6 +423,9 @@ $(document).ready(function() {
 		choiceDocOptions();
 	});
 	$("input[name='trasportAndCost3']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='trasportAndCost30']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='trasportAndCost4']").change(function() {			
