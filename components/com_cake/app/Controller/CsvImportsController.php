@@ -22,17 +22,17 @@ class CsvImportsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_stop'));
 		}
 		
-		if(isset($this->request->data['CsvImport']['deliminatore']))
-			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
+		if(isset($this->request->data['CsvImport']['delimitatore']))
+			$delimitatore = $this->request->data['CsvImport']['delimitatore'];
 		else
-			$deliminatore = Configure::read('CsvImportDelimiterDefault');
+			$delimitatore = Configure::read('CsvImportDelimiterDefault');
 		
 		if(isset($this->request->data['CsvImport']['password_default']))
 			$password_default = $this->request->data['CsvImport']['password_default'];
 		else
 			$password_default = '';
 		
-		$this->set(compact('deliminatore', 'password_default'));
+		$this->set(compact('delimitatore', 'password_default'));
 		
 		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, 'COMPLETE');
 		$this->set(compact('struttura_file'));
@@ -88,16 +88,16 @@ class CsvImportsController extends AppController {
 		else
 			$category_article_id = null;
 		
-		if(isset($this->request->data['CsvImport']['deliminatore']))
-			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
+		if(isset($this->request->data['CsvImport']['delimitatore']))
+			$delimitatore = $this->request->data['CsvImport']['delimitatore'];
 		else
-			$deliminatore = Configure::read('CsvImportDelimiterDefault');
+			$delimitatore = Configure::read('CsvImportDelimiterDefault');
 		
 		$versions = ['COMPLETE' => 'Completa', 'SIMPLE' => 'Semplificata'];
 		$version = 'SIMPLE';
 		$this->set(compact('versions', 'version'));
 		
-		$this->set(compact('supplier_organization_id', 'category_article_id', 'deliminatore'));
+		$this->set(compact('supplier_organization_id', 'category_article_id', 'delimitatore'));
 		
 		$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, 'COMPLETE');
 		$this->set(compact('struttura_file'));		
@@ -112,7 +112,7 @@ class CsvImportsController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 
 			self::d($this->request->data, $debug);
-		
+
 			/*
 			 * campi filtro
 			*/
@@ -121,20 +121,20 @@ class CsvImportsController extends AppController {
 				$category_article_id = $this->request->data['CsvImport']['category_article_id'];
 			else 
 				$category_article_id = 0;
-			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
+			$delimitatore = $this->request->data['CsvImport']['delimitatore'];
 			$file1 = $this->request->data['Document']['file1'];
 			$version = $this->request->data['CsvImport']['version'];
 			
-			$this->set(compact('supplier_organization_id', 'category_article_id', 'deliminatore', 'version'));
+			$this->set(compact('supplier_organization_id', 'category_article_id', 'delimitatore', 'version'));
 	
 			if($this->user->organization['Organization']['hasFieldArticleCategoryId']=='Y') {
-				if(empty($supplier_organization_id) || empty($category_article_id) || empty($deliminatore) || $file1['size']==0) {
+				if(empty($supplier_organization_id) || empty($category_article_id) || empty($delimitatore) || $file1['size']==0) {
 					$this->Session->setFlash(__('msg_error_params'));
 					$this->myRedirect(Configure::read('routes_msg_exclamation'));
 				}
 			}
 			else {
-				if(empty($supplier_organization_id) || empty($deliminatore) || $file1['size']==0) {
+				if(empty($supplier_organization_id) || empty($delimitatore) || $file1['size']==0) {
 					$this->Session->setFlash(__('msg_error_params'));
 					$this->myRedirect(Configure::read('routes_msg_exclamation'));
 				}
@@ -143,7 +143,7 @@ class CsvImportsController extends AppController {
 			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
 			$this->set(compact('struttura_file'));
 		
-			$result = $this->_readFileSend($file1, $deliminatore, $version, false, $supplier_organization_id, $debug);
+			$result = $this->_readFileSend($file1, $delimitatore, $version, false, $supplier_organization_id, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 
@@ -178,15 +178,15 @@ class CsvImportsController extends AppController {
 			/*
 			 * campi filtro
 			*/
-			$deliminatore = $this->request->data['CsvImport']['deliminatore'];
+			$delimitatore = $this->request->data['CsvImport']['delimitatore'];
 			$password_default = $this->request->data['CsvImport']['password_default'];	
 			$version = 'COMPLETE';
 			
-			$this->set(compact('deliminatore', 'password_default', 'version'));
+			$this->set(compact('delimitatore', 'password_default', 'version'));
 						
 			$file1 = $this->request->data['Document']['file1'];
 
-			if(empty($password_default) || empty($deliminatore) || $file1['size']==0) {
+			if(empty($password_default) || empty($delimitatore) || $file1['size']==0) {
 				$this->Session->setFlash(__('msg_error_params'));
 				$this->myRedirect(Configure::read('routes_msg_exclamation'));
 			}
@@ -194,7 +194,7 @@ class CsvImportsController extends AppController {
 			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
 			$this->set(compact('struttura_file'));
 					
-			$result = $this->_readFileSend($file1, $deliminatore, 'COMPLETE', false, 0, $debug);
+			$result = $this->_readFileSend($file1, $delimitatore, 'COMPLETE', false, 0, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 
@@ -280,7 +280,7 @@ class CsvImportsController extends AppController {
 			
 			unset($this->request->data['CsvImport']['supplier_organization_id']);
 			unset($this->request->data['CsvImport']['category_article_id']);
-			unset($this->request->data['CsvImport']['deliminatore']);
+			unset($this->request->data['CsvImport']['delimitatore']);
 			unset($this->request->data['CsvImport']['version']);
 			
 			App::import('Model', 'Article');
@@ -913,7 +913,7 @@ class CsvImportsController extends AppController {
 
 		$supplier_organization_id = $this->request->data['CsvImport']['supplier_organization_id'];
 		$file1 = $this->request->data['Document']['file1'];
-		$deliminatore = ',';
+		$delimitatore = ',';
 		$version = 'COMPLETE';
 		$this->set(compact('version'));
 
@@ -927,7 +927,7 @@ class CsvImportsController extends AppController {
 			$struttura_file = $this->CsvImport->getStrutturaFile($this->user, $this->action, $version);
 			$this->set(compact('struttura_file'));	
 
-			$result = $this->_readFileSend($file1, $deliminatore, $version, true, $supplier_organization_id, $debug);
+			$result = $this->_readFileSend($file1, $delimitatore, $version, true, $supplier_organization_id, $debug);
 			$esito = $result['esito'];
 			$results = $result['results'];
 					
@@ -1099,7 +1099,7 @@ class CsvImportsController extends AppController {
 	* UPLOAD_ERR_NO_FILE (4): Nessun file e' stato inviato;
 	* UPLOAD_ERR_NO_TMP_DIR (6): Mancanza della cartella temporanea;
 	*/	
-	private function _readFileSend($file, $deliminatore, $version='COMPLETE', $first_row_header=false, $supplier_organization_id=0, $debug=false) {
+	private function _readFileSend($file, $delimitatore, $version='COMPLETE', $first_row_header=false, $supplier_organization_id=0, $debug=false) {
 
 		setlocale(LC_ALL, 'it_IT.utf8');
 
@@ -1119,7 +1119,7 @@ class CsvImportsController extends AppController {
 				if (($handle = fopen($file['tmp_name'], "r")) !== false) {
 						
 					$i=0;
-					while (($data = fgetcsv($handle, 1000, $deliminatore)) !== false) {
+					while (($data = fgetcsv($handle, 1000, $delimitatore)) !== false) {
 						
 						/*
 						 * ultima riga vuota
@@ -1127,7 +1127,7 @@ class CsvImportsController extends AppController {
 						if(empty($data) || empty($data[0]) || $data[0]==' ') {
 							break;
 						}
-						
+			
 						/*
 					     * prima riga puo' essere l'intestazione
 						 */
@@ -1135,7 +1135,7 @@ class CsvImportsController extends AppController {
 						}
 						else {							
 							$num = count($data); // totale colonne del file csv
-						
+							
 							if($num > (count($struttura_file)+1)){
 								$esito = "Il file csv contiene troppo colonne alla riga ".($i+1).": sono ".$num." e devono essere ".count($struttura_file);
 								break;
@@ -1145,10 +1145,10 @@ class CsvImportsController extends AppController {
 							 * tutta la riga e' nella prima colonna => separatore errato
 							*/	
 							if($num==1) {
-								$esito = "Il Deliminatore indicato (".$deliminatore.") non è corretto";
+								$esito = "Il delimitatore indicato (".$delimitatore.") non è corretto";
 								break;
 							}
-
+							
 							$results[$totRows]['ESITO'] = 'OK';
 							for ($c=0; $c < $num; $c++) {	
 								

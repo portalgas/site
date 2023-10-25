@@ -21,7 +21,7 @@ echo $this->Form->input('supplier_organization_id', $options);
 if($user->organization['Organization']['hasFieldArticleCategoryId']=='Y')
 	echo $this->Form->input('category_article_id', ['id' => 'category_article_id', 'options' => $categories, 'empty' => 'Filtra per categoria','default'=>$category_article_id,'escape' => false]);
 		
-echo $this->Form->input('deliminatore', ['label' => 'Delimitatore', 'id' => 'deliminatore', 'value' => $deliminatore, 'style' => 'width:50px;']);
+echo $this->Form->input('delimitatore', ['label' => 'Delimitatore', 'id' => 'delimitatore', 'value' => $delimitatore, 'style' => 'width:50px;']);
 
 echo $this->Form->input('version', ['label' => 'Versione', 'id' => 'version', 'options' => $versions, 'value' => $version]);
 		
@@ -74,10 +74,10 @@ $(document).ready(function() {
 				return false;
 			}
 		}
-		var deliminatore = $('#deliminatore').val();
-		if(deliminatore=='' || deliminatore==undefined) {
-			alert("Devi scegliere il deliminatore dei valori nel file .csv");
-			$('#deliminatore').focus();
+		var delimitatore = $('#delimitatore').val();
+		if(delimitatore=='' || delimitatore==undefined) {
+			alert("Devi scegliere il delimitatore dei valori nel file .csv");
+			$('#delimitatore').focus();
 			return false;
 		}		
 		return true;

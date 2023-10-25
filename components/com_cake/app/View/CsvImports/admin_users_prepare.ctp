@@ -9,7 +9,7 @@ echo $this->Form->create('CsvImport',array('id'=>'formGas', 'action' => 'todefin
 echo '<fieldset class="filter">';
 echo '<legend>'.__('Csv Import Prepare').'</legend>';
 
-echo $this->Form->hidden('deliminatore',array('value' => $deliminatore));
+echo $this->Form->hidden('delimitatore',array('value' => $delimitatore));
 echo $this->Form->hidden('password_default',array('value' => $password_default));
 
 echo '</fieldset>';

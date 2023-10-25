@@ -12,7 +12,7 @@ echo '<legend>'.__('Csv Import Prepare').'</legend>';
 
 echo $this->Form->hidden('supplier_organization_id',  ['value' => $supplier_organization_id]);
 echo $this->Form->hidden('category_article_id', ['value' => $category_article_id]);
-echo $this->Form->hidden('deliminatore', ['value' => $deliminatore]);
+echo $this->Form->hidden('delimitatore', ['value' => $delimitatore]);
 echo $this->Form->hidden('version', ['value' => $version]);
 echo '</fieldset>';
 

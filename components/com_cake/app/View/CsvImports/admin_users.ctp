@@ -12,7 +12,7 @@ echo '<legend>'.__('CsvImport').'</legend>';
 
 echo $this->Form->input('password_default', array('id' => 'password_default', 'value' => '', 'style' => 'width:150px;'));
 
-echo $this->Form->input('deliminatore', array('label' => 'Delimitatore', 'id' => 'deliminatore', 'value' => $deliminatore, 'style' => 'width:50px;'));
+echo $this->Form->input('delimitatore', array('label' => 'Delimitatore', 'id' => 'delimitatore', 'value' => $delimitatore, 'style' => 'width:50px;'));
 		
 echo $this->Form->input('Document.file1', array(
 	'between' => '<br />',
@@ -43,10 +43,10 @@ $(document).ready(function() {
 			return false;
 		}
 		
-		var deliminatore = $('#deliminatore').val();
-		if(deliminatore=='' || deliminatore==undefined) {
-			alert("Devi scegliere il deliminatore dei valori nel file .csv");
-			$('#deliminatore').focus();
+		var delimitatore = $('#delimitatore').val();
+		if(delimitatore=='' || delimitatore==undefined) {
+			alert("Devi scegliere il delimitatore dei valori nel file .csv");
+			$('#delimitatore').focus();
 			return false;
 		}		
 		return true;
