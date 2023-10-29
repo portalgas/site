@@ -428,7 +428,7 @@ class Order extends AppModel {
 
     /*
      * estrae l'importo totale degli acquisti di un ordine e lo salvo sull'ordine
-     * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrderS)
+     * per evitare discordanze (ex rich di pagamento con ordini con totImporti diversi a SummaryOrders)
     */
     public function setTotImporto($user, $order_id, $debug=false) {
 
@@ -441,12 +441,13 @@ class Order extends AppModel {
 
             $results = [];
             $results = $this->find('first', $options);
-            $results['Order']['nota'] = 'test';
+            $results['Order']['nota'] = '';
             $results['Order']['tot_importo'] = $tot_importo;
 
             if(!$this->save($results)) {
                 CakeLog::write('error','Order::setTotImporto()');
-                CakeLog::write('error',$this->validationErrors);
+                CakeLog::write('error', $results);
+                CakeLog::write('error', $this->validationErrors);
             }
         }
     }
