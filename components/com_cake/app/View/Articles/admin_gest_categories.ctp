@@ -122,11 +122,14 @@ if(count($results)>0) {
 		echo $this->Form->hidden('FilterArticleName',array('id' => 'FilterArticleName', 'value' => $FilterArticleName));
 		echo $this->Form->hidden('article_id_selected',array('id' => 'article_id_selected', 'value' => ''));
 		
-		echo '<div class="box-message"><div id="flashMessage" class="notice" style="text-align:right;">';
-		echo $this->Form->input('category_article_id', array('label' => false, 'id' => 'category_article_id', 'options' => $categories, 'empty' => 'Scegli la categoria', 'escape' => false));
-		echo '</div></div>';
+		if($suppliersOrganization['SuppliersOrganization']['owner_articles']=='REFERENT') {
+			echo '<div class="box-message"><div id="flashMessage" class="notice" style="text-align:right;">';
+			echo $this->Form->input('category_article_id', array('label' => false, 'id' => 'category_article_id', 'options' => $categories, 'empty' => 'Scegli la categoria', 'escape' => false));
+			echo '</div></div>';
+			echo $this->Form->submit("Aggiorna la categoria degli articoli selezionati");	
+		}
 		
-		echo $this->Form->end("Aggiorna la categoria degli articoli selezionati");	
+		echo $this->Form->end();	
 	}
 	else {  // if(count($results)>0)
 		if(empty($FilterArticleSupplierId))  
