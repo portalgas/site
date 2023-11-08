@@ -42,19 +42,43 @@ echo '</div>';
 echo '</div>';
 echo '</fieldset>';
 					
-	if(count($results)>0) { 
-	
-	echo $this->Form->create('Article',array('id' => 'formGas'));
+if(count($results)>0) { 
+	if($suppliersOrganization['SuppliersOrganization']['owner_articles']!='REFERENT') {
+		echo '<div class="alert alert-danger">';
+		echo 'Non puoi modificare le categorie listino: il gestore del listino degli articoli è <b>';
+		switch ($suppliersOrganization['SuppliersOrganization']['owner_articles']) {
+			case 'PACT':
+				echo $this->App->traslateEnum('ProdGasSupplier'.$suppliersOrganization['SuppliersOrganization']['owner_articles']);
+			break;
+			case 'SUPPLIER':
+				echo $this->App->traslateEnum('ProdGasSupplier'.$suppliersOrganization['SuppliersOrganization']['owner_articles']);
+			break;
+			case 'REFERENT':
+				echo $this->App->traslateEnum('ProdGasSupplier'.$suppliersOrganization['SuppliersOrganization']['owner_articles']);
+			break;
+			case 'DES':
+				echo $this->App->traslateEnum('ProdGasSupplier'.$suppliersOrganization['SuppliersOrganization']['owner_articles']);
+			break;
+		}
+		echo '</b></div>';		
+	}
+
+	echo $this->Form->create('Article', ['id' => 'formGas']);
 	?>
 	<fieldset>
 		
 	<div class="table-responsive"><table class="table table-hover">
 	<tr>
-			<th></th>
-			<th><input type="checkbox" class="form-control" id="article_id_selected_all" name="article_id_selected_all" value="ALL" /></th>
-			<th><?php echo $this->Paginator->sort('category');?></th>			
-			<th></th>
-			<?php
+			<?php 
+			echo '<th></th>';
+			echo '<th>';
+			if($suppliersOrganization['SuppliersOrganization']['owner_articles']=='REFERENT')
+				echo '<input type="checkbox" class="form-control" id="article_id_selected_all" name="article_id_selected_all" value="ALL" />';
+			echo '</th>';
+			echo '<th>';
+			echo $this->Paginator->sort('category');
+			echo '</th>';
+			echo '<th></th>';
 			if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 				echo '<th>'.$this->Paginator->sort('codice').'</th>';
 			?>
@@ -66,7 +90,10 @@ echo '</fieldset>';
 	?>
 	<tr class="view">
 		<td><a action="articles-<?php echo $result['Article']['organization_id']; ?>_<?php echo $result['Article']['id']; ?>" class="actionTrView openTrView" href="#" title="<?php echo __('Href_title_expand');?>"></a></td>
-		<td><?php echo '<input type="checkbox" class="form-control" id="'.$result['Article']['id'].'[article_id_selected]" name="article_id_selected" value="'.$result['Article']['id'].'" />';?></td>		
+		<td><?php 
+		if($suppliersOrganization['SuppliersOrganization']['owner_articles']=='REFERENT')
+			echo '<input type="checkbox" class="form-control" id="'.$result['Article']['id'].'[article_id_selected]" name="article_id_selected" value="'.$result['Article']['id'].'" />';?>
+		</td>		
 		<td><?php echo $result['CategoriesArticle']['name']; ?></td>
 		<?php
 		if($user->organization['Organization']['hasFieldArticleCodice']=='Y')

@@ -495,6 +495,9 @@ class ArticlesController extends AppController {
 			}
 		}  // end if ($this->request->is('post') || $this->request->is('put'))
 	
+		App::import('Model', 'SuppliersOrganization');
+		$SuppliersOrganization = new SuppliersOrganization;
+				
 		$conditions = [];
 		$conditions[] = ['SuppliersOrganization.organization_id'=>(int)$this->user->organization['Organization']['id']];
 	
@@ -527,14 +530,24 @@ class ArticlesController extends AppController {
 								'maxLimit' => $SqlLimit,
 								'limit' => $SqlLimit];
 			$results = $this->paginate('Article');
-		}
+
+			/*
+			* dati produttore, per vedere chi gestisce il listino
+			 * $suppliersOrganization['owner_articles'] = 'REFERENT'
+			*/
+			$options = [];
+			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
+										'SuppliersOrganization.id' => $FilterArticleSupplierId];
+			$options['recursive'] = -1;
+			$suppliersOrganization = $SuppliersOrganization->find('first', $options);
+			$this->set('suppliersOrganization', $suppliersOrganization);
+			
+		} // if(!empty($FilterArticleSupplierId))
 	
 		/*
 		 * get elenco produttori filtrati
 		*/
 		if($this->isSuperReferente()) {
-			App::import('Model', 'SuppliersOrganization');
-			$SuppliersOrganization = new SuppliersOrganization;
 				
 			$options = [];
 			$options['conditions'] = ['SuppliersOrganization.organization_id' => $this->user->organization['Organization']['id'],
