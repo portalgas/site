@@ -324,9 +324,8 @@ class ArticlesController extends AppController {
 							else
 								$msg .= 'Articolo "'.$name.'" cancellato definitivamente.<br />';							
 						}
-
-					}					
-				}
+					} // end if (empty($articleResults)) 
+				} // foreach ($array_article_id as $id)
 				$this->Session->setFlash($msg);
 			}	
 		}  // end if ($this->request->is('post') || $this->request->is('put'))

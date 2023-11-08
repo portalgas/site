@@ -156,8 +156,13 @@ if(!empty($results)) {
 			echo '<td title="'.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';
 		else
 			echo '<td></td>';
-		echo '<td class="actions-table-img-3">';			
-		echo $this->Html->link(null, array('controller' => 'Articles', 'action' => 'context_articles_index', null,'FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$result['SuppliersOrganization']['id']),array('class' => 'action actionList','title' => __('List Articles')));
+		echo '<td class="actions-table-img-3">';	
+		echo '<a class="action actionList" 
+		         title="'.__('List Articles').'" 
+				 target="_blank" 
+				 href="/administrator/index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=index-quick">
+			</a>';
+		// echo $this->Html->link(null, array('controller' => 'Articles', 'action' => 'context_articles_index', null,'FilterArticleFlagPresenteArticlesorders=ALL&FilterArticleSupplierId='.$result['SuppliersOrganization']['id']),array('class' => 'action actionList','title' => __('List Articles')));
 		/*
 		 * se lo stato e' Y definitivo modifico l'articolo da joomla
 		 */
