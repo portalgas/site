@@ -25,7 +25,7 @@ class ProdGasSuppliersController extends AppController {
 		
 		$results = $ProdGasSuppliersImport->getProdGasSuppliers($this->user, $this->user->organization['Organization']['id'], 0, [], $debug);
 		
-		self::d($results, $debug);
+		if($debug) debug($results);
 
 		$this->set(compact('results'));
 	}

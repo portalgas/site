@@ -87,9 +87,25 @@ class ProdGasSupplier extends AppModel {
 			$suppliersOrganizationResults = $SuppliersOrganization->find('all', $options);
 			self::d($options, $debug);
 			self::d($suppliersOrganizationResults, $debug);
-						
-			$results['Organization'] = $suppliersOrganizationResults;
+
+			/*
+			* estraggo i referenti per ogni G.A.S. 
+			*/
+			App::import('Model', 'SuppliersOrganizationsReferent');
+			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+
+			if(!empty($suppliersOrganizationResults))
+			foreach($suppliersOrganizationResults as $numResult => $suppliersOrganizationResult) {
+				$supplier_organization_id = $suppliersOrganizationResult['SuppliersOrganization']['id'];
+				$conditions = ['User.block' => 0,
+								'SuppliersOrganization.id' => $supplier_organization_id];
+				$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['organization_id']]);
+				$suppliersOrganizationsReferent = $SuppliersOrganizationsReferent->getReferentsCompact($tmp_user, $conditions);
 				
+				$suppliersOrganizationResults[$numResult]['SuppliersOrganizationsReferents'] = $suppliersOrganizationsReferent;
+			}			
+
+			$results['Organization'] = $suppliersOrganizationResults;
 			
 		} // end if(!empty($results))
 		

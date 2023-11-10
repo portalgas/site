@@ -97,6 +97,11 @@ if(!empty($organization_id)) {
 	*/
 	$i++;
 	$_menus[$i]['level'] = 1;
+	$_menus[$i]['label'] = "Istruzioni per esporta ed importa <label class='label label-success'>new</label>";
+	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/helps&a_to=articles-export-import";
+	$_menus[$i]['target'] = "_blank";	
+	$i++;
+	$_menus[$i]['level'] = 1;
 	$_menus[$i]['label'] = "Esporta articoli in EXCEL <label class='label label-success'>new</label>";
 	$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/articles&a_to=export";
 	$_menus[$i]['target'] = "_blank";
