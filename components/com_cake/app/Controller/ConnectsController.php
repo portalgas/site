@@ -76,18 +76,19 @@ class ConnectsController extends AppController {
 		unset($pass['a_to']);
 		if(!empty($pass)) {
 			// debug($pass);
+			
 			foreach ($pass as $key => $value) {
 				$q .= $key.'='.$value.'&';
 			}
 			$q = substr($q, 0, strlen($q)-1);
 		}
-
+		
 		// https://neo.portalgas.it/api/joomla25Salt/login
 		$url = Configure::read('Neo.portalgas.url').Configure::read('Neo.portalgas.pagelogin').'?u='.$user_salt.'&scope='.$scope.'&c_to='.$c_to.'&a_to='.$a_to;
 
 		if(!empty($q))
 			$url .= '&'.$q;
-
+			
 	 	if($debug) debug($url); 
 	 	if($debug) exit;	
 		// $this->redirect($url);
