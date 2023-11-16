@@ -976,7 +976,7 @@ class DeliveriesController extends AppController {
          * redirect al carrello se gia' loggato
          */
         if (!empty($this->user->id) && !empty($this->user->organization_id)) {
-
+   
             App::import('Model', 'Organization');
             $Organization = new Organization;
 
@@ -997,19 +997,20 @@ class DeliveriesController extends AppController {
         $organization_id = $userPreview->organization_id;
         $user_id = $userPreview->user_id;
         $delivery_id = $userPreview->delivery_id;
-
+ 
         /*
          * consegna
          * la leggo sempre nel caso non ho acquisti
          */
         $options = [];
-        $options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
+        $options['conditions'] = ['Delivery.organization_id' => $organization_id,
             'Delivery.isVisibleFrontEnd' => 'Y',
             'Delivery.stato_elaborazione' => 'OPEN',
-            'Delivery.type' => 'GAS',
+           // ora anche per gas-group 'Delivery.type' => 'GAS',
             'Delivery.id' => $delivery_id];
         $options['recursive'] = -1;
         $deliveryResults = $this->Delivery->find('first', $options);
+    
         if (empty($deliveryResults)) {
             $this->myRedirect(Configure::read('routes_msg_frontend_cart_preview'));
         }
@@ -1021,14 +1022,14 @@ class DeliveriesController extends AppController {
         $conditions = ['Delivery' => [
                 'Delivery.isVisibleFrontEnd' => 'Y',
                 'Delivery.stato_elaborazione' => 'OPEN',
-                'Delivery.type' => 'GAS',
+                // ora anche per gas-group 'Delivery.type' => 'GAS',
                 'Delivery.id' => $delivery_id
             ],
             'Cart' => [
                 'Cart.user_id' => (int) $user_id,
                 'Cart.deleteToReferent' => 'N'],
             'Order' => [
-                'Order.order_type_id not in ' => [Configure::read('Order.type.gas_parent_groups'), Configure::read('Order.type.gas_groups')],
+                'Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
                 'Order.state_code != ' => 'CREATE-INCOMPLETE'],
             'SuppliersOrganization' => ['SuppliersOrganization.stato' => 'Y']
         ];
