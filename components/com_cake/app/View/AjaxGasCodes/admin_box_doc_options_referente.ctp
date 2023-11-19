@@ -38,11 +38,10 @@ if(!empty($results))
 </div>
 <div class="col-md-5">
 		<?php
+		$id = '1';
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
 			
 			echo '<div id="setting-to-users-all-modify" class="box-options">';
-			
-			$id = '1';
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
@@ -58,9 +57,8 @@ if(!empty($results))
 		?>
 	<div id="setting-to-users" class="box-options">
 		<?php
+		$id = '2';
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '2';
-							
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
@@ -115,8 +113,8 @@ if(!empty($results))
 	</div>
 	<div id="setting-to-users-label" class="box-options">
 		<?php
+		$id = '3';
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '3';
 				
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
@@ -169,9 +167,8 @@ if(!empty($results))
 
 	<div id="setting-to-users-articles-label" class="box-options">
 		<?php
-		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '30';
-				
+		$id = '30';		
+		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {		
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
@@ -231,9 +228,8 @@ if(!empty($results))
 		
 	<div id="setting-to-articles" class="box-options">
 		<?php
+		$id = '4';
 		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '4';
-		
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
@@ -267,9 +263,8 @@ if(!empty($results))
 		
 	<div id="setting-to-articles-details" class="box-options">
 		<?php
-		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {
-			$id = '5';
-		
+		$id = '5';
+		if($hasTrasport=='Y' || $hasCostMore=='Y' || $hasCostLess=='Y') {		
 			echo '<div class="doc-options">';
 			echo '<label class="control-label">Visualizzo le <b>spese aggiuntive</b> o gli <b>sconti</b></label> ';
 			echo '<label class="radio-inline"><input type="radio" name="trasportAndCost'.$id.'" id="trasportAndCost'.$id.'_N" value="N" ';
