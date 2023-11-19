@@ -305,7 +305,7 @@ class ReferenteController extends AppController {
         } 
 		else
 			$msg = __('OrderStateCodeUpdate');
-			
+		
 		$this->Session->setFlash($msg);
 		if(isset($order['Order']) && $order['Order']['order_type_id']==Configure::read('Order.type.gas_groups')) {
 			$params = ['order_type_id' => $order['Order']['order_type_id'],
