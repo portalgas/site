@@ -15,7 +15,7 @@ if($isReferentGeneric) {
 ?>
     <div class="col-xs-12 col-sm-4 col-md-3">
 	    <div class="box-container">
-    		<a href="index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/orders&amp;a_to=/index&amp;q=11">
+    		<a href="index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/orders&amp;a_to=/index&amp;order_type_id=11">
 	    		<div class="box">
     		  		<span class="fa fa-3x fa-shopping-basket"></span>
       				<h4>Ordini titolari per gruppi</h4>
@@ -30,7 +30,7 @@ if($isReferentGeneric) {
 	?>
 	<div class="col-xs-12 col-sm-4 col-md-3">
 		<div class="box-container">
-			<a href="index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/orders&amp;a_to=/index&amp;q=10">
+			<a href="index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/orders&amp;a_to=/index&amp;order_type_id=10">
 				<div class="box">
 						<span class="fa fa-3x fa-shopping-basket"></span>
 						<h4>Ordini dei gruppi</h4>
