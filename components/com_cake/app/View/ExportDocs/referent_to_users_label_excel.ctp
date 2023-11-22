@@ -14,23 +14,31 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 		foreach($result['Delivery']['Order'] as $numOrder => $order) {
 
-										foreach ($order['ExportRows'] as $rows) {
+							
+			foreach ($order['ExportRows'] as $rows) {
 				
 				$user_id = current(array_keys($rows));
 				$rows = current(array_values($rows));
-				foreach ($rows as $typeRow => $cols) {
+
+				foreach ($rows as $typeRow => $cols) {
 						
 					switch ($typeRow) {
 						case 'TRGROUP':
 						
 							$rows = [];
-							$rows[] = $cols['LABEL'];
+
+							$label = $cols['LABEL'];
+							if(!empty($cols['LABEL_CODICE']))
+								$label .= ' ('.$cols['LABEL_CODICE'].')';
+							$rows[] = $label;
 							
 							/*
 							 * estraggo il totale di un utente 
 							 */
 							foreach ($order['ExportRows'] as $rows2) {
-								$user_id2 = current(array_keys($rows2));								$rows2 = current(array_values($rows2));								foreach ($rows2 as $typeRow2 => $cols2) 
+								$user_id2 = current(array_keys($rows2));
+								$rows2 = current(array_values($rows2));
+								foreach ($rows2 as $typeRow2 => $cols2) 
 									if($typeRow2 == 'TRSUBTOT' && $user_id2 == $user_id) {
 										if($trasportAndCost=='Y') {
 											$totale += $cols2['IMPORTO_COMPLETO'];
@@ -40,7 +48,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 											$totale += $cols2['IMPORTO'];
 											$rows[] = $cols2['IMPORTO'];
 										}
-									}							}
+									}
+							}
 							if($user_phone=='Y')
 								$rows[] = $cols['LABEL_PHONE'];
 							if($user_email=='Y')
@@ -112,13 +121,18 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							
 							$rows = [];
 							$rows[] = $cols['QTA'];
-							$rows[] = $name;							$rows[] = $cols['PREZZO'];
+							$rows[] = $name;
+							$rows[] = $cols['PREZZO'];
 							if($cols['DELETE_TO_REFERENT']=='Y')
 								$rows[] = '0,00';
-							else								$rows[] = $cols['IMPORTO'];							if($trasportAndCost=='Y') {
-								$rows[] = '';							}
+							else
+								$rows[] = $cols['IMPORTO'];
+							if($trasportAndCost=='Y') {
+								$rows[] = '';
+							}
 							
-							$this->PhpExcel->addTableRow($rows);						break;
+							$this->PhpExcel->addTableRow($rows);
+						break;
 						case 'TRDATABIS':
 							$rows = [];
 							$rows[] = $cols['NOTA'];

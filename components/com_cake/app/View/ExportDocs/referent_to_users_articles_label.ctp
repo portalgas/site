@@ -75,7 +75,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 									$html_header[$user_id] .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
 								
 								$html_header[$user_id] .= $cols['LABEL'];
-							
+								if(!empty($cols['LABEL_CODICE']))
+									$html_header[$user_id] .= ' ('.$cols['LABEL_CODICE'].')';	
+
 								if($user_phone=='Y')
 									$html_header[$user_id] .=  ' '.$cols['LABEL_PHONE'];
 								if($user_email=='Y')

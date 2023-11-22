@@ -194,12 +194,19 @@ class ExportDoc extends AppModel {
 							}
 							else $user_address = '';
 							
+							if(isset($order['User'][$numArticlesOrder]['Profile']['codice'])) {
+								$user_codice = $order['User'][$numArticlesOrder]['Profile']['codice'];
+							}
+							else 
+								$user_codice = '';
+
 							$this->exportRowsNum++;
 							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL'] = "Utente: ".$order['User'][$numArticlesOrder]['name'];
 							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL_ID'] = $order['User'][$numArticlesOrder]['id'];
 							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL_PHONE'] = $user_phone;
 							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL_EMAIL'] = $user_email;
 							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL_ADDRESS'] = $user_address;
+							$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRGROUP']['LABEL_CODICE'] = $user_codice;
 						}  // if($user_id_old != $order['User'][$numArticlesOrder]['id'])
 			
 	
@@ -498,6 +505,11 @@ class ExportDoc extends AppModel {
 					else $user_email = '';
 					if(isset($user['User']['Profile']['address'])) $user_address = $user['User']['Profile']['address'];
 					else $user_address = '';
+					if(isset($user['User']['Profile']['codice'])) {
+						$user_codice = $user['User']['Profile']['codice'];
+					}
+					else 
+						$user_codice = '';
 
 					$this->exportRowsNum++;
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL'] = "Utente: ".$user['User']['name'];
@@ -505,6 +517,7 @@ class ExportDoc extends AppModel {
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL_PHONE'] = $user_phone;
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL_EMAIL'] = $user_email;
 					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL_ADDRESS'] = $user_address;
+					$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL_CODICE'] = $user_codice;
 					
 					if($debug) echo '<br />&nbsp;&nbsp;&nbsp;'.$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRGROUP']['LABEL'];
 					

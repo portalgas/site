@@ -81,7 +81,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 					switch ($typeRow) {
 						case 'TRGROUP':
-							$html .= '<td colspan="5" >'.$cols['LABEL'].'</td>';
+							$label = $cols['LABEL'];
+							if(!empty($cols['LABEL_CODICE']))
+								$label .= ' ('.$cols['LABEL_CODICE'].')';							
+							$html .= '<td colspan="5" >'.$label.'</td>';
 							$html .= '<td style="background-color:#F5F5F5;" colspan="5"></td>';
 						break;
 						case 'TRSUBTOT':

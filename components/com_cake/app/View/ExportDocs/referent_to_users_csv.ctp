@@ -48,6 +48,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 						case 'TRGROUP':
 							$label = $cols['LABEL'];
 							
+							if(!empty($cols['LABEL_CODICE']))
+								$label .= ' ('.$cols['LABEL_CODICE'].')';
+
 							if($user_phone=='Y')
 								$label .=  ' '.$cols['LABEL_PHONE'];
 							if($user_email=='Y')

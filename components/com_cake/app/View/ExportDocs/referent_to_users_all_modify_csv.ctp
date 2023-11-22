@@ -1,16 +1,38 @@
 <?php 
-$headers = array('csv' => array(		'N' => 'N',		'name' => __('Name'),		'prezzo_unita' => $this->ExportDocs->prepareCsvAccenti(__('PrezzoUnita')),		'prezzo_um' => __('Prezzo/UM'),
-		'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')),		'importo' => __('Importo'),				'qta_utente' => $this->ExportDocs->prepareCsvAccenti("Quantità dell'utente"),
+$headers = array('csv' => array(
+		'N' => 'N',
+		'name' => __('Name'),
+		'prezzo_unita' => $this->ExportDocs->prepareCsvAccenti(__('PrezzoUnita')),
+		'prezzo_um' => __('Prezzo/UM'),
+		'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')),
+		'importo' => __('Importo'),		
+		'qta_utente' => $this->ExportDocs->prepareCsvAccenti("Quantità dell'utente"),
 		'importo_utente' => "Importo dell'utente",
 		'qta_referente' => $this->ExportDocs->prepareCsvAccenti("Quantità totale modificata dal referente"),
 		'importo_referente' => "Importo totale modificato dal referente",
 		'importo_forzato' => "Importo forzato"
-	));
-$csv = array(		'N' => 'N',		'name' => __('Name'),		'prezzo_unita' =>$this->ExportDocs->prepareCsvAccenti( __('PrezzoUnita')),		'prezzo_um' => __('Prezzo/UM'),		'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')),		'importo' => __('Importo'),		'qta_utente' => $this->ExportDocs->prepareCsvAccenti("Quantità dell'utente"),		'importo_utente' => "Importo dell'utente",		'qta_referente' => $this->ExportDocs->prepareCsvAccenti("Quantità totale modificata dal referente"),		'importo_referente' => "Importo totale modificato dal referente",		'importo_forzato' => "Importo forzato");
+	)
+);
+$csv = array(
+		'N' => 'N',
+		'name' => __('Name'),
+		'prezzo_unita' =>$this->ExportDocs->prepareCsvAccenti( __('PrezzoUnita')),
+		'prezzo_um' => __('Prezzo/UM'),
+		'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')),
+		'importo' => __('Importo'),
+		'qta_utente' => $this->ExportDocs->prepareCsvAccenti("Quantità dell'utente"),
+		'importo_utente' => "Importo dell'utente",
+		'qta_referente' => $this->ExportDocs->prepareCsvAccenti("Quantità totale modificata dal referente"),
+		'importo_referente' => "Importo totale modificato dal referente",
+		'importo_forzato' => "Importo forzato");
 
 $totRows=0;
 $data = [];
-foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {		foreach($result['Delivery']['Order'] as $numOrder => $order) {
+foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
+
+	if($result['Delivery']['totOrders']>0 && $result['Delivery']['totArticlesOrder']>0) {
+
+		foreach($result['Delivery']['Order'] as $numOrder => $order) {
 			
 			if($order['Order']['hasTrasport']=='Y' && $order['Order']['trasport']!='0.00' && $trasportAndCost=='Y')
 				$csv += array('trasporto' => __('Trasport'));
@@ -28,13 +50,23 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($res
 			
 			$headers = array('csv' => $csv);
 			
-			foreach ($order['ExportRows'] as $rows) {					
-				$user_id = current(array_keys($rows));				$rows = current(array_values($rows));								foreach ($rows as $typeRow => $cols) {
+			foreach ($order['ExportRows'] as $rows) {
+					
+				$user_id = current(array_keys($rows));
+				$rows = current(array_values($rows));
+				
+				foreach ($rows as $typeRow => $cols) {
 
 					switch ($typeRow) {
-						case 'TRGROUP':							$data[$totRows]['csv'] = array('N' => $this->ExportDocs->prepareCsv($cols['LABEL']));
+						case 'TRGROUP':
+							$label = $cols['LABEL'];
+							if(!empty($cols['LABEL_CODICE']))
+								$label .= ' ('.$cols['LABEL_CODICE'].')';							
+							$data[$totRows]['csv'] = array('N' => $this->ExportDocs->prepareCsv($label));
 							
-							$totRows++;							break;						case 'TRSUBTOT':
+							$totRows++;
+							break;
+						case 'TRSUBTOT':
 							
 							$data[$totRows]['csv'] = array(
 									'N' => 'Totale dell\'utente',
@@ -64,7 +96,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($res
 								$data[$totRows]['csv'] += array('importo_completo' => $cols['IMPORTO_COMPLETO']);
 							
 							$totRows++;
-							break;						case 'TRTOT':
+							break;
+						case 'TRTOT':
 							
 							$data[$totRows]['csv'] = array(
 								'N' => 'Totale',
@@ -94,23 +127,39 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {	if($res
 								$data[$totRows]['csv'] += array('importo_completo' => $cols['IMPORTO_COMPLETO']);
 							
 							$totRows++;
-							break;						case 'TRDATA':
+							break;
+						case 'TRDATA':
 							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UMRIF']));
 							
 							$cols['PREZZO_UM'] = $cols['PREZZO_UMRIF'];
-														$data[$totRows]['csv'] = array(									'N' => $cols['NUM'],									'name' => $name,									'prezzo_unita' => $cols['PREZZO'],									'prezzo_um' => $this->ExportDocs->prepareCsv($cols['PREZZO_UM']),									'qta' => $cols['QTA'], // $this->App->traslateQtaImportoModificati($cols['ISQTAMOD']),									'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])									'qta_utente' => $cols['QTAUSER'],
+							
+							$data[$totRows]['csv'] = array(
+									'N' => $cols['NUM'],
+									'name' => $name,
+									'prezzo_unita' => $cols['PREZZO'],
+									'prezzo_um' => $this->ExportDocs->prepareCsv($cols['PREZZO_UM']),
+									'qta' => $cols['QTA'], // $this->App->traslateQtaImportoModificati($cols['ISQTAMOD']),
+									'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+									'qta_utente' => $cols['QTAUSER'],
 									'importo_utente' => $cols['IMPORTOUSER'],
 									'qta_referente' => $cols['QTAREF'],
 									'importo_referente' => $cols['IMPORTOREF'],
-									'importo_forzato' => $cols['IMPORTOFORZATO']							);
+									'importo_forzato' => $cols['IMPORTOFORZATO']
+							);
 							
-							$totRows++;						break;						case 'TRDATABIS':							$data[$totRows]['csv'] = array(
+							$totRows++;
+						break;
+						case 'TRDATABIS':
+							$data[$totRows]['csv'] = array(
 									'N' => '',
 									'name' => $cols['NOTA']
 							);	
 
 							$totRows++;
-						break;					}										}
+						break;
+					}
+						
+				}
 			}					
 		}
 	}
