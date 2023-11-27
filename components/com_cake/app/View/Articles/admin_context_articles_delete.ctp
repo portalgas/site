@@ -157,8 +157,7 @@ else
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List Articles'), array('action' => 'context_articles_index',null,
-																	'sort:'.$sort,'direction:'.$direction,'page:'.$page),
+		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'),
 																	array('class'=>'action actionReload','title' => __('List Articles')));?></li>
 		<li><?php echo $this->Html->link(__('Edit'), array('action' => 'context_articles_edit', $this->request->data['Article']['id'], 'article_organization_id' => $this->request->data['Article']['organization_id'],
 																	'sort:'.$sort,'direction:'.$direction,'page:'.$page),

@@ -2,7 +2,8 @@
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
 $this->Html->addCrumb(__('List Orders'),array('controller' => 'Orders', 'action' => 'index'));
 $this->Html->addCrumb(__('Order home'),array('controller'=>'Orders','action'=>'home', null, 'order_id='.$order_id));
-$this->Html->addCrumb(__('List Articles'),array('controller'=>'Articles','action'=>'context_order_index', null, 'order_id='.$order_id));
+// $this->Html->addCrumb(__('List Articles'),array('controller'=>'Articles','action'=>'context_order_index', null, 'order_id='.$order_id));
+$this->Html->addCrumb(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'));
 $this->Html->addCrumb(__('Title Delete Article'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 

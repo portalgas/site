@@ -16,7 +16,7 @@ echo __('Articles');
 echo '<div class="actions-img">';
 echo '<ul>';
 echo '<li>';
-echo $this->Html->link(__('List Articles'), array('action' => 'context_articles_index'),array('class' => 'action actionList','title' => __('List Articles')));
+echo $this->Html->link(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'),array('class' => 'action actionList','title' => __('List Articles')));
 echo '</li>';
 echo '</ul>';
 echo '</div>';

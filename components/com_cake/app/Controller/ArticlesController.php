@@ -4,7 +4,7 @@ App::import('Vendor', 'ImageTool');
 
 class ArticlesController extends AppController {
 	
-	public $components = ['Paginator', 'RequestHandler'];
+	public $components = ['Paginator', 'RequestHandler', 'Connects'];
 	public $helpers = ['Javascript', 'Tabs', 'Image'];
 	private $context;
 	private $article_organization_id = 0;
@@ -1344,7 +1344,10 @@ class ArticlesController extends AppController {
 					$this->Session->setFlash(__('Article was not deleted'));
 			} // end if($isArticleInCart)
 				
-			if(!$debug) $this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_'.$context.'_index'.$filterParams.'#anchor_'.$article_organization_id.'_'.$id);			
+			// if(!$debug) $this->myRedirect(Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Articles&action=context_'.$context.'_index'.$filterParams.'#anchor_'.$article_organization_id.'_'.$id);			
+			$url = $this->Connects->createUrlBo('admin/articles', 'index-quick');
+			$url .= '&q=search_supplier_organization_id='.$resultsOld['Article']['supplier_organization_id'];
+			if(!$debug) $this->myRedirect($url);			
 		}
 		
 		/*

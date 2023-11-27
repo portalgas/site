@@ -839,7 +839,7 @@ class AppController extends Controller {
             }
         } else
             $newUrl = $url;  // url assoluto
-            
+
         /*
          * non piu utilizzato perche' tolti gli header all'oggetto Lib/Network/CakeResponse.php
           $this->response->header('Location', $newUrl);
