@@ -40,7 +40,7 @@ if (!empty($results)) {
 				$rowsExcel[] = $result['CashesHistory']['operazione'];	
 				$rowsExcel[] = strip_tags($this->ExportDocs->prepareCsv($result['CashesHistory']['nota']));	
 				if((count($user['Cash'])-1) > $numResult2)
-					$rowsExcel[] = CakeTime::format($result['CashesHistory']['modified'], "%A, %e %B %Y");
+					$rowsExcel[] = CakeTime::format($result['CashesHistory']['created'], "%A, %e %B %Y");
 				
 				$this->PhpExcel->addTableRow($rowsExcel);
 				

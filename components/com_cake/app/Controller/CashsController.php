@@ -129,7 +129,7 @@ class CashsController extends AppController {
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['importo'] = $this->importoToDatabase($value);
-        //debug($data);exit;
+       // debug($data);exit;
 		self::d($data, $debug);
 		
 		$msg_errors = $this->Cash->getMessageErrorsToValidate($this->Cash, $data);
