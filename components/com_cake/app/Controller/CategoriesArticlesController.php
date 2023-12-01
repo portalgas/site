@@ -31,11 +31,12 @@ class CategoriesArticlesController extends AppController {
     public function admin_index() {
 
     	$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
-        $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
-        
+        $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;', null, 'name', 'asc');
+        // asort($results);
+		
         $resultsTotArticle = [];
         foreach ($results as $key => $value) {
-        	 
+			
         	/*
         	 * ottengo il totale degli articoli associati
         	*/
@@ -164,6 +165,7 @@ class CategoriesArticlesController extends AppController {
 		}
 
 		if ($this->request->is('post') || $this->request->is('put')) {
+			$this->CategoriesArticle->id = $id;
 			if ($this->CategoriesArticle->delete())
 				$this->Session->setFlash(__('Delete Category'));
 			else

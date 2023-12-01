@@ -167,6 +167,9 @@ class CashsController extends AppController {
 
         $options['recursive'] = -1;
         $results = $this->Cash->find('first', $options);
+        
+        $data = [];
+        $data['Cash'] = [];
         if (!empty($results)) {
             /*
              * UPDATE
@@ -179,7 +182,7 @@ class CashsController extends AppController {
         $data['Cash']['nota'] = $value; // '".addslashes($nota)."' 
         
 		if($debug) debug($data);
-		
+
         $this->Cash->create();
         $this->Cash->save($data);
 

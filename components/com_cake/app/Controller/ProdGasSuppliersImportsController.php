@@ -34,7 +34,7 @@ class ProdGasSuppliersImportsController extends AppController {
 		 * sql per settare la gestione del listino aricoli al produttore
 		 */
 		$sql_select = "SELECT * from ".Configure::read('DB.prefix')."suppliers_organizations WHERE organization_id = %s and id = %s;";
-		$sql_update = "UPDATE ".Configure::read('DB.prefix')."suppliers_organizations SET owner_articles = 'SUPPLIER', owner_organization_id = %s, owner_supplier_organization_id = %s, can_view_orders = 'Y' WHERE organization_id = %s and id = %s;";
+		$sql_update = "UPDATE ".Configure::read('DB.prefix')."suppliers_organizations SET owner_articles = 'SUPPLIER', owner_organization_id = %s, owner_supplier_organization_id = %s, can_view_orders = 'Y', can_view_orders_users = 'Y' WHERE organization_id = %s and id = %s;";
 		$sql_update_organization = "UPDATE ".Configure::read('DB.prefix')."organizations SET img1 = '%s' WHERE id = %s;";
 		$sql_update_supplier = "UPDATE ".Configure::read('DB.prefix')."suppliers SET owner_organization_id = %s WHERE id = %s;";
 		$sql_update_user = "UPDATE ".Configure::read('DB.portalPrefix')."users SET organization_id = %s WHERE supplier_id = %s;";

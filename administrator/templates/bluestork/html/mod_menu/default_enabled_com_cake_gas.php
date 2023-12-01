@@ -670,6 +670,11 @@ if(!empty($organization_id)) {
 							$_menus[$i]['target'] = "_blank";
 							$i++;
 							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Movimenti di cassa massivi <label class='label label-success'>new</label>";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/cashiers&a_to=/massive";
+							$_menus[$i]['target'] = "_blank";							
+							$i++;
+							$_menus[$i]['level'] = 1;
 							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
 							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";
 							$_menus[$i]['target'] = "_blank";
