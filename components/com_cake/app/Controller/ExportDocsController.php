@@ -1786,7 +1786,7 @@ class ExportDocsController extends AppController {
 
         $results = $Cart->getUserCart($this->user, $user_id, $delivery_id);
         $this->set(compact('results'));
-
+   
         /*
          * loops Orders, if Order.state_code = PROCESSED-ON-DELIVERY (in carico al cassiere) faccio vedere le modifiche
          */

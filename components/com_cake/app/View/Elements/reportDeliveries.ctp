@@ -46,9 +46,9 @@ else {
 			
 			var id =  $(this).attr('id');
 			idArray = id.split('-');
-			var action          = idArray[0];
+			var action = idArray[0];
 			var doc_formato = idArray[1];
-	
+
 			window.open('/administrator/index.php?option=com_cake&controller=ExportDocs&action='+action+'&delivery_id='+delivery_id+'&doc_formato='+doc_formato+'&format=notmpl','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');
 		});
 
