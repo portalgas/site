@@ -820,7 +820,6 @@ class User extends AppModel {
 		 * php 7.4 non supportato
 		 * $username = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($usernameCrypted), MCRYPT_MODE_ECB));
 	 	*/
-
         try {
 	 	    $username = $this->_decoding($usernameCrypted);
         } catch (Exception $e) {

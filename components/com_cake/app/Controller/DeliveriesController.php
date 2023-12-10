@@ -1960,7 +1960,12 @@ class DeliveriesController extends AppController {
         $User = new User;
 
         $organization_id = substr($O, 2, strlen($O));
-        $username = $User->getUsernameToUsernameCrypted($R);
+        try {
+            $username = $User->getUsernameToUsernameCrypted($R);
+        } catch (Exception $e) {
+            CakeLog::write('error', '_getUserPreview '.$R);
+            CakeLog::write('error', $e);
+        }            
         $delivery_id = substr($D, 2, strlen($D));
 
         if ($debug) {
