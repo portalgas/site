@@ -303,8 +303,17 @@ if(!empty($organization_id)) {
 				$i++;
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Consegne";
-				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=view";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=Deliveries&action=view";			
 			}
+			if(in_array(group_id_referent, $user->getAuthorisedGroups()) || 
+			   in_array(group_id_super_referent, $user->getAuthorisedGroups()) || 
+			   in_array(group_id_manager, $user->getAuthorisedGroups())) {
+					$i++;
+					$_menus[$i]['level'] = 1;
+					$_menus[$i]['label'] = "Esporta per consegna <label class='label label-success'>new</label>";
+					$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/exports&a_to=deliveries";
+					$_menus[$i]['target'] = "_blank";
+				}			
 		} // end if($hasGasGroups=='Y')
 
 		if(
