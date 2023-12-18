@@ -24,11 +24,11 @@ function gestioneModalSupplier(id) {
 		switch(id) {
 			case "print_screen_supplier_nota":
 				mymodal.find('.modal-title').html("Ecco come apparirà la descrizione inserita");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" class="img-responsive-disabled" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" class="img-responsive-disabled" />');
 				break;
 			case "print_screen_supplier_article":
 				mymodal.find('.modal-title').html("Ecco come apparirà il testo inserito per la scheda del produttore");
-				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_nota.jpg" class="img-responsive-disabled" />');
+				mymodal.find('.modal-body').html('<img src="<?php echo Configure::read('App.img.cake');?>/print_screen_supplier_article.jpg" class="img-responsive-disabled" />');
 				break;
 			case "print_screen_supplier_article_ctrl":
 				mymodal.find('.modal-title').html("Scheda del produttore");
