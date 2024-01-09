@@ -33,6 +33,14 @@ else {
 			?>
 		</td>		
 	</tr>
+	<tr>
+		<td></td>
+		<td colspan="3">
+			<a href="index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/exports&amp;a_to=deliveries" target="_blank">
+				Esporta per <b>consegna</b> <label class="label label-success">new</label></a>
+		</td>
+		<td></td>
+	</tr>
 
 	<script type="text/javascript">
 	$(document).ready(function() {
