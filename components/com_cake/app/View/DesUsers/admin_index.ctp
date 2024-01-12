@@ -56,6 +56,9 @@ if(!empty($desOrganizationsResults)) {
 
 	foreach ($desOrganizationsResults as $numResult0 => $desOrganizationsResult) {
 		
+		$tmp = new stdClass();
+		$tmp->user = new stdClass(); 
+		$tmp->user->organization = []; 
 		$tmp->user->organization['Organization'] = $desOrganizationsResult['Organization'];
 		
 		echo '  <div class="panel panel-primary">';
