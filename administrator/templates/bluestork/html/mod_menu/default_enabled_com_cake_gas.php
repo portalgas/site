@@ -441,7 +441,7 @@ if(!empty($organization_id)) {
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=index&group_id=".group_id_referent;
 				$i++;
 				$_menus[$i]['level'] = 1;
-				$_menus[$i]['label'] = "Senza referenza";
+				$_menus[$i]['label'] = "Gasisti senza referenza";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=not_index&group_id=".group_id_referent;
 					
 				
