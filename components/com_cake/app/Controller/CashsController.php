@@ -8,14 +8,20 @@ class CashsController extends AppController {
 
         /*
          * il ReferentCassiere non puo' accedere
+         * isGasGroupsCassiere solo a index_quick
          */
-        if (!$this->isCassiere()) {
+        if (!$this->isCassiere() && !$this->isGasGroupsCassiere()) {
             $this->Session->setFlash(__('msg_not_permission'));
             $this->myRedirect(Configure::read('routes_msg_stop'));
         }
     }
 
     public function admin_index() {
+
+        if (!$this->isCassiere()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
 
         App::import('Model', 'User');
 
@@ -64,8 +70,26 @@ class CashsController extends AppController {
 
         $options = [];
         $options['conditions'] = ['User.organization_id' => $this->user->organization['Organization']['id'],
-								  'User.block' => 0];
+								  'User.block' => 0,
+                                  'User.username NOT LIKE' => 'dispensa@%'];
+        /*
+         * se cassiere di un GasGroups filtro solo x i gasisti deòl proprio gruppo
+         */
+        if (isset($this->user->organization['Organization']['hasGasGroups']) && 
+            $this->user->organization['Organization']['hasGasGroups']=='Y' && 
+            $this->isGasGroupsCassiere()) {
+                
+                App::import('Model', 'UserGroupMap');
+                $UserGroupMap = new UserGroupMap;  
 
+                $user_ids = $UserGroupMap->getUserIdsByGasGroupsCassiere($this->user, $this->user->id);
+                if(!empty($user_ids))
+                    $user_ids = implode(",", $user_ids); 
+                else
+                    $user_ids = 0;
+                $options['conditions'] += ['User.id IN (' . $user_ids . ')'];
+        }
+        
         $options['recursive'] = -1;
         $options['order'] = Configure::read('orderUser');
         $results = $User->find('all', $options);
@@ -195,6 +219,11 @@ class CashsController extends AppController {
 	 */
     public function admin_add($user_id=0) {
 
+        if (!$this->isCassiere()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+
         if ($this->request->is('post') || $this->request->is('put')) {
 
             $this->request->data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
@@ -260,6 +289,11 @@ class CashsController extends AppController {
      */
     public function admin_edit($id=0) {
 
+        if (!$this->isCassiere()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
+
         $debug = false;
 
         $options = [];
@@ -299,6 +333,11 @@ class CashsController extends AppController {
      * modifica voce di cassa storica dell'utente , solo campo NOTE
      */
     public function admin_history_edit($id=0) {
+
+        if (!$this->isCassiere()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
 
         $debug = false;
 
@@ -343,6 +382,11 @@ class CashsController extends AppController {
     }
     
     public function admin_edit_by_user_id($user_id=0) {
+
+        if (!$this->isCassiere()) {
+            $this->Session->setFlash(__('msg_not_permission'));
+            $this->myRedirect(Configure::read('routes_msg_stop'));
+        }
 
        if (empty($user_id)) {
             $this->Session->setFlash(__('msg_error_params'));

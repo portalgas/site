@@ -3170,6 +3170,9 @@ msgstr "Gestore ordini per i gruppi"
 msgid "UserGroupsGasGroupsParentOrders"
 msgstr "Gestore ordini titolari"
 
+msgid "UserGroupsGasGroupsCassiere"
+msgstr "Gestore della cassa per gruppi"
+
 msgid "HasUserGroupsRootSupplier"
 msgstr "Ha la gestione dei produttori"
 
@@ -3247,6 +3250,9 @@ msgstr "Gestisce gli ordini per i gruppi"
 
 msgid "HasUserGroupsGasGroupsParentOrders"
 msgstr "Gestisce gli ordini titolari necessari per gli ordini dei gruppi"
+
+msgid "HasUserGroupsGasGroupsCassiere"
+msgstr "Gestisce della cassa per i gasisti che apppartengono al proprio gruppo"
 
 msgid "OrderCycleLife"
 msgstr "Ciclo dell'ordine"

@@ -19,7 +19,7 @@ class OrganizationsCashsController extends AppController {
 				/* ctrl ACL */
 				$actionWithPermission = ['admin_index'];
 				if (in_array($this->action, $actionWithPermission)) {
-					if(!$this->isRoot() && !$this->isManager() && !$this->isGasGropusManagerGroups()) {
+					if(!$this->isRoot() && !$this->isManager() && !$this->isGasGroupsManagerGroups()) {
 						$this->Session->setFlash(__('msg_not_permission'));
 						$this->myRedirect(Configure::read('routes_msg_stop'));
 					}
@@ -27,7 +27,7 @@ class OrganizationsCashsController extends AppController {
 			
 				$actionWithPermission = ['admin_ctrl'];
 					if (in_array($this->action, $actionWithPermission)) {
-					if(!$this->isRoot() && !$this->isManager() && !$this->isCassiere() && !$this->isGasGropusManagerGroups()) {
+					if(!$this->isRoot() && !$this->isManager() && !$this->isCassiere() && !$this->isGasGroupsManagerGroups()) {
 						$this->Session->setFlash(__('msg_not_permission'));
 						$this->myRedirect(Configure::read('routes_msg_stop'));
 					}

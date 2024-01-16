@@ -439,7 +439,12 @@ if(!empty($organization_id)) {
 				$_menus[$i]['level'] = 1;
 				$_menus[$i]['label'] = "Referenti";
 				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=index&group_id=".group_id_referent;
+				$i++;
+				$_menus[$i]['level'] = 1;
+				$_menus[$i]['label'] = "Senza referenza";
+				$_menus[$i]['url'] = "index.php?option=com_cake&controller=SuppliersOrganizationsReferents&action=not_index&group_id=".group_id_referent;
 					
+				
 				/*
 				 *  A R T I C L E S
 				 */	
@@ -651,7 +656,9 @@ if(!empty($organization_id)) {
 					/*
 					 * C A S S I E R E
 					*/
-					if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || in_array(group_id_referent_cassiere, $user->getAuthorisedGroups())) { 
+					if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
+						in_array(group_id_referent_cassiere, $user->getAuthorisedGroups()) || 
+						in_array(group_id_gas_groups_id_cassiere, $user->getAuthorisedGroups())) { 
 
 						$i++;
 						$_menus[$i]['level'] = 0;
@@ -688,27 +695,35 @@ if(!empty($organization_id)) {
 							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";
 							$_menus[$i]['target'] = "_blank";
 						}
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampa/Gestisci l'intera consegna";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_delivery_docs_export";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampa i singoli ordini";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_docs_export";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Prepagato - prospetto utenti";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampe cassiere";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Utility da scaricare";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere";
-						
+						if(in_array(group_id_gas_groups_id_cassiere, $user->getAuthorisedGroups())) {
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Gestione cassa dei gruppi rapida";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index_quick";
+						}
+						if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
+							in_array(group_id_referent_cassiere, $user->getAuthorisedGroups())) { 						
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampa/Gestisci l'intera consegna";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_delivery_docs_export";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampa i singoli ordini";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_docs_export";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Prepagato - prospetto utenti";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampe cassiere";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Utility da scaricare";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere";
+						}
 					} // end if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || in_array(group_id_referent_cassiere, $user->getAuthorisedGroups())) 
 	
 		   			/*
@@ -797,7 +812,8 @@ if(!empty($organization_id)) {
 		   			/*
 		   			 * C A S S I E R E
 		   			*/
-		   			if(in_array(group_id_cassiere, $user->getAuthorisedGroups())) {
+		   			if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
+					   in_array(group_id_gas_groups_id_cassiere, $user->getAuthorisedGroups())) {
 		   			
 						$i++;
 						$_menus[$i]['level'] = 0;
@@ -809,43 +825,54 @@ if(!empty($organization_id)) {
 						$_menus[$i]['label'] = "Home";
 						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cassiere&action=home";						
 						*/
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Gestione cassa";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Gestione cassa rapida";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index_quick";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Pagamenti dell'intera consegna <label class='label label-success'>new</label>";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/cashiers&a_to=deliveries";
-						$_menus[$i]['target'] = "_blank";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";					
-						$_menus[$i]['target'] = "_blank";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Prepagato - prospetto utenti";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampe cassiere";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Utility da scaricare";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere";			   				
+						if(in_array(group_id_cassiere, $user->getAuthorisedGroups())) {						
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Gestione cassa";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Gestione cassa rapida";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index_quick";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Pagamenti dell'intera consegna <label class='label label-success'>new</label>";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/cashiers&a_to=deliveries";
+							$_menus[$i]['target'] = "_blank";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Movimenti di cassa <label class='label label-success'>new</label>";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";					
+							$_menus[$i]['target'] = "_blank";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Prepagato - prospetto utenti";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampe cassiere";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Utility da scaricare";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere";
+						}
+						if(in_array(group_id_cassiere, $user->getAuthorisedGroups())) {
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Gestione cassa dei gruppi rapida";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index_quick";
+							
+						}						
 		   			} 
 				break; // $payToDelivery=='POST'
 				case 'ON-POST': 
 			   		/*
 			   		 * C A S S I E R E
 			   		*/
-			   		if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || in_array(group_id_referent_cassiere, $user->getAuthorisedGroups())) {
+			   		if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
+					   in_array(group_id_referent_cassiere, $user->getAuthorisedGroups()) || 
+					   in_array(group_id_gas_groups_id_cassiere, $user->getAuthorisedGroups())) {
 						$i++;
 						$_menus[$i]['level'] = 0;
 						$_menus[$i]['label'] = "Cassiere";
@@ -876,30 +903,39 @@ if(!empty($organization_id)) {
 							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/movements&a_to=/index";
 							$_menus[$i]['target'] = "_blank";
 						}
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampa/Gestisci l'intera consegna";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_delivery_docs_export";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampa i singoli ordini";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_docs_export";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Passa gli ordini al tesoriere";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cassiere&action=orders_to_wait_processed_tesoriere";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Prepagato - prospetto utenti";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Stampe cassiere";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
-						$i++;
-						$_menus[$i]['level'] = 1;
-						$_menus[$i]['label'] = "Utility da scaricare";
-						$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere"; 
+						if(in_array(group_id_gas_groups_id_cassiere, $user->getAuthorisedGroups())) {
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Gestione cassa dei gruppi rapida";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cashs&action=index_quick";
+						}	
+						if(in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
+							in_array(group_id_referent_cassiere, $user->getAuthorisedGroups())) {												
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampa/Gestisci l'intera consegna";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_delivery_docs_export";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampa i singoli ordini";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Docs&action=cassiere_docs_export";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Passa gli ordini al tesoriere";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Cassiere&action=orders_to_wait_processed_tesoriere";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Prepagato - prospetto utenti";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsCashs&action=ctrl";						
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Stampe cassiere";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_cassiere";
+							$i++;
+							$_menus[$i]['level'] = 1;
+							$_menus[$i]['label'] = "Utility da scaricare";
+							$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=utility_docs_cassiere";
+						} 
 			   		}
 			
 			   		/*

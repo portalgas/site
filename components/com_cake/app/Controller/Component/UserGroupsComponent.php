@@ -224,7 +224,14 @@ class UserGroupsComponent extends Component {
 			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['name'] = __('UserGroupsGasGroupsParentOrders');
 			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['descri'] = __('HasUserGroupsGasGroupsParentOrders');
 			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['join'] = '';
-			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['type'] = 'GAS-GROUPS';				
+			$userGroups[Configure::read('group_id_gas_groups_manager_parent_orders')]['type'] = 'GAS-GROUPS';
+			if($user->organization['Organization']['hasUserGroupsCassiere']=='Y') {			
+				$userGroups[Configure::read('group_id_gas_groups_id_cassiere')]['id'] = Configure::read('group_id_gas_groups_id_cassiere');
+				$userGroups[Configure::read('group_id_gas_groups_id_cassiere')]['name'] = __('UserGroupsGasGroupsCassiere');
+				$userGroups[Configure::read('group_id_gas_groups_id_cassiere')]['descri'] = __('HasUserGroupsGasGroupsCassiere');
+				$userGroups[Configure::read('group_id_gas_groups_id_cassiere')]['join'] = 'neo';
+				$userGroups[Configure::read('group_id_gas_groups_id_cassiere')]['type'] = 'GAS-GROUPS';	
+			}
 		}
 
 		$controllerLog::d($userGroups, $debug);

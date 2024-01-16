@@ -186,10 +186,10 @@ class PagesController extends AppController {
         /* 
         * gas-groups (sotto gruppi)
         */        
-        $this->set('isGasGropusManagerGroups', $this->isGasGropusManagerGroups());
-        $this->set('isGasGropusManagerDelivery', $this->isGasGropusManagerDelivery());
-        $this->set('isGasGropusManagerParentOrders', $this->isGasGropusManagerParentOrders());
-        $this->set('isGasGropusManagerOrders', $this->isGasGropusManagerOrders());
+        $this->set('isGasGroupsManagerGroups', $this->isGasGroupsManagerGroups());
+        $this->set('isGasGroupsManagerDelivery', $this->isGasGroupsManagerDelivery());
+        $this->set('isGasGroupsManagerParentOrders', $this->isGasGroupsManagerParentOrders());
+        $this->set('isGasGroupsManagerOrders', $this->isGasGroupsManagerOrders());
         
         $this->set('userGroups', $this->userGroups);
 

@@ -91,7 +91,6 @@ $this->App->d($results);
 		 */
 		echo '</tr>';
 		echo '<td></td>';
-		echo '<td></td>';	
 		echo '<td></td>';
 		echo '<td></td>';
 		echo '<td style="text-align:right;font-weight: bold;">Totale</td>';
@@ -99,7 +98,6 @@ $this->App->d($results);
 		echo '<td>';
 		echo '<span id="importo_totale"></span>';
 		echo '</td>';
-		echo '<td></td>';
 		echo '<td></td>';
 		echo '<td></td>';
 		echo '<td></td>';

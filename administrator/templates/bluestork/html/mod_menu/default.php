@@ -59,6 +59,7 @@ define('group_id_gas_groups_manager_groups', 122);
 define('group_id_gas_groups_manager_consegne',120);
 define('group_id_gas_groups_manager_orders', 121);
 define('group_id_gas_groups_manager_parent_orders', 123);
+define('group_id_gas_groups_id_cassiere', 127);
 
 /*
  * find se in uso il componente com_cake

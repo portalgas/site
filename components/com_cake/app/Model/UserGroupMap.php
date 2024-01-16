@@ -77,7 +77,37 @@ class UserGroupMap extends AppModel {
         		
 		return $userFlagPrivacy;
 	}
+		
+	/*
+	 * estrae gli user.id degli utenti associato al gruppo (GasGroups) 
+	 * che l'utente come cassiere (isGasGroupsCassiere)
+	 * gestisce
+	 */
+	public function getUserIdsByGasGroupsCassiere($user, $user_id) {
+		
+		$user_ids = [];
 			
+		$options = [];
+		$options['conditions'] = ['id' => $user_id,
+								'group_id' => Configure::read('group_id_gas_groups_id_cassiere')];
+		$options['recursive'] = -1;
+		$user_group_maps = $this->find('all', $options);
+		if(!empty($user_group_maps)) {
+			App::import('Model', 'GasGroupUser');
+			$GasGroupUser = new GasGroupUser; 
+			foreach($user_group_maps as $user_group_map) {
+				$users = $GasGroupUser->getsUserByGasGroupId($user, $user->organization['Organization']['id'], $user_group_map['UserGroupMap']['gas_group_id']);
+				if(!empty($users)) {
+					foreach($users as $user) {
+						$user_ids[$user['User']['id']] = $user['User']['id'];
+					}
+				}
+			}
+		} // end if(!empty($user_group_maps))
+		// debug($user_ids); 
+		return $user_ids;
+	}
+
 	public $hasMany = [
 		'User' => [
 			'className' => 'User',

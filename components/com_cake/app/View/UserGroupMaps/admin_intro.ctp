@@ -21,10 +21,14 @@ foreach ($userGroups as $group_id => $data) {
 	echo '</td>';
 	echo '<td class="actions-table-img">';
 	if(empty($data['join']))	
-		echo $this->Html->link(null, array('controller' => 'UserGroupMaps', 'action' => 'index', null, 'group_id='.$group_id),array('class' => 'action actionEdit','title' => __('Edit')));
+		echo $this->Html->link(null, array('controller' => 'UserGroupMaps', 'action' => 'index', null, 'group_id='.$group_id), ['class' => 'action actionEdit','title' => __('Edit')]);
 	else
 	if($data['join']=='Supplier')	
-		echo $this->Html->link(null, array('controller' => 'SuppliersOrganizationsReferents', 'action' => 'index', null, 'group_id='.$group_id), array('class' => 'action actionEdit','title' => __('Edit')));
+		echo $this->Html->link(null, array('controller' => 'SuppliersOrganizationsReferents', 'action' => 'index', null, 'group_id='.$group_id), ['class' => 'action actionEdit','title' => __('Edit')]);
+	else
+	if($data['join']=='neo') {
+		echo $this->Html->link(null, ['controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/user-groups&a_to=index&group_id='.$group_id], ['target' => '_blank', 'class' => 'action actionEdit','title' => __('Edit')]);
+	}	 	
 	echo '</td>';
 	echo '</tr>';
 }

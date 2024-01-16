@@ -11,7 +11,7 @@ echo '  <div class="row">';
 // echo $this->element('carousel');
 
 if($isReferentGeneric) {
-	if($isGasGropusManagerParentOrders) {
+	if($isGasGroupsManagerParentOrders) {
 ?>
     <div class="col-xs-12 col-sm-4 col-md-3">
 	    <div class="box-container">
@@ -26,7 +26,7 @@ if($isReferentGeneric) {
     </div>
 	<?php 
 	} 
-	if($isGasGropusManagerOrders) {
+	if($isGasGroupsManagerOrders) {
 	?>
 	<div class="col-xs-12 col-sm-4 col-md-3">
 		<div class="box-container">
@@ -80,7 +80,7 @@ if($isReferentGeneric) {
 ?>
 	
 	<?php
-	if($isRoot || $isManager || $isGasGropusManagerDelivery) {
+	if($isRoot || $isManager || $isGasGroupsManagerDelivery) {
 		$url = "index.php?option=com_cake&amp;controller=Connects&amp;action=index&amp;c_to=admin/gas-group-deliveries&amp;a_to=index";
 	?>	
     <div class="col-xs-12 col-sm-4 col-md-3">

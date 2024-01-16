@@ -591,34 +591,40 @@ class AppController extends Controller {
     /* 
      * gas-groups (sotto gruppi)
      */
-    public function isGasGropusManagerGroups() {
+    public function isGasGroupsManagerGroups() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_groups'), $this->user->getAuthorisedGroups()))
             return true;
         else
             return 0;
     }
 
-    public function isGasGropusManagerDelivery() {
+    public function isGasGroupsManagerDelivery() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_consegne'), $this->user->getAuthorisedGroups()))
             return true;
         else
             return 0;
     }
 
-    public function isGasGropusManagerParentOrders() {
+    public function isGasGroupsManagerParentOrders() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_parent_orders'), $this->user->getAuthorisedGroups()))
             return true;
         else
             return 0;
     }
 
-    public function isGasGropusManagerOrders() {
+    public function isGasGroupsManagerOrders() {
         if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_manager_orders'), $this->user->getAuthorisedGroups()))
             return true;
         else
             return 0;
     }
-        
+
+    public function isGasGroupsCassiere() {
+        if ($this->user->get('id') != 0 && in_array(Configure::read('group_id_gas_groups_id_cassiere'), $this->user->getAuthorisedGroups()))
+            return true;
+        else
+            return 0;
+    }    
     
     /*
      * DES

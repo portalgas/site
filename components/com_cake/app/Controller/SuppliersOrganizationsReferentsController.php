@@ -24,7 +24,7 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		$this->set('types', $this->types);
 	}
 
-	/*
+		/*
 	 * elenco di tutti gli users associati al ruolo
 	*/
 	public function admin_index() {
@@ -61,7 +61,9 @@ class SuppliersOrganizationsReferentsController extends AppController {
 			$FilterSuppliersOrganizationsReferentId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'Id');
 		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'UserId')) 
 			$FilterSuppliersOrganizationsReferentUserId = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'UserId');
-		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'UserName')) 			$FilterSuppliersOrganizationsReferentUserName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'UserName');		
+		if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'UserName')) 
+			$FilterSuppliersOrganizationsReferentUserName = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'UserName');
+		
 		/*
 		 *  Supplier.ids di cui lo user e' referente
 		 */
@@ -95,7 +97,9 @@ class SuppliersOrganizationsReferentsController extends AppController {
 			if (!empty($FilterSuppliersOrganizationsReferentUserId)) 
 				$conditions += array('SuppliersOrganizationsReferent.user_id' => $FilterSuppliersOrganizationsReferentUserId);
 			
-			if (!empty($FilterSuppliersOrganizationsReferentUserName)) 				$conditions[] = array('User.name LIKE '=>'%'.$FilterSuppliersOrganizationsReferentUserName.'%');		}	
+			if (!empty($FilterSuppliersOrganizationsReferentUserName)) 
+				$conditions[] = array('User.name LIKE '=>'%'.$FilterSuppliersOrganizationsReferentUserName.'%');
+		}	
 
 		$this->SuppliersOrganizationsReferent->recursive = 0;
 		$this->paginate = array('conditions' => $conditions,'order'=>'SuppliersOrganization.name');
@@ -164,10 +168,39 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		/* filtro */
 		$this->set('FilterSuppliersOrganizationsReferentId', $FilterSuppliersOrganizationsReferentId);
 		$this->set('FilterSuppliersOrganizationsReferentUserId', $FilterSuppliersOrganizationsReferentUserId);
-		$this->set('FilterSuppliersOrganizationsReferentUserName', $FilterSuppliersOrganizationsReferentUserName);		
+		$this->set('FilterSuppliersOrganizationsReferentUserName', $FilterSuppliersOrganizationsReferentUserName);
+		
 		$this->set('resultsFound', $resultsFound);
 		$this->set('SqlLimit', $SqlLimit);
 		$this->set('group_id', $group_id);
+	}
+
+	/*
+	 * elenco di tutti gli users NON referenti di alcun produttore e non sono SuperReferent
+	*/
+	public function admin_not_index() {
+		$sql = "SELECT User.* from ".Configure::read('DB.portalPrefix')."users as User 
+				WHERE User.organization_id = ".$this->user->organization['Organization']['id']." and	 
+						User.block = 0 and 
+						User.username NOT LIKE '%.portalgas.it' and
+						User.id NOT IN (
+					SELECT user_id FROM ".Configure::read('DB.prefix')."suppliers_organizations_referents 
+					WHERE organization_id = ".$this->user->organization['Organization']['id'].")
+					AND User.id NOT IN (SELECT user_id FROM ".Configure::read('DB.portalPrefix')."user_usergroup_map where group_id = ".Configure::read('group_id_super_referent').")
+					ORDER BY User.registerDate desc "; // .Configure::read('orderUser');
+		// debug($sql);
+		App::import('Model', 'User');
+		$User = new User;
+		try {
+			$results = $User->query($sql);
+		}
+		catch (Exception $e) {
+			CakeLog::write('error',$sql);
+		    CakeLog::write('error',$e);
+		}
+		// debug($results);
+		$this->set('isManager', $this->isManager());
+		$this->set('results', $results);
 	}
 
 	/*
@@ -333,7 +366,9 @@ class SuppliersOrganizationsReferentsController extends AppController {
 		$this->layout = 'ajax';
 	}
 	
-	/*	 * key = $_organization_id, $user_id, $supplier_organization_id	*/
+	/*
+	 * key = $_organization_id, $user_id, $supplier_organization_id
+	*/
 	public function admin_delete($user_id=0, $supplier_organization_id=0, $group_id=0, $type) {
 		
 		$debug = false;
@@ -344,12 +379,14 @@ class SuppliersOrganizationsReferentsController extends AppController {
 			$this->myRedirect(Configure::read('routes_msg_exclamation'));
 		}
 
-		$msg .= __('Delete Supplier organization referent');		
+		$msg .= __('Delete Supplier organization referent');
+		
 		/*
 		 *  ctrl se e' gia' referent,
 		*  se NO lo e' associo lo joomla.users al gruppo referenti in joomla.user_usergroup_map
 		*/
-		$options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],									   'SuppliersOrganizationsReferent.user_id' => $user_id,
+		$options['conditions'] = array('SuppliersOrganizationsReferent.organization_id' => $this->user->organization['Organization']['id'],
+									   'SuppliersOrganizationsReferent.user_id' => $user_id,
 									   'SuppliersOrganizationsReferent.group_id' => $group_id);
 		$totRows = $this->SuppliersOrganizationsReferent->find('count', $options);
 		if($debug) {
