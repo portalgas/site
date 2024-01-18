@@ -1,7 +1,11 @@
-<?php
-$msg = "Elenco dei gasisti che non hanno alcuna referenza con un produttore ordinati per data di registrazione discendente";
-echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => $msg));	
+<div class="users">
 
+	<h2 class="ico-suppliersOrganizationsReferents">
+        Elenco dei gasisti che non hanno alcuna referenza con un produttore ordinati per data di registrazione
+		<div class="actions-img">
+		</div>
+	</h2>
+    <?php
 if(!empty($results)) {
 	?>
 	<div class="table-responsive"><table class="table table-hover">
@@ -57,8 +61,8 @@ if(!empty($results)) {
 <?php 
 endforeach;
 echo '</table></div>';
-	}
-	else
-		echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
+}
+else
+    echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));	
 ?>	
 </div>

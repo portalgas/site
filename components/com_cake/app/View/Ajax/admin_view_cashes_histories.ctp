@@ -38,8 +38,10 @@ foreach ($results as $numResult => $result):
 		echo $result['CashesHistory']['nota'];
 		echo '</td>';	
 		echo '<td>';
-		if(!empty($result['CashesHistory']['id']))
-			echo $this->Html->link(null, ['controller' => 'Cashs', 'action' => 'history_edit', $result['CashesHistory']['id']], ['class' => 'action actionEdit','title' => __('Edit Cash')]);
+		if(!$isGasGroupsCassiere)	{
+			if(!empty($result['CashesHistory']['id']))
+				echo $this->Html->link(null, ['controller' => 'Cashs', 'action' => 'history_edit', $result['CashesHistory']['id']], ['class' => 'action actionEdit','title' => __('Edit Cash')]);
+		}
 		echo '</td>';			
 		echo '<td style="white-space: nowrap;">';
 		if((count($results)-1) > $numResult)

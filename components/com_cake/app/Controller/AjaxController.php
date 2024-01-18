@@ -1109,6 +1109,8 @@ class AjaxController extends AppController {
 		$results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
         $this->set(compact('results'));
 		 
+        $this->set('isGasGroupsCassiere', $this->isGasGroupsCassiere());
+
         $this->layout = 'ajax';
         $this->render('/Ajax/admin_view_cashes_histories');
     }
