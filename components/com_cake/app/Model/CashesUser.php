@@ -38,13 +38,35 @@ class CashesUser extends AppModel {
 		} // end if(!empty($supplierOrganizationCashExcludedResults))
 		if($debug) debug($sql_supplier_organization_cash_excluded);
 
+		/*
+		 * non + perche' LEFT JOIN k_summary_orders non considera quelli SummaryOrder.saldato_a = 'CASSIERE'
+		 * dopo ciclo gli ordini e li escludo
 		$sql = "SELECT
 					`Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato
 				FROM
 					".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
 					".Configure::read('DB.prefix')."carts as Cart
 					 LEFT JOIN ".Configure::read('DB.prefix')."summary_orders as SummaryOrder ON 
-					(SummaryOrder.organization_id = ".(int)$user->organization['Organization']['id']." and SummaryOrder.user_id = Cart.user_id and SummaryOrder.order_id = Cart.order_id and SummaryOrder.saldato_a is null)
+					(SummaryOrder.organization_id = ".(int)$user->organization['Organization']['id']." and 
+					SummaryOrder.user_id = Cart.user_id and SummaryOrder.order_id = Cart.order_id and SummaryOrder.saldato_a is null)
+				WHERE
+					ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.user_id = $user_id
+				    and Cart.order_id = `Order`.id  
+				    and Cart.article_organization_id = ArticlesOrder.article_organization_id
+				    and Cart.article_id = ArticlesOrder.article_id  
+				    and ArticlesOrder.order_id = `Order`.id  
+				    and Cart.deleteToReferent = 'N' 
+				    and `Order`.isVisibleBackOffice = 'Y'
+					and `Order`.state_code not in ($stateCodeUsersCash)";
+		 */
+		$sql = "SELECT
+					`Order`.id, ArticlesOrder.prezzo, Cart.qta_forzato, Cart.qta, Cart.importo_forzato, Cart.user_id
+				FROM
+					".Configure::read('DB.prefix')."articles_orders as ArticlesOrder, ".Configure::read('DB.prefix')."orders as `Order`,
+					".Configure::read('DB.prefix')."carts as Cart
 				WHERE
 					ArticlesOrder.organization_id = ".(int)$user->organization['Organization']['id']."
 				    and `Order`.organization_id = ".(int)$user->organization['Organization']['id']."
@@ -65,8 +87,26 @@ class CashesUser extends AppModel {
 		/*
 		 * memorizzo tutti gli order_id per calcolare eventuali costi di trasporto / costi aggiuntivi / sconti
 		 */
+		App::import('Model', 'SummaryOrder');
 		$order_ids = [];
 		foreach($results as $numResult => $result) {
+
+			/*
+			* controllo se esiste in SummaryOrder (passato al Cassiere) e se saldato lo escludo
+			*/
+			$SummaryOrder = new SummaryOrder;
+			$options = [];
+			$options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+									'SummaryOrder.user_id' => $result['Cart']['user_id'],
+									'SummaryOrder.order_id' => $result['Order']['id']];
+			$options['recursive'] = -1;
+			$summaryOrderResult = $SummaryOrder->find('first', $options);
+			if(!empty($summaryOrderResult)) {
+				// e' passato al cassiere => salto
+				if(!empty($summaryOrderResult['SummaryOrder']['saldato_a'])) { // ENUM('CASSIERE', 'TESORIERE')
+					continue;
+				}
+			}
 
 			$order_ids[$result['Order']['id']] = $result['Order']['id'];
 
@@ -99,29 +139,27 @@ class CashesUser extends AppModel {
 				
 		// debug($order_ids);
 		if(!empty($order_ids)) {
+			App::import('Model', 'SummaryOrderTrasport');
+			App::import('Model', 'SummaryOrderCostLess');
+			App::import('Model', 'SummaryOrderCostMore');
+
 			foreach($order_ids as $order_id) {
 				
 				$importo_trasport = 0;
 				$importo_cost_less = 0;
 				$importo_cost_more = 0;
 
-				App::import('Model', 'SummaryOrderTrasport');
 				$SummaryOrderTrasport = new SummaryOrderTrasport;
-
 				$summaryOrderTrasportResults = $SummaryOrderTrasport->select_to_order($user, $order_id, $user_id, $debug);
 				if(!empty($summaryOrderTrasportResults)) 
 					$importo_trasport = $summaryOrderTrasportResults['SummaryOrderTrasport']['importo_trasport'];
 
-				App::import('Model', 'SummaryOrderCostLess');
 				$SummaryOrderCostLess = new SummaryOrderCostLess;
-
 				$summaryOrderCostLessResults = $SummaryOrderCostLess->select_to_order($user, $order_id, $user_id, $debug);
 				if(!empty($summaryOrderCostLessResults))
 					$importo_cost_less = $summaryOrderCostLessResults['SummaryOrderCostLess']['importo_cost_less'];
 
-				App::import('Model', 'SummaryOrderCostMore');
 				$SummaryOrderCostMore = new SummaryOrderCostMore;
-
 				$summaryOrderCostMoreResults = $SummaryOrderCostMore->select_to_order($user, $order_id, $user_id, $debug);
 				if(!empty($summaryOrderCostMoreResults))
 					$importo_cost_more = $summaryOrderCostMoreResults['SummaryOrderCostMore']['importo_cost_more'];
@@ -145,6 +183,12 @@ class CashesUser extends AppModel {
 
 		if($debug) debug('CashesUser::getTotImportoAcquistatoDeatils');
 
+		App::import('Model', 'OrderLifeCycle');
+		$OrderLifeCycle = new OrderLifeCycle;
+		
+		$stateCodeUsersCash = $OrderLifeCycle->getStateCodeUsersCash($user);
+		$stateCodeUsersCash = "'".implode("','", $stateCodeUsersCash)."'";
+				
 		/*
 		 * escludo gli acquisti effettuati da produttori in supplier_organization_cash_excludeds
 	     */		
@@ -161,6 +205,9 @@ class CashesUser extends AppModel {
 		} // end if(!empty($supplierOrganizationCashExcludedResults))
 		if($debug) debug($sql_supplier_organization_cash_excluded);
 
+		/*
+		 * non + perche' LEFT JOIN k_summary_orders non considera quelli SummaryOrder.saldato_a = 'CASSIERE'
+		 * dopo ciclo gli ordini e li escludo		
 		$sql = "SELECT
 					`Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.state_code, 
 					Delivery.luogo, Delivery.data, SuppliersOrganization.name
@@ -186,9 +233,55 @@ class CashesUser extends AppModel {
 			$sql .= $sql_supplier_organization_cash_excluded;				    
 		$sql .= " GROUP BY `Order`.id 
 				    ORDER BY Delivery.data asc, SuppliersOrganization.name";
+		*/
+		$sql = "SELECT
+					`Order`.id, `Order`.data_inizio, `Order`.data_fine, `Order`.data_fine_validation, `Order`.state_code, 
+					Delivery.luogo, Delivery.data, SuppliersOrganization.name,
+					Cart.user_id
+				FROM
+					".Configure::read('DB.prefix')."deliveries as Delivery,
+					".Configure::read('DB.prefix')."suppliers_organizations as SuppliersOrganization,
+					".Configure::read('DB.prefix')."orders as `Order`,
+					".Configure::read('DB.prefix')."carts as Cart
+				WHERE
+					`Order`.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Delivery.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and SuppliersOrganization.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.organization_id = ".(int)$user->organization['Organization']['id']."
+				    and Cart.user_id = ".$user_id."
+				    and Cart.order_id = `Order`.id  
+				    and Cart.deleteToReferent = 'N' 
+				    and `Order`.isVisibleBackOffice = 'Y'  
+				    and Delivery.id = `Order`.delivery_id   
+				    and SuppliersOrganization.id = `Order`.supplier_organization_id 
+					and `Order`.state_code not in ($stateCodeUsersCash)"; 
+		if(!empty($sql_supplier_organization_cash_excluded))
+			$sql .= $sql_supplier_organization_cash_excluded;				    
+		$sql .= " GROUP BY `Order`.id 
+				    ORDER BY Delivery.data asc, SuppliersOrganization.name";		
 		if($debug) debug($sql); 
 		$results = $this->query($sql);
 			
+		/*
+		* controllo se esiste in SummaryOrder (passato al Cassiere) e se saldato lo escludo
+		*/
+		App::import('Model', 'SummaryOrder');
+		foreach($results as $numResult => $result) {
+			$SummaryOrder = new SummaryOrder;
+			$options = [];
+			$options['conditions'] = ['SummaryOrder.organization_id' => $user->organization['Organization']['id'],
+									'SummaryOrder.user_id' => $result['Cart']['user_id'],
+									'SummaryOrder.order_id' => $result['Order']['id']];
+			$options['recursive'] = -1;
+			$summaryOrderResult = $SummaryOrder->find('first', $options);
+			if(!empty($summaryOrderResult)) {
+				// e' passato al cassiere => salto
+				if(!empty($summaryOrderResult['SummaryOrder']['saldato_a'])) { // ENUM('CASSIERE', 'TESORIERE')
+					unset($results[$numResult]);
+				}
+			}
+		} // end foreach($results as $numResult => $result) 
+
 		if($debug) debug($results);
 
 		return $results;

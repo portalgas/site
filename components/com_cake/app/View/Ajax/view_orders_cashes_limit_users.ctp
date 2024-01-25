@@ -20,12 +20,13 @@ if (!empty($results)): ?>
 		<th><?php echo __('OpenClose');?></th>
 		<th><?php echo __('StatoElaborazione'); ?></th>
 		<?php 
-		if($user->organization['Organization']['hasVisibility']=='Y')			echo '<th>'.__('isVisibleFrontEnd').'</th>';	
+		if($user->organization['Organization']['hasVisibility']=='Y')
+			echo '<th>'.__('isVisibleFrontEnd').'</th>';	
 		?>
 	</tr>	
 	<?php
 		$i = 0;
-		foreach ($results as $i => $result):
+		foreach ($results as $result) {
 		?>
 		<tr>
 			<td><?php echo ($i+1);?></td>
@@ -55,7 +56,10 @@ if (!empty($results)): ?>
 					echo '<td title="'.__('toolTipsVisibleFrontEnd').'" class="stato_'.$this->App->traslateEnum($result['Order']['isVisibleFrontEnd']).'"></td>';
 			?>
 		</tr>
-	<?php endforeach; ?>
+	<?php 
+		$i++;
+	}
+	?>
 	</table></div>
 <?php else: 
 	echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => "Non ci sono ordini associati"));
