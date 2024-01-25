@@ -723,11 +723,7 @@ class UsersController extends AppController {
         $options['recursive'] = -1;
         $bookmarksMailResults = $BookmarksMail->find('all', $options);
 
-        /*
-          echo "<pre>";
-          print_r($bookmarksMailResults);
-          echo "</pre>";
-         */
+        // debug($bookmarksMailResults);
 
         App::import('Model', 'SuppliersOrganization');
         $SuppliersOrganization = new SuppliersOrganization;
@@ -736,7 +732,7 @@ class UsersController extends AppController {
         $options = [];
         $options['conditions'] = ['SuppliersOrganization.organization_id' => (int) $this->user->organization['Organization']['id'],
 								'SuppliersOrganization.stato' => 'Y',
-								'Supplier.stato' => 'Y']; // escludo i Temporanei perche' possono essere produttori di appoggio utilizzati dal gas
+								'Supplier.stato IN ' => ['Y', 'PG']]; // escludo i Temporanei perche' possono essere produttori di appoggio utilizzati dal gas
         $options['order'] = ['SuppliersOrganization.name'];
         $options['recursive'] = 0;
         $suppliersOrganizationResults = $SuppliersOrganization->find('all', $options);
