@@ -24,11 +24,11 @@ group by u.organization_id, u.email, u.name;</pre>
 	</div>
 
 <pre class="shell" rel="mail">
-pagamento PortAlGas 2023
+pagamento PortAlGas <?php echo date('Y');?>
 
 Ciao,  ( 😉 )
 
-Vorremmo procedere con la richiesta della vostra quota per il 2023.
+Vorremmo procedere con la richiesta della vostra quota per il <?php echo date('Y');?>.
 Vi chiediamo pertanto di verificare i Codici Fiscali; Indirizzi ed Email, Nominativi etc, se da modificare lo potete fare in autonomia in Portalgas da Home Gas\Il proprio Gas\Dati per il Pagamento ) 
 
 Ricordo le fasce per numero di utenti che sono: 
