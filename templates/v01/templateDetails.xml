@@ -89,6 +89,7 @@
 					<option value="31">gasamunì (id 31)</option>
 					<option value="23">gasati (id 23)</option>
 					<option value="148">gasattivospoleto (id 148)</option>
+					<option value="169">gascorima (id 169)</option> 
 					<option value="154">gasdelgarda (id 154)</option> 
 					<option value="127">gasiamovaldayas (id 127)</option>
 					<option value="7">gasavigliana (id 7)</option>
@@ -182,6 +183,7 @@
 					<option value="gasamuni">gasamunì</option>
 					<option value="gasati">gasati</option>
 					<option value="gasattivospoleto">gasattivospoleto</option>
+					<option value="gascorima">gascorima</option> 
 					<option value="gasavigliana">gasavigliana</option>
 					<option value="gasbrugherio">gasbrugherio</option>
 					<option value="gasbussero">gasbussero</option>
