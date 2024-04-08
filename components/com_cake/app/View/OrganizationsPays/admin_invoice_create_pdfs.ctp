@@ -4,6 +4,9 @@ echo '<div class="organizations form">';
 foreach($organizationPayResults as $organizationPayResult) {
 
     debug($organizationPayResult['Organization']['name'].' '.$organizationPayResult['Organization']['id']);
+
+    $url = '/administrator/index.php?option=com_cake&controller=OrganizationsPays&action=ajax_invoice_create_pdf&format=notmpl';
+    debug("chiamo l'url POST ".$url);
 ?>
     <script type="text/javascript">
         let url_<?php echo $organizationPayResult['Organization']['id'];?> = '/administrator/index.php?option=com_cake&controller=OrganizationsPays&action=ajax_invoice_create_pdf&format=notmpl';

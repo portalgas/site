@@ -232,6 +232,9 @@ class OrganizationsPaysController extends AppController {
 		}
 	}
 
+	/*
+	 * sostituito da neo.portalgas.it/admin/organizations-pays/generate
+	 */
     public function admin_invoice_create_pdfs()
     {
         App::import('Model', 'Organization');

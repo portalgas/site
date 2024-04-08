@@ -119,13 +119,19 @@ if(in_array(group_id_root,$user->getAuthorisedGroups())) {
 	$_menus_root[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/organizations-pays&a_to=index";
 	$_menus_root[$i]['target'] = "_blank";	
 	$i++;
+    $_menus_root[$i]['level'] = 3;
+    $_menus_root[$i]['label'] = "1 Genera i pagamenti ".date('Y')." <label class='label label-success'>new</label>";
+    $_menus_root[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/organizations-pays&a_to=generate";
+	$_menus_root[$i]['target'] = "_blank";
+	$i++;
+    $_menus_root[$i]['level'] = 3;
+    $_menus_root[$i]['label'] = "2 Genera tutte le fatture ".date('Y');
+    $_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=invoice_create_pdfs";
+
+	$i++;
 	$_menus_root[$i]['level'] = 3;
 	$_menus_root[$i]['label'] = "Genera fattura";
 	$_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=invoice_create_form";
-    $i++;
-    $_menus_root[$i]['level'] = 3;
-    $_menus_root[$i]['label'] = "Genera tutte le fatture";
-    $_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=invoice_create_pdfs";
 	$i++;
 	$_menus_root[$i]['level'] = 3;
 	$_menus_root[$i]['label'] = "Stampa documenti";
