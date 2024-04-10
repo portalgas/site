@@ -232,9 +232,6 @@ class OrganizationsPaysController extends AppController {
 		}
 	}
 
-	/*
-	 * sostituito da neo.portalgas.it/admin/organizations-pays/generate
-	 */
     public function admin_invoice_create_pdfs()
     {
         App::import('Model', 'Organization');
@@ -243,6 +240,7 @@ class OrganizationsPaysController extends AppController {
         $options = [];
         $options['conditions'] = ['OrganizationsPay.year' => date('Y'),
                                   'Organization.stato' => 'Y', 'Organization.type' => 'GAS'];
+		// $options['conditions'] += ['Organization.id' => 150];								  
         $options['order'] = ['Organization.name'];
         $options['recursive'] = 0;
         $organizationPayResults = $this->OrganizationsPay->find('all', $options);
@@ -297,8 +295,17 @@ class OrganizationsPaysController extends AppController {
                     $this->set('fileData', $fileData);
 
                     $importo_lordo = $organizationPayResult['OrganizationsPay']['importo'];
-                    $ritenuta = number_format(($importo_lordo / 100 * 20),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
-                    $importo_netto = number_format(($importo_lordo - $ritenuta),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                    $import_additional_cost = $organizationPayResult['OrganizationsPay']['import_additional_cost'];
+					$importo_totale = ($importo_lordo + $import_additional_cost);
+                    $ritenuta = number_format(($importo_totale / 100 * 20),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+                    $importo_netto = number_format(($importo_totale - $ritenuta),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					if($importo_totale>77.47)
+						$importo_netto_finale = ($importo_netto +2);
+					else
+						$importo_netto_finale = $importo_netto;
+					
+					$importo_netto_finale = number_format($importo_netto_finale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$importo_totale = number_format($importo_totale,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 
                     switch ($organizationPayResult['OrganizationsPay']['type_pay']) {
                         case 'RICEVUTA':
@@ -308,12 +315,16 @@ class OrganizationsPaysController extends AppController {
                         case 'RITENUTA':
                             $title = "RICEVUTA per PRESTAZIONE di LAVORO AUTONOMO OCCASIONALE";
                             $text = "Tale importo ha natura di compenso per lavoro autonomo occasionale e deriva dal seguente conteggio:<br /><br />".
-                                str_repeat("&nbsp;", 67)."Compenso lordo".str_repeat("&nbsp;", 18)."Euro %s<br />".
-                                str_repeat("&nbsp;", 67)."Ritenuta d’acconto 20&#37;".str_repeat("&nbsp;", 6)."Euro %s<br />".
-                                str_repeat("&nbsp;", 67)."Netto da pagare".str_repeat("&nbsp;", 19)."Euro %s<br />";
+                                str_repeat("&nbsp;", 47)."Compenso lordo".str_repeat("&nbsp;", 18)."Euro %s<br />".
+                                str_repeat("&nbsp;", 47)."Ritenuta d’acconto 20&#37;".str_repeat("&nbsp;", 6)."Euro %s<br />".
+                                str_repeat("&nbsp;", 47)."Netto da pagare".str_repeat("&nbsp;", 19)."Euro %s ";
 
-                            $text = sprintf($text, $importo_lordo, $ritenuta, $importo_netto);
-                            break;
+                            $text = sprintf($text, $importo_totale, $ritenuta, $importo_netto_finale);
+
+							// bollo
+							if($importo_totale>77.47)
+								$text .= "($importo_netto + marca da bollo da 2,00)<br />";
+							break;
                     }
 
                     switch ($organizationPayResult['OrganizationsPay']['beneficiario_pay']) {
@@ -326,7 +337,15 @@ class OrganizationsPaysController extends AppController {
                                 "dichiara di ricevere il pagamento del compenso lordo di %s &euro; relativo alla seguente prestazione: assistenza software fornita per la gestione del portale PG ".date('Y').", per un totale di giorni lavorativi inferiore a 30.<br /><br />";
                             break;
                     }
-                    $intro = sprintf($intro, $importo_lordo);
+
+					$importo_totale_label = '';
+					// bollo
+					if($importo_totale>77.47)
+						$importo_totale_label = number_format(($importo_totale + 2.00),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'))." Euro ($importo_totale + marca da bollo da 2,00 Euro)";
+					else 
+						$importo_totale_label = $importo_totale;
+
+                    $intro = sprintf($intro, $importo_totale_label);
 
                     $nota = "La presente prestazione di lavoro autonomo occasionale è esclusa dal campo di applicazione IVA ai sensi degli art. 1 del D.P.R. 633/1972.<br /><br />Marca da bollo sull’originale € 2,00 se l’importo netto è superiore a Euro 77,47.";
                     $nota2 = "Dichiaro di aver percepito fino ad oggi meno di 5.000 &euro;";
