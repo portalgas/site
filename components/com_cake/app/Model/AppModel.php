@@ -398,7 +398,13 @@ class AppModel extends Model {
 				/*
 				 * Warning: Warning (2): openssl_decrypt(): IV passed is only 14 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0 
 				 */
+				CakeLog::write('debug', '-----------------------------', ['myDebug']);
+				CakeLog::write('debug', $value, ['myDebug']);
+				CakeLog::write('debug', base64_decode($value), ['myDebug']);
+				CakeLog::write('debug', $encrypted_data, ['myDebug']);
+				CakeLog::write('debug', $iv, ['myDebug']);
 			    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);	
+				CakeLog::write('debug', $results, ['myDebug']);
 
 				if($debug) {
 					debug($value);
