@@ -446,8 +446,9 @@ class Order extends AppModel {
 
             if(!$this->save($results)) {
                 CakeLog::write('error','Order::setTotImporto()');
-                CakeLog::write('error', $results);
-                CakeLog::write('error', $this->validationErrors);
+                CakeLog::write('error', json_encode($options));
+                CakeLog::write('error', json_encode($results));
+                CakeLog::write('error', json_encode($this->validationErrors));
             }
         }
     }
