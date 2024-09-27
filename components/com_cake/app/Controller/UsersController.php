@@ -115,8 +115,8 @@ class UsersController extends AppController {
                     Configure::read('group_id_referent') . ',' .
                     Configure::read('group_id_super_referent') . ',' .
                     Configure::read('group_id_tesoriere') . ',' .
-                    Configure::read('group_id_generic');
-
+                    Configure::read('group_id_generic') . ',' .
+                    Configure::read('group_id_cassiere');
 
         /* filtro */
         $this->set('FilterUserUsername', $FilterUserUsername);
