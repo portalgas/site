@@ -15,7 +15,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
 
 <div class="request_payment form">
-<?php echo $this->Form->create('RequestPayments');?>
+<?php echo $this->Form->create('RequestPayment');?>
 	<fieldset>
 		<legend><?php echo __('Add Request Payments'); ?></legend>
 	<?php
