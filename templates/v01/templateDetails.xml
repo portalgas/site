@@ -116,6 +116,7 @@
 					<option value="118">gasnavese (id 118)</option>
 					<option value="38">gasoltremercatosalento (id 38)</option>
 					<option value="89">gasosnago (id 89)</option>
+					<option value="175">gaspalazzolosulloglio (id 175)</option> 
 					<option value="73">gasquinzano (id 73)</option>
 					<option value="37">gassansalvario (id 37)</option>
 					<option value="65">gassassiena (id 65)</option>
@@ -211,6 +212,7 @@
 					<option value="gasnavese">gasnavese</option> 
 					<option value="gasoltremercatosalento">gasoltremercatosalento</option>
 					<option value="gasosnago">gasosnago</option>
+					<option value="gaspalazzolosulloglio">gaspalazzolosulloglio</option>
 					<option value="gasquinzano">gasquinzano</option>
 					<option value="gassansalvario">gassansalvario</option>
 					<option value="gassassiena">gassassiena</option> 
