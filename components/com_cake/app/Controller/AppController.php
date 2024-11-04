@@ -968,7 +968,7 @@ class AppController extends Controller {
     public function traslateWww($str) {
 
         if (strpos($str, 'http://') === false && strpos($str, 'https://') === false)
-            $str = 'http://' . $str;
+            $str = 'https://' . $str;
 
         return $str;
     }
