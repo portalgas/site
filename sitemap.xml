@@ -13740,5 +13740,15 @@
     <loc>https://www.portalgas.it/home-gas-gaspalazzolosulloglio/consegne-gas-gaspalazzolosulloglio</loc>
     <lastmod>2024-10-13</lastmod>
     <changefreq>yearly</changefreq>
-  </url> 
+  </url>
+    <url>
+        <loc>https://www.portalgas.it/home-gas-coffapanaru</loc>
+        <lastmod>2024-11-09</lastmod>
+        <changefreq>yearly</changefreq>
+    </url>
+    <url>
+        <loc>https://www.portalgas.it/home-gas-coffapanaru/consegne-gas-coffapanaru</loc>
+        <lastmod>2024-11-09</lastmod>
+        <changefreq>yearly</changefreq>
+    </url>
 </urlset>
