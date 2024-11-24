@@ -92,6 +92,14 @@ class Sql extends AppModel {
         $results[$i]['name'] = "SocialMarket - Produttori abilitati per i G.A.S. (sono gia' esclusi quelli associati al G.A.S.)";
         $results[$i]['sql'] = "SELECT s.localita as supplierLocalita, s.provincia as supplierProv, so.name as supplierName, o.name, o.localita as gasLocalita, o.provincia as gasProv FROM socialmarket_organizations, ".Configure::read('DB.prefix')."suppliers_organizations as so, ".Configure::read('DB.prefix')."suppliers as s, ".Configure::read('DB.prefix')."organizations as o where socialmarket_organizations.supplier_organization_id = so.id and socialmarket_organizations.organization_id = o.id and s.id = so.supplier_id;";
         $results[$i]['params'] = [];
+        $i++;
+        $results[$i]['name'] = "Consegne e gruppi di consenge senza ordini, di 100gg trigger gas_group_deliveries_AFTER_DELETE => k_deliveries";
+        $results[$i]['sql'] = "SELECT gas_group_deliveries.id, k_deliveries.data, k_deliveries.luogo, k_organizations.name, k_organizations.id FROM k_organizations, gas_group_deliveries, k_deliveries left join k_orders on (k_deliveries.organization_id = k_orders.organization_id and k_deliveries.id = k_orders.delivery_id) where k_organizations.type = 'GAS' and k_organizations.id = 156 and gas_group_deliveries.delivery_id = k_deliveries.id and gas_group_deliveries.organization_id = k_deliveries.organization_id and k_deliveries.sys = 'N' and DATE(k_deliveries.data) <= CURDATE() - INTERVAL %s DAY and k_orders.id is null order by k_deliveries.data desc;";
+        $results[$i]['params'] = ['days' => 'days'];
+        $i++;
+        $results[$i]['name'] = "Consegne senza ordini, di 100gg ";
+        $results[$i]['sql'] = "SELECT k_deliveries.id, k_deliveries.data, k_deliveries.luogo, k_organizations.name, k_organizations.id FROM k_organizations, k_deliveries left join k_orders on (k_deliveries.organization_id = k_orders.organization_id and k_deliveries.id = k_orders.delivery_id) where k_organizations.type = 'GAS' and k_organizations.id != 156 and k_organizations.id = k_deliveries.organization_id and k_deliveries.sys = 'N' and DATE(k_deliveries.data) <= CURDATE() - INTERVAL %s DAY and k_orders.id is null order by k_deliveries.data desc;";
+        $results[$i]['params'] = ['days' => 'days'];
 
 		return $results;
 	}

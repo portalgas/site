@@ -31,7 +31,7 @@ class CategoriesArticlesController extends AppController {
     public function admin_index() {
 
     	$conditions = ['organization_id' => $this->user->organization['Organization']['id']];
-        $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;', null, 'name', 'asc');
+        $results = $this->CategoriesArticle->generateTreeList($conditions, null, null, '&nbsp;&nbsp;&nbsp;');
         // asort($results);
 		
         $resultsTotArticle = [];
