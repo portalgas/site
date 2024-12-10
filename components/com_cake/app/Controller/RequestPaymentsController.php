@@ -266,7 +266,11 @@ class RequestPaymentsController extends AppController {
 		 *  - dispensa
 		 */
 		$results = $this->RequestPayment->getAllDetails($this->user, $id, $conditions, $debug);
-
+        if(empty($results)) {
+            // la richiesta e' stata eliminata
+            $this->Session->setFlash('Dati salvati, tutti gli importi salvati e richiesta di pagamento eliminata');
+            $this->myRedirect(['controller' => 'RequestPayments', 'action' => 'index']);
+        }
 		/*
 		 * dati cassa per l'utente
 		 */

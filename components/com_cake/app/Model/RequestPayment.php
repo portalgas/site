@@ -170,8 +170,12 @@ class RequestPayment extends AppModel {
 			$conditionsLocal = ['RequestPayment.organization_id' => $user->organization['Organization']['id'],
 							    'RequestPayment.id' => $request_payment_id];
 			$requestResults = $this->find('first', array('conditions' => $conditionsLocal, 'recursive' => -1));
-			$results = $requestResults;
-			/*
+            $results = $requestResults;
+
+            if(empty($requestResults))
+                return $results;
+
+            /*
 			 * REQUEST_PAYMENT_ORDER, ordini associati
 			 *
 			*/

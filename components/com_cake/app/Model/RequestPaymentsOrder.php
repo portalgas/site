@@ -117,8 +117,7 @@ class RequestPaymentsOrder extends AppModel {
 							      'Order.state_code' => 'WAIT-REQUEST-PAYMENT-CLOSE'];
 		$options['recursive'] = 0;
 		$requestPaymentsOrderCount = $this->find('count', $options);
-		
-		if($requestPaymentsOrderCount==$requestPaymentsOrderTot) {
+		if($requestPaymentsOrderTot>0 && ($requestPaymentsOrderCount==$requestPaymentsOrderTot)) {
 			self::d("RequestPaymentsOrder::setOrdersStateCodeByRequestPaymentId() - tutti gli ordini della rich  ".$request_payment_id." hanno state_code WAIT-REQUEST-PAYMENT-CLOSE => calcolo stato successivo", $debug);
 
 			foreach($requestPaymentsOrderResults as $requestPaymentsOrderResult) {
