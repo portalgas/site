@@ -1659,7 +1659,7 @@ class DeliveriesController extends AppController {
                     $options['recursive'] = 1;
                     $requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
                     if(!empty($requestPaymentsOrderResults)) {
-                        $msg_can_delete = "Non puoi eliminare la consegna: ordini associati a richieste di pagamento";
+                        $msg_can_delete = "Non puoi eliminare la consegna: sono presenti ordini associati a richieste di pagamento";
                         foreach($requestPaymentsOrderResults as $requestPaymentsOrderResult) {
                             $msg_can_delete .= ' num '. $requestPaymentsOrderResult['RequestPayment']['num'].',';
                         }
