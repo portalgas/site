@@ -1628,7 +1628,7 @@ class DeliveriesController extends AppController {
             $this->Session->delete('delivery_id');
 
             $this->myRedirect(['action' => 'index']);
-        }
+        } // end if ($this->request->is('post') || $this->request->is('put'))
 
         $options = [];
         $options['conditions'] = ['Delivery.organization_id' => $this->user->organization['Organization']['id'],
@@ -1639,6 +1639,37 @@ class DeliveriesController extends AppController {
         if (empty($results)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        /*
+         * controllo se gli ordini sono associati ad una richiesta di pagamento
+         */
+        switch ($this->user->organization['Template']['payToDelivery']) {
+            case 'ON':
+                break;
+            case 'POST':
+            case 'ON-POST':
+                App::import('Model', 'RequestPaymentsOrder');
+                $RequestPaymentsOrder = new RequestPaymentsOrder;
+
+                foreach($results['Order'] as $order) {
+                    $options = [];
+                    $options['conditions'] = ['RequestPaymentsOrder.organization_id' => $this->user->organization['Organization']['id'],
+                        'RequestPaymentsOrder.delivery_id' => $this->delivery_id];
+                    $options['recursive'] = 1;
+                    $requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
+                    if(!empty($requestPaymentsOrderResults)) {
+                        $msg_can_delete = "Non puoi eliminare la consegna: ordini associati a richieste di pagamento";
+                        foreach($requestPaymentsOrderResults as $requestPaymentsOrderResult) {
+                            $msg_can_delete .= ' num '. $requestPaymentsOrderResult['RequestPayment']['num'].',';
+                        }
+                        $msg_can_delete = substr($msg_can_delete, 0, strlen($msg_can_delete) - 1);
+                        $msg_can_delete .= " dovrai attendere che vengano chiuse";
+                        $this->Session->setFlash($msg_can_delete);
+                        $this->myRedirect(['action' => 'index']);
+                    }
+                }
+                break;
         }
 
         /*
@@ -1656,7 +1687,7 @@ class DeliveriesController extends AppController {
         $totStorerooms = $Storeroom->find('count', $options);
         $results['totStorerooms'] = $totStorerooms;
 
-        $this->set(compact('results'));
+        $this->set(compact('results', 'can_delete', 'msg_can_delete'));
     }
 
     public function admin_copy() {
