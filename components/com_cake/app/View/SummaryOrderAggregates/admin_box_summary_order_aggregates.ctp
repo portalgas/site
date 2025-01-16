@@ -32,7 +32,12 @@ if($results['Delivery']['totOrders'] > 0) {
 			$tmp .= '			<th>'.__('importo_originale').'</th>';
 			$tmp .= '			<th>'.__('importo_previous').'</th>';
 			$tmp .= '			<th colspan="2">'.__('importo_change').'</th>';
-			$tmp .= '			<th class="actions">'.__('Actions').'</th>';
+            /*
+             * non permetto + di eliminare un dato aggregato
+             * se no l'ordine passa al cassiere/tesoriere e il totale ordine e' calcolato dia dati aggregati
+             * ma il dettaglio sempre dal carrello
+             */
+			// $tmp .= '			<th class="actions">'.__('Actions').'</th>';
 			$tmp .= '	</tr>';		
 			
 			/*
@@ -104,11 +109,17 @@ if($results['Delivery']['totOrders'] > 0) {
 				
 				//$tmp .= '	<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($summaryOrderAggregate['SummaryOrderAggregate']['created']).'</td>';
 				//$tmp .= '	<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($summaryOrderAggregate['SummaryOrderAggregate']['modified']).'</td>';
-				$tmp .= '	<td class="actions-table-img">';
+
+                /*
+                 * non permetto + di eliminare un dato aggregato
+                 * se no l'ordine passa al cassiere/tesoriere e il totale ordine e' calcolato dia dati aggregati
+                 * ma il dettaglio sempre dal carrello
+                $tmp .= '	<td class="actions-table-img">';
 				if(!$saldato)
 					$tmp .= $this->Html->link(null, '',array('id' => 'delete-'.$rowId, 'class' => 'action actionDelete delete', 'title' => __('Delete')));			
 				$tmp .= '	</td>';
-				$tmp .= '</tr>';
+				 */
+                $tmp .= '</tr>';
 		
 				$tot_importo_originale += $summaryOrderAggregate['User']['totImporto'];
 				$tot_importo += $summaryOrderAggregate['SummaryOrderAggregate']['importo'];
