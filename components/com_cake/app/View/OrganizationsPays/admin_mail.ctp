@@ -35,7 +35,8 @@ Ricordo le fasce per numero di utenti che sono:
 da 1 a 25 utenti 25€; 
 da 26 a 50 utenti 50€ 
 da 51 a 75 utenti 75€ 
-dai 75 utenti in poi 100 €
+da 76 a 100 gasisti 100 €
+da 101 a 150 gasisti 125 €
 e così via
 
 a breve i Manager e i tesorieri, quando si loggano al sito lato amministrativo https://www.portalgas.it/my, vedranno un banner contenente il Link per scaricare la Ricevuta, l'indicazione a chi effettuare il pagamento IBAN oppure la possibilità di pagare tramite Satispay.

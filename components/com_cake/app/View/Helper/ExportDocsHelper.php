@@ -199,8 +199,7 @@ class ExportDocsHelper extends AppHelper {
 		if(!empty($suppliersOrganizationsReferents)) {
 			$tmp .= '<div class="h4Pdf">'.__('Suppliers Organizations Referents').': ';
 			foreach ($suppliersOrganizationsReferents as $i => $suppliersOrganizationReferent) {
-
-                $tmp .= ' '.$suppliersOrganizationReferent['User']['name'].' '.$suppliersOrganizationReferent['User']['email'].' '.$suppliersOrganizationReferent['Profile']['phone'];
+				$tmp .= ' '.$suppliersOrganizationReferent['User']['name'].' '.$suppliersOrganizationReferent['User']['email'].' '.$suppliersOrganizationReferent['Profile']['phone'];
 
 			if(isset($suppliersOrganizationReferent['UserProfile2']['satispay']) && $suppliersOrganizationReferent['UserProfile2']['satispay']=='"Y"')	
 					$tmp .= ' <img src="/images/satispay-ico.png" title="Ha Satispay" style="margin-top:2px" />';
