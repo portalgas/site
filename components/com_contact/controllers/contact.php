@@ -73,6 +73,27 @@ class ContactControllerContact extends JControllerForm
 
 		$contact = $model->getItem($id);
 
+        /*
+         * spam
+         * se il messaggio contiene https://t.me/ non lo invio
+         */
+        if(strpos($data['contact_message'], 'https://t.me/')!==false) {
+            $msg = JText::_('COM_CONTACT_EMAIL_THANKS');
+
+            // Flush the data from the session
+            $app->setUserState('com_contact.contact.data', null);
+            // Redirect if it is set in the parameters, otherwise redirect back to where we came from
+            if ($contact->params->get('redirect'))
+            {
+                $this->setRedirect($contact->params->get('redirect'), $msg);
+            }
+            else
+            {
+                $this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id=' . $stub.'&contactOrganizationId='.$contactOrganizationId, false), $msg);
+            }
+            return true;
+        }
+
 
 		$params->merge($contact->params);
 
