@@ -39,8 +39,8 @@ class OrganizationsPaysController extends AppController {
 			$organization_id = $result['Organization']['id'];			
 			
 			$tot_users = $this->OrganizationsPay->totUsers($organization_id);
-			if($organization_id==37)
-				$tot_users = 24;
+			if($organization_id==37) // anche su /admin/organizations-pays
+				$tot_users = 21;
 			
 			/*
 			 * tolgo info@nomegas.portalgas.it

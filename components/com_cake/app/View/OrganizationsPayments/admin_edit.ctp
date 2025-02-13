@@ -43,7 +43,8 @@ echo $this->Form->input('payCf', array('id' => 'payCf', 'label' => __('payCf')))
 echo $this->Form->input('payPiva', array('id' => 'payPiva', 'label' => __('payPiva')));
 echo $this->Form->input('payType', array('id' => 'payType', 'label' => __('payType'), 'options' => ['RICEVUTA', 'RITENUTA']));
 
-echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => "Se avete bisogno di una ritenuta di pagamento, l'anno successivo dovrete versare tramite F24 la ritenuta del 20%"));
+$msg = "Se avete bisogno della ritenuta di pagamento dovrete versare tramite F24 la ritenuta del 20% (le ritenute vanno versate dai datori di lavoro (sostituti d'imposta) <b>entro il 16 del mese successivo a quello del pagamento</b>), l'anno successivo dovrete inviarci La Certificazione unica (c.d. “modello Cu“) <b>è il documento con il quale i sostituti d'imposta (committenti) sono chiamati a certificare le ritenute di acconto</b>.";
+echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => $msg));
 echo '</div>'; 
 
 echo '<div class="tab-pane fade" id="tabs-gas-config">';

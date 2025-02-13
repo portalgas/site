@@ -46,7 +46,8 @@ e così via
 
 a breve i Manager e i tesorieri, quando si loggano al sito lato amministrativo https://www.portalgas.it/my, vedranno un banner contenente il Link per scaricare la Ricevuta, l'indicazione a chi effettuare il pagamento IBAN oppure la possibilità di pagare tramite Satispay.
 
-Nota: al pagamento seguirà una ricevuta di pagamento. Se avete bisogno di una ritenuta di pagamento indicatelo rispondendo a questa mail (l'anno successivo dovrete versare tramite F24 la ritenuta del 20%)
+Nota: al pagamento seguirà una ricevuta di pagamento.
+Se avete bisogno della ritenuta di pagamento dovrete versare tramite F24 la ritenuta del 20% (le ritenute vanno versate dai datori di lavoro (sostituti d'imposta) <b>entro il 16 del mese successivo a quello del pagamento</b>), l'anno successivo dovrete inviarci La Certificazione unica (c.d. “modello Cu“) <b>è il documento con il quale i sostituti d'imposta (committenti) sono chiamati a certificare le ritenute di acconto</b>.
 
 Grazie 
 Ciao a tutti 
