@@ -3404,6 +3404,9 @@ msgstr "Codice Fiscale indicato nel documento di pagamento"
 msgid "payPiva"
 msgstr "Partiva iva indicato nel documento di pagamento"
 
+msgid "payType"
+msgstr "Tipologia di pagamento"
+
 msgid "HasFieldArticleCategoryId"
 msgstr "Ha il campo CATEGORIA per gli articoli"
 

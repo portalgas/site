@@ -32,14 +32,21 @@ Vorremmo procedere con la richiesta della vostra quota per il <?php echo date('Y
 Vi chiediamo pertanto di verificare i Codici Fiscali; Indirizzi ed Email, Nominativi etc, se da modificare lo potete fare in autonomia in Portalgas da Home Gas\Il proprio Gas\Dati per il Pagamento ) 
 
 Ricordo le fasce per numero di utenti che sono: 
-da 1 a 25 utenti 25€; 
-da 26 a 50 utenti 50€ 
-da 51 a 75 utenti 75€ 
+da 1 a 25 utenti 25 €
+da 26 a 50 utenti 50 €
+da 51 a 75 utenti 75 €
 da 76 a 100 gasisti 100 €
 da 101 a 150 gasisti 125 €
+da 151 a 175 gasisti 150 €
+da 176 a 200 gasisti 175 €
+da 201 a 225 gasisti 200 €
+da 226 a 250 gasisti 225 €
+da 251 a 275 gasisti 250 €
 e così via
 
 a breve i Manager e i tesorieri, quando si loggano al sito lato amministrativo https://www.portalgas.it/my, vedranno un banner contenente il Link per scaricare la Ricevuta, l'indicazione a chi effettuare il pagamento IBAN oppure la possibilità di pagare tramite Satispay.
+
+Nota: al pagamento seguirà una ricevuta di pagamento. Se avete bisogno di una ritenuta di pagamento indicatelo rispondendo a questa mail (l'anno successivo dovrete versare tramite F24 la ritenuta del 20%)
 
 Grazie 
 Ciao a tutti 

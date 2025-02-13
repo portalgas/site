@@ -71,16 +71,17 @@ echo '<div class="tab-pane fade" id="tabs-2">';
 
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-3">';
-		
-	echo $this->Form->input('payMail');
-	echo $this->Form->input('payContatto');
-	echo $this->Form->input('payIntestatario');
-	echo $this->Form->input('payIndirizzo');
-	echo $this->Form->input('payCap');
-	echo $this->Form->input('payCitta');
-	echo $this->Form->input('payProv');
-	echo $this->Form->input('payCf');
-	echo $this->Form->input('payPiva');
+
+echo $this->Form->input('payContatto', array('id' => 'payContatto', 'label' => __('payContatto')));
+echo $this->Form->input('payMail', array('id' => 'payMail', 'label' => __('payMail')));
+echo $this->Form->input('payIntestatario', array('id' => 'payIntestatario', 'label' => __('payIntestatario')));
+echo $this->Form->input('payIndirizzo', array('id' => 'payIndirizzo', 'label' => __('payIndirizzo')));
+echo $this->Form->input('payCap', array('id' => 'payCap', 'label' => __('payCap')));
+echo $this->Form->input('payCitta', array('id' => 'payCitta', 'label' => __('payCitta')));
+echo $this->Form->input('payProv', array('id' => 'payProv', 'label' => __('payProv')));
+echo $this->Form->input('payCf', array('id' => 'payCf', 'label' => __('payCf')));
+echo $this->Form->input('payPiva', array('id' => 'payPiva', 'label' => __('payPiva')));
+echo $this->Form->input('payType', array('id' => 'payType', 'label' => __('payType'), 'options' => ['RICEVUTA', 'RITENUTA']));
 
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-4">';

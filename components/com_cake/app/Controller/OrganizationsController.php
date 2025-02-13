@@ -437,6 +437,7 @@ class OrganizationsController extends AppController {
             $paramsPay += ['payProv' => $this->request->data['Organization']['payProv']];
             $paramsPay += ['payCf' => $this->request->data['Organization']['payCf']];
             $paramsPay += ['payPiva' => $this->request->data['Organization']['payPiva']];
+            $paramsPay += ['payType' => $this->request->data['Organization']['payType']];
             $this->request->data['Organization']['paramsPay'] = json_encode($paramsPay);
 
             self::d($this->request->data, $debug);
@@ -628,6 +629,7 @@ class OrganizationsController extends AppController {
             $paramsPay += ['payProv' => $this->request->data['Organization']['payProv']];
             $paramsPay += ['payCf' => $this->request->data['Organization']['payCf']];
             $paramsPay += ['payPiva' => $this->request->data['Organization']['payPiva']];
+            $paramsPay += ['payType' => $this->request->data['Organization']['payType']];
             $this->request->data['Organization']['paramsPay'] = json_encode($paramsPay);
 
             $this->Organization->create();
