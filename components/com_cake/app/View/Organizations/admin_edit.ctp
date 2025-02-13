@@ -81,7 +81,7 @@ echo $this->Form->input('payCitta', array('id' => 'payCitta', 'label' => __('pay
 echo $this->Form->input('payProv', array('id' => 'payProv', 'label' => __('payProv')));
 echo $this->Form->input('payCf', array('id' => 'payCf', 'label' => __('payCf')));
 echo $this->Form->input('payPiva', array('id' => 'payPiva', 'label' => __('payPiva')));
-echo $this->Form->input('payType', array('id' => 'payType', 'label' => __('payType'), 'options' => ['RICEVUTA', 'RITENUTA']));
+echo $this->Form->input('payType', array('id' => 'payType', 'label' => __('payType'), 'options' => ['RICEVUTA' => 'RICEVUTA', 'RITENUTA' => "RITENUTA D'ACCONTO"]));
 
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-4">';
