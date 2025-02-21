@@ -1982,6 +1982,9 @@ msgstr "Esporta/Gestisci documenti della consegna"
 msgid "Export RequestPayment"
 msgstr "Esporta la richiesta di pagamento"
 
+msgid "RequestPaymentMailSend"
+msgstr "Invia mail per sollecito"
+
 msgid "Pays Supplier"
 msgstr "Pagamenti per produttore"
 

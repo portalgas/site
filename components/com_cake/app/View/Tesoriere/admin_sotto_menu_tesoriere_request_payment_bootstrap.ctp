@@ -14,16 +14,21 @@ echo '</li>';
 
 if($requestPaymentResults['RequestPayment']['stato_elaborazione']=='WAIT') {
 	echo '<li>';
-	echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Orders').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_orders',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'escape' => false));
+	echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Orders').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_orders',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'title' => __('Add Request Payments Orders'),'escape' => false));
 	echo '</li>';
 	if($user->organization['Organization']['hasStoreroom']=='Y' && $user->organization['Organization']['hasStoreroomFrontEnd']=='Y' && $deliveriesValideToStoreroom=='Y') {
 		echo '<li>'; 
-		echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Storeroom').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_storeroom',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'escape' => false));
+		echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Storeroom').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_storeroom',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'title' => __('Add Request Payments Storeroom'), 'escape' => false));
 		echo '</li>';
 	}
 	echo '<li>';
-	echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Generic').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_generic',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'escape' => false));
+	echo $this->Html->link('<span class="desc animate"> '.__('Add Request Payments Generic').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionAdd"></span>', array('controller' => 'RequestPayments', 'action' => 'add_generic',$requestPaymentResults['RequestPayment']['id']),array('class' => 'animate', 'title' => __('Add Request Payments Generic'), 'escape' => false));
 	echo '</li>';
+}
+else {
+    echo '<li>';
+    echo $this->Html->link('<span class="desc animate"> '.__('RequestPaymentMailSend').' </span><span style="float: right;height: 32px;width: 32px;display: inline-block;" class="action actionMail"></span>', ['controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/request-payments&a_to=mails&request_payment_id='.$requestPaymentResults['RequestPayment']['id']], ['target' => '_blank', 'class' => 'animate', 'title' => __('RequestPaymentMailSend'), 'escape' => false]);
+    echo '</li>';
 }
 
 echo '<div class="clearfix"></div>';

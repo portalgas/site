@@ -14,6 +14,9 @@
 		<li><?php echo $this->Html->link(__('Add Request Payments Generic'), array('controller' => 'RequestPayments', 'action' => 'add_generic',$requestPaymentResults['RequestPayment']['id']),array('class' => $position_img.' actionAdd'));?></li>
 	<?php
 	}
+    else {
+        echo '<li>'.$this->Html->link(__('RequestPaymentMailSend'), ['controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/request-payments&a_to=mails&request_payment_id='.$requestPaymentResults['RequestPayment']['id']], ['target' => '_blank', 'class' => $position_img.' actionMail', 'title' => __('RequestPaymentMailSend')]).'</li>';
+    }
 	?>
 </ul>
 
