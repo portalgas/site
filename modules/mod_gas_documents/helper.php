@@ -20,7 +20,7 @@ class modGasDocumentsHelper
 		$path_base = '';
 		$url_base = '';
 		switch (JPATH_BASE) {
-			case '/var/www/portalgas':
+            case '/var/www/portalgas':
 				$path_base = '/var/www/neo.portalgas/webroot';
 				$url_base = 'https://neo.portalgas.it';
 				break;
@@ -32,6 +32,10 @@ class modGasDocumentsHelper
 				$path_base = '/var/www/neonext.portalgas/webroot';
 				$url_base = 'https://neonext.portalgas.it';
 				break;
+            case '/var/www/my/portalgas':
+                $path_base = '/var/www/my/neo.portalgas/webroot';
+                $url_base = 'http://neo.portalgas.it';
+                break;
 			default:
 				# code...
 				break;

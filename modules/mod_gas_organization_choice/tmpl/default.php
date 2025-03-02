@@ -36,6 +36,7 @@ jQuery('#org_id').change(function() {
 		echo 'if(org_id=='.$item->id.')';
 		echo "\r\n";
 		echo 'jQuery("#organizationChoiceForm").attr("action", "/home-'.$item->j_seo.'");';
+        // echo 'jQuery("#organizationChoiceForm").attr("action", "http://neo.portalgas.local/gas/'.$item->j_seo.'/home");';
 		echo "\r\n";
 		echo 'else';
 		echo "\r\n";
