@@ -76,8 +76,11 @@ class ContactControllerContact extends JControllerForm
         /*
          * spam
          * se il messaggio contiene https://t.me/ non lo invio
+         * se l'oggetto inizia per "PortAlGas: "
          */
-        if(strpos($data['contact_message'], 'https://t.me/')!==false) {
+        $subject = strtolower($data['contact_subject']);
+        if(strpos($data['contact_message'], 'https://t.me/')!==false ||
+            strpos($subject, 'portalgas: ')!==false) {
             $msg = JText::_('COM_CONTACT_EMAIL_THANKS');
 
             // Flush the data from the session
@@ -93,7 +96,6 @@ class ContactControllerContact extends JControllerForm
             }
             return true;
         }
-
 
 		$params->merge($contact->params);
 
