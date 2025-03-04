@@ -191,7 +191,7 @@ if (isset($this->error)) :
                         FROM
                             k_organizations Organization
                         WHERE
-                            Organization.stato = 'Y'
+                            Organization.stato = 'Y' and Organization.type = 'GAS'
                         ORDER BY Organization.name";
                     //echo '<br />'.$sql;
                     $db->setQuery($sql);
