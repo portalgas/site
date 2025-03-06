@@ -96,6 +96,10 @@ class ContactControllerContact extends JControllerForm
             }
             return true;
         }
+        /*
+         * al soggetto aggiungo "contatto "
+         */
+        $data['contact_subject'] = 'contatto: '.$data['contact_subject'];
 
 		$params->merge($contact->params);
 
