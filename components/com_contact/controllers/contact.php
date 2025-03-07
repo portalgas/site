@@ -80,7 +80,10 @@ class ContactControllerContact extends JControllerForm
          */
         $subject = strtolower($data['contact_subject']);
         if(strpos($data['contact_message'], 'https://t.me/')!==false ||
-            strpos($subject, 'portalgas: ')!==false) {
+            strpos($subject, 'hallo,')!==false ||
+            strpos($subject, 'hi,')!==false ||
+            strpos($subject, 'hello,')!==false ||
+            strpos($subject, 'aloha,')!==false) {
             $msg = JText::_('COM_CONTACT_EMAIL_THANKS');
 
             // Flush the data from the session
