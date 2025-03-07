@@ -98,11 +98,7 @@ class ContactControllerContact extends JControllerForm
                 $this->setRedirect(JRoute::_('index.php?option=com_contact&view=contact&id=' . $stub.'&contactOrganizationId='.$contactOrganizationId, false), $msg);
             }
             return true;
-        }
-        /*
-         * al soggetto aggiungo "contatto "
-         */
-        $data['contact_subject'] = 'contatto: '.$data['contact_subject'];
+        } // end spam
 
 		$params->merge($contact->params);
 
