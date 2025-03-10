@@ -28,8 +28,8 @@ if (!empty($results)) {
 		$html .= '		<tr>';
 		
 		$html .= '<th width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;" colspan"2">'.__('CashSaldo').'</th>';
-		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('CashOperazione').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:left;" colspan="2">'.__('CashSaldo').'</th>';
+		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:left;">'.__('CashOperazione').'</th>';
         $html .= '<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH30()).'" style="text-align:right;">'.__('nota').'</th>';
 		$html .= '<th width="'.$output->getCELLWIDTH100().'" style="text-align:right;">'.__('Created').'</th>';
 
@@ -49,16 +49,17 @@ if (!empty($results)) {
 					$html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';
 				}
 
-				$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:right;">'.$result['CashesHistory']['importo_e'].'</td>';
-				$html .= '<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
-				$html .= 'background-color:';
-				if($result['CashesHistory']['importo']=='0.00') $html .= '#fff';
-				else
-				if($result['CashesHistory']['importo']<0) $html .= 'red';
-				else
-				if($result['CashesHistory']['importo']>0) $html .= 'green';
-				$html .= '">';
-	            $html .= '</td>';
+                $html .= '<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
+                $html .= 'background-color:';
+                if($result['CashesHistory']['importo']=='0.00') $html .= '#fff';
+                else
+                    if($result['CashesHistory']['importo']<0) $html .= 'red';
+                    else
+                        if($result['CashesHistory']['importo']>0) $html .= 'green';
+                $html .= '">';
+                $html .= '</td>';
+				$html .= '<td width="'.$output->getCELLWIDTH90().'" style="text-align:left;">'.$result['CashesHistory']['importo_e'].'</td>';
+
 	            $html .= '<td width="'.$output->getCELLWIDTH100().'">';
 				if($result['CashesHistory']['operazione']>0)
 					$html .=  '+';		

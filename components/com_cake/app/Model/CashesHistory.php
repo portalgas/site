@@ -26,9 +26,10 @@ class CashesHistory extends AppModel {
         $cashesHistory['CashesHistory'] = $previuosCash['Cash'];
         $cashesHistory['CashesHistory']['id'] = null;
         $cashesHistory['CashesHistory']['cash_id'] = $cash_id;
-		// lascio la data della cassa (segnalazione stampa cassa con storico problema)
-        // $cashesHistory['CashesHistory']['created'] = null;
-        // $cashesHistory['CashesHistory']['modified'] = null;
+		// lascio  la data della cassa (segnalazione stampa cassa con storico problema)
+        // l'export della cassa pewr anno filtra per 'YEAR(CashesHistory.created) >= ' => $year
+        $cashesHistory['CashesHistory']['created'] = null;
+        $cashesHistory['CashesHistory']['modified'] = null;
 
 		if($debug) {
 		  echo "<pre>CashesHistory::previousCashSave() \n ";

@@ -3394,7 +3394,7 @@ class ExportDocsController extends AppController {
     public function admin_cashsHistoryData($year, $doc_formato) {
 
         $debug = false;
-        // $debug_user = '922'; 
+        // $debug_user = '6763';
 
         $user_id = $this->user->get('id');
         if ($user_id == 0) {
