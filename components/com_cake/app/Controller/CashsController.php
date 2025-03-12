@@ -160,9 +160,13 @@ class CashsController extends AppController {
 		if(!empty($msg_errors)) {
 			if($debug) debug($msg_errors);
 		}
-		else {			
+		else {
+            // workaround created e' errata
+            $data['Cash']['created'] = date('Y-m-d H:i:s');
+            $data['Cash']['modified'] = date('Y-m-d H:i:s');
+
 			$this->Cash->create();
-			$this->Cash->save($data);
+            $this->Cash->save($data);
 
 			$this->layout = 'ajax';
 			$this->render('/Layouts/ajax');
@@ -204,7 +208,11 @@ class CashsController extends AppController {
         $data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
         $data['Cash']['user_id'] = $user_id;
         $data['Cash']['nota'] = $value; // '".addslashes($nota)."' 
-        
+
+        // workaround created e' errata
+        $data['Cash']['created'] = date('Y-m-d H:i:s');
+        $data['Cash']['modified'] = date('Y-m-d H:i:s');
+
 		if($debug) debug($data);
 
         $this->Cash->create();
@@ -232,6 +240,10 @@ class CashsController extends AppController {
              */
             if (empty($this->request->data['Cash']['user_id']))
                 $this->request->data['Cash']['user_id'] = 0;
+
+            // workaround created e' errata
+            $this->request->data['Cash']['created'] = date('Y-m-d H:i:s');
+            $this->request->data['Cash']['modified'] = date('Y-m-d H:i:s');
 
             $this->Cash->create();
             if ($this->Cash->save($this->request->data)) {
@@ -317,7 +329,10 @@ class CashsController extends AppController {
              */
             if (empty($this->request->data['Cash']['user_id']))
                 $this->request->data['Cash']['user_id'] = 0;
+
+            $this->request->data['Cash']['modified'] = date('Y-m-d H:i:s');
             // debug($this->request->data);
+
             $this->Cash->create();
             if ($this->Cash->save($this->request->data)) {
                 $this->Session->setFlash(__('The cash has been saved'));
@@ -430,6 +445,9 @@ class CashsController extends AppController {
         if ($this->request->is('post') || $this->request->is('put')) {
 
             $this->request->data['Cash']['organization_id'] = $this->user->organization['Organization']['id'];
+            // workaround created e' errata
+            $this->request->data['Cash']['created'] = date('Y-m-d H:i:s');
+            $this->request->data['Cash']['modified'] = date('Y-m-d H:i:s');
 
 			/*
 			 * dati Cash precedenti in CashesHistory
@@ -438,8 +456,7 @@ class CashsController extends AppController {
 	        $CashesHistory = new CashesHistory;
 			
 			$CashesHistory->previousCashSave($this->user, $this->request->data['Cash']['id']);
-	        			 
-	        			             
+
             $this->Cash->create();
             if ($this->Cash->save($this->request->data)) {
                 $this->Session->setFlash(__('The cash has been saved'));
