@@ -1073,7 +1073,8 @@ class AjaxController extends AppController {
     public function admin_view_cashes_histories($cash_id = 0) {
 
 		$debug = false;
-		
+        // $debug_user = '6775';
+
         if (empty($cash_id)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
@@ -1085,6 +1086,8 @@ class AjaxController extends AppController {
         $options = [];
         $options['conditions'] = ['CashesHistory.organization_id' => (int) $this->user->organization['Organization']['id'],
 							      'CashesHistory.cash_id' => $cash_id];
+        if(isset($debug_user))
+            $options['conditions'] = ['CashesHistory.user_id' => $debug_user];
 		$options['order'] =	['CashesHistory.id asc']; // per created no perche' e' sempre = 
 		$options['recursive'] = 0;
         $results = $CashesHistory->find('all', $options);
@@ -1100,15 +1103,17 @@ class AjaxController extends AppController {
         $options = [];
         $options['conditions'] = ['Cash.organization_id' => (int) $this->user->organization['Organization']['id'],
 							      'Cash.id' => $cash_id];
+        if(isset($debug_user))
+            $options['conditions'] = ['Cash.user_id' => $debug_user];
 		$options['recursive'] =	-1; 
         $cashResults = $Cash->find('first', $options);
 		
 		if(!empty($cashResults))	
-			$results[(count($results))]['CashesHistory'] = $cashResults['Cash'];	
+			$results[(count($results))]['CashesHistory'] = $cashResults['Cash'];
 
 		$results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
         $this->set(compact('results'));
-		 
+
         $this->set('isGasGroupsCassiere', $this->isGasGroupsCassiere());
 
         $this->layout = 'ajax';

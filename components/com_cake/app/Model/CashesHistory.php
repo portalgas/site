@@ -93,7 +93,9 @@ class CashesHistory extends AppModel {
 			if($tot_histories>1)
 				$newResults[0]['CashesHistory']['id'] = $results[0]['CashesHistory']['id'];
 			$newResults[0]['CashesHistory']['nota'] = $results[0]['CashesHistory']['nota'];
-			$newResults[0]['CashesHistory']['modified'] = $results[0]['CashesHistory']['modified'];
+            $newResults[0]['CashesHistory']['modified'] = $results[0]['CashesHistory']['modified'];
+            $newResults[0]['CashesHistory']['created'] = $results[0]['CashesHistory']['created'];
+            $newResults[0]['CashesHistory']['year'] = substr($results[0]['CashesHistory']['created'],0, 4);
 				
 			$newResults[0]['CashesHistory']['operazione'] = $operazione;
 			$newResults[0]['CashesHistory']['operazione_'] = number_format($operazione,2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
@@ -113,7 +115,9 @@ class CashesHistory extends AppModel {
 						$newResults[((int)$numResult+1)]['CashesHistory']['id'] = 0;
 
 						$newResults[((int)$numResult+1)]['CashesHistory']['nota'] = $results[((int)$numResult+1)]['CashesHistory']['nota'];
-					$newResults[((int)$numResult+1)]['CashesHistory']['modified'] = $results[((int)$numResult+1)]['CashesHistory']['modified'];
+                    $newResults[((int)$numResult+1)]['CashesHistory']['modified'] = $results[((int)$numResult+1)]['CashesHistory']['modified'];
+                    $newResults[((int)$numResult+1)]['CashesHistory']['created'] = $results[((int)$numResult+1)]['CashesHistory']['created'];
+                    $newResults[((int)$numResult+1)]['CashesHistory']['year'] = substr($results[((int)$numResult+1)]['CashesHistory']['created'], 0, 4);
 				}
 				else {
 					$newResults[((int)$numResult+1)]['CashesHistory']['id'] = 0;

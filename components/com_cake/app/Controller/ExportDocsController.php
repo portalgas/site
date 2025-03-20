@@ -3394,7 +3394,7 @@ class ExportDocsController extends AppController {
     public function admin_cashsHistoryData($year, $doc_formato) {
 
         $debug = false;
-        // $debug_user = '6763';
+        // $debug_user = '6775';
 
         $user_id = $this->user->get('id');
         if ($user_id == 0) {
@@ -3436,8 +3436,12 @@ class ExportDocsController extends AppController {
             $options['conditions'] = [
                     'CashesHistory.organization_id' => $this->user->organization['Organization']['id'],
                     'CashesHistory.user_id' => $userResult['User']['id']];
+            /*
+             * non filtro + per anno ma li prendo tutti per sapere il saldo dell'ultimo movimento rispetto a year
+             * dopo li escludo
             if(!empty($year))
                 $options['conditions'] += ['YEAR(CashesHistory.created) >= ' => $year];
+            */
             $options['recursive'] = -1;
             $options['order'] = ['CashesHistory.id asc']; // per created no perche' e' sempre = 
             $cashesHistoryResults = $CashesHistory->find('all', $options);
@@ -3463,12 +3467,21 @@ class ExportDocsController extends AppController {
             if(!empty($results))
                 $results = $CashesHistory->getListCashHistoryByUser($this->user, $results);
 
+            /*
+             * ora filtro solo per year
+             */
+            $resultYears = [];
+            if(1==1)
+            foreach($results as $result) {
+                if($result['CashesHistory']['year']==$year)
+                    $resultYears[] = $result;
+            }
             $newResults[$numResult] = $userResult;
-            $newResults[$numResult]['Cash'] = $results;
+            $newResults[$numResult]['Cash'] = $resultYears;
             
         } // foreach users
 
-        //  debug($newResults);
+        // debug($newResults);
         $this->set('results', $newResults);
 
         $fileData['fileTitle'] = "Cassa con storico";
