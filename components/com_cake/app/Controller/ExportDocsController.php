@@ -3470,12 +3470,15 @@ class ExportDocsController extends AppController {
             /*
              * ora filtro solo per year
              */
-            $resultYears = [];
-            if(1==1)
-            foreach($results as $result) {
-                if($result['CashesHistory']['year']==$year)
-                    $resultYears[] = $result;
+            if(!empty($year)) {
+                $resultYears = [];
+                foreach($results as $result) {
+                    if($result['CashesHistory']['year']==$year)
+                        $resultYears[] = $result;
+                }
             }
+            else
+                $resultYears = $results;
             $newResults[$numResult] = $userResult;
             $newResults[$numResult]['Cash'] = $resultYears;
             
