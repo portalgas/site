@@ -3083,6 +3083,9 @@ msgstr "Ha la gestione del GDXP degli ordini"
 msgid "HasBookmarsArticles"
 msgstr "Ha la gestione degli articoli preferiti"
 
+msgid "HasCms"
+msgstr "Ha la gestione del CMS"
+
 msgid "HasDocuments"
 msgstr "Ha la gestione dei documenti"
 
@@ -4610,6 +4613,9 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire gli ordini GDXP"
 
 msgid "toolTipHasBookmarsArticles"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli preferiti"
+
+msgid "toolTipHasCms"
+msgstr "Se è valorizzato a 'Si' si potrà gestire le pagine a front-end"
 
 msgid "toolTipHasDocuments"
 msgstr "Se è valorizzato a 'Si' si potrà gestire i documenti a front-end"

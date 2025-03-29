@@ -169,8 +169,9 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->App->drawFormRadio('Organization','hasArticlesGdxp',array('options' => $hasArticlesGdxp, 'value'=> $this->Form->value('Organization.hasArticlesGdxp'), 'label'=>__('HasArticlesGdxp'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasOrdersGdxp',array('options' => $hasOrdersGdxp, 'value'=>$this->Form->value('Organization.hasOrdersGdxp'), 'label'=>__('HasOrdersGdxp'), 'required'=>'required'));
 	
-	echo '<h3>Documents</h3>';
-	echo $this->App->drawFormRadio('Organization','hasDocuments', ['options' => $hasDocuments, 'value'=> $this->Form->value('Organization.hasDocuments'), 'label'=>__('HasDocuments'), 'required'=>'required']);
+	echo '<h3>Cms</h3>';
+    echo $this->App->drawFormRadio('Organization','hasCms', ['options' => $hasCms, 'value'=> $this->Form->value('Organization.hasCms'), 'label'=>__('HasCms'), 'required'=>'required']);
+    echo $this->App->drawFormRadio('Organization','hasDocuments', ['options' => $hasDocuments, 'value'=> $this->Form->value('Organization.hasDocuments'), 'label'=>__('HasDocuments'), 'required'=>'required']);
 
 
 	echo '<h3>Organization</h3>';

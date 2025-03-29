@@ -1,6 +1,9 @@
 <?php
 // no direct access
 defined('_JEXEC') or die;
+
+$app = JFactory::getApplication('site');
+$neo_portalgas_url  = $app->getCfg('NeoPortalgasUrl');
 ?>
 <form role="select" class="navbar-form" accept-charset="utf-8" method="get" id="organizationChoiceForm" action="<?php echo $_SERVER['PHP_SELF'];?>">
 	<fieldset style="border: medium none;">
@@ -35,8 +38,8 @@ jQuery('#org_id').change(function() {
 	foreach ($list as $item) {
 		echo 'if(org_id=='.$item->id.')';
 		echo "\r\n";
-		echo 'jQuery("#organizationChoiceForm").attr("action", "/home-'.$item->j_seo.'");';
-        // echo 'jQuery("#organizationChoiceForm").attr("action", "http://neo.portalgas.local/gas/'.$item->j_seo.'/home");';
+		// echo 'jQuery("#organizationChoiceForm").attr("action", "/home-'.$item->j_seo.'");';
+        echo 'jQuery("#organizationChoiceForm").attr("action", "'.$neo_portalgas_url.'gas/'.$item->j_seo.'/home");';
 		echo "\r\n";
 		echo 'else';
 		echo "\r\n";

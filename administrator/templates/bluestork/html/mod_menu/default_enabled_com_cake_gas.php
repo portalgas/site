@@ -1057,12 +1057,19 @@ if(!empty($organization_id)) {
 		$_menus[$i]['level'] = 1;
 		$_menus[$i]['label'] = "Stampa documenti";
 		$_menus[$i]['url'] = "index.php?option=com_cake&controller=Pages&action=export_docs_user_intro";
-		if($hasDocuments=='Y' && in_array(group_id_manager, $user->getAuthorisedGroups())) {
+		if($hasCms=='Y' && in_array(group_id_manager, $user->getAuthorisedGroups())) {
+			/*
 			$i++;
 			$_menus[$i]['level'] = 1;
 			$_menus[$i]['label'] = "Gestione documenti front-end <label class='label label-success'>new</label>";
 			$_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/documents&a_to=organization-index";
 			$_menus[$i]['target'] = "_blank";
+			*/
+            $i++;
+            $_menus[$i]['level'] = 1;
+            $_menus[$i]['label'] = "Gestione pagine front-end <label class='label label-success'>new</label>";
+            $_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/cms-menus&a_to=index";
+            $_menus[$i]['target'] = "_blank";
 		}
 		if(in_array(group_id_manager, $user->getAuthorisedGroups()) || 
 		   in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 

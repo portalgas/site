@@ -112,8 +112,9 @@
 					echo '<div title="'.__('toolTipHasArticlesGdxp').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesGdxp']).'_int">'.__('HasArticlesGdxp').'</div> <br />';					
 					echo '<div title="'.__('toolTipHasOrdersGdxp').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasOrdersGdxp']).'_int">'.__('HasOrdersGdxp').'</div> <br />';
 					echo '<div title="'.__('toolTipHasBookmarsArticles').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasBookmarsArticles']).'_int">'.__('HasBookmarsArticles').'</div> <br />';
-					echo '<div title="'.__('toolTipHasDocuments').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasHasDocuments']).'_int">'.__('HasDocuments').'</div> <br />';
-					echo '<div title="'.__('toolTipHasArticlesOrder').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesOrder']).'_int">'.__('HasArticlesOrder').'</div> <br />';
+                    echo '<div title="'.__('toolTipHasCms').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasHasCms']).'_int">'.__('HasCms').'</div> <br />';
+                    echo '<div title="'.__('toolTipHasDocuments').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasHasDocuments']).'_int">'.__('HasDocuments').'</div> <br />';
+                    echo '<div title="'.__('toolTipHasArticlesOrder').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasArticlesOrder']).'_int">'.__('HasArticlesOrder').'</div> <br />';
 					echo '<div title="'.__('toolTipHasVisibility').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasVisibility']).'_int">'.__('HasVisibility').'</div> <br />';
 					echo '<div title="'.__('toolTipHasTrasport').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasTrasport']).'_int">'.__('HasTrasport').'</div> <br />';
 					echo '<div title="'.__('toolTipHasCostMore').'" class="stato_'.$this->App->traslateEnum($result['Organization']['hasCostMore']).'_int">'.__('HasCostMore').'</div> <br />';

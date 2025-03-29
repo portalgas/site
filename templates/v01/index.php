@@ -6,9 +6,9 @@ $app				= JFactory::getApplication();
 $doc				= JFactory::getDocument();
 $templateparams		= $app->getTemplate(true)->params;
 $organizationSEO    = $templateparams->get('organizationSEO');
+$organization_id    = $templateparams->get('organizationId');
 $sitename           = JFactory::getConfig()->get('sitename');
 $vue_is_active      = $app->getCfg('VueIsActive');
-
 /*
  * gestione ricerca motori di ricerca, escludo portalGasTest / PortAlGasNext
  */
@@ -46,13 +46,6 @@ if($noindex)
 	<link rel="stylesheet" type="text/css" href="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/ui-themes/smoothness/jquery-ui-1.10.3.custom.min.css">
 
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/js/my-modal-v02.js"></script>
-	
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 <style type="text/css">
 .lof-ass .lof-css3, .lof-ass .lof-css3 .preload {
@@ -170,7 +163,18 @@ _iub.csConfiguration = {"consentOnContinuedBrowsing":false,"whitelabel":false,"l
             <a href="#" class="navbar-brand visible-xs">PortAlGas</a>
         </div>
         <div id="navbarCollapse" class="collapse navbar-collapse">
-        
+
+                <?php
+                if(!empty($organization_id)) {
+                    $neo_portalgas_url = $app->getCfg('NeoPortalgasUrl');
+                    echo '<div class="nav navbar-nav navbar-left">';
+                    echo '<ul class="menu nav navbar-nav">';
+                    echo '<li><a class="item-000" href="'.$neo_portalgas_url.'gas/'.$organizationSEO.'/home">Home del G.A.S.</a></li>';
+                    echo '</ul>';
+                    echo '</div>';
+                    }
+                ?>
+
 				<jdoc:include type="modules" name="position-menu-left" />
 					
             	<div class="nav navbar-nav navbar-right">
