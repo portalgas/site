@@ -240,7 +240,31 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 </ul>	
 	</li></p>
 		</td>
-	</tr>	
+	</tr>
+    <tr>
+        <th>CMS</th>
+        <td class="border-bottom">Creare
+            <ul>
+                <li>cms_menus
+                    <ul>
+                        <li>organization_id <span class=organizationId></span></li>
+                        <li>tipologia PAGE</li>
+                        <li>name Home del G.A.S.</li>
+                        <li>slug home</li>
+                        <li>sort 0</li>
+                        <li>is_public true</li>
+                        <li>is_system true</li>
+                        <li>is_active true</li>
+                    </ul>
+                </li>
+                <li>cms_pages</li>
+                <li>mkdir /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span></li>
+                <li>chown -R www-data:www-data /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span></li>
+                <li>mkdir /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
+                <li>chown -R www-data:www-data /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
+            </ul>
+        </td>
+    </tr>
 	<tr>
 		<th>Logo</th>
 		<td class="border-bottom">dall'ID dell'articolo per la home
