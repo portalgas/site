@@ -172,7 +172,7 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo '<h3>Cms</h3>';
     echo $this->App->drawFormRadio('Organization','hasCms', ['options' => $hasCms, 'value'=> $this->Form->value('Organization.hasCms'), 'label'=>__('HasCms'), 'required'=>'required']);
     echo $this->App->drawFormRadio('Organization','hasDocuments', ['options' => $hasDocuments, 'value'=> $this->Form->value('Organization.hasDocuments'), 'label'=>__('HasDocuments'), 'required'=>'required']);
-
+    echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => "Se ha il CMS creare voce di menù e pagina della Home del G.A.S."));
 
 	echo '<h3>Organization</h3>';
 	echo $this->App->drawFormRadio('Organization','stato',array('options' => $stato, 'value'=>$this->Form->value('Organization.stato'), 'label'=>__('Stato'), 'required'=>'required',

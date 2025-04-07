@@ -109,10 +109,12 @@ if(in_array(group_id_root,$user->getAuthorisedGroups())) {
 	$_menus_root[$i]['level'] = 3;
 	$_menus_root[$i]['label'] = "Mail manager / tesorieri";
 	$_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=mail";
-	$i++;
+	/*
+    $i++;
 	$_menus_root[$i]['level'] = 3;
 	$_menus_root[$i]['label'] = "Prospetto";
 	$_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=index";
+    */
 	$i++;
 	$_menus_root[$i]['level'] = 3;
 	$_menus_root[$i]['label'] = "Gestisci pagamenti ".date('Y')." <label class='label label-success'>new</label>";

@@ -28,6 +28,7 @@ foreach($organizationPayResults as $organizationPayResult) {
 <?php
 }
 echo '</div>';
+/*
 ?>
 
 <div class="actions">
@@ -36,3 +37,4 @@ echo '</div>';
 		<li><?php echo $this->Html->link(__('Prospetto pagamenti'), array('action' => 'index'),array('class'=>'action actionReload'));?></li>
 	</ul>
 </div>
+*/
