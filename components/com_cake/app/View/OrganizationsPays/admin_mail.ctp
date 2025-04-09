@@ -10,6 +10,14 @@
 	
 	<div>
 
+<pre class="shell" rel="creare cartella per pdf">
+mkdir /var/www/portalgas/images/pays/<?php echo date('Y');?>
+</pre>
+
+<pre class="shell" rel="sql per attivare il messaggio">
+update k_organizations set hasMsg='Y' where `type` = 'GAS' AND `hasMsg` = 'Y' AND `stato` = 'Y';
+</pre>
+
 <pre class="shell" rel="sql per estrarre i manager (10) e tesorieri (11)">
 select o.name, u.organization_id, u.email, u.name  
 from j_users u,

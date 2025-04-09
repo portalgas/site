@@ -14,6 +14,12 @@
 						<h3>Presentazione slide</h3>
 						<p>Un breve volo sull gestionale web per Gruppi d'acquisto solidale e D.E.S.</p></a>
 				</li>
+                <li>
+                    <a href="http://www.portalgas.it/manuali/doc/la-nuova-gestione-della-Home-Page-pagine-per-i-Gas.pdf" target="_blank">
+                        <img src="http://www.portalgas.it/images/cake/minetypes/32x32/pdf.png" />
+                        <h3>Gestione pagine dle proprio G.A.S.</h3>
+                        <p>E' possibile creare pagine con immagini e documenti</p></a>
+                </li>
 				<li>
 					<a href="http://www.portalgas.it/manuali/doc/Presentazione-3-Tesoriere.pptx" target="_blank">
 						<img src="http://www.portalgas.it/images/cake/minetypes/32x32/schedule.png" />
@@ -26,12 +32,12 @@
 						<h3>D.E.S.</h3>
 						<p>Distretto economia sociale</p></a>
 				</li>
-				<li>
+				<!-- li>
 					<a href="http://www.portalgas.it/manuali/doc/Presentazione-Mobile.pptx" target="_blank">
 						<img src="http://www.portalgas.it/images/cake/minetypes/32x32/schedule.png" />
 						<h3>Versione mobile</h3>
 						<p>Per Ios, Android e versione mobile</p></a>
-				</li>
+				</li -->
 			</ul>
 			</div>
 			

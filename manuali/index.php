@@ -8,15 +8,6 @@
 
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-	
 	
 <style>
 body {
@@ -233,6 +224,14 @@ h3 {
         	<p>I video per facilitare l'apprendimento di PortAlGas</p>
       	</div>
 	</a>
+
+    <a href="http://www.portalgas.it/manuali/doc/la-nuova-gestione-della-Home-Page-pagine-per-i-Gas.pdf" target="_blank">
+        <div class="col-sm-1 col-md-4 box-intro">
+            <span aria-hidden="true" class="glyphicon glyphicon-file"></span>
+            <h3>C.M.S.</h3>
+            <p>Creare pagine con immagini e documenti per il proprio G.A.S.</p>
+        </div>
+    </a>
 
 	<a href="use-case.php">
      	 <div class="col-sm-1 col-md-4 box-intro">
