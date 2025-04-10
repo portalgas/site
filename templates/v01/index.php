@@ -169,7 +169,7 @@ _iub.csConfiguration = {"consentOnContinuedBrowsing":false,"whitelabel":false,"l
                     $neo_portalgas_url = $app->getCfg('NeoPortalgasUrl');
                     echo '<div class="nav navbar-nav navbar-left">';
                     echo '<ul class="menu nav navbar-nav">';
-                    echo '<li><a class="item-000" href="'.$neo_portalgas_url.'gas/'.$organizationSEO.'/home">Home del G.A.S.</a></li>';
+                    echo '<li><a class="item-000" href="'.$neo_portalgas_url.'gas/gas-'.$organizationSEO.'/home">Home del G.A.S.</a></li>';
                     echo '</ul>';
                     echo '</div>';
                     }
