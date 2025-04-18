@@ -15,7 +15,7 @@ mkdir /var/www/portalgas/images/pays/<?php echo date('Y');?>
 </pre>
 
 <pre class="shell" rel="sql per attivare il messaggio">
-update k_organizations set hasMsg='Y' where `type` = 'GAS' AND `hasMsg` = 'N' AND `stato` = 'Y';
+update k_organizations set hasMsg='Y' where `type` = 'GAS' AND `hasMsg` = 'N' and parent_id is null AND `stato` = 'Y';
 </pre>
 
 <pre class="shell" rel="sql per estrarre i manager (10) e tesorieri (11)">

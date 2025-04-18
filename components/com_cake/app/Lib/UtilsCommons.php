@@ -291,6 +291,7 @@ class UtilsCommons {
              * stampe dei referenti e tesoriere
              */
             case 'to-users':
+            case 'to-users-schema':
             case 'to-users-label':
             case 'to-users-articles-label':
             case 'to-users-all-modify':
@@ -342,6 +343,10 @@ class UtilsCommons {
                     case 'to-users':
                         $fileName .= '_diviso_per_utente_';
                         $fileTitle .= ' diviso per utente ';
+                        break;
+                    case 'to-users-schema':
+                        $fileName .= '_schematico_';
+                        $fileTitle .= ' schematico ';
                         break;
                     case 'to-users-label':
                     case 'to-users-articles-label':

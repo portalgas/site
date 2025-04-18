@@ -6,7 +6,9 @@
  * @license		GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-$scope = $_GET['scope'];
+$scope = '';
+if(isset($_GET['scope']))
+    $scope = $_GET['scope'];
 
 // No direct access.
 defined('_JEXEC') or die;

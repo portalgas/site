@@ -197,9 +197,9 @@ class ExportDocsController extends AppController {
         if ($doc_options == 'to-users-all-modify' && ($doc_formato == 'PREVIEW' || $doc_formato == 'PDF')) {
          
         }
-        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label') {
+        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-schema') {
            
-           if ($doc_options == 'to-users') {
+           if ($doc_options == 'to-users' || $doc_options == 'to-users-schema') {
                 if($i=='N')
                    $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
                 else
@@ -220,7 +220,7 @@ class ExportDocsController extends AppController {
         /*
          * ORDER BY
          */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify')
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema')
             $orderBy = ['User' => Configure::read('orderUser') . ', Article.name, Article.id'];
         else
         if ($doc_options == 'to-articles' || $doc_options == 'to-articles-monitoring')
@@ -241,7 +241,7 @@ class ExportDocsController extends AppController {
          *      - costi aggiuntivi  (SummaryOrderCostMore)
          *      - sconti  (SummaryOrderCostLess)
          */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify') {
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema') {
 
             /*
              * dati dell'ordine
@@ -383,6 +383,12 @@ class ExportDocsController extends AppController {
                 $this->set('dettaglio_per_utente', $g);
                 $this->set('note', $h);
                 break;
+            case 'to-users-schema':
+                $this->set('user_phone', $a);
+                $this->set('user_email', $b);
+                $this->set('user_address', $c);
+                $this->set('user_avatar', $f);
+                break;
             case 'to-users-label':
             case 'to-users-articles-label':
                 $this->set('user_phone', $a);
@@ -419,6 +425,9 @@ class ExportDocsController extends AppController {
                         $this->render('referent_to_users_no_details');
                 }
                 else
+                if($doc_options == 'to-users-schema')
+                    $this->render('referent_to_users_schema');
+                else
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label');
                 else
@@ -445,6 +454,9 @@ class ExportDocsController extends AppController {
                     else
                         $this->render('referent_to_users_no_details');
                 }
+                else
+                if($doc_options == 'to-users-schema')
+                    $this->render('referent_to_users_schema');
                 else
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label');
@@ -473,6 +485,9 @@ class ExportDocsController extends AppController {
                         $this->render('referent_to_users_no_details_csv');
                 }
                 else
+                if($doc_options == 'to-users-schema')
+                    $this->render('referent_to_users_schema_csv');
+                else
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label_csv');
                 else
@@ -496,6 +511,9 @@ class ExportDocsController extends AppController {
                     else
                         $this->render('referent_to_users_no_details_excel');
                 }
+                else
+                if($doc_options == 'to-users-schema')
+                    $this->render('referent_to_users_schema_excel');
                 else
                 if ($doc_options == 'to-users-label')
                     $this->render('referent_to_users_label_excel');

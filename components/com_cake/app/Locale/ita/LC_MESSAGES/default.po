@@ -3585,31 +3585,31 @@ msgstr "Azioni"
 # E X P O R T - D O C S
 #
 msgid "to_users_all_modify"
-msgstr "Documento con elenco diviso per <b>utente</b> con tutte le <b>modifiche</b><br />(per confrontare i dati dell'utente con le modifiche del referente)"
+msgstr "Documento con elenco diviso per <b>gasista</b> con tutte le <b>modifiche</b><br />(per confrontare i dati del gasista con le modifiche del referente)"
 
 msgid "to_users"
-msgstr "Documento con elenco diviso per <b>utente</b> (per pagamento dell'utente)"
+msgstr "Documento con elenco diviso per <b>gasista</b> (per pagamento del gasista)"
 
 msgid "to_users_label"
-msgstr "Documento con elenco diviso per utente in formato <b>etichetta</b> (per la consegna)"
+msgstr "Documento con elenco diviso per gasista in formato <b>etichetta</b> (per la consegna)"
 
 msgid "to_users_articles_label"
-msgstr "Documento con elenco diviso per utente e articolo in formato <b>etichetta</b> (per la consegna)"
+msgstr "Documento con elenco diviso per gasista e articolo in formato <b>etichetta</b> (per la consegna)"
 
 msgid "to_delivery_cassiere_users_compact_all"
-msgstr "Documento di tutti gli ordini della consegna diviso per utente <b>modalità compatta</b> (per pagamento dell'utente)"
+msgstr "Documento di tutti gli ordini della consegna diviso per gasista <b>modalità compatta</b> (per pagamento del gasista)"
 
 msgid "to_delivery_cassiere_users_all"
-msgstr "Documento di tutti gli ordini della consegna diviso <b>per utente</b> (per pagamento dell'utente)"
+msgstr "Documento di tutti gli ordini della consegna diviso <b>per gasista</b> (per pagamento del gasista)"
 
 msgid "to_delivery_cassiere_users_all_split"
-msgstr "Documenti di tutti gli ordini della consegna diviso per utente (per pagamento dell'utente): per <b>ogni utente</b> sarà creato un <b>documento</b>"
+msgstr "Documenti di tutti gli ordini della consegna diviso per gasista (per pagamento del gasista): per <b>ogni gasista</b> sarà creato un <b>documento</b>"
 
 msgid "to_cassiere_pos"
 msgstr "Documento con il prospetto di tutti le <b>commissioni</b> POS / Satispay"
 
 msgid "to_delivery_cassiere_user_one"
-msgstr "Documento di tutti gli ordini della consegna dell'utente (per pagamento dell'utente)"
+msgstr "Documento di tutti gli ordini della consegna del gasista (per pagamento del gasista)"
 
 msgid "to_lists_suppliers_cassiere"
 msgstr "Documento con il prospetto di tutti i <b>produttori</b> della consegna"
@@ -3618,7 +3618,7 @@ msgid "to_lists_orders_cassiere"
 msgstr "Documento con il prospetto di tutti gli <b>ordini</b> della consegna"
 
 msgid "to_list_users_delivery_cassiere"
-msgstr "Documento con il prospetto di tutti <b>utenti</b> della consegna"
+msgstr "Documento con il prospetto di tutti i <b>gasisti</b> della consegna"
 
 msgid "to_supplier"
 msgstr "Documento con elenco diviso per <b>produttore</b> (per fattura al produttore)"
@@ -3630,25 +3630,28 @@ msgid "to_articles"
 msgstr "Documento con articoli <b>aggregati</b> (per il produttore)"
 
 msgid "to_articles_details"
-msgstr "Documento con articoli <b>aggregati</b> con il <b>dettaglio</b> degli utenti"
+msgstr "Documento con articoli <b>aggregati</b> con il <b>dettaglio</b> dei gasisti"
 
 msgid "to_articles_weight"
 msgstr "Documento con articoli aggregati per <b>peso</b>"
 
+msgid "to_users_schema"
+msgstr "Documento di <b>sintesi</b> dei gasisti"
+
 msgid "to_users_short"
-msgstr "Doc. con elenco diviso per utente"
+msgstr "Doc. con elenco diviso per gasista"
 
 msgid "to_articles_short"
 msgstr "Doc. con articoli aggregati"
 
 msgid "to_articles_details_short"
-msgstr "Doc. con articoli aggregati per utenti"
+msgstr "Doc. con articoli aggregati per gasisti"
 
 msgid "to_articles_weight_short"
 msgstr "Doc. con articoli aggregati per peso"
 
 msgid "to_prod_users_group"
-msgstr "Doc. con gli acquisti ordinati per utente (per la consegna)"
+msgstr "Doc. con gli acquisti ordinati per gasista (per la consegna)"
 
 msgid "des_referent_to_supplier"
 msgstr "Doc. con gli articoli aggregati (per il produttore)"
@@ -3670,7 +3673,7 @@ msgstr "Doc. con gli articoli aggregati divisi per G.A.S. (con controlli)"
 # F I L T E R S
 #
 msgid "Filter Users"
-msgstr "Filtro utenti"
+msgstr "Filtro gasisti"
 
 msgid "Filter Suppliers Organizations Referents"
 msgstr "Filtro dei referenti"

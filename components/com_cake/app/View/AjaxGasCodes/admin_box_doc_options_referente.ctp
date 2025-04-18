@@ -1,6 +1,6 @@
 <?php 
 if(!empty($results))
-	echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => __('OrderToValidateError')));
+	echo $this->element('boxMsg', ['class_msg' => 'message', 'msg' => __('OrderToValidateError')]);
 ?>
 <div class="col-md-7">
 <label class="control-label">Opzioni</label>
@@ -32,9 +32,12 @@ if(!empty($results))
 	<div class="radio">
 		<label><input type="radio" name="doc_options" id="to-articles-details" value="to-articles-details" /><?php echo __('to_articles_details');?></label>
 	</div>
-	<div class="radio">
-		<label><input type="radio" name="doc_options" id="to-articles-weight" value="to-articles-weight" /><?php echo __('to_articles_weight');?></label>
-	</div>
+    <div class="radio">
+        <label><input type="radio" name="doc_options" id="to-articles-weight" value="to-articles-weight" /><?php echo __('to_articles_weight');?></label>
+    </div>
+    <div class="radio">
+        <label><input type="radio" name="doc_options" id="to-users-schema" value="to-users-schema" /><?php echo __('to_users_schema');?></label>
+    </div>
 </div>
 <div class="col-md-5">
 		<?php
@@ -300,6 +303,29 @@ if(!empty($results))
 			<label class="radio-inline"><input type="radio" name="codice1" id="codice1_Y" value="Y" />Si</label>
 		</div>		
 	</div>
+
+    <div id="setting-to-users-shema" class="box-options">
+        <div class="doc-options">
+            <label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
+            <label class="radio-inline"><input type="radio" name="user_phone1" id="user_phone1_N" value="N" />No</label>
+            <label class="radio-inline"><input type="radio" name="user_phone1" id="user_phone1_Y" value="Y" checked />Si</label>
+        </div>
+        <div class="doc-options">
+            <label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
+            <label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_N" value="N" />No</label>
+            <label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_Y" value="Y" checked />Si</label>
+        </div>
+        <div class="doc-options">
+            <label class="control-label">Visualizzo l'<b>indirizzo</b> degli utenti</label>
+            <label class="radio-inline"><input type="radio" name="user_address1" id="user_address1_N" value="N" checked />No</label>
+            <label class="radio-inline"><input type="radio" name="user_address1" id="user_address1_Y" value="Y" />Si</label>
+        </div>
+        <div class="doc-options">
+            <label class="control-label">Visualizzo la <b>foto</b> dell'utente</label>
+            <label class="radio-inline"><input type="radio" name="user_avatar1" id="user_avatar1_N" value="N" checked />No</label>
+            <label class="radio-inline"><input type="radio" name="user_avatar1" id="user_avatar1_Y" value="Y" />Si</label>
+        </div>
+    </div>
 </div>
 
 
@@ -323,16 +349,20 @@ $(document).ready(function() {
 		$('#setting-to-users-articles-label').hide();
 		$('#setting-to-articles-monitoring').hide();
 		$('#setting-to-articles').hide();
-		$('#setting-to-articles-details').hide();
-	
+        $('#setting-to-articles-details').hide();
+        $('#setting-to-users-shema').hide();
+
 		var doc_options = $("input[name='doc_options']:checked").val();
 
 		if(doc_options=='to-users-all-modify')
 			$('#setting-to-users-all-modify').show();
-		else		
-		if(doc_options=='to-users')
-			$('#setting-to-users').show();
 		else
+        if(doc_options=='to-users')
+            $('#setting-to-users').show();
+        else
+        if(doc_options=='to-users-schema')
+            $('#setting-to-users-shema').show();
+        else
 		if(doc_options=='to-users-label')
 			$('#setting-to-users-label').show();
 		else

@@ -1395,6 +1395,14 @@ class AjaxGasCodesController extends AppController {
         else
             $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
 
+        /*
+         * il render del csv
+         * $this->render('referent_to_users_label_csv');
+         * restitusce Error: [Error] Cannot use string offset as an array
+         */
+        if(isset($options['CSV']))
+            unset($options['CSV']);
+
         $this->set('options', $options);
 
         $this->layout = 'ajax';
@@ -1418,6 +1426,14 @@ class AjaxGasCodesController extends AppController {
         else
             $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
 
+        /*
+         * il render del csv
+         * $this->render('referent_to_users_label_csv');
+         * restitusce Error: [Error] Cannot use string offset as an array
+         */
+        if(isset($options['CSV']))
+            unset($options['CSV']);
+
         $this->set('options', $options);
 
         $this->set('des_order_id', $des_order_id);
@@ -1440,6 +1456,14 @@ class AjaxGasCodesController extends AppController {
             $options = array('PDF' => 'Pdf', 'EXCEL' => 'Excel');
         else
             $options = array('PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel');
+
+        /*
+         * il render del csv
+         * $this->render('referent_to_users_label_csv');
+         * restitusce Error: [Error] Cannot use string offset as an array
+         */
+        if(isset($options['CSV']))
+            unset($options['CSV']);
 
         $this->set('options', $options);
 
