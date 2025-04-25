@@ -594,13 +594,17 @@ alert('Gas Register del GAS');
             <td>
                 <b>Inserire il nuovo GAS con i produttori che consegnano in tutta Italia</b>
             </td>
+        </tr>
+        <tr>
             <td>
 <pre class="shell">
 SELECT supplier_organization_id, count(supplier_organization_id) FROM `socialmarket_organizations` group by supplier_organization_id order by count(supplier_organization_id) desc
 </pre>				
             </td>
+        </tr>
+        <tr>
             <td>
-				inserisci i produttori con un numoero alto
+				inserisci i produttori con un numero alto
 <pre class="shell">
 insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(..., <?php echo $max_id;?>);
 
