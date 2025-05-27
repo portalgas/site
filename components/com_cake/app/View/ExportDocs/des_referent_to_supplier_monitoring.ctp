@@ -76,18 +76,21 @@ foreach($results as $result) {
 		else
         	$html .= '<td width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH70()).'">'.$name.'</td>';
                 
-                if($isToValidate) {
-                    if($result['ArticlesOrder']['pezzi_confezione']>1) {
-                        /*
-                         * colli_completi / differenza_da_ordinare
-                         */
-                        $colli_completi = intval($result['Cart']['qta'] / $result['ArticlesOrder']['pezzi_confezione']);
-                        if($colli_completi>0)
-                                $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * ($colli_completi +1)) - $result['Cart']['qta']);
-                        else {
-                                $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['Cart']['qta']);
-                                $colli_completi = '-';
-                        }        	
+        if($isToValidate) {
+            $colli_completi = 0;
+            if($result['ArticlesOrder']['pezzi_confezione']>1) {
+                /*
+                 * colli_completi / differenza_da_ordinare
+                 */
+                $colli_completi = intval($result['Cart']['qta'] / $result['ArticlesOrder']['pezzi_confezione']);
+                if($colli_completi>0) {
+                    $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi) - $result['Cart']['qta']);
+                    if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                }
+                else {
+                        $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['Cart']['qta']);
+                        $colli_completi = '-';
+                }
         	}
                 
             $html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">';
