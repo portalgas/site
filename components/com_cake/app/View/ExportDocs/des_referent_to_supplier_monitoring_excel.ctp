@@ -54,8 +54,10 @@ foreach($results as $numResult => $result) {
                  * colli_completi / differenza_da_ordinare
                  */
                 $colli_completi = intval($result['Cart']['qta'] / $result['ArticlesOrder']['pezzi_confezione']);
-                if($colli_completi>0)
-                        $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * ($colli_completi +1)) - $result['Cart']['qta']);
+                if($colli_completi>0) {
+                    $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi) - $result['Cart']['qta']);
+                    if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                }
                 else {
                         $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['Cart']['qta']);
                         $colli_completi = '-';
