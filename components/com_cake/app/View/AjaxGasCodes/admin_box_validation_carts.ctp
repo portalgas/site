@@ -11,15 +11,17 @@ else {
 	echo '<th>'.__('N').'</th>';
 	echo '<th></th>';
 	echo '<th>'.__('Name').'</th>';
-	echo '<th>'.__('PrezzoUnita').'</th>';
-	echo '<th>'.__('pezzi_confezione_short').'</th>';
-	echo '<th>Colli<br />completati</th>';
-	echo '<th>Quantità<br />ordinata</th>';
+    echo '<th style="text-align:center;">'.__('PrezzoUnita').'</th>';
+    if($orderToQtaMinimaOrder)
+        echo '<th style="text-align:center;">'.__('qta_minima_order_short').'</th>';
+    echo '<th style="text-align:center;">'.__('pezzi_confezione_short').'</th>';
+	echo '<th style="text-align:center;">Colli<br />completati</th>';
+	echo '<th style="text-align:center;">Quantità<br />ordinata</th>';
 	echo '<th>';
 	echo '	<span style="float:left;">Differenza<br />da ordinare</span>';
 	echo '	<span style="float:right;">'.$this->Tabs->drawTooltip('Importo forzato',__('toolTipQtaDifferenza'),$type='WARNING',$pos='LEFT').'</span>';
 	echo '</th>';
-	echo '<th>Importo<br />da pagare</th>';
+	echo '<th style="text-align:center;">Importo<br />da pagare</th>';
 	if($isStoreroom) { 
 		echo '<th>';
 		echo '<input type="checkbox" checked id="article_order_id_selected_all" name="article_order_id_selected_all" value="ALL" class="form-control" />';
@@ -53,7 +55,9 @@ else {
 		echo '</td>';
 		echo '<td>'.$result['ArticlesOrder']['name'].'</td>';
 		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['prezzo_e'].'</td>';
-		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
+        if($orderToQtaMinimaOrder)
+            echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_minima_order'].'</td>';
+        echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
 		echo '<td style="text-align:center;">'.$colli_completi.'</td>';
 		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_cart'].'</td>';
 		echo '<td style="text-align:center;">';

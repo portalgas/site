@@ -1660,6 +1660,25 @@ class AjaxGasCodesController extends AppController {
         $this->set('order', $order);
 
         /*
+         * ctrl se l'ordine ha settato delle quantita' massime > 0
+        if ($Order->isOrderToQtaMassima($this->user, $this->order_id))
+            $orderToQtaMassima = true;
+        else
+            $orderToQtaMassima = false;
+        $this->set('orderToQtaMassima', $orderToQtaMassima);
+         */
+
+        /*
+         * ctrl se l'ordine ha settato delle quantita' minime sugli acquisti di tutto l'ordine > 0
+         */
+        if ($Order->isOrderToQtaMinimaOrder($this->user, $this->order_id))
+            $orderToQtaMinimaOrder = true;
+        else
+            $orderToQtaMinimaOrder = false;
+        $this->set('orderToQtaMinimaOrder', $orderToQtaMinimaOrder);
+
+
+        /*
          * estraggo gli acquisti da validate (ArticlesOrder.pezzi_confezione > 1)
          */
         App::import('Model', 'Cart');
@@ -1667,7 +1686,6 @@ class AjaxGasCodesController extends AppController {
         $results = $Cart->getCartToValidate($this->user, $this->delivery_id, $this->order_id);
         
         self::d($results, false);
-        
         $this->set('results', $results);
 
         $this->disableCache();
