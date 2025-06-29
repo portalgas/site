@@ -157,10 +157,19 @@ else
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'),
-																	array('class'=>'action actionReload','title' => __('List Articles')));?></li>
-		<li><?php echo $this->Html->link(__('Edit'), array('action' => 'context_articles_edit', $this->request->data['Article']['id'], 'article_organization_id' => $this->request->data['Article']['organization_id'],
+		<li>
+            <?php echo $this->Html->link(__('List Articles'), ['controller' => 'Connects', 'action' => 'index', 'c_to' => 'admin/articles&a_to=index-quick'],
+																	['class'=>'action actionReload','title' => __('List Articles')]);?>
+        </li>
+		<?php
+        /*
+         * echo '<li>';
+         * echo $this->Html->link(__('Edit'), array('action' => 'context_articles_edit', $this->request->data['Article']['id'], 'article_organization_id' => $this->request->data['Article']['organization_id'],
 																	'sort:'.$sort,'direction:'.$direction,'page:'.$page),
-																	array('class' => 'action actionEdit','title' => __('Edit'))); ?></li>
+																	array('class' => 'action actionEdit','title' => __('Edit')));
+        * echo '</li>';
+         *
+         */
+         ?>
 	</ul>
 </div>
