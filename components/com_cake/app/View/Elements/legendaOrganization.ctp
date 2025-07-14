@@ -263,6 +263,11 @@ echo $this->element('legendaOrganizationjoomlaSeo');
                 <li>mkdir /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
                 <li>chown -R www-data:www-data /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
             </ul>
+            <pre class="shell" rel="sql">
+INSERT INTO `cms_menus` (`id`, `organization_id`, `cms_menu_type_id`, `name`, `slug`, `options`, `sort`, `is_home`, `is_public`, `is_system`, `is_active`, `created`, `modified`) VALUES (NULL,  <span class="organizationId"></span>, '1', 'Home del G.A.S.', 'home', NULL, '0', '1', '1', '1', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO `cms_pages` (`id`, `organization_id`, `cms_menu_id`, `name`, `body`, `created`, `modified`) VALUES (NULL,  <span class="organizationId"></span>, {id della query prima eseguita}, 'Home del G.A.S.', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            </pre>
         </td>
     </tr>
 	<tr>
@@ -598,7 +603,12 @@ alert('Gas Register del GAS');
         <tr>
             <td>
 <pre class="shell">
-SELECT supplier_organization_id, count(supplier_organization_id) FROM `socialmarket_organizations` group by supplier_organization_id order by count(supplier_organization_id) desc
+SELECT k_suppliers.name, socialmarket_organizations.supplier_organization_id, count(socialmarket_organizations.supplier_organization_id)
+FROM socialmarket_organizations, k_suppliers_organizations, k_suppliers
+WHERE socialmarket_organizations.supplier_organization_id = k_suppliers_organizations.id
+and k_suppliers_organizations.supplier_id = k_suppliers.id
+GROUP BY k_suppliers.name, socialmarket_organizations.supplier_organization_id
+ORDER BY count(socialmarket_organizations.supplier_organization_id) desc
 </pre>				
             </td>
         </tr>
