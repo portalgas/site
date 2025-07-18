@@ -1337,7 +1337,7 @@ class UtilsCrons {
 
         $esito = [];
 
-        $url = "https://maps.google.com/maps/api/geocode/json?sensor=false&key=".Configure::read('GoogleApiKey')."&address=";
+        $url = "https://maps.google.com/maps/api/geocode/json?sensor=false&key=".Configure::read('GoogleApiKeyServer')."&address=";
 
         $url = $url . urlencode($address);
 
