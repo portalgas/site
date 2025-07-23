@@ -130,7 +130,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo '<td style="text-align:center;">'.$requestPayment['RequestPaymentsGeneric']['totRequestPaymentsGeneric'].'&nbsp;</td>';
 		echo '<td title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPayment['RequestPayment']['stato_elaborazione']).'"></td>';
 		echo '<td>'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'</td>';
-		echo '<td>'.$this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['data_send']).'&nbsp;</td>';
+		echo '<td>';
+        if($requestPayment['RequestPayment']['data_send']!==Configure::read('DB.field.date.empty', '1970-01-01'))
+         echo $this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['data_send']);
+        echo '&nbsp;</td>';
 		echo '<td>'.$this->App->formatDateCreatedModifier($requestPayment['RequestPayment']['created']).'&nbsp;</td>';
 		echo '<td>';
 		
