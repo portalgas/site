@@ -33,7 +33,8 @@ $(document).ready(function () {
 		$indirizzo = str_replace("'", "", $result['Supplier']['indirizzo']);
 		$localita = str_replace("'", "", $result['Supplier']['localita']);
 		$categoria = str_replace("'", "", $result['CategoriesSupplier']['name']);
-		
+
+        $img = '';
 		if(!empty($result['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$result['Supplier']['img1']))
 			$img = '<img width="50" src="'.Configure::read('App.server').Configure::read('App.web.img.upload.content').'/'.$result['Supplier']['img1'].'" />';	
 		
@@ -177,7 +178,7 @@ foreach ($results as $numResult => $result) {
 	$name = str_replace("'", "", $result['Supplier']['name']);
 	$indirizzo = str_replace("'", "", $result['Supplier']['indirizzo']);
 
-	echo '<li><a data-attr-id="'.$numResult.'">'.$name.'</a></li>';
+	echo '<li><a data-attr-id="'.$numResult.'">'.$name.'</a> | </li>';
 }
 echo '</ul>';
 ?>
