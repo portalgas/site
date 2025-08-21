@@ -41,6 +41,11 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 							$options += array('class'=> 'selectpicker', 'data-live-search' => true); 				
 						echo $this->Form->input('supplier_organization_id',$options); ?>
 					</td>
+                    <?php
+                    echo '<td>';
+                    echo $this->Form->input('flag_presente_articlesorders', ['label' => __('FlagPresenteArticlesorders'),'options' => $flag_presente_articlesorders, 'name' => 'FilterArticleFlagPresenteArticlesorders', 'default' => $FilterArticleFlagPresenteArticlesorders, 'escape' => false]);
+                    echo '</td>';
+                     ?>
 					<td>
 						<?php echo $this->Form->reset('Reset', ['value' => 'Reimposta','class' => 'reset']); ?>
 					</td>
@@ -159,7 +164,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 			echo $this->Form->submit("Aggiorna i prezzi agli articoli e anche agli articolo associati agli ordini", ['id' => 'updateArticlesOrder_Y', 'div'=> 'submitMultiple', 'class' => 'buttonBlu']);
 		
 		echo $this->Form->end();
-	} // end if(count($results)>0)
+	}
+    else {
+        echo $this->element('boxMsg',array('class_msg' => 'message resultsNotFound', 'msg' => __('msg_search_not_result')));
+    } // end if(count($results)>0)
 	?>	
 </div>
 
@@ -202,7 +210,7 @@ $(document).ready(function() {
     });
 
 	<?php
-	if(!empty($FilterArticleSupplierId) && empty($results)) {
+	if(!empty($FilterArticleSupplierId) && empty($results) && $FilterArticleFlagPresenteArticlesorders=='ALL') {
 	?>
 	$('#formGasFilter').submit();
 	<?php

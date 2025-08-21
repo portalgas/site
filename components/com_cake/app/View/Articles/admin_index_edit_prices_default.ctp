@@ -17,7 +17,7 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 	</h2>
 
 	<?php 
-	echo $this->Form->create('FilterArticle', ['id'=>'formGasFilter', 'type'=>'get']);
+	echo $this->Form->create('FilterArticle', ['id' => 'formGasFilter', 'type' => 'get']);
 	echo '<fieldset class="filter">';
 	echo '<legend>'.__('Filter Articles').'</legend>';
 	echo '<table>';
@@ -36,7 +36,10 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 		echo $this->Form->input('supplier_organization_id',$options); 
 		
 		echo '</td>';
-		
+        echo '<td>';
+        echo $this->Form->input('flag_presente_articlesorders', ['label' => __('FlagPresenteArticlesorders'),'options' => $flag_presente_articlesorders, 'name' => 'FilterArticleFlagPresenteArticlesorders', 'default' => $FilterArticleFlagPresenteArticlesorders, 'escape' => false]);
+        echo '</td>';
+
 		echo '<td>';
 		if(count($ACLsuppliersOrganization) > 1)  
 			echo $this->Form->reset('Reset', ['value' => 'Reimposta','class' => 'reset']);
@@ -161,7 +164,7 @@ $(document).ready(function() {
 	});
 
 	<?php
-	if(!empty($FilterArticleSupplierId) && empty($results)) {
+	if(!empty($FilterArticleSupplierId) && empty($results) && $FilterArticleFlagPresenteArticlesorders=='ALL') {
 	?>
 	$('#formGasFilter').submit();
 	<?php

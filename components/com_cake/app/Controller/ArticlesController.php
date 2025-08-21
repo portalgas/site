@@ -673,6 +673,13 @@ class ArticlesController extends AppController {
 	private function _index_edit_prices() {
 		
 		$SqlLimit = 2000;
+        $FilterArticleFlagPresenteArticlesorders = 'ALL';
+        if(isset($this->request->params['pass']['FilterArticleFlagPresenteArticlesorders']))
+            $FilterArticleFlagPresenteArticlesorders = $this->request->params['pass']['FilterArticleFlagPresenteArticlesorders'];
+        if($FilterArticleFlagPresenteArticlesorders!='ALL')
+            $conditions[] = ['Article.flag_presente_articlesorders' => $FilterArticleFlagPresenteArticlesorders];
+        $this->set(compact('FilterArticleFlagPresenteArticlesorders'));
+
 		$FilterArticleSupplierId = null;
 		if(isset($this->request->data['Article']['FilterArticleSupplierId'])) // recupero il produttore filtrato
 			$FilterArticleSupplierId = $this->request->data['Article']['FilterArticleSupplierId'];
@@ -701,7 +708,17 @@ class ArticlesController extends AppController {
 				$FilterArticleSupplierId = $this->user->get('ACLsuppliersIdsOrganization');
 		}
 		$this->set('FilterArticleSupplierId', $FilterArticleSupplierId);
-		
+
+        if($this->Session->check(Configure::read('Filter.prefix').$this->modelClass.'FlagPresenteArticlesorders')) {
+            $FilterArticleFlagPresenteArticlesorders = $this->Session->read(Configure::read('Filter.prefix').$this->modelClass.'FlagPresenteArticlesorders');
+            if($FilterArticleFlagPresenteArticlesorders!='ALL')
+                $conditions[] = ['Article.flag_presente_articlesorders' => $FilterArticleFlagPresenteArticlesorders];
+        }
+        else {
+            if(!empty($FilterArticleFlagPresenteArticlesorders) && $FilterArticleFlagPresenteArticlesorders!='ALL')
+                $conditions[] = ['Article.flag_presente_articlesorders' => $FilterArticleFlagPresenteArticlesorders];
+        }
+
 		$results = [];
 		if (!empty($this->request->params['pass']['FilterArticleSupplierId'])) {
 									
@@ -735,7 +752,11 @@ class ArticlesController extends AppController {
 		}
 		else
 			$this->set('ACLsuppliersOrganization',$this->getACLsuppliersOrganization());
-		
+
+        $flag_presente_articlesorders = ClassRegistry::init('Article')->enumOptions('flag_presente_articlesorders');
+        $flag_presente_articlesorders['ALL'] = 'Tutti';
+        $this->set(compact('flag_presente_articlesorders'));
+
 		if($this->action=='default')
 			$this->render('admin_index_edit_prices');
 		else
@@ -1696,8 +1717,7 @@ class ArticlesController extends AppController {
 		$um = ClassRegistry::init('Article')->enumOptions('um');
 		$flag_presente_articlesorders = ['Y' => __('Y'), 'N' => __('No'), 'ALL' => __('ALL')];
 		$this->set(compact('um', 'flag_presente_articlesorders'));
-		
-		
+
 		/*
 		 * solo per il context=article
 		 * per context=order Article.stato sempre a Y (se un articolo legato ad un ordine modifica lo stato a N viene cancellato dagli ordini)
