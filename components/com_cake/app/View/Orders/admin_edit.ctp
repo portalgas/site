@@ -158,30 +158,28 @@ if(empty($des_order_id))  {
 	echo '<div class="tab-pane fade" id="tabs-3">';
 
 	echo "\r\n";
-	echo '<table>';
-	echo '<tr>';
-	echo '<td>';
+    echo '<div class="row">';
+    echo '<div class="col-md-2">';
 	echo __('order_qta_massima');
-	echo '</td>';
-	echo '<td>';
+    echo '</div>';
+    echo '<div class="col-md-4">';
 	echo $this->Form->input('qta_massima', array('label' => false, 'type' => 'text', 'id' => 'qta_massima'));
-	echo '</td>';
-	echo '<td>';
+    echo '</div>';
+    echo '<div class="col-md-6">';
 	echo $this->Form->input('qta_massima_um',array('id' => 'qta_massima_um', 'label' => false,'options' => $qta_massima_um_options, 'required' => 'false'));
-	echo '</td>';
-	echo '<td><div class="legenda legenda-ico-mails">'.__('order_qta_massima_help').'</div></td>';
-	echo '</tr>';
+    echo '</div>';
+    echo '<div class="legenda legenda-ico-mails">'.__('order_qta_massima_help').'</div>';
+    echo '</div>';
 
-	echo '<tr>';
-	echo '<td>';
-	echo __('order_importo_massimo');
-	echo '</td>';
-	echo '<td colspan="2"  style="white-space: nowrap;">';
+    echo '<div class="row">';
+    echo '<div class="col-md-2">';
+    echo __('order_importo_massimo');
+    echo '</div>';
+    echo '<div class="col-md-9">';
 	echo $this->Form->input('importo_massimo', ['label' => false, 'type' => 'text', 'id' => 'importo_massimo', 'value' => $this->Form->value('Order.importo_massimo_'),'class' => 'double', 'style' => 'display:inline', 'after' => '&nbsp;&euro;']);
-	echo '</td>';
-	echo '<td><div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div></td>';
-	echo '</tr>';
-	echo '</table>';
+    echo '</div>';
+    echo '<div class="legenda legenda-ico-mails">'.__('order_importo_massimo_help').'</div>';
+    echo '</div>';
 
 	echo '</div>';
 }
