@@ -156,8 +156,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				 */
 				$colli_completi = intval($order['ArticlesOrder'][$numArticlesOrder]['qta_cart'] / $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione']);
 				if($colli_completi>0) {
-                    $differenza_da_ordinare = (($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] * $colli_completi) - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
-                    if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                    $ordinati_che_completano_i_colli = ($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] * $colli_completi);
+                    $differenza_da_ordinare = ($order['ArticlesOrder'][$numArticlesOrder]['qta_cart'] - $ordinati_che_completano_i_colli - $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione']);
+                    //  $differenza_da_ordinare = (($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] * $colli_completi) - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
                 }
 				else {
 					$differenza_da_ordinare = ($order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'] - $order['ArticlesOrder'][$numArticlesOrder]['qta_cart']);
