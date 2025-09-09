@@ -217,7 +217,7 @@ if($componentIsComCake) {
 	else {
 		$_menus_definitivo = $_menus;
 	}
-		
+
 	/*	
 	echo "<pre>";
 	print_r($_menus_definitivo);
@@ -329,14 +329,18 @@ if($componentIsComCake) {
 			}
 		}
 	}
+
 	if(!empty($_menus_definitivo)) {
 		echo '	</ul>';
 		echo '</li>';
-	
+
+        echo '<li class="active"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdsK0XsvAB6Anmje4Rac5rF9qazrwbmd9qJIvQVjfUQFdk_Tw/viewform?vc=0&c=0&w=1&flr=0" target="_blank">Assistenza</a></li>';
+
 		echo '	</ul>';
 		echo '</li>';
-	}	
-	
+	}
+
+
 	echo '</ul>';	
 	echo '<ul class="nav navbar-nav navbar-right">';
 	
