@@ -1,6 +1,6 @@
 <?php
 $this->Html->addCrumb(__('Home'), ['controller' => 'Pages', 'action' => 'home']);
-$this->Html->addCrumb(__('Cassiere home'),array('controller'=>'Cassiere','action'=>'home', null, 'delivery_id='.$delivery_id));
+// $this->Html->addCrumb(__('Cassiere home'),array('controller'=>'Cassiere','action'=>'home', null, 'delivery_id='.$delivery_id));
 $this->Html->addCrumb(__('Export Docs to order'));
 echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 ?>
