@@ -24,7 +24,7 @@ echo '<div class="contentMenuLaterale">';
     echo '(';
     echo 'creata '.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['created'],"%A %e %B %Y");
     if($requestPaymentResults['RequestPayment']['data_send']!==Configure::read('DB.field.date.empty', '1970-01-01'))
-        echo ' - inviata '.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['data_send']);
+        echo ' - inviata '.$this->Time->i18nFormat($requestPaymentResults['RequestPayment']['data_send'],"%A %e %B %Y");
     echo ')';
 echo '<span style="float:right;">';
 	echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).' <span style="padding-left: 20px;" title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPaymentResults['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPaymentResults['RequestPayment']['stato_elaborazione']).'"></span>';

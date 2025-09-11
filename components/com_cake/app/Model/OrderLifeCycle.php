@@ -224,8 +224,8 @@ class OrderLifeCycle extends AppModel {
 		if(empty($orderResult) || empty($state_code_next)) {
 			$esito['CODE'] = "500";
 			$esito['MSG'] = "Parametri errati";
-			return $esito; 
-		}	
+			return $esito;
+		}
 
 		App::import('Model', 'Order');
 		$Order = new Order;

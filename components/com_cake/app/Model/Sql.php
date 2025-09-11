@@ -100,6 +100,10 @@ class Sql extends AppModel {
         $results[$i]['name'] = "Consegne senza ordini, di 100gg ";
         $results[$i]['sql'] = "SELECT k_deliveries.id, k_deliveries.data, k_deliveries.luogo, k_organizations.name, k_organizations.id FROM k_organizations, k_deliveries left join k_orders on (k_deliveries.organization_id = k_orders.organization_id and k_deliveries.id = k_orders.delivery_id) where k_organizations.type = 'GAS' and k_organizations.id != 156 and k_organizations.id = k_deliveries.organization_id and k_deliveries.sys = 'N' and DATE(k_deliveries.data) <= CURDATE() - INTERVAL %s DAY and k_orders.id is null order by k_deliveries.data desc;";
         $results[$i]['params'] = ['days' => 'days'];
+        $i++;
+        $results[$i]['name'] = "Users gmap ripulire i campi per eseguire update j_user_profiles set profile_value = '\"\"' where (profile_key= 'profile.lat' or profile_key= 'profile.lng') and user_id in (); e /var/portalgas/cron/usersGmaps.sh e localizzarli";
+        $results[$i]['sql'] = "SELECT * FROM j_users, j_user_profiles where ornanization_id = %s and user_id = j_users.id and profile_key= 'profile.lng' and profile_value = '\"0.0\"';";
+        $results[$i]['params'] = ['ornanization_id' => 'ornanization_id'];
 
 		return $results;
 	}

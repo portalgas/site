@@ -23,18 +23,27 @@ echo $this->element('boxOrder',array('results' => $results));
  * msg
  */		
 if(!empty($requestPayment)) {
-	
+
 	/*
 	 * ordine associato a richiesta di pagamento
 	 */
 	echo '<h1>';
-	echo __('request_payment_num').' '.$requestPayment['RequestPayment']['num'].' ('.$this->Time->i18nFormat($requestPayment['RequestPayment']['created'],"%A %e %B %Y").')';
-	echo '<span style="float:right;">';
+
+    $label = __('request_payment_num').' '.$requestPayment['RequestPayment']['num'];
+    echo $this->Html->link($label, ['controller' => 'RequestPayments', 'action' => 'edit', $requestPayment['RequestPayment']['id']], ['title' => __('Edit Request Payments')]);
+
+    echo ' (';
+    echo 'creata '.$this->Time->i18nFormat($requestPayment['RequestPayment']['created'],"%A %e %B %Y");
+    if($requestPayment['RequestPayment']['data_send']!==Configure::read('DB.field.date.empty', '1970-01-01'))
+        echo ' - inviata '.$this->Time->i18nFormat($requestPayment['RequestPayment']['data_send'],"%A %e %B %Y");
+    echo ')';
+
+    echo '<span style="float:right;">';
 	echo $this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).' <span style="padding-left: 20px;" title="'.$this->App->traslateEnum('REQUEST_PAYMENT_STATO_ELABORAZIONE_'.$requestPayment['RequestPayment']['stato_elaborazione']).'" class="stato_'.strtolower($requestPayment['RequestPayment']['stato_elaborazione']).'"></span>';
 	echo '</span>';
-	echo '</h1>';	
+	echo '</h1>';
 
-	$msg = __('OrderLifeCyclesSummaryOrderRequestPayment');
+    $msg = __('OrderLifeCyclesSummaryOrderRequestPayment');
 }
 else
 if(empty($summaryOrderNotPaid)) {
@@ -49,12 +58,11 @@ else {
 	 */
 	$msg = __('OrderLifeCyclesSummaryOrderSummaryOrderNotPaid');
 }
-echo $this->element('boxMsg',array('class_msg' => 'notice', 'msg' => $msg));
+echo $this->element('boxMsg', ['class_msg' => 'notice', 'msg' => $msg]);
 
  	
-echo $this->Form->create('SummaryOrder',array('id' => 'formGas'));
+echo $this->Form->create('SummaryOrder', ['id' => 'formGas']);
 echo '<fieldset style="margin: 0;padding: 0;">';
-
 
 
 /*
@@ -91,7 +99,9 @@ if(!empty($summaryOrderNotPaid)) {
 	echo '</tr>';
 		
 	foreach($summaryOrderNotPaid as $numResult => $result) {
-	
+
+        // debug($result);
+
 		echo '<tr>';
 		echo '<td>'.((int)$numResult+1).'</td>';
 		echo '<td>';
@@ -198,19 +208,20 @@ if(!empty($summaryOrderPaid)) {
 	echo '</table></div>';
 }
 else
-	echo $this->element('boxMsg',array('class_msg' => 'notice resultsNotFound', 'msg' => __('OrderLifeCyclesSummaryOrderPaidNotFound')));
+	echo $this->element('boxMsg', ['class_msg' => 'notice resultsNotFound', 'msg' => __('OrderLifeCyclesSummaryOrderPaidNotFound')]);
 
-
-					
 echo '</div>';
 echo '</div>';
 echo '</div>';
 echo '</div> <!-- panel-group --> ';
+
 	
-	
-echo $this->Form->hidden('order_id',array('value' => $results['Order']['id']));
+echo $this->Form->hidden('order_id',  ['value' => $results['Order']['id']]);
 echo '</fieldset>';
 echo $this->Form->end();
+
+
+echo $this->element('boxOrderCloseForce', ['order' => $results]);
 
 echo '</div>'; // end contentMenuLaterale
 ?>

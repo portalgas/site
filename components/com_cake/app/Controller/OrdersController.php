@@ -2130,10 +2130,11 @@ class OrdersController extends AppController {
 				$order_just_pay = true;
 			else
 				$order_just_pay = false;
-			
+
 			$options = [];
 			$options['order_just_pay'] = $order_just_pay; // setta il pagamento del produttore
 			$esito = $OrderLifeCycle->stateCodeUpdate($this->user, $results, 'CLOSE', $options, $debug);
+
 			if($esito['CODE']!=200) {
 				$msg = $esito['MSG'];
 				$this->Session->setFlash($msg);

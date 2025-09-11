@@ -259,6 +259,9 @@ msgstr "Gestisci gli articoli della dispensa"
 msgid "Close Order"
 msgstr "Chiudi l'ordine"
 
+msgid "Force Close Order"
+msgstr "Forza la chiusura dell'ordine"
+
 msgid "Update Cart"
 msgstr "Aggiorna l'articolo già ordinato"
 
