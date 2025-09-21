@@ -135,7 +135,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 
 
 
-    <!--  			template_joomla 			 -->
+<!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
 <h1 class="header" id="header-template_joomla">Joomla Template <a href="index.php?option=com_templates" target="_blank">gestisci template</a></h1>
@@ -257,9 +257,13 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 	</li></p>
 		</td>
 	</tr>
+
+    <!--   CMS   -->
+    <!--   CMS   -->
+    <!--   CMS   -->
     <tr>
         <th>CMS</th>
-        <td class="border-bottom">Creare
+        <td class="border-bottom">Creare con SQL
             <ul>
                 <li>cms_menus
                     <ul>
@@ -274,15 +278,22 @@ echo $this->element('legendaOrganizationjoomlaSeo');
                     </ul>
                 </li>
                 <li>cms_pages</li>
-                <li>mkdir /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span></li>
-                <li>chown -R www-data:www-data /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span></li>
-                <li>mkdir /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
-                <li>chown -R www-data:www-data /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span></li>
             </ul>
-            <pre class="shell" rel="sql">
+            <pre class="shell" rel="eseguire sql">
 INSERT INTO `cms_menus` (`id`, `organization_id`, `cms_menu_type_id`, `name`, `slug`, `options`, `sort`, `is_home`, `is_public`, `is_system`, `is_active`, `created`, `modified`) VALUES (NULL,  <span class="organizationId"></span>, '1', 'Home del G.A.S.', 'home', NULL, '0', '1', '1', '1', '1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO `cms_pages` (`id`, `organization_id`, `cms_menu_id`, `name`, `body`, `created`, `modified`) VALUES (NULL,  <span class="organizationId"></span>, {id della query prima eseguita}, 'Home del G.A.S.', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO `cms_pages` (`id`, `organization_id`, `cms_menu_id`, `name`, `body`, `created`, `modified`) VALUES (NULL,  185, (SELECT id FROM `cms_menus` ORDER BY `cms_menus`.`id` DESC limit 1) , 'Home del G.A.S.', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            </pre>
+        </td>
+    </tr>
+    <tr>
+        <th>CMS</th>
+        <td class="border-bottom">Creare directory
+            <pre class="shell" rel="eseguire cmd">
+mkdir /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span>
+chown -R www-data:www-data /var/www/neo.portalgas/resources/cms/docs/<span class=organizationId></span>
+mkdir /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span>
+chown -R www-data:www-data /var/www/neo.portalgas/webroot/cms/imgs/<span class=organizationId></span>
             </pre>
         </td>
     </tr>
@@ -617,10 +628,13 @@ ORDER BY count(socialmarket_organizations.supplier_organization_id) desc
 insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(..., <?php echo $max_id;?>);
 
 insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3078, <?php echo $max_id;?>);
- insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3123, <?php echo $max_id;?>);
- insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3090, <?php echo $max_id;?>);
- insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3080, <?php echo $max_id;?>);
- insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3191, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3123, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3090, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3305, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3080, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3191, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(3073, <?php echo $max_id;?>);
+insert into socialmarket_organizations (supplier_organization_id, organization_id)  values(2968, <?php echo $max_id;?>);
 </pre>				
             </td>
         </tr>
