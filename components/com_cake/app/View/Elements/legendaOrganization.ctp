@@ -114,12 +114,28 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 
 
 
+<!--  			sitemap.xml 			 -->
+<!--  			sitemap.xml 			 -->
+<!--  			sitemap.xml	 		 -->
+<h1 class="header" id="header-sitemap">sitemap.xml</h1>
+
+<pre class="shell">
+&lt;url&gt;
+&lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>&lt;/loc&gt;
+&lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
+&lt;changefreq&gt;yearly&lt;/changefreq&gt;
+&lt;/url&gt;
+&lt;url&gt;
+&lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>&lt;/loc&gt;
+&lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
+&lt;changefreq&gt;yearly&lt;/changefreq&gt;
+&lt;/url&gt;
+</pre>
 
 
 
 
-
-<!--  			template_joomla 			 -->
+    <!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
 <!--  			template_joomla 			 -->
 <h1 class="header" id="header-template_joomla">Joomla Template <a href="index.php?option=com_templates" target="_blank">gestisci template</a></h1>
@@ -506,24 +522,6 @@ alert('Gas Register del GAS');
 	</tr>	
 </table>
 </div>
-
-<!--  			sitemap.xml 			 -->
-<!--  			sitemap.xml 			 -->
-<!--  			sitemap.xml	 		 -->
-<h1 class="header" id="header-sitemap">sitemap.xml</h1>
-
-<pre class="shell">
-  &lt;url&gt;
-    &lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>&lt;/loc&gt;
-    &lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
-    &lt;changefreq&gt;yearly&lt;/changefreq&gt;
-  &lt;/url&gt;
-  &lt;url&gt;
-    &lt;loc&gt;https://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>&lt;/loc&gt;
-    &lt;lastmod&gt;<?php echo date('Y-m-d');?>&lt;/lastmod&gt;
-    &lt;changefreq&gt;yearly&lt;/changefreq&gt;
-  &lt;/url&gt;
- </pre> 
   
 
 
