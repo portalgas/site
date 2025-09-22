@@ -40,12 +40,15 @@ echo '<div class="contentMenuLaterale">';
 			<th><?php echo __('mail');?></th>
 			<th style="text-align:center;"><?php echo __('Importo_dovuto');?></th>
 			<th style="text-align:center;"><?php echo __('Importo_pagato');?></th>
+			<th style="text-align:center;"><?php echo __('Stato');?></th>
 			<th><?php echo __('Modality');?></th>
 	</tr>			
 	<?php 
 		$tabindex = 1;
 		foreach($results['SummaryPayment'] as $num => $summaryPayment) {
-	
+
+            // if($summaryPayment['SummaryPayment']['id']== 44713) debug($summaryPayment);
+
 			echo '<tr class="view">';
 			echo '<td><a action="request_payment_referent_to_users-'.$requestPaymentResults['RequestPayment']['id'].'_'.$summaryPayment['User']['id'].'" class="actionTrView openTrView" href="#"  title="'.__('Href_title_expand').'"></a></td>';
 			echo '<td>'.($num+1).'</td>';
@@ -53,7 +56,7 @@ echo '<div class="contentMenuLaterale">';
 			echo '<td>'.$summaryPayment['User']['email'].'</td>';
 			echo '<td style="text-align:center;">'.$summaryPayment['SummaryPayment']['importo_dovuto_e'].'</td>';
 		
-			echo '<td  style="text-align:center;color:#fff;';
+			echo '<td style="text-align:center;color:#fff;';
 			/*
 			 * posso pagare + di quello che devo se ho un debito di cassa
 			 */
@@ -65,6 +68,28 @@ echo '<div class="contentMenuLaterale">';
 			
 			echo $summaryPayment['SummaryPayment']['importo_pagato_e'];
 			echo '</td>';
+
+		 	echo '<td style="text-align:center;color:#fff;';
+			switch ($summaryPayment['SummaryPayment']['stato']) {
+				case 'DAPAGARE':
+					echo 'background-color:red;"';
+				break;
+				case 'SOLLECITO1':
+					echo 'background-color:yellow;"';
+				break;
+				case 'SOLLECITO2':
+					echo 'background-color:yellow;"';
+				break;
+				case 'SOSPESO':
+					echo 'background-color:gray;"';
+				break;
+				case 'PAGATO':
+					echo 'background-color:green;"';
+				break;
+			}
+            echo '>';
+            echo $this->App->traslateEnum($summaryPayment['SummaryPayment']['stato']);
+            echo '</td>';
 		?>
 		<td>
 			<?php echo $this->App->traslateEnum($summaryPayment['SummaryPayment']['modalita']); ?>
