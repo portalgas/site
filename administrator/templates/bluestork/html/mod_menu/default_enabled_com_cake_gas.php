@@ -1071,14 +1071,19 @@ if(!empty($organization_id)) {
             $_menus[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/cms-menus&a_to=index";
             $_menus[$i]['target'] = "_blank";
 		}
-		if(in_array(group_id_manager, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_cassiere, $user->getAuthorisedGroups()) || 
-		   in_array(group_id_tesoriere, $user->getAuthorisedGroups())) {
-			$i++;
-			$_menus[$i]['level'] = 1;
-			$_menus[$i]['label'] = "Crea documenti";
-			$_menus[$i]['url'] = "index.php?option=com_cake&controller=DocsCreates&action=index";		
-		}
+        else {
+            /*
+             * chi ha il CMS non ha questa versione precedente
+             */
+            if(in_array(group_id_manager, $user->getAuthorisedGroups()) ||
+                in_array(group_id_cassiere, $user->getAuthorisedGroups()) ||
+                in_array(group_id_tesoriere, $user->getAuthorisedGroups())) {
+                $i++;
+                $_menus[$i]['level'] = 1;
+                $_menus[$i]['label'] = "Crea documenti";
+                $_menus[$i]['url'] = "index.php?option=com_cake&controller=DocsCreates&action=index";
+            }
+        }
 		$i++;
 		$_menus[$i]['level'] = 1;
 		$_menus[$i]['label'] = "Mail";
