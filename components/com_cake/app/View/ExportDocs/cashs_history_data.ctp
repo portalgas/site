@@ -46,7 +46,7 @@ if (!empty($results)) {
 					$html .= '<td width="'.$output->getCELLWIDTH100().'">'.$user['User']['name'].'</td>';
 				}
 				else {
-					$html .= '<td width="'.$output->getCELLWIDTH100().'"></td>';
+					$html .= '<td width="'.$output->getCELLWIDTH100().'" title="'.$result['CashesHistory']['id'].'"></td>';
 				}
 
                 $html .= '<td width="'.$output->getCELLWIDTH10().'" style="text-align:right;';
