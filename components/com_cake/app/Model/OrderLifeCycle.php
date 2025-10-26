@@ -1277,7 +1277,7 @@ class OrderLifeCycle extends AppModel {
 	 */
 	public function getStateCodeNotUpdateArticle($user) {
 		
-		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna
+		$results[] = 'PROCESSED-ON-DELIVERY'; // in carico al cassiere durante la consegna, il totale ordine e' stato gia' calcolato
 		$results[] = 'PROCESSED-TESORIERE';
 		$results[] = 'TO-REQUEST-PAYMENT';		
 		$results[] = 'TO-PAYMENT';	

@@ -90,7 +90,7 @@ class ExportDoc extends AppModel {
 			 */
 		    if(isset($result['Delivery']['Order']))
 			foreach($result['Delivery']['Order'] as $numOrder => $order) {
-			
+
 				if($order['Order']['id']==$order_id) {
 					
 					/*
@@ -154,12 +154,11 @@ class ExportDoc extends AppModel {
 					$tot_importo = 0;
 					$summary_order_aggregate_tot_importo = 0;
 					$user_id_old = 0;
-					
 					$this->exportRowsNum = -1;
 					$this->exportRows = [];
 					if(isset($order['ArticlesOrder']))
 					foreach($order['ArticlesOrder'] as $numArticlesOrder => $articlesOrder) {
-				
+
 						/*
 						 * per l'UTENTE trattato calcolo TOTALI
 						 */

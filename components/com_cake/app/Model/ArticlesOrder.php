@@ -652,6 +652,12 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
             $options['conditions'] += ['Cart.article_id' => $conditions['ArticlesOrder.article_id']];
         if (isset($conditions['Article.id']))
             $options['conditions'] += ['Cart.article_id' => $conditions['Article.id']];
+        if (isset($conditions['Article.stato IN'])) {
+            // e' definito sopra
+            if(isset($options['conditions']['Article.stato']))
+                unset($options['conditions']['Article.stato']);
+            $options['conditions'] += ['Article.stato' => $conditions['Article.stato IN']];
+        }
         if (isset($conditions['Cart.user_id']))
             $options['conditions'] += ['Cart.user_id' => $conditions['Cart.user_id']];
         if (isset($conditions['Cart.deleteToReferent']))

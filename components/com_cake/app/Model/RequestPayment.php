@@ -402,9 +402,10 @@ class RequestPayment extends AppModel {
 							'Order' => array('Order.isVisibleBackOffice' => 'Y',
 											'Order.id' => $order_id),
 							'User' => array('User.id' => $user_id),
-							'Cart' => array('Cart.deleteToReferent' => 'N'));
+							'Cart' => array('Cart.deleteToReferent' => 'N'),
+                            'Article' => array('Article.stato IN' => ['Y', 'N']));
 					$orderBy = array('Article' => 'Article.name');
-						
+
 					$tmpResults = $Delivery->getDataWithoutTabs($user, $conditionsLocal, $options, $orderBy);
 		
 					$resultsSummaryOrderAggregate = [];

@@ -284,7 +284,7 @@ class DataBehavior extends ModelBehavior {
 											'recursive' => 0]);
 
 		foreach ($orderResults as $numOrder => $order) {
-	
+
 			// order
 			$this->_setOrder($Model, $numTab, $numDelivery, $numOrder, $order);
 			
@@ -304,7 +304,7 @@ class DataBehavior extends ModelBehavior {
 				if(isset($conditions['ArticlesOrder'])) $conditionsLocal += $conditions['ArticlesOrder'];
 				if(isset($conditions['Article']))       $conditionsLocal += $conditions['Article'];
 				if(isset($conditions['User']))          $conditionsLocal += $conditions['User'];
-				
+
 				if(isset($options['articlesOrdersInOrderAndCartsAllUsers']) && $options['articlesOrdersInOrderAndCartsAllUsers'])
 					$articlesOrders = $ArticlesOrder->getArticoliAcquistatiDaUtenteInOrdine($user, $conditionsLocal, $orderBy);
 		
@@ -317,7 +317,7 @@ class DataBehavior extends ModelBehavior {
 						$user_ids = $this->_getUserIdsJustSaldato($user, $order['Order']['id'], $articlesOrders);
 
 					foreach($articlesOrders as $numArticlesOrder => $articlesOrder) {
-						
+
 						$totSummaryOrderSaldato = 0;
 						if(isset($articlesOrder['Cart']['user_id']))
 							if (array_key_exists($articlesOrder['Cart']['user_id'], $user_ids))
