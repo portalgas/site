@@ -28,7 +28,7 @@ echo '<legend>'.__('Send Mail').'</legend>';
 		echo '<div id="dest_options_qta_supplier">';
 		echo $this->App->drawFormRadio('Mail','dest_options_qta_supplier',array('options' => $dest_options_qta_supplier, 'value'=>'ALL', 'name' => 'dest-options-qta-supplier', 'label' => __('A quanti'),'tabindex'=>($i+1)));
 		echo '</div>';
-	
+
 		echo '<div id="dest_options_qta_gas">';
 		echo $this->App->drawFormRadio('Mail','dest_options_qta_gas',array('options' => $dest_options_qta_gas, 'value'=>'ALL', 'name' => 'dest-options-qta-gas', 'label' => __('A quanti'),'tabindex'=>($i+1)));
 		echo '</div>';
@@ -56,7 +56,14 @@ echo '<legend>'.__('Send Mail').'</legend>';
 		$label = __('SuppliersOrganization').'&nbsp;('.count($ACLsuppliersOrganization).')';
 		echo $this->Form->input('suppliers',array('label' => $label,'options' => $ACLsuppliersOrganization,'escape' => false,'multiple' => true));
 		echo '</div>';
-				
+
+        /*
+         * single
+         */
+        echo '<div id="single" style="display:block;">';
+        echo $this->Form->input('single', ['type' => 'email', 'label' => __('Email')]);
+        echo '</div>';
+
 		echo $this->Form->input('subject');
 		
 		echo '<div class="clearfix"></div>';
@@ -164,17 +171,17 @@ function choiceDestOptions() {
 	var dest_options_qta_gas = $("input[name='data[Mail][dest_options_qta_gas]']:checked").val();
 
 	$('#dest_options_qta_supplier').hide();
-	$('#dest_options_qta_gas').hide();
+    $('#dest_options_qta_gas').hide();
 	$('#Maildest_options_qta_supplierALL').attr('disabled',false);
 	$('#Maildest_options_qta_supplierSOME').attr('disabled',false);
 	$('#Maildest_options_qta_gasALL').attr('disabled',false);
 	$('#Maildest_options_qta_gasSOME').attr('disabled',false);
 
-	
 	if(dest_options=='GAS') {
 		$('#gas').css('display','block');
 		$('#prodgas').css('display','none');
 		$('#suppliersorganization').css('display','none');
+        $('#single').css('display','none');
 		
 		$('#dest_options_qta_supplier').hide();
 		$('#dest_options_qta_gas').show();			
@@ -184,6 +191,7 @@ function choiceDestOptions() {
 			$('#gas').css('display','none');
 			$('#prodgas').css('display','none');
 			$('#suppliersorganization').css('display','none');
+            $('#single').css('display','none');
 		}			
 	}
 	else	
@@ -191,6 +199,7 @@ function choiceDestOptions() {
 		$('#prodgas').css('display','block');
 		$('#gas').css('display','none');
 		$('#suppliersorganization').css('display','none');
+        $('#single').css('display','none');
 		
 		$('#dest_options_qta_supplier').hide();
 		$('#dest_options_qta_gas').show();			
@@ -200,23 +209,39 @@ function choiceDestOptions() {
 			$('#gas').css('display','none');
 			$('#prodgas').css('display','none');
 			$('#suppliersorganization').css('display','none');
+            $('#single').css('display','none');
 		}			
 	}
-	else	
-	if(dest_options=='SUPPLIERS') {
-		$('#gas').css('display','none');
-		$('#prodgas').css('display','none');
-		$('#suppliersorganization').css('display','block');
-		
-		$('#dest_options_qta_supplier').show();
-		$('#dest_options_qta_gas').hide();			
-		$('#Maildest_options_qta_supplierSOME').attr('disabled',false);
-		
-		if(dest_options_qta_supplier=='ALL') {
-			$('#gas').css('display','none');
-			$('#prodgas').css('display','none');
-			$('#suppliersorganization').css('display','none');
-		}			
-	}
+    else
+    if(dest_options=='SUPPLIERS') {
+        $('#gas').css('display','none');
+        $('#prodgas').css('display','none');
+        $('#suppliersorganization').css('display','block');
+        $('#single').css('display','none');
+
+        $('#dest_options_qta_supplier').show();
+        $('#dest_options_qta_gas').hide();
+        $('#Maildest_options_qta_supplierSOME').attr('disabled',false);
+
+        if(dest_options_qta_supplier=='ALL') {
+            $('#gas').css('display','none');
+            $('#prodgas').css('display','none');
+            $('#suppliersorganization').css('display','none');
+            $('#single').css('display','none');
+        }
+    }
+    else
+    if(dest_options=='SINGLE') {
+        $('#gas').css('display','none');
+        $('#prodgas').css('display','none');
+        $('#suppliersorganization').css('display','none');
+        $('#single').css('display','block');
+
+        $('#dest_options_qta_supplier').show();
+        $('#dest_options_qta_gas').hide();
+        $('#Maildest_options_qta_supplierSOME').attr('disabled',false);
+
+        $('#dest_options_qta_supplier').css('display','none');
+    }
 }
 </script>

@@ -856,6 +856,10 @@ class MailsController extends AppController {
 						}
 					}	
 				break;
+                case 'SINGLE':
+                    $results = [];
+                    $results[0] = $this->request->data['Mail']['single'];
+                    break;
 			}			
 
 			/*
@@ -956,7 +960,16 @@ class MailsController extends AppController {
 						$mail = $result['User']['email'];
 						$name = $result['User']['name'];					
 					break;
-				}				
+                    case 'SINGLE':
+                        $mail = $result;
+                    break;
+				}
+
+                if(empty($mail)) {
+                    $tot_no++;
+                    $msg_ok .= 'mail non valorizzata<br />';
+                    continue;
+                }
 
 				if($this->request->data['Mail']['mittenti']==Configure::read('Mail.no_reply_mail'))  
 					$Email->viewVars(array('body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply_simple'), $this->traslateWww(Configure::read('SOC.site')))));
@@ -992,8 +1005,9 @@ class MailsController extends AppController {
 		
 		
 		$dest_options = ['SUPPLIERS' => 'Produttori', 
-						 'GAS' => 'Organization - G.A.S.', 
-						 'PRODGAS' => 'Organization - Produttori'];
+						 'GAS' => 'Organization - G.A.S.',
+                         'PRODGAS' => 'Organization - Produttori',
+						 'SINGLE' => 'Singola email'];
 					
 		$dest_options_qta_supplier = ['ALL' => 'A tutti',
 								  'SOME' => 'Ad alcuni'];
