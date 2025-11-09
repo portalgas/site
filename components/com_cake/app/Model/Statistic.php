@@ -95,9 +95,10 @@ class Statistic extends AppModel {
 
         $options = [];
         $options['conditions'] = ['Order.organization_id' => (int) $organization_id,
-                                    'Order.state_code' => 'CLOSE',
-                                    'Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
-								  'DATE(Order.data_state_code_close) <= CURDATE() - INTERVAL '.$user->organization['Organization']['ggArchiveStatics'].' DAY '];
+                                  'Order.state_code' => 'CLOSE',
+                                  'Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
+								  'DATE(Order.data_state_code_close) <= CURDATE() - INTERVAL '.$user->organization['Organization']['ggArchiveStatics'].' DAY '
+                                 ];
         $options['recursive'] = 0;
 		if($this->debug_sql_orders_limit > 0)
 			$options['limit'] = $this->debug_sql_orders_limit;
@@ -106,7 +107,38 @@ class Statistic extends AppModel {
 
 		self::d($options['conditions'], $debug);
 		self::d("Statistic::_getOrdersArchive trovati " . count($results) . " ordini", $debug);
-		
+
+        if(count($results)==0)
+            return $results;
+
+        /*
+         * controllo se gli ordini sono associati ad una richiesta di pagamento
+         */
+        switch ($user->organization['Template']['payToDelivery']) {
+            case 'ON':
+                break;
+            case 'POST':
+            case 'ON-POST':
+                App::import('Model', 'RequestPaymentsOrder');
+                $RequestPaymentsOrder = new RequestPaymentsOrder;
+
+                foreach($results as $numResult => $result) {
+                    $options = [];
+                    $options['conditions'] = ['RequestPaymentsOrder.organization_id' => $user->organization['Organization']['id'],
+                        'RequestPaymentsOrder.order_id' => $result['Order']['id']];
+                    $options['recursive'] = 1;
+                    $requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
+                    if(!empty($requestPaymentsOrderResults)) {
+                        // $requestPaymentsOrderResults['RequestPayment']['stato_elaborazione']!='CLOSE'
+                        // se ho associato un rich di pagamento non posso cancellare l'ordine
+                        // quando la richiesta di pagamento viene chiusa, la richiesta di pagamento sara' eliminata
+                        self::d("Statistic::_getOrdersArchive l'ordine " . $result['Order']['id']. " e' associato ad una richiesta di pagamento, non posso eliminalo", $debug);
+                        unset($results[$numResult]);
+                    }
+                }
+                break;
+        }
+
         return $results;
     }
 	
