@@ -1598,7 +1598,6 @@ class DeliveriesController extends AppController {
      * 		storerooms 
      * 		summary_orders 
      */
-
     public function admin_delete() {
 
         $this->Delivery->id = $this->delivery_id;
@@ -1639,6 +1638,15 @@ class DeliveriesController extends AppController {
         if (empty($results)) {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
+        }
+
+        /*
+         * se la consegna ha ordini associati non posso eliminarla, solo root
+         */
+        if(!$this->isRoot() && isset($results['Order']) && count($results['Order']) >0) {
+            $msg_can_delete = "Non puoi eliminare la consegna: sono presenti ".count($results['Order'])." ordini, elimina prima gli ordini";
+            $this->Session->setFlash($msg_can_delete);
+            $this->myRedirect(['action' => 'index']);
         }
 
         /*
@@ -1688,6 +1696,7 @@ class DeliveriesController extends AppController {
         $results['totStorerooms'] = $totStorerooms;
 
         $this->set(compact('results', 'can_delete', 'msg_can_delete'));
+        $this->set('isRoot', $this->isRoot());
     }
 
     public function admin_copy() {

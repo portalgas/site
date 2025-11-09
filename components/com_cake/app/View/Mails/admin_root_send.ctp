@@ -61,7 +61,7 @@ echo '<legend>'.__('Send Mail').'</legend>';
          * single
          */
         echo '<div id="single" style="display:block;">';
-        echo $this->Form->input('single', ['type' => 'email', 'label' => __('Email')]);
+        echo $this->Form->input('single', ['type' => 'email', 'label' => __('Email'), 'placeholder' => 'inserisci la mail del destinatario']);
         echo '</div>';
 
 		echo $this->Form->input('subject');
