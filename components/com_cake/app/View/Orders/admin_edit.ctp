@@ -120,19 +120,21 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 echo '</div>';
 echo '<div class="tab-pane fade" id="tabs-1">';	
 
-        echo '<div id="mail_order_open_Y">';
-    
+    echo '<div id="mail_order_open_Y">';
+  
 	/*
 	 * mail_open_testo
 	*/
 	if($this->Form->value('Order.state_code') == 'CREATE-INCOMPLETE' || $this->Form->value('Order.state_code') == 'OPEN-NEXT' || $this->Form->value('Order.state_code') == 'OPEN') {
-		echo $this->Form->input('mail_open_testo', array('after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));
-		if(count($mail_order_types)>1)
-			echo $this->Form->input('mail_order_type', ['label' => __('Mail Order Types'), 'options' => $mail_order_types]);			
+		echo $this->Form->input('mail_open_testo', array('after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));		
 	}
-	else
-		echo $this->Form->input('mail_open_testo', array('class' => 'noeditor', 'disabled' => 'disabled', 'cols' => '70', 'after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));
-	
+	else 
+		echo $this->Form->input('mail_open_testo', ['class' => 'noeditor', 'disabled' => 'disabled', 'cols' => '70', 'value' => str_replace(['<br>', '<br />', '<br/>'], "\n", $this->Form->value('Order.mail_open_testo')),
+													'after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />']);
+
+	if(count($mail_order_types)>1)
+		echo $this->Form->input('mail_order_type', ['label' => __('Mail Order Types'), 'options' => $mail_order_types]);	
+
 	/*
 	 * legenda
 	*/

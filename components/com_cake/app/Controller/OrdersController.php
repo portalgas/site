@@ -1375,7 +1375,7 @@ class OrdersController extends AppController {
 		App::import('Model', 'MailTypes');
 		$MailTypes = new MailTypes();
 		$mail_order_types = $MailTypes->getOrganizationMailOrderTypes($this->user);
-		$this->set('mail_order_types', $mail_order_types);				
+		$this->set('mail_order_types', $mail_order_types);		
 	}
 
 	public function admin_view() {

@@ -2481,7 +2481,7 @@ msgid "Mail Order Types"
 msgstr "Tipologie di email per l'ordine"
 
 msgid "Mail Open Testo"
-msgstr "Testo da aggiungere all'e'mail di apertura"
+msgstr "Testo da aggiungere all'email di apertura"
 
 msgid "Importo"
 msgstr "Importo"
