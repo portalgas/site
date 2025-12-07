@@ -1139,11 +1139,12 @@ class TestsController extends AppController {
         App::import('Model', 'User');
         $User = new User;
 
-        $url = $User->getUrlCartPreview($this->user, $username, $delivery_id);
+        $MailHelper = new MailHelper(null, null);
+        $url = $MailHelper->getUrlCartPreview($this->user, $username, $delivery_id);
 
         echo '<a target="_blank" href="' . Configure::read('App.server') . '/home-gas-cavagnetta/preview-carrello-gas-cavagnetta?' . $url . '">' . $url . '</a>';
 
-        $usernameCrypted = $User->getUsernameCrypted($username);
+        $usernameCrypted = $MailHelper->getUsernameCrypted($username);
 
         $usernameCrypted = 'SXp1S2JpQ1VmMGM3S1lzcFB4RXhseVRxT1FwVXhBLzcrS2Q1eE0xODF3WT06Oh/YNiABYPuDmXevoJFQwQ0=';
         // Warning (2): openssl_decrypt(): IV passed is only 12 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0 [APP/Model/AppModel.php, line 406]

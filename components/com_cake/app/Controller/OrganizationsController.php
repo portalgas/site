@@ -393,7 +393,16 @@ class OrganizationsController extends AppController {
 			$paramsConfig += ['hasUserFlagPrivacy' => $this->request->data['Organization']['hasUserFlagPrivacy']];
 			$paramsConfig += ['hasUserRegistrationExpire' => $this->request->data['Organization']['hasUserRegistrationExpire']];
 			$paramsConfig += ['userRegistrationExpireDate' => $this->request->data['Organization']['userRegistrationExpireDate']];
-			
+			$paramsConfig += ['hasMailDeliveryOpen' => $this->request->data['Organization']['hasMailDeliveryOpen']];
+
+			$mail_order_types = $this->request->data['Organization']['mailOrderTypes'];
+            if(empty($mail_order_types)) {
+                $mail_order_types = 'DEFAULT';
+            }
+            else {
+                $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            }
+
             /*
              * ruoli
              * di default gasManager, gasManagerDelivery, gasReferente, gasSuperReferente, utenti
@@ -496,6 +505,7 @@ class OrganizationsController extends AppController {
 		$hasUserFlagPrivacy = ['Y' => 'Si', 'N' => 'No'];
 		$hasUserRegistrationExpire = ['Y' => 'Si', 'N' => 'No'];
 		$userRegistrationExpireDate = '';
+		$hasMailDeliveryOpen = ['Y' => 'Si', 'N' => 'No'];
 		
         /*
          * ruoli
@@ -519,7 +529,12 @@ class OrganizationsController extends AppController {
         $stato = ClassRegistry::init('Organization')->enumOptions('stato');
         $type = ClassRegistry::init('Organization')->enumOptions('type');
         $this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasCms', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'hasGasGroups', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'hasFieldCartNote'));
-        $this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
+        $this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate', 'hasMailDeliveryOpen'));
+		
+		App::import('Model', 'MailTypes');
+		$MailTypes = new MailTypes();
+		$mail_order_types = $MailTypes->getMailOrderTypes($this->user);
+		$this->set('mail_order_types', $mail_order_types);
 
 		/*
 		 * template
@@ -527,7 +542,7 @@ class OrganizationsController extends AppController {
 		 $options = [];
 		 $options = ['order' => 'Template.name asc'];
 		 $templates = $this->Organization->Template->find('list', $options);		
-         $this->set('templates', $templates);
+         $this->set('templates', $templates);         
     }
 
     public function admin_edit($id = null) {
@@ -583,8 +598,16 @@ class OrganizationsController extends AppController {
 			$paramsConfig += ['hasUserFlagPrivacy' => $this->request->data['Organization']['hasUserFlagPrivacy']];
             $paramsConfig += ['hasUserRegistrationExpire' => $this->request->data['Organization']['hasUserRegistrationExpire']];
             $paramsConfig += ['userRegistrationExpireDate' => $this->request->data['Organization']['userRegistrationExpireDate']];
+            $paramsConfig += ['hasMailDeliveryOpen' => $this->request->data['Organization']['hasMailDeliveryOpen']];
             
-			
+			$mail_order_types = $this->request->data['Organization']['mailOrderTypes'];
+            if(empty($mail_order_types)) {
+                $mail_order_types = 'DEFAULT';
+            }
+            else {
+                $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            }
+        
             /*
              * ruoli
              * di default gasManager, gasManagerDelivery, gasReferente, gasSuperReferente, utenti
@@ -700,6 +723,7 @@ class OrganizationsController extends AppController {
 			$hasUserFlagPrivacy = ['Y' => 'Si', 'N' => 'No'];
 			$hasUserRegistrationExpire = ['Y' => 'Si', 'N' => 'No'];
 			$userRegistrationExpireDate = '';
+            $hasMailDeliveryOpen = ['Y' => 'Si', 'N' => 'No'];
 			
             /*
              * ruoli
@@ -735,8 +759,13 @@ class OrganizationsController extends AppController {
             $stato = ClassRegistry::init('Organization')->enumOptions('stato');
             $type = ClassRegistry::init('Organization')->enumOptions('type');
         	$this->set(compact('hasArticlesGdxp', 'hasOrdersGdxp', 'hasBookmarsArticles', 'hasCms', 'hasDocuments', 'hasArticlesOrder', 'hasVisibility', 'hasTrasport', 'hasCostMore', 'hasCostLess', 'hasValidate', 'hasCashFilterSupplier', 'hasStoreroom', 'hasStoreroomFrontEnd', 'canOrdersClose', 'canOrdersDelete', 'cashLimit', 'limitCashAfter', 'hasDes', 'hasDesReferentAllGas', 'hasDesUserManager', 'hasGasGroups', 'prodSupplierOrganizationId', 'hasUsersRegistrationFE', 'hasUserGroupsCassiere', 'hasUserGroupsReferentTesoriere', 'hasUserGroupsTesoriere', 'hasUserGroupsStoreroom', 'hasFieldArticleCodice', 'hasFieldArticleIngredienti', 'hasFieldArticleAlertToQta', 'hasFieldPaymentPos', 'hasFieldArticleCategoryId', 'hasFieldSupplierCategoryId', 'hasFieldFatturaRequired', 'hasFieldCartNote'));
-        	$this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate'));
-
+        	$this->set(compact('type', 'stato', 'hasUserFlagPrivacy', 'hasUserRegistrationExpire', 'userRegistrationExpireDate', 'hasMailDeliveryOpen'));
+          		
+            App::import('Model', 'MailTypes');
+            $MailTypes = new MailTypes();
+            $mail_order_types = $MailTypes->getMailOrderTypes($this->user);
+            $this->set('mail_order_types', $mail_order_types);
+          
 			/*
 			 * template
 			 */ 

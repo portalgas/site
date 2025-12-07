@@ -23,7 +23,7 @@ echo '<legend>'.__('View Order').'</legend>';
 echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
-echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
+echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Mail Order Configuration').'</a></li>';
 // echo '<li><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</a></li>';
 if($user->organization['Template']['payToDelivery']=='ON' || $user->organization['Template']['payToDelivery']=='ON-POST')

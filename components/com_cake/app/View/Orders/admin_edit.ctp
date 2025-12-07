@@ -32,7 +32,7 @@ echo '<legend>'.__('Edit Order').'</legend>';
 echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
-echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
+echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Mail Order Configuration').'</a></li>';
 // echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 if(empty($des_order_id))
 	echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</a></li>';
@@ -125,8 +125,11 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	/*
 	 * mail_open_testo
 	*/
-	if($this->Form->value('Order.state_code') == 'CREATE-INCOMPLETE' || $this->Form->value('Order.state_code') == 'OPEN-NEXT' || $this->Form->value('Order.state_code') == 'OPEN')
+	if($this->Form->value('Order.state_code') == 'CREATE-INCOMPLETE' || $this->Form->value('Order.state_code') == 'OPEN-NEXT' || $this->Form->value('Order.state_code') == 'OPEN') {
 		echo $this->Form->input('mail_open_testo', array('after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));
+		if(count($mail_order_types)>1)
+			echo $this->Form->input('mail_order_type', ['label' => __('Mail Order Types'), 'options' => $mail_order_types]);			
+	}
 	else
 		echo $this->Form->input('mail_open_testo', array('class' => 'noeditor', 'disabled' => 'disabled', 'cols' => '70', 'after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));
 	

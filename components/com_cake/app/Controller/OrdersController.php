@@ -502,6 +502,10 @@ class OrdersController extends AppController {
 				$des_order_id = $this->request->data['Order']['des_order_id'];
 			else
 				$des_order_id = 0;	
+
+			if(!isset($this->request->data['Order']['mail_order_type'])) {
+				$this->request->data['Order']['mail_order_type']='DEFAULT';
+			}				
 		}
 		else {
 			$data_inizio = '';
@@ -652,6 +656,11 @@ class OrdersController extends AppController {
 		 */
 		$this->set('isManagerDelivery', $this->isManagerDelivery());
 		
+		App::import('Model', 'MailTypes');
+		$MailTypes = new MailTypes();
+		$mail_order_types = $MailTypes->getOrganizationMailOrderTypes($this->user);
+		$this->set('mail_order_types', $mail_order_types);		
+
 		/*
 		 * dati DesOrder, diverso dalle altre chiamate $this->ActionsDesOrder->getDesOrderData() perche' non ho ancora order_id
 		 */
@@ -1163,7 +1172,11 @@ class OrdersController extends AppController {
 				$this->request->data['Order']['cost_less_type']= null;
 				$this->request->data['Order']['cost_less']= 0;
 			}
-				
+			
+			if(!isset($this->request->data['Order']['mail_order_type'])) {
+				$this->request->data['Order']['mail_order_type']='DEFAULT';
+			}
+
 			$this->request->data['Order']['mail_open_send'] = $this->Order->setOrderMailOpenSend($this->user, $this->request->data);
 			
 			/*
@@ -1358,7 +1371,11 @@ class OrdersController extends AppController {
 		$options['recursive'] = -1;
 		$tot_delivery_old = $Delivery->find('count', $options); 
 		$this->set('tot_delivery_old', $tot_delivery_old);	
-		
+	
+		App::import('Model', 'MailTypes');
+		$MailTypes = new MailTypes();
+		$mail_order_types = $MailTypes->getOrganizationMailOrderTypes($this->user);
+		$this->set('mail_order_types', $mail_order_types);				
 	}
 
 	public function admin_view() {

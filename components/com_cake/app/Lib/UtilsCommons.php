@@ -827,5 +827,75 @@ class UtilsCommons {
 
         return $user;
     }   
+
+    /*
+     * Warning: Warning (2): openssl_decrypt(): IV passed is only 15 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0
+     */
+	public function decoding($value, $debug=false) {
+		$results = '';
+		
+		if(!empty($value)) {
+			
+			try {
+				$encryption_key = base64_decode(Configure::read('crypt_key'));
+				list($encrypted_data, $iv) = explode('::', base64_decode($value), 2);
+                
+				/*
+				 * Warning: Warning (2): openssl_decrypt(): IV passed is only 14 bytes long, cipher expects an IV of precisely 16 bytes, padding with \0 
+				 * Il cifrario che scelto, AES-256-CBC, richiede un IV (Initialization Vector) che sia esattamente 16 byte di lunghezza.
+				 */
+				$iv_length = openssl_cipher_iv_length(Configure::read('crypt_method')); // Questo restituirà 16
+				$iv = substr($iv, 0, $iv_length);
+                
+				CakeLog::write('debug', '-----------------------------', ['myDebug']);
+				CakeLog::write('debug', $value, ['myDebug']);
+				CakeLog::write('debug', base64_decode($value), ['myDebug']);
+				CakeLog::write('debug', $encrypted_data, ['myDebug']);
+				CakeLog::write('debug', $iv, ['myDebug']);
+			    $results = openssl_decrypt($encrypted_data, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);	
+				CakeLog::write('debug', $results, ['myDebug']);
+                
+				if($debug) {
+					debug($value);
+					echo "<pre>encryption_key \n";
+					print_r($encryption_key);
+					echo "</pre>";
+					echo "<pre>base64_decode \n";
+					print_r(base64_decode($value));
+					echo "</pre>";
+					echo "<pre>encrypted_data \n";
+					print_r($encrypted_data);
+					echo "</pre>";
+					debug($results);
+				}			    
+	        } catch (Exception $e) {
+	            CakeLog::write('error', '_decoding '.$value);
+	            CakeLog::write('error', '_decoding '.base64_decode($value));
+	            CakeLog::write('error', '_decoding '.$encryption_key);
+	            CakeLog::write('error', $e);
+	        }
+		}
+
+		return $results;
+	}  
+    
+	public function encoding($value) {
+		
+		$results = '';
+
+		if(!empty($value)) {
+			try {
+				$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(Configure::read('crypt_method')));
+				$results = openssl_encrypt($value, Configure::read('crypt_method'), Configure::read('crypt_key'), 0, $iv);
+				$results = base64_encode($results.'::'.$iv);
+	        } catch (Exception $e) {
+	            CakeLog::write('error', 'encoding '.$value);
+	            CakeLog::write('error', 'encoding '.$iv);
+	            CakeLog::write('error', $e);
+	        }
+		}
+
+		return $results;
+	}    
 }
 ?>

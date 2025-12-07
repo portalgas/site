@@ -34,8 +34,9 @@ if(!empty($results)) {
 					?>
 					<th colspan="2">Nome prodotto</th>
 					<th><?php echo __('Conf.');?></th>
-					<th><?php echo __('Prezzo<br />unità');?></th>
-					<th style="text-align:center;"><?php echo __('Quantità<br />in dispensa');?></th>	
+					<th>Prezzo originale<br />unità</th>
+					<th colspan="2"><?php echo __('Prezzo<br />unità');?></th>
+					<th style="text-align:center;"><?php echo __('StoreroomArticleToBooked');?></th>
 					<th><?php echo __('Modifica<br />quantità<br />in dispensa');?></th>			
 			</tr>
 			<?php
@@ -65,8 +66,19 @@ if(!empty($results)) {
 				if($result['Article']['qta']>0)
 					echo $this->App->getArticleConf($result['Article']['qta'], $this->App->traslateEnum($result['Article']['um']));
 				echo '</td>';
-				echo '<td style="white-space: nowrap;">'.$result['Storeroom']['prezzo'].'&nbsp;&euro;'; // Prezzo unità del prezzo in dispensa 
+				echo '<td style="white-space: nowrap;">';
+				$prezzo_orig = number_format($result['Storeroom']['prezzo_orig'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				echo $prezzo_orig.'&nbsp;&euro;';
 				echo '</td>';
+				echo '<td style="white-space: nowrap;">';
+				 // .$result['Storeroom']['prezzo'].'&nbsp;&euro;'; // Prezzo unità del prezzo in dispensa 
+				 $result['Storeroom']['prezzo_'] = number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+				 echo $this->Form->input('prezzo_', ['id' => $result['Storeroom']['id'].'-prezzo', 'name' => 'data[Storeroom]['.$result['Storeroom']['id'].'][prezzo_]', 'value' => $result['Storeroom']['prezzo_'], 'type' => 'text', 'label' => false, 'after' => '&nbsp;&euro;', 'class' => 'activeUpdate double', 'style' => 'display:inline', 'required' => true]);
+				echo '</td>';
+				echo '<td>';
+				echo '<img alt="" src="'.Configure::read('App.img.cake').'/blank32x32.png" id="submitEcomm-'.$result['Storeroom']['id'].'" class="buttonCarrello submitEcomm" />';
+				echo '<div id="msgEcomm-'.$result['Storeroom']['id'].'" class="msgEcomm"></div>';
+				echo '</td>';				
 				echo '<td style="text-align:center;">'.$result['Storeroom']['qta'].'</td>';
 				echo '<td>'.$this->Form->input('qta', ['label' => false, 'name' => 'data[Storeroom]['.$result['Storeroom']['id'].'][qta]', 'value' => '', 'class' => 'qta_storeroom', 'tabindex'=>($i+1)]).'</td>';
 			echo '</tr>';
@@ -154,3 +166,54 @@ if(!empty($results)) {
 
 	echo '</div> <!-- panel-group -->';
 }
+?>
+<script type="text/javascript">
+function callUpdatePrezzo(storeroom_id, prezzo) {
+	
+	if(prezzo=='' || prezzo==undefined || prezzo=='0,00' || prezzo=='0.00' || prezzo=='0') { 
+		return;
+	}
+	
+	$("#submitEcomm-" + storeroom_id).animate({opacity: 1});
+	
+
+    var url = '';
+    url = "/administrator/index.php?option=com_cake&controller=Storerooms&action=update_prezzo&format=notmpl";
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: "storeroom_id="+storeroom_id+"&value="+encodeURIComponent(prezzo),
+        success: function(response){
+            $("#submitEcomm-" + storeroom_id).attr("src", app_img + "/actions/32x32/bookmark.png");
+            $("#msgEcomm-" + storeroom_id).html("Salvato!");		
+            $("#submitEcomm-" + storeroom_id).delay(1000).animate({
+                opacity: 0
+            }, 1500);
+            $("#msgEcomm-" + storeroom_id).delay(1000).animate({
+                opacity: 0
+            }, 1500);
+        },
+        error:function (XMLHttpRequest, textStatus, errorThrown) {
+             $('#msgEcomm-'+storeroom_id).html(textStatus);
+             $('#submitEcomm-'+storeroom_id).attr('src',app_img+'/blank32x32.png');
+        }
+    });       
+}
+
+$(document).ready(function() {
+
+	$(".activeUpdate").each(function () {
+		$(this).change(function() {
+			/* get id da id="id-field-table"  */
+			var idRow = $(this).attr('id');
+			
+			var storeroom_id = idRow.substring(0,idRow.indexOf('-'));
+			var prezzo =  $(this).val();
+			
+            callUpdatePrezzo(storeroom_id, prezzo);
+            return false;
+		});
+	});
+});		
+</script>

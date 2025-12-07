@@ -10,6 +10,7 @@ App::uses('CakeEmail', 'Network/Email');
 App::uses('TimeHelper', 'View/Helper');
 App::uses('View', 'View');
 App::uses('AppHelper', 'View/Helper');
+App::uses('MailHelper', 'View/Helper');
 App::uses('ExportDocsHelper', 'View/Helper');
 App::uses('File', 'Utility');
 
@@ -19,6 +20,7 @@ class UtilsCrons {
     private $timeHelper;
     private $appHelper;
     private $exportDocsHelper;
+    private $mailHelper;
 
     public function __construct(View $view, array $settings = []) {
 
@@ -28,6 +30,7 @@ class UtilsCrons {
         $this->timeHelper = new TimeHelper($view, $settings);
         $this->appHelper = new AppHelper($view, $settings);
         $this->exportDocsHelper = new ExportDocsHelper($view, $settings);
+        $this->mailHelper = new MailHelper($view, $settings);
     }
 
     /*
@@ -41,6 +44,10 @@ class UtilsCrons {
 
         // escludo i GasGroup
         if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y')
+            return;
+        
+        // escludo chi non l'ha settato
+        if(isset($user->organization['Organization']['hasMailDeliverOpen']) && $user->organization['Organization']['hasMailDeliverOpen']=='N')
             return;
 
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail agli utenti con dettaglio consegna \n";
@@ -151,7 +158,7 @@ class UtilsCrons {
                                 $body_mail .= '</div>';
                             }
 
-                            $url = 'https://www.portalgas.it/home-' . $j_seo . '/preview-carrello-' . $j_seo . '?' . $User->getUrlCartPreviewNoUsername($user, $deliveryResult['Delivery']['id']);
+                            $url = 'https://www.portalgas.it/home-' . $j_seo . '/preview-carrello-' . $j_seo . '?' . $this->mailHelper->getUrlCartPreviewNoUsername($user, $deliveryResult['Delivery']['id']);
 
                             $body_mail .= '<div style="clear: both; float: none; margin: 5px 0 15px;">';
                             $body_mail .= '<img src="https://www.portalgas.it' . Configure::read('App.img.cake') . '/cesta-piena.png" title="" border="0" />';
@@ -167,7 +174,7 @@ class UtilsCrons {
                             /*
                              * all'url per il CartPreview aggiungo lo username crittografato
                              */
-                            $body_mail_final = str_replace("{u}", urlencode($User->getUsernameCrypted($username)), $body_mail);
+                            $body_mail_final = str_replace("{u}", urlencode($this->mailHelper->getUsernameCrypted($username)), $body_mail);
                             if ($debug && $numResult == 1)
                                 echo $body_mail_final;
 
@@ -240,6 +247,18 @@ class UtilsCrons {
 
         $Google->usersDeliveryUpdate($user, $this->timeHelper, $debug);
     }
+
+    public function mailTest($organization_id, $debug=false) {
+        $debug = true;
+        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($user)) 
+            return;
+
+        App::import('Model', 'MailsSend');
+        $MailsSend = new MailsSend;
+
+        $MailsSend->mailTest($organization_id, $user, $debug);
+	}
 
     /*
      * $debug = true perche' quando e' richiamato dal Cron deve scrivere sul file di log

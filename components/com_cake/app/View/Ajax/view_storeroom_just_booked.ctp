@@ -11,18 +11,25 @@ if(!empty($results)) {
 	echo '<th>'.__('N').'</th>';
 	echo '<th>'.__('Name').'</th>';
 	echo '<th style="text-align:center">'.__('StoreroomArticleQtaJustBooked').'</th>';
+	echo '<th style="text-align:center">'.__('PrezzoUnita').'</th>';
+	echo '<th style="text-align:center">'.__('Importo').'</th>';
 	echo '<th>'.__('StoreroomArticleDeliveryaJustBooked').'</th>';
 	echo '</tr>';
 	echo '</thead>';
 	echo '<tbody>';
 
 	$tot_qta = 0;
+	$tot_importo = 0;
 	foreach($results as $numResult => $result) {
 	
+		$importo = number_format($result['Storeroom']['importo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+		$prezzo = number_format($result['Storeroom']['prezzo'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 		echo '<tr>';
 		echo '<td>'._((int)$numResult+1).'</td>';
 		echo '<td>'.$result['User']['name'].'</td>';
 		echo '<td style="text-align:center">'.$result['Storeroom']['qta'].'</td>';
+		echo '<td style="text-align:center">'.$prezzo.'&nbsp;&euro;</td>';
+		echo '<td style="text-align:center">'.$importo.'&nbsp;&euro;</td>';
 		echo '<td>';
 		if(!empty($result['Delivery']['luogo']))
 			echo $result['Delivery']['luogo'].' del '.$this->Time->i18nFormat($result['Delivery']['data'],"%A %e %B %Y");
@@ -30,6 +37,7 @@ if(!empty($results)) {
 		echo '</tr>';
 		
 		$tot_qta = ($tot_qta + intval($result['Storeroom']['qta']));
+		$tot_importo += $result['Storeroom']['importo'];
 	}
 	echo '</tbody>';
 	echo '<tfooter>';
@@ -37,6 +45,8 @@ if(!empty($results)) {
 	echo '<td></td>';
 	echo '<td>Totale</td>';
 	echo '<td style="text-align:center">'.$tot_qta.'</td>';
+	echo '<td></td>';
+	echo '<td style="text-align:center">'.$tot_importo.'&nbsp;&euro;</td>';
 	echo '<td></td>';
 	echo '</tr>';
 	echo '</tfooter>';	

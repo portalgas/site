@@ -1347,6 +1347,8 @@ class AppController extends Controller {
 	}
 
     protected function _queryAutocompleteDecodate($q) {
+        if(empty($q)) return $q;
+
         return strtolower(addslashes(trim($q)));
     }
 }

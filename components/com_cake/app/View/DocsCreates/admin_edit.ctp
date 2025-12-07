@@ -18,7 +18,7 @@ echo $this->Form->input('doc_id', ['type' => 'hidden', 'value' => $doc_id, 'id' 
 echo '<div id="users">';
 $label = __('Users').'&nbsp;('.count($users).')';
 echo '<label for="MailUser">'.$label.'</label> ';
-echo $this->Form->select('master_user_id', $users, ['label' => $label, 'multiple' => true, 'size' =>10, 'id' => 'master_user_id']);
+echo $this->Form->select('master_user_id', $users, ['label' => $label, 'multiple' => true, 'size' => 10, 'id' => 'master_user_id']);
 echo $this->Form->select('user_id', $usersResults, ['multiple' => true, 'size' => 10, 'style' => 'min-width:300px', 'id' => 'user_id']);					
 echo $this->Form->hidden('user_ids', ['id' => 'user_ids','value' => '']);
 echo '</div>';

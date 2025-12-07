@@ -828,6 +828,7 @@ class StoreroomsController extends AppController {
 							$storeroom['Storeroom']['article_organization_id'] = $article['Article']['organization_id'];
 							$storeroom['Storeroom']['name'] = $article['Article']['name'];
 							$storeroom['Storeroom']['qta'] = $data['qta'];
+							$storeroom['Storeroom']['prezzo_orig'] = $article['Article']['prezzo'];
 							$storeroom['Storeroom']['prezzo'] = $article['Article']['prezzo'];
 							$storeroom['Storeroom']['organization_id'] = (int)$this->user->organization['Organization']['id'];
 							$storeroom['Storeroom']['stato'] = 'Y';
@@ -846,14 +847,12 @@ class StoreroomsController extends AppController {
 			} // end if(isset($this->request->data['Article'])) 
 		
 			
-			
 			/*
 			 * tratto gli articoli gia' inseriti in dispensa
 			* */
 			if(isset($this->request->data['Storeroom'])) {
 				foreach($this->request->data['Storeroom'] as $key => $data) {
 					$storeroom_id = $key;
-
 					// DELETE da dispensa
 					if($data['qta']=='0' && is_numeric($data['qta'])) {
 						$this->Storeroom->id = $storeroom_id;
@@ -977,6 +976,30 @@ class StoreroomsController extends AppController {
 		$this->layout = 'ajax';		
 	}	
 	
+    public function admin_update_prezzo() {
+
+		$debug = false;
+		
+        $storeroom_id = $this->request->data['storeroom_id'];
+        $value = $this->request->data['value'];
+		if($debug) debug($this->request->data);
+		
+        $options = [];
+        $options['conditions'] = ['Storeroom.organization_id' => $this->user->organization['Organization']['id'],
+            					  'Storeroom.id' => $storeroom_id];
+        $options['recursive'] = -1;
+        $results = $this->Storeroom->find('first', $options);
+		if($debug) debug($options);
+		if($debug) debug($results); 
+        if (!empty($results)) {
+			$results['Storeroom']['prezzo'] = $this->importoToDatabase($value);
+			self::d($data, $debug);
+	        $this->Storeroom->save($results);
+		}
+		$this->layout = 'ajax';
+		$this->render('/Layouts/ajax');
+    }
+
 	/*
 	 * elenco degli articoli acquistati da portare in dispensa UtilsCron::articlesFromCartToStoreroom
 	 * se Order.state_code = PROCESSED-POST-DELIVERY / INCOMING-ORDER / PROCESSED-ON-DELIVERY
@@ -1084,6 +1107,7 @@ class StoreroomsController extends AppController {
 			$newResults[$result['Article']['id']]['Storeroom']['article_organization_id'] = $result['Storeroom']['article_organization_id'];
 			$newResults[$result['Article']['id']]['Storeroom']['name'] = $result['Storeroom']['name'];
 			$newResults[$result['Article']['id']]['Storeroom']['qta'] = $result['Storeroom']['qta'];
+			$newResults[$result['Article']['id']]['Storeroom']['prezzo_orig'] = $result['Storeroom']['prezzo_orig'];
 			$newResults[$result['Article']['id']]['Storeroom']['prezzo'] = $result['Storeroom']['prezzo'];
 			$newResults[$result['Article']['id']]['Storeroom']['stato'] = $result['Storeroom']['stato'];
 			$newResults[$result['Article']['id']]['Storeroom']['prezzo_db'] = $result['Storeroom']['prezzo_db'];

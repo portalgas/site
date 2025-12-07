@@ -112,7 +112,7 @@
 							</tr>
 							<tr valign="middle">
 								<td align="left">
-									<?php echo $content; ?>
+									<?php echo $this->fetch('content'); ?>
 								</td>
 							</tr>
 							<tr valign="middle">

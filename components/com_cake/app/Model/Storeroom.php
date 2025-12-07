@@ -433,6 +433,10 @@ class Storeroom extends AppModel {
 					$results[$key]['Storeroom']['importo_'] = number_format(($val['Storeroom']['prezzo']*$val['Storeroom']['qta']),2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
 					$results[$key]['Storeroom']['importo_e'] = $results[$key]['Storeroom']['importo_'].' &euro;';
 				}
+				if (isset($val['Storeroom']['prezzo_orig'])) {
+					$results[$key]['Storeroom']['prezzo_orig_'] = number_format($val['Storeroom']['prezzo_orig'],2,Configure::read('separatoreDecimali'),Configure::read('separatoreMigliaia'));
+					$results[$key]['Storeroom']['prezzo_orig_e'] = $results[$key]['Storeroom']['prezzo_orig_'].' &euro;';
+				}
 			}				
 		}
 		return $results;

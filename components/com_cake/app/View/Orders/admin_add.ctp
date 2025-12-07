@@ -22,7 +22,7 @@ else {
 echo '<div class="tabs">';
 echo '<ul class="nav nav-tabs">'; // nav-tabs nav-pills
 echo '<li class="active"><a href="#tabs-0" data-toggle="tab">'.__('Dati ordine').'</a></li>';
-echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Note Referente').'</a></li>';
+echo '<li><a href="#tabs-1" data-toggle="tab">'.__('Mail Order Configuration').'</a></li>';
 // echo '<li class="hidden-xs hidden-sm"><a href="#tabs-2" data-toggle="tab">'.__('Per gli utenti').'</a></li>';
 if(empty($des_order_id))
 	echo '<li><a href="#tabs-3" data-toggle="tab">'.__('Durante l\'ordine').'</span></a></li>';
@@ -96,7 +96,11 @@ echo '<div class="tab-pane fade" id="tabs-1">';
 	
     echo '<div id="mail_order_open_Y">';
     echo $this->Form->input('mail_open_testo', array('after' => '<img width="100" class="print_screen" id="print_screen_mail_open_testo" src="'.Configure::read('App.img.cake').'/print_screen_mail_open_testo.jpg" title="" border="0" />'));	
-    echo $this->element('legendaOrdersSendMail', ['modalita' => 'ADD']);
+    
+	if(count($mail_order_types)>1)
+		echo $this->Form->input('mail_order_type', ['label' => __('Mail Order Types'), 'options' => $mail_order_types]);	
+    	
+	echo $this->element('legendaOrdersSendMail', ['modalita' => 'ADD']);
 	echo $this->element('legendaOrderTestoMailFrontEnd');
     echo '</div>';
     

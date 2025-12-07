@@ -963,7 +963,7 @@ class DeliveriesController extends AppController {
      * dal link della mail /preview-carrello?E=3456434&O=451&R=fHqbzWjOK6GaWezgE4mycHsphSPsE9HhincbgjTmDjY=&format=html
      * 	E = random, non serve a niente
      *  O = (tolgo i primi 2 numeri e poi organization_id) organization_id
-     *  R = username crittografata User->getUsernameCrypted()
+     *  R = username crittografata $this->mailHelper->getUsernameCrypted()
      *  D = (tolgo i primi 2 numeri e poi delivery_id) delivery_id
      *  org_id serve per mod_gas_organization_choice
      */
@@ -981,8 +981,8 @@ class DeliveriesController extends AppController {
             $Organization = new Organization;
 
             $options = [];
-            $options['conditions'] = array('Organization.id' => (int) $this->user->organization_id);
-            $options['recursive'] = array('Organization.j_seo');
+            $options['conditions'] = ['Organization.id' => (int) $this->user->organization_id];
+            $options['recursive'] = ['Organization.j_seo'];
             $options['recursive'] = -1;
 
             $results = $Organization->find('first', $options);
@@ -991,9 +991,9 @@ class DeliveriesController extends AppController {
 
             $this->myRedirect($url);
         } // end if(!empty($this->user->id) && !empty($this->user->organization_id))
-
+        
         $userPreview = $this->_getUserPreview($E, $O, $R, $D, $debug);
-
+    
         $organization_id = $userPreview->organization_id;
         $user_id = $userPreview->user_id;
         $delivery_id = $userPreview->delivery_id;
@@ -1982,12 +1982,12 @@ class DeliveriesController extends AppController {
     private function _getUserPreview($E, $O, $R, $D, $debug = false) {
 
         if ($debug) {
-            debug('E => ' . $E);
-            debug('O => organization_id (tolgo i primi 2 numeri e poi organization_id) ' . $O);
-            debug('R => username ' . $R);
-            debug('D => delivery_id (tolgo i primi 2 numeri e poi delivery_id) ' . $D);
+            debug('E => ['.$E.']');
+            debug('O => organization_id (tolgo i primi 2 numeri e poi organization_id) ['.$O.']');
+            debug('R => username ['.$R.']');
+            debug('D => delivery_id (tolgo i primi 2 numeri e poi delivery_id) ['.$D.']');
         }
-
+          
         if (empty($E) || empty($O) || empty($R) || empty($D)) {
             if ($debug) {
                 debug('ERROR empty(E) || empty(O) || empty(R) || empty($D) ');
@@ -1995,7 +1995,7 @@ class DeliveriesController extends AppController {
             } else
                 $this->myRedirect(Configure::read('routes_msg_frontend_cart_preview'));
         }
-
+       
         App::import('Model', 'User');
         $User = new User;
 
@@ -2008,12 +2008,12 @@ class DeliveriesController extends AppController {
         }            
         $delivery_id = substr($D, 2, strlen($D));
 
-        if ($debug) {
+        if (!$debug) {
             echo '<br />organization_id ' . $organization_id;
             echo '<br />username ' . $username;
             echo '<br />delivery_id ' . $delivery_id;
         }
-
+        
         if (empty($username) || empty($organization_id) || !is_numeric($organization_id) || empty($delivery_id) || !is_numeric($delivery_id)) {
             if ($debug) {
                 echo '<br />ERROR empty(username) || empty(organization_id) || !is_numeric(organization_id) || empty($delivery_id) || !is_numeric($delivery_id) ';
@@ -2029,7 +2029,7 @@ class DeliveriesController extends AppController {
         $options['fields'] = ['id', 'organization_id'];
         $options['recursive'] = -1;
         $results = $User->find('first', $options);
-
+       
 		self::d($results, $debug);
 		
         if (empty($results)) {

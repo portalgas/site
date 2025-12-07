@@ -174,6 +174,11 @@ echo '<div class="tab-pane fade" id="tabs-5">';
     echo $this->App->drawFormRadio('Organization','hasDocuments', ['options' => $hasDocuments, 'value'=> $this->Form->value('Organization.hasDocuments'), 'label'=>__('HasDocuments'), 'required'=>'required']);
     echo $this->element('boxMsg', array('class_msg' => 'message', 'msg' => "Se ha il CMS creare voce di menù e pagina della Home del G.A.S."));
 
+	echo '<h3>Email</h3>'; 
+	echo $this->App->drawFormRadio('Organization','hasMailDeliveryOpen', ['options' => $hasMailDeliveryOpen, 'value'=> $this->Form->value('Organization.hasMailDeliveryOpen'), 'label'=>__('HasMailDeliveryOpen'), 'required'=>'required']);
+	echo '<h5>Tipologia di mail per gli ordini</h5>'; 
+	echo $this->Form->select('mailOrderTypes', $mail_order_types, ['id' => 'mailOrderTypes', 'label' => __('Mail Order Types'), 'multiple' => 'checkbox', 'value' => $this->Form->value('Organization.mailOrderTypes')]);
+
 	echo '<h3>Organization</h3>';
 	echo $this->App->drawFormRadio('Organization','stato',array('options' => $stato, 'value'=>$this->Form->value('Organization.stato'), 'label'=>__('Stato'), 'required'=>'required',
 			'after'=>$this->App->drawTooltip(null,__('toolTipStato'),$type='HELP')));

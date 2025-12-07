@@ -7,10 +7,18 @@ class Mail extends AppModel {
 	/*
 	 * crea oggetto mail per invio mail di sistema
 	 */
-	 public function getMailSystem($user) {
+	 public function getMailSystem($user, $options=[]) {
+
+		$template = 'default';
+		$layout = 'default';
+		if(!empty($options)) {
+			isset($options['template']) ? $template = $options['template']: $template = 'default';
+			isset($options['layout']) ? $layout = $options['layout']: $layout = 'default';
+		}
+
 		$Email = new CakeEmail(Configure::read('EmailConfig'));
 		$Email->helpers(['Html', 'Text']);
-		$Email->template('default');
+		$Email->template($template, $layout); 
 		$Email->emailFormat('html');
 	
 		$Email->replyTo(Configure::read('Mail.no_reply_mail'), Configure::read('Mail.no_reply_name'));
@@ -47,7 +55,7 @@ class Mail extends AppModel {
 			$mail = trim($mail);
 				
 			if(!empty($mail)) { 
-			
+				
 				self::d("Mail::send - tratto la mail ".$mail, $debug);
 									
 				/*
@@ -85,10 +93,12 @@ class Mail extends AppModel {
 
 					try {
 						$Email->to($mail);
-						$Email->send($body_mail);
+						$output =$Email->send($body_mail);
 						
-						if (!Configure::read('mail.send'))
+						if (!Configure::read('mail.send')) {
 							$results['OK'] = $mail.' (modalita DEBUG)';
+							print_r($output);
+						}
 						else
 							$results['OK'] = $mail;
 					} catch (Exception $e) {

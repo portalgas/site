@@ -1644,8 +1644,10 @@ class AjaxController extends AppController {
         App::import('Model', 'Delivery');
         $Delivery = new Delivery;
 
+        $q = $this->_queryAutocompleteDecodate($q);
+        
 		$options = [];
-		$options['conditions'] = ['Delivery.luogo LIKE' => '%' . $q . '%',
+		$options['conditions'] = ['LOWER(Delivery.luogo) LIKE' => '%' . $q . '%',
                 				  'Delivery.organization_id' => (int) $this->user->organization['Organization']['id']];
 		$options['fields'] = ['DISTINCT luogo'];
 		$options['recursive'] = -1;

@@ -2471,8 +2471,17 @@ msgstr "Nota restituz. contributo suppletivo"
 msgid "nota"
 msgstr "Nota"
 
+msgid "Mail Order Configuration"
+msgstr "Email dell'ordine"
+
+msgid "Mail Types"
+msgstr "Tipologie di email"
+
+msgid "Mail Order Types"
+msgstr "Tipologie di email per l'ordine"
+
 msgid "Mail Open Testo"
-msgstr "Testo da aggiungere alla mail di apertura"
+msgstr "Testo da aggiungere all'e'mail di apertura"
 
 msgid "Importo"
 msgstr "Importo"
@@ -3097,6 +3106,9 @@ msgstr "Permette agli utenti di registrarsi a FE"
 
 msgid "HasArticlesOrder"
 msgstr "Ha la gestione degli articoli associati agli ordini"
+
+msgid "HasMailDeliveryOpen"
+msgstr "Ha la mail di apertura della consegna"
 
 msgid "HasVisibility"
 msgstr "Ha la gestione della visibilità delle consegne e degli ordini"

@@ -227,7 +227,19 @@ class User extends AppModel {
 	}
 		
 	public function getUsersToMail($user, $debug=false) {
-         
+		
+		$usersResults = [];
+
+		if(Configure::read('mail.users.testing')) {
+			$usersResults[0]['User'] = [];
+			$usersResults[0]['User']['email'] = 'francesco.actis@gmail.com';
+			$usersResults[0]['UserProfile']['email'] = null;
+			$usersResults[0]['User']['name'] = 'Francesco & Sara';
+			$usersResults[0]['User']['username'] = 'fractis@libero.it';
+			$usersResults[0]['User']['id'] = 2798;	
+			return $usersResults;	
+		}
+
 		if(is_object($user)) 
 			$organization_id = $user->organization['Organization']['id'];
 		else 
@@ -790,24 +802,6 @@ class User extends AppModel {
 	 	return true;
 	 }
 	 
-	 public function getUsernameCrypted($username) {
-	 	
-	 	$salt = Configure::read('Security.salt');
-	 	
-	 	/*
-	 	 * crea stringa cifrata ma non leggibile
-		 * php 7.4 non supportato
- 	 	$encrypted = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $salt, $username, MCRYPT_MODE_ECB);
- 	 	 *
-	 	 * converte stringa cifrata in modo leggibile (MGCP+iQL/0qPiL2H62c+WXrnY856xfided9FJhjarEU=)
-	 	$encrypted_base64 = base64_encode($encrypted);	
-	 	*/
-
-	 	$encrypted = $this->_encoding($username);
-
-	 	return $encrypted;
-	 }
-	 
 	 /*
 	  * call Deliveries::tabsUserCartPreview()
 	  */
@@ -821,74 +815,13 @@ class User extends AppModel {
 		 * $username = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $salt, base64_decode($usernameCrypted), MCRYPT_MODE_ECB));
 	 	*/
         try {
-	 	    $username = $this->_decoding($usernameCrypted);
+	 	    $username = $this->utilsCommons->decoding($usernameCrypted);
         } catch (Exception $e) {
             CakeLog::write('error', 'getUsernameToUsernameCrypted '.$usernameCrypted);
             CakeLog::write('error', $e);
         }
-
+		
 	 	return $username;
-	 }
-	 
-	 /*
-	 * creo link della mail /preview-carrello?E=3456434&O=451&R=fHqbzWjOK6GaWezgE4mycHsphSPsE9HhincbgjTmDjY=&format=html
-	 * 	E = random, non serve a niente
-	 *  O = (tolgo i primi 2 numeri e poi organization_id) organization_id
-	 *  R = username crittografata User->getUsernameCrypted()
-	 *  D = (tolgo i primi 2 numeri e poi delivery_id) delivery_id
-	 *  org_id serve per mod_gas_organization_choice	  */
-	 public function getUrlCartPreview($user, $username, $delivery_id) {
-	 	
-	 	$tmp = "";
-
-	 	$E = '';
-	 	$O = '';
-	 	$R = '';
-	 	$D = '';
-	 	$org_id = '';
-	 	
-	 	$E = $this->utilsCommons->randomString($length=5);
-	 	
-	 	$O = rand (10, 99).$user->organization['Organization']['id'];
-	 	
-	 	$R = urlencode($this->getUsernameCrypted($username));
-	 	
-	 	$D = rand (10, 99).$delivery_id;
-	 	
-	 	$org_id = $user->organization['Organization']['id'];
-
-	 	$tmp = 'E='.$E.'&O='.$O.'&R='.$R.'&D='.$D.'&org_id='.$org_id;
-	 	
-	 	return $tmp;
-	 }
-	 
-	 /*
-	  * creo url senza lo username, 
-	  * in Cron::mailUsersOrdersOpen, quando ciclo per utenti ho gia' creato il messaggio per consegna
-	  */
-	 public function getUrlCartPreviewNoUsername($user, $delivery_id) {
-	 	 
-	 	$tmp = "";
-	 
-	 	$E = '';
-	 	$O = '';
-	 	$R = '';
-	 	$D = '';
-	 	$org_id = '';
-	 	 
-	 	$E = $this->utilsCommons->randomString($length=5);
-	 	 
-	 	$O = rand (10, 99).$user->organization['Organization']['id'];
-	 	 
-	 	$R = "{u}";
-	 	 
-	 	$D = rand (10, 99).$delivery_id;
-	 	 
-	 	$org_id = $user->organization['Organization']['id'];
-	 
-	 	$tmp = 'E='.$E.'&O='.$O.'&R='.$R.'&D='.$D.'&org_id='.$org_id;
-	 	 
-	 	return $tmp;
 	 }
 	 
 	 public $hasMany = [

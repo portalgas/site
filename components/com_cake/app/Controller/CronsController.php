@@ -20,6 +20,13 @@ class CronsController extends AppController {
 		
 		$crons = [];
 		$arr = ['category' => "Mail",
+									'name' => "Test invio mail",
+									'nota' => "test invio mail a info@portalgas.it",
+									'execute' => "",
+									'method' => "mailTest",
+									'stato' => 'Y'];
+        array_push($crons, $arr);	
+		$arr = ['category' => "Mail",
 									'name' => "Mail agli utenti con dettaglio consegna",
 									'nota' => "La mail viene inviata il giorno prima",
 									'execute' => "Dopo la mezzanotte<br />25 0 * * *",
