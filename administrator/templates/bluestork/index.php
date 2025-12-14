@@ -86,7 +86,7 @@ if($component=='com_cake') {
 		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/jquery/jquery-3.2.1.min.js\"><\/script>');
 		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/jquery/jquery-ui.min.js\"><\/script>');
 		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/i18n/ui.datepicker-it.js\"><\/script>');
-		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/genericBackOffice-v08.min.js?v=20250418\"><\/script>');
+		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/genericBackOffice-v09.min.js?v=20251212\"><\/script>');
 	}
 	else {
 		document.write('<script type=\"text/javascript\" src=\"<?php echo $this->baseurl ?>/../components/com_cake/app/webroot/js/jquery/jquery-1.10.1.min.js\"><\/script>');

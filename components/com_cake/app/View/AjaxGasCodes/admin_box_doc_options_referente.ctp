@@ -186,7 +186,7 @@ if(!empty($results))
 		<div class="doc-options">
 			<label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
 			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_N" value="N" />No</label>
-			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_Y" value="Y" checked />Si</label>
+			<label class="radio-inline"><input type="radio" name="user_phone<?php echo $id;?>" id="user_phone<?php echo $id;?>_Y" value="Y" checked />Si...</label>
 		</div>
 		<div class="doc-options">
 			<label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
@@ -307,23 +307,23 @@ if(!empty($results))
     <div id="setting-to-users-shema" class="box-options">
         <div class="doc-options">
             <label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
-            <label class="radio-inline"><input type="radio" name="user_phone1" id="user_phone1_N" value="N" />No</label>
-            <label class="radio-inline"><input type="radio" name="user_phone1" id="user_phone1_Y" value="Y" checked />Si</label>
+            <label class="radio-inline"><input type="radio" name="user_phone_schema" id="user_phone_schema_N" value="N" />No</label>
+            <label class="radio-inline"><input type="radio" name="user_phone_schema" id="user_phone_schema_Y" value="Y" checked />Si</label>
         </div>
         <div class="doc-options">
             <label class="control-label">Visualizzo la <b>mail</b> degli utenti</label>
-            <label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_N" value="N" />No</label>
-            <label class="radio-inline"><input type="radio" name="user_email1" id="user_email1_Y" value="Y" checked />Si</label>
+            <label class="radio-inline"><input type="radio" name="user_email_schema" id="user_email_schema_N" value="N" />No</label>
+            <label class="radio-inline"><input type="radio" name="user_email_schema" id="user_email_schema_Y" value="Y" checked />Si</label>
         </div>
         <div class="doc-options">
             <label class="control-label">Visualizzo l'<b>indirizzo</b> degli utenti</label>
-            <label class="radio-inline"><input type="radio" name="user_address1" id="user_address1_N" value="N" checked />No</label>
-            <label class="radio-inline"><input type="radio" name="user_address1" id="user_address1_Y" value="Y" />Si</label>
+            <label class="radio-inline"><input type="radio" name="user_address_schema" id="user_address_schema_N" value="N" checked />No</label>
+            <label class="radio-inline"><input type="radio" name="user_address_schema" id="user_address_schema_Y" value="Y" />Si</label>
         </div>
         <div class="doc-options">
             <label class="control-label">Visualizzo la <b>foto</b> dell'utente</label>
-            <label class="radio-inline"><input type="radio" name="user_avatar1" id="user_avatar1_N" value="N" checked />No</label>
-            <label class="radio-inline"><input type="radio" name="user_avatar1" id="user_avatar1_Y" value="Y" />Si</label>
+            <label class="radio-inline"><input type="radio" name="user_avatar_schema" id="user_avatar_schema_N" value="N" checked />No</label>
+            <label class="radio-inline"><input type="radio" name="user_avatar_schema" id="user_avatar_schema_Y" value="Y" />Si</label>
         </div>
     </div>
 </div>
@@ -402,16 +402,25 @@ $(document).ready(function() {
 	$("input[name='user_phone30']").change(function() {			
 		choiceDocOptions();
 	});
+	$("input[name='user_phone_schema']").change(function() {			
+		choiceDocOptions();
+	});
 	$("input[name='user_email3']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='user_email30']").change(function() {			
 		choiceDocOptions();
 	});
+	$("input[name='user_email_schema']").change(function() {			
+		choiceDocOptions();
+	});
 	$("input[name='user_address3']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='user_address30']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_address_schema']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='user_avatar1']").change(function() {			
@@ -424,6 +433,9 @@ $(document).ready(function() {
 		choiceDocOptions();
 	});
 	$("input[name='user_avatar30']").change(function() {			
+		choiceDocOptions();
+	});
+	$("input[name='user_avatar_schema']").change(function() {			
 		choiceDocOptions();
 	});
 	$("input[name='delete_to_referent2']").change(function() {			

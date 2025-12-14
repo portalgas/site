@@ -103,6 +103,7 @@ class AppController extends Controller {
             $this->utilsCommons = new UtilsCommons();
 
         $this->user = JFactory::getUser();
+
         unset($this->user->password);
         unset($this->user->password_clear);
 

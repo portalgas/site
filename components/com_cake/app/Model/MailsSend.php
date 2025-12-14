@@ -139,7 +139,7 @@ class MailsSend extends AppModel {
 						
 
 						if(count($orderResults)==1) 
-							$subject_mail = $result['SupplierOrganization']['name'].", ordine che si apre oggi";
+							$subject_mail = $orderResults['SupplierOrganization']['name'].", ordine che si apre oggi";
 						else 
 							$subject_mail = $this->_organizationNameError($user->organization).", ordini che si aprono oggi";								
 						$Email->subject($subject_mail);
@@ -202,8 +202,8 @@ class MailsSend extends AppModel {
 					echo "Estraggo gli ordini che chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
 				
 				/*
-					* prima di filtrare per users, ctrl che ci siano ordini da inviare
-					*/    
+				* prima di filtrare per users, ctrl che ci siano ordini da inviare
+				*/    
 				$sql = $this->_getSqlUsersOrdersClose($user, $organization_id, $debug);                
                 $orderCtrlResults = $Order->query($sql);
 				
@@ -222,13 +222,15 @@ class MailsSend extends AppModel {
 						$name = $usersResult['User']['name'];
 						$username = $usersResult['User']['username'];
 					
+						$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
+						
 						if($debug)
 							echo '<br />'.$numResult.") tratto l'utente ".$name.', username '.$username." \n";
 
 						/*
 							* ordini filtrati per users, ctrl che ci siano ordini da inviare
 							*/
-						$sql = $this->_getSqlUsersOrdersClosByUsere($user, $organization_id, $usersResult['User']['id'], $debug);     
+						$sql = $this->_getSqlUsersOrdersCloseByUser($user, $organization_id, $usersResult['User']['id'], $debug);     
 						self::d($sql, $debug);
 						$orderResults = $Order->query($sql);
 						if(!empty($orderResults)) { 
@@ -239,7 +241,7 @@ class MailsSend extends AppModel {
 							$Email->viewVars(['utente' => $usersResult]);
 
 							if(count($orderResults)==1) 
-								$subject_mail = $result['SupplierOrganization']['name'].", ordine che si chiuderà tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
+								$subject_mail = $orderResults['SupplierOrganization']['name'].", ordine che si chiuderà tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
 							else 
 								$subject_mail = $this->_organizationNameError($user->organization).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
 							$Email->subject($subject_mail);									
@@ -422,7 +424,7 @@ class MailsSend extends AppModel {
 						and Supplier.id = SupplierOrganization.supplier_id 
 						and SupplierOrganization.stato = 'Y'
 						and SupplierOrganization.mail_order_close = 'Y'
-						and  `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
+						and `Order`.state_code != 'CREATE-INCOMPLETE' and `Order`.state_code != 'CLOSE'
 						and `Order`.isVisibleFrontEnd = 'Y' 
 						and Delivery.isVisibleFrontEnd = 'Y' 
 						order by Delivery.data, Supplier.name ";			
@@ -457,7 +459,7 @@ class MailsSend extends AppModel {
 		return $sql;			
 	} 
 	
-	private function _getSqlUsersOrdersClosByUsere($user, $organization_id, $user_id, $debug) {
+	private function _getSqlUsersOrdersCloseByUser($user, $organization_id, $user_id, $debug) {
 		if(Configure::read('mail.users.testing')) {
 			/*
 			 * invio di test
@@ -484,7 +486,6 @@ class MailsSend extends AppModel {
 					and  `Order`.state_code != 'CREATE-INCOMPLETE' 
 					and `Order`.isVisibleFrontEnd = 'Y'  and `Order`.isVisibleFrontEnd = 'Y' 
 					and Delivery.isVisibleFrontEnd = 'Y' and Delivery.isVisibleFrontEnd = 'Y'
-					
 					and `Order`.supplier_organization_id not in (
 					SELECT supplier_organization_id 
 					FROM ".Configure::read('DB.prefix')."bookmarks_mails where user_id = $user_id and organization_id = $organization_id and order_close = 'N')

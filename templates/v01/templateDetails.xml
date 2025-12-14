@@ -95,6 +95,7 @@
 					<option value="154">gasdelgarda (id 154)</option> 
 					<option value="127">gasiamovaldayas (id 127)</option>
 					<option value="7">gasavigliana (id 7)</option>
+					<option value="190">gasbosco (id 190)</option> 
 					<option value="16">gasbarga (id 16)</option>
 					<option value="105">gasbrugherio (id 105)</option>
 					<option value="92">gasbussero (id 92)</option>
@@ -196,6 +197,7 @@
 					<option value="gasattivospoleto">gasattivospoleto</option>
 					<option value="gascorima">gascorima</option> 
 					<option value="gasavigliana">gasavigliana</option>
+					<option value="gasbosco">gasbosco</option>
 					<option value="gasbrugherio">gasbrugherio</option>
 					<option value="gasbussero">gasbussero</option>
 					<option value="gascaneva">gascaneva</option>

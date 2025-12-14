@@ -48,8 +48,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			$html .= '		<tr>';
 				
 
-            $html .= '			<th colspan="2" width="'.$output->getCELLWIDTH100().'">'.__('Name').'</th>';
-            $html .= '			<th width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH200()+$output->getCELLWIDTH100()).'" >'.__('Note').'</th>';
+            $html .= '			<th colspan="2" width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
+            $html .= '			<th width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'" >'.__('Note').'</th>';
             $html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';
             $html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';
 
@@ -69,30 +69,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 					switch ($typeRow) {
 						case 'TRGROUP':
 
-							$html .= '<td colspan="2" width="'.$output->getCELLWIDTH100().'">';
-							if($user_avatar=='Y')
-								$html .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
-							
 							/*
-							 * tolgo Utente:
-							*/
-							$label = str_replace("Utente: ", "", $cols['LABEL']);
-							$html .= $label;
-							
-							if($user_phone=='Y')
-								$html .=  ' '.$cols['LABEL_PHONE'];
-							if($user_email=='Y')
-								$html .=  ' '.$cols['LABEL_EMAIL'];
-							if($user_address=='Y')
-								$html .=  ' '.$cols['LABEL_ADDRESS'];							
-							$html .= '</td>';
-
-                            // note
-                            $html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH200()+$output->getCELLWIDTH100()).'"></td>';
-
-                            /*
                              * estraggo il totale di un utente
                             */
+							$qta_totale_dell_utente = null;
+							$importo_totale_dell_utente = null;
+							$importo_completo = null;							
                             foreach ($order['ExportRows'] as $rows2) {
                                 $user_id2 = current(array_keys($rows2));
                                 $rows2 = current(array_values($rows2));
@@ -107,19 +89,41 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                                 }
                             }
 
-                            $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$qta_totale_dell_utente.'</td>';
-                            $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$importo_totale_dell_utente.'</td>';
+							if(!empty($qta_totale_dell_utente) && !empty($importo_completo)) {
+								$html .= '<td colspan="2" width="'.$output->getCELLWIDTH200().'">';
+								if($user_avatar=='Y')
+									$html .=  ' '.$this->App->drawUserAvatar($user, $cols['LABEL_ID']).' ';
+								
+								/*
+								* tolgo Utente:
+								*/
+								$label = str_replace("Utente: ", "", $cols['LABEL']);
+								$html .= $label;
+								
+								if($user_phone=='Y')
+									$html .=  ' '.$cols['LABEL_PHONE'];
+								if($user_email=='Y')
+									$html .=  ' '.$cols['LABEL_EMAIL'];
+								if($user_address=='Y')
+									$html .=  ' '.$cols['LABEL_ADDRESS'];							
+								$html .= '</td>';
 
+								// note
+								$html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'"></td>';
+
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$qta_totale_dell_utente.'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$importo_completo.'</td>';
+							}
 						break;
 						case 'TRSUBTOT':
 
 						break;
 						case 'TRTOT':
-								
-							$html .= '<td colspan="2" width="'.$output->getCELLWIDTH100().'"></td>';
-                            $html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH200()+$output->getCELLWIDTH100()).'" style="text-align:right;">Totale&nbsp;&nbsp;</td>';
+				
+							$html .= '<td colspan="2" width="'.$output->getCELLWIDTH200().'"></td>';
+                            $html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'" style="text-align:right;">Totale&nbsp;&nbsp;</td>';
                             $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$cols['QTA'].'</td>';
-							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_COMPLETO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 
 						break;								
 						case 'TRDATA':

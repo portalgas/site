@@ -57,8 +57,8 @@ switch($order['Order']['mail_order_type']) {
         }
     break;
     case 'CONFIRM_AFTER_INCOMING':
-        echo '<div>La data presunta della consegna sarà intorno alla data '.CakeTime::format($order['Delivery']['data'], "%A %e %B %Y").'</div>';
-        echo '<div><b>Il giorno e ora esatti della consegna verranno specificati quando la merce sarà effettivamente arrivata.</b></div>';
+        echo '<div>La consegna avverrà '.$order['Delivery']['luogo'].' la data presunta è '.CakeTime::format($order['Delivery']['data'], "%A %e %B %Y").'</div>';
+        echo '<div><b>Il giorno e l\'ora esatti della consegna verranno specificati quando la merce sarà effettivamente arrivata</b></div>';
         echo '<div>Per richieste o dubbi non rispondere a questa mail ma contattare direttamente ';
         if(count($referenti)==1)
             echo 'il referente del produttore: ';

@@ -195,11 +195,21 @@ class ExportDocsHelper extends AppHelper {
 	*/
 	public function suppliersOrganizationsReferent($suppliersOrganizationsReferents) {
 
-		$tmp  = '';
+	$tmp  = '';
 		if(!empty($suppliersOrganizationsReferents)) {
 			$tmp .= '<div class="h4Pdf">'.__('Suppliers Organizations Referents').': ';
 			foreach ($suppliersOrganizationsReferents as $i => $suppliersOrganizationReferent) {
-				$tmp .= ' '.$suppliersOrganizationReferent['User']['name'].' '.$suppliersOrganizationReferent['User']['email'].' '.$suppliersOrganizationReferent['Profile']['phone'];
+				$phone = '';
+				if(isset($suppliersOrganizationReferent['Profile']['satispay']) && $suppliersOrganizationReferent['Profile']['satispay']=='Y') {
+					if(isset($suppliersOrganizationReferent['Profile']['satispay_phone']) && !empty($suppliersOrganizationReferent['Profile']['satispay_phone'])) {
+						$phone = $suppliersOrganizationReferent['Profile']['satispay_phone'];
+					}
+				}
+
+				if(empty($phone))
+					$phone = $suppliersOrganizationReferent['Profile']['phone'];
+
+				$tmp .= ' '.$suppliersOrganizationReferent['User']['name'].' '.$suppliersOrganizationReferent['User']['email'].' '.$phone;
 
 			if(isset($suppliersOrganizationReferent['UserProfile2']['satispay']) && $suppliersOrganizationReferent['UserProfile2']['satispay']=='"Y"')	
 					$tmp .= ' <img src="/images/satispay-ico.png" title="Ha Satispay" style="margin-top:2px" />';

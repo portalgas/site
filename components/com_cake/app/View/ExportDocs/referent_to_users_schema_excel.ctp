@@ -33,26 +33,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
                     switch ($typeRow) {
                         case 'TRGROUP':
-                            $label = $cols['LABEL'];
-                            /*
-                             * tolgo Utente:
-                             */
-                            $label = str_replace("Utente: ", "", $label);
-
-                            if($user_phone=='Y')
-                                $label .=  ' '.$cols['LABEL_PHONE'];
-                            if($user_email=='Y')
-                                $label .=  ' '.$cols['LABEL_EMAIL'];
-                            if($user_address=='Y')
-                                $label .=  ' '.$cols['LABEL_ADDRESS'];
-
-                            $rows = [];
-                            $rows[] = $this->ExportDocs->prepareCsv($label);
-                            $rows[] = ''; // note
 
                             /*
                              * estraggo il totale di un utente
                             */
+							$qta_totale_dell_utente = null;
+							$importo_totale_dell_utente = null;                            
                             foreach ($order['ExportRows'] as $rows2) {
                                 $user_id2 = current(array_keys($rows2));
                                 $rows2 = current(array_values($rows2));
@@ -67,9 +53,27 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                                     }
                             }
 
-                            $rows[] = (int)$this->ExportDocs->prepareCsv($qta_totale_dell_utente);
-                            $rows[] = $importo_totale_dell_utente;
+                            $label = $cols['LABEL'];
+                            /*
+                            * tolgo Utente:
+                            */
+                            $label = str_replace("Utente: ", "", $label);
 
+                            if($user_phone=='Y')
+                                $label .=  ' '.$cols['LABEL_PHONE'];
+                            if($user_email=='Y')
+                                $label .=  ' '.$cols['LABEL_EMAIL'];
+                            if($user_address=='Y')
+                                $label .=  ' '.$cols['LABEL_ADDRESS'];
+
+                            $rows = [];
+                            $rows[] = $this->ExportDocs->prepareCsv($label);
+                            $rows[] = ''; // note
+
+
+
+                            $rows[] = (int)$this->ExportDocs->prepareCsv($qta_totale_dell_utente);
+                            $rows[] = $importo_completo;
                             break;
                         case 'TRSUBTOT':
 
@@ -79,7 +83,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                             $rows[] = '';
                             $rows[] = '';
                             $rows[] = (int)$cols['QTA'];
-                            $rows[] = $cols['IMPORTO'];
+                            $rows[] = $cols['IMPORTO_COMPLETO'];
                             break;
                         case 'TRDATABIS':
                         case 'TRDATA':
@@ -89,8 +93,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                     }
 
                     if(($typeRow=='TRSUBTOT' && $totale_per_utente=='N') || $typeRow=='TRDATA' || $typeRow=='TRSUBTOT') {}
-                    else
-                        $this->PhpExcel->addTableRow($rows);
+                    else {
+                        if(!empty($rows))
+                            $this->PhpExcel->addTableRow($rows);
+                    }
 
                 } // end foreach ($rows as $typeRow => $cols)
 

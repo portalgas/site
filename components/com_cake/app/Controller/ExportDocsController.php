@@ -123,6 +123,7 @@ class ExportDocsController extends AppController {
      *      se  $doc_options=to-articles         $a = trasportAndCost, $b = codice, $c = pezzi_confezione
      *      se  $doc_options=to-articles-details $a = acquistato_il, $b = article_img, $c = trasportAndCost, $d = totale_per_articolo, $e = codice
      *      se  $doc_options=to-articles-monitoring
+     *      se  $doc_options=to-users-schema $a = user_phone, $b = user_email, $c = user_address, $d = user_avatar
      *
      * $doc_formato = PREVIEW, PDF, CSV, EXCEL
      */
@@ -325,7 +326,7 @@ class ExportDocsController extends AppController {
                      
                 } // end if(!empty($des_order_id))
         } // end if($doc_options == 'to-articles-monitoring')
-        
+        //self::d($results, true);
         $this->set(compact('results'));
 
         $params = ['delivery_id' => $delivery_id, 'order_id' => $order_id];
@@ -387,7 +388,7 @@ class ExportDocsController extends AppController {
                 $this->set('user_phone', $a);
                 $this->set('user_email', $b);
                 $this->set('user_address', $c);
-                $this->set('user_avatar', $f);
+                $this->set('user_avatar', $d);
                 break;
             case 'to-users-label':
             case 'to-users-articles-label':
@@ -414,7 +415,7 @@ class ExportDocsController extends AppController {
                 $this->set('codice', $e);
                 break;
         }
-       
+        
         switch ($doc_formato) {
             case 'PREVIEW':
                 $this->layout = 'ajax';

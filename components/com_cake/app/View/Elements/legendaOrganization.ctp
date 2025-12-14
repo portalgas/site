@@ -207,6 +207,8 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 <!--  			config joomla 			 -->
 <h1 class="header" id="header-joomla_config">Joomla configuration <a href="index.php?option=com_content&view=article&layout=edit" target="_blank">gestisci articolo</a></h1>
 <div class="contenuto" id="contenuto-joomla_config" style="display:none;">
+<!-- 
+sostituito da CMS
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>Categoria</th>
@@ -257,7 +259,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 	</li></p>
 		</td>
 	</tr>
-
+--> 
     <!--   CMS   -->
     <!--   CMS   -->
     <!--   CMS   -->
