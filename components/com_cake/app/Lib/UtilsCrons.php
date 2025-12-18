@@ -47,7 +47,7 @@ class UtilsCrons {
             return;
         
         // escludo chi non l'ha settato
-        if(isset($user->organization['Organization']['hasMailDeliverOpen']) && $user->organization['Organization']['hasMailDeliverOpen']=='N')
+        if(isset($user->organization['Organization']['hasMailDeliveryOpen']) && $user->organization['Organization']['hasMailDeliveryOpen']=='N')
             return;
 
         echo date("d/m/Y") . " - " . date("H:i:s") . " Mail agli utenti con dettaglio consegna \n";
