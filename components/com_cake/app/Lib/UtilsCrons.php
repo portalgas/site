@@ -34,6 +34,30 @@ class UtilsCrons {
     }
 
     /*
+     * php -f /var/www/portalgas/components/com_cake/app/Cron/index.php testMailSend 37
+     */
+    public function testMailSend($organization_id, $debug=true) {
+
+        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        if(empty($user)) 
+            return;
+
+        App::import('Model', 'Mail');
+        $Mail = new Mail;
+
+        $Email = $Mail->getMailSystem($user);
+        if(!Configure::read('mail.send'))  $Email->transport('Debug'); // non invia la mail, verra' stampata a video
+        $Email->subject("testMailSend");
+
+        $Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), "Francesco Actis")]);
+        $Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->appHelper->traslateWww($user->organization['Organization']['www']))]);
+
+        $mail = 'francesco.actis@gmail.com';
+        $body_mail_final = "mail di test";
+        $mailResults = $Mail->send($Email, $mail, $body_mail_final, $debug);
+    }
+
+    /*
      *  invio mail x notificare la consegna
      */
     public function mailUsersDelivery($organization_id, $debug=true) {

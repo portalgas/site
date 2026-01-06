@@ -108,7 +108,7 @@ class MailsSend extends AppModel {
 				return true;
 			}
 
-			if($debug) echo "Trovati ".count($orderCtrlResults)." ordini \n";
+			if($debug) echo "\nTrovati ".count($orderCtrlResults)." ordini \n";
 
 			/*
 			* ciclo UTENTI, se Configure::read('mail.users.testing') restituisce francesco.actis@gmail.com
@@ -123,7 +123,7 @@ class MailsSend extends AppModel {
 				$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 
 				if($debug)
-					echo '<br />'.$numResult.") tratto l'utente ".$name.', username '.$username." \n";
+					echo "<br />\n".$numResult.") tratto l'utente ".$name.', username '.$username." \n";
 
 					/*
 					* ordini filtrati per users, ctrl che ci siano ordini da inviare
@@ -132,18 +132,17 @@ class MailsSend extends AppModel {
 					$orderResults = $Order->query($sql);		
 					if(!empty($orderResults)) { 
 						if($debug)
-							echo "Trovati ".count($orderResults)." ordini per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") \n";
+							echo " \nTrovati ".count($orderResults)." ordini per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") \n";
 
 						$Email->viewVars(['orders' => $orderResults]);
 						$Email->viewVars(['utente' => $usersResult]);
-						
 
 						if(count($orderResults)==1) 
 							$subject_mail = $orderResults['SupplierOrganization']['name'].", ordine che si apre oggi";
 						else 
 							$subject_mail = $this->_organizationNameError($user->organization).", ordini che si aprono oggi";								
 						$Email->subject($subject_mail);
-						$mailResults = $Mail->send($Email, [$mail2, $mail], "", false);
+						$mailResults = $Mail->send($Email, [$mail2, $mail], "", $debug);
 
 					}   
 					else {
@@ -393,7 +392,6 @@ class MailsSend extends AppModel {
 					and `Order`.supplier_organization_id not in (
 						SELECT supplier_organization_id 
 						FROM ".Configure::read('DB.prefix')."bookmarks_mails where user_id = $user_id and organization_id = $organization_id and order_open = 'N')
-
 					order by Delivery.data, Supplier.name "; 			
 		}
 		self::d($sql, $debug);
