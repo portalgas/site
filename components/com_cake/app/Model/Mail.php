@@ -63,10 +63,9 @@ class Mail extends AppModel {
 				$results['KO'] = 'Mail vuota!';
 				return $results;
 				*/
-			
 				$exclude = false;
 				foreach(Configure::read('EmailExcludeDomains') as $emailExcludeDomain) {
-					self::d('Mail::send - EmailExcludeDomains '.$mail.' - '.$emailExcludeDomain, $debug);
+					// self::d('Mail::send - EmailExcludeDomains '.$mail.' - '.$emailExcludeDomain, $debug);
 					if(strpos($mail, $emailExcludeDomain)!==false) {
 						$exclude = true;
 						break;
@@ -88,12 +87,12 @@ class Mail extends AppModel {
 						else
 							self::d("Mail::send - inviata a " . $mail, $debug);
 											
-						self::d("Mail::send - mail TO: ".$mail." body_mail ".$body_mail, $debug);
+						// self::d("Mail::send - mail TO: ".$mail." body_mail ".$body_mail, $debug);
 					}
 
 					try {
 						$Email->to($mail);
-						$output =$Email->send($body_mail);
+						$output = $Email->send($body_mail);
 						
 						if (!Configure::read('mail.send')) {
 							$results['OK'] = $mail.' (modalita DEBUG)';

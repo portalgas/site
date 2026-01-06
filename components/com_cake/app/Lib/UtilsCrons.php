@@ -34,7 +34,8 @@ class UtilsCrons {
     }
 
     /*
-     * php -f /var/www/portalgas/components/com_cake/app/Cron/index.php testMailSend 37
+     * /var/portalgas/cron/testMailSend.sh
+     *      php -f /var/www/portalgas/components/com_cake/app/Cron/index.php testMailSend 37
      */
     public function testMailSend($organization_id, $debug=true) {
 
