@@ -89,6 +89,13 @@ class MailsSend extends AppModel {
 			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))]);
 			$Email->viewVars(['user' => $user]);
 
+			/*
+			 * nel temp non ho Configure
+			 */
+			$Email->viewVars(['App_root' => Configure::read('App.root')]);
+			$Email->viewVars(['Portalgas_urlMail' => Configure::read('Portalgas.urlMail')]);
+			$Email->viewVars(['App_web_img_upload_content' => Configure::read('App.web.img.upload.content')]);
+			
 			App::import('Model', 'Order');
 			$Order = new Order;
 
@@ -104,7 +111,7 @@ class MailsSend extends AppModel {
 			$sql = $this->_getSqlUsersOrdersOpen($user, $organization_id, $debug);
 			$orderCtrlResults = $Order->query($sql);  
 			if(empty($orderCtrlResults)) {
-				echo "non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderOpen')+1)." giorni \n";
+				echo "\n non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderOpen')+1)." giorni \n";
 				return true;
 			}
 
@@ -138,12 +145,11 @@ class MailsSend extends AppModel {
 						$Email->viewVars(['utente' => $usersResult]);
 
 						if(count($orderResults)==1) 
-							$subject_mail = $orderResults['SupplierOrganization']['name'].", ordine che si apre oggi";
+							$subject_mail = $orderResults[0]['SupplierOrganization']['name'].", ordine che si apre oggi";
 						else 
 							$subject_mail = $this->_organizationNameError($user->organization).", ordini che si aprono oggi";								
 						$Email->subject($subject_mail);
 						$mailResults = $Mail->send($Email, [$mail2, $mail], "", $debug);
-
 					}   
 					else {
 						if($debug) echo "Per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") non ci sono ordini da inviare \n";                      
@@ -240,7 +246,7 @@ class MailsSend extends AppModel {
 							$Email->viewVars(['utente' => $usersResult]);
 
 							if(count($orderResults)==1) 
-								$subject_mail = $orderResults['SupplierOrganization']['name'].", ordine che si chiuderà tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
+								$subject_mail = $orderResults[0]['SupplierOrganization']['name'].", ordine che si chiuderà tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
 							else 
 								$subject_mail = $this->_organizationNameError($user->organization).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
 							$Email->subject($subject_mail);									
@@ -270,7 +276,7 @@ class MailsSend extends AppModel {
                         
 				} // end if(!empty($orderCtrlResults))
 				else 
-					echo "non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
+					echo "\n non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
 		}
 		catch (Exception $e) {
 			echo '<br />UtilsCrons::mailUsersOrdersClose()<br />'.$e;
