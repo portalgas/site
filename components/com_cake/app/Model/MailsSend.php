@@ -94,7 +94,6 @@ class MailsSend extends AppModel {
 			 */
 			App::import('Model', 'SuppliersOrganizationsReferent');
 			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
-			$Email->viewVars(['SuppliersOrganizationsReferent' => $SuppliersOrganizationsReferent]);
 
 			App::import('Model', 'Order');
 			$Order = new Order;
@@ -141,6 +140,16 @@ class MailsSend extends AppModel {
 						if($debug)
 							echo " \nTrovati ".count($orderResults)." ordini per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") \n";
 
+						/*
+						 * per ogni ordine aggiungo i referenti
+						 */
+						foreach($orderResults as $numResultOrder => $orderResult) {
+							$conditions = [];
+							$conditions['SuppliersOrganization.id'] = $orderResult['Order']['supplier_organization_id'];
+							$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
+							$orderResults[$numResultOrder]['SuppliersOrganizationsReferents'] = $referenti;
+						}
+						
 						$Email->viewVars(['orders' => $orderResults]);
 						$Email->viewVars(['utente' => $usersResult]);
 
@@ -197,6 +206,9 @@ class MailsSend extends AppModel {
 				$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))]);
 				$Email->viewVars(['user' => $user]);
 
+				App::import('Model', 'SuppliersOrganizationsReferent');
+				$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+				
 				App::import('Model', 'Order');
 				$Order = new Order;
 
@@ -242,6 +254,16 @@ class MailsSend extends AppModel {
 							if($debug)
 								echo "Trovati ".count($orderResults)." ordini per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") \n";
 
+							/*
+							* per ogni ordine aggiungo i referenti
+							*/
+							foreach($orderResults as $numResultOrder => $orderResult) {
+								$conditions = [];
+								$conditions['SuppliersOrganization.id'] = $orderResult['Order']['supplier_organization_id'];
+								$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
+								$orderResults[$numResultOrder]['SuppliersOrganizationsReferents'] = $referenti;
+							}
+															
 							$Email->viewVars(['orders' => $orderResults]);
 							$Email->viewVars(['utente' => $usersResult]);
 

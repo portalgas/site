@@ -2,9 +2,7 @@
 $delivery_id_old = 0;
 foreach ($orders as $order) {
 
-    $conditions = [];
-    $conditions['SuppliersOrganization.id'] = $order['Order']['supplier_organization_id'];
-    $referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
+    $referenti = $order['SuppliersOrganizationsReferents'];
 
     if($delivery_id_old==0 || $delivery_id_old != $order['Delivery']['id']) {
 
