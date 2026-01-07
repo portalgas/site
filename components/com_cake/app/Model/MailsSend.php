@@ -89,9 +89,6 @@ class MailsSend extends AppModel {
 			$Email->viewVars(['body_footer' => sprintf(Configure::read('Mail.body_footer_no_reply'), $this->_traslateWww($user->organization['Organization']['www']))]);
 			$Email->viewVars(['user' => $user]);
 
-			/*
-			 * nel tmpl non importo su eseguito dal cron
-			 */
 			App::import('Model', 'SuppliersOrganizationsReferent');
 			$SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
 
@@ -146,7 +143,7 @@ class MailsSend extends AppModel {
 						foreach($orderResults as $numResultOrder => $orderResult) {
 							$conditions = [];
 							$conditions['SuppliersOrganization.id'] = $orderResult['Order']['supplier_organization_id'];
-							$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
+							$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, null, 'CRON');
 							$orderResults[$numResultOrder]['SuppliersOrganizationsReferents'] = $referenti;
 						}
 						
@@ -260,7 +257,7 @@ class MailsSend extends AppModel {
 							foreach($orderResults as $numResultOrder => $orderResult) {
 								$conditions = [];
 								$conditions['SuppliersOrganization.id'] = $orderResult['Order']['supplier_organization_id'];
-								$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
+								$referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions, null, 'CRON');
 								$orderResults[$numResultOrder]['SuppliersOrganizationsReferents'] = $referenti;
 							}
 															
