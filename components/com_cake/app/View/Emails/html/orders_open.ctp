@@ -1,14 +1,10 @@
 <?php 
 $delivery_id_old = 0;
 foreach ($orders as $order) {
-/*
-    App::import('Model', 'SuppliersOrganizationsReferent');
-    $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
+
     $conditions = [];
     $conditions['SuppliersOrganization.id'] = $order['Order']['supplier_organization_id'];
     $referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
-*/   
-    $referenti = [];
 
     if($delivery_id_old==0 || $delivery_id_old != $order['Delivery']['id']) {
 
