@@ -90,12 +90,13 @@ class MailsSend extends AppModel {
 			$Email->viewVars(['user' => $user]);
 
 			/*
-			 * nel temp non ho Configure
-			 */
+			 * nel tmpl non ho Configure
+			
 			$Email->viewVars(['App_root' => Configure::read('App.root')]);
 			$Email->viewVars(['Portalgas_urlMail' => Configure::read('Portalgas.urlMail')]);
 			$Email->viewVars(['App_web_img_upload_content' => Configure::read('App.web.img.upload.content')]);
-			
+			$Email->viewVars(['App_img_upload_content' => Configure::read('App.img.upload.content')]);
+			 */
 			App::import('Model', 'Order');
 			$Order = new Order;
 

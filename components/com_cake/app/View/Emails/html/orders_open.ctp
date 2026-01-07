@@ -1,13 +1,14 @@
 <?php 
 $delivery_id_old = 0;
 foreach ($orders as $order) {
-
+/*
     App::import('Model', 'SuppliersOrganizationsReferent');
     $SuppliersOrganizationsReferent = new SuppliersOrganizationsReferent;
     $conditions = [];
     $conditions['SuppliersOrganization.id'] = $order['Order']['supplier_organization_id'];
     $referenti = $SuppliersOrganizationsReferent->getReferentsCompact($user, $conditions);
-
+*/   
+    $referenti = [];
 
     if($delivery_id_old==0 || $delivery_id_old != $order['Delivery']['id']) {
 
@@ -38,10 +39,10 @@ if(!empty($order['Supplier']['descrizione'])) echo  "/".$order['Supplier']['desc
 if(!empty($order['SupplierOrganization']['frequenza'])) echo  " (frequenza ".$order['SupplierOrganization']['frequenza'].')';
 echo  " fino a ".CakeTime::format($order['Order']['data_fine'], "%A %e %B %Y");
 
-if(!empty($order['Supplier']['img1']) && file_exists($App_root.Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
-echo  ' <img width="50" src="'.$Portalgas_urlMail.$App_web_img_upload_content.'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
+if(!empty($order['Supplier']['img1']) && file_exists(Configure::read('App.root').Configure::read('App.img.upload.content').'/'.$order['Supplier']['img1']))
+echo  ' <img width="50" src="'.Configure::read('Portalgas.urlMail').Configure::read('App.web.img.upload.content').'/'.$order['Supplier']['img1'].'" alt="'.$order['SupplierOrganization']['name'].'" /> ';
 else
-echo  ' <img width="50" src="'.$Portalgas_urlMail.$App_web_img_upload_content.'/empty.png" alt="'.$order['SupplierOrganization']['name'].'" /> ';										
+echo  ' <img width="50" src="'.Configure::read('Portalgas.urlMail').Configure::read('App.web.img.upload.content').'/empty.png" alt="'.$order['SupplierOrganization']['name'].'" /> ';										
 
 echo '<div style="clear:both;float:none;margin-left:25px;">';
 switch($order['Order']['mail_order_type']) {
