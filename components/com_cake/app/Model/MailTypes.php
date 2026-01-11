@@ -16,6 +16,11 @@ class MailTypes extends AppModel {
 		return $results;
 	} 
 
+	public function getMailOrderTypeDefault($user) {
+		$results = [];
+		$results['DEFAULT'] = 'Default';
+		return 'DEFAULT';
+	}
 
 	public function getOrganizationMailOrderTypes($user) {
 		if(!isset($user->organization['Organization']['mailOrderTypes']) || empty($user->organization['Organization']['mailOrderTypes'])) {

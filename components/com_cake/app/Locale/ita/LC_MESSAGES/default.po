@@ -2480,6 +2480,9 @@ msgstr "Tipologie di email"
 msgid "Mail Order Types"
 msgstr "Tipologie di email per l'ordine"
 
+msgid "Mail Order Type Default"
+msgstr "Email di default per l'ordine"
+
 msgid "Mail Open Testo"
 msgstr "Testo da aggiungere all'email di apertura"
 

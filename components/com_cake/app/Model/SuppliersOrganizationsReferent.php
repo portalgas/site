@@ -82,7 +82,11 @@ class SuppliersOrganizationsReferent extends SuppliersOrganizationsReferentMulti
 	/*
 	 * estraggo Referenti di un produttore con i soli dati name, email, telefono, type
 	 * 
-	 *  $modalita = CRON se metodo richiamato da UtilsCrons::mailReferentiQtaMax() perche' esclude jimport()
+	 *  $modalita = CRON se metodo richiamato da 
+	 * 		UtilsCrons::mailReferentiQtaMax() 
+	 * 		UtilsCrons::mailUsersOrdersOpen()
+	 * 	    UtilsCrons::mailUsersOrdersClose()
+	 * perche' esclude jimport()
 	 */
 	public function getReferentsCompact($user, $conditions, $orderBy=null, $modalita='') {
 		

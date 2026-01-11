@@ -158,7 +158,7 @@ class MailsSend extends AppModel {
 						$mailResults = $Mail->send($Email, [$mail2, $mail], "", $debug);
 					}   
 					else {
-						if($debug) echo "Per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") non ci sono ordini da inviare \n";                      
+						if($debug) echo "\n Per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") non ci sono ordini da inviare \n";                      
 					}
 				} // loops Users
 				
@@ -179,7 +179,7 @@ class MailsSend extends AppModel {
 				}
 		}
 		catch (Exception $e) {
-			echo '<br />UtilsCrons::mailUsersOrdersOpen()<br />'.$e;
+			echo "\n UtilsCrons::mailUsersOrdersOpen() ".$e->getMessage();
 		}                    
 	}
 
@@ -270,10 +270,10 @@ class MailsSend extends AppModel {
 								$subject_mail = $this->_organizationNameError($user->organization).", ordini che si chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni";
 							$Email->subject($subject_mail);									
 								
-							$mailResults = $Mail->send($Email, [$mail2, $mail], "", false);
+							$mailResults = $Mail->send($Email, [$mail2, $mail], "", $debug);
 						}   
 						else { 
-							if($debug) echo "Per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") non ci sono ordini da inviare \n";
+							if($debug) echo "\n Per lo user ".$usersResult['User']['username']." (".$usersResult['User']['id'].") non ci sono ordini da inviare \n";
 						}
 							
 					} // loops users 
@@ -295,10 +295,10 @@ class MailsSend extends AppModel {
                         
 				} // end if(!empty($orderCtrlResults))
 				else 
-					echo "\n non ci sono ordini che apriranno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
+					echo "\n non ci sono ordini che chiuderanno tra ".(Configure::read('GGMailToAlertOrderClose')+1)." giorni \n";
 		}
 		catch (Exception $e) {
-			echo '<br />UtilsCrons::mailUsersOrdersClose()<br />'.$e;
+			echo "\n UtilsCrons::mailUsersOrdersClose() ".$e->getMessage();
 		}			
 	}
 

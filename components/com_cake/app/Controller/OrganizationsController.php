@@ -399,9 +399,13 @@ class OrganizationsController extends AppController {
             if(empty($mail_order_types)) {
                 $mail_order_types = 'DEFAULT';
             }
-            else {
-                $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            
+            $mail_order_type_default = $this->request->data['Organization']['mailOrderTypeDefault'];
+            if(empty($mail_order_type_default)) {
+                $mail_order_type_default = 'DEFAULT';
             }
+            $paramsConfig += ['mailOrderTypeDefault' => $mail_order_type_default];
 
             /*
              * ruoli
@@ -533,8 +537,8 @@ class OrganizationsController extends AppController {
 		
 		App::import('Model', 'MailTypes');
 		$MailTypes = new MailTypes();
-		$mail_order_types = $MailTypes->getMailOrderTypes($this->user);
-		$this->set('mail_order_types', $mail_order_types);
+		$this->set('mail_order_types', $MailTypes->getMailOrderTypes($this->user));
+        $this->set('mail_order_type_default', $MailTypes->getMailOrderTypeDefault($this->user));
 
 		/*
 		 * template
@@ -604,9 +608,13 @@ class OrganizationsController extends AppController {
             if(empty($mail_order_types)) {
                 $mail_order_types = 'DEFAULT';
             }
-            else {
-                $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            $paramsConfig += ['mailOrderTypes' => $mail_order_types];
+            
+            $mail_order_type_default = $this->request->data['Organization']['mailOrderTypeDefault'];
+            if(empty($mail_order_type_default)) {
+                $mail_order_type_default = 'DEFAULT';
             }
+            $paramsConfig += ['mailOrderTypeDefault' => $mail_order_type_default];
         
             /*
              * ruoli
@@ -763,8 +771,7 @@ class OrganizationsController extends AppController {
           		
             App::import('Model', 'MailTypes');
             $MailTypes = new MailTypes();
-            $mail_order_types = $MailTypes->getMailOrderTypes($this->user);
-            $this->set('mail_order_types', $mail_order_types);
+            $this->set('mail_order_types', $MailTypes->getMailOrderTypes($this->user));
           
 			/*
 			 * template

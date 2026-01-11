@@ -67,7 +67,7 @@ class UtilsCrons {
         if(empty($user)) 
             return;
 
-        // escludo i GasGroup
+        // escludo i GasGroup, gestito in neo
         if(isset($user->organization['Organization']['hasGasGroups']) && $user->organization['Organization']['hasGasGroups']=='Y')
             return;
         
