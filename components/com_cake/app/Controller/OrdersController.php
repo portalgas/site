@@ -1536,7 +1536,7 @@ class OrdersController extends AppController {
 							if(!empty($mail)) {
 								$mail_open_testo = str_replace('gg/mm/yyy', $data_fine_validation, $mail_open_testo);
 								$body_mail = $mail_open_testo;
-	
+
 								$Email->viewVars(['body_header' => sprintf(Configure::read('Mail.body_header'), $name)]);
 								$Email->to($mail);
 									
@@ -1561,7 +1561,7 @@ class OrdersController extends AppController {
 			}
 			
 			$this->Session->setFlash($msg);
-		}
+		} // end if (!empty($this->request->data['Order']['data_fine_validation_db']))
 
 		/*
 		 * prima volta
@@ -1624,10 +1624,10 @@ class OrdersController extends AppController {
 		$testo_mail .= '</ul>';
 		$testo_mail .= "Vai su https://".Configure::read('SOC.site')." e completa l'ordine ";
 		
-		if ($result['Delivery']['sys'] == 'Y')
-        	$delivery = $result['Delivery']['luogo'];
+		if ($results['Delivery']['sys'] == 'Y')
+        	$delivery = $results['Delivery']['luogo'];
         else
-            $delivery = $result['Delivery']['luogoData'];
+            $delivery = $results['Delivery']['luogoData'];
                 		
 		$testo_mail = sprintf(Configure::read('Mail.body_carts_validation'), $delivery, $results['SuppliersOrganization']['name'], 'gg/mm/yyy', $testo_mail);
 		
