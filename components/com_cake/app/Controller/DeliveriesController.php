@@ -2008,7 +2008,7 @@ class DeliveriesController extends AppController {
         }            
         $delivery_id = substr($D, 2, strlen($D));
 
-        if (!$debug) {
+        if ($debug) {
             echo '<br />organization_id ' . $organization_id;
             echo '<br />username ' . $username;
             echo '<br />delivery_id ' . $delivery_id;
