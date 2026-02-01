@@ -101,8 +101,21 @@ class ProdGasSupplier extends AppModel {
 								'SuppliersOrganization.id' => $supplier_organization_id];
 				$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $suppliersOrganizationResult['SuppliersOrganization']['organization_id']]);
 				$suppliersOrganizationsReferent = $SuppliersOrganizationsReferent->getReferentsCompact($tmp_user, $conditions);
-				
-				$suppliersOrganizationResults[$numResult]['SuppliersOrganizationsReferents'] = $suppliersOrganizationsReferent;
+				if(!empty($suppliersOrganizationsReferent))
+					$suppliersOrganizationResults[$numResult]['SuppliersOrganizationsReferents'] = $suppliersOrganizationsReferent;
+				else {
+					/*
+					 * il gas non ha un referente per il produttore, cerco super referente
+					 */
+					App::import('Model', 'User');
+					$User = new User;					
+
+					$conditions = [];
+					$conditions['UserGroupMap.group_id'] = Configure::read('group_id_super_referent'); 
+					$conditions['User.email NOT .portalgas.it'] = '.portalgas.it';
+					$userResults = $User->getUsers($tmp_user, $conditions);
+					$suppliersOrganizationResults[$numResult]['GasSuperReferente'] = $userResults;
+				}
 			}			
 
 			$results['Organization'] = $suppliersOrganizationResults;

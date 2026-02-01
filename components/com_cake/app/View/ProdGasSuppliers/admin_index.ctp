@@ -54,6 +54,7 @@ else {
 		echo '</td>';
 		echo '<td>';
 		if(!empty($result['SuppliersOrganizationsReferents'])) {
+			echo '<b>'.__('gasReferente').'</b>';
 			echo '<ul style="margin: 0;padding: 0;">';
 			foreach($result['SuppliersOrganizationsReferents'] as $SuppliersOrganizationsReferent) {
 				echo '<li>';
@@ -63,6 +64,20 @@ else {
 				echo '</li>';
 			}
 			echo '</ul>';
+		}
+		else {
+			/*
+			* il gas non ha un referente per il produttore, cerco super referente
+			*/	
+			echo '<b>'.__('gasSuperReferente').'</b>';
+			echo '<ul style="margin: 0;padding: 0;">';
+			foreach($result['GasSuperReferente'] as $gasSuperReferente) {
+				echo '<li>';
+				echo h($gasSuperReferente['User']['name']).' ';
+				if(!empty($gasSuperReferente['User']['email'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.h($gasSuperReferente['User']['email']).'" class="fa fa-envelope-o fa-lg"></a> ';
+				echo '</li>';
+			}
+			echo '</ul>';					
 		}
 		echo '</td>';
 		echo '<td style="text-align:center;">';

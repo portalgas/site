@@ -320,6 +320,8 @@ class User extends AppModel {
 		
 		if(isset($conditions['User.id NOT IN']))
 			$sql .= " AND User.id NOT IN ".$conditions['User.id NOT IN'];
+		if(isset($conditions['User.email NOT .portalgas.it']))
+			$sql .= " AND User.email NOT LIKE '%".$conditions['User.email NOT .portalgas.it']."'";
 		if(isset($conditions['UserGroupMap.group_id']))
 			$sql .= " AND UserGroup.id = ".$conditions['UserGroupMap.group_id'];
 		if(isset($conditions['UserGroup.id']))
@@ -334,7 +336,6 @@ class User extends AppModel {
 			$sql .= " AND UserGroupMap.user_id IN ".$conditions['UserGroupMap.user_id IN'];	
 		
 		$sql .= ' ORDER BY '.$orderBy;
-		self::d($sql,$debug);
 		try {
 			$results = $this->query($sql);
 		}
