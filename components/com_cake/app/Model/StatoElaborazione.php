@@ -261,11 +261,15 @@ class StatoElaborazione extends AppModel {
 	
 	public function requestPayment($user, $debug=false, $request_payment_id=0)  {
 
-		$debug=false;
+		/*
+		 * lasciarlo a false perche' il metodo e' richiamato in requestPayment::edit()
+		 */
+		// $debug=true;
+		// $request_payment_id=1754; 
 
 		App::import('Model', 'RequestPaymentsOrder');
 		$RequestPaymentsOrder = new RequestPaymentsOrder;						
-	
+
 		switch ($user->organization['Template']['payToDelivery']) {
 			case 'ON':
 				return;
@@ -304,8 +308,11 @@ class StatoElaborazione extends AppModel {
 					$options['conditions'] += ['RequestPayment.id' => $request_payment_id];
 				$options['recursive'] = -1;
 				$requestPaymentResults = $RequestPayment->find('all', $options);
-				self::d([$options,$requestPaymentResults], $debug);
+				self::d('Ricerco RequestPayments', $debug);
+				self::d([$options['conditions']], $debug);
+				self::d('RequestPayments trovati '.count($requestPaymentResults), $debug);
 
+				if(count($requestPaymentResults)>0)
 				foreach($requestPaymentResults as $requestPaymentResult) {					
 					
 					$all_summary_order_importi_uguali = true;
@@ -320,7 +327,7 @@ class StatoElaborazione extends AppModel {
 					if(!empty($SummaryPaymentResults)) 
 					foreach ($SummaryPaymentResults as $SummaryPaymentResult) {
 							
-						self::d("request_payment_id ".$SummaryPaymentResult['SummaryPayment']['request_payment_id']." user_id ".$SummaryPaymentResult['SummaryPayment']['user_id']." all_summary_order_importi_uguali [".$all_summary_order_importi_uguali."]", $debug);
+						self::d("SummaryPayment.request_payment_id ".$SummaryPaymentResult['SummaryPayment']['request_payment_id']." SummaryPayment.user_id ".$SummaryPaymentResult['SummaryPayment']['user_id']." all_summary_order_importi_uguali [".$all_summary_order_importi_uguali."]", $debug);
 							
 						if(!$SummaryPayment->isPaid($user, $SummaryPaymentResult, $debug)) {
 							$all_summary_order_importi_uguali = false;
@@ -343,6 +350,8 @@ class StatoElaborazione extends AppModel {
 				 *	  generics
 				 * perche' gia' in statistiche
 				 */
+				self::d('cancello le richieste di pagamento CLOSE senza piu\' ordini, dispensa, generics', $debug);
+				
 				$options = [];
 				$options['conditions'] = ['RequestPayment.organization_id' => (int)$user->organization['Organization']['id'],
 										  'RequestPayment.stato_elaborazione' => 'CLOSE'];
@@ -350,9 +359,14 @@ class StatoElaborazione extends AppModel {
 					$options['conditions'] += ['RequestPayment.id' => $request_payment_id];
 				$options['recursive'] = -1;
 				$requestPaymentResults = $RequestPayment->find('all', $options);
-				self::d([$options,$requestPaymentResults], $debug);
+				self::d([$options], $debug);
+				self::d('RequestPayment trovate '.count($requestPaymentResults), $debug);
+				if(count($requestPaymentResults)>0)
 				foreach($requestPaymentResults as $requestPaymentResult) {					
 			
+					self::d('Tratto la RequestPayment.num '.$requestPaymentResult['RequestPayment']['num'].' con id '.$requestPaymentResult['RequestPayment']['id'], $debug);
+					self::d($requestPaymentResult, $debug);
+
 					$delete = false;
 
 					$options = [];
@@ -360,12 +374,16 @@ class StatoElaborazione extends AppModel {
 											  'RequestPaymentsOrder.request_payment_id' => $requestPaymentResult['RequestPayment']['id']];
 					$options['recursive'] = -1;	
 					$requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
-					self::d([$options,$requestPaymentsOrderResults], $debug);
+					self::d('Ricerco se ha ordini associati', $debug);
+					self::d([$options], $debug);
+					self::d('ordini associati ['.count($requestPaymentsOrderResults).'] alla RequestPayment.num '.$requestPaymentResult['RequestPayment']['num'], $debug);
 				
 					if(empty($requestPaymentsOrderResults)) 
 						$delete = true;
-					else
-						$delete = false;
+					else {
+						$delete = false;						
+						self::d($requestPaymentsOrderResults, $debug);
+					}
 
 					if($delete) {
 						$options = [];
@@ -402,6 +420,9 @@ class StatoElaborazione extends AppModel {
 							self::d("DELETE RequestPayment " . $requestPaymentResult['RequestPayment']['id'] . " OK", $debug);    
 						else
 							self::d("DELETE RequestPayment " . $requestPaymentResult['RequestPayment']['id'] . " ERRORE", $debug);
+					}
+					else {
+						self::d("Non elimino RequestPayment " . $requestPaymentResult['RequestPayment']['id'] . " perche' ha elementi associati", $debug);  
 					} // if(empty($requestPaymentsOrderResults))
 								
 					

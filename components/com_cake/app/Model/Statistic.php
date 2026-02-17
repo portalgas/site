@@ -99,6 +99,11 @@ class Statistic extends AppModel {
                                   'Order.order_type_id != ' => Configure::read('Order.type.gas_parent_groups'),
 								  'DATE(Order.data_state_code_close) <= CURDATE() - INTERVAL '.$user->organization['Organization']['ggArchiveStatics'].' DAY '
                                  ];
+        /*
+         * per i test
+         * */
+        // s$options['conditions'] += ['Order.id' => 52393];
+
         $options['recursive'] = 0;
 		if($this->debug_sql_orders_limit > 0)
 			$options['limit'] = $this->debug_sql_orders_limit;
@@ -125,15 +130,19 @@ class Statistic extends AppModel {
                 foreach($results as $numResult => $result) {
                     $options = [];
                     $options['conditions'] = ['RequestPaymentsOrder.organization_id' => $user->organization['Organization']['id'],
-                        'RequestPaymentsOrder.order_id' => $result['Order']['id']];
+                                              'RequestPaymentsOrder.order_id' => $result['Order']['id'],
+                                              'RequestPayment.stato_elaborazione != ' => 'CLOSE'];
                     $options['recursive'] = 1;
                     $requestPaymentsOrderResults = $RequestPaymentsOrder->find('all', $options);
                     if(!empty($requestPaymentsOrderResults)) {
-                        // $requestPaymentsOrderResults['RequestPayment']['stato_elaborazione']!='CLOSE'
-                        // se ho associato un rich di pagamento non posso cancellare l'ordine
-                        // quando la richiesta di pagamento viene chiusa, la richiesta di pagamento sara' eliminata
+                        // se ho associato un rich di pagamento != CLOSE non posso cancellare l'ordine
                         self::d("Statistic::_getOrdersArchive l'ordine " . $result['Order']['id']. " e' associato ad una richiesta di pagamento, non posso eliminalo", $debug);
                         unset($results[$numResult]);
+                    }
+                    else {
+                        // cancello l'ordine
+                        // trigger cancellera' k_request_payments_orders
+                        // quando la richiesta di pagamento viene chiusa, la richiesta di pagamento sara' eliminata
                     }
                 }
                 break;
