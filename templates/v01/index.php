@@ -40,7 +40,7 @@ if($noindex)
 	<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/v01/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/v01/css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/v01/css/font-awesome.min.css">
-	<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/v01/css/my-bootstrap-v03.min.css">
+	<link rel="stylesheet" href="<?php echo $this->baseurl ?>/templates/v01/css/my-bootstrap-v04.min.css">
 	
 	<script type="text/javascript" src="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="<?php echo $this->baseurl ?>/components/com_cake/app/webroot/ui-themes/smoothness/jquery-ui-1.10.3.custom.min.css">
