@@ -37,8 +37,8 @@ JHtml::register('users.editor', array('JHtmlUsers', 'editor'));
 		?>
 		
 			<div class="form-group">
-			  <label class="control-label col-xs-3"><?php echo $field->title; ?></label>
-				<div class="col-xs-9">	
+			  <label class="control-label col-md-3"><?php echo $field->title; ?></label>
+				<div class="col-md-9">	
 						<?php if (JHtml::isRegistered('users.'.$field->id)):?>
 							<?php echo JHtml::_('users.'.$field->id, $field->value);?>
 						<?php elseif (JHtml::isRegistered('users.'.$field->fieldname)):?>

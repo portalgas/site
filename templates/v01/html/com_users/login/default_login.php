@@ -37,22 +37,22 @@ JHtml::_('behavior.keepalive');
 	<?php endif ; ?>
 
 	<div class="container">
-	<div class="col-xs-3"></div>	
-	<div class="col-xs-6">		
+	<div class="col-md-3"></div>	
+	<div class="col-md-6">		
 	<form class="form-horizontal" action="<?php echo JRoute::_('index.php?option=com_users&task=user.login'); ?>" method="post">
 
 		<fieldset>
 		
 			<div class="form-group">
-	            <label for="inputPassword" class="control-label col-xs-2">Username</label>
-            	<div class="col-xs-10">
+	            <label for="inputPassword" class="control-label col-md-2">Username</label>
+            	<div class="col-md-10">
 				  	<input type="text" placeholder="Userame" id="username" name="username" class="form-control">
 				</div>
 			</div>
 
 			<div class="form-group">
-	            <label for="inputPassword" class="control-label col-xs-2">Password</label>
-            	<div class="col-xs-10">
+	            <label for="inputPassword" class="control-label col-md-2">Password</label>
+            	<div class="col-md-10">
 					  <input type="password" placeholder="Password" value="" id="password" name="password" class="form-control">
 				</div>
 			</div>
@@ -60,7 +60,7 @@ JHtml::_('behavior.keepalive');
 			
 			<?php if (JPluginHelper::isEnabled('system', 'remember')) : ?>
 			<div class="form-group">
-	            <div class="col-xs-offset-2 col-xs-10">
+	            <div class="col-md-offset-2 col-md-10">
 					<label id="remember-lbl" for="remember"><?php echo JText::_('JGLOBAL_REMEMBER_ME') ?></label>
 					<input id="remember" type="checkbox" name="remember" class="inputbox" value="yes"  alt="<?php echo JText::_('JGLOBAL_REMEMBER_ME') ?>" />
 				</div>
@@ -68,7 +68,7 @@ JHtml::_('behavior.keepalive');
 			<?php endif; ?>
 			
 			<div class="form-group">
-            	<div class="col-xs-offset-2 col-xs-10">
+            	<div class="col-md-offset-2 col-md-10">
             			<button type="submit" class="btn btn-success"><?php echo JText::_('JLOGIN'); ?></button>
 						<input type="hidden" name="return" value="<?php echo base64_encode($this->params->get('login_redirect_url', $this->form->getValue('return'))); ?>" />
 						<?php echo JHtml::_('form.token'); ?>			
@@ -101,7 +101,7 @@ JHtml::_('behavior.keepalive');
 	</div>
 	
 	</div>
-	<div class="col-xs-3"></div>
+	<div class="col-md-3"></div>
 	</div> <!-- class="container" -->
 	
 </div>

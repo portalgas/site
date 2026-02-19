@@ -17,26 +17,26 @@ defined('_JEXEC') or die;
 	</legend>
 	
 	<div class="form-group">
-	  <label class="control-label col-xs-3"><?php echo JText::_('COM_USERS_PROFILE_NAME_LABEL'); ?></label>
-		<div class="col-xs-9">	
+	  <label class="control-label col-md-3"><?php echo JText::_('COM_USERS_PROFILE_NAME_LABEL'); ?></label>
+		<div class="col-md-9">	
 			<?php echo $this->data->name; ?>
 		</div>
 	</div>	
 	<div class="form-group">
-	  <label class="control-label col-xs-3"><?php echo JText::_('COM_USERS_PROFILE_USERNAME_LABEL'); ?></label>
-		<div class="col-xs-9">	
+	  <label class="control-label col-md-3"><?php echo JText::_('COM_USERS_PROFILE_USERNAME_LABEL'); ?></label>
+		<div class="col-md-9">	
 			<?php echo $this->data->username; ?>
 		</div>
 	</div>	
 	<div class="form-group">
-	  <label class="control-label col-xs-3"><?php echo JText::_('COM_USERS_PROFILE_REGISTERED_DATE_LABEL'); ?></label>
-		<div class="col-xs-9">	
+	  <label class="control-label col-md-3"><?php echo JText::_('COM_USERS_PROFILE_REGISTERED_DATE_LABEL'); ?></label>
+		<div class="col-md-9">	
 			<?php echo $this->data->registerDate; ?>
 		</div>
 	</div>	
 	<div class="form-group">
-	  <label class="control-label col-xs-3"><?php echo JText::_('COM_USERS_PROFILE_LAST_VISITED_DATE_LABEL'); ?></label>
-		<div class="col-xs-9">	
+	  <label class="control-label col-md-3"><?php echo JText::_('COM_USERS_PROFILE_LAST_VISITED_DATE_LABEL'); ?></label>
+		<div class="col-md-9">	
 			<?php if ($this->data->lastvisitDate != '0000-00-00 00:00:00' && $this->data->lastvisitDate != '1970-01-01 00:00:00')
 					echo JHtml::_('date', $this->data->lastvisitDate);
 			else

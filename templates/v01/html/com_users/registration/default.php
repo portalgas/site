@@ -30,7 +30,7 @@ JHtml::_('behavior.formvalidation');
 	<form id="member-registration" action="<?php echo JRoute::_('index.php?option=com_users&task=registration.register'); ?>" method="post" class="form-horizontal form-validate" enctype="multipart/form-data" class="form form-inline" role="form">
 		
 	<div class="container">
-		<div class="col-xs-12 col-sm-12 col-lg-8 col-md-8">
+		<div class="col-md-12 col-sm-12 col-lg-8 col-md-8">
    
 			
 			<fieldset>
@@ -95,15 +95,15 @@ JHtml::_('behavior.formvalidation');
 
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_spacer" class="col-xs-3-disabled"><span class="spacer"><span class="before"></span><span class="text"><label class="" id="jform_spacer-lbl"><strong class="red">*</strong> Campi richiesti</label></span><span class="after"></span></span>									</label></a>
-						<div class="col-xs-9-disabled">
+						<label for="jform_spacer" class="col-md-3-disabled"><span class="spacer"><span class="before"></span><span class="text"><label class="" id="jform_spacer-lbl"><strong class="red">*</strong> Campi richiesti</label></span><span class="after"></span></span>									</label></a>
+						<div class="col-md-9-disabled">
 							&nbsp;					
 						</div>
 					</div>
 
 					 <div class="form-group">	
-						<label for="jform_name" class="col-xs-3-disabled">Nome:<span class="star">&nbsp;*</span></label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_name" class="col-md-3-disabled">Nome:<span class="star">&nbsp;*</span></label>
+						<div class="col-md-9-disabled">
 							<input type="text" size="30" class="required form-control" value="" id="jform_name" name="jform[name]" aria-required="true" required="required" placeholder="Nome">					
 							<div class="alert alert-info">Sarà il nome che gli altri gasisti visualizzeranno</div>
 						</div>
@@ -114,8 +114,8 @@ JHtml::_('behavior.formvalidation');
 		                <h3>Dati del tuo account</h3>				
 							 <div class="form-group">	
 								<!-- a title="Inserisci il nome con il quale potrai autenticarti" -->
-								<label for="jform_username" class="col-xs-3-disabled">Account:<span class="star">&nbsp;*</span></label>
-								<div class="col-xs-9-disabled">
+								<label for="jform_username" class="col-md-3-disabled">Account:<span class="star">&nbsp;*</span></label>
+								<div class="col-md-9-disabled">
 									<input type="text" size="30" class="validate-username required form-control" value="" id="jform_username" name="jform[username]" aria-required="true" required="required" placeholder="Account">
 									<div class="alert alert-info">Inserisci il nome con il quale potrai autenticarti</div>						
 								</div>
@@ -124,8 +124,8 @@ JHtml::_('behavior.formvalidation');
 										
 							 <div class="form-group">	
 								<!-- a title="Inserisci la password desiderata. Minimo 4 caratteri" -->
-								<label for="jform_password1" class="col-xs-3-disabled">Password:<span class="star">&nbsp;*</span></label>
-								<div class="col-xs-9-disabled">
+								<label for="jform_password1" class="col-md-3-disabled">Password:<span class="star">&nbsp;*</span></label>
+								<div class="col-md-9-disabled">
 									<input type="password" size="30" class="validate-password required form-control" autocomplete="off" value="" id="jform_password1" name="jform[password1]" aria-required="true" required="required" placeholder="Password">			
 									<div class="alert alert-info">Inserisci la password desiderata. Minimo 4 caratteri</div>					
 								</div>
@@ -134,8 +134,8 @@ JHtml::_('behavior.formvalidation');
 										
 							 <div class="form-group">	
 								<!-- a title="Conferma la tua password" -->
-								<label for="jform_password2" class="col-xs-3-disabled">Conferma password:<span class="star">&nbsp;*</span></label>
-								<div class="col-xs-9-disabled">
+								<label for="jform_password2" class="col-md-3-disabled">Conferma password:<span class="star">&nbsp;*</span></label>
+								<div class="col-md-9-disabled">
 									<input type="password" size="30" class="validate-password required form-control" autocomplete="off" value="" id="jform_password2" name="jform[password2]" aria-required="true" required="required" placeholder="Conferma password">										
 								</div>
 								<!-- /a -->
@@ -144,8 +144,8 @@ JHtml::_('behavior.formvalidation');
 					
 					 <div class="form-group">	
 						<!-- a title="Inserisci il tuo indirizzo email: a questo indirizzo riceverai una mail per continuare la registrazione" -->
-						<label for="jform_email1" class="col-xs-3-disabled">Indirizzo email:<span class="star">&nbsp;*</span></label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_email1" class="col-md-3-disabled">Indirizzo email:<span class="star">&nbsp;*</span></label>
+						<div class="col-md-9-disabled">
 							<input type="email" size="40" value="" id="jform_email1" class="validate-email required form-control" name="jform[email1]" aria-required="true" required="required" placeholder="Indirizzo email">					
 							<div class="alert alert-info">Inserisci il tuo indirizzo email: a questo indirizzo riceverai una mail per continuare la registrazione</div>						
 						</div>
@@ -154,8 +154,8 @@ JHtml::_('behavior.formvalidation');
 							
 					 <div class="form-group">	
 						<!-- a title="Conferma il tuo indirizzo email" data-toggle="tooltip" data-placement="right" -->
-						<label for="jform_email2" class="col-xs-3-disabled">Conferma indirizzo email:<span class="star">&nbsp;*</span></label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_email2" class="col-md-3-disabled">Conferma indirizzo email:<span class="star">&nbsp;*</span></label>
+						<div class="col-md-9-disabled">
 							<input type="email" size="40" value="" id="jform_email2" class="validate-email required form-control" name="jform[email2]" aria-required="true" required="required" placeholder="Conferma indirizzo email">					
 						</div>
 						<!-- /a -->
@@ -165,8 +165,8 @@ JHtml::_('behavior.formvalidation');
 					
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_profile_cf" class="col-xs-3-disabled">Codice fiscale:</label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_profile_cf" class="col-md-3-disabled">Codice fiscale:</label>
+						<div class="col-md-9-disabled">
 							<input type="text" size="16" value="" id="jform_profile_cf" name="jform[profile][cf]" class="form-control" aria-invalid="false" placeholder="Codice fiscale">					
 						</div>
 						<!-- /a -->
@@ -174,8 +174,8 @@ JHtml::_('behavior.formvalidation');
 										
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_profile_address" class="col-xs-3-disabled">Indirizzo:</label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_profile_address" class="col-md-3-disabled">Indirizzo:</label>
+						<div class="col-md-9-disabled">
 							<input type="text" size="50" value="" id="jform_profile_address" name="jform[profile][address]" class="form-control" aria-invalid="false" placeholder="Indirizzo">					
 						</div>
 						<!-- /a -->
@@ -183,9 +183,9 @@ JHtml::_('behavior.formvalidation');
 								
 					 <div class="form-group">	
 						<!-- a title="Indica la tua Città di appartenenza." -->
-						<label for="jform_profile_city" class="col-xs-3-disabled">Città:</label>
+						<label for="jform_profile_city" class="col-md-3-disabled">Città:</label>
 						
-						<div class="col-xs-9-disabled">
+						<div class="col-md-9-disabled">
 							<input type="text" size="30" value="" id="jform_profile_city" name="jform[profile][city]" class="form-control" aria-invalid="false" placeholder="Città">					
 						</div>
 						<!-- /a -->
@@ -193,9 +193,9 @@ JHtml::_('behavior.formvalidation');
 									
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_profile_region" class="col-xs-3-disabled">Provincia:</label>
+						<label for="jform_profile_region" class="col-md-3-disabled">Provincia:</label>
 						
-						<div class="col-xs-9-disabled">
+						<div class="col-md-9-disabled">
 							<input type="text" size="2" value="" id="jform_profile_region" name="jform[profile][region]" class="form-control" aria-invalid="false" placeholder="Provincia">					
 						</div>
 						<!-- /a -->
@@ -203,9 +203,9 @@ JHtml::_('behavior.formvalidation');
 													
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_profile_postal_code" class="col-xs-3-disabled">CAP:</label>
+						<label for="jform_profile_postal_code" class="col-md-3-disabled">CAP:</label>
 						
-						<div class="col-xs-9-disabled">
+						<div class="col-md-9-disabled">
 							<input type="text" size="5" value="" id="jform_profile_postal_code" name="jform[profile][postal_code]" class="form-control" aria-invalid="false" placeholder="CAP">					
 						</div>
 						<!-- /a -->
@@ -213,8 +213,8 @@ JHtml::_('behavior.formvalidation');
 								
 					 <div class="form-group">	
 						<!-- a title="" -->
-						<label for="jform_profile_email" class="col-xs-3-disabled">Altro indirizzo mail:</label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_profile_email" class="col-md-3-disabled">Altro indirizzo mail:</label>
+						<div class="col-md-9-disabled">
 							<input type="text" size="30" class="invalid form-control" value="" id="jform_profile_email" name="jform[profile][email]" aria-invalid="true" placeholder="Altro indirizzo mail">					
 						</div>
 						<!-- /a -->
@@ -222,8 +222,8 @@ JHtml::_('behavior.formvalidation');
 								
 					 <div class="form-group">	
 						<!-- a title="Non sarà visibile su PortAlGas ma solamente ai referenti che avranno necessità per gli ordini" -->
-						<label for="jform_profile_phone" class="col-xs-3-disabled">Cellulare:<span class="star">&nbsp;*</span></label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_profile_phone" class="col-md-3-disabled">Cellulare:<span class="star">&nbsp;*</span></label>
+						<div class="col-md-9-disabled">
 							<input type="text" size="30" class="required invalid form-control" value="" id="jform_profile_phone" name="jform[profile][phone]" aria-required="true" required="required" aria-invalid="true" placeholder="Cellulare">
 							<div class="alert alert-info">Non sarà visibile su PortAlGas ma solamente ai referenti che avranno necessità per gli ordini</div>						
 						</div>
@@ -233,8 +233,8 @@ JHtml::_('behavior.formvalidation');
 					
 					 <div class="form-group">	
 						<!-- a title="Questa informazione potrebbe essere utile per effettuare i pagamenti" -->
-						<label for="jform_profile_phone" class="col-xs-3-disabled">Satispay:<span class="star">&nbsp;*</span></label>
-						<div class="col-xs-9-disabled">
+						<label for="jform_profile_phone" class="col-md-3-disabled">Satispay:<span class="star">&nbsp;*</span></label>
+						<div class="col-md-9-disabled">
 							<label class="radio-inline"><input type="radio" name="satispay" class="required invalid" value="" id="jform_profile_satispay" name="jform[profile][satispay]" aria-required="true" required="required"  checked />No</label>
 							<label class="radio-inline"><input type="radio" name="satispay" class="required invalid" value="" id="jform_profile_satispay" name="jform[profile][satispay]" aria-required="true" required="required" />Si</label>	
 							<div class="alert alert-info">Questa informazione potrebbe essere utile per effettuare i pagamenti</div>		
@@ -245,7 +245,7 @@ JHtml::_('behavior.formvalidation');
 
 						
 					<div class="form-group">
-						<div class="col-xs-offset-3 col-xs-9">
+						<div class="col-md-offset-3 col-md-9">
 							<label class="checkbox-inline">
 								<input type="checkbox" name="jform[profile][tos]" value="OK" id="jform[profile][tos]" class="" />  accetto i 
 								<a title="Accettazione dei termini di utilizzo" rel="nofollow" data-toggle="modal" data-target="#myModal">termini di utilizzo e le condizioni</a>.
@@ -263,7 +263,7 @@ JHtml::_('behavior.formvalidation');
 				
 				<br>
 		        <div class="form-group">
-		            <div class="col-xs-offset-3 col-xs-9">
+		            <div class="col-md-offset-3 col-md-9">
 		            	<input id="member-registration" class="btn btn-success" type="submit" value="<?php echo JText::_('JREGISTER');?>" />
 						<?php echo JText::_('COM_USERS_OR');?>
 						<a href="<?php echo JRoute::_('');?>" title="<?php echo JText::_('JCANCEL');?>"><?php echo JText::_('JCANCEL');?></a>
@@ -277,7 +277,7 @@ JHtml::_('behavior.formvalidation');
 
 	</div> <!-- id="form-data" -->
 
-	<div class="col-xs-4 hidden-sm hidden-xs col-lg-4 col-md-4">
+	<div class="col-md-4 hidden-sm hidden-xs col-lg-4 col-md-4">
 		<img align="middle" class="img-responsive hidden-sm hidden-xs" alt="Immagine-contatto" src="/images/monitor2.png" />
 	</div>	
 	

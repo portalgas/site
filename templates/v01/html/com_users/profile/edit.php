@@ -25,8 +25,8 @@ $lang->load( 'plg_user_profile', JPATH_ADMINISTRATOR );
 <?php endif; ?>
 
 <div class="container">
-<div class="col-xs-2"></div>	
-<div class="col-xs-8">	
+<div class="col-md-2"></div>	
+<div class="col-md-8">	
 <form class="form-horizontal"id="member-profile" action="<?php echo JRoute::_('index.php?option=com_users&task=profile.save'); ?>" method="post" class="form-validate" enctype="multipart/form-data">
 <?php foreach ($this->form->getFieldsets() as $group => $fieldset):// Iterate through the form fieldsets and display each one.?>
 	<?php $fields = $this->form->getFieldset($group);?>
@@ -76,12 +76,12 @@ $lang->load( 'plg_user_profile', JPATH_ADMINISTRATOR );
 					$field->name!='jform[profile][notaRestituzCassa]') {
 				?>
 					<div class="form-group">
-						<label for="<?php echo $field->id; ?>" class="control-label col-xs-3"><?php echo $field->label; ?> 
+						<label for="<?php echo $field->id; ?>" class="control-label col-md-3"><?php echo $field->label; ?> 
 							<?php if (!$field->required && $field->type!='Spacer' && $field->name!='jform[username]'): ?>
 								<span class="optional"><?php echo JText::_('COM_USERS_OPTIONAL'); ?></span>
 							<?php endif; ?>					
 						</label>
-						<div class="col-xs-9">			
+						<div class="col-md-9">			
 							<?php echo $field->input; ?>
 						</div>
 					</div>
@@ -108,7 +108,7 @@ $lang->load( 'plg_user_profile', JPATH_ADMINISTRATOR );
 		</div>
 	</form>
 	</div>
-	<div class="col-xs-2"></div>
+	<div class="col-md-2"></div>
 	</div> <!-- class="container" -->	
 	
 </div>

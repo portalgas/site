@@ -23,8 +23,8 @@ JHtml::_('behavior.formvalidation');
 	<?php endif; ?>
 
 	<div class="container">
-	<div class="col-xs-2"></div>	
-	<div class="col-xs-8">		
+	<div class="col-md-2"></div>	
+	<div class="col-md-8">		
 	<form class="form-horizontal" action="<?php echo JRoute::_('index.php?option=com_users&task=reset.complete'); ?>" method="post" class="form-validate">
 
 		<?php foreach ($this->form->getFieldsets() as $fieldset): ?>
@@ -36,8 +36,8 @@ JHtml::_('behavior.formvalidation');
 		<fieldset>
 			<div class="form-group">
 			<?php foreach ($this->form->getFieldset($fieldset->name) as $name => $field): ?>
-	            <label for="inputPassword" class="control-label col-xs-3"><?php echo $field->label; ?></label>
-            	<div class="col-xs-9">			
+	            <label for="inputPassword" class="control-label col-md-3"><?php echo $field->label; ?></label>
+            	<div class="col-md-9">			
 					<?php echo $field->input; ?>
 				</div>
 			<?php endforeach; ?>
@@ -51,7 +51,7 @@ JHtml::_('behavior.formvalidation');
 		</div>
 	</form>
 	</div>
-	<div class="col-xs-2"></div>
+	<div class="col-md-2"></div>
 	</div> <!-- class="container" -->
 
 	
