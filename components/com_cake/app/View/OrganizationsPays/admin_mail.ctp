@@ -53,9 +53,17 @@ da 251 a 275 gasisti 250 €
 e così via
 
 a breve i Manager e i tesorieri, quando si loggano al sito lato amministrativo https://www.portalgas.it/my, vedranno un banner contenente il Link per scaricare la Ricevuta, l'indicazione a chi effettuare il pagamento IBAN oppure la possibilità di pagare tramite Satispay.
+Attendere il banner prima di pagare, non effettuate pagamenti in anticipo. Grazie 
+
+in sintesi
+- entro <b>marzo</b> verificate i dati 
+- entro <b>aprile</b> comparirà su https://portalgas.t/my un banner contenente il Link con l'indicazione del pagamento
+- dopo la comparsa del banner potrete effettuare il pagamento
 
 Nota: al pagamento seguirà una ricevuta di pagamento.
 Se avete bisogno della ritenuta di pagamento dovrete versare tramite F24 la ritenuta del 20% (le ritenute vanno versate dai datori di lavoro (sostituti d'imposta) <b>entro il 16 del mese successivo a quello del pagamento</b>), l'anno successivo dovrete inviarci La Certificazione unica (c.d. “modello Cu“) <b>è il documento con il quale i sostituti d'imposta (committenti) sono chiamati a certificare le ritenute di acconto</b>.
+
+per qualsiasi dubbio scrivete a <b></b>contatti@portalgas.it</b>
 
 Grazie 
 Ciao a tutti 
