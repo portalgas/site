@@ -52,10 +52,18 @@ class MenusController extends AppController {
 	        $menus[$i]['class'] = 'actionEdit';
 	        $i++;
 	        $menus[$i]['label'] = __('Print Delivery');
+	        $menus[$i]['controller'] = 'Connects';
+	        $menus[$i]['action'] = 'index';
+	        $menus[$i]['params'] = ['c_to' => 'admin/exports', 'a_to' => 'deliveries', 'q' => 'delivery_id='.$id];
+	        $menus[$i]['class'] = 'actionPrinter';          
+          /*
+	        $i++;
+	        $menus[$i]['label'] = __('Print Delivery');
 	        $menus[$i]['controller'] = 'Pages';
 	        $menus[$i]['action'] = 'export_docs_delivery';
 	        $menus[$i]['params'] = ['delivery_id' => $id];
 	        $menus[$i]['class'] = 'actionPrinter';
+          */
 	        $i++;
 	        $menus[$i]['label'] = __('Delete');
 	        $menus[$i]['controller'] = 'Deliveries';

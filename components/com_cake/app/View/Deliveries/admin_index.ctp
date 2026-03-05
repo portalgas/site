@@ -40,7 +40,7 @@ else
 			}
 			?>
 			<th style="width50px;"></th>
-			<th><?php echo $this->Paginator->sort('stato_elaborazione',__('StatoElaborazione'));?></th>
+			<th class="text-center"><?php echo $this->Paginator->sort('stato_elaborazione',__('StatoElaborazione'));?></th>
 			<th><?php echo $this->Paginator->sort('Created');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
@@ -88,23 +88,22 @@ else
 			echo '<img class="img-responsive-disabled" src="'.Configure::read('App.server').Configure::read('App.img.cake').'/gcalendar.png" title="Inserito in GCalendar con evento num '.$result['Delivery']['gcalendar_event_id'].'" />';
 		echo '</td>';
 			
-		echo '<td title="'.__('toolTipStatoElaborazione').'" class="stato_'.strtolower($result['Delivery']['stato_elaborazione']).'"></td>';
+		echo '<td title="'.__('toolTipStatoElaborazione').'" class="text-center stato_'.strtolower($result['Delivery']['stato_elaborazione']).'"></td>';
 		echo '<td style="white-space: nowrap;">'.$this->App->formatDateCreatedModifier($result['Delivery']['created']).'</td>';
-		
 		echo '<td>';
 		$modal_url = Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Menus&action=delivery&id='.$result['Delivery']['id'].'&format=notmpl';
 		$modal_size = 'sm'; // sm md lg
 		$modal_header = __('Delivery').' '.$result['Delivery']['luogo'];
 		echo '<button type="button" class="btn btn-primary btn-menu" data-attr-url="'.$modal_url.'" data-attr-size="'.$modal_size.'" data-attr-header="'.$modal_header.'" ><i class="fa fa-2x fa-navicon"></i></button>';
 		echo '</td>';
-	echo '</tr>';
-	
-	echo '<tr data-attr-action="deliveries-'.$result['Delivery']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Delivery']['id'].'">';
-	echo '	<td colspan="2"></td>'; 
-	echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Delivery']['id'].'"></td>';
-	echo '</tr>';
+		echo '</tr>';
 		
-}	
+		echo '<tr data-attr-action="deliveries-'.$result['Delivery']['id'].'" class="collapse ajax_details" id="ajax_details-'.$result['Delivery']['id'].'">';
+		echo '	<td colspan="2"></td>'; 
+		echo '	<td colspan="'.$colspan.'" id="ajax_details_content-'.$result['Delivery']['id'].'"></td>';
+		echo '</tr>';
+			
+	}	
 		echo '</table>';
 		echo '<p>';
 		
