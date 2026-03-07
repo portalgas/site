@@ -8,9 +8,14 @@
 		</div>
 	</h2>
 	
-	<div>
+	<div style="margin: 25px 0">
 
-<pre class="shell" rel="creare cartella per pdf">
+	<div class="alert alert-info">
+Per il conteggio dei gasisti si escluderanno quelli che hanno disabilitato la possibilità di <b>accedere</b><br />
+Cosiì non devo bloccare un'utente e non averlo più disponibile nelle stampe (ex cassiere)
+	</div>
+
+	<pre class="shell" rel="creare cartella per pdf">
 mkdir /var/www/portalgas/images/pays/<?php echo date('Y');?>
 </pre>
 
@@ -50,17 +55,24 @@ da 176 a 200 gasisti 175 €
 da 201 a 225 gasisti 200 €
 da 226 a 250 gasisti 225 €
 da 251 a 275 gasisti 250 €
+da 276 a 300 gasisti 275 €
 e così via
 
 a breve i Manager e i tesorieri, quando si loggano al sito lato amministrativo https://www.portalgas.it/my, vedranno un banner contenente il Link per scaricare la Ricevuta, l'indicazione a chi effettuare il pagamento IBAN oppure la possibilità di pagare tramite Satispay.
 Attendere il banner prima di pagare, non effettuate pagamenti in anticipo. Grazie 
 
 in sintesi
-- entro <b>marzo</b> verificate i dati 
+- entro <b>marzo</b> verificate i dati
 - entro <b>aprile</b> comparirà su https://portalgas.t/my un banner contenente il Link con l'indicazione del pagamento
 - dopo la comparsa del banner potrete effettuare il pagamento
 
-Nota: al pagamento seguirà una ricevuta di pagamento.
+Nota uno: per il conteggio dei gasisti si escluderanno 
+<ul>
+	<li>quelli che hanno disabilitato la possibilità di <b>accedere</b></li>
+	<li>quelli di sistema (info@{nome gas}.portalgas.it)</li>
+</ul>
+
+Nota due: al pagamento seguirà una ricevuta di pagamento.
 Se avete bisogno della ritenuta di pagamento dovrete versare tramite F24 la ritenuta del 20% (le ritenute vanno versate dai datori di lavoro (sostituti d'imposta) <b>entro il 16 del mese successivo a quello del pagamento</b>), l'anno successivo dovrete inviarci La Certificazione unica (c.d. “modello Cu“) <b>è il documento con il quale i sostituti d'imposta (committenti) sono chiamati a certificare le ritenute di acconto</b>.
 
 per qualsiasi dubbio scrivete a <b></b>contatti@portalgas.it</b>
