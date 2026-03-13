@@ -118,11 +118,11 @@
 
 <p>Di seguito la videata di un produttore con stato “valido” con i campi modificabili e il modulo per l’invio della mail alla redazione per notificare il cambiamento di alcuni dati del produttore.</p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/produttori-campo-frequenza.jpg" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-produttori-campo-frequenza.jpg" class="img-responsive"></a>
 
 <p>E la videata di un produttore con stato “valido” con i <strong>campi non modificabili</strong></p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/produttori-campo-non-modificabili.jpg" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-produttori-campo-non-modificabili.jpg" class="img-responsive"></a>
 
 			
 			<h1 id="aggiungiamo-un-nuovo-produttore">Aggiungiamo un nuovo produttore</h1>
@@ -139,7 +139,7 @@
 				</ul>
 			</p>
 			
-			<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/produttori-elenco-portalgas.jpg" class="img-responsive"></a>
+			<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-produttori-elenco-portalgas.jpg" class="img-responsive"></a>
 
 			<p>
 			<div class="table-responsive">
@@ -187,7 +187,7 @@
 	 
 				<h2 id="anagrafica-del-produttore">Anagrafica del produttore</h2>
 		
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/produttori-form.jpg" class="img-responsive"></a>		
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-produttori-form.jpg" class="img-responsive"></a>		
 
 <p>Di seguito i campi necessari per creare un nuovo produttore</p>
 	
@@ -345,7 +345,7 @@
 
 <p>Rendere un produttore "non attivo" serve per disabilitare temporaneamente, all'interno del proprio G.A.S., un produttore</p>			
 			
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/produttori-campo-frequenza.jpg"></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-produttori-campo-frequenza.jpg"></a>
 
 
 
@@ -354,7 +354,7 @@
 			
 			<p>Qui si settano i permessi che il referente desidera dare al produttore</p>
 			
-			<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/produttori-permessi.jpg"></a></p>
+			<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-produttori-permessi.jpg"></a></p>
 	
 
 			<p>Questi sono:</p>
@@ -445,7 +445,7 @@
 	
 <p>Indicare un testo che illustri l’attività del produttore e associare eventuali immagini.</p>
 
-<p>I gasisti, cliccando su <img border="0" src="https://www.portalgas.it/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore"/> apriranno la scheda del produttore</p>
+<p>I gasisti, cliccando su <img border="0" src="http://www.portalgas.it/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore"/> apriranno la scheda del produttore</p>
 	
 <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/frontend-produttori-scheda.png" class="img-responsive"></a>
 		
@@ -458,7 +458,7 @@
 		quindi <b>non</b> si potranno modificare alcuni dati, ma si dovrà fare una richiesta cliccando sull'apposito link.</p>
 		
 			
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/produttori-campo-frequenza.jpg"></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-produttori-campo-frequenza.jpg"></a>
 
 		<p>Il dato del produttore che interessa solamente il proprio GAS è la <b>frequenza</b> e lo si potrà modificare in autonomia</p>			
 

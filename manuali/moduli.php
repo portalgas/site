@@ -137,7 +137,7 @@
 </p>
 <p>Quindi, se desideri modificarlo per sempre, così da averlo per tutti i prossimi ordini, vai sull'anagrafica dell'articolo. Selezionando il Tab “Condizioni d'acquisto” troverai la seguente videata</p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/articoli-tab-condizioni-aquisto.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-articoli-tab-condizioni-aquisto.jpg" class="img-responsive"></a>
 
 <p>Per maggior dettagli si veda il manuale “<a title="vai alla pagina del manuale" href="gestione_degli_articoli.php">La gestione degli articoli</a>”.
 

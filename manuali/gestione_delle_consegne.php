@@ -24,7 +24,7 @@
 			</ul>	
 			</p>
 
-			<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/consegne-elenco.png" /></a>
+			<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-consegne-elenco.jpg" /></a>
 	
 	
 			<h1 id="invio-della-mail-ai-gasisti-il-giorno-precedente-la-consegna">Invio della mail ai gasisti il giorno precedente la consegna</h1>
