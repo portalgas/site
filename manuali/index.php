@@ -225,7 +225,7 @@ h3 {
       	</div>
 	</a>
 
-    <a href="http://www.portalgas.it/manuali/doc/la-nuova-gestione-della-Home-Page-pagine-per-i-Gas.pdf" target="_blank">
+    <a href="https://www.portalgas.it/manuali/doc/la-nuova-gestione-della-Home-Page-pagine-per-i-Gas.pdf" target="_blank">
         <div class="col-sm-1 col-md-4 box-intro">
             <span aria-hidden="true" class="glyphicon glyphicon-file"></span>
             <h3>C.M.S.</h3>

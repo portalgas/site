@@ -7,11 +7,11 @@
 
 		<h1 id="ambienti">Quali sono gli ambienti di PortAlGas?</h1>
 		
-			<p>il Front End (Dove si fanno gli Ordini, è dove accedono gli Utenti): <a href="http://www.portalgas.it" target="_blank">http://www.portalgas.it</a></p>
+			<p>il Front End (Dove si fanno gli Ordini, è dove accedono gli Utenti): <a href="https://www.portalgas.it" target="_blank">https://www.portalgas.it</a></p>
 
 			<p>il Front End link diretto: http://<nome gas>.portalgas.it</p>
 
-			<p>il Back End (Dove si Gestisce il Gas e dove si gestiscono Ordini): <a href="http://www.portalgas.it/my" target="_blank">http://www.portalgas.it/my</a></p>
+			<p>il Back End (Dove si Gestisce il Gas e dove si gestiscono Ordini): <a href="https://www.portalgas.it/my" target="_blank">https://www.portalgas.it/my</a></p>
 
 			<p>In Caso di dubbi o incertezze potete leggere il manuale: <a href="http://manuali.portalgas.it" target="_blank">http://manuali.portalgas.it</a></p>
 
@@ -21,7 +21,7 @@
 			
 			<p>Se vi iscrivete al <b>Canale YouTube</b> ci sono i video istruttivi sul nostro nuovo canale YouTube: <a href="https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA" target="_blank">https://www.youtube.com/channel/UCo1XZkyDWhTW5Aaoo672HBA</a>: Piano piano completeremo per tutti i ruoli e attività</p>
 			
-			<p>Per quanto riguarda eventuali dubbi su privacy ed altro sono qui riassunti: <a href="http://www.portalgas.it/12-portalgas/2-termini-di-utilizzo" target="_blank">http://www.portalgas.it/12-portalgas/2-termini-di-utilizzo</a></p>
+			<p>Per quanto riguarda eventuali dubbi su privacy ed altro sono qui riassunti: <a href="https://www.portalgas.it/12-portalgas/2-termini-di-utilizzo" target="_blank">https://www.portalgas.it/12-portalgas/2-termini-di-utilizzo</a></p>
 
 		<h1 id="note-tecniche">Quali sono le caratteristiche tecniche di PortAlGas?</h1>
 

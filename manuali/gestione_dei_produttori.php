@@ -445,7 +445,7 @@
 	
 <p>Indicare un testo che illustri l’attività del produttore e associare eventuali immagini.</p>
 
-<p>I gasisti, cliccando su <img border="0" src="http://www.portalgas.it/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore"/> apriranno la scheda del produttore</p>
+<p>I gasisti, cliccando su <img border="0" src="https://www.portalgas.it/images/cake/apps/32x32/kontact.png" alt="Leggi la scheda del produttore"/> apriranno la scheda del produttore</p>
 	
 <a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/frontend-produttori-scheda.png" class="img-responsive"></a>
 		

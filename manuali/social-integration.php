@@ -157,7 +157,7 @@
 					<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/social-iftt-create.jpg" class="img-responsive"></a>
 				</p>		
 			</li>
-			<li>scegliete come canale: Feed e indicate come indirizzo web il feed rss di PortAlGas del vostro GAS, per esempio http://www.portalgas.it/rss/{NOME DEL TUO GAS}.rss <br />
+			<li>scegliete come canale: Feed e indicate come indirizzo web il feed rss di PortAlGas del vostro GAS, per esempio https://www.portalgas.it/rss/{NOME DEL TUO GAS}.rss <br />
 			Per maggior informazioni sui Feed Rss si <a href="#feed-rss">legga qui</a></li>
 			<li>scegliere come destinazione Facebook</li>
 		</ul>		

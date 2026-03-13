@@ -38,7 +38,7 @@
 
 			<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/frontend-consegne.jpg" class="img-responsive"></a>
 
-			<p>Se loggati potranno visualizzare i loro acquisti cliccando su <img border="0" title="ci sono prodotti ordinati" src="http://www.portalgas.it/images/cake/cesta-piena.png" /></p>
+			<p>Se loggati potranno visualizzare i loro acquisti cliccando su <img border="0" title="ci sono prodotti ordinati" src="https://www.portalgas.it/images/cake/cesta-piena.png" /></p>
 			
 			<p>Per ogni ordine</p>
 				<ul>
@@ -56,7 +56,7 @@
 			</ul>
 		</p>	
 		<p>
-			Ai gasisti loggati, cliccando sull'icona <img src="http://www.portalgas.it/images/cake/apps/32x32/messenger.png" />, sar&agrave; visibile un eventuale testo aggiunto dal referente.
+			Ai gasisti loggati, cliccando sull'icona <img src="https://www.portalgas.it/images/cake/apps/32x32/messenger.png" />, sar&agrave; visibile un eventuale testo aggiunto dal referente.
 		</p>
 		<p>Il testo riprende il testo incorporato alla mail di notifica dell'apertura dell'ordine.
 		</p>	

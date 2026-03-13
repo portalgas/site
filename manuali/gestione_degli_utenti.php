@@ -116,11 +116,11 @@
 			<p>
 			<ul>
 				<li>Contattare personalmente il GAS a quale desiderate aderire</li>
-				<li>Registratevi alla pagina <a target="_blank" href="http://www.portalgas.it/registrati">www.portalgas.it/registrati</a></li>
+				<li>Registratevi alla pagina <a target="_blank" href="https://www.portalgas.it/registrati">www.portalgas.it/registrati</a></li>
 				<li>PortAlGas invierà una <b>mail</b> per confermare la mail inserita durante la registrazione, leggere <a href="http://manuali.portalgas.it/problemi.php#problemi-con-le-mail-di-portalgas">problemi con le mail di PortAlGas</a></li>
 				<li>Cliccando sulla mail ricevuta si confermerà la mail inserita durante la registrazione (l'utenza viene così <b>attivata</b>).</li>
 				<li>Il manager del GAS dovrà <b>abilitarvi</b> per permettervi di accedere e verrà inviata un'altra <b>mail</b> con l'avvenuta abilitazione</li>
-				<li>Accedete alla sito <a target="_blank" href="http://www.portalgas.it/registrati">www.portalgas.it</a></li>
+				<li>Accedete alla sito <a target="_blank" href="https://www.portalgas.it/registrati">www.portalgas.it</a></li>
 			</ul>
 			</p>
 

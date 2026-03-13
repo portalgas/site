@@ -476,7 +476,7 @@ PortAlGas presenterà, per ogni utente
 
 <h2 id="la-richiesta-di-pagamento-al-gasista">La richiesta di pagamento al gasista</h2>
 
-	<p>Ecco come appare la richiesta di un pagamento ad un gasista una volta che si è loggato su http://www.portalgas.it</p>
+	<p>Ecco come appare la richiesta di un pagamento ad un gasista una volta che si è loggato su https://www.portalgas.it</p>
 
 	<p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/frontend-rich-pagamento.png" class="img-responsive"></a></p>
 

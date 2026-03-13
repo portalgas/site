@@ -19,18 +19,16 @@
 
 	<ol> 
 		<li>Dati dell'ordine</li>
-		<li>Invio mail</li>
-		<li>Visualizzazione per gli utenti</li>
-		<li>Gestione dopo la consegna o Gestione dopo l'arrivo della merce</li>
-		<li>Referenti</li>
-		<li>Fattura</li>
+		<li>Email dell'ordine</li>
+		<li>Durante l'ordine</li>
+		<li>Dopo la consegna o dopo l'arrivo della merce</li>
 	</ol>
 
 	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tabs.png" /></a>
 
 	<h2 id="il-tab-dei-dati-dell-ordine">Il Tab dei "Dati dell'ordine"</h2>
 	
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-dati-ordine.jpg" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-dati-ordine.jpg" /></a>
 
 	<p>La maschera è composta dai seguenti campi</p>
 
@@ -88,9 +86,9 @@
 	<strong>Nota: </strong> la gestione delle consegne è un compito del manager delle consegne del G.A.S.
 </div>	
 	
-	<h2 id="il-tab-invio-mail">Il Tab "Invio mail"</h2>
+	<h2 id="il-tab-invio-mail">Il Tab "Email dell'ordine"</h2>
 	
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-invio-mail.png" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-invio-mail.jpg" /></a>
 	
 	<p>La maschera è composta dai seguenti campi</p>
 
@@ -118,11 +116,11 @@
 
 <p>Per incollare il testo correttamente usa l'inconcina apposita cerchiata di rosso nello screenshot sottostante</p>
 
-<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-invio-mail1.png" /></a></p>
+<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-invio-mail1.jpg" /></a></p>
 
 <p>e otterrai </p>
 
-<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-invio-mail1.png" /></a></p>
+<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-invio-mail2.jpg" /></a></p>
 		
 		
 <p>Ecco come comparirà la nota nel corpo della mail che verrà inviata ai gasisti</p>
@@ -136,12 +134,12 @@
 </p>
  	
 <p>
-	Il testo aggiuntivo della mail all'apertura dell'ordine sarà anche visibile ai gasisti loggati sul front-end (www.portalgas.it) nel "Tab consegne" cliccando sull'icona <img src="http://www.portalgas.it/images/cake/apps/32x32/messenger.png" /> evidenziata nell'immagine sottostante
+	Il testo aggiuntivo della mail all'apertura dell'ordine sarà anche visibile ai gasisti loggati sul front-end (www.portalgas.it) nel "Tab consegne" cliccando sull'icona <img src="https://www.portalgas.it/images/cake/apps/32x32/messenger.png" /> evidenziata nell'immagine sottostante
 </p>	
 <p>
 	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/front-end-testo-mail.png" /></a>
 </p>
-	
+	<!--
 	<h2 id="il-tab-visualizzazione-per-gli-utenti">Il Tab Visualizzazione "Per gli utenti"</h2>
 	
 	<p>Gestisce la visualizzazione per i gasisti al momento che dovranno effettuare gli acquisti.</p>
@@ -156,7 +154,7 @@
 	<p>Quando si crea un ordine non si può scegliere se potrà essere visualizzato in modalità con o senza immagini.</p>
 	<p>Solo dopo che sono stati associati gli articoli, PortAlGas controlla quanti articoli associati hanno immagini: se almeno <b>80%</b> degli articoli associati presentano immagini, l'ordine sarà in modalità con le immagini.</p>
 	<p>Il referente potrà comunque andare in modifica dell'ordine e setta la modalità che preferisce.</p>
-
+-->
 	<h2 id="il-tab-gestione-durante-l-ordine">Il Tab Gestione "Durante l'ordine"</h2>
 	
 	<p>Qualora fosse necessario è possibile impostare 2 limiti sull'ordine</p>
@@ -185,7 +183,7 @@
 	
 	<p>Quindi, per esempio, se si dovesse scegliere KG, sarà calcolata la quantità totale solo degli acquisti di articoli che hanno come unità di misura KG, HG e GR.</p>
 	
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-gestione-durante-l-ordine.png" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-gestione-durante-l-ordine.jpg" /></a>
 	
 	<h2 id="il-tab-gestione-dopo-la-consegna-o-gestione-dopo-l-arrivo-della-merce">Il Tab Gestione "Dopo la consegna o dopo l'arrivo della merce"</h2>
 	
@@ -194,7 +192,7 @@
 		<li>per la gestione con “pagamento <strong>dopo</strong> la consegna” il Tab avrà come titolo "Dopo la consegna"</li>
 		<li>per la gestione con “pagamento <strong>alla</strong> consegna” il Tab avrà come titolo "Dopo l'arrivo della merce"</li>
 	</ul>
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-gestione-dopo-la-consegna.png" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-gestione-dopo-la-consegna.jpg" /></a>
 	
 	<p>La maschera è composta dai seguenti campi</p>
 <div class="table-responsive">
@@ -223,7 +221,7 @@
        </tbody>
     </table>
 </div>  
-  
+  <!--
 	<h2 id="il-tab-referenti">Il Tab "Referenti"</h2>
 	<p>Il tab referenti presenta l'elenco dei referenti associati al produttore dell'ordine. Il Tab comparirà solo dopo la creazione dell'ordine</p>
 	<h2 id="il-tab-fattura">Il Tab "Fattura"</h2>
@@ -239,7 +237,7 @@ ll tab fattura presenta le seguenti informazioni:
 	<li>La nota del referente quando ha trasmesso l'ordine al tesoriere</li>
 	<li>Stato del pagamento</li>
 </ul>
-											
+-->										
 	<h1 id="associazione-degli-articoli-del-produttore-all-ordine">Associazione degli articoli del produttore all'ordine</h1>
 	
 	<p>Ora possiamo scegliere quali articoli, tra quelli del produttore scelto, associare all'ordine.</p>
@@ -258,7 +256,7 @@ ll tab fattura presenta le seguenti informazioni:
 	<p>Di default questi campi hanno il valore preso dall'anagrafica degli articoli.</p>
 	<p>Di seguito il tab “Condizioni d'acquisto” dell'anagrafica degli articoli dove si valorizzano questi valori:</p>
 	
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-tab-condizioni-aquisto.png" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articoli-tab-condizioni-aquisto.jpg" /></a>
 	
 	<p>e sotto gli stessi campi come vengono presentati durante l'associazione degli articoli ad un determinato ordine. Se si desidera si possono modificare i valori, se no si prendono quelli valorizzati nell'anagrafica dell'articolo.</p>
 	
@@ -296,7 +294,7 @@ ll tab fattura presenta le seguenti informazioni:
 
 <p>Si avrà sempre la possibilità di modificare gli articoli associati una volta salvati</p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/associazione-degli-articoli-all-ordine.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-associazione-degli-articoli-all-ordine.jpg" /></a>
 		
 
 		
@@ -323,7 +321,7 @@ ll tab fattura presenta le seguenti informazioni:
 	
 	<h1 id="ecco-creato-l-ordine">Ecco creato l'ordine!</h1>
 	
-	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-elenco.jpg" /></a>
+	<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-elenco.jpg" /></a>
 	<p>In questa fase l'ordine potrà avere i seguenti “stati dell'ordine”:</p>
 
 <div class="table-responsive">
@@ -379,9 +377,9 @@ ll tab fattura presenta le seguenti informazioni:
 			<li>report con gli articoli aggregati con il dettaglio dei gasisti</li>
 			<li>report con gli articoli divisi per gasista</li>
 		</ol>
-
+<!--
 		<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/home-ordini-monitor.gif" class="img-responsive"></a>
-
+-->
 		<p>Cliccare su <div class="action actionWorkflow"></div> per accede alla Home dell'ordine</p>
 		<p>Cliccare su <div class="action actionMenu"></div> per aprire il menù dell'ordine</p>
 			
@@ -398,7 +396,7 @@ ll tab fattura presenta le seguenti informazioni:
 Per accedere al modulo:
 <ul>
 	<li>Cliccando dal menù su Referenti => Ordini => Monitoraggio Ordini</li>
-	<li>Dalla home cliccare su <img border="0" title="ci sono prodotti ordinati" src="http://www.portalgas.it/manuali/images/ico-monitorare-ordini.png" /></li>
+	<li>Dalla home cliccare su <img border="0" title="ci sono prodotti ordinati" src="https://www.portalgas.it/manuali/images/ico-monitorare-ordini.png" /></li>
 </ul>
 
 Qui si visualizzeranno gli ordini che il Super-Referente ha scelto di monitorare. Avrà a disposizione 3 differenti report:
@@ -408,7 +406,7 @@ Qui si visualizzeranno gli ordini che il Super-Referente ha scelto di monitorare
 	<li>report con gli articoli divisi per gasista</li>
 </ol>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/monitorare-ordini.gif" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-monitorare-ordini.jpg" class="img-responsive"></a>
 
 <p>Cliccare su <div class="action actionWorkflow"></div> per accede alla Home dell'ordine</p>
 <p>Cliccare su <div class="action actionMenu"></div> per aprire il menù dell'ordine</p>
@@ -430,12 +428,9 @@ Qui si visualizzeranno gli ordini che il Super-Referente ha scelto di monitorare
 					<li><a href="#creazione-di-un-ordine">Creazione di un ordine</a>
 						<ul class="nav">
 					<li><a href="#il-tab-dei-dati-dell-ordine">Il Tab dei "dati dell'ordine"</a></li>
-					<li><a href="#il-tab-invio-mail">Il Tab "Invio mail"</a></li>
-					<li><a href="#il-tab-visualizzazione-per-gli-utenti">Il Tab visualizzazione "Per gli utenti"</a></li>
-					<li><a href="#il-tab-gestione-durante-l-ordine">Il Tab gestione "Durante l'ordine"</a></li>
+					<li><a href="#il-tab-invio-mail">Il Tab "Email dell'ordine"</a></li>
+					<li><a href="#il-tab-gestione-durante-l-ordine">Il Tab Gestione "Durante l'ordine"</a></li>
 					<li><a href="#il-tab-gestione-dopo-la-consegna-o-gestione-dopo-l-arrivo-della-merce">Il Tab gestione "Dopo la consegna o Dopo l'arrivo della merce"</a></li>
-					<li><a href="#il-tab-referenti">Il Tab "Referenti"</a></li>
-					<li><a href="#il-tab-fattura">Il Tab "Fattura"</a></li>
 						</ul>
 					</li>	
 					<li><a href="#associazione-degli-articoli-del-produttore-all-ordine">Associazione degli articoli del produttore all'ordine</a>
