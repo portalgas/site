@@ -10,21 +10,39 @@
 
 <h1 id="gli-articoli-su-portalgas" class="page-header">Gli articoli su PortAlGas</h1>
 
-<p>Ogni referente potrà gestire solamente gli articoli dei produttori per i quali è abilitato.</p>
+<p>Ogni referente potrà gestire solamente gli articoli 
+	<ul> 
+		<li>dei produttori per i quali è abilitato</li>
+		<li>dei produttori che non gestiscono il proprio listino articoli</li>
+	</ul>	
+<p>
+	Esistono produttori che gestiscono il proprio listino articoli, quindi il referente
+	<ul> 
+		<li>potrà <b>visualizzare</b> il lisitno articoli</li>
+		<li>non potrà <b>modificare</b> il lisitno articoli</li>
+	</ul>
+</p>
+
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-produttori-gestione-listino.jpg" /></a>
+
 <p>Quando il referente crea un ordine, decide</p>
 <ul>
 	<li>quali articoli associare all'ordine</li>
 	<li>imposta alcuni valori degli articoli scelti per quel determinato ordine</li>
 </ul>
+
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articoli-in-ordine.jpg" /></a>
+
 <p>PortAlGas permette di gestire gli articoli dei produttori attraverso il menù "Articoli", che è così composto:</p>
 <ul>
-	<li>Articoli, per gestire la loro anagrafica</li>
+	<li>Gestione completa, per gestire la loro anagrafica</li>
 	<li>Modifica rapida degli articoli</li>
 	<li>Stampa articoli</li>
 	<li>Gestisci categorie</li>
 	<li>Modifica prezzi</li>
 	<li>Modifica prezzi in %</li>
 	<li>Modifica prezzo degli articolo associati agli ordini</li>
+	<li>Esporta articoli</li>
 	<li>Importa articoli</li>
 </ul>
 <h1 id="articoli-per-gestire-la-loro-anagrafica" class="page-header">Articoli, per gestire la loro anagrafica</h1>
@@ -33,71 +51,71 @@
 
 <p>Clicchiamo su Articoli, si presenterà l’elenco degli articoli dei produttori di cui sono referente.</p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-filtri-ricerca.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articoli-filtri-ricerca.jpg" /></a>
 
-<p>Vengono presentati i seguenti filtri di ricerca:</p>
+<p>Vengono presentati i seguenti filtri di ricerca, da sottolineare i filtri in base allo stato</p>
 
 <ul>
-	<li>Articoli associati ad un ordine</li>
-	<li>Articoli associati ad un produttore</li>
-	<li>Articoli associati ad una categoria</li>
-	<li>Articoli con un determinato nome</li>
-	<li>Articoli che appartiene ad una delle seguenti categorie:
-		<ul>
-			<li>Biologico</li>
-			<li>Biodinamico</li>
-			<li>Vegetariano</li>
-			<li>Vegano</li>
-			<li>Celiaco</li>
-		</ul>
-	</li>
-	<li>Articoli associati all’unità di misura
-		<ul>
-			<li>KG</li>
-			<li>HG</li>
-			<li>GR</li>
-			<li>PZ</li>
-			<li>LT</li>
-			<li>ML</li>
-			<li>MM</li>
-		</ul>	
-	</li>
-	<li>Articoli visibili o non visibili</li>
+	<li><b>Ordinabili</b>: fitra per gli articoli che si potranno ordinare ad un ordine</li>
+	<li><b>Non ordinabili</b>: fitra per gli articoli che <b>non</b> si potranno ordinare ad un ordine (per esempio d'inverno rendo "non ordinabili" gli articoli estivi così non si presentano quando creo un ordine d'inverno)</li>
+	<li><b>Entrambi</b>: tutti</li>
 </ul>
+		
+<p>Dall'elenco degli articoli è possibile modificare la sua anagrafica</p>
 						
-						
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articoli-elenco-dettaglio.jpg" /></a>
+
 <h2 id="anagrafica-degli-articoli" class="page-header">Anagrafica degli articoli</h2>
 
-<p>Di seguito i campi da compilare per creare l'anagrafica di un articolo , organizzati i 4 differenti tabs:</p>
+<p>Di seguito i campi da compilare per creare l'anagrafica di un articolo</p>
+
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-form-articolo.jpg" /></a>
 
 		<ol>
-			<li>Dati articolo</li>
-			<li>Prezzo</li>
-			<li>Condizioni d'acquisto</li>
+			<li>Produttore articolo</li>
+			<li>Categoria</li>
+			<li>Nome</li>
+			<li>Nota</li>
+			<li>Ingredienti</li>
 			<li>Immagine</li>
+			<li>Tipologia
+				<ul>
+					<li>Biologico</li>
+					<li>Biodinamico</li>
+					<li>Vegetariano</li>
+					<li>Vegano</li>
+					<li>Celiaco</li>
+					<li>Senza lattosio</li>
+				</ul>
+			</li>
 		</ol>
 
+<p>Ogni articolo può avere 1 o più varianti che comprende</p>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articolo-form-varianti.jpg" /></a>
 
-<h3 id="il-tab-dei-dati-dell-articolo">Il Tab dei dati dell’articolo</h3>
-
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-form.png" /></a>
-
-<h3 id="il-tab-del-prezzo">Il Tab del prezzo</h3>
-
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-tab-prezzo.png" /></a>
+<ol>
+	<li>Codice articolo</li>
+	<li>Quantità</li>
+	<li>Unità di misura</li>
+	<li>Prezzo</li>
+	<li>Iva</li>
+	<li>Prezzo/UM (Unità di misura di riferimento)</li>
+	<li>Num di pezzi in una confezione *</li>
+	<li>Quantità minima che un gasista può acquistare *</li>
+	<li>Quantità massima che un gasista può acquistare *</li>
+	<li>Multipli di *</li>
+	<li>Qtà minima rispetto a tutti gli acquisti *</li>
+	<li>Qtà massima rispetto a tutti gli acquisti *</li>
+</ol>
+<p>Ecco un esempio di varianti</p>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articoli-varianti-esempio.jpg" /></a>
 
 <p>
-<strong>Nota</strong>: Nel caso in cui le confezioni siano minori di 1 Kg (ad Es. 500 Grammi o 5 Hg meglio usare 0.5 Kg)  è meglio inserirle come frazioni dello stesso 
+<strong>Nota</strong>: Nel caso in cui le confezioni siano minori di 1 Kg (ad Es. 500 Grammi o 5 Hg meglio usare 0.5 Kg) è meglio inserirle come frazioni dello stesso 
 ovvero 0,50 Kg Unità di Misura Kg con il prezzo relativo agli stessi, in questo caso il prezzo al Kg verrà calcolato automaticamente, vedasi l'esempio in figura 
 </p>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-tab-prezzo-um.png" /></a>
-
-<h3 id="il-tab-delle-condizioni-d-acquisto">Il Tab delle condizioni d’acquisto</h3>
-
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-tab-condizioni-aquisto.png" /></a>
-
-<p>I valori del tab "Condizioni d’acquisto" saranno i valori di default presentati quando si assocerà l’articolo ad un ordine.
+<p>* questi valori saranno presentati quando si assocerà l’articolo ad un ordine.<br />
 Questi potranno essere modificati per quel determinato ordine senza modificarli nella sua anagrafica</p>
 
 <p>Questi sono:</p>
@@ -131,11 +149,6 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 
 <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articles-order-add-articles-fields.png" /></a>
 
-<h3 id="il-tab-dell-immagine">Il Tab dell’immagine</h3>
-
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-tab-immagine.png" /></a>
-
-<p>Nel "Tab Immagine" si può uplodare un immagine con estensione .jpg, .jpeg, .gif, .png da associare all'articolo</p>
 
 <h1 id="modifica-rapida-degli-articoli" class="page-header">Modifica rapida degli articoli</h1>
 
@@ -242,6 +255,13 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 	<li>non saranno modificati nell'anagrafica dell'articolo</li>
 </ul>
 
+<h1 id="export-articoli" class="page-header">Export articoli</h1>
+
+<p>Esporta il listino articoli in formato excel scegliendo quali campi esportare</p>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-export-articoli.jpg" /></a>
+
+
+
 <h1 id="importa-articoli" class="page-header">Importa articoli</h1>
 
 <p>Cliccando su questa voce di menù, raggiungibile dal percorso Home => Referenti => Articoli => importa articoli, si accede al modulo per importare con un file con estensione csv gli articoli in PortAlGas.</p>
@@ -249,28 +269,19 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 <p>Di seguito, come si presenta la maschera iniziale</p>
 
 <p>
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/articoli-importa.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-import-articoli.jpg" class="img-responsive"></a>
 </p>
 
-<p>Il file dev'essere formattato nel modo che segue</p>
+<p>Un esempio di formato del file</p>
 
 <a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articoli-importazione-formato.png" /></a>
 
-<p>I valori consentiti per i campi
 
-		<ul>
-			<li>"Prezzo": valore numerico con 2 decimali (esempio 1,00)</li>
-			<li>"Quantità": valore numerico con 2 decimali (esempio 1,00)</li>
-			<li>"Unità di misura": Pz, Gr, Hg, Kg, Ml, Dl, Lt</li>
-			<li>"Unità di misura di riferimento": Pz, Gr, Hg, Kg, Ml, Dl, Lt</li>
-			<li>"Bio": Y se è biologico, N se non è biologico</li>
-		</ul>
+<h1 id="importa-exist-articoli" class="page-header">Importa articoli da listino già esistente</h1>
+
+<p>
+	<iframe width="650" height="500" src="https://www.youtube.com/embed/W1K5ZAu0MYc?si=bQ27VaJUxlzUpTaQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
 </p>
-
-<div class="alert alert-info" role="alert">
-	<strong>Nota: </strong> per evitare problemi di carico su PortAlGas, sono consentiti file con un massimo di <strong>100</strong> righe.
-</div>
-
 
 <h1 id="associamo-gli-articoli-all-ordine" class="page-header">Associamo gli articoli all’ordine</h1>
 
@@ -324,7 +335,7 @@ Questi potranno essere modificati per quel determinato ordine senza modificarli 
 	<li>la quantità massima che si può ordinare rispetto al totale degli acquisti</li>
 </ul>
 
-<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/articles-order-associa-articles-edit.png" /></a>
+<a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-articles-order-associa-articles-edit.jpg" /></a>
 
 
 <p>Questi valori</p>
@@ -396,14 +407,7 @@ Se si desidera eliminare un articolo ad un ordine aperto clicca su , clicca su <
 					<li><a href="#articoli-per-gestire-la-loro-anagrafica">Articoli, per gestire la loro anagrafica</a>
 						<ul class="nav">
 							<li><a href="#ricerca-degli-articoli">Ricerca degli articoli</a></li>
-							<li><a href="#anagrafica-degli-articoli">Anagrafica degli articoli</a>
-								<ul class="nav">
-									<li><a href="#il-tab-dei-dati-dell-articolo">Il Tab dei dati dell’articolo</a></li>
-									<li><a href="#il-tab-del-prezzo">Il Tab del prezzo</a></li>
-									<li><a href="#il-tab-delle-condizioni-d-acquisto">Il Tab delle condizioni d’acquisto</a></li>
-									<li><a href="#il-tab-dell-immagine">Il Tab dell’immagine</a></li>
-								</ul>
-							</li>							
+							<li><a href="#anagrafica-degli-articoli">Anagrafica degli articoli</a></li>							
 						</ul>					
 					</li>
 					<li><a href="#modifica-rapida-degli-articoli">Modifica rapida degli articoli</a></li>
@@ -412,7 +416,9 @@ Se si desidera eliminare un articolo ad un ordine aperto clicca su , clicca su <
 					<li><a href="#modifica-prezzi">Modifica prezzi</a></li>
 					<li><a href="#modifica-prezzi-in-percentuale">Modifica prezzi in %</a></li>
 					<li><a href="#modifica-prezzo-degli-articolo-associati-agli-ordini">Modifica prezzo degli articolo associati agli ordini</a></li>
+					<li><a href="#export-articoli">Export articoli</a></li>
 					<li><a href="#importa-articoli">Importa articoli</a></li>
+					<li><a href="#importa-exist-articoli">Importa articoli da listino già esistente</a></li>
 					<li><a href="#associamo-gli-articoli-all-ordine">Associamo gli articoli all’ordine</a></li>
 					<li><a href="#gestione-visibilita-degli-articoli">Gestione visibilità degli articoli</a></li>
 				</ul>
