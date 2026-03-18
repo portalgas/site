@@ -20,7 +20,7 @@
 			<p>Modifiche ai prezzi In questo modo si possono modificare TUTTI gli Articoli</p>
 		
 			<p>
-				<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/use-case-modifica-prezzi.png" class="img-responsive"></a>
+				<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-use-case-modifica-prezzi.png" class="img-responsive"></a>
 			</p>
 		
 			<p>
@@ -76,7 +76,7 @@
 		
             <h2 id="passo-tesoriere-presa-in-carico-ordini-passati-dai-referenti">Passo 1 tesoriere: presa in carico ordini passati dai Referenti</h2>
 
-			<p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/Passo 1 Menu Tesoriere-Presa in carico Ordini.png" class="img-responsive"></a></p>
+			<p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-Passo 1 Menu Tesoriere-Presa in carico Ordini.png" class="img-responsive"></a></p>
 		        
             <p>Evidenziati in giallo gli ordini che sono in attesa di essere presi in carico – Selezionarli</p>
 
@@ -89,7 +89,7 @@
             
             <h2 id="gestisci-gli-ordini-presi-in-carico-elaborazione">Passo 2: gestisci gli Ordini presi in carico (Elaborazione)</h2>
 
-            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/Passo 2 Menu Tesoriere Gestisci gli ordini in elaborazione.png" class="img-responsive"></a></p>
+            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-Passo 2 Menu Tesoriere Gestisci gli ordini in elaborazione.png" class="img-responsive"></a></p>
 		     
             <p>Selezionare fra gli ordini in carico al Tesoriere, gli ordini da Elaborare</p>
             
@@ -99,7 +99,7 @@
 		    
             <h2 id="#gestisci-richieste-di-pagamento">Passo 3: gestisci Richieste di Pagamento</h2>
             
-            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/Passo 3 Manu Tesoriere - Gestisci Richieste di Pagamento.png" class="img-responsive"></a></p>
+            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-Passo 3 Manu Tesoriere - Gestisci Richieste di Pagamento.png" class="img-responsive"></a></p>
 		    
             <p>Selezionare “Crea una Nuova Richiesta di Pagamento”</p>
             
@@ -205,7 +205,7 @@
         
             <p>Tramite pagamenti per Produttore</p>
         
-            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/Passo Finale - Controlli e Monitoraggio.png" class="img-responsive"></a></p>
+            <p><a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-Passo Finale - Controlli e Monitoraggio.png" class="img-responsive"></a></p>
         
             <p>è possibile verificare i pagamenti effettuati per un produttore </p>
         

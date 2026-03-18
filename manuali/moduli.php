@@ -564,7 +564,7 @@ Il Referente potrà gestire solamente gli articoli dei produttori per i quali è
 
 <p>Si presenterà, nell'anagrafica dell'ordine come sotto illustrato</p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/moduli-conflitto-acquisti-dettaglio.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-moduli-conflitto-acquisti-dettaglio.jpg" class="img-responsive"></a>
 
 <p>Bisogna tener conto che i 3 algoritmi che suddividono l'importo del trasporto per ogni utente aggregano gli importi dei singoli utenti, così come il modulo per la “gestione degli acquisti aggregati per importo”.</p>
 
@@ -608,7 +608,7 @@ Il Referente potrà gestire solamente gli articoli dei produttori per i quali è
 
 <p>Di seguito la videata del Tab dell'ordine con la possibilità di scegliere se gestire o no un costo aggiuntivo</p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/moduli-conflitto-acquisti-dettaglio.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-moduli-conflitto-acquisti-dettaglio.jpg" class="img-responsive"></a>
 
 <p>una volta impostato l’importo del costo aggiuntivo si dovrà decidere come suddividerlo, secondo una delle seguenti modalità:</p>
 
@@ -655,7 +655,7 @@ Il Referente potrà gestire solamente gli articoli dei produttori per i quali è
 
 <p>Di seguito la videata del Tab dell'ordine con la possibilità di scegliere se gestire o no uno sconto</p>
 
-<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/moduli-conflitto-acquisti-dettaglio.png" class="img-responsive"></a>
+<a data-target="#modalImg" data-toggle="modal" href="" class="img_orig" title="clicca per ingrandire l'immagine"><img src="images/2026-moduli-conflitto-acquisti-dettaglio.jpg" class="img-responsive"></a>
 
 <p>una volta impostato l’importo dello sconto si dovrà decidere come suddividerlo, secondo una delle seguenti modalità:</p>
 

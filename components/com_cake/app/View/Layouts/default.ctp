@@ -11,7 +11,7 @@ if($user->organization['Organization']['type']=='PROD') {
 }
 else {
 	/*
-	 * vale per tutti i GAs e i ProdGasSuppliers
+	 * vale per tutti i GAS e i ProdGasSuppliers
 	 */
 	echo $this->Html->script('genericEcomm-v03.min');
 	echo $this->Html->script('genericBackOfficeGas-v02.min'); 	
@@ -54,10 +54,12 @@ echo $this->fetch('content');
 echo '<div id="footer">';
 if(Configure::read('developer.mode')) echo $this->element('boxMsg', ['class_msg' => 'notice', 'msg' => __('developer.mode')]);
 echo '</div>';
-			
+	
+echo '<a href="https://manuali.portalgas.it/" target="_blank">';
 echo '<div id="help">';
 echo '	<div class="logo">Manuali</div>';
 echo '</div>';
+echo '</a>';
 			
 echo '</div>'; // cakeContainer
 

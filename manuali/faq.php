@@ -100,11 +100,11 @@
 
 		<p>Per incollare il testo correttamente usa l'inconcina apposita cerchiata di rosso nello screenshot sottostante</p>
 		
-		<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-invio-mail1.png" /></a></p>
+		<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-invio-mail1.jpg" /></a></p>
 		
 		<p>e otterrai </p>
 		
-		<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/ordini-tab-invio-mail1.png" /></a></p>
+		<p><a title="clicca per ingrandire l'immagine" class="img_orig" href="" data-toggle="modal" data-target="#modalImg"><img class="img-responsive" src="images/2026-ordini-tab-invio-mail2.jpg" /></a></p>
 		
 		<h2 id="spese-di-trasporto-sconti-o-spese-generiche">Spese di trasporto, sconti o spese generiche</h2>
 		

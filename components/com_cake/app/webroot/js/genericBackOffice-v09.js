@@ -202,10 +202,13 @@ My.prototype = {
 		$('#help').mouseleave(function () {
 			$(this).animate({right: '-100px'}, 500);
 		});	
+        /* 
+         * ora punto a https://manuali.portalgas.it/
 		$('.logo').click(function () {
 			var url = '/administrator/index.php?option=com_cake&controller=Manuals&action=index';
 			window.location.href = url;
 		});	
+        */
 		
 		var scroll_timer;
 		var displayed = false;
