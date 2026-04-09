@@ -63,6 +63,27 @@ class OrganizationsPay extends AppModel {
 		return $totale;
 	}
 
+		/*
+	 * utenti attivi, serve per i pagamenti annuali
+	 *   se block = 1 non e' piu' visibile nelle stmape etc
+	 * 	 se can_login = 1 non puo' accedere ma e' visibile nelle stmape etc
+	 */
+	public function totAttivi($organization_id) {
+
+		App::import('Model', 'User');
+        $User = new User;
+		
+		$options = [];
+		$options['conditions'] = ['User.organization_id' => $organization_id,
+								//	'User.block' => 0,
+								  'User.can_login' => 0
+				];
+		$options['recursive'] = -1;
+        $totale = $User->find('count', $options);
+		
+		return $totale;
+	}
+
 	/*
 	 * calcola il totale di produttori di un organization
 	 */

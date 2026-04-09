@@ -3717,9 +3717,9 @@ class ExportDocsController extends AppController {
         foreach ($results as $numResult => $result) {
             $organization_id = $result['Organization']['id'];
 
-            $tot_users = $OrganizationsPay->totUsers($organization_id);
+            $tot_users = $OrganizationsPay->totAttivi($organization_id);
             if($organization_id==37)
-                $tot_users = 24;
+                $tot_users = 22;
                 
             /*
              * tolgo info@nomegas.portalgas.it
