@@ -19,6 +19,7 @@
 			if(!empty($results['Supplier']['telefono'])) echo $results['Supplier']['telefono'].'&nbsp;';
 			if(!empty($results['Supplier']['mail']))  echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$this->App->getPublicMail($user,$results['Supplier']['mail']).'"><i class="fa fa-envelope-o"></i></a>&nbsp;';
 			if(!empty($results['Supplier']['www']))  echo '<a title="Vai al sito del produttore" target="_blank" href="'.$this->App->traslateWww($results['Supplier']['www']).'"><i class="fa fa-link"></i></a>&nbsp;';
+			if(!empty($results['Supplier']['slug'])) echo '<a target="_blank" title="pagina portalgas del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$results['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 			?>
 		</li>
 	</ul>

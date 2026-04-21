@@ -87,6 +87,8 @@ class ContactControllerContact extends JControllerForm
             strpos($subject, 'hallo ')!==false ||
             // strpos($subject, 'hi ')!==false ||
             strpos($subject, 'hello ')!==false ||
+            strpos($subject, 'thank you ')!==false ||
+            strpos($subject, '$')!==false ||
             strpos($subject, 'aloha ')!==false) {
             $msg = JText::_('COM_CONTACT_EMAIL_THANKS');
 

@@ -250,6 +250,7 @@ if(!empty($results['SuppliersOrganization'])) {
 		if(!empty($result['Supplier']['telefono2'])) echo $result['Supplier']['telefono2'].'<br />';
 		if(!empty($result['Supplier']['mail'])) echo '<a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'">'.$result['Supplier']['mail'].'</a><br />';
 		if(!empty($result['Supplier']['www'])) echo '<a href="'.$this->App->traslateWww($result['Supplier']['www']).'" target="_blank">'.$result['Supplier']['www'].'</a><br />';
+		if(!empty($result['Supplier']['slug'])) echo '<a target="_blank" title="pagina portalgas del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
 		
 		echo '<td>';

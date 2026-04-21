@@ -19,6 +19,10 @@ Cosiì non devo bloccare un'utente e non averlo più disponibile nelle stampe (e
 mkdir /var/www/portalgas/images/pays/<?php echo date('Y');?>
 </pre>
 
+<pre class="shell" rel="sql per non permettre la login a chi è bloccato: il calcolo degli utenti attivi è fatto su chi non può loggarsi">
+update j_users set can_login = 1 where block = 1; 
+</pre>
+
 <pre class="shell" rel="sql per attivare il messaggio">
 update k_organizations set hasMsg='Y' where `type` = 'GAS' AND `hasMsg` = 'N' and parent_id is null AND `stato` = 'Y';
 </pre>

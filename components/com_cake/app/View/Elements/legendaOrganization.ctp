@@ -63,7 +63,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 	        ServerAdmin info@portalgas.it
 	        ServerName <span class="gasAlias"></span>.portalgas.it
 	        ServerAlias <span class="gasAlias"></span>.portalgas.it
-	        Redirect / https://www.portalgas.it/home-<span class="gasAliasSEO"></span>/consegne-<span class="gasAliasSEO"></span>
+	        Redirect / https://neo.portalgas.it/gas/<span class="gasAliasSEO"></span>/consegne
 	
 	        # ${APACHE_LOG_DIR} /var/log/apache2/
 	        ErrorLog ${APACHE_LOG_DIR}/error-<span class="gasAlias"></span>.portalgas.it.log

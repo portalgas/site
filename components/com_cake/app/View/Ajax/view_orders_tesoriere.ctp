@@ -66,6 +66,7 @@ echo '<td>';
 if(!empty($supplier['Supplier']['telefono2'])) echo '<br />'.$supplier['Supplier']['telefono2'];
 if(!empty($supplier['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" href="mailto:'.$supplier['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
 if(!empty($supplier['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($supplier['Supplier']['www']).'" target="_blank" class="blank fa fa-globe fa-lg"></a>';
+if(!empty($supplier['Supplier']['slug'])) echo '<a title="pagina portalgas del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$supplier['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 echo '</td>';
 
 echo '<td>';

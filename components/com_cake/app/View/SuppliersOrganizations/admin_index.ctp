@@ -116,7 +116,8 @@ if(!empty($results)) {
 		echo $result['Supplier']['telefono'];
 				if(!empty($result['Supplier']['telefono2'])) echo '<br />'.$result['Supplier']['telefono2'];
 				if(!empty($result['Supplier']['mail'])) echo '<br /><a title="'.__('Email send').'" target="_blank" href="mailto:'.$result['Supplier']['mail'].'" class="fa fa-envelope-o fa-lg"></a>';
-				if(!empty($result['Supplier']['www'])) echo '<a title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank fa fa-globe fa-lg"></a>';
+				if(!empty($result['Supplier']['www'])) echo '<a target="_blank" title="link esterno al sito del produttore" href="'.$this->App->traslateWww($result['Supplier']['www']).'" class="blank fa fa-globe fa-lg"></a>';
+				if(!empty($result['Supplier']['slug'])) echo '<a target="_blank" title="pagina portalgas del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
 		echo '<td>';
 		echo $this->app->drawListSuppliersOrganizationsReferents($user,$result['SuppliersOrganizationsReferent']);
