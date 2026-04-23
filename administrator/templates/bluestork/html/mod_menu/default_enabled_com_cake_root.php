@@ -129,6 +129,10 @@ if(in_array(group_id_root,$user->getAuthorisedGroups())) {
     $_menus_root[$i]['level'] = 3;
     $_menus_root[$i]['label'] = "2 Genera tutte le fatture ".date('Y');
     $_menus_root[$i]['url'] = "index.php?option=com_cake&controller=OrganizationsPays&action=invoice_create_pdfs";
+	$i++;
+    $_menus_root[$i]['level'] = 3;
+    $_menus_root[$i]['label'] = "3 Genera i messaggi e abilitali ".date('Y');
+    $_menus_root[$i]['url'] = "index.php?option=com_cake&controller=Connects&action=index&c_to=admin/organizations-pays&a_to=generateMsg";
 
 	$i++;
 	$_menus_root[$i]['level'] = 3;

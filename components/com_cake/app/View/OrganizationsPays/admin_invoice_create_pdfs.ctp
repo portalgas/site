@@ -1,5 +1,7 @@
 <?php 
-echo '<div class="organizations form">';
+echo '<div class="organizations form">
+    <h1>Esito sulla console del browser</h1>
+';
 
 foreach($organizationPayResults as $organizationPayResult) {
 
