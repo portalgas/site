@@ -173,11 +173,13 @@ _iub.csConfiguration = {"consentOnContinuedBrowsing":false,"whitelabel":false,"l
                     echo '</ul>';
                     echo '</div>';
                 }
-				echo '<div class="nav navbar-nav navbar-left">';
-				echo '<ul class="menu nav navbar-nav">';
-				echo '<li><a class="item-000" href="'.$neo_portalgas_url.'gas/gas-'.$organizationSEO.'/consegne">Consegne</a></li>';
-				echo '</ul>';
-				echo '</div>';				
+				if($organizationSEO!='portale') {
+					echo '<div class="nav navbar-nav navbar-left">';
+					echo '<ul class="menu nav navbar-nav">';
+					echo '<li><a class="item-000" href="'.$neo_portalgas_url.'gas/gas-'.$organizationSEO.'/consegne">Consegne</a></li>';
+					echo '</ul>';
+					echo '</div>';
+				}
                 ?>
 
 				<jdoc:include type="modules" name="position-menu-left" />

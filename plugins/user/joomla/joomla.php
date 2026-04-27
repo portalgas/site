@@ -302,8 +302,13 @@ class plgUserJoomla extends JPlugin
 					case "organization.home":
 						if(isset($paramsConfig['hasGasGroups']) && $paramsConfig['hasGasGroups']=='Y') 	
 							$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'?option=com_cake&controller=Connects&action=index&c_to=fai-la-spesa');
-						else 
-							$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+						else {
+							/*
+							 * la precedente pagina delle consegne e' ora su neo
+							 * $app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/home-'.$j_seo.'/consegne-'.$j_seo);
+							 */
+							$app->redirect($protoloc.$_SERVER['HTTP_HOST'].'?option=com_cake&controller=Connects&action=index&c_to=gas/'.$j_seo.'/consegne');
+						}
 						break;
                     case "organization.socialmarket.home":
                         $app->redirect($protoloc.$_SERVER['HTTP_HOST'].'/?option=com_cake&controller=Connects&action=index&c_to=social-market');
