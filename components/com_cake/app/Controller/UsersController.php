@@ -90,7 +90,7 @@ class UsersController extends AppController {
         
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
             $FilterUserCanLogin = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'CanLogin');
-            if ($FilterUserCanLogin != 'ALL')
+            if ($FilterUserCanLogin != 'ALL' && ($FilterUserCanLogin==0 || $FilterUserCanLogin==1)) 
                 $conditions['User.can_login'] = "User.can_login = $FilterUserCanLogin";  // 0 no login / 1 si login
             else
                 $conditions['User.can_login'] = "User.can_login IN ('0','1')";
