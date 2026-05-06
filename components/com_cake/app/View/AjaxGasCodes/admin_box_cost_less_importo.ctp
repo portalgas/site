@@ -73,7 +73,7 @@ else {
 		</div>
           <div class="col-md-3 form-inline">
               <label for="trasporto"><?php echo __('Percentuale');?></label>
-              <input type="number" min="0" value="" name="perc" id="perc" class="perc form-control" />
+              <input type="number" min="0" step="0.01" value="" name="perc" id="perc" class="perc form-control" />
           </div>
 		<div class="col-md-3 form-inline">
 			<label for="cost_less"><?php echo __('CostLess');?></label>

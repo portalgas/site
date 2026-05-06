@@ -161,6 +161,9 @@ class ServiceArticlesBehavior extends SuperServiceArticlesBehavior {
 
             foreach ($results as $numResult => $result) {
 
+                if(!isset($result['Article']))
+                    continue;
+                
                 $articlesOrderOptions = [];
                 $articlesOrderOptions['conditions'] = ['ArticlesOrder.organization_id' => $user->organization['Organization']['id'],
                     'ArticlesOrder.article_organization_id' => $result['Article']['organization_id'],
