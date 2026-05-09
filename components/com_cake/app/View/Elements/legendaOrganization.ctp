@@ -116,7 +116,11 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 
 <!--  			sitemap.xml 			 -->
 <!--  			sitemap.xml 			 -->
-<!--  			sitemap.xml	 		 -->
+<!--  			sitemap.xml	 		     -->
+<!-- creo sitemap.xml                    -->
+<!-- /var/www/neo.portalgas/src/Command/Sh/sitemap.sh -->
+<!-- /var/www/neo.portalgas/bin/cake Sitemap -->
+<!-- 
 <h1 class="header" id="header-sitemap">sitemap.xml</h1>
 
 <pre class="shell">
@@ -131,7 +135,7 @@ echo $this->element('legendaOrganizationjoomlaSeo');
 &lt;changefreq&gt;yearly&lt;/changefreq&gt;
 &lt;/url&gt;
 </pre>
-
+-->
 
 
 
