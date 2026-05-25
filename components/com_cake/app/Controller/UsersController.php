@@ -17,6 +17,7 @@ class UsersController extends AppController {
         $FilterUserUserGroups = null;
         $FilterUserUsername = null;
         $FilterUserName = '';
+        $FilterUserEmail = '';
         $FilterUserBlock = 'ALL';
         $FilterUserCanLogin = 'ALL';
         $FilterUserSort = Configure::read('orderUser');	
@@ -68,6 +69,10 @@ class UsersController extends AppController {
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
             $FilterUserName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             $conditions['User.name'] = "User.name LIKE '%" . $FilterUserName . "%'";
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Email')) {
+            $FilterUserEmail = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Email');
+            $conditions['User.email'] = "User.email LIKE '%" . $FilterUserEmail . "%'";
         }
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'UserGroups')) {
             $FilterUserUserGroups = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'UserGroups');
@@ -121,6 +126,7 @@ class UsersController extends AppController {
         /* filtro */
         $this->set('FilterUserUsername', $FilterUserUsername);
         $this->set('FilterUserName', $FilterUserName);
+        $this->set('FilterUserEmail', $FilterUserEmail);
         $this->set('FilterUserUserGroups', $FilterUserUserGroups);
         $this->set('FilterUserBlock', $FilterUserBlock);
         $this->set('FilterUserCanLogin', $FilterUserCanLogin);
@@ -209,6 +215,7 @@ class UsersController extends AppController {
 
         $FilterUserUsername = '';
         $FilterUserName = '';
+        $FilterUserEmail = '';
         $FilterUserProfileCF = '';
         $FilterUserBlock = 'ALL';
         $FilterUserCanLogin = 'ALL';
@@ -229,6 +236,10 @@ class UsersController extends AppController {
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
             $FilterUserName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             $conditions['User.name'] = "User.name LIKE '%" . $FilterUserName . "%'";
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Email')) {
+            $FilterUserEmail = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Email');
+            $conditions['User.email'] = "User.email LIKE '%" . $FilterUserEmail . "%'";
         }
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'ProfileCF')) {
             $FilterUserProfileCF = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'ProfileCF');
@@ -275,6 +286,7 @@ class UsersController extends AppController {
         /* filtro */
         $this->set('FilterUserUsername', $FilterUserUsername);
         $this->set('FilterUserName', $FilterUserName);
+        $this->set('FilterUserEmail', $FilterUserEmail);
         $this->set('FilterUserProfileCF', $FilterUserProfileCF);
         $this->set('FilterUserBlock', $FilterUserBlock);
         $this->set('FilterUserCanLogin', $FilterUserCanLogin);
@@ -335,6 +347,7 @@ class UsersController extends AppController {
 
         $FilterUserUsername = null;
         $FilterUserName = '';
+        $FilterUserEmail = '';
         $FilterUserBlock = 'ALL';
         $FilterUserSort = Configure::read('orderUser');
         
@@ -351,6 +364,10 @@ class UsersController extends AppController {
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Name')) {
             $FilterUserName = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Name');
             $conditions['User.name'] = "User.name LIKE '%" . $FilterUserName . "%'";
+        }
+        if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Email')) {
+            $FilterUserEmail = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Email');
+            $conditions['User.email'] = "User.email LIKE '%" . $FilterUserEmail . "%'";
         }
         if ($this->Session->check(Configure::read('Filter.prefix') . $this->modelClass . 'Block')) {
             $FilterUserBlock = $this->Session->read(Configure::read('Filter.prefix') . $this->modelClass . 'Block');
@@ -372,6 +389,7 @@ class UsersController extends AppController {
         /* filtro */
         $this->set('FilterUserUsername', $FilterUserUsername);
         $this->set('FilterUserName', $FilterUserName);
+        $this->set('FilterUserEmail', $FilterUserEmail);
         $this->set('FilterUserBlock', $FilterUserBlock);
         $this->set('FilterUserSort', $FilterUserSort);
 

@@ -35,8 +35,13 @@ class User extends AppModel {
 		else
 			$sql .= " AND User.block = 0 ";  // 0 attivo
 		
-		if(isset($conditions['User.can_login'])) $sql .= ' AND '.$conditions['User.can_login'];	
+		if(isset($conditions['User.can_login'])) {
+			if(empty($conditions['User.can_login']))
+				$conditions['User.can_login'] = 0;
+			$sql .= ' AND '.$conditions['User.can_login'];	
+		}
 		if(isset($conditions['User.id'])) $sql .= ' AND '.$conditions['User.id'];
+		if(isset($conditions['User.email'])) $sql .= ' AND '.$conditions['User.email'];
 		if(isset($conditions['User.name'])) $sql .= ' AND '.$conditions['User.name'];
 		if(isset($conditions['User.username'])) $sql .= ' AND '.$conditions['User.username'];
 		if(isset($conditions['UserGroup.group_id'])) $sql .= " AND UserGroup.group_id IN (".$conditions['UserGroup.group_id'].")";  // filtro per gruppi

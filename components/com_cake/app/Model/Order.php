@@ -695,7 +695,7 @@ class Order extends AppModel {
 			),
 			'dateToDesDataFineMax' => array(
 				'rule'       =>  array('date_comparison','<=', 'des_data_fine_max'),
-				'message'    => 'La data di chiusura non può essere posteriore alla data di chiusura dell\'ordine condisivo',
+				'message'    => 'La data di chiusura non può essere posteriore alla data di chiusura dell\'ordine condiviso',
 			),
 		),
 	);

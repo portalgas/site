@@ -266,7 +266,7 @@ class ArticlesOrdersController extends AppController {
                 
 					$data = [];
 				
-					self::d('Tratto articolo ['.$article_id.']', $debug);
+					self::d('Tratto articolo id ['.$article_id.'] organization_id ['.$article['article_organization_id'].']', $debug);
 					self::d($article, $debug);
 
 					/*

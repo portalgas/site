@@ -35,6 +35,11 @@ echo $this->Ajax->autoComplete('FilterUserName',
 							array('label' => 'Nominativo','name'=>'FilterUserName','value'=>$FilterUserName,'size'=>'50','escape' => false));
 echo '</td>';
 echo '<td>';
+echo $this->Ajax->autoComplete('FilterUserEmail', 
+							Configure::read('App.server').'/administrator/index.php?option=com_cake&controller=Ajax&action=autoCompleteUsers_email&format=notmpl',
+							array('label' => 'Email','name'=>'FilterUserEmail','value'=>$FilterUserEmail,'size'=>'50','escape' => false));
+echo '</td>';
+echo '<td>';
 echo $this->Form->input('block', ['label' => __('Stato'), 'options' => $block, 'name' => 'FilterUserBlock', 'default' => $FilterUserBlock, 'escape' => false]); 
 echo '</td>';	
 echo '<td>';
@@ -246,6 +251,7 @@ $(document).ready(function() {
 	$('.reset').click(function() {
 		$('#FilterUserUsername').val('');	
 		$('#FilterUserName').val('');	
+		$('#FilterUserEmail').val('');	
 	});
 });
 </script>

@@ -338,7 +338,7 @@ msgid "View Order"
 msgstr "Visualizza l'ordine"
 
 msgid "View DesOrder"
-msgstr "Visualizza l'ordine condisivo"
+msgstr "Visualizza l'ordine condiviso"
 
 msgid "View ProdGasPromotion"
 msgstr "Visualizza la promozione"
