@@ -127,10 +127,10 @@ class DesSuppliersController extends AppController {
    		$options['recursive'] = -1;
    		$options['conditions'] = ['DesSupplier.des_id' => $this->user->des_id];
    		$options['fields'] = ['DesSupplier.supplier_id'];
-   		$results = $this->DesSupplier->find('all', $options);
-        if(!empty($results))
+		$results = $this->DesSupplier->find('all', $options);
+		if(!empty($results))
         foreach($results as $result) {
-            array_push($supplier_ids, $result['DesSupplier']['supplier_id']);
+            array_push($supplier_ids, (int)$result['DesSupplier']['supplier_id']);
         }
 
         $supplier_states = ['Y', 'T', 'PG'];
@@ -138,7 +138,7 @@ class DesSuppliersController extends AppController {
         $options = [];
         $options['conditions'] = ['Supplier.stato' => $supplier_states];
         if(!empty($supplier_ids))
-            $options['conditions'] += ['Supplier.id NOT IN ' => $supplier_ids];
+            $options['conditions'] += ['Supplier.id NOT IN ' => $supplier_states];
         $options['recursive'] = -1;
         $options['order'] = ['Supplier.name'];
         $suppliers = $this->DesSupplier->Supplier->find('list', $options);
