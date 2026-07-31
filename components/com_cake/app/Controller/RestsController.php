@@ -228,7 +228,7 @@ class RestsController extends AppController {
 
             // Check to see the the session already exists.                        
             $app->checkSession();
-            $app->setUserState('users.login.form.data', array());
+            $app->setUserState('users.login.form.data', []);
             
             // Update the user related fields for the Joomla sessions table.
             $sql = 'UPDATE '.$db->quoteName('#__session') .
@@ -326,13 +326,13 @@ class RestsController extends AppController {
 			$this->render('/Rests/admin_index');		
 		}
 		
-		$user->organization['Organization']['id'] = $organization_id; 
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 		
 		App::import('Model', 'Delivery');
 		$Delivery = new Delivery;
 		
 		$options = [];
-		$options['conditions'] = ['Delivery.organization_id' => $user->organization['Organization']['id'],
+		$options['conditions'] = ['Delivery.organization_id' => $tmp_user->organization['Organization']['id'],
 								   'Delivery.isVisibleFrontEnd' => 'Y',
 								   'Delivery.stato_elaborazione'=> 'OPEN',
 									'Delivery.sys'=> 'N',
@@ -340,7 +340,7 @@ class RestsController extends AppController {
 		$options['recursive'] = -1;
 		$options['order'] = ['Delivery.data'];
 		$results = $Delivery->find('all', $options);
-
+		
 		$newResults = [];
 		foreach($results as $numResults => $result) {
 		
@@ -354,11 +354,11 @@ class RestsController extends AppController {
 		App::import('Model', 'Order');
 		$Order = new Order;
 		
-		$ordersResults = $Order->getOrdersDeliverySys($user);
+		$ordersResults = $Order->getOrdersDeliverySys($tmp_user);
 
 		if(count($ordersResults)>0) {
 		
-			$sysResults = $Delivery->getDeliverySys($user);
+			$sysResults = $Delivery->getDeliverySys($tmp_user);
 			
 			$tmp['Delivery']['id'] = $sysResults['Delivery']['id'];
 			$tmp['Delivery']['luogo'] = $sysResults['Delivery']['luogo'];
@@ -394,7 +394,7 @@ class RestsController extends AppController {
 			$this->render('/Rests/admin_index');		
 		}
 		
-		$user->organization['Organization']['id'] = $organization_id; 
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 		
 		App::import('Model', 'Supplier');
 		
@@ -402,15 +402,14 @@ class RestsController extends AppController {
 		$Order = new Order;
 		
 		$options = [];
-		$options['conditions'] = array('Delivery.organization_id' => $user->organization['Organization']['id'],
+		$options['conditions'] = ['Delivery.organization_id' => $tmp_user->organization['Organization']['id'],
 									   'Delivery.isVisibleFrontEnd' => 'Y',
 									   'Delivery.stato_elaborazione'=> 'OPEN',
-										'Order.organization_id' => $user->organization['Organization']['id'],
-										'Order.delivery_id' => $delivery_id,
-										);
+										'Order.organization_id' => $tmp_user->organization['Organization']['id'],
+										'Order.delivery_id' => $delivery_id];
 		$options['recursive'] = 0;
-		$options['fields'] = array('Order.id', 'Order.supplier_organization_id', 'Order.data_inizio', 'Order.data_fine', 'Order.data_fine_validation', 'Order.nota', 'SuppliersOrganization.supplier_id');
-		$options['order'] = array('Order.data_fine');
+		$options['fields'] = ['Order.id', 'Order.supplier_organization_id', 'Order.data_inizio', 'Order.data_fine', 'Order.data_fine_validation', 'Order.nota', 'SuppliersOrganization.supplier_id'];
+		$options['order'] = ['Order.data_fine'];
 		$results = $Order->find('all', $options);
 
 		$newResults = [];
@@ -425,9 +424,9 @@ class RestsController extends AppController {
 			$Supplier = new Supplier;
 
 			$options = [];
-			$options['conditions'] = array('Supplier.id' => $result['SuppliersOrganization']['supplier_id']);
+			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
 			$options['recursive'] = -1;
-			$options['fields'] = array('Supplier.name', 'Supplier.img1');
+			$options['fields'] = ['Supplier.name', 'Supplier.img1'];
 			$supplierResults = $Supplier->find('first', $options);
 			
 			$newResults[$numResults]['Supplier'] = $supplierResults['Supplier'];
@@ -451,18 +450,18 @@ class RestsController extends AppController {
 	 */
 	public function articles_orders($organization_id, $order_id) {
 	
-		$user->organization['Organization']['id'] = $organization_id;
+		$tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $organization_id]);
 	
 		App::import('Model', 'ArticlesOrder');
 		$ArticlesOrder = new ArticlesOrder;		
 		
 		$options = [];
-		$options['conditions'] = array(// 'Cart.user_id' => $this->user->id,
+		$options['conditions'] = [// 'Cart.user_id' => $this->user->id,
 										'Cart.deleteToReferent' => 'N', 
-										'ArticlesOrder.order_id' => $order_id);
+										'ArticlesOrder.order_id' => $order_id];
 		
 		$options['order'] = 'Article.name';
-		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($user, $order_id, $organization_id, $options);
+		$results = $ArticlesOrder->getArticoliEventualiAcquistiInOrdine($tmp_user, $order_id, $organization_id, $options);
 
 		$newResults = [];
 		foreach($results as $numResults => $result) {
