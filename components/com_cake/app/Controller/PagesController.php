@@ -672,7 +672,9 @@ class PagesController extends AppController {
             'Delivery.isVisibleBackOffice' => 'Y',
             'Delivery.sys' => 'N',
             'Delivery.type'=> 'GAS', // GAS-GROUP
-            'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '];
+         //   presento tutte le consegne come per il tab a FE "tutte le consegne" 
+         //   'DATE(Delivery.data) >= CURDATE() - INTERVAL ' . Configure::read('GGinMenoPerEstrarreDeliveriesCartInTabs') . ' DAY '
+         ];
         $options['order'] = ['Delivery.data' => 'asc'];
         $options['fields'] = ['Delivery.id', 'Delivery.luogoData'];
         $options['recursive'] = 1;

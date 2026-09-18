@@ -11,6 +11,7 @@ else
 echo '<div class="users">';
 echo '<h2 class="ico-users">';
 echo __('Users');
+echo ' trovati '.count($results).' su '.$users_totale;
 echo '<div class="actions-img">';			
 echo '	<ul>';
 echo '		<li><a href="/administrator/index.php?option=com_users" class="action actionUser" title="Gestione completa">Gestione completa</a></li>';

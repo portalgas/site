@@ -146,7 +146,9 @@ class UsersController extends AppController {
 		App::import('Model', 'Cart');
 		$Cart = new Cart;
 		
-        // debug($conditions);
+        $users_totale = $this->User->find('count', ['conditions' => ['organization_id' => (int) $this->user->organization['Organization']['id'], 'username NOT LIKE \'%.portalgas.it\''], 
+                                                    'recursive' => -1, 
+                                                    'callbacks' => false]);
         $userResults = $this->User->getUsersComplete($this->user, $conditions, Configure::read('orderUser'), false);
 		if(!empty($userResults)) {
 			foreach($userResults as $numResult => $userResult) {
@@ -157,8 +159,8 @@ class UsersController extends AppController {
 				$userResults[$numResult] += $cartResults; 
 			}
 		}
-		self::d($userResults, $debug);		
         $this->set('results', $userResults);
+        $this->set(compact('users_totale'));
     }
 
     public function admin_index_block() {
