@@ -9,14 +9,14 @@ echo $this->Html->getCrumbList(array('class'=>'crumbs'));
 
 echo '<div class="contentMenuLaterale">';
 
-echo $this->Form->create('Order',array('id' => 'formGas'));
+echo $this->Form->create('Order', ['id' => 'formGas']);
 echo '<fieldset>';
 
 if(empty($des_order_id))
 	echo '<legend>'.__('Add Order').'</legend>';
 else {
 	echo '<legend>'.__('Add DesOrder').'</legend>';
-	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
+	echo $this->element('boxDesOrder', ['results' => $desOrdersResults]);
 }	
 	
 echo '<div class="tabs">';
@@ -60,7 +60,7 @@ echo '<div class="tab-pane fade active in" id="tabs-0">';
 	/*
 	 * consegna
 	 */
-	echo $this->element('boxOrdersDelivery', ['modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery]);
+	echo $this->element('boxOrdersDelivery', ['modalita' => 'ADD', 'isManagerDelivery' => $isManagerDelivery, 'user' => $user]);
 	echo $this->Html->div('clearfix','');
 	
 	echo $this->App->drawDate('Order', 'data_inizio', __('DataInizio'), $data_inizio_db);
@@ -278,16 +278,36 @@ $(document).ready(function() {
 			return false;
 		}
 
-		var typeDelivery = $("input[name='typeDelivery']:checked").val();
-		if(typeDelivery==undefined || typeDelivery!='to_defined') {
-			var delivery_id = $('#delivery_id').val();
-			if(delivery_id=='' || delivery_id==undefined) {
-				alert("<?php echo __('jsAlertDeliveryRequired');?>");
-				$('.tabs li:eq(0) a').tab('show');
-				$('#delivery_id').focus();
-				return false;
-			}	    
+		<?php 
+		if($user->organization['Organization']['hasDeliveriesMultiple']=='N') {
+		?>
+			var typeDelivery = $("input[name='typeDelivery']:checked").val();
+			if(typeDelivery==undefined || typeDelivery!='to_defined') {
+				var delivery_id = $('#delivery_id').val();
+				if(delivery_id=='' || delivery_id==undefined) {
+					alert("<?php echo __('jsAlertDeliveryRequired');?>");
+					$('.tabs li:eq(0) a').tab('show');
+					$('#delivery_id').focus();
+					return false;
+				}	    
+			}
+		<?php
 		}
+		else {
+		?>
+			var typeDelivery = $("input[name='typeDelivery']:checked").val();
+			if(typeDelivery==undefined || typeDelivery!='to_defined') {
+				var delivery_ids = $('#delivery_ids').val();
+				if(delivery_ids=='' || delivery_ids==undefined) {
+					alert("<?php echo __('jsAlertDeliveryRequired');?>");
+					$('.tabs li:eq(0) a').tab('show');
+					$('#delivery_ids').focus();
+					return false;
+				}	    
+			}
+		<?php
+		}
+		?>
 		
 		var orderDataInizioDb = $('#OrderDataInizioDb').val();
 		if(orderDataInizioDb=='' || orderDataInizioDb==undefined) {
@@ -325,9 +345,9 @@ $(document).ready(function() {
 
 				if(resultCompare=='<') testo = "<b>Non</b> verr&agrave; inviata alcuna <b>mail</b> ai gasisti perch&egrave; la data di apertura dell'ordine &egrave; <b>antecedente</b> alla data odierna";
 				else
-						if(resultCompare=='=') testo = "Verr&agrave; inviata la <b>mail</b> ai gasisti per notificare dell'apertura dell'ordine <b>questa notte</b>";
+					if(resultCompare=='=') testo = "Verr&agrave; inviata la <b>mail</b> ai gasisti per notificare dell'apertura dell'ordine <b>questa notte</b>";
 				else
-						if(resultCompare=='>') testo = "Verr&agrave; inviata la <b>mail</b> ai gasisti per notificare dell'apertura dell'ordine il <b>giorno stesso</b> dell'apertura dell'ordine"; 
+					if(resultCompare=='>') testo = "Verr&agrave; inviata la <b>mail</b> ai gasisti per notificare dell'apertura dell'ordine il <b>giorno stesso</b> dell'apertura dell'ordine"; 
 		}
 
 		$("#modalOrderMailMsg .modal-body").html(testo);	

@@ -458,7 +458,7 @@ class OrdersController extends AppController {
 		$this->set(compact('supplier_organization_id'));
 
 		$msg = "";
-
+		
 		/*
 		 * setting fields
 		*/
@@ -537,11 +537,20 @@ class OrdersController extends AppController {
 		$this->set('isVisibleBackOfficeDefault', $isVisibleBackOffice);
 		
 		if ($this->request->is('post') || $this->request->is('put')) {
+			
+			/*
+			 * restituisce un array di order_id per la gestione delle consegne multiple
+			 * hasDeliveriesMultiple
+			 * */
+			$order_ids = $this->_add($this->user, $this->request->data, $debug);	
 
-			$this->order_id = $this->_add($this->user, $this->request->data, $debug);	
+			if(count($order_ids) > 0) {
 
-			if($this->order_id > 0) {
-				
+				/*
+				 * prendo il primo ordine
+				 * */
+				$this->order_id = $order_ids[0];
+
 				/*
 				 * associo ordine all'ordine DES
 				 */
@@ -568,7 +577,12 @@ class OrdersController extends AppController {
 					$DesOrdersOrganization->save($data);
 				 } // end DES
 				 
-				 $this->Routings->fromOrderAddToArticlesOrderAdd($this->user, $this->order_id, null, $debug);
+				 $opts = [];
+				 if($this->user->organization['Organization']['hasDeliveriesMultiple']=='Y') {
+					$opts['order_ids'] = implode(',', $order_ids);
+				}
+				
+				$this->Routings->fromOrderAddToArticlesOrderAdd($this->user, $this->order_id, $opts, $debug);
 			}
 			else {
 				$msg = __('The order could not be saved. Please, try again.');	
@@ -773,7 +787,7 @@ class OrdersController extends AppController {
 	}
 	
 	private function _add($user, $requestData, $debug) {
-	
+		
 		App::import('Model', 'OrderLifeCycle');
 		$OrderLifeCycle = new OrderLifeCycle;
 
@@ -859,26 +873,41 @@ class OrdersController extends AppController {
 		self::d('OrderController::oggi '.$data_oggi.' = '.$data_inizio_db, $debug);
 		self::d($requestData, $debug);
 
-		/*
-		 * richiamo la validazione 
-		 */
-		$msg_errors = $this->Order->getMessageErrorsToValidate($this->Order, $requestData);
-		if(!empty($msg_errors)) {
-			self::d($requestData, $debug);
-			self::d($msg_errors, $debug);
-			$order_id = 0;
-		}
-		else {
-			$this->Order->create();
-			if($this->Order->save($requestData)) 
-				$order_id = $this->Order->getLastInsertId();
-			else 
+		$delivery_ids = [];
+		if($user->organization['Organization']['hasDeliveriesMultiple']=='Y') 
+			$delivery_ids = $requestData['delivery_ids'];
+		else 
+			$delivery_ids[] = $requestData['Order']['delivery_id'];
+
+		$order_ids = [];
+		foreach($delivery_ids as $delivery_id) {
+
+			$requestData['Order']['delivery_id'] = $delivery_id;
+			$this->request->data['Order']['delivery_id'] = $delivery_id;
+
+			/*
+			* richiamo la validazione 
+			*/
+			$msg_errors = $this->Order->getMessageErrorsToValidate($this->Order, $requestData);
+			if(!empty($msg_errors)) {
+				self::d($requestData, $debug);
+				self::d($msg_errors, $debug);
 				$order_id = 0;
+			}
+			else {
+				$this->Order->create();
+				if($this->Order->save($requestData)) 
+					$order_id = $this->Order->getLastInsertId();
+				else 
+					$order_id = 0;
+			}
+			
+			$order_ids[] = $order_id;
+			self::d('OrderController::_add() order_id '.$order_id, $debug);
+	
 		}
 		
-		self::d('OrderController::_add() order_id '.$order_id, $debug);
-		
-		return $order_id;
+		return $order_ids;
 	} 
 			
 	/*

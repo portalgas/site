@@ -199,8 +199,10 @@ class ArticlesOrdersController extends AppController {
      *
      * 	action_post = action_articles_orders_current gestione normale
      *  action_post = action_articles_orders_previuos associo articoli ordine precedente
+     * 
+     *  order_ids per consegne multiple Organization.hasDeliveriesMultiple
 	 */
-    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc', $filter_name='') {
+    public function admin_add($delivery_id=0, $order_id=0, $des_order_id=0, $sort='Article.name asc', $filter_name='', $order_ids=[]) {
 
         $debug = false;
 		
@@ -258,143 +260,153 @@ class ArticlesOrdersController extends AppController {
 
             $article_id_selected = $this->request->data['ArticlesOrder']['article_id_selected'];
             $arr_article_id_selected = explode(',', $article_id_selected);
-			
-			if(isset($this->request->data['Article']))
-            foreach ($this->request->data['Article'] as $article_id => $article) {
 
-                if (isset($article_id) && in_array($article_id, $arr_article_id_selected)) {
-                
-					$data = [];
-				
-					self::d('Tratto articolo id ['.$article_id.'] organization_id ['.$article['article_organization_id'].']', $debug);
-					self::d($article, $debug);
-
-					/*
-                	 * get Article.name
-                	 */
-                	$opts = []; 
-					$opts['conditions'] = ['Article.organization_id' => $article['article_organization_id'], 
-					         			   'Article.id' => $article_id];
-                    $opts['recursive'] = -1;
-					$articleResults = $Article->find('first', $opts);
-					if(empty($articleResults)) {
-						self::d($opts);
-						self::x('Non trovato il nome dell articolo');
-					}
-					
-					$data['ArticlesOrder']['name'] = $articleResults['Article']['name'];
-					self::d($articleResults, $debug); 
-
-                    $data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
-					$data['ArticlesOrder']['order_id'] = $order_id;
-				
-					/*
-					 * dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
-					 */
-					$data['ArticlesOrder']['article_organization_id'] = $article['article_organization_id'];
-					$data['ArticlesOrder']['article_id'] = $article_id;
-		
-					if(isset($article['ArticlesOrderPrezzo']))	
-						$data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
-					else
-						$data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo_'];
-						
-					if(isset($article['ArticlesOrderPezziConfezione']))	
-						$data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
-					else
-						$data['ArticlesOrder']['pezzi_confezione'] = $articleResults['Article']['pezzi_confezione'];
-					if(isset($article['ArticlesOrderQtaMinima']))	
-						$data['ArticlesOrder']['qta_minima'] = $article['ArticlesOrderQtaMinima'];
-					else
-						$data['ArticlesOrder']['qta_minima'] = $articleResults['Article']['qta_minima'];
-					if(isset($article['ArticlesOrderQtaMassima']))	
-						$data['ArticlesOrder']['qta_massima'] = $article['ArticlesOrderQtaMassima'];
-					else
-						$data['ArticlesOrder']['qta_massima'] = $articleResults['Article']['qta_massima'];
-					if(isset($article['ArticlesOrderQtaMinimaOrder']))	
-						$data['ArticlesOrder']['qta_minima_order'] = $article['ArticlesOrderQtaMinimaOrder'];
-					else
-						$data['ArticlesOrder']['qta_minima_order'] = $articleResults['Article']['qta_minima_order'];
-					if(isset($article['ArticlesOrderQtaMassimaOrder']))	
-						$data['ArticlesOrder']['qta_massima_order'] = $article['ArticlesOrderQtaMassimaOrder'];
-					else
-						$data['ArticlesOrder']['qta_massima_order'] = $articleResults['Article']['qta_massima_order'];
-					if(isset($article['ArticlesOrderQtaMultipli']))	
-						$data['ArticlesOrder']['qta_multipli'] = $article['ArticlesOrderQtaMultipli'];
-					else
-						$data['ArticlesOrder']['qta_multipli'] = $articleResults['Article']['qta_multipli'];
-						
-					$data['ArticlesOrder']['alert_to_qta'] = 0;	
-					if(isset($data['alert_to_qta']))	
-						$data['ArticlesOrder']['alert_to_qta'] = $article['ArticlesOrderAlertToQta'];
-					else
-						$data['ArticlesOrder']['alert_to_qta'] = $articleResults['Article']['alert_to_qta'];
-					
-					$data['ArticlesOrder']['send_mail'] = 'N';
-					$data['ArticlesOrder']['qta_cart'] = '0';
-					$data['ArticlesOrder']['flag_bookmarks'] = 'N';
-					$data['ArticlesOrder']['stato'] = 'Y';
-
-					self::d('ArticlesOrder da salvare', $debug);
-					self::d($data, $debug);
-
-                    /*
-                     * richiamo la validazione
-                     */
-                    $this->ArticlesOrder->set($data);
-                    if (!$this->ArticlesOrder->validates()) {
-
-                        $errors = $this->ArticlesOrder->validationErrors;
-                        $tmp = '';
-                        $flatErrors = Set::flatten($errors);
-                        if (count($errors) > 0) {
+            $order_ids = [];
+            if($this->user->organization['Organization']['hasDeliveriesMultiple']=='Y') 
+                $order_ids = explode(',', $this->request->data['ArticlesOrder']['order_ids']);
+            else 
+                $order_ids[] = $order_id;
+               
+            foreach($order_ids as $order_id) {
+                if(isset($this->request->data['Article']))
+                foreach ($this->request->data['Article'] as $article_id => $article) {
+    
+                    if (isset($article_id) && in_array($article_id, $arr_article_id_selected)) {
+                    
+                        $data = [];
+                    
+                        self::d('Tratto articolo id ['.$article_id.'] organization_id ['.$article['article_organization_id'].']', $debug);
+                        self::d($article, $debug);
+    
+                        /*
+                         * get Article.name
+                         */
+                        $opts = []; 
+                        $opts['conditions'] = ['Article.organization_id' => $article['article_organization_id'], 
+                                                'Article.id' => $article_id];
+                        $opts['recursive'] = -1;
+                        $articleResults = $Article->find('first', $opts);
+                        if(empty($articleResults)) {
+                            self::d($opts);
+                            self::x('Non trovato il nome dell articolo');
+                        }
+                        
+                        $data['ArticlesOrder']['name'] = $articleResults['Article']['name'];
+                        self::d($articleResults, $debug); 
+    
+                        $data['ArticlesOrder']['organization_id'] = $this->user->organization['Organization']['id'];
+                        $data['ArticlesOrder']['order_id'] = $order_id;
+                    
+                        /*
+                         * dati dell owner_ dell'articolo REFERENT / SUPPLIER / DES
+                         */
+                        $data['ArticlesOrder']['article_organization_id'] = $article['article_organization_id'];
+                        $data['ArticlesOrder']['article_id'] = $article_id;
+            
+                        if(isset($article['ArticlesOrderPrezzo']))	
+                            $data['ArticlesOrder']['prezzo'] = $article['ArticlesOrderPrezzo'];
+                        else
+                            $data['ArticlesOrder']['prezzo'] = $articleResults['Article']['prezzo_'];
+                            
+                        if(isset($article['ArticlesOrderPezziConfezione']))	
+                            $data['ArticlesOrder']['pezzi_confezione'] = $article['ArticlesOrderPezziConfezione'];
+                        else
+                            $data['ArticlesOrder']['pezzi_confezione'] = $articleResults['Article']['pezzi_confezione'];
+                        if(isset($article['ArticlesOrderQtaMinima']))	
+                            $data['ArticlesOrder']['qta_minima'] = $article['ArticlesOrderQtaMinima'];
+                        else
+                            $data['ArticlesOrder']['qta_minima'] = $articleResults['Article']['qta_minima'];
+                        if(isset($article['ArticlesOrderQtaMassima']))	
+                            $data['ArticlesOrder']['qta_massima'] = $article['ArticlesOrderQtaMassima'];
+                        else
+                            $data['ArticlesOrder']['qta_massima'] = $articleResults['Article']['qta_massima'];
+                        if(isset($article['ArticlesOrderQtaMinimaOrder']))	
+                            $data['ArticlesOrder']['qta_minima_order'] = $article['ArticlesOrderQtaMinimaOrder'];
+                        else
+                            $data['ArticlesOrder']['qta_minima_order'] = $articleResults['Article']['qta_minima_order'];
+                        if(isset($article['ArticlesOrderQtaMassimaOrder']))	
+                            $data['ArticlesOrder']['qta_massima_order'] = $article['ArticlesOrderQtaMassimaOrder'];
+                        else
+                            $data['ArticlesOrder']['qta_massima_order'] = $articleResults['Article']['qta_massima_order'];
+                        if(isset($article['ArticlesOrderQtaMultipli']))	
+                            $data['ArticlesOrder']['qta_multipli'] = $article['ArticlesOrderQtaMultipli'];
+                        else
+                            $data['ArticlesOrder']['qta_multipli'] = $articleResults['Article']['qta_multipli'];
+                            
+                        $data['ArticlesOrder']['alert_to_qta'] = 0;	
+                        if(isset($data['alert_to_qta']))	
+                            $data['ArticlesOrder']['alert_to_qta'] = $article['ArticlesOrderAlertToQta'];
+                        else
+                            $data['ArticlesOrder']['alert_to_qta'] = $articleResults['Article']['alert_to_qta'];
+                        
+                        $data['ArticlesOrder']['send_mail'] = 'N';
+                        $data['ArticlesOrder']['qta_cart'] = '0';
+                        $data['ArticlesOrder']['flag_bookmarks'] = 'N';
+                        $data['ArticlesOrder']['stato'] = 'Y';
+    
+                        self::d('ArticlesOrder da salvare', $debug);
+                        self::d($data, $debug);
+                       
+                        /*
+                         * richiamo la validazione
+                         */
+                        $this->ArticlesOrder->set($data);
+                        if (!$this->ArticlesOrder->validates()) {
+    
+                            $errors = $this->ArticlesOrder->validationErrors;
                             $tmp = '';
-                            foreach ($flatErrors as $key => $value)
-                                $tmp .= $value . ' - ';
+                            $flatErrors = Set::flatten($errors);
+                            if (count($errors) > 0) {
+                                $tmp = '';
+                                foreach ($flatErrors as $key => $value)
+                                    $tmp .= $value . ' - ';
+                            }
+                            $msg .= "Articolo non inserito: dati non validi, $tmp<br />";
+                            $this->Session->setFlash($msg);
+                        } else {
+                            $this->ArticlesOrder->create();
+                            if (!$this->ArticlesOrder->save($data)) {
+                                $msg .= "<br />Articolo ".$articleResults['Article']['name']." [".$article_id."] non salvato per errore di sistema!";
+                            }
                         }
-                        $msg .= "Articolo non inserito: dati non validi, $tmp<br />";
-                        $this->Session->setFlash($msg);
-                    } else {
-                        $this->ArticlesOrder->create();
-                        if (!$this->ArticlesOrder->save($data)) {
-                            $msg .= "<br />Articolo ".$articleResults['Article']['name']." [".$article_id."] non salvato per errore di sistema!";
-                        }
-                    }
-                } // end if(isset($article_id) && in_array($article_id, $arr_article_id_selected))
-            } // end foreach 
+                    } // end if(isset($article_id) && in_array($article_id, $arr_article_id_selected))
+                } // end foreach 
+            } // end foreach($order_ids as $order_id)
 
             if (!empty($msg))
                 $this->Session->setFlash(__('The articles order could not be saved. Please, try again.'));
             else {
-                /*
-                 * aggiorno lo stato dell'ordine 
-                 * 	da OPEN-NEXT o OPEN
-                 * */
-                $utilsCrons = new UtilsCrons(new View(null));
-                $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $order_id);
 
-                /*
-                 * setto la tipologia Draw (SIMPLE o COMPLETE)
-                 */
-                App::import('Model', 'Order');
-                $Order = new Order;
-                $Order->updateTypeDraw($this->user, $order_id);
+                foreach($order_ids as $order_id) {
+                    /*
+                    * aggiorno lo stato dell'ordine 
+                    * 	da OPEN-NEXT o OPEN
+                    * */
+                    $utilsCrons = new UtilsCrons(new View(null));
+                    $utilsCrons->ordersStatoElaborazione($this->user->organization['Organization']['id'], (Configure::read('developer.mode')) ? true : false, $order_id);
+                
+                    /*
+                    * setto la tipologia Draw (SIMPLE o COMPLETE)
+                    */
+                    App::import('Model', 'Order');
+                    $Order = new Order;
+                    $Order->updateTypeDraw($this->user, $order_id);
 
-                if ($this->user->organization['Organization']['hasDes'] == 'Y' && !empty($des_order_id)) {
-					/*
-					 * non +, il GAS puo' scegliere quali articoli associare
-                    App::import('Model', 'DesOrder');
-                    $DesOrder = new DesOrder;
-                    $DesOrder->insertOrUpdateArticlesOrderAllOrganizations($this->user, $des_order_id, $order_id, null, $isTitolareDesSupplier, $debug);
-					*/
-					
-                    $this->Session->setFlash(__('The articles order has been saved'));
-                    $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $this->order_id . '&des_order_id=' . $des_order_id;
-                } else {
-                    $this->Session->setFlash(__('The articles order has been saved'));
-                    $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $order_id;
-                }
+                    if ($this->user->organization['Organization']['hasDes'] == 'Y' && !empty($des_order_id)) {
+                        /*
+                        * non +, il GAS puo' scegliere quali articoli associare
+                        App::import('Model', 'DesOrder');
+                        $DesOrder = new DesOrder;
+                        $DesOrder->insertOrUpdateArticlesOrderAllOrganizations($this->user, $des_order_id, $order_id, null, $isTitolareDesSupplier, $debug);
+                        */
+                        
+                        $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $this->order_id . '&des_order_id=' . $des_order_id;
+                    } else {
+                        $url = Configure::read('App.server') . '/administrator/index.php?option=com_cake&controller=Orders&action=home&delivery_id=' . $this->delivery_id . '&order_id=' . $order_id;
+                    }
+                } // end foreach($order_ids as $order_id)    
 
+                $this->Session->setFlash(__('The articles order has been saved'));
                 if (!$debug)
                     $this->myRedirect($url);
             }
@@ -444,7 +456,7 @@ class ArticlesOrdersController extends AppController {
 		$sorts['Article.name asc'] = __('Name').' '.__('OrderAsc');
 		$sorts['Article.name desc'] = __('Name').' '.__('OrderDesc');
  
-		$this->set(compact('sort', 'sorts', 'filter_name'));
+		$this->set(compact('sort', 'sorts', 'filter_name', 'order_ids'));
     }
 
     /*

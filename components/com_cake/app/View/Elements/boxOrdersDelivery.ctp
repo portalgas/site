@@ -25,8 +25,14 @@ if($modalita=='EDIT') {
 					if($modalita=='ADD') {
 						if(empty($deliveries))
 							echo __('OrderNotFoundDeliveries');
-						else
-							echo $this->Form->input('delivery_id',array('label' => false, 'empty' => Configure::read('option.empty'), 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false'));
+						else {
+							if(isset($user) && $user->organization['Organization']['hasDeliveriesMultiple']=='Y')
+								$options = ['label' => false, 'id' => 'delivery_ids', 'name' => 'delivery_ids', 'default' => $delivery_id, 'required' => 'false', 'multiple' => true];
+							else 
+								$options = ['label' => false, 'empty' => Configure::read('option.empty'), 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false', 'multiple' => false];
+	
+							echo $this->Form->input('delivery_id', $options);
+						}
 					} 
 					else 
 					if($modalita=='EDIT') {

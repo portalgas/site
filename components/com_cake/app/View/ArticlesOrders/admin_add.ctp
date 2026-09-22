@@ -24,7 +24,7 @@ echo '<div class="articles">';
 if(!empty($des_order_id))
 	echo $this->element('boxDesOrder', array('results' => $desOrdersResults));	
 
-echo $this->element('boxOrder', ['results' => $order]);
+echo $this->element('boxOrder', ['results' => $order, 'order_ids' => $order_ids]);
 
 
 echo $this->Form->create('ArticlesOrder', ['id' => 'formGas']);
@@ -59,6 +59,7 @@ if(!empty($sorts)) {
 	echo $this->Form->hidden('delivery_id',['id' => 'delivery_id', 'value' => $delivery_id]);	 
 	echo $this->Form->hidden('order_id',['id' => 'order_id', 'value' => $order_id]);	 
 	echo $this->Form->hidden('des_order_id',['id' => 'des_order_id', 'value' => $des_order_id]);
+	echo $this->Form->hidden('order_ids',['id' => 'order_ids', 'value' => $order_ids]);
 	echo '</div>';	
 	echo '<div class="col col-md-6">';
 	echo $this->Form->input('sort', ['id' => 'sort', 'options' => $sorts, 'default' => $sort]);	 	
@@ -281,7 +282,8 @@ $(document).ready(function() {
 		var delivery_id = $('#delivery_id').val();
 		var order_id = $('#order_id').val();
 		var des_order_id = $('#des_order_id').val();
-		var url = '/administrator/index.php?option=com_cake&controller=ArticlesOrders&action=add&delivery_id='+delivery_id+'&order_id='+order_id+'&des_order_id='+des_order_id+'&sort='+sort+'&filter_name='+filter_name;
+		var order_ids = $('#order_ids').val(); 
+		var url = '/administrator/index.php?option=com_cake&controller=ArticlesOrders&action=add&delivery_id='+delivery_id+'&order_id='+order_id+'&des_order_id='+des_order_id+'&sort='+sort+'&filter_name='+filter_name+'&order_ids='+order_ids;
 		window.location.replace(url);
 	});
 
@@ -291,7 +293,8 @@ $(document).ready(function() {
 		var delivery_id = $('#delivery_id').val();
 		var order_id = $('#order_id').val();
 		var des_order_id = $('#des_order_id').val();
-		var url = '/administrator/index.php?option=com_cake&controller=ArticlesOrders&action=add&delivery_id='+delivery_id+'&order_id='+order_id+'&des_order_id='+des_order_id+'&sort='+sort+'&filter_name='+filter_name;
+		var order_ids = $('#order_ids').val(); 
+		var url = '/administrator/index.php?option=com_cake&controller=ArticlesOrders&action=add&delivery_id='+delivery_id+'&order_id='+order_id+'&des_order_id='+des_order_id+'&sort='+sort+'&filter_name='+filter_name+'&order_ids='+order_ids;
 		window.location.replace(url);
 	});
 	

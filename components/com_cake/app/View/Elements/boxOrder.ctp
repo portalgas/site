@@ -11,14 +11,19 @@ $orderDataFine = $this->Time->i18nFormat($results['Order']['data_fine'],"%A, %e 
 
 echo '<div class="row">';
 echo '<div class="col-md-6">';	
-echo '<select name="delivery_id" id="delivery_id" class="form-control">';
-echo '<option value="'.$results['Delivery']['id'].'">'.$deliveryLabel.'</option>';
-echo '</select>';
-echo '<br />';
+if(empty($order_ids)) {
+	echo '<select name="delivery_id" id="delivery_id" class="form-control">';
+	echo '<option value="'.$results['Delivery']['id'].'">'.$deliveryLabel.'</option>';
+	echo '</select>';
+	echo '<br />';
+}
+else 
+	echo '<input type="hidden" name="delivery_id" id="delivery_id" value="'.$results['Delivery']['id'].'" />';
+
 echo '<select name="order_id" id="order_id" class="form-control">';
 echo '<option value="'.$results['Order']['id'].'">'.$results['SuppliersOrganization']['name'].' - dal '.$orderDataInizio.' al '.$orderDataFine;
 echo '</option>';
-echo '</select>';
+echo '</select>';	
 echo '</div>';
 echo '<div class="col-md-6">';
 ?>	

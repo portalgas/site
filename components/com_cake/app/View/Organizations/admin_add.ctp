@@ -117,6 +117,8 @@ echo '<div class="tab-pane fade" id="tabs-5">';
 	echo $this->App->drawFormRadio('Organization','hasCostMore',array('options' => $hasCostMore, 'value'=>'Y', 'label'=>__('HasCostMore'), 'required'=>'required'));
 	echo $this->App->drawFormRadio('Organization','hasCostLess',array('options' => $hasCostLess, 'value'=>'Y', 'label'=>__('HasCostLess'), 'required'=>'required'));
 
+	echo '<h3>'.__('Deliveries').'</h3>';
+	echo $this->App->drawFormRadio('Organization','hasDeliveriesMultiple', ['options' => $hasDeliveriesMultiple, 'value'=>'N', 'label'=>__('HasDeliveriesMultiple'), 'required'=>'required']);
 
 	echo '<h3>'.__('Storeroom').'</h3>';
 	echo $this->App->drawFormRadio('Organization','hasStoreroom',array('options' => $hasStoreroom, 'value'=>'Y', 'label'=>__('HasStoreroom'), 'required'=>'required'));

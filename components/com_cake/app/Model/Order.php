@@ -714,12 +714,33 @@ class Order extends AppModel {
 	}
 
 	function date_comparison_to_delivery($field=[], $operator) {
+
+		/*
+		 * ora si fa un ciclo per ogni order e la sua validazione
+		$hasDeliveriesMultiple = 'N';
+		$organization_id = $this->data[$this->alias]['organization_id'];
+		if(!empty($organization_id)) {
+			App::import('Model', 'Organization');
+			$Organization = new Organization;
+
+			$options = [];
+			$options['conditions'] = ['id' => $organization_id];
+			$options['recursive'] = -1;
+			$organization = $Organization->find('first', $options);	
+			$paramsConfig = json_decode($organization['Organization']['paramsConfig']);
+			$hasDeliveriesMultiple = $paramsConfig->hasDeliveriesMultiple;
+		}
+
+		if($hasDeliveriesMultiple=='Y')
+			return true;
+		*/
+
 		foreach( $field as $key => $value ){
 			if(isset($this->data[$this->alias]['delivery_id'])) { // capita se l'elenco delle consegne è vuoto
 				$delivery_id = $this->data[$this->alias]['delivery_id'];
 				$organization_id = $this->data[$this->alias]['organization_id'];
 				 
-				$this->Delivery->unbindModel(array('hasMany' => array('Order','Cart')));
+				$this->Delivery->unbindModel(['hasMany' => ['Order','Cart']]);
 				$delivery = $this->Delivery->read($delivery_id, $organization_id, 'data');
 				$delivery_data = $delivery['Delivery']['data'];
 			

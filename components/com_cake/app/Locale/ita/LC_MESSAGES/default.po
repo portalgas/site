@@ -3113,6 +3113,9 @@ msgstr "Permette agli utenti di registrarsi a FE"
 msgid "HasArticlesOrder"
 msgstr "Ha la gestione degli articoli associati agli ordini"
 
+msgid "HasDeliveriesMultiple"
+msgstr "Ha la gestione delle consegne multiple"
+
 msgid "HasMailDeliveryOpen"
 msgstr "Ha la mail di apertura della consegna"
 
@@ -4646,6 +4649,9 @@ msgstr "Se è valorizzato a 'Si' si potrà gestire i documenti a front-end"
 
 msgid "toolTipHasArticlesOrder"
 msgstr "Se è valorizzato a 'Si' si potrà gestire gli articoli associati agli ordini"
+
+msgid "toolTipHasDeliveriesMultiple"
+msgstr "Se è valorizzato a 'Si' si potrà gestire le consegne multiple"
 
 msgid "toolTipHasVisibility"
 msgstr "Se è valorizzato a 'Si' si potrà gestire la visibilità delle consegne e degli ordini"

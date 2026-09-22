@@ -104,10 +104,14 @@ class RoutingsComponent extends Component {
 
 		switch ($go) {
 			case "articlesorders_add";
-				$url .= "ArticlesOrders&action=add&delivery_id=$delivery_id&order_id=$order_id&des_order_id=$des_order_id";			
+				$url .= "ArticlesOrders&action=add&delivery_id=$delivery_id&order_id=$order_id&des_order_id=$des_order_id";	
+				if(isset($opt['order_ids']))	
+					$url .= "&sort=Article.name asc&filter_name=&order_ids=".$opt['order_ids'];
 			break;
 			case "articlesorders_add_hidden";
-				$url .= "ArticlesOrders&action=add_hidden&order_id=$order_id";			
+				$url .= "ArticlesOrders&action=add_hidden&order_id=$order_id";
+				if(isset($opt['order_ids']))	
+					$url .= "&sort=Article.name asc&filter_name=&order_ids=".$opt['order_ids'];		
 			break;
 			case "articlesorders_add_prod_gas"; // dismesso
 				$url .= "ArticlesOrders&action=add_prod_gas&delivery_id=$delivery_id&order_id=$order_id";			
