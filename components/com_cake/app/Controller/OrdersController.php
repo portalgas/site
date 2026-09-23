@@ -870,7 +870,7 @@ class OrdersController extends AppController {
 			$requestData['Order']['owner_supplier_organization_id'] = $suppliersOrganizationResults['SuppliersOrganization']['owner_supplier_organization_id'];
 		}
 				
-		self::d('OrderController::oggi '.$data_oggi.' = '.$data_inizio_db, $debug);
+		self::l('OrderController::oggi '.date('Y-m-d').' = '.$this->request->data['Order']['data_inizio_db'], $debug);
 		self::d($requestData, $debug);
 
 		$delivery_ids = [];
@@ -890,8 +890,8 @@ class OrdersController extends AppController {
 			*/
 			$msg_errors = $this->Order->getMessageErrorsToValidate($this->Order, $requestData);
 			if(!empty($msg_errors)) {
-				self::d($requestData, $debug);
-				self::d($msg_errors, $debug);
+				self::l($requestData, $debug);
+				self::l($msg_errors, $debug);
 				$order_id = 0;
 			}
 			else {
@@ -902,9 +902,10 @@ class OrdersController extends AppController {
 					$order_id = 0;
 			}
 			
-			$order_ids[] = $order_id;
-			self::d('OrderController::_add() order_id '.$order_id, $debug);
-	
+			if($order_id!==0)
+				$order_ids[] = $order_id;
+
+			self::l('OrderController::_add() order_id '.$order_id, $debug);
 		}
 		
 		return $order_ids;
@@ -1217,7 +1218,7 @@ class OrdersController extends AppController {
 				$this->request->data['Order']['nota'] = '';
 						
 			if($debug) {
-				debug ('oggi '.$data_oggi.' = '.$data_inizio_db);
+				debug ('oggi '.date('Y-m-d').' = '.$this->request->data['Order']['data_inizio_db']);
 				debug ('mail_open_send '.$this->request->data['Order']['mail_open_send']);
 			}
 
