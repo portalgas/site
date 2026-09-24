@@ -100,7 +100,7 @@ class Cart extends CartMultiKey {
 						'ArticlesOrder.pezzi_confezione' => '1'];
 		if(!empty($article_organization_id) && !empty($article_id)) $conditions += ['Article.organization_id' => $article_organization_id, 'Article.id' => $article_id];
 		$orderBy = ['Article' => 'Article.name'];
-	
+
 		$results = $ArticlesOrder->getArticlesOrdersInOrder($user, $conditions, $orderBy);
 
 		foreach($results as $numResults => $result) {
@@ -122,7 +122,8 @@ class Cart extends CartMultiKey {
 				}
 							    
 				$differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] % $result['ArticlesOrder']['pezzi_confezione']);
-					
+
+				self::d('name '.$result['ArticlesOrder']['name'].' article_id '.$result['ArticlesOrder']['article_id'], $debug);
 				self::d('pezzi_confezione '.$result['ArticlesOrder']['pezzi_confezione'], $debug);
 				self::d('qta_cart '.$result['ArticlesOrder']['qta_cart'], $debug);
 				self::d('differenza_da_ordinare '.$differenza_da_ordinare, $debug);
@@ -144,7 +145,7 @@ class Cart extends CartMultiKey {
 				unset($results[$numResults]);
 			
 		} // foreach($results['ArticlesOrder'] as $numResults => $articlesOrder)
-	
+
 		return $results;
 	}
 	

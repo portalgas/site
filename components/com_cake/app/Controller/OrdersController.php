@@ -1502,7 +1502,6 @@ class OrdersController extends AppController {
 						
 			$data_fine_validation = $this->request->data['Order']['data_fine_validation'];
 			$data_fine_validation_db = $this->request->data['Order']['data_fine_validation_db'];
-			// debug($this->request->data['Order']);
 
 			/*
 			 * aggiorno stato ORDER
@@ -1522,7 +1521,42 @@ class OrdersController extends AppController {
 				if($debug) debug("riapro l'ordine");
 				$this->Order->riapriOrdine($this->user, $this->order_id, $debug);
 			}
+				
+			if($continue) {
+				/*
+				* aggiorno gli articoli non completati
+				*/			
+				$riopen_qta_multipli_1 = $this->request->data['riopen_qta_multipli_1'];
+				$riopen_pezzi_confezione_1 = $this->request->data['riopen_pezzi_confezione_1'];
+				if($riopen_qta_multipli_1=='Y' || $riopen_pezzi_confezione_1=='Y') {
+					
+					App::import('Model', 'ArticlesOrder');
+					$ArticlesOrder = new ArticlesOrder;
+
+					App::import('Model', 'Cart');
+					$Cart = new Cart;
+					$cartToValidateResults = $Cart->getCartToValidate($this->user, $this->delivery_id, $this->order_id);
+					foreach($cartToValidateResults as $cartToValidateResult) {
 						
+						$conditions = ['organization_id' => (int) $this->user->organization['Organization']['id'],
+										'order_id' => $cartToValidateResult['ArticlesOrder']['order_id'],
+										'article_organization_id' => $cartToValidateResult['ArticlesOrder']['article_organization_id'],
+										'article_id' => $cartToValidateResult['ArticlesOrder']['article_id']
+						];
+						$results = $ArticlesOrder->find('first', ['conditions' => $conditions, 'recursive' => -1]);
+
+						if($riopen_qta_multipli_1=='Y')
+							$results['ArticlesOrder']['qta_multipli'] = 1;
+						if($riopen_pezzi_confezione_1=='Y') 
+							$results['ArticlesOrder']['pezzi_confezione'] = 1;
+
+						$ArticlesOrder->create();
+						$ArticlesOrder->save($results);
+
+					} // foreach($newResults['ArticlesOrder'] as $numResult => $cartToValidateResult) 
+				} // end if($riopen_qta_multipli_1=='Y' || $riopen_pezzi_confezione_1=='Y')
+			} // end if($continue)
+
 			/*
 			 * invio mail
 			 */
@@ -1613,6 +1647,9 @@ class OrdersController extends AppController {
 		$invio_mail = ['Y' => 'Si', 'N' => 'No'];
 		$this->set(compact('invio_mail'));
 		$this->set(compact('invio_mail_default'));
+
+		$this->set('riopen_qta_multipli_1', isset($this->request->data['riopen_qta_multipli_1']) ? $this->request->data['riopen_qta_multipli_1']: 'N');
+		$this->set('riopen_pezzi_confezione_1', isset($this->request->data['riopen_pezzi_confezione_1']) ? $this->request->data['riopen_pezzi_confezione_1']: 'N');
 		
 		$this->request->data = $results;
 		

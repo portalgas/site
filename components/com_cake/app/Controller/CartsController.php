@@ -343,7 +343,6 @@ class CartsController extends AppController {
    	   	if ($this->request->is('post') || $this->request->is('put')) {
 
    	   		self::d($this->request->data, $debug); 
-   	   		
    	   		if($this->user->organization['Organization']['hasStoreroom']=='Y') {
    	   			/*
    	   			 * ctrl se storeroom esiste

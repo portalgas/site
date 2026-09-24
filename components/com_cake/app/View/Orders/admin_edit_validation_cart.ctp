@@ -17,6 +17,9 @@ echo $this->Form->create('Order',array('id' => 'formGas'));
 echo '<fieldset>';
 echo '<legend>'.__('ValidationCartRiOpen').'</legend>';
 
+		echo '<input type="hidden" name="riopen_qta_multipli_1" value="'.$riopen_qta_multipli_1.'" />';
+		echo '<input type="hidden" name="riopen_pezzi_confezione_1" value="'.$riopen_pezzi_confezione_1.'" />';
+
 		echo $this->Form->input('id');
 		echo '<div class="input text required">';
 		echo '<label for="OrderSuppliersOrganizationId">'.__('SuppliersOrganization').'</label> ';

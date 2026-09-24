@@ -14,7 +14,8 @@ else {
     echo '<th style="text-align:center;">'.__('PrezzoUnita').'</th>';
     if($orderToQtaMinimaOrder)
         echo '<th style="text-align:center;">'.__('qta_minima_order_short').'</th>';
-    echo '<th style="text-align:center;">'.__('pezzi_confezione_short').'</th>';
+	echo '<th style="text-align:center;">'.__('pezzi_confezione_short').'</th>';
+	echo '<th style="text-align:center;">'.__('qta_multipli').'</th>';
 	echo '<th style="text-align:center;">Colli<br />completati</th>';
 	echo '<th style="text-align:center;">Quantità<br />ordinata</th>';
 	echo '<th>';
@@ -57,7 +58,8 @@ else {
 		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['prezzo_e'].'</td>';
         if($orderToQtaMinimaOrder)
             echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_minima_order'].'</td>';
-        echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
+		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['pezzi_confezione'].'</td>';
+		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_multipli'].'</td>';
 		echo '<td style="text-align:center;">'.$colli_completi.'</td>';
 		echo '<td style="text-align:center;">'.$result['ArticlesOrder']['qta_cart'].'</td>';
 		echo '<td style="text-align:center;">';
@@ -78,25 +80,49 @@ else {
 		echo '<td colspan="2"></td>';
 		echo '<td colspan="10" id="tdViewId-'.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_organization_id'].'_'.$result['ArticlesOrder']['article_id'].'"></td>';
 		echo '</tr>';
-		echo $this->Form->hidden('differenza_da_ordinare',array('name' => 'data[Cart]['.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_organization_id'].'_'.$result['ArticlesOrder']['article_id'].'][differenza_da_ordinare]','value' => $result['ArticlesOrder']['differenza_da_ordinare']));
+		echo $this->Form->hidden('differenza_da_ordinare', ['name' => 'data[Cart]['.$result['ArticlesOrder']['order_id'].'_'.$result['ArticlesOrder']['article_organization_id'].'_'.$result['ArticlesOrder']['article_id'].'][differenza_da_ordinare]','value' => $result['ArticlesOrder']['differenza_da_ordinare']]);
 		
 		$i++;
 	} // foreach($results as $numResult => $result)
 	
 	echo '</table></div>';
 	 
-	echo $this->Form->hidden('article_order_id_selected',array('id' =>'article_order_id_selected', 'value'=>''));
+	echo $this->Form->hidden('article_order_id_selected', ['id' =>'article_order_id_selected', 'value'=>'']);
 	
-	if($isStoreroom)
-		echo $this->Form->submit(__('ValidationCartToStoreroom'),array('id' => 'action_post_storeroom', 'div'=> 'submitMultiple'));
+	echo '<div class="row">';		
 	
 	if($order['Order']['state_code']=='PROCESSED-BEFORE-DELIVERY') {
 		if($order['Order']['data_fine_validation']!=Configure::read('DB.field.date.empty'))	
 			$label = 'Riaperto fino a '.$this->Time->i18nFormat($order['Order']['data_fine_validation'],"%A %e %B %Y").' - '.__('JustValidationCartRiOpen');
 		else 
 			$label = __('ValidationCartRiOpen');
-		echo $this->Form->submit($label,array('id' => 'action_post_riopen', 'div'=> 'submitMultiple','class' => 'buttonBlu'));
+
+		echo '<div class="col-md-6 col align-self-start box-submit-riopen">';
+		echo $this->Form->submit($label, ['id' => 'action_post_riopen', 'class' => 'buttonBlu', 'style' => 'float: none;']);
+
+		echo '<h1>Per facilitare la chiusura dell\'ordine, gli articoli sopraindicati imposto</h1>';
+		echo '<div class="form-check">';
+		echo '	<label class="form-check-label">';
+		echo '		<input type="checkbox" class="form-check-input" value="Y" name="riopen_pezzi_confezione_1"> il nunmero pezzi in confezione a 1';
+		echo '	</label>';
+		echo '	</div>';
+		echo '	<div class="form-check">';
+		echo '	<label class="form-check-label">';
+		echo '		<input type="checkbox" class="form-check-input" value="Y" name="riopen_qta_multipli_1"> la quantità multipla a 1';
+		echo '	</label>';
+		echo '</div>';
+
+		echo '</div>'; // col-md-6
 	}
+
+	if($isStoreroom) {
+		echo '<div class="col-md-6">';
+		echo $this->Form->submit(__('ValidationCartToStoreroom'), ['id' => 'action_post_storeroom']); // 'div'=> 'submitMultiple'
+		echo '</div>';
+	}
+
+	echo '</div>'; // row
+
 }  // if(empty($results)) 
 echo '</div>';
 ?>
@@ -148,3 +174,10 @@ $(document).ready(function() {
 	});
 });
 </script>
+<style>
+.box-submit-riopen {
+	border: 1px solid #ccc;
+	padding: 15px;
+	text-align: center;
+}
+</style>
