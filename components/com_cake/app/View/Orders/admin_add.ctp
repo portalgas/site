@@ -279,7 +279,7 @@ $(document).ready(function() {
 		}
 
 		<?php 
-		if($user->organization['Organization']['hasDeliveriesMultiple']=='N') {
+		if($user->organization['Organization']['hasDeliveriesMultiple']=='N' || count($deliveries)==1) {
 		?>
 			var typeDelivery = $("input[name='typeDelivery']:checked").val();
 			if(typeDelivery==undefined || typeDelivery!='to_defined') {
