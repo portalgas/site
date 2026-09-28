@@ -28,7 +28,7 @@ if($modalita=='EDIT') {
 						else {
 							if(isset($user) && $user->organization['Organization']['hasDeliveriesMultiple']=='Y') {
 								if(count($deliveries)==1)
-									$options = ['label' => false, 'empty' => Configure::read('option.empty'), 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false', 'multiple' => false];
+									$options = ['label' => false, 'id' => 'delivery_ids', 'default' => $delivery_id, 'required' => 'false', 'multiple' => false];
 								else
 									$options = ['label' => false, 'id' => 'delivery_ids', 'name' => 'delivery_ids', 'default' => $delivery_id, 'required' => 'false', 'multiple' => true];
 							}
