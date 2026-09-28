@@ -874,8 +874,13 @@ class OrdersController extends AppController {
 		self::d($requestData, $debug);
 
 		$delivery_ids = [];
-		if($user->organization['Organization']['hasDeliveriesMultiple']=='Y') 
-			$delivery_ids = $requestData['delivery_ids'];
+		if($user->organization['Organization']['hasDeliveriesMultiple']=='Y') {
+			$_delivery_ids = $requestData['delivery_ids'];
+			if(is_string($_delivery_ids))
+				$delivery_ids[] = $_delivery_ids;
+			else 
+				$delivery_ids = $_delivery_ids;
+		}
 		else 
 			$delivery_ids[] = $requestData['Order']['delivery_id'];
 
