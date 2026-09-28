@@ -198,9 +198,9 @@ class ExportDocsController extends AppController {
         if ($doc_options == 'to-users-all-modify' && ($doc_formato == 'PREVIEW' || $doc_formato == 'PDF')) {
          
         }
-        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-schema') {
+        else if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-schema' || $doc_options == 'to-users-articles-details') {
            
-           if ($doc_options == 'to-users' || $doc_options == 'to-users-schema') {
+           if ($doc_options == 'to-users' || $doc_options == 'to-users-schema' || $doc_options == 'to-users-articles-details') {
                 if($i=='N')
                    $conditions += ['Cart' => ['Cart.stato' => 'Y',  'Cart.deleteToReferent' => 'N']];
                 else
@@ -221,7 +221,7 @@ class ExportDocsController extends AppController {
         /*
          * ORDER BY
          */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema')
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema' || $doc_options == 'to-users-articles-details')
             $orderBy = ['User' => Configure::read('orderUser') . ', Article.name, Article.id'];
         else
         if ($doc_options == 'to-articles' || $doc_options == 'to-articles-monitoring')
@@ -242,7 +242,7 @@ class ExportDocsController extends AppController {
          *      - costi aggiuntivi  (SummaryOrderCostMore)
          *      - sconti  (SummaryOrderCostLess)
          */
-        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema') {
+        if ($doc_options == 'to-users' || $doc_options == 'to-users-label' || $doc_options == 'to-users-articles-label' || $doc_options == 'to-users-all-modify' || $doc_options == 'to-users-schema' || $doc_options == 'to-users-articles-details') {
 
             /*
              * dati dell'ordine
@@ -446,6 +446,9 @@ class ExportDocsController extends AppController {
                 else
                 if ($doc_options == 'to-articles-details')
                     $this->render('referent_to_articles_details');
+                else
+                if ($doc_options == 'to-users-articles-details')
+                    $this->render('referent_to_users_articles_details');
                 break;
             case 'PDF':
                 $this->layout = 'pdf';
@@ -475,7 +478,7 @@ class ExportDocsController extends AppController {
                     $this->render('referent_to_articles_monitoring');
                 else
                 if ($doc_options == 'to-articles-details')
-                    $this->render('referent_to_articles_details');
+                    $this->render('referent_to_articles_details');              
                 break;
             case 'CSV':
                 $this->layout = 'csv';
@@ -530,6 +533,9 @@ class ExportDocsController extends AppController {
                 else
                 if ($doc_options == 'to-articles-details')
                     $this->render('referent_to_articles_details_excel');
+                else
+                if ($doc_options == 'to-users-articles-details')
+                    $this->render('referent_to_users_articles_details_excel');                
                 break;
         }
     }

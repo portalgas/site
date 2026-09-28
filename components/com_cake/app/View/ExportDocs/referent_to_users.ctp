@@ -58,7 +58,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				$html .= '			<th width="'.($output->getCELLWIDTH200()+$output->getCELLWIDTH20()+$output->getCELLWIDTH70()).'" colspan="2">'.__('Name').'</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('PrezzoUnita').'</th>';
 				if($note=='N') $html .= '			<th width="'.$output->getCELLWIDTH100().'">'.__('Prezzo/UM').'</th>';
-				$html .= '			<th width="'.$output->getCELLWIDTH70().'">'.__('qta').'</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').'</th>';
 				if($note=='Y') $html .= '			<th width="'.$output->getCELLWIDTH100().'">Nota</th>';
 				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').'</th>';				
 			} // end if($trasportAndCost=='Y')

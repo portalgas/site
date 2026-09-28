@@ -30,6 +30,9 @@ if(!empty($results))
 	<p>
 		<input type="radio" name="doc_options" id="to-articles-details" value="to-articles-details" /><label for="to-articles-details"><?php echo __('to_articles_details');?></label>
 	</p>
+	<p>
+		<input type="radio" name="doc_options" id="to-users-articles-details" value="to-users-articles-details" /><label for="to-users-articles-details"><?php echo __('to_user_articles_details');?></label>
+	</p>
 </div>
 
 <style type="text/css">

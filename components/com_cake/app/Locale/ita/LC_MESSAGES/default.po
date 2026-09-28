@@ -3656,6 +3656,9 @@ msgstr "Documento con articoli <b>aggregati</b> (per il produttore)"
 msgid "to_articles_details"
 msgstr "Documento con articoli <b>aggregati</b> con il <b>dettaglio</b> dei gasisti"
 
+msgid "to_users_articles_details"
+msgstr "Documento con gasisti <b>aggregati</b> con il <b>dettaglio</b> articoli"
+
 msgid "to_articles_weight"
 msgstr "Documento con articoli aggregati per <b>peso</b>"
 

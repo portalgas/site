@@ -275,6 +275,16 @@ class ExportDoc extends AppModel {
 						$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['IMPORTO_E'] = $importo_.'&nbsp;&euro;';
 						$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['ISQTAMOD'] = $qta_modificata;
 						$this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['ISIMPORTOMOD'] = $importo_modificato;
+
+						/*
+						 * dati articolo
+						 * */
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['PEZZI_CONFEZIONE'] = $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'];
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['QTA_MINIMA'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_minima'];
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['QTA_MASSIMA'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_massima'];
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['QTA_MINIMA_ORDER'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_minima_order'];
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['QTA_MASSIMA_ORDER'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_massima_order'];
+						 $this->exportRows[$this->exportRowsNum][$order['User'][$numArticlesOrder]['id']]['TRDATA']['QTA_MULTIPLI'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_multipli'];
 						
 						/*
 						 * qta e importo dell'utente
@@ -602,6 +612,16 @@ class ExportDoc extends AppModel {
 				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['IMPORTO_E'] = $importo_.'&nbsp;&euro;';
 				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['ISQTAMOD'] = $qta_modificata;
 				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['ISIMPORTOMOD'] = $importo_modificato;
+
+				/*
+				* dati articolo
+				* */
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['PEZZI_CONFEZIONE'] = $order['ArticlesOrder'][$numArticlesOrder]['pezzi_confezione'];
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['QTA_MINIMA'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_minima'];
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['QTA_MASSIMA'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_massima'];
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['QTA_MINIMA_ORDER'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_minima_order'];
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['QTA_MASSIMA_ORDER'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_massima_order'];
+				$this->exportRows[$this->exportRowsNum][$user['User']['id']]['TRDATA']['QTA_MULTIPLI'] = $order['ArticlesOrder'][$numArticlesOrder]['qta_multipli'];				
 				
 				/*
 				 * qta e importo dell'utente

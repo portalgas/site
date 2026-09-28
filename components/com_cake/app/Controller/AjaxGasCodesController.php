@@ -1323,9 +1323,9 @@ class AjaxGasCodesController extends AppController {
          * per i colli e la qta_massima_order
          */
         $options = [];
-        $options['conditions'] = array('Order.organization_id' => $orderResults['Order']['organization_id'],
-                                        'Order.id' => $orderResults['Order']['id'],
-                                        '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')');
+        $options['conditions'] = ['Order.organization_id' => $orderResults['Order']['organization_id'],
+                                    'Order.id' => $orderResults['Order']['id'],
+                                    '(Order.state_code = \'OPEN\' OR Order.state_code = \'RI-OPEN-VALIDATE\' OR Order.state_code = \'PROCESSED-BEFORE-DELIVERY\')'];
         $options['recursive'] = -1;
         $order = $Order->find('first', $options);
         
@@ -1384,25 +1384,31 @@ class AjaxGasCodesController extends AppController {
 
     public function admin_box_doc_print_referente($doc_options = null, $order_id=0) {
 
-        if ($doc_options == 'to-users-all-modify')
-            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
-        else
-        if ($doc_options == 'to-users-label' || $doc_options == 'to-articles-weight')
-            $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
-        else
-        if ($doc_options == 'to-users-articles-label')
-            $options = ['PDF' => 'Pdf'];
-        else
-            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
-
+        switch($doc_options) {
+            case 'to-users-articles-label':
+                $options = ['PDF' => 'Pdf'];
+            break;
+            case 'to-users-all-modify':
+                $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
+            break;
+            case 'to-users-label':
+            case 'to-articles-weight':
+                $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
+            break;
+            case 'to-users-articles-details':
+                $options = ['EXCEL' => 'Excel'];
+            break;
+            default:
+                $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
+        }
+        
         /*
          * il render del csv
          * $this->render('referent_to_users_label_csv');
          * restitusce Error: [Error] Cannot use string offset as an array
-         */
         if(isset($options['CSV']))
             unset($options['CSV']);
-
+        */
         $this->set('options', $options);
 
         $this->layout = 'ajax';

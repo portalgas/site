@@ -32,6 +32,9 @@ if(!empty($results))
 	<div class="radio">
 		<label><input type="radio" name="doc_options" id="to-articles-details" value="to-articles-details" /><?php echo __('to_articles_details');?></label>
 	</div>
+	<div class="radio">
+		<label><input type="radio" name="doc_options" id="to-users-articles-details" value="to-users-articles-details" /><?php echo __('to_users_articles_details');?></label>
+	</div>
     <div class="radio">
         <label><input type="radio" name="doc_options" id="to-articles-weight" value="to-articles-weight" /><?php echo __('to_articles_weight');?></label>
     </div>

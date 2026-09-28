@@ -4,10 +4,15 @@ echo __('Print Doc');
 echo '<div class="actions-img">';
 echo '<ul>';
 echo '<li>';
-echo $this->App->drawFormRadio('Doc','doc_formato', ['options' => $options, 'value'=> 'PDF', 'label' => false]);
+if(count($options)==1)
+	$default = array_key_first($options);
+else
+	$default = 'PDF';
+
+echo $this->App->drawFormRadio('Doc','doc_formato', ['options' => $options, 'value'=> $default, 'label' => false]);
 echo '</li>';
 echo '<li style="padding-left:25px;">';
-echo $this->Html->link(__('Print Doc'), '' ,array('id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc')));
+echo $this->Html->link(__('Print Doc'), '' , ['id' => 'actionExportDoc', 'class' => 'action actionPrinter blank', 'title' => __('Print Doc')]);
 echo '</li>';
 echo '</ul>';
 echo '</div>';
