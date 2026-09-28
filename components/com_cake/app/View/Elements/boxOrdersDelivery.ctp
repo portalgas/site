@@ -26,8 +26,12 @@ if($modalita=='EDIT') {
 						if(empty($deliveries))
 							echo __('OrderNotFoundDeliveries');
 						else {
-							if(isset($user) && $user->organization['Organization']['hasDeliveriesMultiple']=='Y')
-								$options = ['label' => false, 'id' => 'delivery_ids', 'name' => 'delivery_ids', 'default' => $delivery_id, 'required' => 'false', 'multiple' => true];
+							if(isset($user) && $user->organization['Organization']['hasDeliveriesMultiple']=='Y') {
+								if(count($deliveries)==1)
+									$options = ['label' => false, 'empty' => Configure::read('option.empty'), 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false', 'multiple' => false];
+								else
+									$options = ['label' => false, 'id' => 'delivery_ids', 'name' => 'delivery_ids', 'default' => $delivery_id, 'required' => 'false', 'multiple' => true];
+							}
 							else 
 								$options = ['label' => false, 'empty' => Configure::read('option.empty'), 'id' => 'delivery_id', 'default' => $delivery_id, 'required' => 'false', 'multiple' => false];
 	
@@ -57,16 +61,16 @@ if($modalita=='EDIT') {
 						<div class="actions-img" style="float:left;">
 						<?php 
 						if($isManagerDelivery) {
-							echo $this->Html->link(__('New Delivery'), array('controller' => 'Deliveries', 'action' => 'add'), array('id' => 'content_link', 'class' => 'action actionAdd','title' => __('New Delivery')));
+							echo $this->Html->link(__('New Delivery'), ['controller' => 'Deliveries', 'action' => 'add'], ['id' => 'content_link', 'class' => 'action actionAdd','title' => __('New Delivery')]);
 							
 							echo '<div id="content_link_only_text" title="'.__('New Delivery').'" class="action actionAdd">'.__('New Delivery').'</div>';							
 						}
 						else {
-							echo $this->Html->link(__('Send mail to manager to delivery'), array(), array( 'class' => 'action actionEdit sendMail','title' => __('Send mail to manager to delivery'),
+							echo $this->Html->link(__('Send mail to manager to delivery'), [], ['class' => 'action actionEdit sendMail','title' => __('Send mail to manager to delivery'),
 											'pass_org_id' => $result['SuppliersOrganization']['organization_id'],
 											'pass_id' => 0,
 											'pass_entity' => 'DeliveryNew',
-											'id' => 'content_link'));
+											'id' => 'content_link']);
 		
 							echo '<div id="content_link_only_text" title="'.__('Send mail to manager to delivery').'" class="action actionEdit">'.__('Send mail to manager to delivery').'</div>';
 						}
@@ -95,7 +99,7 @@ if($modalita=='EDIT') {
 					<input type="radio" value="delivery_old" name="typeDelivery" />
 				</td>
 				<td id="delivery_old_content">
-					<?php echo $this->Html->link(__('Associalo ad una consegna scaduta'), array('controller' => 'Orders', 'action' => 'edit_delivery_old', null, 'delivery_id='.$this->request->data['Order']['delivery_id'].'&order_id='.$this->request->data['Order']['id']),array('id' => 'action_delivery_old', 'title' => __('Associalo ad una consegna scaduta')));?>
+					<?php echo $this->Html->link(__('Associalo ad una consegna scaduta'), ['controller' => 'Orders', 'action' => 'edit_delivery_old', null, 'delivery_id='.$this->request->data['Order']['delivery_id'].'&order_id='.$this->request->data['Order']['id']], ['id' => 'action_delivery_old', 'title' => __('Associalo ad una consegna scaduta')]);?>
 					<span id="label_delivery_old"><?php echo __('Associalo ad una consegna scaduta');?></span>
 				</td>
 			</tr>			
