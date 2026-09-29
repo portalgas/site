@@ -299,6 +299,7 @@ class UtilsCommons {
             case 'to-articles-monitoring':
             case 'to-articles':
             case 'to-articles-details':
+            case 'to-users-articles-details':
 
                 if (isset($params['delivery_id']) && isset($params['order_id'])) {
                     $order_id = $params['order_id'];
@@ -312,11 +313,11 @@ class UtilsCommons {
                         $delivery_data = $this->dateFormat($results['Delivery']['data']);
                     else
                         $delivery_data = Configure::read('DeliveryToDefinedLabel');
-
-//					$fileName .= 'report_'.strtolower($user_target).'_'.strtolower(__('Delivery')).'_'.$results['Delivery']['luogoData'].'_'.$results['SupplierOrganization']['name'];
-//					$fileTitle .= 'Report '.strtolower($user_target).' '.strtolower(__('Delivery')).' '.$results['Delivery']['luogoData'].' '.$results['SupplierOrganization']['name'];
-                    $fileName .= strtolower(__('Delivery')) . '_' . $delivery_data . '_' . $results['SupplierOrganization']['name'];
-                    $fileTitle .= strtolower(__('Delivery')) . ' del ' . $delivery_data . ' ' . $results['SupplierOrganization']['name'];
+    
+//					$fileName .= 'report_'.strtolower($user_target).'_'.strtolower(__('Delivery')).'_'.$results['Delivery']['luogoData'].'_'.$results['SuppliersOrganization']['name'];
+//					$fileTitle .= 'Report '.strtolower($user_target).' '.strtolower(__('Delivery')).' '.$results['Delivery']['luogoData'].' '.$results['SuppliersOrganization']['name'];
+                    $fileName .= strtolower(__('Delivery')) . '_' . $delivery_data . '_' . $results['SuppliersOrganization']['name'];
+                    $fileTitle .= strtolower(__('Delivery')) . ' del ' . $delivery_data . ' ' . $results['SuppliersOrganization']['name'];
                 }
                 else
                 if (isset($params['delivery_id'])) {
@@ -372,6 +373,10 @@ class UtilsCommons {
                     case 'to-articles-details':
                         $fileName .= '_con_articoli_aggregati_con_dettaglio_utenti_';
                         $fileTitle .= ' con articoli aggregati con dettaglio utenti ';
+                        break;
+                    case 'to-users-articles-details':
+                        $fileName .= '_con_utenti_aggregati_con_dettaglio_articoli_';
+                        $fileTitle .= ' con tenti aggregati con dettaglio articoli ';
                         break;
                 }
                 break;
