@@ -547,6 +547,11 @@ class JController extends JObject
 	 */
 	protected function checkEditId($context, $id)
 	{
+		/*
+		 * per li messaggio Non puoi utilizzare questo link per accedere direttamente alla pagina
+		 return true;
+		 */
+		
 		if ($id)
 		{
 			$app = JFactory::getApplication();

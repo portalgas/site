@@ -80,6 +80,9 @@ class ContactControllerContact extends JControllerForm
          */
         $subject = strtolower($data['contact_subject']);
         if(strpos($data['contact_message'], 'https://t.me/')!==false ||
+			strpos($data['contact_message'], 'https://telegra.ph')!==false ||
+			strpos($data['contact_message'], 'https://google.com/link')!==false ||
+			
             strpos($subject, 'hallo,')!==false ||
             strpos($subject, 'hi,')!==false ||
             strpos($subject, 'hello,')!==false ||
@@ -88,6 +91,9 @@ class ContactControllerContact extends JControllerForm
             // strpos($subject, 'hi ')!==false ||
             strpos($subject, 'hello ')!==false ||
             strpos($subject, 'thank you ')!==false ||
+            strpos($subject, 'credit')!==false ||
+            strpos($subject, 'token')!==false ||
+            strpos($subject, 'balance')!==false ||
             strpos($subject, '$')!==false ||
             strpos($subject, 'aloha ')!==false) {
             $msg = JText::_('COM_CONTACT_EMAIL_THANKS');

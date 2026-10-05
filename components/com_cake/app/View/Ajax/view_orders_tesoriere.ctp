@@ -1,24 +1,30 @@
 <?php
+echo '<div class="table-responsive"><table class="table table-hover">';
+echo '<tr>';
+echo '<th>'.__('OpenClose').'</th>';
+echo '<th>'.__('Referenti').'</th>';
 if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
-	echo '<div class="table-responsive"><table class="table table-hover">';
-	echo '<tr>';
-	echo '<th>Aperto/Chiuso</th>';
-	echo '<th>'.__('Referenti').'</th>';
 	echo '<th>'.__('Fattura').'</th>';
 	echo '<th>'.__('Nota del referente').'</th>';
-	echo '</tr>';
-	
-	echo '<tr>';
-	echo '<td style="white-space:nowrap;">';
-	echo $this->App->utilsCommons->getOrderTime($results['Order']);
-	echo '</td>';
-	echo '<td>';
-	if(isset($results['Order']['SuppliersOrganizationsReferent'])) // deve sempre esistere!
-		echo $this->App->drawListSuppliersOrganizationsReferents($user, $results['Order']['SuppliersOrganizationsReferent']);
-	else 
-		echo "Nessun referente associato!";
-	echo '</td>';
-	
+}
+else {
+	echo '<th></th>';
+	echo '<th></th>';
+}	
+echo '</tr>';
+
+echo '<tr>';
+echo '<td style="white-space:nowrap;">';
+echo $this->App->utilsCommons->getOrderTime($results['Order']);
+echo '</td>';
+echo '<td>';
+if(isset($results['Order']['SuppliersOrganizationsReferent'])) // deve sempre esistere!
+	echo $this->App->drawListSuppliersOrganizationsReferents($user, $results['Order']['SuppliersOrganizationsReferent']);
+else 
+	echo "Nessun referente associato!";
+echo '</td>';
+
+if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST') {
 	echo '<td>';
 	if(!empty($results['Order']['tesoriere_doc1']) && file_exists(Configure::read('App.root').Configure::read('App.doc.upload.tesoriere').DS.$user->organization['Organization']['id'].DS.$results['Order']['tesoriere_doc1'])) {
 		$ico = $this->App->drawDocumentIco($results['Order']['tesoriere_doc1']);
@@ -34,10 +40,13 @@ if($user->organization['Template']['payToDelivery']=='POST' || $user->organizati
 	else
 		echo "Nessuna nota del referente";
 	echo '</td>';				
-	
-	echo '</tr>';
-	echo '</table></div>';
-} // end if($user->organization['Template']['payToDelivery']=='POST' || $user->organization['Template']['payToDelivery']=='ON-POST')
+}
+else {
+	echo '<td></td>';
+	echo '<td></td>';
+}
+echo '</tr>';
+echo '</table></div>';
 
 echo '<br />';
 echo '<div class="table-responsive"><table class="table table-hover">';

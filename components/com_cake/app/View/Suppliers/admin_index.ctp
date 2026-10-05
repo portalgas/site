@@ -18,12 +18,12 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 				<tr>
 					<?php 
 					echo '<td>';
-					$options = array('label' => '&nbsp;', 
+					$options = ['label' => '&nbsp;', 
 									'options' => $organizations,
 									'empty' => __('FilterToOrganizations'),
 									'name' => 'FilterSupplierOrganizationId',
 									'default' => $FilterSupplierOrganizationId,
-									'escape' => false);
+									'escape' => false];
 					if(count($organizations) > Configure::read('HtmlSelectWithSearchNum')) 
 						$options += array('class'=> 'selectpicker', 'data-live-search' => true); 
 	
@@ -176,7 +176,7 @@ $urlBase = Configure::read('App.server').'/administrator/index.php?option=com_co
 		if(!empty($result['Supplier']['slug'])) echo '<a title="pagina portalgas del produttore" href="'.Configure::read('Neo.portalgas.url').'site/produttore/'.$result['Supplier']['slug'].'" class="blank fa fa-globe fa-lg"></a>';
 		echo '</td>';
 		echo '<td rowspan="'.$rowspan.'" title="'.__('toolJoomlaContent').' - vale '.$result['Supplier']['j_content_id'].'" class="'.$class_j_content_id.'"></td>';
-		echo '<td rowspan="'.$rowspan.'" title="'.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';
+		echo '<td rowspan="'.$rowspan.'" title="'.$this->App->traslateEnum($result['Supplier']['stato']).' - '.__('toolTipStatoSupplier').'" class="stato_'.$this->App->traslateEnum($result['Supplier']['stato']).'"></td>';
 		echo '<td rowspan="'.$rowspan.'" style="white-space: nowrap;">';
 		echo $this->App->formatDateCreatedModifier($result['Supplier']['created']);
 		echo '</td>';
