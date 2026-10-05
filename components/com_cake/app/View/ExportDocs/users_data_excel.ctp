@@ -54,7 +54,7 @@ foreach($results as $numResult => $result) {
 	if(!isset($result['Profile']['hasUserRegistrationExpire']))
 		$result['Profile']['hasUserRegistrationExpire'] = __('NO');
 		
-	if ($result['User']['block'] == 1 || $result['User']['block'] == false)
+	if ($result['User']['block'] == 1)
 		$block = __('Y');
 	else
 		$block = __('NO');	
@@ -62,7 +62,7 @@ foreach($results as $numResult => $result) {
 	/*
 	 * can_login per verificare gli utenti attivi, per i pagamenti annuali
 	 */
-	if ($result['User']['can_login'] == 0 || $result['User']['can_login'] == true)
+	if ($result['User']['can_login'] == 0)
 		$can_login = __('Y');
 	else
 		$can_login = __('NO');			
