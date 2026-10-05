@@ -49,12 +49,12 @@ foreach($results as $numResult => $result) {
 	$data = [];
 	
 	if(!isset($result['Profile']['hasUserFlagPrivacy']))
-		$result['Profile']['hasUserFlagPrivacy'] = 'N';
+		$result['Profile']['hasUserFlagPrivacy'] = __('NO');
 		
 	if(!isset($result['Profile']['hasUserRegistrationExpire']))
-		$result['Profile']['hasUserRegistrationExpire'] = 'N';
+		$result['Profile']['hasUserRegistrationExpire'] = __('NO');
 		
-	if ($result['User']['block'] == 1)
+	if ($result['User']['block'] == 1 || $result['User']['block'] == false)
 		$block = __('Y');
 	else
 		$block = __('NO');	
@@ -62,7 +62,7 @@ foreach($results as $numResult => $result) {
 	/*
 	 * can_login per verificare gli utenti attivi, per i pagamenti annuali
 	 */
-	if ($result['User']['can_login'] == 0)
+	if ($result['User']['can_login'] == 0 || $result['User']['can_login'] == true)
 		$can_login = __('Y');
 	else
 		$can_login = __('NO');			
