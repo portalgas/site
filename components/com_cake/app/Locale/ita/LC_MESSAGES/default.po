@@ -2165,7 +2165,7 @@ msgstr "Utenti disattivati"
 msgid "User Can Login"
 msgstr "Login utente"
 
-msgid "Usera Can Login"
+msgid "Users Can Login"
 msgstr "Login utenti"
 
 msgid "UsersFlagPrivacyAndRegistrationExpire"

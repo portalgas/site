@@ -2440,9 +2440,11 @@ class ExportDocsController extends AppController {
             
         } // end if($userGroupIds!='ALL')
 
-        $results = $User->getUsersComplete($user, $conditions);
+        $conditions += ['User.block' => ' User.block IN (0,1) '];
+        $conditions += ['User.can_login' => ' User.can_login IN (0,1) '];
+		$results = $User->getUsersComplete($user, $conditions);
         foreach($results as $numResult2 => $result) {
-            
+      
             $tmp_user = $this->utilsCommons->createObjUser(['organization_id' => $result['User']['organization_id']]);
 
             $cartResults = $Cart->getLastCartDateByUser($tmp_user, $result['User']['id'], $debug);
