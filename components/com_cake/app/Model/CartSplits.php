@@ -5,14 +5,10 @@ class CartSplits extends AppModel {
 
     public $tablePrefix = '';
 	public $useTable = 'cart_splits';
-
-    public function initialize(Controller $controller) 
-    {
-    
-    }
 		
     /*
      * se modifico la qta di un articolo elimino eventuali suddivisioni
+     * mededimo metodo in neo
      * */
     public function deleteArticle($user, $organization_id, $order_id, $user_id, $article_organization_id, $article_id) {
         
