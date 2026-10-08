@@ -408,6 +408,10 @@ class AjaxGasCartsController extends AppController {
     
     	$resultsJS = $this->AjaxGasCart->managementCart($this->user, $order_id, $article_organization_id, $article_id, $user_id, $qta, $backOffice=true);
 
+		App::import('Model', 'CartSplits');
+		$CartSplits = new CartSplits;
+		$CartSplits->deleteArticle($this->user, $this->user->organization['Organization']['id'], $order_id, $user_id, $article_organization_id, $article_id); 
+
     	/*
     	 * gestione JavaScript
     	 * */
