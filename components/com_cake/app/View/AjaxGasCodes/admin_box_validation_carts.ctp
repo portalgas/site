@@ -102,9 +102,11 @@ else {
 
 		echo '<h1>Per facilitare la chiusura dell\'ordine, gli articoli sopraindicati imposto</h1>';
 		echo '<div class="form-check">';
+		/*
 		echo '	<label class="form-check-label">';
-		echo '		<input type="checkbox" class="form-check-input" value="Y" name="riopen_pezzi_confezione_1"> il nunmero pezzi in confezione a 1';
+		echo '		<input type="checkbox" class="form-check-input" value="Y" name="riopen_pezzi_confezione_1"> il numero pezzi in confezione a 1';
 		echo '	</label>';
+		*/
 		echo '	</div>';
 		echo '	<div class="form-check">';
 		echo '	<label class="form-check-label">';
