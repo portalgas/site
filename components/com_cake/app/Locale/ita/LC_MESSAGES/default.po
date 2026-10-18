@@ -4308,6 +4308,9 @@ msgstr "Nessun gasista deve saldare l'ordine"
 msgid "OrderLifeCyclesSummaryOrderRequestPayment"
 msgstr "L'ordine è associato ad una richiesta di pagamento, il pagamento dovrà essere gestito dal tesoriere"
 
+msgid "OrderLifeCyclesRequestPaymentToClose"
+msgstr "La richiesta di pagamento potrà chiudersi se tutti i pagamenti sono pagati o sospesi"
+
 msgid "OrderLifeCyclesSummaryOrderSummaryOrderPaid"
 msgstr "L'ordine è stato saldato da tutti i gasisti"
 

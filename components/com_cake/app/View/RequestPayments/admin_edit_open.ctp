@@ -59,7 +59,8 @@ echo '<span style="float:right;">';
 		
 echo $this->Form->create('RequestPayment', ['id' => 'formGas']);
 echo '<fieldset style="margin: 0;padding: 0;">';
-echo '<div class="submit" style="float:right;"><input type="submit" value="'.__('Submit').'" /></div>';
+
+echo '<div class="submit" style="float:right;margin:5px 0px;"><input type="submit" value="'.__('Submit').'" /></div>';
 ?>		
 	<div class="table-responsive"><table class="table table-hover">
 		<tr>
@@ -264,7 +265,11 @@ echo '<div class="submit" style="float:right;"><input type="submit" value="'.__(
 	echo '<td style="text-align:center;">'.$tot_importo_dovuto.'&nbsp;&euro;</td>';
 	echo '<td style="text-align:center;">'.$tot_importo_richiesto.'&nbsp;&euro;</td>';
 	echo '<td>'.$tot_importo_cash.'&nbsp;&euro;</td>';
-	echo '<td colspan="4">'.$tot_da_pagare_rimanente.'&nbsp;&euro;&nbsp;<span class="label label-info">Totale da incassare</span></td>';
+	echo '<td>'.$tot_da_pagare_rimanente.'&nbsp;&euro;&nbsp;<span class="label label-info">Totale da incassare</span></td>';
+	echo '<td colspan="3">';
+	echo $this->element('boxMsg', ['class_msg' => 'message', 'msg' => __('OrderLifeCyclesRequestPaymentToClose')]);
+	echo '</td>';
+	
 	echo '</tr>';
 		
 	echo '</table></div>';

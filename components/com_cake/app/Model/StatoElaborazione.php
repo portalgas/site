@@ -315,6 +315,8 @@ class StatoElaborazione extends AppModel {
 				if(count($requestPaymentResults)>0)
 				foreach($requestPaymentResults as $requestPaymentResult) {					
 					
+					self::d('Elaboro RequestPayment num ['.$requestPaymentResult['RequestPayment']['num'].'] id ['.$requestPaymentResult['RequestPayment']['id'].']', $debug);
+
 					$all_summary_order_importi_uguali = true;
 					
 					$options = [];
@@ -327,8 +329,11 @@ class StatoElaborazione extends AppModel {
 					if(!empty($SummaryPaymentResults)) 
 					foreach ($SummaryPaymentResults as $SummaryPaymentResult) {
 							
-						self::d("SummaryPayment.request_payment_id ".$SummaryPaymentResult['SummaryPayment']['request_payment_id']." SummaryPayment.user_id ".$SummaryPaymentResult['SummaryPayment']['user_id']." all_summary_order_importi_uguali [".$all_summary_order_importi_uguali."]", $debug);
-							
+						if($all_summary_order_importi_uguali)
+							self::d("SummaryPayment.request_payment_id ".$SummaryPaymentResult['SummaryPayment']['request_payment_id']." SummaryPayment.user_id ".$SummaryPaymentResult['SummaryPayment']['user_id']." all_summary_order_importi_uguali [".$all_summary_order_importi_uguali."] => tutto saldato, potrei chiudere la richiesta", $debug);
+						else 
+							self::d("SummaryPayment.request_payment_id ".$SummaryPaymentResult['SummaryPayment']['request_payment_id']." SummaryPayment.user_id ".$SummaryPaymentResult['SummaryPayment']['user_id']." all_summary_order_importi_uguali [".$all_summary_order_importi_uguali."] => NON saldato, NON posso chiudere la richiesta", $debug);
+												
 						if(!$SummaryPayment->isPaid($user, $SummaryPaymentResult, $debug)) {
 							$all_summary_order_importi_uguali = false;
 							break;
@@ -339,7 +344,10 @@ class StatoElaborazione extends AppModel {
 						$this->_requestPaymentClose($user, $requestPaymentResult['RequestPayment']['id'], $debug);
 						
 						$RequestPaymentsOrder->setOrdersStateCodeByRequestPaymentId($user, $requestPaymentResult['RequestPayment']['id'], '', $debug); // lo stato successivo lo calcola OrderLifeCycle::stateCodeAfter
-					}					
+					}
+					else {
+						self::d("NON tutti hanno saldato, NON posso chiudere la richiesta [".$requestPaymentResult['RequestPayment']['id']."]", $debug);
+					}				
 					
 				} // loop foreach($requestPaymentResults as $requestPaymentResult) 
 				

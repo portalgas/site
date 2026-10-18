@@ -5,6 +5,8 @@ class SummaryPayment extends AppModel {
   	
 	/*
 	 * condizione se un pagamento per un utente e' saldato
+	 * se cosi' potro' chiudere la richiesta di pagamento 
+	 * __(OrderLifeCyclesRequestPaymentToClose)
 	*/
 	public function isPaid($user, $results, $debug=false) {
 
