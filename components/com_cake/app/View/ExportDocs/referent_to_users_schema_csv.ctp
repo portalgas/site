@@ -4,12 +4,17 @@ $csv = [];
 if($user->organization['Organization']['hasFieldArticleCodice']=='Y' && $codice=='Y')
     $csv += array('codice' => __('Codice'));
 
-$csv += array('name' => __('Name'),
-    'note' => __('Note'),
-    'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')).' totale',
-    'importo' => __('Importo').' totale');
+if($qta_article=='Y') 
+    $csv += array('name' => __('Name'),
+        'note' => __('Note'),
+        'qta' => $this->ExportDocs->prepareCsvAccenti(__('qta')).' totale',
+        'importo' => __('Importo').' totale');
+else 
+    $csv += array('name' => __('Name'),
+        'note' => __('Note'),
+        'importo' => __('Importo').' totale');
 
-$headers = array('csv' => $csv);
+$headers = ['csv' => $csv];
 
 
 $data = "";
@@ -26,6 +31,9 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                 $rows = current(array_values($rows));
 
                 foreach ($rows as $typeRow => $cols) {
+
+                    $data[$totRows] = [];
+                    $data[$totRows]['csv'] = [];
 
                     switch ($typeRow) {
                         case 'TRGROUP':
@@ -59,26 +67,38 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                                     }
                             }
 
-                            $data[$totRows]['csv'] = array(
-                                'name' => $this->ExportDocs->prepareCsv($label),
-                                'note' => '',
-                                'qta' => $qta_totale_dell_utente,
-                                'importo' => $importo_totale_dell_utente, // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
-                            );
-
+                            if($qta_article=='Y') 
+                                $data[$totRows]['csv'] = [ 
+                                    'name' => $this->ExportDocs->prepareCsv($label),
+                                    'note' => '',
+                                    'qta' => $qta_totale_dell_utente,
+                                    'importo' => $importo_totale_dell_utente, // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+                                ];
+                            else 
+                                $data[$totRows]['csv'] = [
+                                    'name' => $this->ExportDocs->prepareCsv($label),
+                                    'note' => '',
+                                    'importo' => $importo_totale_dell_utente, // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+                                ];
                             $totRows++;
                             break;
                         case 'TRSUBTOT':
                             $totRows++;
                             break;
                         case 'TRTOT':
-                            $data[$totRows]['csv'] = array(
-                                'name' => '',
-                                'note' => '',
-                                'qta' => $cols['QTA'],
-                                'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
-                            );
-
+                            if($qta_article=='Y') 
+                                $data[$totRows]['csv'] = [
+                                    'name' => '',
+                                    'note' => '',
+                                    'qta' => $cols['QTA'],
+                                    'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])
+                                ];
+                            else  
+                                $data[$totRows]['csv'] = [
+                                    'name' => '',
+                                    'note' => '',
+                                    'importo' => $cols['IMPORTO'], // $this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD'])                                    
+                                ];
                             $totRows++;
                             break;
                         case 'TRDATA':
@@ -87,10 +107,10 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                         case 'TRDATABIS':
                             $totRows++;
                             break;
-                    }
+                    } // end switch ($typeRow)
 
-                }
-            }
+                } // end foreach ($rows as $typeRow => $cols)
+            } // foreach ($order['ExportRows'] as $rows)
         }
     }
 }

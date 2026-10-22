@@ -309,6 +309,11 @@ if(!empty($results))
 
     <div id="setting-to-users-shema" class="box-options">
         <div class="doc-options">
+            <label class="control-label">Visualizzo le <b>quantità</b> acquistate</label>
+            <label class="radio-inline"><input type="radio" name="qta_per_articolo" id="qta_per_articolo_N" value="N" />No</label>
+            <label class="radio-inline"><input type="radio" name="qta_per_articolo" id="qta_per_articolo_Y" value="Y" checked />Si</label>
+        </div>
+        <div class="doc-options">
             <label class="control-label">Visualizzo il <b>telefono</b> degli utenti</label>
             <label class="radio-inline"><input type="radio" name="user_phone_schema" id="user_phone_schema_N" value="N" />No</label>
             <label class="radio-inline"><input type="radio" name="user_phone_schema" id="user_phone_schema_Y" value="Y" checked />Si</label>
@@ -405,6 +410,9 @@ $(document).ready(function() {
 	$("input[name='user_phone30']").change(function() {			
 		choiceDocOptions();
 	});
+	$("input[name='qta_per_articolo']").change(function() {			
+		choiceDocOptions();
+	});	
 	$("input[name='user_phone_schema']").change(function() {			
 		choiceDocOptions();
 	});

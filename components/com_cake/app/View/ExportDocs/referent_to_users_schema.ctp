@@ -50,8 +50,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
             $html .= '			<th colspan="2" width="'.$output->getCELLWIDTH200().'">'.__('Name').'</th>';
             $html .= '			<th width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'" >'.__('Note').'</th>';
-            $html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';
-            $html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';
+            if($qta_article=='Y') {
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.__('qta').' totale</th>';
+				$html .= '			<th width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.__('Importo').' totale</th>';
+			}
+			else 
+            	$html .= '			<th width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" style="text-align:right;">'.__('Importo').' totale</th>';
 
 			$html .= '		</tr>';				
 			$html .= '	</thead><tbody>';
@@ -111,8 +115,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								// note
 								$html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'"></td>';
 
-								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$qta_totale_dell_utente.'</td>';
-								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$importo_completo.'</td>';
+								if($qta_article=='Y') {
+									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">'.$qta_totale_dell_utente.'</td>';
+									$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">'.$importo_completo.'</td>';
+								}
+								else 
+									$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" style="text-align:right;">'.$importo_completo.'</td>';
 							}
 						break;
 						case 'TRSUBTOT':
@@ -122,8 +130,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 				
 							$html .= '<td colspan="2" width="'.$output->getCELLWIDTH200().'"></td>';
                             $html .= '<td width="'.($output->getCELLWIDTH90()+$output->getCELLWIDTH100()+$output->getCELLWIDTH100()).'" style="text-align:right;">Totale&nbsp;&nbsp;</td>';
-                            $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$cols['QTA'].'</td>';
-							$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_COMPLETO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+                            if($qta_article=='Y') {
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">&nbsp;'.$cols['QTA'].'</td>';
+								$html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_COMPLETO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
+							}
+							else 
+								$html .= '<td width="'.($output->getCELLWIDTH70()+$output->getCELLWIDTH70()).'" style="text-align:right;">&nbsp;'.$cols['IMPORTO_COMPLETO_E'].$this->App->traslateQtaImportoModificati($cols['ISIMPORTOMOD']).'</td>';
 
 						break;								
 						case 'TRDATA':

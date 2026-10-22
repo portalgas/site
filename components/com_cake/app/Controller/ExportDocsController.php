@@ -385,10 +385,11 @@ class ExportDocsController extends AppController {
                 $this->set('note', $h);
                 break;
             case 'to-users-schema':
-                $this->set('user_phone', $a);
-                $this->set('user_email', $b);
-                $this->set('user_address', $c);
-                $this->set('user_avatar', $d);
+                $this->set('qta_article', $a);
+                $this->set('user_phone', $b);
+                $this->set('user_email', $c);
+                $this->set('user_address', $d);
+                $this->set('user_avatar', $e);
                 break;
             case 'to-users-label':
             case 'to-users-articles-label':

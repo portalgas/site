@@ -377,11 +377,11 @@ function setExportDocsParameters(doc_options) {
         e = $("input[name='codice1']:checked").val();
     } else
     if (doc_options == 'to-users-schema') {
-        a = $("input[name='user_phone_schema']:checked").val();
-        b = $("input[name='user_email_schema']:checked").val();
-        c = $("input[name='user_address_schema']:checked").val();
-        d = $("input[name='user_avatar_schema']:checked").val();
-        e = 'N';
+        a = $("input[name='qta_per_articolo']:checked").val();
+        b = $("input[name='user_phone_schema']:checked").val();
+        c = $("input[name='user_email_schema']:checked").val();
+        d = $("input[name='user_address_schema']:checked").val();
+        e = $("input[name='user_avatar_schema']:checked").val();
         f = 'N'; 
         g = 'N'; 
     } else

@@ -1393,6 +1393,7 @@ class AjaxGasCodesController extends AppController {
             break;
             case 'to-users-label':
             case 'to-articles-weight':
+            case 'to-users-schema':
                 $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
             break;
             case 'to-users-articles-details':
@@ -1420,17 +1421,25 @@ class AjaxGasCodesController extends AppController {
             $this->Session->setFlash(__('msg_error_params'));
             $this->myRedirect(Configure::read('routes_msg_exclamation'));
         }
-        
-        if ($doc_options == 'to-users-all-modify')
-            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
-        else
-        if ($doc_options == 'to-users-label' || $doc_options == 'to-articles-weight')
-            $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
-        else
-        if ($doc_options == 'to-users-articles-label')
-            $options = ['PDF' => 'Pdf'];        
-        else
-            $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
+       
+        switch($doc_options) {
+            case 'to-users-articles-label':
+                $options = ['PDF' => 'Pdf'];
+            break;
+            case 'to-users-all-modify':
+                $options = ['PDF' => 'Pdf', 'CSV' => 'Csv'];
+            break;
+            case 'to-users-label':
+            case 'to-articles-weight':
+            case 'to-users-schema':
+                $options = ['PDF' => 'Pdf', 'EXCEL' => 'Excel'];
+            break;
+            case 'to-users-articles-details':
+                $options = ['EXCEL' => 'Excel'];
+            break;
+            default:
+                $options = ['PDF' => 'Pdf', 'CSV' => 'Csv', 'EXCEL' => 'Excel'];
+        }
 
         /*
          * il render del csv

@@ -18,7 +18,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
             // define table cells
             $table[] =	array('label' => __('Name'), 'width' => 'auto', 'wrap' => true, 'filter' => false);
             $table[] =	array('label' => __('Note'), 'width' => 'auto', 'filter' => false);
-            $table[] =	array('label' => __('qta').' totale', 'width' => 'auto', 'filter' => true);
+            if($qta_article=='Y') 
+                $table[] =	array('label' => __('qta').' totale', 'width' => 'auto', 'filter' => true);
             $table[] = array('label' => __('Importo').' totale', 'width' => 'auto', 'filter' => true);
 
             // heading
@@ -72,7 +73,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 
 
 
-                            $rows[] = (int)$this->ExportDocs->prepareCsv($qta_totale_dell_utente);
+                            if($qta_article=='Y') 
+                                $rows[] = (int)$this->ExportDocs->prepareCsv($qta_totale_dell_utente);
                             $rows[] = $importo_completo;
                             break;
                         case 'TRSUBTOT':
@@ -82,7 +84,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
                             $rows = [];
                             $rows[] = '';
                             $rows[] = '';
-                            $rows[] = (int)$cols['QTA'];
+                            if($qta_article=='Y') 
+                                $rows[] = (int)$cols['QTA'];
                             $rows[] = $cols['IMPORTO_COMPLETO'];
                             break;
                         case 'TRDATABIS':

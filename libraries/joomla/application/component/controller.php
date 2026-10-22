@@ -544,6 +544,8 @@ class JController extends JObject
 	 * @return  boolean  True if the ID is in the edit list.
 	 *
 	 * @since   11.1
+	 * 
+	 * JLIB_APPLICATION_ERROR_UNHELD_ID="Non puoi utilizzare questo link per accedere direttamente alla pagina (#%d)."
 	 */
 	protected function checkEditId($context, $id)
 	{
