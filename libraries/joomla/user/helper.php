@@ -568,7 +568,7 @@ abstract class JUserHelper
 					$salt = '';
 					for ($i = 0; $i < 8; $i++)
 					{
-						$salt .= $APRMD5{rand(0, 63)};
+						$salt .= $APRMD5[rand(0, 63)];
 					}
 					return $salt;
 				}

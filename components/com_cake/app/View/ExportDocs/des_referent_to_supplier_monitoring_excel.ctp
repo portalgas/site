@@ -51,17 +51,18 @@ foreach($results as $numResult => $result) {
         if($isToValidate) {
             if($result['ArticlesOrder']['pezzi_confezione']>1) {
                 /*
-                 * colli_completi / differenza_da_ordinare
-                 */
-                $colli_completi = intval($result['Cart']['qta'] / $result['ArticlesOrder']['pezzi_confezione']);
+                * colli_completi / differenza_da_ordinare
+                */
+                $colli_completi = intval($result['ArticlesOrder']['qta_cart'] / $result['ArticlesOrder']['pezzi_confezione']);                      
                 if($colli_completi>0) {
-                    $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi) - $result['Cart']['qta']);
-                    if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                        $ordinati_che_completano_i_colli = ($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi);
+                        $differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] - $ordinati_che_completano_i_colli - $result['ArticlesOrder']['pezzi_confezione']);
+                        if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
                 }
                 else {
-                        $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['Cart']['qta']);
-                        $colli_completi = '-';
-                }        	
+                    $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['ArticlesOrder']['qta_cart']);
+                    $colli_completi = '-';
+                }          	
         }
                 
             

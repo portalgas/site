@@ -297,7 +297,8 @@ class JCacheStorageFile extends JCacheStorage
 				}
 
 				usleep(100);
-				$data_lock = @flock($_fileopen, LOCK_EX);
+				if($_fileopen!==false) // todo fractis puo' esserlo in locale
+					$data_lock = @flock($_fileopen, LOCK_EX);
 				$lock_counter++;
 			}
 

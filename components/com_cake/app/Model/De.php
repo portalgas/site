@@ -56,6 +56,7 @@ class De extends AppModel {
 			$newResults[$result['Article']['id']]['ArticlesOrder']['name'] = $result['ArticlesOrder']['name'];
 			$newResults[$result['Article']['id']]['ArticlesOrder']['pezzi_confezione'] = $result['ArticlesOrder']['pezzi_confezione'];
 			$newResults[$result['Article']['id']]['ArticlesOrder']['prezzo'] = $result['ArticlesOrder']['prezzo'];
+			$newResults[$result['Article']['id']]['ArticlesOrder']['qta_cart'] = $result['ArticlesOrder']['qta_cart'];
 			
 			/*
 			 * gestione qta e importi

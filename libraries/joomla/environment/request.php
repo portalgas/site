@@ -149,10 +149,19 @@ class JRequest
 				// Get the variable from the input hash and clean it
 				$var = self::_cleanVar($input[$name], $mask, $type);
 
-				// Handle magic quotes compatibility
-				if (get_magic_quotes_gpc() && ($var != $default) && ($hash != 'FILES'))
-				{
-					$var = self::_stripSlashesRecursive($var);
+				// todo fractis
+				if (version_compare(PHP_VERSION, '7.4.33', '<=')) {
+					// Handle magic quotes compatibility
+					if (get_magic_quotes_gpc() && ($var != $default) && ($hash != 'FILES'))
+					{
+						$var = self::_stripSlashesRecursive($var);
+					}
+				}
+				else {
+					if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() && ($var != $default) && ($hash != 'FILES'))
+					{
+						$var = self::_stripSlashesRecursive($var);
+					}					
 				}
 
 				$GLOBALS['_JREQUEST'][$name][$sig] = $var;

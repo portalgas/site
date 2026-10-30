@@ -56,6 +56,8 @@ $html .= '</thead><tbody>';
 $i=0;
 $tot_qta = 0;
 $tot_importo = 0;
+$differenza_da_ordinare = 0;
+
 if(isset($results))
 foreach($results as $result) {
 
@@ -77,36 +79,37 @@ foreach($results as $result) {
         	$html .= '<td width="'.($output->getCELLWIDTH300()+$output->getCELLWIDTH70()).'">'.$name.'</td>';
                 
         if($isToValidate) {
-            $colli_completi = 0;
-            if($result['ArticlesOrder']['pezzi_confezione']>1) {
-                /*
-                 * colli_completi / differenza_da_ordinare
-                 */
-                $colli_completi = intval($result['Cart']['qta'] / $result['ArticlesOrder']['pezzi_confezione']);
-                if($colli_completi>0) {
-                    $differenza_da_ordinare = (($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi) - $result['Cart']['qta']);
-                    if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                $colli_completi = 0;
+                if($result['ArticlesOrder']['pezzi_confezione']>1) {
+                        /*
+                        * colli_completi / differenza_da_ordinare
+                        */
+                        $colli_completi = intval($result['ArticlesOrder']['qta_cart'] / $result['ArticlesOrder']['pezzi_confezione']);                      
+                        if($colli_completi>0) {
+                                $ordinati_che_completano_i_colli = ($result['ArticlesOrder']['pezzi_confezione'] * $colli_completi);
+                                $differenza_da_ordinare = ($result['ArticlesOrder']['qta_cart'] - $ordinati_che_completano_i_colli - $result['ArticlesOrder']['pezzi_confezione']);
+                                if($differenza_da_ordinare<0) $differenza_da_ordinare = -1 * $differenza_da_ordinare;
+                        }
+                        else {
+                            $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['ArticlesOrder']['qta_cart']);
+                            $colli_completi = '-';
+                        }
                 }
-                else {
-                        $differenza_da_ordinare = ($result['ArticlesOrder']['pezzi_confezione'] - $result['Cart']['qta']);
-                        $colli_completi = '-';
-                }
-        	}
                 
-            $html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">';
-            if($result['ArticlesOrder']['pezzi_confezione']>1)  $html .= $colli_completi;
-            else $html .= '';
-            $html .= '</td>';
-            $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
-            if($result['ArticlesOrder']['pezzi_confezione']>1) {
-            	
-                if($differenza_da_ordinare != $result['ArticlesOrder']['pezzi_confezione'])  
-                    $html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
-                else
-                    $html .= '0 (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
-            }
-            else 
-                    $html .= '';
+                $html .= '<td width="'.$output->getCELLWIDTH50().'" style="text-align:center;">';
+                if($result['ArticlesOrder']['pezzi_confezione']>1)  $html .= $colli_completi;
+                else $html .= '';
+                $html .= '</td>';
+                $html .= '<td width="'.$output->getCELLWIDTH70().'" style="text-align:center;">';
+                if($result['ArticlesOrder']['pezzi_confezione']>1) {
+                        
+                        if($differenza_da_ordinare != $result['ArticlesOrder']['pezzi_confezione'])  
+                        $html .= '<span class="box_evidenza"> '.$differenza_da_ordinare.' </span> (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
+                        else
+                        $html .= '0 (collo da '.$result['ArticlesOrder']['pezzi_confezione'].')';
+                }
+                else 
+                        $html .= '';
             $html .= '</td>';
         }
         else {
