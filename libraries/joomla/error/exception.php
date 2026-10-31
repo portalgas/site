@@ -52,7 +52,7 @@ class JException extends Exception
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected string $file;
+	protected $file;
 
 	/**
 	 * Line number the error occurred in [Available if backtrace is enabled]

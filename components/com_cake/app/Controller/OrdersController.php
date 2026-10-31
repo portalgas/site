@@ -885,6 +885,7 @@ class OrdersController extends AppController {
 			$delivery_ids[] = $requestData['Order']['delivery_id'];
 
 		$order_ids = [];
+		if(!empty($delivery_ids))
 		foreach($delivery_ids as $delivery_id) {
 
 			$requestData['Order']['delivery_id'] = $delivery_id;
@@ -911,7 +912,7 @@ class OrdersController extends AppController {
 				$order_ids[] = $order_id;
 
 			self::l('OrderController::_add() order_id '.$order_id, $debug);
-		}
+		} // end foreach($delivery_ids as $delivery_id)
 		
 		return $order_ids;
 	} 
