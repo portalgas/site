@@ -892,7 +892,7 @@ class UtilsCrons {
 
     public function loopsOrders($organization_id) {
 
-    $user = $this->_getObjUserLocal($organization_id, ['GAS']);
+        $user = $this->_getObjUserLocal($organization_id, ['GAS']);
         if(empty($user)) 
             return; 
         

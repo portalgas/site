@@ -59,8 +59,10 @@ class JException extends Exception
 	 *
 	 * @var    int
 	 * @since  11.1
+	 * 
+	 * se lo dichiato int $line Type of JException::$line must not be defined
 	 */
-	protected int $line = 0;
+	protected $line = 0;
 
 	/**
 	 * Name of the method the error occurred in [Available if backtrace is enabled]
