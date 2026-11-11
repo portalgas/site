@@ -40,8 +40,7 @@ class SuppliersOrganizationsReferent extends SuppliersOrganizationsReferentMulti
 		foreach ($results as $result) {
 
 			$Supplier = new Supplier;		
-			// $options['conditions'] = ['Supplier.id' => $result['SuppliersOrganizationsReferent']['supplier_organization_id']];
-			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
+		   $options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
 			$options['recursive'] = -1;
 			$resultsSuppliers = $Supplier->find('first', $options);
 			if(!empty($resultsSuppliers)) {
@@ -49,7 +48,7 @@ class SuppliersOrganizationsReferent extends SuppliersOrganizationsReferentMulti
 				$i++;
 			}
 		} // end foreach ($results as $result)
-		
+
 		return $results;
 	}
 	
