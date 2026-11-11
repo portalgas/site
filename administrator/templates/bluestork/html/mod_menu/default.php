@@ -117,8 +117,8 @@ if($componentIsComCake) {
 		/*
 		 * produttori
 		 */
-		$hasPromotionGas = $paramsConfig['hasPromotionGas'];
-		$hasPromotionGasUsers = $paramsConfig['hasPromotionGasUsers'];
+		isset($paramsConfig['hasPromotionGas']) ? $hasPromotionGas = $paramsConfig['hasPromotionGas']: $hasPromotionGas = 'N';
+		isset($paramsConfig['hasPromotionGasUsers']) ? $hasPromotionGasUsers = $paramsConfig['hasPromotionGasUsers']: $hasPromotionGasUsers = 'N';
 				
 		$hasArticlesGdxp = $paramsConfig['hasArticlesGdxp'];
 		$hasBookmarsArticles = $paramsConfig['hasBookmarsArticles'];
@@ -150,19 +150,20 @@ if($componentIsComCake) {
 		* di default gasManager, gasManagerDelivery, gasReferente, gasSuperReferente, utenti
 		*/
 		// referente cassa (pagamento degli utenti alla consegna)
-		$hasRolesCassiere = $paramsFields['hasRolesCassiere'];
+		isset($paramsFields['hasRolesCassiere']) ? $hasRolesCassiere = $paramsFields['hasRolesCassiere']: $hasRolesCassiere = 'N';
+		
 	
 		/*
 		 * referente tesoriere (pagamento con richiesta degli utenti dopo consegna)
 		 * 		gestisce anche il pagamento del suo produttore
 		 */
-		$hasRolesReferentTesoriere = $paramsFields['hasRolesReferentTesoriere'];
+		isset($paramsFields['hasRolesReferentTesoriere']) ? $hasRolesReferentTesoriere = $paramsFields['hasRolesReferentTesoriere']: $hasRolesReferentTesoriere = 'N';
 	
 		// tesoriere per pagamento fornitori
-		$hasRolesTesoriere = $paramsFields['hasRolesTesoriere'];
+		isset($paramsFields['hasRolesTesoriere']) ? $hasRolesTesoriere = $paramsFields['hasRolesTesoriere']: $hasRolesTesoriere = 'N';
 	
 		// dispensa
-		$hasRolesStoreroom = $paramsFields['hasRolesStoreroom'];
+		isset($paramsFields['hasRolesStoreroom']) ? $hasRolesStoreroom = $paramsFields['hasRolesStoreroom']: $hasRolesStoreroom = 'N';
 	}		
 	else {
 		$organization_id = 0;

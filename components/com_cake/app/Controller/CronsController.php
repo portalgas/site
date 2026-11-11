@@ -122,7 +122,7 @@ class CronsController extends AppController {
 								'nota' => "Elabora tutti gli ordine del giorno e se sono impostati come ricorsivi crea il nuovo ordine",
 								'execute' => "Prima della mezzanotte<br />40 23 * * *<br />dopo loopsDeliveries",
 								'method' => "loopsOrders",
-								'stato' => 'N'];
+								'stato' => 'Y'];
 		array_push($crons, $arr);
 		$arr = ['category' => "DES",
 									'name' => "Ordine condiviso: stato elaborazione",

@@ -37,8 +37,7 @@ class ArticlesOrder extends ArticlesOrderMultiKey {
         $owner_supplier_organization_id = 0;         
         if (array_key_exists('Order.id', $conditions)) {
 
-            if(!is_array($orderResult))
-                $orderResult = $this->_getOrderById($user, $conditions['Order.id'], $debug);
+            $orderResult = $this->_getOrderById($user, $conditions['Order.id'], $debug);
         
             $owner_articles = $orderResult['Order']['owner_articles'];
             $owner_organization_id = $orderResult['Order']['owner_organization_id'];

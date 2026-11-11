@@ -56,6 +56,8 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 			
 					switch ($typeRow) {
 						case 'TRGROUP':
+							$rows = [];
+								
 							$label = $cols['LABEL'];
 							
 							if(!empty($cols['LABEL_CODICE']))
@@ -68,12 +70,11 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							if($user_address=='Y')
 								$label .=  ' '.$cols['LABEL_ADDRESS'];
 															
-							$rows = [];
 							$rows[] = $this->ExportDocs->prepareCsv($label);
 						break;
 						case 'TRSUBTOT':
+							$rows = [];
 							if($totale_per_utente=='Y') {
-								$rows = [];
 								$rows[] = '';
 								if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 									$rows[] = '';
@@ -124,11 +125,12 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 								$rows[] = $cols['IMPORTO_COMPLETO'];
 						break;								
 						case 'TRDATA':
+							$rows = [];
+								
 							$name = $this->ExportDocs->prepareCsv($cols['NAME'].' '.$this->ExportDocs->prepareCsv($this->App->getArticleConf($cols['ARTICLEQTA'], $cols['UM'])));
 							if($cols['DELETE_TO_REFERENT']=='Y') $name .= " (CANCELLATO)";
 							$codice = $this->ExportDocs->prepareCsv($cols['CODICE']);
 									
-							$rows = [];
 							$rows[] = '';
 							if($user->organization['Organization']['hasFieldArticleCodice']=='Y')
 								$rows[] = $codice;
@@ -160,7 +162,7 @@ foreach($results['Delivery'] as $numDelivery => $result['Delivery']) {
 							$rows[] = $cols['QTA_MASSIMA'];								
 						break;
 						case 'TRDATABIS':
-							case 'TRDATA':
+						case 'TRDATA':
 								$rows = [];
 								$rows[] = $cols['NOTA'];
 						break;

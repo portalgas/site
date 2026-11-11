@@ -114,7 +114,11 @@ class JRegistryFormatINI extends JRegistryFormat
 			$line = trim($line);
 
 			// Ignore empty lines and comments.
-			if (empty($line) || ($line[[0]] == ';'))
+			/*
+			 * Got error 'PHP message: PHP Warning:  Illegal offset typ 
+			 * if (empty($line) || ($line[[0]] == ';'))
+			*/
+			if (empty($line) || ($line[0] == ';'))
 			{
 				continue;
 			}

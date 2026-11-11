@@ -5,7 +5,7 @@ echo $this->Html->script('generic-v05.min');
 echo $this->Html->script('bootstrap-select.min');
 echo $this->Html->css('bootstrap-select.min');
 
-if($user->organization['Organization']['type']=='PROD') {
+if(isset($user) && $user->organization['Organization']['type']=='PROD') {	
 	echo $this->Html->script('genericEcommProd.min', array('date' => '2017feb'));
 	echo $this->Html->script('genericBackOfficeProd.min', array('date' => '2017feb'));
 }

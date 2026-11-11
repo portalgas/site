@@ -36,17 +36,20 @@ class SuppliersOrganizationsReferent extends SuppliersOrganizationsReferentMulti
 		$results = $SuppliersOrganizationsReferent->find('all', $options);
 
 		App::import('Model', 'Supplier');
-		foreach ($results as $i => $result) {
+		$i=0;
+		foreach ($results as $result) {
 
 			$Supplier = new Supplier;		
-			
-			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganizationsReferent']['supplier_organization_id']];
+			// $options['conditions'] = ['Supplier.id' => $result['SuppliersOrganizationsReferent']['supplier_organization_id']];
+			$options['conditions'] = ['Supplier.id' => $result['SuppliersOrganization']['supplier_id']];
 			$options['recursive'] = -1;
 			$resultsSuppliers = $Supplier->find('first', $options);
-				
-			$results[$i]['Supplier'] = $resultsSuppliers['Supplier'];
-		}
-
+			if(!empty($resultsSuppliers)) {
+				$results[$i]['Supplier'] = $resultsSuppliers['Supplier'];
+				$i++;
+			}
+		} // end foreach ($results as $result)
+		
 		return $results;
 	}
 	

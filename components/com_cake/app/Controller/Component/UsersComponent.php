@@ -42,6 +42,9 @@ class UsersComponent extends Component {
 	 */
 	private function _addParamsCashJUser($user) {
 
+		if(empty($user->organization))
+			return $user;
+				
 		$controllerLog = $this->Controller;
 		
 		/*

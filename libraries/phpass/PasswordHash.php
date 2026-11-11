@@ -240,6 +240,7 @@ class PasswordHash {
 		return '*';
 	}
 
+	/*
 	function CheckPassword($password, $stored_hash)
 	{
 		$hash = $this->crypt_private($password, $stored_hash);
@@ -248,6 +249,25 @@ class PasswordHash {
 
 		return $hash == $stored_hash;
 	}
+	*/
+
+	// todo fractis
+	function CheckPassword($password, $stored_hash)
+	{
+		if (version_compare(PHP_VERSION, '7.4.33', '<=')) {
+			$hash = $this->crypt_private($password, $stored_hash);
+
+			if ($hash[0] == '*')
+				$hash = crypt($password, $stored_hash);
+
+			return $hash == $stored_hash;
+		}
+		else {
+			$hash = password_hash($password, PASSWORD_DEFAULT);
+			return password_verify($password, $hash);
+		}
+	}
+
 }
 
 ?>
